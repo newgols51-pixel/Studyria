@@ -7,8 +7,7 @@
   // ── CONFIG ──────────────────────────────────────────────────────
   // Supabase project URL and anon key
   const SUPABASE_URL = "https://qsdfmgcekdpjdcyqhuhi.supabase.co";
-  const SUPABASE_ANON =‎"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZGZtZ2Nla2RwamRjeXFodWhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTE2NDcsImV4cCI6MjA5NjIyNzY0N30.kDOEYxUQyLTp1blasuX2kVSIy2olGLhdqqtOMTlEX5g";
-
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZGZtZ2Nla2RwamRjeXFodWhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTE2NDcsImV4cCI6MjA5NjIyNzY0N30.kDOEYxUQyLTp1blasuX2kVSIy2olGLhdqqtOMTlEX5g";
   // ── INIT CLIENT (once, exposed on window) ───────────────────────
   // The @supabase/supabase-js v2 CDN sets window.supabase = { createClient }
   if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
