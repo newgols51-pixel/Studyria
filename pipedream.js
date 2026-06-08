@@ -27,11 +27,34 @@
     };
   }
 
-  if (typeof window.pipedream_onLogin !== 'function') {
-    window.pipedream_onLogin = function (email, name) {
-      window.sendToPipedream({ event: 'user_login', email, name: name || '', created_at: new Date().toISOString() });
-    };
+  window.pipedream_onLogin = async function(email, password) {
+  try {
+    const { data, error } =
+      await window.supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) {
+      alert(error.message);
+      console.error(error);
+      return;
+    }
+
+    await window.sendToPipedream({
+      event: 'user_login',
+      email: email,
+      created_at: new Date().toISOString()
+    });
+
+    alert("Login Successful");
+    location.reload();
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
   }
+};
 
   if (typeof window.pipedream_onSignup !== 'function') {
     window.pipedream_onSignup = function (email, name) {
