@@ -4429,11 +4429,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ── Expose helpers for supabase.js to call directly ───────────────
-window.pipedream_onLogin        = pipedream_onLogin;
-window.pipedream_onSignup       = pipedream_onSignup;
-window.pipedream_onForgotPassword = pipedream_onForgotPassword;
-window.pipedream_onBuy          = pipedream_onBuy;
-window.sendToPipedream          = sendToPipedream;
+if (typeof pipedream_onLogin !== "undefined")
+  window.pipedream_onLogin = pipedream_onLogin;
+
+if (typeof pipedream_onSignup !== "undefined")
+  window.pipedream_onSignup = pipedream_onSignup;
+
+if (typeof pipedream_onForgotPassword !== "undefined")
+  window.pipedream_onForgotPassword = pipedream_onForgotPassword;
+
+if (typeof pipedream_onBuy !== "undefined")
+  window.pipedream_onBuy = pipedream_onBuy;
+
+if (typeof sendToPipedream !== "undefined")
+  window.sendToPipedream = sendToPipedream;
 // ══════════════════════════════════════════════════════════════════
 
 // ── INIT ──────────────────────────────────────────────────────────
