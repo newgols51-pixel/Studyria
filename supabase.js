@@ -306,3 +306,29 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
   });
 
 })();
+
+window.authResendVerification = async function () {
+  try {
+    const email =
+      document.getElementById("verifyEmail")?.textContent?.trim();
+
+    if (!email) {
+      alert("Email not found");
+      return;
+    }
+
+    const { error } = await window.supabaseClient.auth.resend({
+      type: "signup",
+      email: email
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Verification email sent successfully");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Failed to resend email");
+  }
+}
