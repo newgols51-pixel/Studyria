@@ -120,12 +120,17 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="auth-spinner"></span>Creating account…'; }
 
-    const { data, error } = await client.auth.signUp({
-      email,
-      password: pass,
-      options: { data: { full_name: name } }
-    });
-
+     const { data, error } = await client.auth.signUp({
+  email,
+  password: pass,
+  options: {
+    data: {
+      full_name: name
+    },
+    emailRedirectTo: window.location.origin
+  }
+});
+    
     if (btn) { btn.disabled = false; btn.innerHTML = 'Create Account'; }
 
     if (error) {
