@@ -1,0 +1,27 @@
+{
+  "name": "Studyria – India's #1 PDF Study Platform",
+  "short_name": "Studyria",
+  "description": "Curated study materials from IIT professors & industry experts. Free & premium PDFs for every competitive exam.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080c14",
+  "theme_color": "#3d8ef8",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books"],
+  "lang": "en-IN",
+  "dir": "ltr"
+}

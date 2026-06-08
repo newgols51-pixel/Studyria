@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block admin panel from indexing
+Disallow: /?page=admin
+Disallow: /?page=admin-login
+Disallow: /?page=dashboard
+
+Sitemap: https://studyria.com/sitemap.xml
