@@ -127,7 +127,7 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
     data: {
       full_name: name
     },
-    emailRedirectTo: window.location.origin
+    emailRedirectTo: "https://newgols51-pixel.github.io/studyria/"
   }
 });
     
