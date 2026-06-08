@@ -168,8 +168,8 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="auth-spinner"></span>Sending…'; }
 
     const { error } = await client.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/?reset=true'
-    });
+  redirectTo: 'https://newgols51-pixel.github.io/studyria/?reset=true'
+});
 
     if (btn) { btn.disabled = false; btn.innerHTML = 'Send Reset Link'; }
 
