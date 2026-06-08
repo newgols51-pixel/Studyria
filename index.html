@@ -4336,15 +4336,6 @@ async function sendToPipedream(data) {
 // ── Pipedream event helpers ───────────────────────────────────────
 
 // Called after successful login
-function pipedream_onLogin(email, name) {
-  sendToPipedream({
-    event: "user_login",
-    email: email,
-    name: name || "",
-    created_at: new Date().toISOString()
-  });
-}
-
 // Called after successful registration (signup)
 function pipedream_onSignup(email, name) {
   sendToPipedream({
