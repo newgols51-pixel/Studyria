@@ -188,8 +188,8 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
     const client = sb();
     if (!client) return;
 
-    const pass    = document.getElementById('resetPass')?.value;
-    const confirm = document.getElementById('resetPassConfirm')?.value;
+    const pass = document.getElementById('newPassword')?.value;
+const confirm = document.getElementById('confirmNewPassword')?.value;
     const btn     = document.getElementById('resetBtn');
 
     clearAuthErr('resetError');
