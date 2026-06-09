@@ -3237,7 +3237,7 @@ function switchDashTab(tab) {
   const currentUser = window.currentUser; if (!currentUser) return;
   document.querySelectorAll('#page-dashboard .sidebar-link[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
 
-  const purchased = PDFS.slice(0, 4);
+  const purchased = [];
   const wishPdfs = PDFS.filter(p => wishlist.includes(p.id));
   const main = document.getElementById('dashMain');
 
@@ -3247,14 +3247,14 @@ function switchDashTab(tab) {
       <p class="text-muted text-sm mb-4">Here's what's happening with your account.</p>
       <div class="stats-grid">
         ${[
-          {num:currentUser.purchased,label:"PDFs Purchased",change:"+2 this month",up:true},
-          {num:`₹${currentUser.totalSpent.toLocaleString()}`,label:"Total Spent",change:"+₹599 this month",up:false},
-          {num:currentUser.wishlist,label:"Wishlist Items",change:"3 items saved",up:true},
-          {num:"12",label:"Hours Read",change:"+3h this week",up:true}
+          {num:currentUser.purchased || 0,label:'PDFs Purchased', ...},
+          {num:`₹${(currentUser.totalSpent || 0).toLocaleString()}`,label:'Total Spent', ...},
+          {num:currentUser.wishlist || 0,label:'Wishlist Items', ...},
+          {num:"0",label:"Hours Read",change:"",up:false}
         ].map(s => `<div class="card stat-card"><div class="stat-num grad-text">${s.num}</div><div class="stat-label">${s.label}</div><div class="stat-change ${s.up?'stat-up':'stat-down'}">${s.change}</div></div>`).join('')}
       </div>
       <div class="section-title mb-3" style="font-size:1.1rem">Recently Purchased</div>
-      <div class="pdf-grid">${purchased.map(pdfCardHTML).join('')}</div>`;
+<div class="text-muted">No purchases yet</div>
   }
   else if (tab === 'purchased') {
     main.innerHTML = `
