@@ -27,19 +27,8 @@
     };
   }
 
-  window.pipedream_onLogin = async function(email, password) {
+  window.pipedream_onLogin = async function(email) {
   try {
-    const { data, error } =
-      await window.supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
-    if (error) {
-      alert(error.message);
-      console.error(error);
-      return;
-    }
 
     await window.sendToPipedream({
       event: 'user_login',
@@ -47,12 +36,10 @@
       created_at: new Date().toISOString()
     });
 
-    alert("Login Successful");
-    location.reload();
+    console.log("Login tracked");
 
   } catch (err) {
     console.error(err);
-    alert(err.message);
   }
 };
 
