@@ -2753,8 +2753,14 @@ function openDetail(id) {
 }
 
 function renderDetail() {
-  const pdf = selectedPdf;
-  if (!pdf) return;
+    const pdf = selectedPdf;
+
+    alert(JSON.stringify(pdf));
+
+    if (!pdf) return;
+  document.getElementById('detailContent').innerHTML =
+'<h1 style="color:white">DETAIL PAGE WORKING</h1>';
+return;
   const inWish = wishlist.includes(pdf.id);
   const discount = Math.round((1 - pdf.price / pdf.originalPrice) * 100);
   document.getElementById('detailContent').innerHTML = `
