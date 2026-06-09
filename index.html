@@ -3273,20 +3273,40 @@ function switchDashTab(tab) {
         `<div class="pdf-grid">${wishPdfs.map(pdfCardHTML).join('')}</div>`);
   }
   else if (tab === 'profile') {
-    main.innerHTML = `
-      <h2 style="font-family:'Clash Display',sans-serif;margin-bottom:4px">Your Profile</h2>
-      <p class="text-muted text-sm mb-4">Manage your personal information</p>
-      <div class="card p-6" style="max-width:560px">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="avatar-btn" style="width:64px;height:64px;font-size:1.3rem">${currentUser.avatar}</div>
-          <div><div class="fw-600">${window.currentUser.name}</div><div class="text-muted text-sm">Member since ${currentUser.joined}</div><button class="btn btn-secondary btn-sm mt-1">Change Photo</button></div>
+  main.innerHTML = `
+    <h2 style="font-family:'Clash Display',sans-serif;margin-bottom:4px">Your Profile</h2>
+    <p class="text-muted text-sm mb-4">Manage your personal information</p>
+
+    <div class="card p-6" style="max-width:560px">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="avatar-btn" style="width:64px;height:64px;font-size:1.3rem">
+          ${currentUser?.avatar || '👤'}
         </div>
-        <div class="divider"></div>
-        ${["Full Name",window.currentUser.name],["Email",window.currentUser.email],["Phone","+91 98765 43210"],["Location","Mumbai, India"]].map(([label,val]) =>
-          `<div class="form-group"><label class="form-label">${label}</label><input class="form-input" value="${val}" /></div>`
-        ).join('')}
-        <button class="btn btn-primary" onclick="showToast('Profile updated!','success')">${icon('check', 14)}Save Changes</button>
-      </div>`;
+        <div>
+          <div class="fw-600">${window.currentUser?.name || ''}</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      ${[
+        ["Full Name", window.currentUser?.name || ""],
+        ["Email", window.currentUser?.email || ""],
+        ["Phone", "+91 98765 43210"],
+        ["Location", "Mumbai, India"]
+      ].map(([label,val]) =>
+        `<div class="form-group">
+          <label class="form-label">${label}</label>
+          <input class="form-input" value="${val}" />
+        </div>`
+      ).join('')}
+
+      <button class="btn btn-primary"
+        onclick="showToast('Profile updated!','success')">
+        Save Profile
+      </button>
+    </div>
+  `;
   }
   else if (tab === 'settings') {
     main.innerHTML = `
