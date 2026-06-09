@@ -3247,14 +3247,15 @@ function switchDashTab(tab) {
       <p class="text-muted text-sm mb-4">Here's what's happening with your account.</p>
       <div class="stats-grid">
         ${[
-          {num:currentUser.purchased || 0,label:'PDFs Purchased', ...},
-          {num:`₹${(currentUser.totalSpent || 0).toLocaleString()}`,label:'Total Spent', ...},
-          {num:currentUser.wishlist || 0,label:'Wishlist Items', ...},
-          {num:"0",label:"Hours Read",change:"",up:false}
+          {num:currentUser.purchased || 0,label:'PDFs Purchased'},
+{num:`₹${(currentUser.totalSpent || 0).toLocaleString()}`,label:'Total Spent'},
+{num:currentUser.wishlist || 0,label:'Wishlist Items'},
+{num:'0',label:'Hours Read',change:'',up:false}
         ].map(s => `<div class="card stat-card"><div class="stat-num grad-text">${s.num}</div><div class="stat-label">${s.label}</div><div class="stat-change ${s.up?'stat-up':'stat-down'}">${s.change}</div></div>`).join('')}
       </div>
-      <div class="section-title mb-3" style="font-size:1.1rem">Recently Purchased</div>
-<div class="text-muted">No purchases yet</div>
+${purchased.length
+ ? `<div class="pdf-grid">${purchased.map(pdfCardHTML).join('')}</div>`
+ : `<div class="text-muted">No purchases yet</div>`
   }
   else if (tab === 'purchased') {
     main.innerHTML = `
