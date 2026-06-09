@@ -2732,9 +2732,24 @@ function renderLibGrid() {
 
 // ── DETAIL ────────────────────────────────────────────────────────
 function openDetail(id) {
-  selectedPdf = (window.PDFS || []).find(p => p.id === id);
-  renderDetail();
-  navigate('detail');
+    console.log("Clicked ID:", id);
+
+    selectedPdf = (window.PDFS || []).find(
+        p => String(p.id) === String(id)
+    );
+
+    console.log("Selected PDF:", selectedPdf);
+
+    if (!selectedPdf) {
+        alert("PDF not found");
+        return;
+    }
+
+    navigate('detail');
+
+    setTimeout(() => {
+        renderDetail();
+    }, 50);
 }
 
 function renderDetail() {
