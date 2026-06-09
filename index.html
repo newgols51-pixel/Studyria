@@ -3219,13 +3219,12 @@ function renderDashboard() {
   // window.currentUser is set synchronously by syncNavToAuth() which is
   // called from onAuthStateChange (INITIAL_SESSION fires on every page
   // load). If it's still null here, show the sign-in prompt.
-  const user = window.currentUser || currentUser;
+  const user = window.currentUser;
   if (!user) {
     document.getElementById('dashMain').innerHTML = `<div style="text-align:center;padding:120px 20px">${icon('lock', 48)}<br><br><h2 style="font-family:'Clash Display',sans-serif">Sign in to access your dashboard</h2><p class="text-muted mt-2 mb-4">Track purchases, manage wishlist, and more.</p><button class="btn btn-primary btn-lg" onclick="navigate('login')">Sign In</button></div>`;
     return;
   }
   // Always use the authoritative window.currentUser object.
-  currentUser = user;
   document.getElementById('dashAvatar').textContent = user.avatar;
   document.getElementById('dashName').textContent   = user.name;
   document.getElementById('dashEmail').textContent  = user.email;
@@ -3235,6 +3234,7 @@ function renderDashboard() {
 
 function switchDashTab(tab) {
   dashTab = tab;
+  const currentUser = window.currentUser; if (!currentUser) return;
   document.querySelectorAll('#page-dashboard .sidebar-link[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
 
   const purchased = PDFS.slice(0, 4);
@@ -3279,10 +3279,10 @@ function switchDashTab(tab) {
       <div class="card p-6" style="max-width:560px">
         <div class="flex items-center gap-3 mb-4">
           <div class="avatar-btn" style="width:64px;height:64px;font-size:1.3rem">${currentUser.avatar}</div>
-          <div><div class="fw-600">${currentUser.name}</div><div class="text-muted text-sm">Member since ${currentUser.joined}</div><button class="btn btn-secondary btn-sm mt-1">Change Photo</button></div>
+          <div><div class="fw-600">${window.currentUser.name}</div><div class="text-muted text-sm">Member since ${currentUser.joined}</div><button class="btn btn-secondary btn-sm mt-1">Change Photo</button></div>
         </div>
         <div class="divider"></div>
-        ${[["Full Name",currentUser.name],["Email",currentUser.email],["Phone","+91 98765 43210"],["Location","Mumbai, India"]].map(([label,val]) =>
+        ${["Full Name",window.currentUser.name],["Email",window.currentUser.email],["Phone","+91 98765 43210"],["Location","Mumbai, India"]].map(([label,val]) =>
           `<div class="form-group"><label class="form-label">${label}</label><input class="form-input" value="${val}" /></div>`
         ).join('')}
         <button class="btn btn-primary" onclick="showToast('Profile updated!','success')">${icon('check', 14)}Save Changes</button>
