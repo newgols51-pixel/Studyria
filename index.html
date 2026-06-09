@@ -2833,7 +2833,7 @@ function toggleWish(id) {
   } else {
     wishlist.push(id);
     const pdf = (window.PDFS || []).find(p => p.id === id);
-    showToast(`"${pdf.title}" saved!`, 'success');
+    showToast(pdf.title +'saved!','success');
   }
   // Update wish button if visible on page
   const btn = document.getElementById(`wish-${id}`);
