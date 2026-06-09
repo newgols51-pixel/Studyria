@@ -2754,9 +2754,9 @@ function openDetail(id) {
 
 function renderDetail() {
     const pdf = selectedPdf;
-
+alert("STEP-1");
     if (!pdf) return;
-  
+alert("STEP-2");
   const inWish = wishlist.includes(pdf.id);
   const discount = Math.round((1 - pdf.price / pdf.originalPrice) * 100);
   
@@ -2817,6 +2817,7 @@ function renderDetail() {
         <div class="alert alert-info mt-3" style="font-size:.78rem">${icon('shield', 14)}30-Day Money Back Guarantee</div>
       </div>
     </div>`;
+  alert("STEP-3");
 }
 
 // ── WISHLIST ──────────────────────────────────────────────────────
