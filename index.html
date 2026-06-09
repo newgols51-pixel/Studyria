@@ -2755,14 +2755,11 @@ function openDetail(id) {
 function renderDetail() {
     const pdf = selectedPdf;
 
-    alert(JSON.stringify(pdf));
-
     if (!pdf) return;
-  document.getElementById('detailContent').innerHTML =
-'<h1 style="color:white">DETAIL PAGE WORKING</h1>';
-return;
+  
   const inWish = wishlist.includes(pdf.id);
   const discount = Math.round((1 - pdf.price / pdf.originalPrice) * 100);
+  
   document.getElementById('detailContent').innerHTML = `
     <div>
       <div class="detail-cover" style="background:linear-gradient(135deg,${pdf.coverFrom},${pdf.coverTo})">
