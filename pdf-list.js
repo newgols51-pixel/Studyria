@@ -34,11 +34,8 @@
     // Replace local PDFS array with live DB data
     // Keep local entries as fallback for any DB ids that don't exist
     if (typeof window.PDFS !== 'undefined') {
-      const dbIds = new Set(dbPdfs.map(p => String(p.id)));
-      const localOnly = window.PDFS.filter(p => !dbIds.has(String(p.id)));
-      window.PDFS = [...dbPdfs, ...localOnly];
+  window.PDFS = dbPdfs;
     }
-
     // Re-render any visible shelves/grids
     if (typeof window.renderTrendingShelf    === 'function') window.renderTrendingShelf();
     if (typeof window.renderNewArrivalsShelf === 'function') window.renderNewArrivalsShelf();
