@@ -2754,6 +2754,8 @@ function openDetail(id) {
   }
 function renderDetail() {
     const pdf = selectedPdf;
+  pdf.reviews = pdf.reviews || 0;
+  pdf.sales = pdf.sales || 0;
   console.log("PDF =", pdf);
 alert("STEP-1");
     if (!pdf) return;
@@ -2771,10 +2773,10 @@ alert("STEP-2");
         <div class="text-muted text-sm mb-3">by <strong style="color:var(--accent)">${pdf.author}</strong></div>
         <div class="flex items-center gap-3 flex-wrap mb-4">
           <div class="flex items-center gap-1" style="color:var(--gold)">${icon('star', 16)}<strong>${pdf.rating}</strong></div>
-          <span class="text-muted text-sm">(${pdf.reviews.toLocaleString()} reviews)</span>
+          <span class="text-muted text-sm">${(pdf.reviews || 0).toLocaleString()} reviews</span>
           <span class="badge badge-accent">${pdf.category}</span>
           <span class="text-muted text-sm">${pdf.pages} pages</span>
-          <span class="text-muted text-sm">${pdf.sales.toLocaleString()} sold</span>
+          <span class="text-muted text-sm">${(pdf.sales || 0).toLocaleString()} sold
         </div>
         <p style="color:var(--text2);line-height:1.8;margin-bottom:24px">${pdf.preview} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
         <div class="divider"></div>
