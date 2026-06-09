@@ -2751,10 +2751,10 @@ function openDetail(id) {
     setTimeout(() => {
         renderDetail();
     }, 50);
-}
-
+  }
 function renderDetail() {
     const pdf = selectedPdf;
+  console.log("PDF =", pdf);
 alert("STEP-1");
     if (!pdf) return;
 alert("STEP-2");
@@ -2762,7 +2762,6 @@ alert("STEP-2");
   const discount = Math.round((1 - pdf.price / pdf.originalPrice) * 100);
   
   document.getElementById('detailContent').innerHTML = `
-    <div>
       <div class="detail-cover" style="background:linear-gradient(135deg,${pdf.coverFrom},${pdf.coverTo})">
         ${icon('file', 100)}
         ${pdf.tag ? `<span class="pdf-tag tag-${pdf.tag.toLowerCase().replace(' ','')} ">${pdf.tag}</span>` : ''}
@@ -2817,7 +2816,6 @@ alert("STEP-2");
         <div class="divider"></div>
         <div class="alert alert-info mt-3" style="font-size:.78rem">${icon('shield', 14)}30-Day Money Back Guarantee</div>
       </div>
-    </div>`;
   alert("STEP-3");
 }
 
