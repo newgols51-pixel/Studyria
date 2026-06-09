@@ -2494,7 +2494,7 @@ function setHomeCat(cat) {
 
 function renderHomeGrid() {
   const search = (document.getElementById('homeSearch')?.value || '').toLowerCase();
-  let filtered = PDFS.filter(p =>
+  let filtered = (window.PDFS || []).filter(p =>
     (homeCat === 'All' || p.category === homeCat) &&
     (search === '' || p.title.toLowerCase().includes(search) || p.author.toLowerCase().includes(search))
   );
@@ -2711,7 +2711,7 @@ function toggleFreeOnly() {
 function renderLibGrid() {
   const search = (document.getElementById('libSearch')?.value || '').toLowerCase();
   const sort = document.getElementById('libSort')?.value || 'popular';
-  let filtered = PDFS.filter(p =>
+  let filtered = (window.PDFS || []).filter(p =>
     (libCat === 'All' || p.category === libCat) &&
     (!freeOnly || p.free) &&
     (search === '' || p.title.toLowerCase().includes(search) || p.author.toLowerCase().includes(search) || p.category.toLowerCase().includes(search))
@@ -2731,7 +2731,7 @@ function renderLibGrid() {
 
 // ── DETAIL ────────────────────────────────────────────────────────
 function openDetail(id) {
-  selectedPdf = PDFS.find(p => p.id === id);
+  selectedPdf = (window.PDFS || []).find(p => p.id === id);
   renderDetail();
   navigate('detail');
 }
@@ -2808,7 +2808,7 @@ function toggleWish(id) {
     showToast('Removed from wishlist', 'info');
   } else {
     wishlist.push(id);
-    const pdf = PDFS.find(p => p.id === id);
+    const pdf = (window.PDFS || []).find(p => p.id === id);
     showToast(`"${pdf.title}" saved!`, 'success');
   }
   // Update wish button if visible on page
@@ -2820,7 +2820,7 @@ function toggleWish(id) {
 }
 
 function renderWishlist() {
-  const pdfs = PDFS.filter(p => wishlist.includes(p.id));
+const pdfs = (window.PDFS || []).filter(p => wishlist.includes(p.id));
   document.getElementById('wishCount').textContent = `${pdfs.length} saved items`;
   const el = document.getElementById('wishContent');
   if (pdfs.length === 0) {
@@ -2837,7 +2837,7 @@ function renderWishlist() {
 
 // handleBuy kept for backward compat (detail page Buy Now button)
 function handleBuy(id) {
-  const pdf = PDFS.find(p => p.id === id);
+  const pdf = (window.PDFS || []).find(p => p.id === id);
   if (!pdf) return;
   // Use pdf_url (DB field) first, then pdfUrl (local field), then '' — real URL fetched inside downloadPDF/buyPDF from DB
   const resolvedUrl = pdf.pdf_url || pdf.pdfUrl || '';
@@ -2850,7 +2850,7 @@ function handleBuy(id) {
 }
 
 async function downloadPDF(pdfId, pdfUrl) {
-  const pdf = PDFS.find(p => p.id === pdfId);
+  const pdf = (window.PDFS || []).find(p => p.id === pdfId);
   if (!pdf) return;
 
   // ── STEP 1: Login check ───────────────────────────────────────
