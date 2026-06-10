@@ -4256,6 +4256,7 @@ async function adminSavePDF() {
       const fpath  = `${Date.now()}_${title.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'').slice(0,40)}.${ext}`;
 
       btn.innerHTML = `<span class="auth-spinner"></span>Uploading cover…`;
+      console.log('Uploading cover...', coverFile);
       const { error: coverErr } = await window.supabaseClient.storage
         .from('covers')
         .upload(fpath, coverFile, { upsert: true, contentType: coverFile.type });
@@ -4276,6 +4277,7 @@ async function adminSavePDF() {
       const fpath2 = `${Date.now()}_${title.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'').slice(0,40)}.pdf`;
 
       btn.innerHTML = `<span class="auth-spinner"></span>Uploading PDF…`;
+      console.log('Uploading pdf...', pdfFile);
       const { error: pdfErr } = await window.supabaseClient.storage
         .from('pdfs')
         .upload(fpath2, pdfFile, { upsert: true, contentType: 'application/pdf' });
