@@ -3500,6 +3500,9 @@ async function adminDoLogin() {
       // Check admin_users table
       const { data: adminRow, error: adminErr } = await window.supabaseClient
         .from('admin_users').select('*').eq('email', email).single();
+      console.log('EMAIL:', email);
+console.log('ADMIN ROW:', adminRow);
+console.log('ADMIN ERR:', adminErr);
       if (adminErr || !adminRow) throw new Error('This account is not authorized as admin.');
 
       adminSession = { email, name: adminRow.name || email.split('@')[0], role: adminRow.role || 'Admin', uid: authData.user.id };
