@@ -574,7 +574,7 @@
     if (!client) return;
 
     client
-      .channel('pdf_books_changes')
+      ..channel('pdfs_changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'pdf_books' }, () => {
         if (typeof window.renderTrendingShelf    === 'function') window.renderTrendingShelf();
         if (typeof window.renderNewArrivalsShelf === 'function') window.renderNewArrivalsShelf();
