@@ -9,7 +9,7 @@
 
   try {
     const { data, error } = await client
-      .from('pdf_books')
+      .from('pdfs')
       .select('*')
       .eq('published', true)
       .order('created_at', { ascending: false });
