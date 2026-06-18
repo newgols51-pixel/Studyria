@@ -9,7 +9,7 @@
 //     so auth tokens are never intercepted or cached.
 // ══════════════════════════════════════════════════════════════════
 
-const CACHE_NAME   = 'studyria-v6.3';
+const CACHE_NAME   = 'studyria-v6.4';
 const OFFLINE_PAGE = '/404.html';
 
 // ── INSTALL ──────────────────────────────────────────────────────
