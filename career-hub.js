@@ -207,7 +207,7 @@ function _chMapRow(row) {
     howToApply:           row.how_to_apply || '',
     faq:                  row.faq || '',
 
-    // ── Important Links ──
+    // ── Important Links (ONLY these 3 may ever open externally) ──
     notificationLink:  row.notification_link || '',
     officialWebsite:   row.official_website || '',
     registrationLink:  row.registration_link || '',
@@ -215,6 +215,11 @@ function _chMapRow(row) {
     syllabusLink:      row.syllabus_link || '',
     admitCardLink:     row.admit_card_link || '',
     resultLink:        row.result_link || '',
+
+    // ── Full Article Import (read entirely inside Studyria) ──
+    organization:      row.organization || row.org || '',
+    articleContent:    row.article_content || '',
+    sourceUrl:         row.source_url || '',   // never rendered as a link — internal only
   };
 }
 
@@ -622,26 +627,75 @@ function _chFormatLongText(t) {
     ).join('');
 }
 
-// Important Links table (only rows with a real URL show up)
+// Important Links table — ONLY these 3 may ever send a user outside Studyria.
+// Every other field (registration, login, syllabus, admit card, result, the
+// original AssamCareer source) is informational/internal only and is never
+// rendered as a clickable outbound link.
 function _chImportantLinksHTML(j) {
   const rows = [
-    ['Apply Online',      j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : ''],
-    ['Registration',      j.registrationLink],
-    ['Login',              j.loginLink],
-    ['Notification PDF',  j.notificationLink],
-    ['Official Website',  j.officialWebsite],
-    ['Syllabus',           j.syllabusLink],
-    ['Admit Card',         j.admitCardLink],
-    ['Result',              j.resultLink],
-  ].filter(([, url]) => !!url);
+    ['Apply Online',      '🚀', j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : ''],
+    ['Notification PDF',  '📥', j.notificationLink],
+    ['Official Website',  '🌐', j.officialWebsite],
+  ].filter(([, , url]) => !!url);
   if (!rows.length) return '';
   return `
   <div class="ch-links-table">
-    ${rows.map(([label, url]) => `
+    ${rows.map(([label, icon, url]) => `
       <a class="ch-links-row" href="javascript:void(0)" onclick="chGatedExternalLink('${_chEsc(url).replace(/'/g,"\\'")}','${j.id}')">
-        <span class="ch-links-label">${_chEsc(label)}</span>
+        <span class="ch-links-label"><span>${icon}</span> ${_chEsc(label)}</span>
         <span class="ch-links-go">Open ↗</span>
       </a>`).join('')}
+  </div>`;
+}
+
+// ── Quick Overview Cards (Hero summary grid) ───────────────────────
+function _chQuickOverviewCardsHTML(j, orgName) {
+  const cards = [
+    ['🏛️','Organization', orgName || j.location || '—'],
+    ['🎓','Qualification', j.qualification || 'Any'],
+    ['🎂','Age Limit', j.ageLimit || '—'],
+    ['⏰','Last Date', j.lastDate, true],
+  ];
+  if (j.salary)     cards.push(['💰','Salary', j.salary]);
+  if (j.totalPosts) cards.push(['👥','Vacancy Details', Number(j.totalPosts).toLocaleString() + ' Posts']);
+  if (j.applicationMode) cards.push(['📝','Mode', j.applicationMode]);
+
+  return `
+  <div class="ch-detail-meta-grid">
+    ${cards.map(([icon,label,val,danger]) => `
+      <div class="ch-detail-meta-item">
+        <span class="ch-dm-label">${icon} ${_chEsc(label)}</span>
+        <span class="ch-dm-val"${danger?' style="color:var(--danger)"':''}>${_chEsc(val||'—')}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ── Important Dates Timeline ────────────────────────────────────────
+// Parses admin-entered "Label: Date" lines (one per line, or auto-split
+// from a single comma/semicolon separated block) into a vertical timeline.
+function _chImportantDatesTimelineHTML(j) {
+  if (!j.importantDates) return '';
+  const raw = String(j.importantDates).trim();
+  if (!raw) return '';
+
+  const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  const items = lines.map(line => {
+    const m = line.match(/^(.+?)[:\-–]\s*(.+)$/);
+    return m ? { label: m[1].trim(), date: m[2].trim() } : { label: 'Date', date: line };
+  });
+  if (!items.length) return '';
+
+  return `
+  <div class="ch-detail-section-label"><span>📅</span> Important Dates</div>
+  <div class="ch-dates-timeline">
+    ${items.map((it, i) => `
+      <div class="ch-dates-row${i===items.length-1?' last':''}">
+        <div class="ch-dates-dot"></div>
+        <div class="ch-dates-info">
+          <div class="ch-dates-label">${_chEsc(it.label)}</div>
+          <div class="ch-dates-value">${_chEsc(it.date)}</div>
+        </div>
+      </div>`).join('')}
   </div>`;
 }
 
@@ -654,38 +708,34 @@ function chOpenJobDetail(id) {
 
   const saved      = (window._chState.savedJobs || []).includes(j.id);
   const applyUrl   = j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : null;
+  const orgName    = j.organization || j.org || '';
+  const articleWords = (j.articleContent || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   const wordCount  = (j.description || '').split(/\s+/).filter(Boolean).length
-                    + Object.values({a:j.eligibility,b:j.selectionProcess,c:j.howToApply,d:j.syllabusText}).join(' ').split(/\s+/).filter(Boolean).length;
+                    + Object.values({a:j.eligibility,b:j.selectionProcess,c:j.howToApply,d:j.syllabusText}).join(' ').split(/\s+/).filter(Boolean).length
+                    + articleWords;
   const readMins   = Math.max(1, Math.round(wordCount / 200));
   const hasStructured = !!(j.vacancyDetails || j.eligibility || j.ageLimit || j.qualificationDetails ||
     j.selectionProcess || j.salaryDetails || j.applicationFee || j.importantDates ||
     j.requiredDocuments || j.examPattern || j.syllabusText || j.howToApply || j.faq);
+  const hasArticle = !!(j.articleContent && j.articleContent.trim());
 
   const recs = _chGetRecommendations(j, 6);
 
   document.getElementById('chJobSheetContent').innerHTML = `
     <div class="ch-detail-progress"><div class="ch-detail-progress-bar" id="chDetailProgressBar"></div></div>
 
+    <!-- ── Hero Section ── -->
     <div class="ch-detail-header">
       <div class="ch-detail-org-logo">${_chEsc(j.orgIcon||'💼')}</div>
       <div class="ch-detail-head-info">
         <div class="ch-detail-title">${_chEsc(j.title)}</div>
-        <div class="ch-detail-org">${_chEsc(j.org)}</div>
+        <div class="ch-detail-org">${_chEsc(orgName)}</div>
       </div>
     </div>
 
     ${_chBadgesHTML(j)}
 
-    <div class="ch-detail-meta-grid">
-      <div class="ch-detail-meta-item"><span class="ch-dm-label">📍 State</span><span class="ch-dm-val">${_chEsc(j.location)}</span></div>
-      <div class="ch-detail-meta-item"><span class="ch-dm-label">🎓 Qualification</span><span class="ch-dm-val">${_chEsc(j.qualification)}</span></div>
-      ${j.salary?`<div class="ch-detail-meta-item"><span class="ch-dm-label">💰 Salary</span><span class="ch-dm-val">${_chEsc(j.salary)}</span></div>`:''}
-      ${j.totalPosts?`<div class="ch-detail-meta-item"><span class="ch-dm-label">👥 Total Posts</span><span class="ch-dm-val">${Number(j.totalPosts).toLocaleString()}</span></div>`:''}
-      ${j.applicationMode?`<div class="ch-detail-meta-item"><span class="ch-dm-label">📝 Mode</span><span class="ch-dm-val">${_chEsc(j.applicationMode)}</span></div>`:''}
-      <div class="ch-detail-meta-item"><span class="ch-dm-label">⏰ Last Date</span><span class="ch-dm-val" style="color:var(--danger)">${_chEsc(j.lastDate)}</span></div>
-    </div>
-
-    <div class="ch-detail-readtime">📖 ${readMins} min read ${j.viewsCount?`&nbsp;·&nbsp; 👁️ ${Number(j.viewsCount).toLocaleString()} views`:''}</div>
+    <div class="ch-detail-readtime">📖 ${readMins} min read ${j.viewsCount?`&nbsp;·&nbsp; 👁️ ${Number(j.viewsCount).toLocaleString()} views`:''} &nbsp;·&nbsp; Read fully on Studyria — no redirects</div>
 
     <!-- Sticky Smart Action Bar -->
     <div class="ch-detail-actionbar">
@@ -697,9 +747,23 @@ function chOpenJobDetail(id) {
       <button class="ch-action-btn icon" onclick="chReportJob('${j.id}')" title="Report Issue">⚑</button>
     </div>
 
+    <!-- ── Quick Overview Cards ── -->
+    <div class="ch-detail-section-label" style="padding-top:18px"><span>⚡</span> Job Overview</div>
+    ${_chQuickOverviewCardsHTML(j, orgName)}
+
+    <!-- ── Important Dates Timeline ── -->
+    ${_chImportantDatesTimelineHTML(j)}
+
+    <!-- ── Important Links (Apply / Notification / Official Website only) ── -->
+    ${_chImportantLinksHTML(j) ? `
+    <div class="ch-detail-section-label"><span>🔗</span> Important Links</div>
+    ${_chImportantLinksHTML(j)}` : ''}
+
+    <!-- ── Quick Summary (structured sections) ── -->
     ${hasStructured ? `
+    <div class="ch-detail-section-label"><span>📋</span> Quick Summary</div>
     <div class="ch-detail-sections">
-      ${_chSection('📄','Overview', j.description, true)}
+      ${_chSection('📄','Overview', j.description, !hasArticle)}
       ${_chSection('👥','Vacancy Details', j.vacancyDetails)}
       ${_chSection('✅','Eligibility Criteria', j.eligibility)}
       ${_chSection('🎂','Age Limit', j.ageLimit)}
@@ -707,20 +771,21 @@ function chOpenJobDetail(id) {
       ${_chSection('🧭','Selection Process', j.selectionProcess)}
       ${_chSection('💰','Salary Details', j.salaryDetails)}
       ${_chSection('💳','Application Fee', j.applicationFee)}
-      ${_chSection('📅','Important Dates', j.importantDates)}
       ${_chSection('📑','Required Documents', j.requiredDocuments)}
       ${_chSection('📝','Exam Pattern', j.examPattern)}
       ${_chSection('📘','Syllabus', j.syllabusText)}
       ${_chSection('🚀','How To Apply', j.howToApply)}
       ${_chSection('❓','FAQs', j.faq)}
-    </div>` : `
+    </div>` : (!hasArticle ? `
     <div class="ch-detail-sections">
       <div class="ch-detail-overview-card">${_chFormatLongText(j.description) || '<p style="color:var(--text3)">No description available yet.</p>'}</div>
-    </div>`}
+    </div>` : '')}
 
-    ${_chImportantLinksHTML(j) ? `
-    <div class="ch-detail-section-label"><span>🔗</span> Important Links</div>
-    ${_chImportantLinksHTML(j)}` : ''}
+    <!-- ── Full Article (complete AssamCareer notification, imported in full) ── -->
+    ${hasArticle ? `
+    <div class="ch-detail-section-label"><span>📰</span> Full Notification</div>
+    <div class="ch-article-body">${j.articleContent}</div>
+    ` : ''}
 
     ${recs.length ? `
     <div class="ch-detail-section-label"><span>✨</span> Recommended For You</div>
