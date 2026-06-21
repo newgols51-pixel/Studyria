@@ -177,12 +177,44 @@ function _chMapRow(row) {
     category:      Array.isArray(row.category) ? row.category : (row.category ? [row.category] : []),
     featured:      !!row.featured,
     isNew:         row.is_new != null ? !!row.is_new : _chIsRecent(row.published_at || row.created_at),
+    isTrending:    !!row.is_trending,
+    isUrgent:      !!row.is_urgent,
     applyUrl:      row.apply_url || row.link || '#',
     vacancies:     row.vacancies || null,
+    totalPosts:    row.total_posts || row.vacancies || null,
     description:   row.description || '',
     source:        row.source || 'manual',
     publishedAt:   row.published_at || row.created_at || null,
     createdAt:     row.created_at || null,
+    applicationMode: row.application_mode || '',
+    jobType:       row.job_type || '',
+    slug:          row.slug || '',
+    viewsCount:    row.views_count || 0,
+    appliesCount:  row.applies_count || 0,
+
+    // ── Structured 15-section content (all optional) ──
+    vacancyDetails:       row.vacancy_details || '',
+    eligibility:          row.eligibility || '',
+    ageLimit:             row.age_limit || '',
+    qualificationDetails: row.qualification_details || '',
+    selectionProcess:     row.selection_process || '',
+    salaryDetails:        row.salary_details || '',
+    applicationFee:       row.application_fee || '',
+    importantDates:       row.important_dates || '',
+    requiredDocuments:    row.required_documents || '',
+    examPattern:          row.exam_pattern || '',
+    syllabusText:         row.syllabus || '',
+    howToApply:           row.how_to_apply || '',
+    faq:                  row.faq || '',
+
+    // ── Important Links ──
+    notificationLink:  row.notification_link || '',
+    officialWebsite:   row.official_website || '',
+    registrationLink:  row.registration_link || '',
+    loginLink:         row.login_link || '',
+    syllabusLink:      row.syllabus_link || '',
+    admitCardLink:     row.admit_card_link || '',
+    resultLink:        row.result_link || '',
   };
 }
 
@@ -385,12 +417,13 @@ function _chCardHTML(j) {
   const src    = j.source && j.source !== 'manual'
     ? `<span class="ch-job-tag" style="font-size:.63rem;opacity:.7">📡 ${_chEsc(j.source)}</span>` : '';
   return `
-<div class="ch-job-card${j.featured?' ch-featured-card':''}${j.isNew?' ch-new':''}" id="chCard-${j.id}">
+<div class="ch-job-card${j.featured?' ch-featured-card':''}${j.isNew?' ch-new':''}" id="chCard-${j.id}" onclick="chOpenJobDetail('${j.id}')">
+  ${_chBadgesHTML(j, 3)}
   <div class="ch-job-top">
     <div class="ch-job-org-logo">${_chEsc(j.orgIcon||'💼')}</div>
     <div class="ch-job-info">
       <div class="ch-job-title">${_chEsc(j.title)}</div>
-      <div class="ch-job-org">${_chEsc(j.org)}${j.vacancies?` &nbsp;·&nbsp; ${Number(j.vacancies).toLocaleString()} Posts`:''}</div>
+      <div class="ch-job-org">${_chEsc(j.org)}${j.totalPosts?` &nbsp;·&nbsp; ${Number(j.totalPosts).toLocaleString()} Posts`:''}</div>
     </div>
   </div>
   <div class="ch-job-tags">
@@ -401,11 +434,11 @@ function _chCardHTML(j) {
     ${src}
   </div>
   <div class="ch-job-footer">
-    <button class="ch-job-save-btn${saved?' saved':''}" onclick="chToggleSave('${j.id}',this)" title="${saved?'Unsave':'Save'}">${saved?'❤️':'🤍'}</button>
-    <button class="ch-job-share-btn" onclick="chShareJob('${j.id}')" title="Share">
+    <button class="ch-job-save-btn${saved?' saved':''}" onclick="event.stopPropagation();chToggleSave('${j.id}',this)" title="${saved?'Unsave':'Save'}">${saved?'❤️':'🤍'}</button>
+    <button class="ch-job-share-btn" onclick="event.stopPropagation();chShareJob('${j.id}')" title="Share">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
     </button>
-    <a class="ch-job-apply-btn" href="${_chEsc(j.applyUrl)}" target="_blank" rel="noopener noreferrer">Apply Now →</a>
+    <button class="ch-job-apply-btn" onclick="event.stopPropagation();chOpenJobDetail('${j.id}')">View Details →</button>
   </div>
 </div>`;
 }
@@ -413,6 +446,33 @@ function _chCardHTML(j) {
 function _chEsc(s) {
   if (s == null) return '';
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ── Badge computation (used on cards + detail sheet) ──────────────
+// Returns an array of {label, cls} badges based on job flags/category.
+function _chComputeBadges(j) {
+  const badges = [];
+  const cats = (j.category || []).map(c => String(c).toLowerCase());
+  const salaryNum = parseInt((j.salary || '0').replace(/[^0-9]/g, ''), 10) || 0;
+
+  if (j.isNew)              badges.push({ label: 'NEW',         cls: 'new' });
+  if (j.featured)           badges.push({ label: 'FEATURED',    cls: 'featured' });
+  if (j.isTrending)         badges.push({ label: 'TRENDING',    cls: 'trending' });
+  if (j.isUrgent)           badges.push({ label: 'URGENT',      cls: 'urgent' });
+  if (salaryNum >= 50000)   badges.push({ label: 'HIGH SALARY', cls: 'salary' });
+  if (j.jobType === 'government' || cats.includes('govt')) badges.push({ label: 'GOVERNMENT', cls: 'govt' });
+  if (j.jobType === 'private'    || cats.includes('private')) badges.push({ label: 'PRIVATE',    cls: 'private' });
+  if (cats.includes('scholarship'))  badges.push({ label: 'SCHOLARSHIP', cls: 'scholarship' });
+  if (cats.includes('internship'))   badges.push({ label: 'INTERNSHIP',  cls: 'internship' });
+
+  return badges;
+}
+
+function _chBadgesHTML(j, max) {
+  let badges = _chComputeBadges(j);
+  if (max) badges = badges.slice(0, max);
+  if (!badges.length) return '';
+  return `<div class="ch-badges-row">${badges.map(b => `<span class="ch-badge ch-badge-${b.cls}">${b.label}</span>`).join('')}</div>`;
 }
 
 // ── Saved Jobs ───────────────────────────────────────────────────
@@ -495,52 +555,308 @@ function chShareJob(id) {
   }
 }
 
+// ── Recently Viewed (for recommendations + engagement) ─────────────
+function _chTrackRecentlyViewed(id) {
+  try {
+    let arr = JSON.parse(localStorage.getItem('ch_recently_viewed') || '[]');
+    arr = arr.filter(x => x !== id);
+    arr.unshift(id);
+    arr = arr.slice(0, 20);
+    localStorage.setItem('ch_recently_viewed', JSON.stringify(arr));
+  } catch (_) {}
+}
+function _chGetRecentlyViewed() {
+  try { return JSON.parse(localStorage.getItem('ch_recently_viewed') || '[]'); }
+  catch (_) { return []; }
+}
+
+// ── Recommendation engine ───────────────────────────────────────────
+// Scores other jobs by shared category / qualification / location,
+// boosts saved-category affinity, excludes the current job.
+function _chGetRecommendations(j, limit) {
+  const all = (window._chState.jobs || []).filter(x => x.id !== j.id);
+  const myCats = new Set((j.category || []).map(c => String(c).toLowerCase()));
+  const savedIds = new Set(window._chState.savedJobs || []);
+
+  const scored = all.map(x => {
+    let score = 0;
+    const xCats = (x.category || []).map(c => String(c).toLowerCase());
+    score += xCats.filter(c => myCats.has(c)).length * 3;
+    if (x.qualification && j.qualification && x.qualification.toLowerCase() === j.qualification.toLowerCase()) score += 2;
+    if (x.location && j.location && x.location.toLowerCase() === j.location.toLowerCase()) score += 1;
+    if (savedIds.has(x.id)) score += 1;
+    if (x.featured) score += 0.5;
+    if (x.isNew) score += 0.5;
+    return { job: x, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score || (new Date(b.job.publishedAt||0) - new Date(a.job.publishedAt||0)));
+  return scored.slice(0, limit || 6).map(s => s.job);
+}
+
+// ── Accordion section builder (auto-hides empty sections) ──────────
+function _chSection(icon, title, content, open) {
+  if (!content) return '';
+  const id = 'chSec-' + Math.random().toString(36).slice(2, 9);
+  return `
+  <div class="ch-detail-accordion${open?' open':''}" id="${id}">
+    <button class="ch-detail-accordion-hd" onclick="chToggleAccordion('${id}')">
+      <span class="ch-detail-accordion-title"><span>${icon}</span> ${_chEsc(title)}</span>
+      <svg class="ch-accordion-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="ch-detail-accordion-body"><div class="ch-detail-accordion-inner">${_chFormatLongText(content)}</div></div>
+  </div>`;
+}
+
+function chToggleAccordion(id) {
+  document.getElementById(id)?.classList.toggle('open');
+}
+
+// Preserve line breaks / simple bullet lines from admin-entered text
+function _chFormatLongText(t) {
+  if (!t) return '';
+  return _chEsc(t).split(/\n+/).map(line => line.trim()).filter(Boolean)
+    .map(line => /^[-•*]\s?/.test(line)
+      ? `<div class="ch-detail-bullet">${line.replace(/^[-•*]\s?/, '')}</div>`
+      : `<p>${line}</p>`
+    ).join('');
+}
+
+// Important Links table (only rows with a real URL show up)
+function _chImportantLinksHTML(j) {
+  const rows = [
+    ['Apply Online',      j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : ''],
+    ['Registration',      j.registrationLink],
+    ['Login',              j.loginLink],
+    ['Notification PDF',  j.notificationLink],
+    ['Official Website',  j.officialWebsite],
+    ['Syllabus',           j.syllabusLink],
+    ['Admit Card',         j.admitCardLink],
+    ['Result',              j.resultLink],
+  ].filter(([, url]) => !!url);
+  if (!rows.length) return '';
+  return `
+  <div class="ch-links-table">
+    ${rows.map(([label, url]) => `
+      <a class="ch-links-row" href="javascript:void(0)" onclick="chGatedExternalLink('${_chEsc(url).replace(/'/g,"\\'")}','${j.id}')">
+        <span class="ch-links-label">${_chEsc(label)}</span>
+        <span class="ch-links-go">Open ↗</span>
+      </a>`).join('')}
+  </div>`;
+}
+
 function chOpenJobDetail(id) {
   const j = _chFindJob(id);
   if (!j) return;
-  const saved = (window._chState.savedJobs || []).includes(j.id);
-  const applyUrl = j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : null;
+
+  _chTrackRecentlyViewed(j.id);
+  window._chCurrentDetailId = j.id;
+
+  const saved      = (window._chState.savedJobs || []).includes(j.id);
+  const applyUrl   = j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : null;
+  const wordCount  = (j.description || '').split(/\s+/).filter(Boolean).length
+                    + Object.values({a:j.eligibility,b:j.selectionProcess,c:j.howToApply,d:j.syllabusText}).join(' ').split(/\s+/).filter(Boolean).length;
+  const readMins   = Math.max(1, Math.round(wordCount / 200));
+  const hasStructured = !!(j.vacancyDetails || j.eligibility || j.ageLimit || j.qualificationDetails ||
+    j.selectionProcess || j.salaryDetails || j.applicationFee || j.importantDates ||
+    j.requiredDocuments || j.examPattern || j.syllabusText || j.howToApply || j.faq);
+
+  const recs = _chGetRecommendations(j, 6);
 
   document.getElementById('chJobSheetContent').innerHTML = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
-      <div style="width:52px;height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0">${_chEsc(j.orgIcon||'💼')}</div>
-      <div>
-        <div style="font-family:var(--font-editorial);font-size:1.05rem;font-weight:800;color:var(--text);line-height:1.3">${_chEsc(j.title)}</div>
-        <div style="font-size:.8rem;color:var(--text2);margin-top:3px">${_chEsc(j.org)}</div>
+    <div class="ch-detail-progress"><div class="ch-detail-progress-bar" id="chDetailProgressBar"></div></div>
+
+    <div class="ch-detail-header">
+      <div class="ch-detail-org-logo">${_chEsc(j.orgIcon||'💼')}</div>
+      <div class="ch-detail-head-info">
+        <div class="ch-detail-title">${_chEsc(j.title)}</div>
+        <div class="ch-detail-org">${_chEsc(j.org)}</div>
       </div>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px">
-      <span class="ch-job-tag loc">📍 ${_chEsc(j.location)}</span>
-      <span class="ch-job-tag qual">🎓 ${_chEsc(j.qualification)}</span>
-      ${j.salary?`<span class="ch-job-tag sal">💰 ${_chEsc(j.salary)}</span>`:''}
-      <span class="ch-job-tag date">⏰ Last Date: ${_chEsc(j.lastDate)}</span>
-      ${j.vacancies?`<span class="ch-job-tag" style="color:var(--accent);border-color:rgba(61,142,248,.3);background:rgba(61,142,248,.07)">👥 ${Number(j.vacancies).toLocaleString()} Posts</span>`:''}
-      ${j.source&&j.source!=='manual'?`<span class="ch-job-tag" style="font-size:.68rem;opacity:.8">📡 ${_chEsc(j.source)}</span>`:''}
+
+    ${_chBadgesHTML(j)}
+
+    <div class="ch-detail-meta-grid">
+      <div class="ch-detail-meta-item"><span class="ch-dm-label">📍 State</span><span class="ch-dm-val">${_chEsc(j.location)}</span></div>
+      <div class="ch-detail-meta-item"><span class="ch-dm-label">🎓 Qualification</span><span class="ch-dm-val">${_chEsc(j.qualification)}</span></div>
+      ${j.salary?`<div class="ch-detail-meta-item"><span class="ch-dm-label">💰 Salary</span><span class="ch-dm-val">${_chEsc(j.salary)}</span></div>`:''}
+      ${j.totalPosts?`<div class="ch-detail-meta-item"><span class="ch-dm-label">👥 Total Posts</span><span class="ch-dm-val">${Number(j.totalPosts).toLocaleString()}</span></div>`:''}
+      ${j.applicationMode?`<div class="ch-detail-meta-item"><span class="ch-dm-label">📝 Mode</span><span class="ch-dm-val">${_chEsc(j.applicationMode)}</span></div>`:''}
+      <div class="ch-detail-meta-item"><span class="ch-dm-label">⏰ Last Date</span><span class="ch-dm-val" style="color:var(--danger)">${_chEsc(j.lastDate)}</span></div>
     </div>
-    <div style="background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:14px;margin-bottom:18px;font-size:.85rem;color:var(--text2);line-height:1.7">${_chEsc(j.description)||'No description available.'}</div>
-    <div style="display:flex;gap:10px">
-      <button onclick="chToggleSave('${j.id}',this);this.textContent=this.textContent.includes('Save')?'❤️ Saved':'🤍 Save'"
-        style="flex:1;padding:13px;border-radius:var(--radius-sm);border:1px solid var(--glass-border);background:var(--glass);color:var(--text);font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">${saved?'❤️ Saved':'🤍 Save'}</button>
-      <button onclick="chShareJob('${j.id}')"
-        style="padding:13px 16px;border-radius:var(--radius-sm);border:1px solid var(--glass-border);background:var(--glass);color:var(--text2);font-size:.85rem;cursor:pointer;font-family:var(--font-body)">📤</button>
-      ${applyUrl
-        ? `<a href="${_chEsc(applyUrl)}" target="_blank" rel="noopener noreferrer"
-             style="flex:2;padding:13px;border-radius:var(--radius-sm);background:var(--grad-primary);color:#fff;font-size:.9rem;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--font-body)">Apply Now →</a>`
-        : `<button disabled style="flex:2;padding:13px;border-radius:var(--radius-sm);background:var(--glass);border:1px solid var(--glass-border);color:var(--text3);font-size:.9rem;font-family:var(--font-body)">No Apply Link</button>`
-      }
-    </div>`;
-  document.getElementById('chJobSheet').style.display  = 'flex';
+
+    <div class="ch-detail-readtime">📖 ${readMins} min read ${j.viewsCount?`&nbsp;·&nbsp; 👁️ ${Number(j.viewsCount).toLocaleString()} views`:''}</div>
+
+    <!-- Sticky Smart Action Bar -->
+    <div class="ch-detail-actionbar">
+      <button class="ch-action-btn primary" onclick="chGatedExternalLink('${applyUrl?_chEsc(applyUrl).replace(/'/g,"\\'"):''}','${j.id}')" ${!applyUrl?'disabled':''}>Apply Now →</button>
+      <button class="ch-action-btn icon${saved?' active':''}" id="chDetailSaveBtn" onclick="chToggleSave('${j.id}',this);chSyncDetailSaveBtn('${j.id}')" title="Save">${saved?'❤️':'🤍'}</button>
+      <button class="ch-action-btn icon" onclick="chShareJob('${j.id}')" title="Share">📤</button>
+      <button class="ch-action-btn icon" onclick="chCopyLink('${j.id}')" title="Copy Link">🔗</button>
+      ${j.notificationLink ? `<button class="ch-action-btn icon" onclick="chGatedExternalLink('${_chEsc(j.notificationLink).replace(/'/g,"\\'")}','${j.id}')" title="Download Notification">📥</button>` : ''}
+      <button class="ch-action-btn icon" onclick="chReportJob('${j.id}')" title="Report Issue">⚑</button>
+    </div>
+
+    ${hasStructured ? `
+    <div class="ch-detail-sections">
+      ${_chSection('📄','Overview', j.description, true)}
+      ${_chSection('👥','Vacancy Details', j.vacancyDetails)}
+      ${_chSection('✅','Eligibility Criteria', j.eligibility)}
+      ${_chSection('🎂','Age Limit', j.ageLimit)}
+      ${_chSection('🎓','Educational Qualification', j.qualificationDetails)}
+      ${_chSection('🧭','Selection Process', j.selectionProcess)}
+      ${_chSection('💰','Salary Details', j.salaryDetails)}
+      ${_chSection('💳','Application Fee', j.applicationFee)}
+      ${_chSection('📅','Important Dates', j.importantDates)}
+      ${_chSection('📑','Required Documents', j.requiredDocuments)}
+      ${_chSection('📝','Exam Pattern', j.examPattern)}
+      ${_chSection('📘','Syllabus', j.syllabusText)}
+      ${_chSection('🚀','How To Apply', j.howToApply)}
+      ${_chSection('❓','FAQs', j.faq)}
+    </div>` : `
+    <div class="ch-detail-sections">
+      <div class="ch-detail-overview-card">${_chFormatLongText(j.description) || '<p style="color:var(--text3)">No description available yet.</p>'}</div>
+    </div>`}
+
+    ${_chImportantLinksHTML(j) ? `
+    <div class="ch-detail-section-label"><span>🔗</span> Important Links</div>
+    ${_chImportantLinksHTML(j)}` : ''}
+
+    ${recs.length ? `
+    <div class="ch-detail-section-label"><span>✨</span> Recommended For You</div>
+    <div class="ch-rec-scroll">
+      ${recs.map(r => `
+        <div class="ch-rec-card" onclick="chOpenJobDetail('${r.id}')">
+          ${_chBadgesHTML(r, 1)}
+          <div class="ch-rec-org-logo">${_chEsc(r.orgIcon||'💼')}</div>
+          <div class="ch-rec-title">${_chEsc(r.title)}</div>
+          <div class="ch-rec-meta">📍 ${_chEsc(r.location)} &nbsp;·&nbsp; ⏰ ${_chEsc(r.lastDate)}</div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    <div style="height:90px"></div>
+  `;
+
+  const sheet = document.getElementById('chJobSheet');
+  sheet.classList.add('ch-fullscreen');
+  sheet.style.display  = 'flex';
   document.body.style.overflow = 'hidden';
+
+  // Reading progress bar tracks scroll within the sheet
+  const inner = document.getElementById('chJobSheetInner');
+  if (inner) {
+    inner.scrollTop = 0;
+    inner.onscroll = () => {
+      const bar = document.getElementById('chDetailProgressBar');
+      if (!bar) return;
+      const pct = inner.scrollTop / Math.max(1, inner.scrollHeight - inner.clientHeight);
+      bar.style.width = Math.min(100, Math.max(0, pct * 100)) + '%';
+    };
+  }
+
+  _chIncrementViewCount(j.id);
+}
+
+function chSyncDetailSaveBtn(id) {
+  const btn = document.getElementById('chDetailSaveBtn');
+  if (!btn) return;
+  const saved = (window._chState.savedJobs || []).includes(id);
+  btn.classList.toggle('active', saved);
+  btn.textContent = saved ? '❤️' : '🤍';
+}
+
+async function _chIncrementViewCount(jobId) {
+  const sb = window.supabaseClient;
+  if (!sb) return;
+  try { await sb.rpc('increment_job_views', { job_id: jobId }); } catch (_) { /* optional RPC, ignore if missing */ }
+}
+
+function chCopyLink(id) {
+  const j = _chFindJob(id);
+  if (!j) return;
+  const url = j.slug
+    ? `${location.origin}${location.pathname}#career-hub/job/${j.slug}`
+    : (j.applyUrl && j.applyUrl !== '#' ? j.applyUrl : location.href);
+  navigator.clipboard?.writeText(url).then(() => {
+    if (typeof showToast === 'function') showToast('Link copied! 🔗', 'success');
+  }).catch(() => {});
+}
+
+function chReportJob(id) {
+  const j = _chFindJob(id);
+  if (!j) return;
+  if (typeof showToast === 'function') showToast('Thanks — we\'ll review this listing. 🙏', 'info');
+  const sb = window.supabaseClient;
+  if (sb) {
+    sb.from('career_hub_reports').insert({ job_id: j.id, reason: 'user_reported' }).then(() => {}).catch(() => {});
+  }
 }
 
 function chCloseJobSheet(e) {
   if (e && e.target !== document.getElementById('chJobSheet')) return;
-  document.getElementById('chJobSheet').style.display = 'none';
+  const sheet = document.getElementById('chJobSheet');
+  sheet.style.display = 'none';
+  sheet.classList.remove('ch-fullscreen');
   document.body.style.overflow = '';
 }
 
 // Kept for backward compat (used in older onclick attributes)
 function chApplyJob(id) { chOpenJobDetail(id); }
+
+// ── User Retention Engine ("You're Leaving Studyria") ───────────────
+// Gates every outbound link (Apply Now, Important Links) behind a
+// premium modal that surfaces similar/trending opportunities first.
+function chGatedExternalLink(url, jobId) {
+  if (!url) return;
+  const j = _chFindJob(jobId);
+  const recs = j ? _chGetRecommendations(j, 4) : (window._chState.jobs || []).slice(0, 4);
+
+  window._chPendingExternalUrl = url;
+
+  let modal = document.getElementById('chLeavingModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'chLeavingModal';
+    modal.className = 'ch-leaving-overlay';
+    modal.onclick = (e) => { if (e.target === modal) chCloseLeavingModal(); };
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div class="ch-leaving-card">
+      <div class="ch-leaving-icon">🚀</div>
+      <div class="ch-leaving-title">You're Leaving Studyria</div>
+      <div class="ch-leaving-sub">You're about to open an external site to continue your application.</div>
+
+      ${recs.length ? `
+      <div class="ch-leaving-recs-label">While you're here — explore more</div>
+      <div class="ch-leaving-recs">
+        ${recs.map(r => `
+          <div class="ch-leaving-rec" onclick="chCloseLeavingModal();chOpenJobDetail('${r.id}')">
+            <span class="ch-leaving-rec-icon">${_chEsc(r.orgIcon||'💼')}</span>
+            <span class="ch-leaving-rec-title">${_chEsc(r.title)}</span>
+          </div>`).join('')}
+      </div>` : ''}
+
+      <div class="ch-leaving-actions">
+        <button class="ch-leaving-btn ghost" onclick="chCloseLeavingModal()">Explore More Opportunities</button>
+        <button class="ch-leaving-btn primary" onclick="chConfirmLeave()">Continue to Apply →</button>
+      </div>
+    </div>`;
+  modal.style.display = 'flex';
+}
+
+function chConfirmLeave() {
+  const url = window._chPendingExternalUrl;
+  chCloseLeavingModal();
+  if (url) window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function chCloseLeavingModal() {
+  const modal = document.getElementById('chLeavingModal');
+  if (modal) modal.style.display = 'none';
+  window._chPendingExternalUrl = null;
+}
 
 // ── Stats strip ──────────────────────────────────────────────────
 function _chUpdateStats() {
