@@ -1721,6 +1721,8 @@ const CH_MENU_CAT_MAP = {
 };
 
 function chOpenMenu() {
+  // Guard: prevent double-open from any residual event firing
+  if (window._chMenu && window._chMenu.open) return;
   const ov = document.getElementById('chMenuOverlay');
   if (!ov) { console.warn('[CH Menu] chMenuOverlay element not found'); return; }
   window._chMenu.open = true;
@@ -1987,7 +1989,18 @@ function _chShowAppliedToast() {
 }
 
 
-// ── Replay any queued menu calls from before this script loaded ────────────
-if (typeof window._chMenuReplayPending === 'function') {
-  window._chMenuReplayPending();
-}
+// ── Career Hub Menu: Activate real functions & replay any queued tap ──────────
+// This runs once career-hub.js is fully parsed and all functions are defined.
+// Calls _chMenuBootstrap.activate() which:
+//   1. Swaps window.chOpenMenu/chCloseMenu stubs → real functions
+//   2. Re-attaches button listeners (in case DOM wasn't ready earlier)
+//   3. If user tapped hamburger before this script loaded → opens menu NOW
+(function() {
+  if (window._chMenuBootstrap && typeof window._chMenuBootstrap.activate === 'function') {
+    window._chMenuBootstrap.activate(chOpenMenu, chCloseMenu);
+  } else {
+    // Fallback: just expose functions directly
+    window.chOpenMenu  = chOpenMenu;
+    window.chCloseMenu = chCloseMenu;
+  }
+})();
