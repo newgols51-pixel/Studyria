@@ -1741,8 +1741,13 @@ function chOpenMenu() {
 }
 
 function chCloseMenu(e) {
-  // Accept: no-arg call (from X btn / ESC / programmatic), OR backdrop click
-  if (e && e.target && e.target !== document.getElementById('chMenuOverlay')) return;
+  // When called with a mouse/pointer event (backdrop click), only close if the
+  // click landed directly on the overlay backdrop — not on the drawer itself.
+  // All other call paths (no-arg: X btn, ESC, programmatic, swipe) close unconditionally.
+  if (e && (e instanceof MouseEvent || e instanceof PointerEvent || e.type === 'click')) {
+    const ov = document.getElementById('chMenuOverlay');
+    if (ov && e.target !== ov) return; // click was inside drawer — ignore
+  }
   const ov = document.getElementById('chMenuOverlay');
   if (!ov) return;
   window._chMenu.open = false;
@@ -1751,13 +1756,13 @@ function chCloseMenu(e) {
   document.body.style.overflow = '';
   document.documentElement.style.overflow = '';
   document.removeEventListener('keydown', _chMenuEscHandler);
-  if (window._chMenu.lastFocus?.focus) {
+  if (window._chMenu.lastFocus && typeof window._chMenu.lastFocus.focus === 'function') {
     try { window._chMenu.lastFocus.focus(); } catch(err) {}
   }
 }
 
 function _chMenuEscHandler(ev) {
-  if (ev.key === 'Escape') chCloseMenu();
+  if (ev.key === 'Escape') chCloseMenu(); // no-arg → always closes
 }
 
 // ── Live counters + profile + quick links + footer meta ─────────────
@@ -1774,6 +1779,12 @@ function _chMenuRefresh() {
   set('chMenuCountScholar', jobs.filter(_isScholar).length);
   set('chMenuCountIntern',  jobs.filter(_isIntern).length);
   set('chMenuCountSaved',   (s.savedJobs || []).length);
+
+  // Top-section quick stats (new strip in drawer head)
+  set('chMenuStatActive',   jobs.length);
+  set('chMenuStatGovt',     jobs.filter(_isGovt).length);
+  set('chMenuStatScholar2', jobs.filter(_isScholar).length);
+  set('chMenuStatIntern2',  jobs.filter(_isIntern).length);
 
   // Applied jobs — read from localStorage ledger kept by chMarkApplied()
   const applied = JSON.parse(localStorage.getItem('ch_applied_jobs') || '[]');
@@ -1917,7 +1928,7 @@ function chMenuNav(e, target) {
     case 'profile':
       if (window.currentUser) { if (typeof navigate === 'function') navigate('dashboard'); }
       else { if (typeof navigate === 'function') navigate('login'); }
-      chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+      chCloseMenu();
       return; // navigate() already moves away from Career Hub
 
     case 'settings':
@@ -1926,7 +1937,7 @@ function chMenuNav(e, target) {
 
     case 'contact':
       if (typeof navigate === 'function') { navigate('home'); setTimeout(() => document.querySelector('.home-footer')?.scrollIntoView({behavior:'smooth'}), 150); }
-      chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+      chCloseMenu();
       return;
 
     default:
@@ -1934,7 +1945,7 @@ function chMenuNav(e, target) {
   }
 
   _chMenuHighlightActive();
-  chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+  chCloseMenu();
 }
 
 function chMenuProfileTap() {
@@ -1958,7 +1969,7 @@ function chMenuSearchGo() {
   window._ch.savedOnly = false;
   chSelectCatByKey('all');
   chFilterJobs();
-  chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+  chCloseMenu();
   document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
