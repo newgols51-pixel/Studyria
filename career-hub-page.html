@@ -1,0 +1,469 @@
+<!-- ══ CAREER HUB PAGE — PREMIUM v4 REDESIGN ══════════════════════════════
+     Drop this in as a replacement for <div class="page" id="page-career-hub">
+     through the closing </div> <!-- /.ch-wrap -->
+     ════════════════════════════════════════════════════════════════════════ -->
+
+<div class="page" id="page-career-hub">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   STUDYRIA CAREER HUB — PREMIUM UI v4
+   Dark AMOLED · Glassmorphism · Blue / Cyan / Purple
+   ══════════════════════════════════════════════════════════════ */
+
+.ch-wrap {
+  max-width: 900px; margin: 0 auto; padding: 0 0 130px;
+}
+@media(max-width:640px){ .ch-wrap { padding-bottom: 100px; } }
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.ch-hero {
+  background: linear-gradient(135deg,
+    rgba(37,99,235,.14) 0%,
+    rgba(124,58,237,.11) 50%,
+    rgba(6,182,212,.09) 100%);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  padding: 32px 20px 26px; text-align: center; position: relative; overflow: hidden;
+}
+.ch-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,99,235,.08), transparent);
+  pointer-events: none;
+}
+body.light .ch-hero { border-color: rgba(0,0,0,.07); }
+.ch-hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.25);
+  border-radius: 100px; padding: 5px 14px; font-size: .71rem; font-weight: 800;
+  color: #f59e0b; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 14px;
+}
+.ch-live-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(34,197,94,.8);
+  animation: ch-pulse 1.6s ease-in-out infinite;
+}
+@keyframes ch-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.75);}}
+.ch-hero-title {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.55rem, 5vw, 2.3rem); font-weight: 800;
+  margin-bottom: 8px; line-height: 1.2;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #22d3ee 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.ch-hero-sub {
+  color: var(--text2); font-size: .88rem; max-width: 480px; margin: 0 auto 22px;
+  line-height: 1.6;
+}
+
+/* ── Search ──────────────────────────────────────────────────── */
+.ch-search-bar {
+  display: flex; gap: 10px; max-width: 560px; margin: 0 auto;
+  background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.11);
+  border-radius: 50px; padding: 6px 6px 6px 18px;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  transition: border-color .2s, box-shadow .2s;
+  box-shadow: 0 2px 20px rgba(37,99,235,.08);
+}
+body.light .ch-search-bar { background: rgba(255,255,255,.9); border-color: rgba(0,0,0,.12); }
+.ch-search-bar:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.14), 0 4px 24px rgba(59,130,246,.12);
+}
+.ch-search-input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--text); font-size: .91rem; font-family: var(--font-body);
+}
+.ch-search-input::placeholder { color: var(--text3); }
+.ch-search-btn {
+  padding: 10px 20px; border-radius: 50px; border: none;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff; font-size: .84rem; font-weight: 700; cursor: pointer;
+  font-family: var(--font-body); transition: transform .15s, box-shadow .15s;
+  white-space: nowrap; box-shadow: 0 4px 14px rgba(37,99,235,.38);
+}
+.ch-search-btn:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(37,99,235,.25); }
+
+/* ── Stats strip ─────────────────────────────────────────────── */
+.ch-stats {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  background: var(--bg2); border-bottom: 1px solid rgba(255,255,255,.06);
+}
+body.light .ch-stats { border-color: rgba(0,0,0,.07); }
+.ch-stat-item {
+  padding: 14px 8px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,.06);
+  cursor: default;
+}
+body.light .ch-stat-item { border-color: rgba(0,0,0,.07); }
+.ch-stat-item:last-child { border-right: none; }
+.ch-stat-num {
+  font-size: 1.1rem; font-weight: 800; line-height: 1;
+  display: inline-block; transition: transform .3s;
+}
+.ch-stat-num.blue   { color: #60a5fa; }
+.ch-stat-num.red    { color: #f87171; }
+.ch-stat-num.gold   { color: #fbbf24; }
+.ch-stat-num.green  { color: #34d399; }
+.ch-stat-lbl {
+  font-size: .6rem; color: var(--text3); margin-top: 4px;
+  letter-spacing: .03em; font-weight: 600; text-transform: uppercase;
+}
+
+/* ── Notifications ticker ────────────────────────────────────── */
+.ch-notif-ticker {
+  margin: 16px 16px 0;
+  background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.18);
+  border-radius: 14px; overflow: hidden;
+}
+.ch-notif-ticker-hd {
+  display: flex; align-items: center; gap: 8px; padding: 9px 14px;
+  border-bottom: 1px solid rgba(16,185,129,.12);
+  font-size: .74rem; font-weight: 800; color: #34d399; letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ch-notif-list { max-height: 160px; overflow-y: auto; scrollbar-width: thin; }
+.ch-notif-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: .77rem; color: var(--text2); transition: background .15s;
+}
+body.light .ch-notif-item { border-color: rgba(0,0,0,.05); }
+.ch-notif-item:last-child { border-bottom: none; }
+.ch-notif-item:hover { background: rgba(255,255,255,.02); }
+.ch-notif-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #34d399;
+  flex-shrink: 0; margin-top: 5px; box-shadow: 0 0 5px rgba(52,211,153,.5);
+}
+.ch-notif-body { flex: 1; line-height: 1.55; color: var(--text); }
+.ch-notif-time { font-size: .65rem; color: var(--text3); flex-shrink: 0; margin-top: 3px; }
+
+/* ── Category scroller ───────────────────────────────────────── */
+.ch-cats-wrap {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 14px 16px; scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.ch-cats-wrap::-webkit-scrollbar { display: none; }
+.ch-cat-btn {
+  white-space: nowrap; padding: 7px 14px; border-radius: 50px;
+  border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04);
+  color: var(--text2); font-size: .8rem; font-weight: 600; cursor: pointer;
+  transition: all .2s; flex-shrink: 0; scroll-snap-align: start;
+  font-family: var(--font-body);
+}
+.ch-cat-btn:active { opacity: .7; }
+.ch-cat-btn.active {
+  background: linear-gradient(135deg, rgba(37,99,235,.25), rgba(124,58,237,.2));
+  border-color: rgba(59,130,246,.45); color: #93c5fd;
+  box-shadow: 0 2px 10px rgba(37,99,235,.2);
+}
+body.light .ch-cat-btn { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.1); color: #334155; }
+body.light .ch-cat-btn.active { background: rgba(37,99,235,.1); border-color: rgba(37,99,235,.4); color: #1d4ed8; }
+
+/* ── Filters row ─────────────────────────────────────────────── */
+.ch-filters {
+  display: flex; gap: 8px; padding: 0 16px 14px; overflow-x: auto;
+  scrollbar-width: none;
+}
+.ch-filters::-webkit-scrollbar { display: none; }
+.ch-filter-select {
+  appearance: none; -webkit-appearance: none;
+  padding: 8px 32px 8px 12px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04);
+  color: var(--text2); font-size: .78rem; font-family: var(--font-body);
+  font-weight: 500; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  outline: none;
+}
+body.light .ch-filter-select { background-color: rgba(0,0,0,.04); border-color: rgba(0,0,0,.1); color: #334155; }
+.ch-filter-select:focus { border-color: rgba(59,130,246,.4); }
+
+/* ── Featured banner ─────────────────────────────────────────── */
+.ch-featured-banner {
+  display: none; align-items: center; gap: 14px;
+  margin: 14px 16px 4px;
+  background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(251,191,36,.06));
+  border: 1px solid rgba(245,158,11,.25); border-radius: 18px;
+  padding: 14px 16px; position: relative; overflow: hidden;
+}
+.ch-featured-banner::before {
+  content: ''; position: absolute; top: -20px; right: -20px;
+  width: 80px; height: 80px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,.12), transparent 70%);
+}
+.ch-featured-icon { font-size: 26px; flex-shrink: 0; }
+.ch-featured-text { flex: 1; min-width: 0; }
+.ch-featured-label {
+  font-size: .65rem; font-weight: 800; color: #f59e0b; text-transform: uppercase;
+  letter-spacing: .06em; margin-bottom: 3px;
+}
+.ch-featured-title {
+  font-size: 13.5px; font-weight: 700; color: #f1f5f9;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;
+}
+.ch-featured-meta { font-size: 11.5px; color: #94a3b8; }
+.ch-featured-apply {
+  padding: 9px 16px; border-radius: 10px; border: 1px solid rgba(245,158,11,.4);
+  background: rgba(245,158,11,.15); color: #fbbf24; font-size: 12.5px;
+  font-weight: 700; cursor: pointer; flex-shrink: 0; white-space: nowrap;
+  font-family: var(--font-body); transition: background .15s;
+}
+.ch-featured-apply:active { background: rgba(245,158,11,.25); }
+
+/* ── Section header ──────────────────────────────────────────── */
+.ch-section-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 16px 10px;
+}
+.ch-section-title {
+  font-size: 15px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.ch-refresh-btn {
+  font-size: 12px; color: var(--text2);
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; padding: 5px 12px; cursor: pointer;
+  font-family: var(--font-body); font-weight: 600; transition: background .15s;
+}
+.ch-refresh-btn:active { background: rgba(255,255,255,.1); }
+.ch-refresh-btn.active { background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.25); color: #f87171; }
+body.light .ch-refresh-btn { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.1); color: #64748b; }
+
+/* ── Jobs grid ───────────────────────────────────────────────── */
+.ch-jobs-grid { padding: 0; }
+
+/* ── Loading / empty / error states ─────────────────────────── */
+.ch-loading {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 40px 20px; color: var(--text2); font-size: .85rem;
+}
+.ch-spinner {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(59,130,246,.2);
+  border-top-color: #3b82f6;
+  animation: ch-spin .75s linear infinite;
+}
+@keyframes ch-spin { to { transform: rotate(360deg); } }
+.ch-empty {
+  display: none; text-align: center; padding: 50px 24px;
+  color: var(--text2); font-size: .88rem; line-height: 1.7;
+}
+.ch-empty-icon { font-size: 2.4rem; display: block; margin-bottom: 12px; opacity: .5; }
+</style>
+
+<div class="ch-wrap">
+  <!-- ── Hero ──────────────────────────────────────────────────── -->
+  <div class="ch-hero">
+    <div class="ch-hero-badge">
+      <span class="ch-live-dot"></span>
+      Live Opportunities
+    </div>
+    <h1 class="ch-hero-title">Find Your Dream Career</h1>
+    <p class="ch-hero-sub">Govt Jobs · Scholarships · Internships · Private Sector · All in one place</p>
+
+    <div class="ch-search-bar">
+      <input class="ch-search-input" id="chSearchInput" type="text"
+        placeholder="Search jobs, organizations, exams…"
+        oninput="chFilterJobs()" autocomplete="off" />
+      <button class="ch-search-btn" onclick="chFilterJobs()">Search</button>
+    </div>
+  </div>
+
+  <!-- ── Stats Strip ───────────────────────────────────────────── -->
+  <div class="ch-stats">
+    <div class="ch-stat-item">
+      <div class="ch-stat-num blue" id="chStatJobs">—</div>
+      <div class="ch-stat-lbl">Active Jobs</div>
+    </div>
+    <div class="ch-stat-item">
+      <div class="ch-stat-num red" id="chStatGovt">—</div>
+      <div class="ch-stat-lbl">Govt Posts</div>
+    </div>
+    <div class="ch-stat-item">
+      <div class="ch-stat-num gold" id="chStatScholar">—</div>
+      <div class="ch-stat-lbl">Scholarships</div>
+    </div>
+    <div class="ch-stat-item">
+      <div class="ch-stat-num green" id="chStatIntern">—</div>
+      <div class="ch-stat-lbl">Internships</div>
+    </div>
+  </div>
+
+  <!-- ── Notifications Ticker ──────────────────────────────────── -->
+  <div class="ch-notif-ticker">
+    <div class="ch-notif-ticker-hd">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      Latest Notifications
+    </div>
+    <div class="ch-notif-list" id="chNotifList">
+      <div class="ch-notif-item">
+        <span class="ch-notif-dot"></span>
+        <span class="ch-notif-body"><b>SBI PO 2026</b> — 1,500 Probationary Officer posts. Last date: 08 July 2026.</span>
+        <span class="ch-notif-time">2h ago</span>
+      </div>
+      <div class="ch-notif-item">
+        <span class="ch-notif-dot"></span>
+        <span class="ch-notif-body"><b>AIIMS CRE 2026</b> — 1,484 Group B &amp; C posts across AIIMS institutes. Apply online.</span>
+        <span class="ch-notif-time">5h ago</span>
+      </div>
+      <div class="ch-notif-item">
+        <span class="ch-notif-dot"></span>
+        <span class="ch-notif-body"><b>SSC CGL 2026</b> — Notification OUT! 12,256 vacancies. Last date: 22 June 2026.</span>
+        <span class="ch-notif-time">1d ago</span>
+      </div>
+      <div class="ch-notif-item">
+        <span class="ch-notif-dot"></span>
+        <span class="ch-notif-body"><b>IBPS PO 2026</b> — 5,000+ vacancies across 11 PSBs. Prelims: 22–23 Aug 2026.</span>
+        <span class="ch-notif-time">1d ago</span>
+      </div>
+      <div class="ch-notif-item">
+        <span class="ch-notif-dot"></span>
+        <span class="ch-notif-body"><b>Assam OBC Scholarship 2026</b> — Pre-Matric &amp; Post-Matric applications open.</span>
+        <span class="ch-notif-time">2d ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Category Scroller ──────────────────────────────────────── -->
+  <div class="ch-cats-wrap" id="chCatsWrap">
+    <button class="ch-cat-btn active" data-cat="all"         onclick="chSelectCat(this,'all')">🌐 All</button>
+    <button class="ch-cat-btn" data-cat="govt"               onclick="chSelectCat(this,'govt')">🏛️ Govt Jobs</button>
+    <button class="ch-cat-btn" data-cat="assam"              onclick="chSelectCat(this,'assam')">🗺️ Assam Jobs</button>
+    <button class="ch-cat-btn" data-cat="adre"               onclick="chSelectCat(this,'adre')">📝 ADRE</button>
+    <button class="ch-cat-btn" data-cat="apsc"               onclick="chSelectCat(this,'apsc')">🎯 APSC</button>
+    <button class="ch-cat-btn" data-cat="ssc"                onclick="chSelectCat(this,'ssc')">📋 SSC</button>
+    <button class="ch-cat-btn" data-cat="railway"            onclick="chSelectCat(this,'railway')">🚂 Railway</button>
+    <button class="ch-cat-btn" data-cat="banking"            onclick="chSelectCat(this,'banking')">🏦 Banking</button>
+    <button class="ch-cat-btn" data-cat="defence"            onclick="chSelectCat(this,'defence')">🛡️ Defence</button>
+    <button class="ch-cat-btn" data-cat="private"            onclick="chSelectCat(this,'private')">🏢 Private</button>
+    <button class="ch-cat-btn" data-cat="it"                 onclick="chSelectCat(this,'it')">💻 IT Jobs</button>
+    <button class="ch-cat-btn" data-cat="wfh"                onclick="chSelectCat(this,'wfh')">🏠 Work From Home</button>
+    <button class="ch-cat-btn" data-cat="freshers"           onclick="chSelectCat(this,'freshers')">🌱 Freshers</button>
+    <button class="ch-cat-btn" data-cat="internship"         onclick="chSelectCat(this,'internship')">🎓 Internships</button>
+    <button class="ch-cat-btn" data-cat="scholarship"        onclick="chSelectCat(this,'scholarship')">🏆 Scholarships</button>
+    <button class="ch-cat-btn" data-cat="admit"              onclick="chSelectCat(this,'admit')">🪪 Admit Cards</button>
+    <button class="ch-cat-btn" data-cat="result"             onclick="chSelectCat(this,'result')">📊 Results</button>
+    <button class="ch-cat-btn" data-cat="syllabus"           onclick="chSelectCat(this,'syllabus')">📚 Syllabus</button>
+  </div>
+
+  <!-- ── Filters ────────────────────────────────────────────────── -->
+  <div class="ch-filters">
+    <select class="ch-filter-select" id="chQualFilter" onchange="chFilterJobs()">
+      <option value="">🎓 All Qualifications</option>
+      <option value="10th">Class 10th</option>
+      <option value="12th">Class 12th</option>
+      <option value="diploma">Diploma</option>
+      <option value="graduate">Graduate</option>
+      <option value="postgraduate">Post Graduate</option>
+      <option value="phd">PhD</option>
+    </select>
+    <select class="ch-filter-select" id="chStateFilter" onchange="chFilterJobs()">
+      <option value="">📍 All States</option>
+      <option value="assam">Assam</option>
+      <option value="national">National</option>
+      <option value="northeast">North East</option>
+    </select>
+    <select class="ch-filter-select" id="chSortFilter" onchange="chFilterJobs()">
+      <option value="latest">⏱ Latest First</option>
+      <option value="deadline">📅 By Deadline</option>
+      <option value="salary">💰 Salary High</option>
+    </select>
+    <select class="ch-filter-select" id="chSourceFilter" onchange="chFilterJobs()">
+      <option value="">📡 All Sources</option>
+      <option value="manual">✍️ Manual</option>
+      <option value="rss">📰 RSS Feed</option>
+      <option value="jsearch">🔍 JSearch</option>
+      <option value="pipedream">⚡ Pipedream</option>
+    </select>
+  </div>
+
+  <!-- ── Featured Job Banner ────────────────────────────────────── -->
+  <div class="ch-featured-banner" id="chFeaturedBanner" style="display:none">
+    <div class="ch-featured-icon">⭐</div>
+    <div class="ch-featured-text">
+      <div class="ch-featured-label">Featured Opportunity</div>
+      <div class="ch-featured-title" id="chFeaturedTitle">Loading…</div>
+      <div class="ch-featured-meta" id="chFeaturedMeta"></div>
+    </div>
+    <button class="ch-featured-apply" id="chFeaturedApplyBtn">View →</button>
+  </div>
+
+  <!-- ── Dynamic Sections (JS-populated) ───────────────────────── -->
+  <div id="chFeaturedSection"></div>
+  <div id="chTrendingSection"></div>
+  <div id="chGovtSection"></div>
+  <div id="chScholarSection"></div>
+  <div id="chInternSection"></div>
+  <div id="chLatestSection"></div>
+
+  <!-- ── Latest Jobs section header ────────────────────────────── -->
+  <div class="ch-section-hd">
+    <div class="ch-section-title" id="chJobsSectionTitle">
+      <span class="ch-sec-dot blue"></span>💼 Latest Jobs
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="ch-refresh-btn" id="chSavedToggleBtn" onclick="chToggleSavedView()">
+        🤍 Saved (<span id="chSavedCount">0</span>)
+      </button>
+      <button class="ch-refresh-btn" onclick="chLoadJobs(true)">↻ Refresh</button>
+    </div>
+  </div>
+
+  <!-- ── Jobs list (JS-populated) ───────────────────────────────── -->
+  <div id="chJobsList" class="ch-jobs-grid"><!-- JS-populated --></div>
+
+  <div id="chJobsLoading" class="ch-loading" style="display:none">
+    <div class="ch-spinner"></div>
+    Loading opportunities…
+  </div>
+
+  <div id="chJobsEmpty" class="ch-empty" style="display:none">
+    <span class="ch-empty-icon">🔍</span>
+    <span id="chJobsEmptyText">
+      No jobs match your search.<br>Try different keywords or clear filters.
+    </span>
+  </div>
+
+  <div id="chJobsError" class="ch-empty" style="display:none">
+    <span class="ch-empty-icon">⚠️</span>
+    <span id="chJobsErrorText">Unable to load jobs.</span><br>
+    <button onclick="chLoadJobs(true)" style="margin-top:14px;padding:10px 22px;border-radius:11px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:#f87171;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">↻ Retry</button>
+  </div>
+
+</div><!-- /.ch-wrap -->
+
+<!-- ── Job Detail Sheet (full-screen on mobile) ─────────────────── -->
+<div id="chJobSheet" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);backdrop-filter:blur(12px)" onclick="chCloseJobSheet(event)">
+  <div id="chJobSheetInner" style="position:absolute;bottom:0;left:0;right:0;max-height:92vh;overflow-y:auto;background:var(--bg2);border-radius:26px 26px 0 0;border:1px solid rgba(255,255,255,.1);padding:0 0 0;animation:ch-sheet-in .28s cubic-bezier(.16,1,.3,1)">
+
+    <!-- Drag handle (mobile) -->
+    <div class="ch-sheet-draghandle" style="text-align:center;padding:10px 0 0">
+      <div style="width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto"></div>
+    </div>
+
+    <!-- Close button (shown in full-screen mode) -->
+    <button class="ch-sheet-close-btn" onclick="chCloseJobSheet()" aria-label="Close"
+      style="position:absolute;top:12px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:5">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div id="chJobSheetContent"></div>
+  </div>
+</div>
+
+<style>
+@keyframes ch-sheet-in {
+  from { transform: translateY(100%); opacity: .4; }
+  to   { transform: translateY(0);    opacity: 1;  }
+}
+#chJobSheet.ch-fullscreen { align-items: stretch; background: var(--bg2); backdrop-filter: none; }
+#chJobSheet.ch-fullscreen #chJobSheetInner {
+  position: relative; max-height: 100dvh; height: 100dvh; border-radius: 0;
+  animation: none; border: none;
+}
+#chJobSheet.ch-fullscreen .ch-sheet-draghandle { display: none; }
+#chJobSheet.ch-fullscreen .ch-sheet-close-btn  { display: flex !important; }
+</style>
+
+<!-- Career Hub v4 logic -->
+</div><!-- /#page-career-hub -->
