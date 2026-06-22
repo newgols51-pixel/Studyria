@@ -1722,30 +1722,40 @@ const CH_MENU_CAT_MAP = {
 
 function chOpenMenu() {
   const ov = document.getElementById('chMenuOverlay');
-  if (!ov) return;
+  if (!ov) { console.warn('[CH Menu] chMenuOverlay element not found'); return; }
   window._chMenu.open = true;
   window._chMenu.lastFocus = document.activeElement;
+  // Ensure overlay is not blocked by any other stacking context
+  ov.style.zIndex = '950';
   ov.classList.add('open');
+  // Lock body scroll — use both overflow and touch-action for Android PWA
   document.body.style.overflow = 'hidden';
-  _chMenuRefresh();
-  _chMenuHighlightActive();
+  document.documentElement.style.overflow = 'hidden';
+  try { _chMenuRefresh(); } catch(err) { console.warn('[CH Menu] _chMenuRefresh error', err); }
+  try { _chMenuHighlightActive(); } catch(err) {}
+  // Remove any stale listener before adding fresh one
+  document.removeEventListener('keydown', _chMenuEscHandler);
   document.addEventListener('keydown', _chMenuEscHandler);
 }
 
 function chCloseMenu(e) {
-  // Only close on backdrop click / explicit call, never bubble from inner clicks
-  if (e && e.target !== document.getElementById('chMenuOverlay')) return;
-  const ov = document.getElementById('chMenuDrawer')?.closest('.ch-menu-overlay');
+  // Accept: no-arg call (from X btn / ESC / programmatic), OR backdrop click
+  if (e && e.target && e.target !== document.getElementById('chMenuOverlay')) return;
+  const ov = document.getElementById('chMenuOverlay');
   if (!ov) return;
   window._chMenu.open = false;
   ov.classList.remove('open');
+  // Restore body scroll
   document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
   document.removeEventListener('keydown', _chMenuEscHandler);
-  if (window._chMenu.lastFocus?.focus) window._chMenu.lastFocus.focus();
+  if (window._chMenu.lastFocus?.focus) {
+    try { window._chMenu.lastFocus.focus(); } catch(err) {}
+  }
 }
 
 function _chMenuEscHandler(ev) {
-  if (ev.key === 'Escape') chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+  if (ev.key === 'Escape') chCloseMenu();
 }
 
 // ── Live counters + profile + quick links + footer meta ─────────────
@@ -1976,3 +1986,8 @@ function _chShowAppliedToast() {
   document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
+
+// ── Replay any queued menu calls from before this script loaded ────────────
+if (typeof window._chMenuReplayPending === 'function') {
+  window._chMenuReplayPending();
+}
