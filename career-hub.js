@@ -68,6 +68,7 @@ async function chLoadJobs(notify) {
       .limit(300);
     if (error) throw error;
     s.jobs = (data || []).map(_map);
+    localStorage.setItem('ch_last_updated', new Date().toISOString());
   } catch (e) {
     console.error('[CareerHub]', e);
     _chErr(e.message || 'Failed to load. Please retry.');
@@ -445,6 +446,24 @@ function _chStats() {
   set('chStatGovt',    fmt(jobs.filter(_isGovt).length));
   set('chStatScholar', fmt(jobs.filter(_isScholar).length));
   set('chStatIntern',  fmt(jobs.filter(_isIntern).length));
+
+  if (typeof _chMenuRefresh === 'function' && window._chMenu?.open) _chMenuRefresh();
+  else if (typeof _chMenuQuietCount === 'function') _chMenuQuietCount(jobs);
+}
+
+// Lightweight counter sync for when the drawer is closed (avoids touching
+// profile/quick-link DOM while it isn't visible — cheap, count-only update).
+function _chMenuQuietCount(jobs) {
+  const _isGovt    = j => j.jobType === 'government' || j.category.map(c=>c.toLowerCase()).some(c=>c.includes('govt')||c.includes('government'));
+  const _isScholar = j => j.category.map(c=>c.toLowerCase()).some(c=>c.includes('scholarship')) || /scholarship/i.test(j.title);
+  const _isIntern  = j => j.category.map(c=>c.toLowerCase()).some(c=>c.includes('internship'))  || /internship/i.test(j.title);
+  const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n >= 1000 ? (n/1000).toFixed(1)+'K' : String(n); };
+  set('chMenuCountGovt',    jobs.filter(_isGovt).length);
+  set('chMenuCountScholar', jobs.filter(_isScholar).length);
+  set('chMenuCountIntern',  jobs.filter(_isIntern).length);
+  set('chMenuCountSaved',   (window._ch.savedJobs || []).length);
+  const dot = document.getElementById('chMenuNotifDot');
+  if (dot) dot.classList.toggle('show', document.querySelectorAll('#chNotifList .ch-notif-item').length > 0);
 }
 
 // ── Featured banner ────────────────────────────────────────────────
@@ -1683,3 +1702,277 @@ function _chInjectStyles() {
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('page-career-hub')?.classList.contains('active')) chInit();
 });
+
+/* ═══════════════════════════════════════════════════════════════════
+   MAIN MENU DRAWER  —  AssamCareer-style, real routing
+   ═══════════════════════════════════════════════════════════════════ */
+window._chMenu = window._chMenu || { open: false, lastFocus: null };
+
+const CH_MENU_VERSION = 'v1.2.0';
+
+// Map menu item -> { cat } for chSelectCatByKey, or null if handled specially
+const CH_MENU_CAT_MAP = {
+  govt:        'govt',
+  private:     'private',
+  scholarship: 'scholarship',
+  internship:  'internship',
+  admit:       'admit',
+  result:      'result',
+};
+
+function chOpenMenu() {
+  const ov = document.getElementById('chMenuOverlay');
+  if (!ov) return;
+  window._chMenu.open = true;
+  window._chMenu.lastFocus = document.activeElement;
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _chMenuRefresh();
+  _chMenuHighlightActive();
+  document.addEventListener('keydown', _chMenuEscHandler);
+}
+
+function chCloseMenu(e) {
+  // Only close on backdrop click / explicit call, never bubble from inner clicks
+  if (e && e.target !== document.getElementById('chMenuOverlay')) return;
+  const ov = document.getElementById('chMenuDrawer')?.closest('.ch-menu-overlay');
+  if (!ov) return;
+  window._chMenu.open = false;
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', _chMenuEscHandler);
+  if (window._chMenu.lastFocus?.focus) window._chMenu.lastFocus.focus();
+}
+
+function _chMenuEscHandler(ev) {
+  if (ev.key === 'Escape') chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+}
+
+// ── Live counters + profile + quick links + footer meta ─────────────
+function _chMenuRefresh() {
+  const s = window._ch;
+  const jobs = s.jobs || [];
+
+  const _isGovt    = j => j.jobType === 'government' || j.category.map(c=>c.toLowerCase()).some(c=>c.includes('govt')||c.includes('government'));
+  const _isScholar = j => j.category.map(c=>c.toLowerCase()).some(c=>c.includes('scholarship')) || /scholarship/i.test(j.title);
+  const _isIntern  = j => j.category.map(c=>c.toLowerCase()).some(c=>c.includes('internship'))  || /internship/i.test(j.title);
+
+  const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n >= 1000 ? (n/1000).toFixed(1)+'K' : String(n); };
+  set('chMenuCountGovt',    jobs.filter(_isGovt).length);
+  set('chMenuCountScholar', jobs.filter(_isScholar).length);
+  set('chMenuCountIntern',  jobs.filter(_isIntern).length);
+  set('chMenuCountSaved',   (s.savedJobs || []).length);
+
+  // Applied jobs — read from localStorage ledger kept by chMarkApplied()
+  const applied = JSON.parse(localStorage.getItem('ch_applied_jobs') || '[]');
+  set('chMenuCountApplied', applied.length);
+
+  // Notifications — count ticker items currently rendered
+  const notifCount = document.querySelectorAll('#chNotifList .ch-notif-item').length;
+  set('chMenuCountNotif', notifCount);
+  const dot = document.getElementById('chMenuNotifDot');
+  if (dot) dot.classList.toggle('show', notifCount > 0);
+
+  // Profile card
+  const user = window.currentUser;
+  const nameEl = document.getElementById('chMenuProfileName');
+  const subEl  = document.getElementById('chMenuProfileSub');
+  const avEl   = document.getElementById('chMenuAvatar');
+  if (user) {
+    const name = user.name || user.full_name || user.email?.split('@')[0] || 'Account';
+    if (nameEl) nameEl.textContent = name;
+    if (subEl)  subEl.textContent  = user.email || 'View your profile';
+    if (avEl) {
+      if (user.avatar_url) avEl.innerHTML = `<img src="${user.avatar_url}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      else avEl.textContent = name.charAt(0).toUpperCase();
+    }
+  } else {
+    if (nameEl) nameEl.textContent = 'Guest User';
+    if (subEl)  subEl.textContent  = 'Tap to sign in';
+    if (avEl)   avEl.textContent   = '?';
+  }
+
+  // Quick action links — pull from saved site settings when present, else sensible defaults
+  const tg = (typeof getSiteSetting === 'function' && getSiteSetting('footer_telegram')) || 'https://t.me/studyria';
+  const wa = (typeof getSiteSetting === 'function' && getSiteSetting('footer_whatsapp')) || 'https://wa.me/918011267054';
+  const ch = (typeof getSiteSetting === 'function' && getSiteSetting('footer_channel'))  || tg;
+  const tgBtn = document.getElementById('chMenuTelegramBtn');
+  const waBtn = document.getElementById('chMenuWhatsappBtn');
+  const chBtn = document.getElementById('chMenuChannelBtn');
+  if (tgBtn) tgBtn.href = tg;
+  if (waBtn) waBtn.href = wa;
+  if (chBtn) chBtn.href = ch;
+
+  // Footer meta — reflects the last time job data was actually refreshed
+  const verEl = document.getElementById('chMenuVersion');
+  if (verEl) verEl.textContent = CH_MENU_VERSION;
+  const updEl = document.getElementById('chMenuUpdated');
+  if (updEl) {
+    const last = localStorage.getItem('ch_last_updated');
+    updEl.textContent = last ? _chRelTime(last) : 'just now';
+  }
+}
+
+function _chRelTime(iso) {
+  const d = new Date(iso); if (isNaN(d)) return '—';
+  const mins = Math.floor((Date.now() - d.getTime()) / 60000);
+  if (mins < 1)  return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24)  return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+function _chMenuHighlightActive() {
+  const s = window._ch;
+  let active = 'home';
+  if (s.savedOnly) active = 'saved';
+  else if (s.cat && s.cat !== 'all') {
+    const found = Object.entries(CH_MENU_CAT_MAP).find(([, cat]) => cat === s.cat);
+    if (found) active = found[0];
+    else if (s.cat === 'internship') active = 'internship';
+  }
+  document.querySelectorAll('.ch-menu-item').forEach(el => el.classList.toggle('active', el.dataset.menu === active));
+}
+
+// ── Real routing — every item does something concrete ────────────────
+function chMenuNav(e, target) {
+  e?.preventDefault();
+  const s = window._ch;
+
+  switch (target) {
+    case 'home':
+      window._ch.savedOnly = false;
+      chSelectCatByKey('all');
+      break;
+
+    case 'latest': {
+      window._ch.savedOnly = false;
+      chSelectCatByKey('all');
+      s.sort = 'latest';
+      const sortEl = document.getElementById('chSortFilter');
+      if (sortEl) sortEl.value = 'latest';
+      chFilterJobs();
+      document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      break;
+    }
+
+    case 'govt': case 'private': case 'scholarship': case 'internship': case 'admit': case 'result':
+      window._ch.savedOnly = false;
+      chSelectCatByKey(CH_MENU_CAT_MAP[target]);
+      document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      break;
+
+    case 'admission':
+      window._ch.savedOnly = false;
+      chSelectCatByKey('all');
+      document.getElementById('chSearchInput') && (document.getElementById('chSearchInput').value = 'admission');
+      chFilterJobs();
+      document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      break;
+
+    case 'links':
+      window._ch.savedOnly = false;
+      chSelectCatByKey('all');
+      if (typeof showToast === 'function') showToast('🔗 Open any job to view its Important Links', 'info');
+      document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      break;
+
+    case 'featured': {
+      window._ch.savedOnly = false;
+      chSelectCatByKey('all');
+      const featJob = (s.jobs || []).find(j => j.featured);
+      document.getElementById('chFeaturedSection')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      if (featJob) setTimeout(() => chOpenDetail(featJob.id), 350);
+      break;
+    }
+
+    case 'saved':
+      window._ch.savedOnly = true;
+      _syncSavedUI();
+      chFilterJobs();
+      document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      break;
+
+    case 'applied':
+      _chShowAppliedToast();
+      break;
+
+    case 'notifications':
+      document.getElementById('chNotifList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      break;
+
+    case 'profile':
+      if (window.currentUser) { if (typeof navigate === 'function') navigate('dashboard'); }
+      else { if (typeof navigate === 'function') navigate('login'); }
+      chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+      return; // navigate() already moves away from Career Hub
+
+    case 'settings':
+      if (typeof showToast === 'function') showToast('⚙ Settings — coming soon', 'info');
+      break;
+
+    case 'contact':
+      if (typeof navigate === 'function') { navigate('home'); setTimeout(() => document.querySelector('.home-footer')?.scrollIntoView({behavior:'smooth'}), 150); }
+      chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+      return;
+
+    default:
+      break;
+  }
+
+  _chMenuHighlightActive();
+  chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+}
+
+function chMenuProfileTap() {
+  chMenuNav(null, 'profile');
+}
+
+function chMenuQuickTap(e, kind) {
+  // Links already carry the correct href from _chMenuRefresh(); just let them open,
+  // but warn gracefully if no URL was ever configured.
+  const btn = e.currentTarget;
+  if (!btn.href || btn.href.endsWith('#')) {
+    e.preventDefault();
+    if (typeof showToast === 'function') showToast('Link not configured yet', 'info');
+  }
+}
+
+function chMenuSearchGo() {
+  const v = document.getElementById('chMenuSearchInput')?.value || '';
+  const main = document.getElementById('chSearchInput');
+  if (main) main.value = v;
+  window._ch.savedOnly = false;
+  chSelectCatByKey('all');
+  chFilterJobs();
+  chCloseMenu({ target: document.getElementById('chMenuOverlay') });
+  document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ── Applied-jobs ledger (lightweight local tracker) ──────────────────
+// Call chMarkApplied(jobId) from the "Apply Now" flow to track applied jobs.
+function chMarkApplied(jobId) {
+  if (!jobId) return;
+  const list = JSON.parse(localStorage.getItem('ch_applied_jobs') || '[]');
+  if (!list.includes(jobId)) {
+    list.push(jobId);
+    localStorage.setItem('ch_applied_jobs', JSON.stringify(list));
+  }
+  const el = document.getElementById('chMenuCountApplied');
+  if (el) el.textContent = String(list.length);
+}
+
+function _chShowAppliedToast() {
+  const list = JSON.parse(localStorage.getItem('ch_applied_jobs') || '[]');
+  if (!list.length) {
+    if (typeof showToast === 'function') showToast('No applied jobs tracked yet', 'info');
+    return;
+  }
+  window._ch.savedOnly = false;
+  chSelectCatByKey('all');
+  window._ch.search = '';
+  _renderJobs((window._ch.jobs || []).filter(j => list.includes(j.id)));
+  document.getElementById('chJobsList')?.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
