@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080c14" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4fb" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark light">
+  <title>Offline — Studyria</title>
+  
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       STUDYRIA OFFLINE PAGE — PRODUCTION STYLES
+       Mobile-first, accessible, beautiful, lightweight
+       ═══════════════════════════════════════════════════════════════════ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #080c14 0%, #0f1a2e 50%, #1a1f3a 100%);
+      color: #e4e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+      body {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5fb 50%, #e8f0fc 100%);
+        color: #1e293b;
+      }
+    }
+
+    /* ─── Main Container ─────────────────────────────────────────────── */
+    .offline-container {
+      width: 100%;
+      max-width: 500px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .offline-container {
+        padding: 1.5rem;
+      }
+    }
+
+    /* ─── Logo ──────────────────────────────────────────────────────── */
+    .offline-logo {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 2rem;
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .offline-logo {
+        animation: none;
+      }
+    }
+
+    @keyframes logoFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* ─── Illustration ──────────────────────────────────────────────── */
+    .offline-illustration {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      margin: 0 auto 2.5rem;
+      animation: illustrationPulse 2s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .offline-illustration {
+        animation: none;
+      }
+    }
+
+    @keyframes illustrationPulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.85;
+      }
+    }
+
+    /* ─── Heading ───────────────────────────────────────────────────── */
+    .offline-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-title {
+        background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .offline-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* ─── Subtitle ──────────────────────────────────────────────────── */
+    .offline-subtitle {
+      font-size: 1.1rem;
+      color: #9ca3af;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+      animation: fadeInUp 0.6s ease-out 0.1s both;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-subtitle {
+        color: #64748b;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .offline-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    /* ─── Features List ────────────────────────────────────────────── */
+    .offline-features {
+      list-style: none;
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-features {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .offline-feature {
+      padding: 0.75rem 0;
+      font-size: 0.95rem;
+      color: #d1d5db;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-feature {
+        color: #475569;
+      }
+    }
+
+    .offline-feature:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .offline-feature strong {
+      color: #3d8ef8;
+      font-weight: 600;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-feature strong {
+        color: #2563eb;
+      }
+    }
+
+    /* ─── Status Indicator ──────────────────────────────────────────── */
+    .offline-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      animation: fadeInUp 0.6s ease-out 0.3s both;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-status {
+        background: rgba(220, 38, 38, 0.08);
+        border-color: rgba(220, 38, 38, 0.25);
+      }
+    }
+
+    .offline-status-indicator {
+      width: 8px;
+      height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .offline-status-indicator {
+        animation: none;
+      }
+    }
+
+    .offline-status-text {
+      font-size: 0.95rem;
+      color: #fca5a5;
+      font-weight: 500;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-status-text {
+        color: #dc2626;
+      }
+    }
+
+    /* ─── Buttons ───────────────────────────────────────────────────── */
+    .offline-actions {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+      margin-top: 2rem;
+      animation: fadeInUp 0.6s ease-out 0.4s both;
+    }
+
+    @media (min-width: 360px) {
+      .offline-actions {
+        flex-direction: row;
+      }
+    }
+
+    .offline-btn {
+      flex: 1;
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .offline-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Primary button */
+    .offline-btn-primary {
+      background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(61, 142, 248, 0.3);
+    }
+
+    .offline-btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(61, 142, 248, 0.4);
+      transform: translateY(-2px);
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-btn-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+      }
+
+      .offline-btn-primary:hover {
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+      }
+    }
+
+    /* Secondary button */
+    .offline-btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e4e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .offline-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-btn-secondary {
+        background: rgba(0, 0, 0, 0.05);
+        color: #1e293b;
+        border-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .offline-btn-secondary:hover {
+        background: rgba(0, 0, 0, 0.08);
+        border-color: rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    /* ─── Loading State ────────────────────────────────────────────── */
+    .offline-btn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .offline-btn.loading::after {
+      content: '';
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      margin-left: 0.5em;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: -0.125em;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ─── Footer ────────────────────────────────────────────────────── */
+    .offline-footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.85rem;
+      color: #6b7280;
+      animation: fadeIn 0.6s ease-out 0.5s both;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-footer {
+        color: #9ca3af;
+        border-color: rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .offline-footer a {
+      color: #3d8ef8;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .offline-footer a:hover {
+      color: #00c8e8;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .offline-footer a {
+        color: #2563eb;
+      }
+
+      .offline-footer a:hover {
+        color: #0891b2;
+      }
+    }
+
+    /* ─── Animations ────────────────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ─── Accessibility ────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .offline-title,
+      .offline-subtitle,
+      .offline-features,
+      .offline-status,
+      .offline-actions,
+      .offline-footer,
+      .offline-logo,
+      .offline-illustration {
+        animation: none;
+      }
+
+      .offline-btn:active {
+        transform: none;
+      }
+
+      .offline-btn-primary:hover,
+      .offline-btn-secondary:hover {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .offline-container {
+        padding: 1rem;
+      }
+
+      .offline-title {
+        font-size: 1.25rem;
+      }
+
+      .offline-subtitle {
+        font-size: 0.95rem;
+      }
+
+      .offline-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <!-- Logo -->
+    <div class="offline-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#3d8ef8"></stop>
+            <stop offset="1" stop-color="#00c8e8"></stop>
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="22" fill="url(#logoGradient)"></rect>
+        <text x="50" y="68" font-family="Arial,Helvetica,sans-serif" font-size="58" font-weight="800" fill="white" text-anchor="middle">S</text>
+      </svg>
+    </div>
+
+    <!-- Illustration (SVG) -->
+    <svg class="offline-illustration" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Signal waves -->
+      <g opacity="0.3">
+        <circle cx="100" cy="100" r="20" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <circle cx="100" cy="100" r="35" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <circle cx="100" cy="100" r="50" fill="none" stroke="currentColor" stroke-width="2"></circle>
+      </g>
+
+      <!-- WiFi symbol with slash -->
+      <g>
+        <!-- WiFi arc 1 -->
+        <path d="M 70 110 Q 100 80 130 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        <!-- WiFi arc 2 -->
+        <path d="M 80 120 Q 100 95 120 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        <!-- WiFi dot -->
+        <circle cx="100" cy="130" r="4" fill="currentColor"></circle>
+        <!-- Slash -->
+        <line x1="130" y1="70" x2="70" y2="130" stroke="currentColor" stroke-width="4" stroke-linecap="round"></line>
+      </g>
+    </svg>
+
+    <!-- Title -->
+    <h1 class="offline-title">You're Offline</h1>
+
+    <!-- Subtitle -->
+    <p class="offline-subtitle">
+      Check your internet connection. Some features work offline, but you'll need to reconnect to sync your data.
+    </p>
+
+    <!-- Status -->
+    <div class="offline-status">
+      <div class="offline-status-indicator"></div>
+      <span class="offline-status-text" id="statusText">No internet connection</span>
+    </div>
+
+    <!-- Features -->
+    <ul class="offline-features">
+      <li class="offline-feature">📚 <strong>Offline browsing</strong> of cached PDFs</li>
+      <li class="offline-feature">✍️ <strong>Save drafts</strong> to your device</li>
+      <li class="offline-feature">🔖 <strong>Access bookmarks</strong> offline</li>
+    </ul>
+
+    <!-- Actions -->
+    <div class="offline-actions">
+      <button class="offline-btn offline-btn-primary" id="retryBtn" onclick="retryConnection()">
+        <span>🔄 Try Again</span>
+      </button>
+      <a href="/" class="offline-btn offline-btn-secondary">
+        Home
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="offline-footer">
+      <p id="connectionStatus">Waiting for connection…</p>
+      <p style="margin-top: 0.5rem;">
+        Having trouble? <a href="https://support.studyria.com" target="_blank">Contact support</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ═══════════════════════════════════════════════════════════════════
+     * OFFLINE PAGE LOGIC
+     * Handles: Automatic reconnect detection, UI updates, retry logic
+     * ═══════════════════════════════════════════════════════════════════
+     */
+
+    const RETRY_TIMEOUT = 5000; // 5 seconds
+    const MAX_RETRY_ATTEMPTS = 3;
+    let retryCount = 0;
+
+    /**
+     * Check connection and return to home if online
+     */
+    async function checkConnection() {
+      try {
+        // Use a small, cacheable resource to check connection
+        const response = await fetch('/manifest.json', {
+          method: 'HEAD',
+          cache: 'no-store',
+        });
+
+        if (response.ok) {
+          onConnectionRestored();
+          return true;
+        }
+      } catch (error) {
+        // Still offline
+      }
+
+      return false;
+    }
+
+    /**
+     * Handle successful reconnection
+     */
+    function onConnectionRestored() {
+      const statusText = document.getElementById('statusText');
+      const connectionStatus = document.getElementById('connectionStatus');
+
+      // Update UI
+      statusText.textContent = '✅ Connection restored!';
+      connectionStatus.textContent = 'You\'re back online. Redirecting…';
+
+      // Redirect to home after a short delay
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+    }
+
+    /**
+     * Retry connection manually
+     */
+    async function retryConnection() {
+      const retryBtn = document.getElementById('retryBtn');
+      const connectionStatus = document.getElementById('connectionStatus');
+
+      // Update button state
+      retryBtn.classList.add('loading');
+      retryBtn.disabled = true;
+
+      connectionStatus.textContent = 'Checking connection…';
+
+      // Wait a moment, then check
+      setTimeout(async () => {
+        const isOnline = await checkConnection();
+
+        if (isOnline) {
+          // Connected!
+          return;
+        }
+
+        // Still offline, update UI
+        retryBtn.classList.remove('loading');
+        retryBtn.disabled = false;
+
+        retryCount++;
+        if (retryCount >= MAX_RETRY_ATTEMPTS) {
+          connectionStatus.innerHTML =
+            'Still offline. Try these steps:<br>' +
+            '1. Check your WiFi/mobile signal<br>' +
+            '2. Restart your router<br>' +
+            '3. Refresh this page when ready';
+        } else {
+          connectionStatus.textContent = `Still offline. Retrying in ${RETRY_TIMEOUT / 1000}s…`;
+
+          // Auto-retry after delay
+          setTimeout(retryConnection, RETRY_TIMEOUT);
+        }
+      }, 500);
+    }
+
+    /**
+     * Set up online/offline event listeners
+     */
+    function setupNetworkListeners() {
+      window.addEventListener('online', () => {
+        console.log('[Offline] Online event detected');
+        checkConnection();
+      });
+
+      window.addEventListener('offline', () => {
+        console.log('[Offline] Offline event detected');
+      });
+    }
+
+    /**
+     * Auto-check connection every 10 seconds if offline
+     */
+    function startAutoCheck() {
+      let checkAttempts = 0;
+      const maxChecks = 30; // Stop after 5 minutes (30 * 10s)
+
+      const autoCheck = async () => {
+        if (checkAttempts >= maxChecks) {
+          console.log('[Offline] Auto-check stopped after 5 minutes');
+          return;
+        }
+
+        const isOnline = await checkConnection();
+        if (!isOnline) {
+          checkAttempts++;
+          setTimeout(autoCheck, 10000);
+        }
+      };
+
+      // Start first check after 5 seconds
+      setTimeout(autoCheck, 5000);
+    }
+
+    /**
+     * Initialize offline page
+     */
+    function initialize() {
+      console.log('[Offline] Page initialized');
+      
+      // Set up listeners
+      setupNetworkListeners();
+
+      // Start auto-check
+      startAutoCheck();
+
+      // Disable retry button initially if already attempted
+      const retryBtn = document.getElementById('retryBtn');
+      retryBtn.addEventListener('click', retryConnection);
+    }
+
+    // Initialize when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
+</body>
+</html>
