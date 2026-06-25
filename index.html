@@ -14514,12 +14514,9 @@ async function renderPopularDownloads() {
 // install button (#pwaInstallBtn) so both co-exist safely.
 let _pwaInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
-  // Do NOT call e.preventDefault() here — the App Center engine below
-  // already calls it. Calling it twice is safe but we avoid redundancy.
-  // Just store the reference for triggerPWAInstall() (navbar button).
+  // ✅ Always prevent the browser's automatic mini-infobar / install banner.
+  //    The burger-menu card is the ONLY install CTA — never show the navbar button.
   _pwaInstallPrompt = e;
-  const btn = document.getElementById('pwaInstallBtn');
-  if (btn) btn.style.display = 'flex';
 });
 window.addEventListener('appinstalled', () => {
   const btn = document.getElementById('pwaInstallBtn');
@@ -29113,6 +29110,14 @@ if (_origTrackReading) {
         _installEvt = null;
         if (result.outcome === 'accepted') {
           if (typeof showToast === 'function') showToast('🚀 Studyria installed successfully!', 'success');
+          // Replace install button with "App Installed ✅" immediately
+          // (appinstalled event will also fire, but this gives instant feedback)
+          var installBtn = document.getElementById('pwaHmInstallBtn');
+          if (installBtn) {
+            installBtn.textContent = 'App Installed ✅';
+            installBtn.disabled = true;
+            installBtn.style.cssText += ';background:rgba(16,217,142,0.15);border-color:rgba(16,217,142,0.4);color:#10d98e;cursor:default;animation:none';
+          }
           // Note: _isInstalled will be updated by the appinstalled event,
           // NOT set here — wait for browser confirmation.
         }
@@ -29176,12 +29181,13 @@ if (_origTrackReading) {
 
   // ── beforeinstallprompt ────────────────────────────────────────
   window.addEventListener('beforeinstallprompt', function(e) {
+    // ✅ Prevent automatic install banners / mini-infobar.
+    //    The install CTA lives exclusively in the Burger Menu card.
     e.preventDefault();
     _installEvt = e;
-    // Merge with legacy pwaInstallBtn if present
+    // Also keep the legacy reference in sync (used by triggerPWAInstall fallback)
     _pwaInstallPrompt = e;
-    const legacyBtn = document.getElementById('pwaInstallBtn');
-    if (legacyBtn) legacyBtn.style.display = 'flex';
+    // ⛔ Do NOT show pwaInstallBtn (navbar button) — burger menu is the only entry point.
     renderInstallCard();
   });
 
@@ -29189,6 +29195,7 @@ if (_origTrackReading) {
     _installEvt = null;
     _pwaInstallPrompt = null;
     _isInstalled = true;
+    // ⛔ Never show the navbar install button
     const legacyBtn = document.getElementById('pwaInstallBtn');
     if (legacyBtn) legacyBtn.style.display = 'none';
     renderInstallCard();

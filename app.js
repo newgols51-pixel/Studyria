@@ -389,22 +389,18 @@ function _scheduleUpdateChecks() {
 function setupInstallPrompt() {
   // Capture beforeinstallprompt (Android, Chrome Desktop, Edge, Samsung)
   window.addEventListener('beforeinstallprompt', e => {
+    // ✅ Always prevent the browser's automatic install banner / mini-infobar.
     e.preventDefault();
     _state.deferredPrompt = e;
 
-    // Also wire up the legacy install button in the navbar if present
-    const legacyBtn = document.getElementById('pwaInstallBtn');
-    if (legacyBtn) legacyBtn.style.display = 'flex';
+    // ⛔ NEVER show the legacy navbar install button.
+    //    The custom "Download / Install Studyria App" card in the Burger Menu
+    //    is the only install entry point.  prompt() fires only on explicit click.
 
-    // Dispatch event so other handlers (App Center, etc.) can react
+    // Dispatch event so other handlers (pwaAppCenter, etc.) can react
     window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
 
-    // Show fallback install banner only if pwaAppCenter is NOT handling UI
-    if (!window.pwaAppCenter && !_state.isInstalled) {
-      showInstallBanner();
-    }
-
-    console.log('[PWA] Install prompt captured ✅');
+    console.log('[PWA] Install prompt captured ✅ (burger-menu card is the sole CTA)');
   });
 
   // App successfully installed
@@ -414,11 +410,15 @@ function setupInstallPrompt() {
     _state.deferredPrompt = null;
     document.documentElement.setAttribute('data-pwa-installed', 'true');
 
+    // Legacy navbar install button — keep hidden (burger menu is the sole entry point)
     const legacyBtn = document.getElementById('pwaInstallBtn');
     if (legacyBtn) legacyBtn.style.display = 'none';
 
-    // Remove fallback install banner if present
+    // Remove fallback install banner if somehow present
     document.getElementById('_pwaInstallBanner')?.remove();
+
+    // Mark burger-menu install card as installed
+    _markBurgerInstalled();
 
     window.dispatchEvent(new CustomEvent('pwa:installed'));
 
@@ -518,11 +518,28 @@ async function promptInstall() {
     dismissInstallBanner();
 
     if (outcome === 'accepted') {
+      // Mark burger-menu install button as "App Installed ✅"
+      _markBurgerInstalled();
       if (typeof showToast === 'function') showToast('🚀 Studyria installed!', 'success');
     }
   } catch (e) {
     console.warn('[PWA] Install prompt error:', e);
   }
+}
+
+/**
+ * Update the burger-menu install card to "App Installed ✅" state.
+ * Called after outcome === 'accepted' or after the appinstalled event.
+ * Works whether pwaAppCenter or the fallback path is active.
+ */
+function _markBurgerInstalled() {
+  const installBtn = document.getElementById('pwaHmInstallBtn');
+  if (installBtn) {
+    installBtn.textContent = 'App Installed ✅';
+    installBtn.disabled = true;
+    installBtn.style.cssText += ';background:rgba(16,217,142,0.15);border-color:rgba(16,217,142,0.4);color:#10d98e;cursor:default;animation:none';
+  }
+  // If pwaAppCenter is present it will re-render on appinstalled; that's fine.
 }
 
 /**
@@ -872,6 +889,7 @@ window.PWA = {
 
   // Install
   promptInstall,
+  markBurgerInstalled: _markBurgerInstalled,
   showiOSInstallTip,
   dismissInstallBanner,
 
