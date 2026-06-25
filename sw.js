@@ -7,12 +7,19 @@
 //   • Same-origin JS/CSS/fonts  — Stale-while-revalidate.
 //   • API / Supabase / Razorpay / Pipedream / CDN
 //     — Bypassed entirely (always fresh from network).
+//   • OneSignal SDK files       — Bypassed (handled by their own SW).
 //
 // Messages:
 //   • SKIP_WAITING  → activates this waiting SW immediately.
 //   • GET_VERSION   → replies with cache name, build label, whats new.
 //   • CLEAR_CACHE   → wipes all caches.
 //
+// OneSignal Integration Notes:
+//   OneSignal uses its own service workers (OneSignalSDKWorker.js and
+//   OneSignalSDKUpdaterWorker.js at root scope). This SW does NOT
+//   intercept push events from OneSignal — OneSignal's own SW handles
+//   those. This SW only handles the Studyria-specific push events that
+//   are sent directly to this registration (non-OneSignal pushes).
 // ══════════════════════════════════════════════════════════════════
 
 const CACHE_NAME   = 'studyria-v7';           // ← bump on every deploy
@@ -113,8 +120,19 @@ self.addEventListener('fetch', event => {
     'tailwindcss.com',
     'fonts.googleapis.com',
     'fonts.gstatic.com',
+    // OneSignal SDK — must always be fresh, handled by their own SW
+    'onesignal.com',
   ];
   if (bypassCDNs.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
+
+  // ③b Bypass OneSignal service-worker shim files on same origin
+  //     These files import the OneSignal CDN bundle and must never be
+  //     served stale from our cache.
+  const bypassPaths = [
+    '/OneSignalSDKWorker.js',
+    '/OneSignalSDKUpdaterWorker.js',
+  ];
+  if (bypassPaths.includes(url.pathname)) return;
 
   // ④ HTML navigation — Network-first with offline fallback
   if (request.mode === 'navigate') {

@@ -860,6 +860,9 @@ async function initPWA() {
     });
   }
 
+  // Initialize OneSignal after SW is ready
+  _initOneSignal();
+
   console.log('[PWA] Studyria PWA v' + PWA_CONFIG.VERSION + ' initialized ✅');
 }
 
@@ -869,6 +872,268 @@ if (document.readyState === 'loading') {
 } else {
   initPWA();
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 11b. ONESIGNAL INTEGRATION
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * OneSignal App ID for Studyria
+ * @const {string}
+ */
+const ONESIGNAL_APP_ID = '12e09fd8-9362-49ef-87d9-14ba353db7a6';
+
+/**
+ * Internal OneSignal state
+ */
+const _osState = {
+  initialized:  false,
+  sdkReady:     false,
+  subscribed:   false,
+  userId:       null,
+};
+
+/**
+ * _initOneSignal — loads the OneSignal SDK via their async deferred queue,
+ * configures it in manual-permission mode (no automatic prompt), then checks
+ * existing subscription state to render the burger-menu button correctly.
+ *
+ * Called once from initPWA() after the page has loaded.
+ */
+function _initOneSignal() {
+  // Only run once
+  if (_osState.initialized) return;
+  _osState.initialized = true;
+
+  // OneSignal v16 uses a promise-queue pattern before the SDK script loads.
+  // Anything pushed to window.OneSignalDeferred executes once the SDK fires.
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+  // Dynamically inject the OneSignal SDK script (non-blocking, async)
+  if (!document.getElementById('_osSDKScript')) {
+    const script = document.createElement('script');
+    script.id = '_osSDKScript';
+    script.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  // Queue initialisation — runs when SDK script has loaded
+  window.OneSignalDeferred.push(async function(OneSignal) {
+    try {
+      await OneSignal.init({
+        appId:                        ONESIGNAL_APP_ID,
+        // IMPORTANT: autoResubscribe keeps existing subscribers seamlessly
+        // re-subscribed on subsequent visits, but never shows a browser
+        // permission prompt automatically to new visitors.
+        autoResubscribe:              true,
+        // Do NOT request permission automatically on page load.
+        notifyButton:                 { enable: false },
+        // Disable the OneSignal bell widget — we use our own burger button.
+        promptOptions: {
+          autoPrompt: false,
+        },
+      });
+
+      _osState.sdkReady = true;
+      console.log('[OneSignal] SDK ready ✅');
+
+      // Check whether this browser is already subscribed
+      await _osCheckSubscriptionState(OneSignal);
+
+    } catch (err) {
+      console.warn('[OneSignal] Init error:', err);
+    }
+  });
+}
+
+/**
+ * _osCheckSubscriptionState — reads the current OneSignal push-subscription
+ * status and updates the burger-menu notification button to reflect it.
+ * @param {object} OneSignal - the live OneSignal SDK instance
+ */
+async function _osCheckSubscriptionState(OneSignal) {
+  try {
+    const isPushEnabled = await OneSignal.User.PushSubscription.optedIn;
+    _osState.subscribed = !!isPushEnabled;
+
+    if (_osState.subscribed) {
+      _userId = await OneSignal.User.PushSubscription.id;
+      console.log('[OneSignal] Already subscribed ✅, id:', _userId);
+    }
+
+    // Render the burger button in the correct initial state
+    _osRenderBurgerButton();
+
+    // Keep button in sync if the user changes permission in browser settings
+    OneSignal.User.PushSubscription.addEventListener('change', function(event) {
+      _osState.subscribed = !!event.current.optedIn;
+      _osRenderBurgerButton();
+    });
+
+  } catch (err) {
+    console.warn('[OneSignal] Subscription state check failed:', err);
+    _osRenderBurgerButton(); // render default state
+  }
+}
+
+/**
+ * _osRenderBurgerButton — updates the #osNotifBtn element (injected into the
+ * burger menu by _osInjectBurgerButton) to show the correct state:
+ *   • Notifications Enabled ✅  (already subscribed)
+ *   • Enable Notifications 🔔   (not yet subscribed)
+ *   • Try Again 🔔              (permission previously denied)
+ */
+function _osRenderBurgerButton() {
+  const btn = document.getElementById('osNotifBtn');
+  if (!btn) return;
+
+  const perm = 'Notification' in window ? Notification.permission : 'default';
+
+  if (_osState.subscribed) {
+    btn.textContent = 'Notifications Enabled ✅';
+    btn.disabled = true;
+    btn.style.cssText = _osBtnBaseStyle() +
+      'background:rgba(16,217,142,0.12);border-color:rgba(16,217,142,0.35);color:#10d98e;cursor:default;';
+  } else if (perm === 'denied') {
+    btn.textContent = 'Try Again 🔔';
+    btn.disabled = false;
+    btn.style.cssText = _osBtnBaseStyle() +
+      'background:rgba(255,77,109,0.1);border-color:rgba(255,77,109,0.3);color:#ff6b85;cursor:pointer;';
+  } else {
+    btn.textContent = 'Enable Notifications 🔔';
+    btn.disabled = false;
+    btn.style.cssText = _osBtnBaseStyle() +
+      'background:rgba(61,142,248,0.1);border-color:rgba(61,142,248,0.3);color:#60a5fa;cursor:pointer;';
+  }
+}
+
+/** Shared button base styles */
+function _osBtnBaseStyle() {
+  return [
+    'width:100%',
+    'padding:10px 14px',
+    'border-radius:10px',
+    'border:1px solid',
+    'font-family:var(--font-body,system-ui,sans-serif)',
+    'font-size:.82rem',
+    'font-weight:700',
+    'text-align:left',
+    'transition:all .2s',
+    'display:flex',
+    'align-items:center',
+    'gap:8px',
+  ].join(';') + ';';
+}
+
+/**
+ * osRequestNotification — the click handler wired to the burger-menu button.
+ * Requests browser notification permission, then subscribes to OneSignal.
+ * Called by the button's onclick handler (injected into the DOM below).
+ *
+ * MUST be called from a user gesture (button click) so the browser allows the
+ * Notification.requestPermission() call without throwing a SecurityError.
+ */
+window.osRequestNotification = async function() {
+  const btn = document.getElementById('osNotifBtn');
+
+  // Guard: SDK not ready yet
+  if (!_osState.sdkReady || !window.OneSignal) {
+    if (typeof showToast === 'function') {
+      showToast('Notifications not ready yet — please try again in a moment.', 'info');
+    }
+    return;
+  }
+
+  // Guard: already subscribed
+  if (_osState.subscribed) return;
+
+  // Show loading state
+  if (btn) {
+    btn.textContent = 'Enabling…';
+    btn.disabled = true;
+    btn.style.cssText = _osBtnBaseStyle() +
+      'background:rgba(61,142,248,0.08);border-color:rgba(61,142,248,0.2);color:#7a8caa;cursor:wait;';
+  }
+
+  try {
+    // OneSignal v16: requestPermission() shows the native browser prompt
+    // and subscribes the user in one step.
+    await window.OneSignal.Notifications.requestPermission();
+
+    // Re-check actual state after the prompt resolves
+    const perm = 'Notification' in window ? Notification.permission : 'default';
+
+    if (perm === 'granted') {
+      // Give OneSignal a moment to complete the internal subscription
+      await new Promise(r => setTimeout(r, 800));
+
+      const isPushEnabled = await window.OneSignal.User.PushSubscription.optedIn;
+      _osState.subscribed = !!isPushEnabled;
+
+      if (_osState.subscribed) {
+        console.log('[OneSignal] Subscribed ✅');
+        if (typeof showToast === 'function') {
+          showToast('🔔 Notifications enabled! You\'ll get the latest updates from Studyria.', 'success');
+        }
+      }
+    } else if (perm === 'denied') {
+      console.warn('[OneSignal] Permission denied by user.');
+      if (typeof showToast === 'function') {
+        showToast('Notifications blocked. To enable, update your browser site settings.', 'info');
+      }
+    }
+
+  } catch (err) {
+    console.warn('[OneSignal] requestPermission error:', err);
+    if (typeof showToast === 'function') {
+      showToast('Could not enable notifications — please try again.', 'error');
+    }
+  } finally {
+    _osRenderBurgerButton();
+  }
+};
+
+/**
+ * _osInjectBurgerButton — inserts the OneSignal notification button into the
+ * burger menu, directly after the PWA App Center block and before
+ * #dynamicMenuItems. Safe to call multiple times (idempotent).
+ */
+function _osInjectBurgerButton() {
+  if (document.getElementById('osNotifSection')) return; // already injected
+
+  // Find the anchor — the divider just before #dynamicMenuItems
+  const dynamicMenu = document.getElementById('dynamicMenuItems');
+  if (!dynamicMenu) return;
+
+  const section = document.createElement('div');
+  section.id = 'osNotifSection';
+  section.style.cssText = 'padding:4px 12px 8px;';
+  section.innerHTML = `
+    <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;color:rgba(100,140,220,0.5);text-transform:uppercase;padding:6px 2px 4px;">
+      🔔 NOTIFICATIONS
+    </div>
+    <button id="osNotifBtn" onclick="osRequestNotification()"
+      style="${_osBtnBaseStyle()}background:rgba(61,142,248,0.1);border-color:rgba(61,142,248,0.3);color:#60a5fa;cursor:pointer;">
+      Enable Notifications 🔔
+    </button>
+  `;
+
+  // Insert before #dynamicMenuItems
+  dynamicMenu.parentNode.insertBefore(section, dynamicMenu);
+
+  // Immediately reflect correct state if SDK already resolved
+  _osRenderBurgerButton();
+}
+
+// Inject the button as soon as the DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _osInjectBurgerButton);
+} else {
+  _osInjectBurgerButton();
+}
+// Also try after a short delay in case Alpine.js rewrites the menu
+setTimeout(_osInjectBurgerButton, 1200);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 12. PUBLIC API  (window.PWA)
@@ -900,11 +1165,18 @@ window.PWA = {
   // Sync
   registerBackgroundSync,
 
-  // Notifications
+  // Notifications (native Web Push — used as fallback / diagnostics)
   requestNotificationPermission,
   subscribeToPushNotifications,
   getPushSubscription,
   unsubscribeFromPush,
+
+  // OneSignal
+  oneSignal: {
+    isSubscribed: () => _osState.subscribed,
+    isReady:      () => _osState.sdkReady,
+    requestPermission: () => window.osRequestNotification(),
+  },
 
   // Diagnostics
   getDiagnostics,

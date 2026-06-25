@@ -32008,6 +32008,30 @@ async function hlmSaveTheme() {
 <script type="module" src="poster-init.js"></script>
 <script type="module" src="poster-engine.js"></script>
 
+<!--
+  ══════════════════════════════════════════════════════════════════════
+  PWA APPLICATION LAYER + ONESIGNAL INTEGRATION
+  app.js handles:
+    • Service Worker registration & lifecycle
+    • Install prompt (burger menu card)
+    • Offline / online detection
+    • Cache versioning & cleanup
+    • Background Sync
+    • OneSignal Web Push (user-initiated, button in burger menu)
+  ══════════════════════════════════════════════════════════════════════
+-->
+
+<!--
+  OneSignal deferred queue pre-initialiser.
+  Must appear BEFORE app.js loads so the queue exists when app.js
+  pushes its init callback into it.
+-->
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+</script>
+
+<script src="app.js" defer></script>
+
 </body>
 </html>
 
