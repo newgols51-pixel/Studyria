@@ -1,47 +1,45 @@
 // ══════════════════════════════════════════════════════════════════
-// sw.js — Studyria Service Worker
+// sw.js — Studyria Service Worker  (Smart App Center Edition)
+// Version: studyria-v6  — PWA App Center update detection support
+//
 // Strategy:
 //   • Navigation (HTML)        — network-first, no caching.
-//     Prevents stale index.html from masking auth or JS fixes.
-//   • Same-origin JS/CSS/fonts — stale-while-revalidate, loads fast
-//     and cache is updated in background.
-//   • API calls (Supabase / Razorpay / Pipedream / RapidAPI / RSS)
-//     — bypassed entirely so auth tokens & live data are never
-//     intercepted or served stale.
-//   • Career Hub jobs (Supabase) — bypassed so Pipedream-synced
-//     jobs always appear fresh without a hard refresh.
+//   • Same-origin JS/CSS/fonts — stale-while-revalidate.
+//   • API / Supabase / Razorpay / Pipedream / RapidAPI / RSS
+//     — bypassed entirely.
+//   • Career Hub jobs          — bypassed, always fresh.
+//
+// App Center additions:
+//   • GET_VERSION → replies with cache name & build label.
+//   • SKIP_WAITING → activates waiting SW immediately.
+//   • CLEAR_CACHE  → wipes all caches (admin / force-refresh).
 // ══════════════════════════════════════════════════════════════════
 
-const CACHE_NAME   = 'studyria-v7.0.0';   // ← bumped from v4 → forces old cache purge
+const CACHE_NAME   = 'studyria-v6';          // bump this to force update
+const SW_BUILD     = '2025.06.25-r1';         // human-readable version label
 const OFFLINE_PAGE = '/404.html';
 
+// Shown in the burger menu update card
+const WHATS_NEW = '✨ Smart App Center, auto-update detection, faster offline caching & Career Hub improvements.';
+
 // ── Static assets to pre-cache on install ────────────────────────
-// Keep this list minimal — only shell assets needed for the offline
-// fallback. index.html is intentionally excluded (always network-first).
 const PRECACHE_ASSETS = [
   OFFLINE_PAGE,
-  // Add any critical CSS/icon files here if needed, e.g.:
-  // '/icons/icon-192.png',
-  // '/icons/icon-512.png',
 ];
 
 // ── INSTALL ──────────────────────────────────────────────────────
-// Pre-cache the offline fallback. skipWaiting() activates immediately
-// so new service worker takes over without waiting for old tabs to close.
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return Promise.allSettled(
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.allSettled(
         PRECACHE_ASSETS.map(url => cache.add(url).catch(() => {}))
-      );
-    })
+      )
+    )
   );
   self.skipWaiting();
 });
 
 // ── ACTIVATE ─────────────────────────────────────────────────────
-// Delete every cache entry that isn't the current version name.
-// This purges the old 'studyria-v4' cache automatically.
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -61,29 +59,20 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // ① Only intercept GET requests — POST/PUT/DELETE pass through untouched.
+  // ① Only intercept GET requests
   if (request.method !== 'GET') return;
 
-  // ② Bypass all third-party API & data hosts — auth tokens, live job
-  //    data, RSS feeds and payment scripts must NEVER be cached or
-  //    intercepted by the service worker.
+  // ② Bypass all third-party API & data hosts
   const bypassHosts = [
-    // Supabase (auth, database, Realtime, Storage)
     'supabase.co',
-    // Payment
     'razorpay.com',
     'checkout.razorpay.com',
-    // Pipedream webhook & workflow triggers
     'pipedream.net',
     'm.pipedream.net',
-    // Google APIs / Fonts served via googleapis
     'googleapis.com',
     'gstatic.com',
-    // JSearch / RapidAPI (used by Pipedream workflow, not browser,
-    // but bypass here as a safety net)
     'rapidapi.com',
     'jsearch.p.rapidapi.com',
-    // RSS feed sources — always fetch live so Career Hub stays current
     'sarkariresult.com',
     'freshersworld.com',
     'employmentnews.gov.in',
@@ -91,8 +80,7 @@ self.addEventListener('fetch', event => {
   ];
   if (bypassHosts.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
 
-  // ③ Bypass CDN scripts — let the browser's built-in HTTP cache handle
-  //    versioned CDN assets (Supabase SDK, etc.).
+  // ③ Bypass CDN scripts
   const bypassCDNs = [
     'jsdelivr.net',
     'cdnjs.cloudflare.com',
@@ -100,9 +88,7 @@ self.addEventListener('fetch', event => {
   ];
   if (bypassCDNs.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
 
-  // ④ HTML navigation — network-first, NO caching.
-  //    Ensures index.html is always the latest deploy; no auth or
-  //    Career Hub JS updates are ever masked by a cached copy.
+  // ④ HTML navigation — network-first, NO caching
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -113,14 +99,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // ⑤ Same-origin JS / CSS / fonts — stale-while-revalidate.
-  //    Covers: career-hub.js, supabase.js, pipedream.js and any other
-  //    local scripts. Served instantly from cache; cache entry is
-  //    refreshed in the background so the NEXT load is always fresh.
-  //
-  //    Note: because CACHE_NAME bumped to v5, all stale-while-revalidate
-  //    entries from v4 are already gone — first load after update always
-  //    fetches from network.
+  // ⑤ Same-origin JS / CSS / fonts — stale-while-revalidate
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.open(CACHE_NAME).then(async cache => {
@@ -131,21 +110,19 @@ self.addEventListener('fetch', event => {
           }
           return res;
         }).catch(() => null);
-        // Serve stale immediately if available; wait for network otherwise.
         return cached || networkFetch;
       })
     );
     return;
   }
 
-  // ⑥ Everything else — pass through to network unmodified.
+  // ⑥ Everything else — pass through
 });
 
 // ── MESSAGE HANDLER ───────────────────────────────────────────────
-// Allows the app to manually trigger a cache clear (e.g. after a
-// forced update or admin action). Call from the app with:
-//   navigator.serviceWorker.controller?.postMessage({ type: 'CLEAR_CACHE' })
 self.addEventListener('message', event => {
+
+  // Clear all caches (admin / force-refresh)
   if (event.data?.type === 'CLEAR_CACHE') {
     caches.keys().then(keys =>
       Promise.all(keys.map(k => caches.delete(k)))
@@ -155,9 +132,17 @@ self.addEventListener('message', event => {
     });
   }
 
-  // SKIP_WAITING message — useful when the app detects a new SW
-  // is waiting and wants to activate it without a tab close.
+  // Activate waiting SW immediately (used by App Center "Update Now")
   if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+
+  // App Center queries SW version & what's new text
+  if (event.data?.type === 'GET_VERSION') {
+    event.ports?.[0]?.postMessage({
+      cacheName: CACHE_NAME,
+      build:     SW_BUILD,
+      whatsNew:  WHATS_NEW,
+    });
   }
 });
