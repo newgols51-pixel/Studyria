@@ -52,6 +52,72 @@
 // CREATE INDEX IF NOT EXISTS idx_purchased_pdfs_pdf_uuid ON public.purchased_pdfs(pdf_uuid);
 // CREATE INDEX IF NOT EXISTS idx_purchased_pdfs_email    ON public.purchased_pdfs(email);
 //
+// -- 3. Creators (one row per creator applicant / approved creator)
+// CREATE TABLE IF NOT EXISTS public.creators (
+//   user_id                 uuid         PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+//   full_name               text         NOT NULL,
+//   author_name             text         NOT NULL,
+//   gender                  text,
+//   dob                     date,
+//   mobile                  text,
+//   creator_type            text,
+//   qualification           text,
+//   experience              text,
+//   occupation              text,
+//   bio                     text,
+//   expertise               text,
+//   languages               text,
+//   social_link             text,
+//   photo_url               text,
+//   verification_doc_path   text,
+//   verification_doc_name   text,
+//   verification_doc_size   bigint,
+//   verification_doc_type   text,
+//   verification_status     text         NOT NULL DEFAULT 'not_submitted'
+//                             CHECK (verification_status IN ('not_submitted','submitted','verified')),
+//   status                  text         NOT NULL DEFAULT 'pending'
+//                             CHECK (status IN ('pending','approved','rejected','suspended')),
+//   rejection_reason        text,
+//   admin_notes             text,
+//   applied_at              timestamptz  NOT NULL DEFAULT now(),
+//   approved_at             timestamptz,
+//   suspended_at            timestamptz,
+//   level                   text         NOT NULL DEFAULT 'starter'
+//                             CHECK (level IN ('starter','rising','pro','elite')),
+//   revenue_share           integer      NOT NULL DEFAULT 60
+//                             CHECK (revenue_share BETWEEN 0 AND 100),
+//   quality_score           numeric(5,2) DEFAULT 0,
+//   originality_score       numeric(5,2) DEFAULT 0,
+//   creator_score           numeric(5,2) DEFAULT 0,
+//   total_earnings          numeric(12,2) NOT NULL DEFAULT 0,
+//   available_balance       numeric(12,2) NOT NULL DEFAULT 0,
+//   total_downloads         integer      NOT NULL DEFAULT 0,
+//   total_sales             integer      NOT NULL DEFAULT 0,
+//   pdf_count               integer      NOT NULL DEFAULT 0,
+//   created_at              timestamptz  NOT NULL DEFAULT now(),
+//   updated_at              timestamptz  NOT NULL DEFAULT now()
+// );
+// ALTER TABLE public.creators ENABLE ROW LEVEL SECURITY;
+// -- Users manage their own creator row:
+// CREATE POLICY "Creators: users manage own row" ON public.creators
+//   FOR ALL TO authenticated
+//   USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+// -- Admins read all rows:
+// CREATE POLICY "Creators: admin read all" ON public.creators
+//   FOR SELECT TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// -- Admins write all rows:
+// CREATE POLICY "Creators: admin write all" ON public.creators
+//   FOR UPDATE TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// -- Indexes:
+// CREATE INDEX IF NOT EXISTS idx_creators_status        ON public.creators(status);
+// CREATE INDEX IF NOT EXISTS idx_creators_level         ON public.creators(level);
+// CREATE INDEX IF NOT EXISTS idx_creators_applied_at    ON public.creators(applied_at DESC);
+// CREATE INDEX IF NOT EXISTS idx_creators_total_earnings ON public.creators(total_earnings DESC);
+//
 // -- Career Hub tables → see supabase-setup.sql (generated separately)
 // ─────────────────────────────────────────────────────────────────
 
