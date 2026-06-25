@@ -12,7 +12,7 @@
 //     jobs always appear fresh without a hard refresh.
 // ══════════════════════════════════════════════════════════════════
 
-const CACHE_NAME   = 'studyria-v7';   // ← bumped from v4 → forces old cache purge
+const CACHE_NAME   = 'studyria-v7.0.0';   // ← bumped from v4 → forces old cache purge
 const OFFLINE_PAGE = '/404.html';
 
 // ── Static assets to pre-cache on install ────────────────────────
