@@ -935,18 +935,15 @@ function _initOneSignal() {
         appId:                        ONESIGNAL_APP_ID,
 
         // ── Combined service worker ─────────────────────────────────
-        // Studyria already registers /sw.js at the root scope for
-        // offline caching / PWA support. OneSignal must NOT try to
-        // register its own separate OneSignalSDKWorker.js at root —
-        // only one SW can own a given scope, so that registration was
-        // silently losing to (or conflicting with) Studyria's own
-        // navigator.serviceWorker.register('/sw.js') call. Pointing
-        // OneSignal at the SAME file (which importScripts() the
-        // OneSignal SW bundle — see sw.js) makes both systems share the
-        // one registration that already exists. This is OneSignal's
+        // Studyria already registers sw.js at the root scope for
+        // offline caching / PWA support. OneSignal MUST point at the
+        // same sw.js (which importScripts() the OneSignal SW bundle at
+        // the top of that file) so both systems share the one
+        // registration. Only one SW can own a given scope — two
+        // competing registrations conflict silently. This is OneSignal's
         // officially documented "combine with an existing service
         // worker" setup.
-        serviceWorkerPath:            '/sw.js',
+        serviceWorkerPath:            'sw.js',
         serviceWorkerParam:           { scope: '/' },
 
         // IMPORTANT: autoResubscribe keeps existing subscribers seamlessly
@@ -1134,6 +1131,15 @@ window.osRequestNotification = async function() {
     const granted = OneSignal.Notifications.permission === true;
 
     if (granted) {
+      // Permission granted — immediately update the button so the user
+      // gets instant feedback before the optIn() backend round-trip.
+      if (btn) {
+        btn.textContent = 'Notifications Enabled ✅';
+        btn.disabled = true;
+        btn.style.cssText = _osBtnBaseStyle() +
+          'background:rgba(16,217,142,0.12);border-color:rgba(16,217,142,0.35);color:#10d98e;cursor:default;';
+      }
+
       // Explicitly opt in. requestPermission() only asks the browser;
       // optIn() is what tells OneSignal to actually create/activate the
       // push subscription. This is the missing step that left
