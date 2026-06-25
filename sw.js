@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-// sw.js — Studyria Service Worker  v7  (Production-Ready PWA)
+// sw.js — Studyria Service Worker  v8  (Production-Ready PWA + OneSignal)
 // ══════════════════════════════════════════════════════════════════
 //
 // Cache Strategy:
@@ -7,7 +7,7 @@
 //   • Same-origin JS/CSS/fonts  — Stale-while-revalidate.
 //   • API / Supabase / Razorpay / Pipedream / CDN
 //     — Bypassed entirely (always fresh from network).
-//   • OneSignal SDK files       — Bypassed (handled by their own SW).
+//   • OneSignal SDK requests    — Bypassed (always fresh from CDN).
 //
 // Messages:
 //   • SKIP_WAITING  → activates this waiting SW immediately.
@@ -15,15 +15,32 @@
 //   • CLEAR_CACHE   → wipes all caches.
 //
 // OneSignal Integration Notes:
-//   OneSignal uses its own service workers (OneSignalSDKWorker.js and
-//   OneSignalSDKUpdaterWorker.js at root scope). This SW does NOT
-//   intercept push events from OneSignal — OneSignal's own SW handles
-//   those. This SW only handles the Studyria-specific push events that
-//   are sent directly to this registration (non-OneSignal pushes).
+//   This is a COMBINED service worker. OneSignal does not run a separate
+//   worker/scope — its push runtime is imported directly below via
+//   importScripts(), per OneSignal's official "merge with an existing
+//   service worker" setup. OneSignal.init() in index.html points at this
+//   exact file (serviceWorkerPath: "/sw.js", serviceWorkerParam: { scope: "/" }),
+//   so there is only ONE service worker, ONE scope ("/"), and ONE
+//   registration for the whole site — Studyria's caching/offline/PWA logic
+//   AND OneSignal's push delivery both run inside it.
+//
+//   The 'push' and 'notificationclick' listeners below are Studyria's own
+//   fallback handlers (used only for non-OneSignal pushes, e.g. raw
+//   PushManager subscriptions from subscribeToPushNotifications() in
+//   app.js). OneSignal's imported bundle registers its own internal
+//   'push' / 'notificationclick' listeners that run independently and
+//   handle all OneSignal-sent notifications — the two do not conflict
+//   because each only acts on the data shape it owns.
 // ══════════════════════════════════════════════════════════════════
 
-const CACHE_NAME   = 'studyria-v7';           // ← bump on every deploy
-const SW_BUILD     = '2025.06.25-r2';
+// Must be the first statement that runs — wires this worker into
+// OneSignal's push delivery pipeline. Always fetched fresh (see the
+// bypass rule for onesignal.com in registerServiceWorker()'s updateViaCache:
+// 'none', and the fetch-handler bypass below).
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
+
+const CACHE_NAME   = 'studyria-v8';           // ← bump on every deploy
+const SW_BUILD     = '2026.06.25-r3-onesignal-merge';
 const OFFLINE_PAGE = '/offline.html';          // FIX: was /404.html
 
 const WHATS_NEW = '✨ Faster offline caching, improved update detection, background sync & Career Hub improvements.';
@@ -120,19 +137,12 @@ self.addEventListener('fetch', event => {
     'tailwindcss.com',
     'fonts.googleapis.com',
     'fonts.gstatic.com',
-    // OneSignal SDK — must always be fresh, handled by their own SW
+    // OneSignal SDK files — always fetched fresh from their CDN
+    // (this worker only importScripts() them once at startup; runtime
+    // requests OneSignal's bundle makes are never cached by us)
     'onesignal.com',
   ];
   if (bypassCDNs.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
-
-  // ③b Bypass OneSignal service-worker shim files on same origin
-  //     These files import the OneSignal CDN bundle and must never be
-  //     served stale from our cache.
-  const bypassPaths = [
-    '/OneSignalSDKWorker.js',
-    '/OneSignalSDKUpdaterWorker.js',
-  ];
-  if (bypassPaths.includes(url.pathname)) return;
 
   // ④ HTML navigation — Network-first with offline fallback
   if (request.mode === 'navigate') {

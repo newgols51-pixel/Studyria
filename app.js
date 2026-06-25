@@ -894,9 +894,23 @@ const _osState = {
 };
 
 /**
+ * Resolves once OneSignal.init() has fully completed and the live SDK
+ * object is available. Anything that touches OneSignal (the button
+ * handler, diagnostics, etc.) should `await _osReady` instead of
+ * checking window.OneSignal directly — window.OneSignal can still be
+ * the temporary OneSignalDeferred shim (typeof "function") until this
+ * resolves, which is exactly what caused "Notifications not ready yet".
+ * @type {Promise<object>} resolves with the live OneSignal SDK instance
+ */
+let _osReadyResolve;
+const _osReady = new Promise(resolve => { _osReadyResolve = resolve; });
+
+/**
  * _initOneSignal — configures OneSignal in manual-permission mode
- * (no automatic prompt), then checks existing subscription state to
- * render the burger-menu button correctly.
+ * (no automatic prompt), registers it against Studyria's EXISTING
+ * service worker (sw.js, which importScripts() the OneSignal SW bundle
+ * — see sw.js header comment), then checks existing subscription state
+ * to render the burger-menu button correctly.
  *
  * The OneSignal SDK script is loaded in <head> of index.html.
  * This function only needs to push the init callback onto the
@@ -919,6 +933,22 @@ function _initOneSignal() {
     try {
       await OneSignal.init({
         appId:                        ONESIGNAL_APP_ID,
+
+        // ── Combined service worker ─────────────────────────────────
+        // Studyria already registers /sw.js at the root scope for
+        // offline caching / PWA support. OneSignal must NOT try to
+        // register its own separate OneSignalSDKWorker.js at root —
+        // only one SW can own a given scope, so that registration was
+        // silently losing to (or conflicting with) Studyria's own
+        // navigator.serviceWorker.register('/sw.js') call. Pointing
+        // OneSignal at the SAME file (which importScripts() the
+        // OneSignal SW bundle — see sw.js) makes both systems share the
+        // one registration that already exists. This is OneSignal's
+        // officially documented "combine with an existing service
+        // worker" setup.
+        serviceWorkerPath:            '/sw.js',
+        serviceWorkerParam:           { scope: '/' },
+
         // IMPORTANT: autoResubscribe keeps existing subscribers seamlessly
         // re-subscribed on subsequent visits, but never shows a browser
         // permission prompt automatically to new visitors.
@@ -932,7 +962,9 @@ function _initOneSignal() {
       });
 
       _osState.sdkReady = true;
-      console.log('[OneSignal] SDK ready ✅');
+      window.OneSignal = OneSignal; // live SDK object, not the shim
+      _osReadyResolve(OneSignal);
+      console.log('[OneSignal] SDK ready ✅ — version:', OneSignal.Debug?.getRumVersion?.() || 'n/a');
 
       // Check whether this browser is already subscribed
       await _osCheckSubscriptionState(OneSignal);
@@ -950,12 +982,18 @@ function _initOneSignal() {
  */
 async function _osCheckSubscriptionState(OneSignal) {
   try {
-    const isPushEnabled = await OneSignal.User.PushSubscription.optedIn;
+    // FIX: optedIn and .id are SYNCHRONOUS properties in OneSignal v16,
+    // not promises. `await` on a non-promise value is harmless on its
+    // own, but it signalled this integration was written against the
+    // wrong API shape — kept as plain reads here, matching OneSignal's
+    // documented usage (`var optedIn = OneSignal.User.PushSubscription.optedIn;`).
+    const isPushEnabled = OneSignal.User.PushSubscription.optedIn;
     _osState.subscribed = !!isPushEnabled;
 
     if (_osState.subscribed) {
-      _userId = await OneSignal.User.PushSubscription.id;
-      console.log('[OneSignal] Already subscribed ✅, id:', _userId);
+      _osState.userId = OneSignal.User.PushSubscription.id;
+      _osSaveSubscriptionState();
+      console.log('[OneSignal] Already subscribed ✅, id:', _osState.userId);
     }
 
     // Render the burger button in the correct initial state
@@ -964,6 +1002,8 @@ async function _osCheckSubscriptionState(OneSignal) {
     // Keep button in sync if the user changes permission in browser settings
     OneSignal.User.PushSubscription.addEventListener('change', function(event) {
       _osState.subscribed = !!event.current.optedIn;
+      _osState.userId = event.current.id || null;
+      _osSaveSubscriptionState();
       _osRenderBurgerButton();
     });
 
@@ -971,6 +1011,24 @@ async function _osCheckSubscriptionState(OneSignal) {
     console.warn('[OneSignal] Subscription state check failed:', err);
     _osRenderBurgerButton(); // render default state
   }
+}
+
+/**
+ * _osSaveSubscriptionState — persists the subscribed flag + OneSignal
+ * subscription id locally so the burger button (and any other UI) can
+ * render the correct state instantly on next page load, before OneSignal
+ * has finished re-initialising. This is a read-through cache only —
+ * OneSignal.User.PushSubscription remains the source of truth and
+ * always overwrites this on init.
+ */
+function _osSaveSubscriptionState() {
+  try {
+    localStorage.setItem('studyria_onesignal_state', JSON.stringify({
+      subscribed: _osState.subscribed,
+      userId:     _osState.userId,
+      savedAt:    Date.now(),
+    }));
+  } catch (e) { /* localStorage unavailable — non-critical */ }
 }
 
 /**
@@ -1033,47 +1091,85 @@ function _osBtnBaseStyle() {
 window.osRequestNotification = async function() {
   const btn = document.getElementById('osNotifBtn');
 
-  // Guard: SDK not ready yet
-  if (!_osState.sdkReady || !window.OneSignal) {
-    if (typeof showToast === 'function') {
-      showToast('Notifications not ready yet — please try again in a moment.', 'info');
-    }
-    return;
-  }
-
   // Guard: already subscribed
   if (_osState.subscribed) return;
 
-  // Show loading state
+  // Show loading state immediately — covers the (usually instant) wait
+  // for OneSignal to finish initialising if the click happens very early.
   if (btn) {
-    btn.textContent = 'Enabling…';
+    btn.textContent = _osState.sdkReady ? 'Enabling…' : 'Preparing…';
     btn.disabled = true;
     btn.style.cssText = _osBtnBaseStyle() +
       'background:rgba(61,142,248,0.08);border-color:rgba(61,142,248,0.2);color:#7a8caa;cursor:wait;';
   }
 
+  // FIX: wait on the real readiness promise instead of bailing out with
+  // "not ready yet". _osReady resolves the moment OneSignal.init()
+  // finishes (almost always well under a second after page load), so the
+  // button now completes the flow instead of dead-ending.
+  let OneSignal;
   try {
-    // OneSignal v16: requestPermission() shows the native browser prompt
-    // and subscribes the user in one step.
-    await window.OneSignal.Notifications.requestPermission();
+    OneSignal = await _osReady;
+  } catch (e) {
+    OneSignal = null;
+  }
 
-    // Re-check actual state after the prompt resolves
-    const perm = 'Notification' in window ? Notification.permission : 'default';
+  if (!OneSignal || !_osState.sdkReady) {
+    if (typeof showToast === 'function') {
+      showToast('Notifications could not start — please reload and try again.', 'error');
+    }
+    _osRenderBurgerButton();
+    return;
+  }
 
-    if (perm === 'granted') {
-      // Give OneSignal a moment to complete the internal subscription
-      await new Promise(r => setTimeout(r, 800));
+  try {
+    // OneSignal v16: requestPermission() shows the native browser prompt.
+    // It resolves true/false based on the browser's permission decision —
+    // it does NOT by itself guarantee PushSubscription.optedIn flips to
+    // true (that requires an explicit optIn() call, see below).
+    await OneSignal.Notifications.requestPermission();
 
-      const isPushEnabled = await window.OneSignal.User.PushSubscription.optedIn;
+    // OneSignal.Notifications.permission is a SYNCHRONOUS boolean in v16
+    // (not a method, not a promise) — read it directly.
+    const granted = OneSignal.Notifications.permission === true;
+
+    if (granted) {
+      // Explicitly opt in. requestPermission() only asks the browser;
+      // optIn() is what tells OneSignal to actually create/activate the
+      // push subscription. This is the missing step that left
+      // PushSubscription.optedIn stuck at false even after the browser
+      // prompt was accepted.
+      await OneSignal.User.PushSubscription.optIn();
+
+      // optedIn updates synchronously, but the SDK's internal sync to
+      // OneSignal's backend is async — poll briefly rather than guessing
+      // a fixed delay, so slow networks aren't cut off too early.
+      let isPushEnabled = OneSignal.User.PushSubscription.optedIn;
+      for (let i = 0; i < 10 && !isPushEnabled; i++) {
+        await new Promise(r => setTimeout(r, 300));
+        isPushEnabled = OneSignal.User.PushSubscription.optedIn;
+      }
+
       _osState.subscribed = !!isPushEnabled;
+      _osState.userId = OneSignal.User.PushSubscription.id || null;
+      _osSaveSubscriptionState();
 
       if (_osState.subscribed) {
-        console.log('[OneSignal] Subscribed ✅');
+        console.log('[OneSignal] Subscribed ✅, id:', _osState.userId);
         if (typeof showToast === 'function') {
           showToast('🔔 Notifications enabled! You\'ll get the latest updates from Studyria.', 'success');
         }
+      } else {
+        // Permission granted but the subscription itself never opted in
+        // (rare — e.g. push service unreachable). Treat as a retryable
+        // failure, not a denial.
+        console.warn('[OneSignal] Permission granted but subscription did not opt in.');
+        if (typeof showToast === 'function') {
+          showToast('Could not finish enabling notifications — please try again.', 'error');
+        }
       }
-    } else if (perm === 'denied') {
+    } else {
+      // Browser permission was denied or dismissed.
       console.warn('[OneSignal] Permission denied by user.');
       if (typeof showToast === 'function') {
         showToast('Notifications blocked. To enable, update your browser site settings.', 'info');
@@ -1171,6 +1267,8 @@ window.PWA = {
   oneSignal: {
     isSubscribed: () => _osState.subscribed,
     isReady:      () => _osState.sdkReady,
+    whenReady:    () => _osReady,
+    getUserId:    () => _osState.userId,
     requestPermission: () => window.osRequestNotification(),
   },
 

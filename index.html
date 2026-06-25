@@ -4757,9 +4757,10 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 
 <!-- ══ OneSignal Web Push SDK ════════════════════════════════════════
      Loaded here (in <head>) per OneSignal's official setup guide.
-     autoResubscribe is handled in app.js; no auto-prompt is shown.
-     The deferred queue pre-initialiser below ensures app.js can push
-     its init callback before this script finishes loading.
+     Actual OneSignal.init() (with serviceWorkerPath/serviceWorkerParam
+     pointing at the merged /sw.js) runs in app.js, pushed onto the
+     OneSignalDeferred queue below. No auto-prompt is shown — permission
+     is requested only via the "Enable Notifications" button.
 ════════════════════════════════════════════════════════════════════ -->
 <script>window.OneSignalDeferred = window.OneSignalDeferred || [];</script>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
