@@ -28,6 +28,11 @@ const PRECACHE_ASSETS = [
 ];
 
 // ── INSTALL ──────────────────────────────────────────────────────
+// NOTE: Do NOT call self.skipWaiting() here.
+// Skipping waiting unconditionally means the new SW activates instantly
+// on every update, so the waiting SW state (which triggers the App Center
+// update card) is never reached. Instead, SKIP_WAITING is sent from the
+// page only when the user clicks "Update Now" in the App Center card.
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache =>
@@ -36,7 +41,7 @@ self.addEventListener('install', event => {
       )
     )
   );
-  self.skipWaiting();
+  // Do NOT call self.skipWaiting() — let the SW wait so the update card works.
 });
 
 // ── ACTIVATE ─────────────────────────────────────────────────────
@@ -142,6 +147,7 @@ self.addEventListener('message', event => {
     event.ports?.[0]?.postMessage({
       cacheName: CACHE_NAME,
       build:     SW_BUILD,
+      version:   SW_BUILD,      // alias — used by diagnostics panel
       whatsNew:  WHATS_NEW,
     });
   }

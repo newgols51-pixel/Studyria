@@ -17928,6 +17928,14 @@ CREATE TRIGGER trg_progress_updated
 
         <button class="bsf-admin-save" onclick="bsfAdminSave()">💾 Save Settings to Supabase</button>
 
+        <!-- PWA Diagnostics Section -->
+        <div style="margin-top:20px;padding:14px;border-radius:10px;background:rgba(61,142,248,0.05);border:1px solid rgba(61,142,248,0.15)">
+          <div id="pwaDiagPanel" style="color:var(--text)">
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:10px">🔍 PWA Diagnostics</div>
+            <div style="color:var(--text2);font-size:.8rem">Loading…</div>
+          </div>
+        </div>
+
         <!-- SQL Block -->
         <div class="bsf-sql-block">
           <div class="bsf-sql-title">📋 Supabase SQL — Run in SQL Editor</div>
@@ -18029,6 +18037,11 @@ CREATE TRIGGER trg_progress_updated
 
     // ── Init render ───────────────────────────────────────────────
     bsfRender();
+
+    // ── Populate PWA Diagnostics if admin panel is visible ──────
+    if (BSF.isAdmin && window.pwaAppCenter) {
+      setTimeout(function() { window.pwaAppCenter.refreshDiagnostics(); }, 100);
+    }
 
     // ── Global BSF functions ──────────────────────────────────────
     window.bsfSetFilter = function(f) {
@@ -28923,9 +28936,10 @@ if (_origTrackReading) {
 
 <script>
 /* ══════════════════════════════════════════════════════════════════
-   PWA APP CENTER ENGINE  v1.0  — Studyria Smart App Center
+   PWA APP CENTER ENGINE  v2.0  — Studyria Smart App Center
    Handles: SW registration, install prompt, update detection,
-   update UI, restart flow, check-for-updates, cache versioning.
+   update UI, restart flow, check-for-updates, cache versioning,
+   PWA Diagnostics panel.
    ══════════════════════════════════════════════════════════════════ */
 (function() {
   'use strict';
@@ -28936,13 +28950,28 @@ if (_origTrackReading) {
   let _installEvt   = null;   // beforeinstallprompt event
   let _isInstalled  = false;  // running as standalone PWA
   let _updateDismissed = false;
+  let _swStatus     = 'not-supported'; // for diagnostics
+  let _manifestOk   = false;           // for diagnostics
+  let _currentVer   = '—';            // SW reported version
 
-  // Detect standalone (installed) mode
-  _isInstalled = (
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true ||
-    document.referrer.includes('android-app://')
-  );
+  // Detect standalone (installed) mode — covers Android, iOS, Desktop
+  function detectStandalone() {
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.matchMedia('(display-mode: minimal-ui)').matches ||
+      window.navigator.standalone === true ||           // iOS Safari
+      document.referrer.startsWith('android-app://') ||
+      new URLSearchParams(window.location.search).get('source') === 'pwa'
+    );
+  }
+  _isInstalled = detectStandalone();
+
+  // Check manifest link validity
+  (function checkManifest() {
+    const link = document.querySelector('link[rel="manifest"]');
+    _manifestOk = !!(link && link.href);
+  })();
 
   // ── Helpers ────────────────────────────────────────────────────
   function show(id)  { const el = document.getElementById(id); if(el) el.style.display = ''; }
@@ -28963,6 +28992,32 @@ if (_origTrackReading) {
     ['pwaHmCheckTxt','pwaHmCheckTxt2'].forEach(id => setText(id, txt));
   }
 
+  // ── PWA Diagnostics renderer ──────────────────────────────────
+  function renderDiagnostics() {
+    const el = document.getElementById('pwaDiagPanel');
+    if (!el) return;
+    const swOk = (_swStatus === 'active' || _swStatus === 'registered');
+    const rows = [
+      ['🔧 Service Worker', swOk ? '✅ ' + _swStatus : '❌ ' + _swStatus],
+      ['📄 Manifest', _manifestOk ? '✅ Linked & valid' : '❌ Not found'],
+      ['📲 Installable', _installEvt ? '✅ Yes' : (_isInstalled ? '— Already installed' : '❌ No prompt')],
+      ['✅ Installed', _isInstalled ? '✅ Yes (standalone)' : '❌ No (browser tab)'],
+      ['🏷️ Current Version', _currentVer],
+      ['⬆️ Update Available', _waitingSW ? '✅ Yes — update ready' : '❌ None detected'],
+    ];
+    el.innerHTML = `
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:10px">🔍 PWA Diagnostics</div>
+      <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+        ${rows.map(([k,v])=>`
+          <tr>
+            <td style="padding:5px 8px;color:var(--text2);white-space:nowrap">${k}</td>
+            <td style="padding:5px 8px;color:var(--text);font-weight:500">${v}</td>
+          </tr>`).join('')}
+      </table>
+      <button onclick="window.pwaAppCenter.refreshDiagnostics()" style="margin-top:8px;font-size:.72rem;padding:4px 10px;border-radius:6px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text2);cursor:pointer">↻ Refresh</button>
+    `;
+  }
+
   // ── Render install / installed card ───────────────────────────
   function renderInstallCard() {
     if (_isInstalled) {
@@ -28972,17 +29027,27 @@ if (_origTrackReading) {
       show('pwaHmInstallCard');
       hide('pwaHmInstalledCard');
     } else {
-      // No prompt available and not installed — hide both
+      // Prompt not yet fired or browser does not support it.
+      // Keep both hidden — the beforeinstallprompt listener will show the card.
       hide('pwaHmInstallCard');
       hide('pwaHmInstalledCard');
     }
+    renderDiagnostics();
   }
 
   // ── Show update card with dynamic What's New from SW ────────────
   function fetchWhatsNew(sw, callback) {
     try {
       const mc = new MessageChannel();
-      mc.port1.onmessage = function(e) { callback(e.data?.whatsNew || null); };
+      mc.port1.onmessage = function(e) {
+        const data = e.data || {};
+        // Update version display from SW build label
+        if (data.version || data.build) {
+          _currentVer = data.version || data.build;
+          renderDiagnostics();
+        }
+        callback(data.whatsNew || null);
+      };
       sw.postMessage({ type: 'GET_VERSION' }, [mc.port2]);
       setTimeout(function() { callback(null); }, 2000); // fallback timeout
     } catch(e) { callback(null); }
@@ -29009,7 +29074,14 @@ if (_origTrackReading) {
         if (typeof showToast === 'function') showToast('🚀 Studyria installed successfully!', 'success');
         _isInstalled = true;
         renderInstallCard();
+      } else {
+        renderInstallCard();
       }
+    },
+
+    refreshDiagnostics: function() {
+      _isInstalled = detectStandalone();
+      renderDiagnostics();
     },
 
     checkForUpdates: async function() {
@@ -29079,17 +29151,30 @@ if (_origTrackReading) {
 
   // ── Service Worker registration ────────────────────────────────
   if ('serviceWorker' in navigator) {
+    _swStatus = 'registering';
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('./sw.js')
         .then(function(reg) {
           _swReg = reg;
+          _swStatus = 'registered';
           console.log('✅ Service Worker Registered');
+
+          // Get version from active SW
+          if (reg.active) {
+            _swStatus = 'active';
+            fetchWhatsNew(reg.active, function(_wn) {
+              // version captured inside fetchWhatsNew via e.data.version
+              renderDiagnostics();
+            });
+          }
 
           // Already waiting (page loaded after update downloaded)
           if (reg.waiting) {
             _waitingSW = reg.waiting;
             fetchWhatsNew(reg.waiting, function(wn) { showUpdateCard(wn); });
           }
+
+          renderDiagnostics();
 
           // New SW installing → watch for it to go waiting
           reg.addEventListener('updatefound', function() {
@@ -29111,15 +29196,36 @@ if (_origTrackReading) {
             }
           });
         })
-        .catch(function() {}); // sw.js missing = silently skip
+        .catch(function(err) {
+          _swStatus = 'failed';
+          console.warn('SW registration failed:', err);
+          renderDiagnostics();
+        });
     });
+  } else {
+    _swStatus = 'not-supported';
   }
 
-  // ── Init: render install card state on DOM ready ───────────────
+  // ── Init: render diagnostics on DOM ready (don't show install card yet —
+  //    wait for beforeinstallprompt or confirm standalone) ──────────────
+  function initRender() {
+    // If already standalone, show installed card immediately
+    if (_isInstalled) renderInstallCard();
+    // Always render diagnostics
+    renderDiagnostics();
+    // Schedule a delayed re-render in case beforeinstallprompt fires late
+    setTimeout(function() {
+      if (!_installEvt && !_isInstalled) {
+        // Still no prompt — nothing to show (keep cards hidden)
+        renderDiagnostics();
+      }
+    }, 4000);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderInstallCard);
+    document.addEventListener('DOMContentLoaded', initRender);
   } else {
-    renderInstallCard();
+    initRender();
   }
 
 })();
