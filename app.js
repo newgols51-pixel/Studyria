@@ -894,9 +894,13 @@ const _osState = {
 };
 
 /**
- * _initOneSignal — loads the OneSignal SDK via their async deferred queue,
- * configures it in manual-permission mode (no automatic prompt), then checks
- * existing subscription state to render the burger-menu button correctly.
+ * _initOneSignal — configures OneSignal in manual-permission mode
+ * (no automatic prompt), then checks existing subscription state to
+ * render the burger-menu button correctly.
+ *
+ * The OneSignal SDK script is loaded in <head> of index.html.
+ * This function only needs to push the init callback onto the
+ * already-existing window.OneSignalDeferred queue.
  *
  * Called once from initPWA() after the page has loaded.
  */
@@ -905,18 +909,10 @@ function _initOneSignal() {
   if (_osState.initialized) return;
   _osState.initialized = true;
 
-  // OneSignal v16 uses a promise-queue pattern before the SDK script loads.
-  // Anything pushed to window.OneSignalDeferred executes once the SDK fires.
+  // OneSignal v16 uses a promise-queue pattern. The SDK script in <head>
+  // creates window.OneSignalDeferred; we just push our init callback.
+  // (Guard in case the queue was somehow not created yet.)
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-  // Dynamically inject the OneSignal SDK script (non-blocking, async)
-  if (!document.getElementById('_osSDKScript')) {
-    const script = document.createElement('script');
-    script.id = '_osSDKScript';
-    script.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
-    script.defer = true;
-    document.head.appendChild(script);
-  }
 
   // Queue initialisation — runs when SDK script has loaded
   window.OneSignalDeferred.push(async function(OneSignal) {

@@ -4754,6 +4754,15 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   src="https://js.sentry-cdn.com/2521d02dd6df7fd0ed934c67ccacc06e.min.js"
   crossorigin="anonymous"
 ></script>
+
+<!-- ══ OneSignal Web Push SDK ════════════════════════════════════════
+     Loaded here (in <head>) per OneSignal's official setup guide.
+     autoResubscribe is handled in app.js; no auto-prompt is shown.
+     The deferred queue pre-initialiser below ensures app.js can push
+     its init callback before this script finishes loading.
+════════════════════════════════════════════════════════════════════ -->
+<script>window.OneSignalDeferred = window.OneSignalDeferred || [];</script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -32021,15 +32030,9 @@ async function hlmSaveTheme() {
   ══════════════════════════════════════════════════════════════════════
 -->
 
-<!--
-  OneSignal deferred queue pre-initialiser.
-  Must appear BEFORE app.js loads so the queue exists when app.js
-  pushes its init callback into it.
--->
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-</script>
-
+<!-- OneSignal SDK and deferred queue are now initialised in <head>.
+     app.js reads window.OneSignalDeferred and pushes its init callback
+     once the SDK fires — no separate pre-initialiser needed here. -->
 <script src="app.js" defer></script>
 
 </body>
