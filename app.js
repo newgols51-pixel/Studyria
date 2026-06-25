@@ -74,15 +74,31 @@ const _metrics = {
 // 2. STANDALONE / INSTALLED DETECTION
 // ═══════════════════════════════════════════════════════════════════════════
 
+/**
+ * detectStandalone — returns true ONLY when the browser confirms the PWA is
+ * actually running as an installed app (outside the normal browser tab UI).
+ *
+ * ✅  display-mode media queries   — Android, Chrome, Edge, Samsung Internet
+ * ✅  navigator.standalone === true — iOS Safari Add-to-Home-Screen
+ * ✅  android-app:// referrer      — Android TWA / WebAPK wrapper
+ *
+ * ❌  NEVER use URL parameters such as ?source=pwa.
+ *     The manifest start_url may contain ?source=pwa, which is appended even
+ *     when the page is opened in a normal browser tab — making it completely
+ *     unreliable as an install signal.
+ * ❌  NEVER use localStorage / sessionStorage / cookies / custom flags.
+ */
 function detectStandalone() {
-  return (
-    window.matchMedia('(display-mode: standalone)').matches  ||
-    window.matchMedia('(display-mode: fullscreen)').matches  ||
-    window.matchMedia('(display-mode: minimal-ui)').matches  ||
-    window.navigator.standalone === true                      ||  // iOS Safari
-    document.referrer.startsWith('android-app://')           ||
-    new URLSearchParams(window.location.search).get('source') === 'pwa'
-  );
+  // CSS display-mode: standalone fires only when running as installed PWA
+  if (window.matchMedia('(display-mode: standalone)').matches) return true;
+  // display-mode: fullscreen / minimal-ui also indicate PWA launch
+  if (window.matchMedia('(display-mode: fullscreen)').matches) return true;
+  if (window.matchMedia('(display-mode: minimal-ui)').matches) return true;
+  // iOS Safari sets navigator.standalone = true on Add-to-Home-Screen launch
+  if (window.navigator.standalone === true) return true;
+  // Android TWA: referrer is set to the android-app:// origin by the wrapper
+  if (document.referrer.startsWith('android-app://')) return true;
+  return false;
 }
 
 function checkInstalledState() {
@@ -92,20 +108,32 @@ function checkInstalledState() {
     _state.isInstalled ? 'true' : 'false'
   );
   if (_state.isInstalled) {
-    console.log('[PWA] Running in standalone / installed mode');
+    console.log('[PWA] Running in standalone / installed mode ✅');
+  } else {
+    console.log('[PWA] Running in browser tab — not yet installed');
   }
 
-  // Watch for dynamic display-mode changes
-  const mq = window.matchMedia('(display-mode: standalone)');
-  if (mq.addEventListener) {
-    mq.addEventListener('change', e => {
-      _state.isInstalled = e.matches;
-      document.documentElement.setAttribute(
-        'data-pwa-installed',
-        _state.isInstalled ? 'true' : 'false'
-      );
-    });
-  }
+  // Watch all display-mode variants so we catch dynamic state changes
+  // (e.g. user installs while page is open)
+  ['standalone', 'fullscreen', 'minimal-ui'].forEach(function(mode) {
+    var mq = window.matchMedia('(display-mode: ' + mode + ')');
+    if (mq.addEventListener) {
+      mq.addEventListener('change', function() {
+        var nowInstalled = detectStandalone();
+        if (nowInstalled !== _state.isInstalled) {
+          _state.isInstalled = nowInstalled;
+          document.documentElement.setAttribute(
+            'data-pwa-installed',
+            _state.isInstalled ? 'true' : 'false'
+          );
+          console.log('[PWA] Install state changed → isInstalled:', _state.isInstalled);
+          window.dispatchEvent(new CustomEvent('pwa:installstatechange', {
+            detail: { isInstalled: _state.isInstalled }
+          }));
+        }
+      });
+    }
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

@@ -28965,15 +28965,18 @@ if (_origTrackReading) {
   let _currentVer   = '—';            // SW reported version
 
   // Detect standalone (installed) mode — covers Android, iOS, Desktop
+  // ✅ display-mode media queries   (Chrome, Edge, Samsung Internet, Firefox)
+  // ✅ navigator.standalone === true (iOS Safari Add-to-Home-Screen)
+  // ✅ android-app:// referrer      (Android TWA / WebAPK)
+  // ❌ NOT ?source=pwa URL param — the manifest start_url uses this param,
+  //    so it fires even when opening the site in a normal browser tab.
   function detectStandalone() {
-    return (
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.matchMedia('(display-mode: fullscreen)').matches ||
-      window.matchMedia('(display-mode: minimal-ui)').matches ||
-      window.navigator.standalone === true ||           // iOS Safari
-      document.referrer.startsWith('android-app://') ||
-      new URLSearchParams(window.location.search).get('source') === 'pwa'
-    );
+    if (window.matchMedia('(display-mode: standalone)').matches) return true;
+    if (window.matchMedia('(display-mode: fullscreen)').matches) return true;
+    if (window.matchMedia('(display-mode: minimal-ui)').matches) return true;
+    if (window.navigator.standalone === true) return true;           // iOS Safari
+    if (document.referrer.startsWith('android-app://')) return true; // TWA
+    return false;
   }
   _isInstalled = detectStandalone();
 
@@ -29031,16 +29034,28 @@ if (_origTrackReading) {
   // ── Render install / installed card ───────────────────────────
   function renderInstallCard() {
     if (_isInstalled) {
+      // Browser confirms the app is running in standalone mode → installed
       hide('pwaHmInstallCard');
       show('pwaHmInstalledCard');
-    } else if (_installEvt) {
+    } else {
+      // Not installed — always show the install card regardless of whether
+      // beforeinstallprompt has fired yet. On iOS and some browsers the
+      // prompt never fires, but the user can still install manually.
       show('pwaHmInstallCard');
       hide('pwaHmInstalledCard');
-    } else {
-      // Prompt not yet fired or browser does not support it.
-      // Keep both hidden — the beforeinstallprompt listener will show the card.
-      hide('pwaHmInstallCard');
-      hide('pwaHmInstalledCard');
+      // Update install button label based on whether we have a prompt
+      var installBtn = document.getElementById('pwaHmInstallBtn');
+      if (installBtn) {
+        if (_installEvt) {
+          installBtn.textContent = 'INSTALL';
+          installBtn.disabled = false;
+        } else {
+          // No prompt (iOS or unsupported browser) — show guidance text
+          var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+          installBtn.textContent = isIOS ? '📲 Add to Home Screen' : 'HOW TO INSTALL';
+          installBtn.disabled = false;
+        }
+      }
     }
     renderDiagnostics();
   }
@@ -29076,21 +29091,42 @@ if (_origTrackReading) {
   window.pwaAppCenter = {
 
     install: async function() {
-      if (!_installEvt) return;
-      _installEvt.prompt();
-      const { outcome } = await _installEvt.userChoice;
-      _installEvt = null;
-      if (outcome === 'accepted') {
-        if (typeof showToast === 'function') showToast('🚀 Studyria installed successfully!', 'success');
-        _isInstalled = true;
+      if (!_installEvt) {
+        // No install prompt available — show platform-appropriate guidance
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          if (typeof showToast === 'function') {
+            showToast('📱 Tap Share ⬆ then "Add to Home Screen" to install on iPhone', 'info');
+          } else {
+            alert('To install on iPhone:\n1. Tap the Share button ⬆ at the bottom of Safari\n2. Tap "Add to Home Screen"');
+          }
+        } else {
+          if (typeof showToast === 'function') {
+            showToast('📱 Open browser menu → "Install app" or "Add to Home Screen" to install', 'info');
+          }
+        }
+        return;
+      }
+      try {
+        _installEvt.prompt();
+        var result = await _installEvt.userChoice;
+        _installEvt = null;
+        if (result.outcome === 'accepted') {
+          if (typeof showToast === 'function') showToast('🚀 Studyria installed successfully!', 'success');
+          // Note: _isInstalled will be updated by the appinstalled event,
+          // NOT set here — wait for browser confirmation.
+        }
         renderInstallCard();
-      } else {
+      } catch(e) {
+        console.warn('[PWA] Install prompt error:', e);
+        _installEvt = null;
         renderInstallCard();
       }
     },
 
     refreshDiagnostics: function() {
       _isInstalled = detectStandalone();
+      renderInstallCard();
       renderDiagnostics();
     },
 
@@ -29222,20 +29258,12 @@ if (_origTrackReading) {
     _swStatus = 'not-supported';
   }
 
-  // ── Init: render diagnostics on DOM ready (don't show install card yet —
-  //    wait for beforeinstallprompt or confirm standalone) ──────────────
+  // ── Init: render correct card state immediately on DOM ready ──────────────
+  // renderInstallCard() now always shows the install card when not installed,
+  // so we call it immediately — no need to defer for beforeinstallprompt.
   function initRender() {
-    // If already standalone, show installed card immediately
-    if (_isInstalled) renderInstallCard();
-    // Always render diagnostics
+    renderInstallCard();
     renderDiagnostics();
-    // Schedule a delayed re-render in case beforeinstallprompt fires late
-    setTimeout(function() {
-      if (!_installEvt && !_isInstalled) {
-        // Still no prompt — nothing to show (keep cards hidden)
-        renderDiagnostics();
-      }
-    }, 4000);
   }
 
   if (document.readyState === 'loading') {
