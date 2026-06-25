@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c14" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4fb" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Offline — Studyria</title>
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       STUDYRIA OFFLINE PAGE — Production Styles
+       Mobile-first · Accessible · Lightweight · Responsive
+       ═══════════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      height: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+        'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #080c14 0%, #0f1a2e 50%, #1a1f3a 100%);
+      color: #e4e8f0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      line-height: 1.6;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @media (prefers-color-scheme: light) {
+      body {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5fb 50%, #e8f0fc 100%);
+        color: #1e293b;
+      }
+    }
+
+    /* ─── Container ────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    /* ─── Logo ────────────────────────────────────────────────── */
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1.75rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo { animation: none; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    /* ─── WiFi Illustration ──────────────────────────────────── */
+    .illustration {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 2rem;
+      opacity: 0.85;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .illustration { animation: none; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .85; }
+      50%       { opacity: .55; }
+    }
+
+    /* ─── Heading ─────────────────────────────────────────────── */
+    .title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: .5rem;
+      background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp .5s ease-out;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .title {
+        background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+    }
+
+    @media (max-width: 400px) { .title { font-size: 1.6rem; } }
+
+    /* ─── Subtitle ────────────────────────────────────────────── */
+    .subtitle {
+      font-size: 1rem;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp .5s ease-out .1s both;
+    }
+
+    @media (prefers-color-scheme: light) { .subtitle { color: #64748b; } }
+
+    /* ─── Status Badge ────────────────────────────────────────── */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .6rem 1.1rem;
+      background: rgba(239, 68, 68, .1);
+      border: 1px solid rgba(239, 68, 68, .3);
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+      animation: fadeInUp .5s ease-out .2s both;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .35; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { .status-dot { animation: none; } }
+
+    .status-text {
+      font-size: .9rem;
+      color: #fca5a5;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    @media (prefers-color-scheme: light) { .status-text { color: #dc2626; } }
+
+    /* ─── Feature List ────────────────────────────────────────── */
+    .features {
+      list-style: none;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.75rem;
+      text-align: left;
+      animation: fadeInUp .5s ease-out .25s both;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .features {
+        background: rgba(0, 0, 0, .02);
+        border-color: rgba(0, 0, 0, .07);
+      }
+    }
+
+    .feature {
+      padding: .6rem 0;
+      font-size: .9rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    @media (prefers-color-scheme: light) { .feature { color: #475569; } }
+
+    .feature + .feature {
+      border-top: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    .feature strong { color: #3d8ef8; }
+    @media (prefers-color-scheme: light) { .feature strong { color: #2563eb; } }
+
+    /* ─── Action Buttons ──────────────────────────────────────── */
+    .actions {
+      display: flex;
+      gap: .75rem;
+      animation: fadeInUp .5s ease-out .3s both;
+    }
+
+    .btn {
+      flex: 1;
+      padding: .875rem 1rem;
+      font-size: .95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active { transform: scale(.97); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(61, 142, 248, .35);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 6px 24px rgba(61, 142, 248, .5);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: .7;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Spinner on the retry button while loading */
+    .btn-primary.loading::after {
+      content: '';
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, .07);
+      color: #e4e8f0;
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .btn-secondary:hover { background: rgba(255, 255, 255, .12); }
+
+    @media (prefers-color-scheme: light) {
+      .btn-primary {
+        background: linear-gradient(135deg, #2563eb, #0891b2);
+      }
+      .btn-secondary {
+        background: rgba(0, 0, 0, .04);
+        color: #1e293b;
+        border-color: rgba(0, 0, 0, .1);
+      }
+      .btn-secondary:hover { background: rgba(0, 0, 0, .07); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn { transition: none; }
+      .btn:active { transform: none; }
+      .btn-primary:hover { transform: none; }
+    }
+
+    /* ─── Footer ──────────────────────────────────────────────── */
+    .footer {
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      font-size: .82rem;
+      color: #6b7280;
+      animation: fadeIn .6s ease-out .5s both;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .footer {
+        border-color: rgba(0, 0, 0, .07);
+        color: #9ca3af;
+      }
+    }
+
+    .footer a {
+      color: #3d8ef8;
+      text-decoration: none;
+    }
+
+    .footer a:hover { color: #00c8e8; }
+
+    #connectionStatus {
+      margin-top: .4rem;
+      min-height: 1.2em;
+      color: #9ca3af;
+      font-size: .82rem;
+    }
+
+    /* ─── Shared keyframes ────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .title, .subtitle, .status, .features, .actions, .footer, .logo, .illustration {
+        animation: none;
+      }
+    }
+
+    /* ─── Mobile tweaks ─────────────────────────────────────────── */
+    @media (max-width: 400px) {
+      .container { padding: 1.5rem 1rem; }
+      .subtitle  { font-size: .9rem; }
+      .btn       { font-size: .88rem; padding: .75rem .75rem; }
+      .actions   { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+
+    <!-- Logo -->
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#3d8ef8"/>
+            <stop offset="1" stop-color="#00c8e8"/>
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="22" fill="url(#lg)"/>
+        <text x="50" y="68"
+          font-family="Arial,Helvetica,sans-serif"
+          font-size="58" font-weight="800" fill="white" text-anchor="middle">S</text>
+      </svg>
+    </div>
+
+    <!-- Illustration -->
+    <svg class="illustration" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true" focusable="false">
+      <!-- Outer glow rings -->
+      <circle cx="80" cy="80" r="58" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".15"/>
+      <circle cx="80" cy="80" r="45" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".2"/>
+      <!-- WiFi arcs -->
+      <path d="M 45 95 Q 80 60 115 95" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+      <path d="M 57 107 Q 80 82 103 107" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+      <!-- Center dot -->
+      <circle cx="80" cy="119" r="5" fill="currentColor"/>
+      <!-- Slash: top-right to bottom-left -->
+      <line x1="115" y1="50" x2="47" y2="125"
+        stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Title -->
+    <h1 class="title">You're Offline</h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle">
+      No internet connection detected. Some content may be available offline from your cache.
+    </p>
+
+    <!-- Status badge -->
+    <div class="status" role="status" aria-live="polite">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="status-text" id="statusText">No internet connection</span>
+    </div>
+
+    <!-- Features available offline -->
+    <ul class="features" aria-label="Available offline">
+      <li class="feature"><span aria-hidden="true">📚</span> <span><strong>Browse cached PDFs</strong> from your last visit</span></li>
+      <li class="feature"><span aria-hidden="true">🔖</span> <span><strong>Access your bookmarks</strong> without internet</span></li>
+      <li class="feature"><span aria-hidden="true">✍️</span> <span><strong>Drafts auto-saved</strong> and synced when you reconnect</span></li>
+    </ul>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-primary" id="retryBtn" aria-label="Try reconnecting">
+        <span id="retryBtnLabel">🔄 Try Again</span>
+      </button>
+      <a href="/" class="btn btn-secondary">
+        🏠 Home
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div id="connectionStatus" aria-live="polite">Waiting for connection…</div>
+      <div style="margin-top:.5rem">
+        Need help?
+        <a href="https://studyria.com/support" target="_blank" rel="noopener">Contact Support</a>
+      </div>
+    </div>
+
+  </div><!-- /.container -->
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       STUDYRIA OFFLINE PAGE LOGIC
+       Auto-reconnect · Retry button · Visual feedback
+       ═══════════════════════════════════════════════════════════════ */
+
+    (function () {
+      'use strict';
+
+      const PROBE_URL         = '/manifest.json?_t=' + Date.now();
+      const RETRY_DELAY_MS    = 5000;
+      const MAX_AUTO_ATTEMPTS = 20;   // ~100 seconds of auto-retrying
+
+      let retryCount    = 0;
+      let autoCheckId   = null;
+      let isChecking    = false;
+
+      const retryBtn        = document.getElementById('retryBtn');
+      const retryLabel      = document.getElementById('retryBtnLabel');
+      const statusText      = document.getElementById('statusText');
+      const connectionStatus= document.getElementById('connectionStatus');
+
+      /** Try to reach the server. Returns true if online. */
+      async function probe() {
+        try {
+          const r = await fetch('/manifest.json', {
+            method: 'HEAD',
+            cache: 'no-store',
+            signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined,
+          });
+          return r.ok;
+        } catch {
+          return false;
+        }
+      }
+
+      /** Called when connection is confirmed restored. */
+      function onRestored() {
+        clearInterval(autoCheckId);
+        autoCheckId = null;
+
+        statusText.textContent       = '✅ Connection restored!';
+        connectionStatus.textContent = 'You\'re back online. Redirecting…';
+        retryLabel.textContent       = '✅ Online!';
+        retryBtn.disabled            = true;
+
+        // Update status dot colour
+        const dot = document.querySelector('.status-dot');
+        if (dot) {
+          dot.style.background  = '#10b981';
+          dot.style.animation   = 'none';
+        }
+        const badge = document.querySelector('.status');
+        if (badge) {
+          badge.style.background   = 'rgba(16,185,129,.1)';
+          badge.style.borderColor  = 'rgba(16,185,129,.3)';
+        }
+
+        setTimeout(() => {
+          window.location.replace('/');
+        }, 1200);
+      }
+
+      /** Single retry cycle (manual or auto). */
+      async function doRetry(manual) {
+        if (isChecking) return;
+        isChecking = true;
+
+        if (manual) retryCount = 0;   // reset count on manual press
+
+        // Button loading state
+        retryBtn.disabled     = true;
+        retryBtn.classList.add('loading');
+        retryLabel.textContent = '';
+        connectionStatus.textContent = 'Checking connection…';
+
+        const online = await probe();
+
+        retryBtn.classList.remove('loading');
+
+        if (online) {
+          onRestored();
+        } else {
+          retryCount++;
+          retryBtn.disabled    = false;
+          retryLabel.textContent = '🔄 Try Again';
+
+          if (retryCount >= 3) {
+            connectionStatus.innerHTML =
+              'Still offline. Try these steps:<br>' +
+              '① Check your Wi-Fi or mobile signal<br>' +
+              '② Restart your router or airplane mode<br>' +
+              '③ Refresh when you\'re back online';
+          } else {
+            connectionStatus.textContent = 'Still offline. Auto-checking in ' + (RETRY_DELAY_MS / 1000) + 's…';
+          }
+        }
+
+        isChecking = false;
+      }
+
+      /** Start background auto-check. */
+      function startAutoCheck() {
+        if (autoCheckId) return;
+        let attempts = 0;
+
+        autoCheckId = setInterval(async () => {
+          if (attempts >= MAX_AUTO_ATTEMPTS) {
+            clearInterval(autoCheckId);
+            autoCheckId = null;
+            connectionStatus.textContent = 'Auto-check stopped. Tap "Try Again" when ready.';
+            return;
+          }
+          attempts++;
+          if (!isChecking) {
+            const online = await probe();
+            if (online) onRestored();
+          }
+        }, RETRY_DELAY_MS);
+      }
+
+      // ── Wire up button ────────────────────────────────────────
+      retryBtn.addEventListener('click', () => doRetry(true));
+
+      // ── Browser events ────────────────────────────────────────
+      window.addEventListener('online',  () => { probe().then(ok => { if (ok) onRestored(); }); });
+      window.addEventListener('offline', () => {
+        statusText.textContent       = 'No internet connection';
+        connectionStatus.textContent = 'You went offline again.';
+      });
+
+      // ── SW messages (if a controller exists) ──────────────────
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.addEventListener('message', e => {
+          if (e.data?.type === 'ONLINE') onRestored();
+        });
+      }
+
+      // ── Boot: start probing ───────────────────────────────────
+      // First probe after a short delay to let the browser settle
+      setTimeout(() => {
+        probe().then(ok => {
+          if (ok) {
+            onRestored();
+          } else {
+            startAutoCheck();
+          }
+        });
+      }, 800);
+
+    })();
+  </script>
+</body>
+</html>

@@ -14509,9 +14509,14 @@ async function renderPopularDownloads() {
 }
 
 // ── PWA INSTALL (Feature 6) ──────────────────────────────────────
+// NOTE: The primary install/update logic lives in the App Center engine
+// below (pwaAppCenter). This section only manages the legacy navbar
+// install button (#pwaInstallBtn) so both co-exist safely.
 let _pwaInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
+  // Do NOT call e.preventDefault() here — the App Center engine below
+  // already calls it. Calling it twice is safe but we avoid redundancy.
+  // Just store the reference for triggerPWAInstall() (navbar button).
   _pwaInstallPrompt = e;
   const btn = document.getElementById('pwaInstallBtn');
   if (btn) btn.style.display = 'flex';
@@ -14520,9 +14525,14 @@ window.addEventListener('appinstalled', () => {
   const btn = document.getElementById('pwaInstallBtn');
   if (btn) btn.style.display = 'none';
   _pwaInstallPrompt = null;
-  showToast('✅ Studyria installed as app!', 'success');
+  // Toast is shown by the App Center engine; avoid double-toast.
 });
 function triggerPWAInstall() {
+  // Prefer the App Center engine if available
+  if (window.pwaAppCenter) {
+    window.pwaAppCenter.install();
+    return;
+  }
   if (_pwaInstallPrompt) {
     _pwaInstallPrompt.prompt();
     _pwaInstallPrompt.userChoice.then(choice => {
@@ -29190,9 +29200,15 @@ if (_origTrackReading) {
 
           // SW controller changed → update is live
           navigator.serviceWorker.addEventListener('controllerchange', function() {
-            // Only auto-toast if we triggered the update (not first install)
+            // IMPORTANT: Do NOT auto-reload. Show the restart card so the user
+            // can save work and reload at their convenience.
             if (_waitingSW) {
-              if (typeof showToast === 'function') showToast('✅ Studyria updated! Reloading…', 'success');
+              hide('pwaHmUpdateCard');
+              show('pwaHmRestartCard');
+              if (typeof showToast === 'function') {
+                showToast('✅ Update applied! Restart to finish.', 'success');
+              }
+              _waitingSW = null;
             }
           });
         })

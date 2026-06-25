@@ -2,12 +2,18 @@
   "name": "Studyria – Assam's Smart Education Platform",
   "short_name": "Studyria",
   "description": "Assam's #1 smart education platform. Free & premium PDFs, career hub, job alerts, and creator program — all in one app.",
+  "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait-primary",
   "background_color": "#080c14",
   "theme_color": "#3d8ef8",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "categories": ["education", "books", "productivity"],
   "icons": [
     {
       "src": "/icons/icon-72.png",
@@ -76,21 +82,21 @@
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Studyria Home — Browse study materials"
+      "label": "Studyria Home"
     },
     {
       "src": "/screenshots/library.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "PDF Library — Free & premium study PDFs"
+      "label": "PDF Library"
     },
     {
       "src": "/screenshots/career.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Career Hub — Assam job alerts"
+      "label": "Career Hub"
     }
   ],
   "shortcuts": [
@@ -99,27 +105,21 @@
       "short_name": "Library",
       "description": "Open the PDF study library",
       "url": "/?tab=library&source=shortcut",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "Career Hub",
       "short_name": "Jobs",
       "description": "Browse Assam job alerts",
       "url": "/?tab=career-hub&source=shortcut",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "My Library",
       "short_name": "My PDFs",
       "description": "View your purchased PDFs",
       "url": "/?tab=my-library&source=shortcut",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     }
-  ],
-  "categories": ["education", "books", "productivity"],
-  "lang": "en-IN",
-  "dir": "ltr",
-  "prefer_related_applications": false,
-  "display_override": ["standalone", "minimal-ui", "browser"],
-  "id": "studyria-pwa-v1"
+  ]
 }

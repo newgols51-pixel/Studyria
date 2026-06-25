@@ -1,913 +1,877 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * STUDYRIA PWA APPLICATION LAYER (v2.0)
+ * STUDYRIA PWA APPLICATION LAYER  v3.0  (Production-Ready)
  * ═══════════════════════════════════════════════════════════════════════════
- * 
+ *
  * Handles:
- * - Service Worker registration & lifecycle management
- * - Install prompt & installed app detection
- * - Update detection & restart flow
- * - Offline/Online detection & handling
- * - Cache versioning & cleanup
- * - Background Sync support
- * - Push notification handling
- * - PWA diagnostics & performance monitoring
+ *   - Service Worker registration & lifecycle
+ *   - Install prompt (Android, Windows, Edge, Chrome) + iOS guidance
+ *   - Update detection, "Update Now" + "Restart" flow
+ *   - Offline / Online detection
+ *   - Cache versioning & cleanup
+ *   - Background Sync
+ *   - Push Notification subscription
+ *   - PWA diagnostics & performance monitoring
+ *
+ * USAGE: Include this file AFTER your main page scripts.
+ *   <script src="app.js" defer></script>
+ *
+ * IMPORTANT: This file is a supplementary PWA layer. If your page already
+ * has an inline App Center engine (pwaAppCenter), this file will detect
+ * that and defer install/update UI to it, only adding missing functionality.
+ * ═══════════════════════════════════════════════════════════════════════════
  */
 
 'use strict';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 1. PWA CONFIGURATION & STATE
+// 1. CONFIGURATION & STATE
 // ═══════════════════════════════════════════════════════════════════════════
 
-const PWA = {
-  // Core configuration
-  NAME: 'Studyria',
-  VERSION: '2.0.0',
-  SW_PATH: '/sw.js',
-  MANIFEST_PATH: '/manifest.json',
-  OFFLINE_PAGE: '/offline.html',
-  
-  // Cache versioning
-  CACHE_VERSION: 'studyria-v2.0.0',
-  RUNTIME_CACHE: 'studyria-runtime-v2.0.0',
-  STATIC_CACHE: 'studyria-static-v2.0.0',
-  
-  // Update polling interval (4 hours)
-  UPDATE_CHECK_INTERVAL: 4 * 60 * 60 * 1000,
-  
-  // State tracking
-  state: {
-    swRegistration: null,
-    pendingUpdate: null,
-    isOnline: navigator.onLine,
-    isInstalled: false,
-    isInstallPromptShown: false,
-    deferredPrompt: null,
-    lastUpdateCheck: 0,
-    swController: null,
-  },
-  
-  // Diagnostics
-  diagnostics: {
-    swSupported: 'serviceWorker' in navigator,
-    pwaCapable: true,
-    offlineCapable: false,
-    syncSupported: 'SyncManager' in window,
-    notificationSupported: 'Notification' in window,
-    periodicSyncSupported: 'periodicSync' in ServiceWorkerRegistration.prototype,
-  },
-  
-  // Performance metrics
-  metrics: {
-    cacheHits: 0,
-    cacheMisses: 0,
-    networkErrors: 0,
-    swInstallTime: 0,
-    swActivateTime: 0,
-  },
+const PWA_CONFIG = {
+  NAME:              'Studyria',
+  VERSION:           '3.0.0',
+  SW_PATH:           '/sw.js',
+  SW_SCOPE:          '/',
+  OFFLINE_PAGE:      '/offline.html',
+
+  // Must match CACHE_NAME in sw.js
+  CACHE_NAME:        'studyria-v7',
+
+  // How often to poll for SW updates (4 hours)
+  UPDATE_INTERVAL_MS: 4 * 60 * 60 * 1000,
+};
+
+// Internal mutable state (not exposed directly)
+const _state = {
+  swRegistration:   null,
+  waitingSW:        null,
+  deferredPrompt:   null,   // beforeinstallprompt event
+  isInstalled:      false,
+  isOnline:         typeof navigator !== 'undefined' ? navigator.onLine : true,
+  updateDismissed:  false,
+  initialized:      false,
+  updateCheckTimer: null,
+};
+
+// Capability flags (set once at init)
+const _caps = {
+  sw:           'serviceWorker' in navigator,
+  sync:         false,     // set after SW registers
+  notification: 'Notification' in window,
+  periodicSync: false,     // set after SW registers
+  pushManager:  false,     // set after SW registers
+};
+
+// Performance counters
+const _metrics = {
+  cacheHits:    0,
+  cacheMisses:  0,
+  netErrors:    0,
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 2. SERVICE WORKER REGISTRATION & LIFECYCLE
+// 2. STANDALONE / INSTALLED DETECTION
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Initialize PWA: register service worker and set up listeners
- */
-async function initPWA() {
-  try {
-    if (!PWA.diagnostics.swSupported) {
-      console.warn('[PWA] Service Workers not supported on this browser');
-      return;
-    }
+function detectStandalone() {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches  ||
+    window.matchMedia('(display-mode: fullscreen)').matches  ||
+    window.matchMedia('(display-mode: minimal-ui)').matches  ||
+    window.navigator.standalone === true                      ||  // iOS Safari
+    document.referrer.startsWith('android-app://')           ||
+    new URLSearchParams(window.location.search).get('source') === 'pwa'
+  );
+}
 
-    // Register service worker
-    PWA.state.swRegistration = await navigator.serviceWorker.register(PWA.SW_PATH, {
-      scope: '/',
-      updateViaCache: 'none', // Always check for updates
+function checkInstalledState() {
+  _state.isInstalled = detectStandalone();
+  document.documentElement.setAttribute(
+    'data-pwa-installed',
+    _state.isInstalled ? 'true' : 'false'
+  );
+  if (_state.isInstalled) {
+    console.log('[PWA] Running in standalone / installed mode');
+  }
+
+  // Watch for dynamic display-mode changes
+  const mq = window.matchMedia('(display-mode: standalone)');
+  if (mq.addEventListener) {
+    mq.addEventListener('change', e => {
+      _state.isInstalled = e.matches;
+      document.documentElement.setAttribute(
+        'data-pwa-installed',
+        _state.isInstalled ? 'true' : 'false'
+      );
     });
+  }
+}
 
-    console.log('[PWA] Service Worker registered:', PWA.state.swRegistration);
-    PWA.diagnostics.offlineCapable = true;
+// ═══════════════════════════════════════════════════════════════════════════
+// 3. SERVICE WORKER REGISTRATION & LIFECYCLE
+// ═══════════════════════════════════════════════════════════════════════════
 
-    // Set up listeners for SW lifecycle
-    setupServiceWorkerListeners();
-    
-    // Check for installed state
-    checkInstalledState();
-    
-    // Start update polling
-    startUpdatePolling();
-    
-    // Set up online/offline listeners
-    setupNetworkListeners();
-    
-    // Request notification permission (non-blocking)
-    if (PWA.diagnostics.notificationSupported && Notification.permission === 'default') {
-      Notification.requestPermission().catch(() => {});
+async function registerServiceWorker() {
+  if (!_caps.sw) {
+    console.warn('[PWA] Service Workers not supported');
+    return;
+  }
+
+  try {
+    const reg = await navigator.serviceWorker.register(PWA_CONFIG.SW_PATH, {
+      scope:          PWA_CONFIG.SW_SCOPE,
+      updateViaCache: 'none',   // always re-fetch sw.js from network
+    });
+    _state.swRegistration = reg;
+
+    // Detect capability support after registration
+    _caps.sync         = 'sync'         in reg;
+    _caps.periodicSync = 'periodicSync' in reg;
+    _caps.pushManager  = 'pushManager'  in reg;
+
+    console.log('[PWA] Service Worker registered ✅', reg.scope);
+
+    // If SW already active, get version info
+    if (reg.active) {
+      _querySwVersion(reg.active);
     }
 
-  } catch (error) {
-    console.error('[PWA] Registration failed:', error);
-    PWA.diagnostics.pwaCapable = false;
+    // If a new SW is already waiting (e.g. user reloaded after update downloaded)
+    if (reg.waiting && navigator.serviceWorker.controller) {
+      _state.waitingSW = reg.waiting;
+      _onUpdateReady(reg.waiting);
+    }
+
+    // Watch for a new SW installing
+    reg.addEventListener('updatefound', _onUpdateFound);
+
+    // SW controller changed → new version is now active
+    navigator.serviceWorker.addEventListener('controllerchange', _onControllerChange);
+
+    // Messages from SW
+    navigator.serviceWorker.addEventListener('message', _onSwMessage);
+
+    // Start polling for updates
+    _scheduleUpdateChecks();
+
+  } catch (err) {
+    console.error('[PWA] SW registration failed:', err);
   }
 }
 
-/**
- * Set up listeners for Service Worker updates and controller changes
- */
-function setupServiceWorkerListeners() {
-  const reg = PWA.state.swRegistration;
+function _onUpdateFound() {
+  const reg = _state.swRegistration;
   if (!reg) return;
+  const installing = reg.installing;
+  if (!installing) return;
 
-  // Listen for updates
-  reg.addEventListener('updatefound', onUpdateFound);
+  console.log('[PWA] New Service Worker installing…');
 
-  // Listen for controller change (indicates update was applied)
-  navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
-
-  // Listen for messages from SW
-  navigator.serviceWorker.addEventListener('message', onServiceWorkerMessage);
-
-  // If SW already installed, check for updates immediately
-  if (reg.active && !reg.waiting && !reg.installing) {
-    checkForUpdates();
-  }
-}
-
-/**
- * Called when updatefound fires (new SW downloading/installing)
- */
-function onUpdateFound() {
-  const reg = PWA.state.swRegistration;
-  if (!reg) return;
-
-  const newWorker = reg.installing;
-  if (!newWorker) return;
-
-  console.log('[PWA] New Service Worker detected (installing)');
-
-  newWorker.addEventListener('statechange', () => {
-    if (newWorker.state === 'installed') {
-      // New SW installed but not yet activated
-      // Check if there's a controller (i.e., not the first install)
+  installing.addEventListener('statechange', () => {
+    if (installing.state === 'installed') {
       if (navigator.serviceWorker.controller) {
-        console.log('[PWA] New Service Worker ready - update available');
-        PWA.state.pendingUpdate = newWorker;
-        showUpdateNotification();
+        // There was an existing SW — this is an update
+        console.log('[PWA] New SW installed & waiting — update available');
+        _state.waitingSW = installing;
+        _onUpdateReady(installing);
       } else {
-        console.log('[PWA] Service Worker installed (first install)');
-      }
-    } else if (newWorker.state === 'activated') {
-      console.log('[PWA] New Service Worker activated');
-      // If there's no pending update notification shown, it means update was silent
-      if (PWA.state.pendingUpdate === newWorker) {
-        PWA.state.pendingUpdate = null;
+        // First install — no controller yet
+        console.log('[PWA] Service Worker installed (first-time)');
       }
     }
   });
 }
 
-/**
- * Called when a new Service Worker takes control
- */
-function onControllerChange() {
-  console.log('[PWA] Service Worker controller changed - reloading app');
-  // Clear the pending update
-  PWA.state.pendingUpdate = null;
-  
-  // Reload the page to use the new SW version
-  window.location.reload();
+function _onControllerChange() {
+  // A new SW has taken control. This fires after SKIP_WAITING.
+  // We do NOT auto-reload here — the restart card asks the user first.
+  console.log('[PWA] SW controller changed (update applied)');
+  // The restart card is shown via showRestartCard(), called from applyUpdate()
 }
 
-/**
- * Handle messages from Service Worker
- */
-function onServiceWorkerMessage(event) {
-  const { type, data } = event.data;
-
+function _onSwMessage(event) {
+  const { type, data } = event.data || {};
   switch (type) {
-    case 'cache_hit':
-      PWA.metrics.cacheHits++;
-      console.log('[PWA] Cache hit:', data.url);
-      break;
-
-    case 'cache_miss':
-      PWA.metrics.cacheMisses++;
-      console.log('[PWA] Cache miss:', data.url);
-      break;
-
-    case 'network_error':
-      PWA.metrics.networkErrors++;
-      console.warn('[PWA] Network error for:', data.url);
-      break;
-
+    case 'cache_hit':      _metrics.cacheHits++;  break;
+    case 'cache_miss':     _metrics.cacheMisses++; break;
+    case 'network_error':  _metrics.netErrors++;   break;
     case 'sync_registered':
-      console.log('[PWA] Background sync registered:', data.tag);
+      console.log('[PWA] Background sync registered:', data?.tag);
       break;
-
-    case 'push_notification':
-      console.log('[PWA] Push notification received:', data);
-      break;
-
     default:
-      console.log('[PWA] Unknown message from SW:', type);
+      break;
   }
 }
 
+function _querySwVersion(sw) {
+  try {
+    const mc = new MessageChannel();
+    mc.port1.onmessage = e => {
+      const { version, build, whatsNew } = e.data || {};
+      console.log('[PWA] SW version:', version || build);
+      // Dispatch to page-level handlers if present
+      window.dispatchEvent(new CustomEvent('pwa:swversion', {
+        detail: { version: version || build, whatsNew }
+      }));
+    };
+    sw.postMessage({ type: 'GET_VERSION' }, [mc.port2]);
+  } catch (_) {}
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
-// 3. UPDATE DETECTION & MANAGEMENT
+// 4. UPDATE MANAGEMENT
 // ═══════════════════════════════════════════════════════════════════════════
 
+function _onUpdateReady(waitingSW) {
+  // If the page's own App Center is present, let it handle UI
+  if (window.pwaAppCenter) {
+    // pwaAppCenter handles its own update UI — just ensure _waitingSW is set
+    return;
+  }
+  showUpdateBanner(waitingSW);
+}
+
 /**
- * Check for Service Worker updates
+ * Fallback update banner (used if pwaAppCenter is NOT present in the page)
  */
+function showUpdateBanner(waitingSW) {
+  // Remove any existing banner first
+  const existing = document.getElementById('_pwaUpdateBanner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = '_pwaUpdateBanner';
+  banner.setAttribute('role', 'status');
+  banner.setAttribute('aria-live', 'polite');
+  banner.style.cssText = [
+    'position:fixed', 'top:0', 'left:0', 'right:0', 'z-index:99999',
+    'background:linear-gradient(135deg,#1a2540,#0d1830)',
+    'border-bottom:1px solid rgba(61,142,248,0.3)',
+    'padding:12px 16px', 'display:flex', 'align-items:center',
+    'gap:12px', 'font-family:system-ui,sans-serif',
+    'box-shadow:0 4px 24px rgba(0,0,0,0.5)',
+  ].join(';');
+
+  banner.innerHTML = `
+    <div style="flex:1;min-width:0">
+      <div style="color:#e4e8f0;font-weight:600;font-size:.9rem">🚀 New Version Available</div>
+      <div style="color:#7a8caa;font-size:.78rem;margin-top:2px">What's New: bug fixes, performance & Career Hub improvements.</div>
+    </div>
+    <button id="_pwaUpdateNow"
+      style="padding:8px 16px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap;flex-shrink:0">
+      Update Now
+    </button>
+    <button id="_pwaUpdateLater"
+      style="padding:8px 12px;background:rgba(255,255,255,0.07);color:#7a8caa;border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:.8rem;cursor:pointer;flex-shrink:0">
+      Later
+    </button>
+  `;
+
+  document.body.insertAdjacentElement('afterbegin', banner);
+
+  document.getElementById('_pwaUpdateNow').addEventListener('click', () => {
+    applyUpdate();
+  });
+
+  document.getElementById('_pwaUpdateLater').addEventListener('click', () => {
+    _state.updateDismissed = true;
+    banner.remove();
+  });
+}
+
+/**
+ * Tell the waiting SW to skip waiting (activate immediately)
+ * Then show the restart card / banner
+ */
+function applyUpdate() {
+  const sw = _state.waitingSW || _state.swRegistration?.waiting;
+  if (!sw) return;
+
+  sw.postMessage({ type: 'SKIP_WAITING' });
+
+  // Remove update banner if visible
+  document.getElementById('_pwaUpdateBanner')?.remove();
+
+  // If pwaAppCenter handles restart, let it; otherwise show our fallback
+  if (!window.pwaAppCenter) {
+    showRestartBanner();
+  }
+}
+
+function showRestartBanner() {
+  const existing = document.getElementById('_pwaRestartBanner');
+  if (existing) return;
+
+  const banner = document.createElement('div');
+  banner.id = '_pwaRestartBanner';
+  banner.setAttribute('role', 'status');
+  banner.style.cssText = [
+    'position:fixed', 'top:0', 'left:0', 'right:0', 'z-index:99999',
+    'background:linear-gradient(135deg,#064e3b,#065f46)',
+    'border-bottom:1px solid rgba(16,217,142,0.3)',
+    'padding:12px 16px', 'display:flex', 'align-items:center',
+    'gap:12px', 'font-family:system-ui,sans-serif',
+    'box-shadow:0 4px 24px rgba(0,0,0,0.5)',
+  ].join(';');
+
+  banner.innerHTML = `
+    <div style="flex:1">
+      <div style="color:#e4e8f0;font-weight:600;font-size:.9rem">✅ Restart App to Finish Update</div>
+      <div style="color:#a7f3d0;font-size:.78rem;margin-top:2px">Update installed! Restart to use the new version.</div>
+    </div>
+    <button id="_pwaRestartNow"
+      style="padding:8px 16px;background:linear-gradient(135deg,#10d98e,#06b6d4);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap;flex-shrink:0">
+      Restart Now
+    </button>
+  `;
+
+  document.body.insertAdjacentElement('afterbegin', banner);
+
+  document.getElementById('_pwaRestartNow').addEventListener('click', () => {
+    window.location.reload();
+  });
+}
+
 async function checkForUpdates() {
   try {
-    if (!PWA.state.swRegistration) return;
-
-    const now = Date.now();
-    if (now - PWA.state.lastUpdateCheck < 60000) {
-      // Skip if checked recently (within 1 minute)
-      return;
-    }
-
-    PWA.state.lastUpdateCheck = now;
-    console.log('[PWA] Checking for updates...');
-
-    // Trigger update check
-    await PWA.state.swRegistration.update();
-
-    console.log('[PWA] Update check complete');
-  } catch (error) {
-    console.error('[PWA] Update check failed:', error);
+    if (!_state.swRegistration) return;
+    console.log('[PWA] Checking for updates…');
+    await _state.swRegistration.update();
+  } catch (e) {
+    console.warn('[PWA] Update check failed:', e);
   }
 }
 
-/**
- * Start periodic update polling
- */
-function startUpdatePolling() {
-  // Check immediately
-  checkForUpdates();
-
-  // Then check periodically
-  setInterval(checkForUpdates, PWA.UPDATE_CHECK_INTERVAL);
-
-  // Also check when app becomes visible
+function _scheduleUpdateChecks() {
+  // Check on visibility change (user returns to tab)
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      checkForUpdates();
-    }
+    if (!document.hidden) checkForUpdates();
   });
-}
 
-/**
- * Show update notification to user
- */
-function showUpdateNotification() {
-  // Check if notification already shown
-  if (sessionStorage.getItem('updateNotificationShown')) {
-    return;
-  }
-
-  sessionStorage.setItem('updateNotificationShown', 'true');
-
-  // Create notification UI
-  const notification = document.createElement('div');
-  notification.className = 'pwa-update-banner';
-  notification.innerHTML = `
-    <div class="pwa-update-content">
-      <div class="pwa-update-icon">🔄</div>
-      <div class="pwa-update-text">
-        <div class="pwa-update-title">Update Available</div>
-        <div class="pwa-update-message">A new version of Studyria is ready</div>
-      </div>
-      <div class="pwa-update-actions">
-        <button class="pwa-update-btn pwa-update-dismiss" onclick="dismissUpdateNotification()">Later</button>
-        <button class="pwa-update-btn pwa-update-install" onclick="installUpdate()">Update Now</button>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentElement('afterbegin', notification);
-
-  // Auto-dismiss after 10 seconds if not interacted
-  setTimeout(() => {
-    if (notification.parentNode) {
-      notification.remove();
-    }
-  }, 10000);
-}
-
-/**
- * Dismiss update notification
- */
-function dismissUpdateNotification() {
-  const notification = document.querySelector('.pwa-update-banner');
-  if (notification) {
-    notification.remove();
-  }
-}
-
-/**
- * Install pending update
- */
-function installUpdate() {
-  const newWorker = PWA.state.pendingUpdate;
-  if (newWorker) {
-    console.log('[PWA] Installing update...');
-    dismissUpdateNotification();
-    
-    // Tell the new SW to skip waiting and take control immediately
-    newWorker.postMessage({ type: 'SKIP_WAITING' });
-  }
+  // Periodic check
+  if (_state.updateCheckTimer) clearInterval(_state.updateCheckTimer);
+  _state.updateCheckTimer = setInterval(checkForUpdates, PWA_CONFIG.UPDATE_INTERVAL_MS);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 4. INSTALL PROMPT & APP INSTALLATION
+// 5. INSTALL PROMPT
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Check if app is already installed
- */
-function checkInstalledState() {
-  // Check for installed state
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    PWA.state.isInstalled = true;
-    document.documentElement.setAttribute('data-pwa-installed', 'true');
-    console.log('[PWA] App is running in standalone mode');
-    return;
-  }
-
-  // iOS PWA detection
-  if (window.navigator.standalone === true) {
-    PWA.state.isInstalled = true;
-    document.documentElement.setAttribute('data-pwa-installed', 'true');
-    console.log('[PWA] App is running as iOS PWA');
-    return;
-  }
-
-  // Listen for changes in display mode
-  const displayModeMediaQuery = window.matchMedia('(display-mode: standalone)');
-  displayModeMediaQuery.addEventListener('change', () => {
-    PWA.state.isInstalled = displayModeMediaQuery.matches;
-    document.documentElement.setAttribute('data-pwa-installed', PWA.state.isInstalled ? 'true' : 'false');
-  });
-}
-
-/**
- * Listen for install prompt
- */
 function setupInstallPrompt() {
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing
+  // Capture beforeinstallprompt (Android, Chrome Desktop, Edge, Samsung)
+  window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
+    _state.deferredPrompt = e;
 
-    // Store the prompt for later use
-    PWA.state.deferredPrompt = e;
-    console.log('[PWA] Install prompt ready');
+    // Also wire up the legacy install button in the navbar if present
+    const legacyBtn = document.getElementById('pwaInstallBtn');
+    if (legacyBtn) legacyBtn.style.display = 'flex';
 
-    // Show custom install button if not already installed
-    if (!PWA.state.isInstalled) {
-      showInstallPrompt();
+    // Dispatch event so other handlers (App Center, etc.) can react
+    window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
+
+    // Show fallback install banner only if pwaAppCenter is NOT handling UI
+    if (!window.pwaAppCenter && !_state.isInstalled) {
+      showInstallBanner();
     }
+
+    console.log('[PWA] Install prompt captured ✅');
   });
 
-  // Handle app installed
+  // App successfully installed
   window.addEventListener('appinstalled', () => {
-    console.log('[PWA] App installed successfully');
-    PWA.state.isInstalled = true;
+    console.log('[PWA] App installed ✅');
+    _state.isInstalled = true;
+    _state.deferredPrompt = null;
     document.documentElement.setAttribute('data-pwa-installed', 'true');
-    dismissInstallPrompt();
 
-    // Send analytics
+    const legacyBtn = document.getElementById('pwaInstallBtn');
+    if (legacyBtn) legacyBtn.style.display = 'none';
+
+    // Remove fallback install banner if present
+    document.getElementById('_pwaInstallBanner')?.remove();
+
+    window.dispatchEvent(new CustomEvent('pwa:installed'));
+
+    // Analytics
     if (window.gtag) {
-      window.gtag('event', 'app_installed', {
-        app_name: PWA.NAME,
-        version: PWA.VERSION,
-      });
+      window.gtag('event', 'app_installed', { app_name: PWA_CONFIG.NAME });
+    }
+    if (typeof showToast === 'function') {
+      showToast('✅ Studyria App installed!', 'success');
     }
   });
 }
 
 /**
- * Show custom install prompt
+ * Fallback install banner (used if pwaAppCenter is NOT in the page)
  */
-function showInstallPrompt() {
-  if (PWA.state.isInstallPromptShown || PWA.state.isInstalled) {
-    return;
+function showInstallBanner() {
+  if (document.getElementById('_pwaInstallBanner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = '_pwaInstallBanner';
+  banner.setAttribute('role', 'complementary');
+  banner.style.cssText = [
+    'position:fixed', 'bottom:16px', 'left:50%', 'transform:translateX(-50%)',
+    'z-index:99998', 'max-width:420px', 'width:calc(100% - 32px)',
+    'background:linear-gradient(135deg,#0d1830,#121e38)',
+    'border:1px solid rgba(61,142,248,0.25)',
+    'border-radius:16px', 'padding:16px',
+    'box-shadow:0 8px 40px rgba(0,0,0,0.6)',
+    'font-family:system-ui,sans-serif',
+    'animation:_pwaSlideUp .35s ease-out',
+  ].join(';');
+
+  // Inline keyframe
+  if (!document.getElementById('_pwaAnimStyles')) {
+    const style = document.createElement('style');
+    style.id = '_pwaAnimStyles';
+    style.textContent = `
+      @keyframes _pwaSlideUp {
+        from { opacity:0; transform:translateX(-50%) translateY(24px); }
+        to   { opacity:1; transform:translateX(-50%) translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  PWA.state.isInstallPromptShown = true;
-
-  const prompt = document.createElement('div');
-  prompt.className = 'pwa-install-banner';
-  prompt.innerHTML = `
-    <div class="pwa-install-content">
-      <div class="pwa-install-icon">📚</div>
-      <div class="pwa-install-text">
-        <div class="pwa-install-title">Install Studyria</div>
-        <div class="pwa-install-message">Get offline access to your PDFs</div>
+  banner.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:2rem;flex-shrink:0">📚</div>
+      <div style="flex:1">
+        <div style="color:#e4e8f0;font-weight:700;font-size:.95rem">Download / Install Studyria App</div>
+        <div style="color:#7a8caa;font-size:.78rem;margin-top:2px">Offline access to your PDFs. No browser needed.</div>
       </div>
-      <div class="pwa-install-actions">
-        <button class="pwa-install-btn pwa-install-dismiss" onclick="dismissInstallPrompt()">Not Now</button>
-        <button class="pwa-install-btn pwa-install-confirm" onclick="promptInstall()">Install</button>
-      </div>
+      <button id="_pwaInstallClose"
+        style="background:none;border:none;color:#7a8caa;font-size:1.2rem;cursor:pointer;padding:4px;line-height:1;flex-shrink:0"
+        aria-label="Close">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button id="_pwaInstallConfirm"
+        style="flex:1;padding:10px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer">
+        ⬇ Install
+      </button>
+      <button id="_pwaInstallLater"
+        style="padding:10px 14px;background:rgba(255,255,255,0.06);color:#7a8caa;border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:.85rem;cursor:pointer">
+        Later
+      </button>
     </div>
   `;
 
-  document.body.insertAdjacentElement('afterbegin', prompt);
+  document.body.appendChild(banner);
 
-  // Auto-dismiss after 15 seconds if not interacted
-  setTimeout(() => {
-    if (prompt.parentNode) {
-      dismissInstallPrompt();
-    }
-  }, 15000);
+  document.getElementById('_pwaInstallConfirm').addEventListener('click', promptInstall);
+  document.getElementById('_pwaInstallLater').addEventListener('click', dismissInstallBanner);
+  document.getElementById('_pwaInstallClose').addEventListener('click', dismissInstallBanner);
+
+  // Auto-dismiss after 15s if untouched
+  setTimeout(dismissInstallBanner, 15000);
 }
 
-/**
- * Trigger installation
- */
+function dismissInstallBanner() {
+  document.getElementById('_pwaInstallBanner')?.remove();
+}
+
 async function promptInstall() {
-  const prompt = PWA.state.deferredPrompt;
-  if (!prompt) return;
-
-  // Show the install prompt
-  prompt.prompt();
-
-  // Log the result
-  const { outcome } = await prompt.userChoice;
-  console.log(`[PWA] User response to install prompt: ${outcome}`);
-
-  // Clear the deferred prompt
-  PWA.state.deferredPrompt = null;
-}
-
-/**
- * Dismiss install prompt
- */
-function dismissInstallPrompt() {
-  const prompt = document.querySelector('.pwa-install-banner');
-  if (prompt) {
-    prompt.remove();
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 5. OFFLINE & ONLINE DETECTION
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Set up network status listeners
- */
-function setupNetworkListeners() {
-  window.addEventListener('online', onOnline);
-  window.addEventListener('offline', onOffline);
-
-  // Initial check
-  updateNetworkStatus();
-}
-
-/**
- * Handle coming online
- */
-function onOnline() {
-  PWA.state.isOnline = true;
-  document.documentElement.setAttribute('data-online', 'true');
-  console.log('[PWA] App is online');
-
-  // Remove offline indicator
-  dismissOfflineIndicator();
-
-  // Trigger background sync if supported
-  if (PWA.diagnostics.syncSupported && PWA.state.swRegistration) {
-    PWA.state.swRegistration.sync.register('sync-data').catch(() => {});
-  }
-
-  // Dispatch custom event for app to handle
-  window.dispatchEvent(new CustomEvent('pwa:online', { detail: { timestamp: Date.now() } }));
-}
-
-/**
- * Handle going offline
- */
-function onOffline() {
-  PWA.state.isOnline = false;
-  document.documentElement.setAttribute('data-online', 'false');
-  console.log('[PWA] App is offline');
-
-  // Show offline indicator
-  showOfflineIndicator();
-
-  // Dispatch custom event for app to handle
-  window.dispatchEvent(new CustomEvent('pwa:offline', { detail: { timestamp: Date.now() } }));
-}
-
-/**
- * Update network status
- */
-function updateNetworkStatus() {
-  if (navigator.onLine) {
-    onOnline();
-  } else {
-    onOffline();
-  }
-}
-
-/**
- * Show offline indicator
- */
-function showOfflineIndicator() {
-  // Check if indicator already exists
-  if (document.getElementById('pwaOfflineIndicator')) {
+  const prompt = _state.deferredPrompt;
+  if (!prompt) {
+    // iOS / unsupported — show instructions
+    showiOSInstallTip();
     return;
   }
 
-  const indicator = document.createElement('div');
-  indicator.id = 'pwaOfflineIndicator';
-  indicator.className = 'pwa-offline-indicator';
-  indicator.innerHTML = `
-    <div class="pwa-offline-icon">📡</div>
-    <div class="pwa-offline-text">You're offline</div>
-  `;
+  try {
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
+    console.log('[PWA] Install prompt outcome:', outcome);
+    _state.deferredPrompt = null;
+    dismissInstallBanner();
 
-  document.body.insertAdjacentElement('afterbegin', indicator);
-}
-
-/**
- * Dismiss offline indicator
- */
-function dismissOfflineIndicator() {
-  const indicator = document.getElementById('pwaOfflineIndicator');
-  if (indicator) {
-    indicator.remove();
+    if (outcome === 'accepted') {
+      if (typeof showToast === 'function') showToast('🚀 Studyria installed!', 'success');
+    }
+  } catch (e) {
+    console.warn('[PWA] Install prompt error:', e);
   }
 }
 
+/**
+ * iOS Add to Home Screen instructions (Safari does not support beforeinstallprompt)
+ */
+function showiOSInstallTip() {
+  if (document.getElementById('_pwaIOSTip')) return;
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (!isIOS) {
+    // Non-iOS without prompt: generic help
+    if (typeof showToast === 'function') {
+      showToast('📱 Tap browser menu → "Add to Home Screen" to install', 'info');
+    }
+    return;
+  }
+
+  const tip = document.createElement('div');
+  tip.id = '_pwaIOSTip';
+  tip.style.cssText = [
+    'position:fixed', 'bottom:0', 'left:0', 'right:0',
+    'z-index:99999', 'padding:20px 20px 32px',
+    'background:linear-gradient(0deg,#0d1830,#121e38)',
+    'border-top:1px solid rgba(61,142,248,0.25)',
+    'font-family:system-ui,sans-serif',
+    'text-align:center',
+    'box-shadow:0 -8px 40px rgba(0,0,0,0.6)',
+  ].join(';');
+
+  tip.innerHTML = `
+    <div style="font-size:1.5rem;margin-bottom:10px">📱</div>
+    <div style="color:#e4e8f0;font-weight:700;font-size:1rem;margin-bottom:6px">Install Studyria on iPhone</div>
+    <div style="color:#7a8caa;font-size:.85rem;line-height:1.6">
+      Tap <strong style="color:#3d8ef8">Share</strong> <span style="font-size:1rem">⬆</span> at the bottom of Safari,
+      then tap <strong style="color:#3d8ef8">"Add to Home Screen"</strong> 
+      <span style="font-size:1rem">➕</span>
+    </div>
+    <button onclick="document.getElementById('_pwaIOSTip').remove()"
+      style="margin-top:14px;padding:10px 24px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">
+      Got it
+    </button>
+    <div style="font-size:1.5rem;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);color:#3d8ef8">▼</div>
+  `;
+
+  document.body.appendChild(tip);
+  setTimeout(() => tip.remove(), 20000);
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
-// 6. CACHE MANAGEMENT & VERSIONING
+// 6. OFFLINE / ONLINE DETECTION
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Clean up old cache versions
- */
+function setupNetworkListeners() {
+  window.addEventListener('online',  _onOnline);
+  window.addEventListener('offline', _onOffline);
+  // Apply initial state
+  _state.isOnline ? _onOnline() : _onOffline();
+}
+
+function _onOnline() {
+  _state.isOnline = true;
+  document.documentElement.setAttribute('data-online', 'true');
+  document.getElementById('_pwaOfflineBar')?.remove();
+
+  // Trigger background sync
+  if (_caps.sync && _state.swRegistration) {
+    _state.swRegistration.sync.register('sync-data').catch(() => {});
+  }
+
+  window.dispatchEvent(new CustomEvent('pwa:online', { detail: { ts: Date.now() } }));
+}
+
+function _onOffline() {
+  _state.isOnline = false;
+  document.documentElement.setAttribute('data-online', 'false');
+
+  if (!document.getElementById('_pwaOfflineBar')) {
+    const bar = document.createElement('div');
+    bar.id = '_pwaOfflineBar';
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = [
+      'position:fixed', 'top:0', 'left:0', 'right:0', 'z-index:99999',
+      'background:linear-gradient(135deg,#7f1d1d,#991b1b)',
+      'padding:10px 16px', 'display:flex', 'align-items:center', 'gap:8px',
+      'font-family:system-ui,sans-serif',
+      'font-size:.85rem', 'color:#fecaca',
+      'box-shadow:0 2px 12px rgba(0,0,0,0.5)',
+    ].join(';');
+    bar.innerHTML = `
+      <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;flex-shrink:0;animation:_pwaPulse 2s ease-in-out infinite"></span>
+      <span>📡 You're offline — some features may be unavailable</span>
+    `;
+
+    if (!document.getElementById('_pwaAnimStyles')) {
+      const style = document.createElement('style');
+      style.id = '_pwaAnimStyles';
+      style.textContent = `
+        @keyframes _pwaSlideUp {
+          from { opacity:0; transform:translateX(-50%) translateY(24px); }
+          to   { opacity:1; transform:translateX(-50%) translateY(0); }
+        }
+        @keyframes _pwaPulse {
+          0%,100% { opacity:1; }
+          50% { opacity:.4; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    document.body.insertAdjacentElement('afterbegin', bar);
+  }
+
+  window.dispatchEvent(new CustomEvent('pwa:offline', { detail: { ts: Date.now() } }));
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 7. CACHE MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════
+
 async function cleanupOldCaches() {
   try {
-    const cacheNames = await caches.keys();
-    const validCaches = [PWA.CACHE_VERSION, PWA.RUNTIME_CACHE, PWA.STATIC_CACHE];
-
-    const deletePromises = cacheNames
-      .filter((name) => !validCaches.includes(name) && name.includes('studyria'))
-      .map((name) => {
-        console.log('[PWA] Deleting old cache:', name);
-        return caches.delete(name);
-      });
-
-    await Promise.all(deletePromises);
-    console.log('[PWA] Cache cleanup complete');
-  } catch (error) {
-    console.error('[PWA] Cache cleanup failed:', error);
+    const keys    = await caches.keys();
+    const toDelete = keys.filter(k => k.startsWith('studyria-') && k !== PWA_CONFIG.CACHE_NAME);
+    await Promise.all(toDelete.map(k => caches.delete(k)));
+    if (toDelete.length) console.log('[PWA] Old caches deleted:', toDelete);
+  } catch (e) {
+    console.warn('[PWA] Cache cleanup failed:', e);
   }
 }
 
-/**
- * Clear all caches (emergency)
- */
 async function clearAllCaches() {
   try {
-    const cacheNames = await caches.keys();
-    const deletePromises = cacheNames
-      .filter((name) => name.includes('studyria'))
-      .map((name) => caches.delete(name));
-
-    await Promise.all(deletePromises);
-    console.log('[PWA] All caches cleared');
-  } catch (error) {
-    console.error('[PWA] Failed to clear caches:', error);
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k.startsWith('studyria-')).map(k => caches.delete(k)));
+    console.log('[PWA] All Studyria caches cleared');
+  } catch (e) {
+    console.warn('[PWA] clearAllCaches failed:', e);
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 7. BACKGROUND SYNC SUPPORT
+// 8. BACKGROUND SYNC
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Register background sync task
- */
 async function registerBackgroundSync(tag = 'sync-data') {
   try {
-    if (!PWA.diagnostics.syncSupported || !PWA.state.swRegistration) {
-      console.warn('[PWA] Background Sync not supported');
+    if (!_caps.sync || !_state.swRegistration) {
+      console.warn('[PWA] Background Sync not supported or SW not ready');
       return false;
     }
-
-    await PWA.state.swRegistration.sync.register(tag);
+    await _state.swRegistration.sync.register(tag);
     console.log('[PWA] Background sync registered:', tag);
     return true;
-  } catch (error) {
-    console.error('[PWA] Failed to register background sync:', error);
+  } catch (e) {
+    console.warn('[PWA] registerBackgroundSync failed:', e);
     return false;
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 9. PUSH NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
 /**
- * Get pending sync tags
+ * Request push notification permission.
+ * MUST be called from a user gesture (e.g. button click).
  */
-async function getPendingSyncTags() {
-  try {
-    if (!PWA.state.swRegistration) return [];
-    return await PWA.state.swRegistration.sync.getTags();
-  } catch (error) {
-    console.error('[PWA] Failed to get sync tags:', error);
-    return [];
-  }
+async function requestNotificationPermission() {
+  if (!_caps.notification) return 'denied';
+  if (Notification.permission === 'granted') return 'granted';
+  if (Notification.permission === 'denied')  return 'denied';
+
+  const permission = await Notification.requestPermission();
+  return permission;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 8. PUSH NOTIFICATIONS
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Subscribe to push notifications
- */
 async function subscribeToPushNotifications(vapidPublicKey) {
   try {
-    if (!PWA.diagnostics.notificationSupported || !PWA.state.swRegistration) {
-      console.warn('[PWA] Push notifications not supported');
+    if (!_caps.pushManager || !_state.swRegistration) {
+      console.warn('[PWA] Push Manager not supported or SW not ready');
       return null;
     }
-
     if (Notification.permission !== 'granted') {
-      console.log('[PWA] Notification permission not granted');
+      console.warn('[PWA] Notification permission not granted');
       return null;
     }
-
-    const subscription = await PWA.state.swRegistration.pushManager.subscribe({
+    const sub = await _state.swRegistration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+      applicationServerKey: _urlBase64ToUint8Array(vapidPublicKey),
     });
-
-    console.log('[PWA] Push notification subscription:', subscription);
-    return subscription;
-  } catch (error) {
-    console.error('[PWA] Failed to subscribe to push notifications:', error);
+    console.log('[PWA] Push subscription created ✅');
+    return sub;
+  } catch (e) {
+    console.warn('[PWA] Push subscribe failed:', e);
     return null;
   }
 }
 
-/**
- * Get current push subscription
- */
 async function getPushSubscription() {
   try {
-    if (!PWA.state.swRegistration) return null;
-    return await PWA.state.swRegistration.pushManager.getSubscription();
-  } catch (error) {
-    console.error('[PWA] Failed to get push subscription:', error);
+    if (!_state.swRegistration) return null;
+    return await _state.swRegistration.pushManager.getSubscription();
+  } catch (e) {
     return null;
   }
 }
 
-/**
- * Unsubscribe from push notifications
- */
-async function unsubscribeFromPushNotifications() {
+async function unsubscribeFromPush() {
   try {
-    const subscription = await getPushSubscription();
-    if (subscription) {
-      await subscription.unsubscribe();
-      console.log('[PWA] Unsubscribed from push notifications');
-      return true;
-    }
+    const sub = await getPushSubscription();
+    if (sub) { await sub.unsubscribe(); return true; }
     return false;
-  } catch (error) {
-    console.error('[PWA] Failed to unsubscribe from push notifications:', error);
+  } catch (e) {
     return false;
   }
 }
 
-/**
- * Convert VAPID public key to Uint8Array
- */
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
+function _urlBase64ToUint8Array(b64) {
+  const pad  = '='.repeat((4 - (b64.length % 4)) % 4);
+  const base = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+  const raw  = atob(base);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 9. PWA DIAGNOSTICS & REPORTING
+// 10. DIAGNOSTICS
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Get comprehensive PWA diagnostics
- */
-function getPWADiagnostics() {
+function getDiagnostics() {
+  const reg = _state.swRegistration;
   return {
     pwa: {
-      name: PWA.NAME,
-      version: PWA.VERSION,
-      initialized: PWA.state.swRegistration !== null,
+      name:        PWA_CONFIG.NAME,
+      version:     PWA_CONFIG.VERSION,
+      cacheName:   PWA_CONFIG.CACHE_NAME,
+      initialized: _state.initialized,
     },
     capabilities: {
-      serviceWorkers: PWA.diagnostics.swSupported,
-      offline: PWA.diagnostics.offlineCapable,
-      backgroundSync: PWA.diagnostics.syncSupported,
-      notifications: PWA.diagnostics.notificationSupported,
-      periodicSync: PWA.diagnostics.periodicSyncSupported,
+      serviceWorkers: _caps.sw,
+      backgroundSync: _caps.sync,
+      notifications:  _caps.notification,
+      periodicSync:   _caps.periodicSync,
+      pushManager:    _caps.pushManager,
     },
     state: {
-      isOnline: PWA.state.isOnline,
-      isInstalled: PWA.state.isInstalled,
-      hasPendingUpdate: PWA.state.pendingUpdate !== null,
-      notificationPermission: Notification.permission || 'N/A',
+      isOnline:            _state.isOnline,
+      isInstalled:         _state.isInstalled,
+      hasPendingUpdate:    !!(_state.waitingSW || reg?.waiting),
+      swState:             reg?.active?.state || 'none',
+      notificationPerm:    _caps.notification ? Notification.permission : 'N/A',
     },
     metrics: {
-      ...PWA.metrics,
-      hitRate: PWA.metrics.cacheHits + PWA.metrics.cacheMisses > 0
-        ? ((PWA.metrics.cacheHits / (PWA.metrics.cacheHits + PWA.metrics.cacheMisses)) * 100).toFixed(2) + '%'
+      ..._metrics,
+      hitRate: (_metrics.cacheHits + _metrics.cacheMisses) > 0
+        ? ((_metrics.cacheHits / (_metrics.cacheHits + _metrics.cacheMisses)) * 100).toFixed(1) + '%'
         : 'N/A',
     },
     browser: {
-      userAgent: navigator.userAgent,
-      platform: navigator.platform,
-      language: navigator.language,
-      onLine: navigator.onLine,
+      userAgent:           navigator.userAgent,
+      language:            navigator.language,
       hardwareConcurrency: navigator.hardwareConcurrency || 'N/A',
-      deviceMemory: navigator.deviceMemory || 'N/A',
+      deviceMemory:        navigator.deviceMemory        || 'N/A',
+      onLine:              navigator.onLine,
     },
   };
 }
 
-/**
- * Log PWA diagnostics to console
- */
-function logPWADiagnostics() {
-  const diagnostics = getPWADiagnostics();
-  console.group('[PWA] Diagnostics Report');
-  console.table(diagnostics);
-  console.groupEnd();
-}
-
-/**
- * Export PWA diagnostics
- */
-function exportPWADiagnostics() {
-  const diagnostics = getPWADiagnostics();
-  const blob = new Blob([JSON.stringify(diagnostics, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `studyria-pwa-diagnostics-${Date.now()}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 10. PERFORMANCE MONITORING
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Get performance metrics
- */
 function getPerformanceMetrics() {
-  if (!window.performance || !window.performance.timing) {
-    return null;
+  // Use modern Navigation Timing API v2 where available
+  const entries = performance.getEntriesByType?.('navigation');
+  if (entries?.length) {
+    const nav = entries[0];
+    return {
+      dns:            nav.domainLookupEnd - nav.domainLookupStart,
+      tcp:            nav.connectEnd      - nav.connectStart,
+      ttfb:           nav.responseStart   - nav.requestStart,
+      download:       nav.responseEnd     - nav.responseStart,
+      domInteractive: nav.domInteractive  - nav.fetchStart,
+      domComplete:    nav.domComplete     - nav.fetchStart,
+      loadComplete:   nav.loadEventEnd    - nav.fetchStart,
+      type:           nav.type,
+    };
   }
-
-  const timing = performance.timing;
-  const navigation = performance.navigation;
-
+  // Fallback: legacy timing API
+  const t = performance.timing;
+  if (!t) return null;
   return {
-    dns: timing.domainLookupEnd - timing.domainLookupStart,
-    tcp: timing.connectEnd - timing.connectStart,
-    ttfb: timing.responseStart - timing.requestStart,
-    download: timing.responseEnd - timing.responseStart,
-    domInteractive: timing.domInteractive - timing.fetchStart,
-    domComplete: timing.domComplete - timing.fetchStart,
-    loadComplete: timing.loadEventEnd - timing.fetchStart,
-    type: navigation.type === 0 ? 'navigate' : navigation.type === 1 ? 'reload' : 'backForward',
+    dns:            t.domainLookupEnd - t.domainLookupStart,
+    tcp:            t.connectEnd      - t.connectStart,
+    ttfb:           t.responseStart   - t.requestStart,
+    download:       t.responseEnd     - t.responseStart,
+    domInteractive: t.domInteractive  - t.fetchStart,
+    domComplete:    t.domComplete     - t.fetchStart,
+    loadComplete:   t.loadEventEnd    - t.fetchStart,
   };
 }
 
-/**
- * Send performance metrics to analytics
- */
-function reportPerformanceMetrics() {
-  const metrics = getPerformanceMetrics();
-  if (!metrics || !window.gtag) return;
-
-  window.gtag('event', 'page_view_timing', {
-    'dns_time': metrics.dns,
-    'tcp_time': metrics.tcp,
-    'ttfb': metrics.ttfb,
-    'download_time': metrics.download,
-    'dom_interactive': metrics.domInteractive,
-    'dom_complete': metrics.domComplete,
-    'load_complete': metrics.loadComplete,
-  });
-
-  console.log('[PWA] Performance metrics reported:', metrics);
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
-// 11. INITIALIZATION
+// 11. MAIN INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Initialize PWA when DOM is ready
- */
-function initializeOnDOMReady() {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPWA);
-  } else {
-    initPWA();
-  }
-}
+async function initPWA() {
+  if (_state.initialized) return;
+  _state.initialized = true;
 
-/**
- * Set up all PWA features when script loads
- */
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    initPWA();
-    setupInstallPrompt();
-    cleanupOldCaches();
-    
-    // Report performance metrics after page load
-    window.addEventListener('load', () => {
-      setTimeout(reportPerformanceMetrics, 0);
-    });
-  });
-} else {
-  // Script loaded after DOMContentLoaded
-  initPWA();
+  checkInstalledState();
   setupInstallPrompt();
-  cleanupOldCaches();
-  
-  // Report performance metrics
+  setupNetworkListeners();
+
+  // Register SW after load to avoid delaying first paint
   if (document.readyState === 'complete') {
-    setTimeout(reportPerformanceMetrics, 0);
+    await registerServiceWorker();
+    cleanupOldCaches();
   } else {
-    window.addEventListener('load', () => {
-      setTimeout(reportPerformanceMetrics, 0);
+    window.addEventListener('load', async () => {
+      await registerServiceWorker();
+      cleanupOldCaches();
     });
   }
+
+  console.log('[PWA] Studyria PWA v' + PWA_CONFIG.VERSION + ' initialized ✅');
+}
+
+// Boot
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPWA);
+} else {
+  initPWA();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 12. PUBLIC API
+// 12. PUBLIC API  (window.PWA)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Export PWA utilities to window for external use
 window.PWA = {
-  // Version and config
-  VERSION: PWA.VERSION,
-  
+  VERSION: PWA_CONFIG.VERSION,
+
   // State queries
-  isOnline: () => PWA.state.isOnline,
-  isInstalled: () => PWA.state.isInstalled,
-  hasPendingUpdate: () => PWA.state.pendingUpdate !== null,
-  
+  isOnline:        () => _state.isOnline,
+  isInstalled:     () => _state.isInstalled,
+  hasPendingUpdate:() => !!(_state.waitingSW || _state.swRegistration?.waiting),
+
   // Update management
   checkForUpdates,
-  installUpdate,
-  
-  // Cache management
+  applyUpdate,
+  showRestartBanner,
+
+  // Install
+  promptInstall,
+  showiOSInstallTip,
+  dismissInstallBanner,
+
+  // Cache
   cleanupOldCaches,
   clearAllCaches,
-  
-  // Install prompts
-  promptInstall,
-  dismissInstallPrompt,
-  
-  // Background sync
+
+  // Sync
   registerBackgroundSync,
-  getPendingSyncTags,
-  
-  // Push notifications
+
+  // Notifications
+  requestNotificationPermission,
   subscribeToPushNotifications,
   getPushSubscription,
-  unsubscribeFromPushNotifications,
-  
+  unsubscribeFromPush,
+
   // Diagnostics
-  getDiagnostics: getPWADiagnostics,
-  logDiagnostics: logPWADiagnostics,
-  exportDiagnostics: exportPWADiagnostics,
-  
-  // Performance
+  getDiagnostics,
   getPerformanceMetrics,
-  reportPerformanceMetrics,
+  logDiagnostics: () => {
+    const d = getDiagnostics();
+    console.group('[PWA] Diagnostics');
+    console.table(d.state);
+    console.table(d.capabilities);
+    console.table(d.metrics);
+    console.groupEnd();
+    return d;
+  },
 };
 
-console.log('[PWA] App initialized - use window.PWA for utilities');
+console.log('[PWA] window.PWA ready — use window.PWA.logDiagnostics() to inspect');
