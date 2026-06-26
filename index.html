@@ -26529,34 +26529,105 @@ function renderPCCSEO(main) {
   <div class="admin-section-sub">Control meta tags, sitemaps, robots.txt and social sharing.</div>
   <div class="mod-form-wrap" style="margin-bottom:14px">
     <div style="font-weight:700;color:var(--accent);margin-bottom:14px">🌐 Global SEO</div>
-    <div class="form-group"><label class="form-label">Default Meta Title</label><input class="form-input" value="Studyria – India's #1 PDF Study Platform"/></div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">Default Meta Description</label><textarea class="form-input" rows="2">Download free and premium PDF study materials for JEE, NEET, UPSC and all competitive exams.</textarea></div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">Meta Keywords</label><input class="form-input" value="study PDF, JEE notes, NEET materials, UPSC books, free PDF download India"/></div>
+    <div class="form-group"><label class="form-label">Default Meta Title</label><input class="form-input" id="seoMetaTitle" placeholder="Studyria – India's #1 PDF Study Platform"/></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Default Meta Description</label><textarea class="form-input" id="seoMetaDesc" rows="2" placeholder="Download free and premium PDF study materials for JEE, NEET, UPSC and all competitive exams."></textarea></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Meta Keywords</label><input class="form-input" id="seoMetaKeywords" placeholder="study PDF, JEE notes, NEET materials, UPSC books, free PDF download India"/></div>
   </div>
   <div class="mod-form-wrap" style="margin-bottom:14px">
     <div style="font-weight:700;color:var(--gold);margin-bottom:14px">📱 Open Graph / Social</div>
     <div class="admin-form-grid">
-      <div class="form-group"><label class="form-label">OG Title</label><input class="form-input" value="Studyria – Study Smarter"/></div>
-      <div class="form-group"><label class="form-label">OG Image URL</label><input class="form-input" placeholder="https://studyria.com/og.png"/></div>
+      <div class="form-group"><label class="form-label">OG Title</label><input class="form-input" id="seoOgTitle" placeholder="Studyria – Study Smarter"/></div>
+      <div class="form-group"><label class="form-label">OG Image URL</label><input class="form-input" id="seoOgImage" placeholder="https://studyria.com/og.png"/></div>
     </div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">OG Description</label><textarea class="form-input" rows="2">India's largest collection of curated PDF study materials.</textarea></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">OG Description</label><textarea class="form-input" id="seoOgDesc" rows="2" placeholder="India's largest collection of curated PDF study materials."></textarea></div>
   </div>
   <div class="mod-form-wrap">
     <div style="font-weight:700;color:var(--success);margin-bottom:14px">⚙ Technical SEO</div>
     <div class="admin-toggle-row">
       <div><div style="font-size:.85rem;font-weight:600">Auto Sitemap Generator</div><div class="text-muted text-xs">Regenerate sitemap.xml on every PDF publish</div></div>
-      <button class="admin-toggle on" onclick="this.classList.toggle('on')"></button>
+      <button class="admin-toggle on" id="seoToggleSitemap" onclick="this.classList.toggle('on')"></button>
     </div>
     <div class="admin-toggle-row">
       <div><div style="font-size:.85rem;font-weight:600">Index PDF pages</div><div class="text-muted text-xs">Allow search engines to index individual PDF pages</div></div>
-      <button class="admin-toggle on" onclick="this.classList.toggle('on')"></button>
+      <button class="admin-toggle on" id="seoToggleIndex" onclick="this.classList.toggle('on')"></button>
     </div>
-    <div class="form-group" style="margin-top:14px"><label class="form-label">robots.txt Content</label><textarea class="form-input" rows="4" style="font-family:monospace">User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: https://studyria.com/sitemap.xml</textarea></div>
+    <div class="form-group" style="margin-top:14px"><label class="form-label">robots.txt Content</label><textarea class="form-input" id="seoRobotsTxt" rows="4" style="font-family:monospace" placeholder="User-agent: *&#10;Allow: /&#10;Disallow: /admin&#10;Sitemap: https://studyria.com/sitemap.xml"></textarea></div>
     <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="showToast('SEO settings saved!','success')">💾 Save SEO Config</button>
+      <button class="btn btn-primary btn-sm" id="seoSaveBtn" onclick="saveSeoConfig()">💾 Save SEO Config</button>
       <button class="btn btn-secondary btn-sm" onclick="showToast('Sitemap regenerated!','success')">🗺 Regenerate Sitemap</button>
     </div>
+    <div id="seoStatusMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
   </div>`;
+  loadSeoConfig();
+}
+
+async function loadSeoConfig() {
+  const sb = window.supabaseClient;
+  if (!sb) return;
+  try {
+    const { data, error } = await sb.from('site_config').select('key,value').in('key', [
+      'seo_meta_title','seo_meta_desc','seo_meta_keywords',
+      'seo_og_title','seo_og_image','seo_og_desc',
+      'seo_toggle_sitemap','seo_toggle_index','seo_robots_txt'
+    ]);
+    if (error || !data) return;
+    const cfg = {};
+    data.forEach(row => { cfg[row.key] = row.value; });
+    const g = id => document.getElementById(id);
+    if (cfg.seo_meta_title    !== undefined && g('seoMetaTitle'))    g('seoMetaTitle').value    = cfg.seo_meta_title;
+    if (cfg.seo_meta_desc     !== undefined && g('seoMetaDesc'))     g('seoMetaDesc').value     = cfg.seo_meta_desc;
+    if (cfg.seo_meta_keywords !== undefined && g('seoMetaKeywords')) g('seoMetaKeywords').value = cfg.seo_meta_keywords;
+    if (cfg.seo_og_title      !== undefined && g('seoOgTitle'))      g('seoOgTitle').value      = cfg.seo_og_title;
+    if (cfg.seo_og_image      !== undefined && g('seoOgImage'))      g('seoOgImage').value      = cfg.seo_og_image;
+    if (cfg.seo_og_desc       !== undefined && g('seoOgDesc'))       g('seoOgDesc').value       = cfg.seo_og_desc;
+    if (cfg.seo_robots_txt    !== undefined && g('seoRobotsTxt'))    g('seoRobotsTxt').value    = cfg.seo_robots_txt;
+    if (cfg.seo_toggle_sitemap !== undefined && g('seoToggleSitemap')) {
+      g('seoToggleSitemap').classList.toggle('on', cfg.seo_toggle_sitemap === 'true');
+    }
+    if (cfg.seo_toggle_index !== undefined && g('seoToggleIndex')) {
+      g('seoToggleIndex').classList.toggle('on', cfg.seo_toggle_index === 'true');
+    }
+  } catch(e) { console.warn('[SEO] loadSeoConfig error:', e); }
+}
+
+async function saveSeoConfig() {
+  const sb = window.supabaseClient;
+  const btn = document.getElementById('seoSaveBtn');
+  const statusEl = document.getElementById('seoStatusMsg');
+  const g = id => document.getElementById(id);
+
+  if (!sb) {
+    if (statusEl) { statusEl.style.display='block'; statusEl.style.color='var(--danger)'; statusEl.textContent='⚠️ Supabase not connected — cannot save.'; }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Saving…'; }
+
+  const rows = [
+    { key: 'seo_meta_title',      value: g('seoMetaTitle')?.value?.trim()    || '' },
+    { key: 'seo_meta_desc',       value: g('seoMetaDesc')?.value?.trim()     || '' },
+    { key: 'seo_meta_keywords',   value: g('seoMetaKeywords')?.value?.trim() || '' },
+    { key: 'seo_og_title',        value: g('seoOgTitle')?.value?.trim()      || '' },
+    { key: 'seo_og_image',        value: g('seoOgImage')?.value?.trim()      || '' },
+    { key: 'seo_og_desc',         value: g('seoOgDesc')?.value?.trim()       || '' },
+    { key: 'seo_robots_txt',      value: g('seoRobotsTxt')?.value            || '' },
+    { key: 'seo_toggle_sitemap',  value: String(g('seoToggleSitemap')?.classList.contains('on') ?? true) },
+    { key: 'seo_toggle_index',    value: String(g('seoToggleIndex')?.classList.contains('on')   ?? true) },
+  ];
+
+  try {
+    const { error } = await sb.from('site_config').upsert(rows, { onConflict: 'key' });
+    if (error) throw error;
+    showToast('✅ SEO settings saved!', 'success');
+    if (statusEl) { statusEl.style.display='block'; statusEl.style.color='var(--success)'; statusEl.textContent='✅ SEO settings saved successfully.'; }
+    if (typeof logAdminActivity === 'function') logAdminActivity('SEO config updated', 'green');
+  } catch(err) {
+    const msg = err?.message || String(err);
+    showToast('❌ Save failed: ' + msg, 'error');
+    if (statusEl) { statusEl.style.display='block'; statusEl.style.color='var(--danger)'; statusEl.textContent='❌ Error: ' + msg; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Save SEO Config'; }
+  }
 }
 
 /* ─── 14. LIVE ANALYTICS CENTER ──────────────────────────────── */
