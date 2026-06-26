@@ -30,7 +30,7 @@
 
 const PWA_CONFIG = {
   NAME:              'Studyria',
-  VERSION:           '3.0.0',
+  VERSION:           '3.0.1',
   SW_PATH:           '/sw.js',
   SW_SCOPE:          '/',
   OFFLINE_PAGE:      '/offline.html',
