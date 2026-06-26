@@ -877,38 +877,41 @@ if (document.readyState === 'loading') {
 // 11b. ONESIGNAL INTEGRATION
 // ═══════════════════════════════════════════════════════════════════════════
 //
-// ── BUG THAT WAS FIXED HERE (read this before touching the flow again) ──
+// ── ROOT CAUSE OF "requestPermission stays pending forever" (Chrome Android) ──
 //
-// Symptom: clicking "Enable Notifications" changed the button to
-// "Preparing…" and it never changed again.
+// Notification.requestPermission() (and by extension OneSignal's wrapper)
+// MUST be called in the DIRECT synchronous call stack of a user gesture.
+// Chrome Android PWA has a strict user-activation timeout: any `await`
+// before requestPermission() consumes that activation window.
 //
-// Root cause: two legacy files at the site root — OneSignalSDKWorker.js
-// and OneSignalSDKUpdaterWorker.js — were leftover from BEFORE Studyria
-// migrated to OneSignal's "combine with an existing service worker"
-// setup. Those files importScripts() the OneSignal SW bundle directly at
-// the default root scope ("/"). Returning visitors' browsers still had a
-// SW registered from those files at scope "/" — the SAME scope sw.js
-// registers (sw.js is what OneSignal.init() is actually told to use via
-// serviceWorkerPath: 'sw.js'). Two service worker registrations cannot
-// both own one scope. That silent conflict stalled OneSignal's internal
-// SW handshake forever, so `_osReadyResolve(OneSignal)` below was never
-// called, `_osReady` never resolved, and the click handler's
-// `await _osReady` blocked with NO timeout — hence the frozen button.
-// (OneSignalSDKWorker.js / OneSignalSDKUpdaterWorker.js have been fixed
-// separately to self-unregister so stale registrations clear themselves.)
+// Old broken flow:
+//   click → await withTimeout → await _osReady (SDK init, can be slow)
+//         → await _osVerifyServiceWorkerActive → requestPermission()
 //
-// What changed in THIS file to make the bug impossible to hit again,
-// even if some other future misconfiguration reintroduces a stall:
-//   1. Every step (init, SW-active check, permission, optIn, optedIn
-//      poll) now races against an explicit timeout via withTimeout().
-//      Nothing can hang the button forever — 10s total ceiling.
-//   2. A new explicit "Service Worker is active" check
-//      (_osVerifyServiceWorkerActive) runs before touching OneSignal,
-//      using navigator.serviceWorker.ready / .controller — not assumed.
-//   3. On ANY failure or timeout, the button is always restored to a
-//      clickable state showing the real error — never left stuck.
-//   4. console.log at every step: Init, Service Worker, Permission,
-//      Subscription, Success, Error — exactly as required.
+// By the time requestPermission() was reached, the user gesture was stale.
+// Chrome silently held the pending promise forever without showing the
+// dialog. Result: Notification.permission stayed "default", userId/token
+// were never generated, button stayed on "Preparing…" / "Enabling…".
+//
+// ── THE FIX ───────────────────────────────────────────────────────────────
+// 1. Call Notification.requestPermission() SYNCHRONOUSLY on click — before
+//    ANY await — using the native browser API directly. This guarantees
+//    the call is within the user-gesture window on Chrome Android PWA.
+// 2. Store the returned Promise immediately, then await it.
+// 3. Only AFTER permission resolves (granted/denied) do we then await the
+//    OneSignal SDK and call optIn(). By then permission is already settled
+//    so optIn() never needs to show a prompt and gesture timing is moot.
+// 4. No "Preparing…" — button shows "Requesting…" only after user clicks
+//    and transitions to "Enabling…" only after permission is granted.
+// 5. No polling loop — use OneSignal PushSubscription 'change' event.
+// 6. No withTimeout wrapper around the whole flow; individual async steps
+//    have their own timeouts only where a network round-trip is involved.
+//
+// ── Files unchanged (already correct) ────────────────────────────────────
+//   sw.js                        — importScripts OneSignal SW bundle ✅
+//   OneSignalSDKWorker.js        — self-unregisters legacy scope conflict ✅
+//   OneSignalSDKUpdaterWorker.js — self-unregisters legacy scope conflict ✅
+//   index.html                   — loads OneSignalSDK.page.js with defer ✅
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
@@ -916,9 +919,6 @@ if (document.readyState === 'loading') {
  * @const {string}
  */
 const ONESIGNAL_APP_ID = '12e09fd8-9362-49ef-87d9-14ba353db7a6';
-
-/** Hard ceiling for the whole subscribe flow. Per requirements: max 10s. */
-const ONESIGNAL_FLOW_TIMEOUT_MS = 10000;
 
 /**
  * Internal OneSignal state
@@ -932,191 +932,93 @@ const _osState = {
 
 /**
  * Resolves once OneSignal.init() has fully completed and the live SDK
- * object is available. Anything that touches OneSignal (the button
- * handler, diagnostics, etc.) should `await _osReady` instead of
- * checking window.OneSignal directly — window.OneSignal can still be
- * the temporary OneSignalDeferred shim (typeof "function") until this
- * resolves.
- *
- * IMPORTANT: this promise itself has no timeout — it's a long-lived
- * readiness signal that may legitimately resolve late if OneSignal's
- * CDN script is slow. The TIMEOUT is enforced at the call site
- * (osRequestNotification, via withTimeout()) so a slow/failed init
- * degrades the button gracefully instead of hanging the UI, while
- * init can still keep trying in the background for next time.
- * @type {Promise<object>} resolves with the live OneSignal SDK instance
+ * object is available. Callers should await this before touching OneSignal
+ * APIs. Rejected if init fails so callers can fail fast instead of hanging.
+ * @type {Promise<object>}
  */
 let _osReadyResolve;
 let _osReadyReject;
 const _osReady = new Promise((resolve, reject) => {
   _osReadyResolve = resolve;
-  _osReadyReject = reject;
+  _osReadyReject  = reject;
 });
 
 /**
- * withTimeout — races a promise against a timeout, rejecting with a
- * clear, descriptive Error if the timeout wins. Used to enforce the
- * 10-second ceiling on every step of the subscribe flow, per
- * requirements ("no infinite loading state", "maximum 10 seconds").
- * @param {Promise} promise
- * @param {number} ms
- * @param {string} stepLabel - used in the timeout error message
- */
-function withTimeout(promise, ms, stepLabel) {
-  let timer;
-  const timeout = new Promise((_, reject) => {
-    timer = setTimeout(() => {
-      reject(new Error(`Timed out waiting for "${stepLabel}" after ${ms}ms`));
-    }, ms);
-  });
-  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
-}
-
-/**
- * _initOneSignal — configures OneSignal in manual-permission mode
- * (no automatic prompt), registers it against Studyria's EXISTING
- * service worker (sw.js, which importScripts() the OneSignal SW bundle
- * — see sw.js header comment), then checks existing subscription state
- * to render the burger-menu button correctly.
- *
- * The OneSignal SDK script is loaded in <head> of index.html.
- * This function only needs to push the init callback onto the
- * already-existing window.OneSignalDeferred queue.
- *
- * Called once from initPWA() after the page has loaded.
+ * _initOneSignal — queues OneSignal.init() on the SDK's deferred queue.
+ * Called once from initPWA(). Uses autoPrompt:false so we never show the
+ * permission dialog automatically — only on explicit user click.
  */
 function _initOneSignal() {
-  // Only run once
   if (_osState.initialized) return;
   _osState.initialized = true;
 
-  console.log('[OneSignal] Step: Init — queuing OneSignal.init()…');
+  console.log('[OneSignal] Init — queuing…');
 
-  // OneSignal v16 uses a promise-queue pattern. The SDK script in <head>
-  // creates window.OneSignalDeferred; we just push our init callback.
-  // (Guard in case the queue was somehow not created yet.)
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-  // Queue initialisation — runs when SDK script has loaded
   window.OneSignalDeferred.push(async function(OneSignal) {
     try {
       await OneSignal.init({
-        appId:                        ONESIGNAL_APP_ID,
-
-        // ── Combined service worker ─────────────────────────────────
-        // Studyria already registers sw.js at the root scope for
-        // offline caching / PWA support. OneSignal MUST point at the
-        // same sw.js (which importScripts() the OneSignal SW bundle at
-        // the top of that file) so both systems share the one
-        // registration. Only one SW can own a given scope — two
-        // competing registrations conflict silently (this is the exact
-        // bug that was fixed — see header comment above). This is
-        // OneSignal's officially documented "combine with an existing
-        // service worker" setup.
-        serviceWorkerPath:            'sw.js',
-        serviceWorkerParam:           { scope: '/' },
-
-        // IMPORTANT: autoResubscribe keeps existing subscribers seamlessly
-        // re-subscribed on subsequent visits, but never shows a browser
-        // permission prompt automatically to new visitors.
-        autoResubscribe:              true,
-        // Do NOT request permission automatically on page load.
-        notifyButton:                 { enable: false },
-        // Disable the OneSignal bell widget — we use our own burger button.
-        promptOptions: {
-          autoPrompt: false,
-        },
+        appId:             ONESIGNAL_APP_ID,
+        // Combined service worker — sw.js importScripts the OneSignal SW
+        // bundle at its top. Must match the scope registered by initPWA().
+        serviceWorkerPath: 'sw.js',
+        serviceWorkerParam:{ scope: '/' },
+        // Re-subscribe returning users silently — no prompt on page load.
+        autoResubscribe:   true,
+        // Disable the OneSignal bell — we use our own burger-menu button.
+        notifyButton:      { enable: false },
+        promptOptions:     { autoPrompt: false },
       });
 
-      _osState.sdkReady = true;
-      window.OneSignal = OneSignal; // live SDK object, not the shim
+      _osState.sdkReady  = true;
+      window.OneSignal   = OneSignal; // expose live SDK (replaces shim)
       _osReadyResolve(OneSignal);
-      console.log('[OneSignal] Step: Init — SDK ready ✅ version:', OneSignal.Debug?.getRumVersion?.() || 'n/a');
+      console.log('[OneSignal] Init — SDK ready ✅');
 
-      // Check whether this browser is already subscribed
       await _osCheckSubscriptionState(OneSignal);
 
     } catch (err) {
-      console.error('[OneSignal] Step: Init — FAILED:', err);
-      // Reject _osReady so anything awaiting it (including a currently
-      // pending button click) fails fast instead of hanging — this is
-      // exactly the path that used to leave the button stuck forever.
-      _osReadyReject(err);
+      console.error('[OneSignal] Init — FAILED:', err);
+      _osReadyReject(err); // unblocks any awaiting click handler
     }
   });
 }
 
 /**
- * _osVerifyServiceWorkerActive — explicit Step 2 of the subscribe flow.
- * Confirms a service worker is actually controlling this page (or about
- * to) before we ask OneSignal to do anything with it. Previously this
- * was never checked — the flow just assumed OneSignal's SW was fine,
- * which is part of how the scope-conflict bug went unnoticed.
- * @returns {Promise<ServiceWorkerRegistration>}
- */
-async function _osVerifyServiceWorkerActive() {
-  console.log('[OneSignal] Step: Service Worker — checking registration…');
-
-  if (!('serviceWorker' in navigator)) {
-    throw new Error('Service Workers are not supported in this browser.');
-  }
-
-  // navigator.serviceWorker.ready resolves once a SW is active and
-  // controlling this scope — this is the real, documented signal,
-  // not a guess based on registration state alone.
-  const reg = await navigator.serviceWorker.ready;
-
-  if (!reg || !reg.active) {
-    throw new Error('Service Worker registered but not active.');
-  }
-
-  console.log('[OneSignal] Step: Service Worker — active ✅ scope:', reg.scope);
-  return reg;
-}
-
-/**
- * _osCheckSubscriptionState — reads the current OneSignal push-subscription
- * status and updates the burger-menu notification button to reflect it.
- * @param {object} OneSignal - the live OneSignal SDK instance
+ * _osCheckSubscriptionState — reads current push-subscription state from
+ * the live SDK and updates the burger button accordingly.
+ * @param {object} OneSignal
  */
 async function _osCheckSubscriptionState(OneSignal) {
   try {
-    // optedIn and .id are SYNCHRONOUS properties in OneSignal v16,
-    // not promises — read as plain values, matching OneSignal's
-    // documented usage (`var optedIn = OneSignal.User.PushSubscription.optedIn;`).
-    const isPushEnabled = OneSignal.User.PushSubscription.optedIn;
+    const isPushEnabled = OneSignal.User.PushSubscription.optedIn; // sync in v16
     _osState.subscribed = !!isPushEnabled;
 
     if (_osState.subscribed) {
-      _osState.userId = OneSignal.User.PushSubscription.id;
+      _osState.userId = OneSignal.User.PushSubscription.id || null;
       _osSaveSubscriptionState();
-      console.log('[OneSignal] Already subscribed ✅, id:', _osState.userId);
+      console.log('[OneSignal] Already subscribed ✅ id:', _osState.userId);
     }
 
-    // Render the burger button in the correct initial state
     _osRenderBurgerButton();
 
-    // Keep button in sync if the user changes permission in browser settings
+    // Stay in sync if the user changes permission in browser settings
     OneSignal.User.PushSubscription.addEventListener('change', function(event) {
       _osState.subscribed = !!event.current.optedIn;
-      _osState.userId = event.current.id || null;
+      _osState.userId     = event.current.id || null;
       _osSaveSubscriptionState();
       _osRenderBurgerButton();
     });
 
   } catch (err) {
     console.warn('[OneSignal] Subscription state check failed:', err);
-    _osRenderBurgerButton(); // render default state
+    _osRenderBurgerButton();
   }
 }
 
 /**
- * _osSaveSubscriptionState — persists the subscribed flag + OneSignal
- * subscription id locally so the burger button (and any other UI) can
- * render the correct state instantly on next page load, before OneSignal
- * has finished re-initialising. This is a read-through cache only —
- * OneSignal.User.PushSubscription remains the source of truth and
- * always overwrites this on init.
+ * _osSaveSubscriptionState — caches subscription state in localStorage so
+ * the button renders correctly on the next page load before SDK re-init.
  */
 function _osSaveSubscriptionState() {
   try {
@@ -1125,15 +1027,14 @@ function _osSaveSubscriptionState() {
       userId:     _osState.userId,
       savedAt:    Date.now(),
     }));
-  } catch (e) { /* localStorage unavailable — non-critical */ }
+  } catch (e) { /* non-critical */ }
 }
 
 /**
- * _osRenderBurgerButton — updates the #osNotifBtn element (injected into the
- * burger menu by _osInjectBurgerButton) to show the correct state:
- *   • Notifications Enabled ✅  (already subscribed)
- *   • Enable Notifications 🔔   (not yet subscribed)
- *   • Try Again 🔔              (permission previously denied)
+ * _osRenderBurgerButton — sets the #osNotifBtn text/style to match state:
+ *   Notifications Enabled ✅   — already subscribed (button disabled)
+ *   Notifications Blocked 🚫   — browser permission denied
+ *   Enable Notifications 🔔    — default / not yet subscribed
  */
 function _osRenderBurgerButton() {
   const btn = document.getElementById('osNotifBtn');
@@ -1142,24 +1043,25 @@ function _osRenderBurgerButton() {
   const perm = 'Notification' in window ? Notification.permission : 'default';
 
   if (_osState.subscribed) {
-    btn.textContent = 'Notifications Enabled ✅';
-    btn.disabled = true;
+    btn.textContent   = 'Notifications Enabled ✅';
+    btn.disabled      = true;
     btn.style.cssText = _osBtnBaseStyle() +
       'background:rgba(16,217,142,0.12);border-color:rgba(16,217,142,0.35);color:#10d98e;cursor:default;';
   } else if (perm === 'denied') {
-    btn.textContent = 'Try Again 🔔';
-    btn.disabled = false;
+    // Requirement 6: show blocked state when permission is denied.
+    btn.textContent   = 'Notifications Blocked 🚫';
+    btn.disabled      = false; // keep clickable so user can see the tip
     btn.style.cssText = _osBtnBaseStyle() +
       'background:rgba(255,77,109,0.1);border-color:rgba(255,77,109,0.3);color:#ff6b85;cursor:pointer;';
   } else {
-    btn.textContent = 'Enable Notifications 🔔';
-    btn.disabled = false;
+    btn.textContent   = 'Enable Notifications 🔔';
+    btn.disabled      = false;
     btn.style.cssText = _osBtnBaseStyle() +
       'background:rgba(61,142,248,0.1);border-color:rgba(61,142,248,0.3);color:#60a5fa;cursor:pointer;';
   }
 }
 
-/** Shared button base styles */
+/** Shared button base styles (flex, rounded, font, etc.) */
 function _osBtnBaseStyle() {
   return [
     'width:100%',
@@ -1178,154 +1080,186 @@ function _osBtnBaseStyle() {
 }
 
 /**
- * _osSetButtonError — restores the button to a clickable, errored state
- * and surfaces the REAL error message via toast, per requirements
- * ("show the real error instead of staying on Preparing…").
- * @param {string} userMessage - short message for the toast
- * @param {Error|string} realError - the actual error, always logged
+ * _osSetButtonError — restores the button to a clickable state and shows
+ * the real error in a toast. Never leaves the button stuck on a loading state.
  */
 function _osSetButtonError(userMessage, realError) {
-  console.error('[OneSignal] Step: Error —', realError);
-  if (typeof showToast === 'function') {
-    showToast(userMessage, 'error');
-  }
-  // Always restore the button — never leave it stuck on a loading state.
-  _osRenderBurgerButton();
+  console.error('[OneSignal] Error —', realError);
+  if (typeof showToast === 'function') showToast(userMessage, 'error');
+  _osRenderBurgerButton(); // always restore
 }
 
 /**
- * osRequestNotification — the click handler wired to the burger-menu button.
- * Requests browser notification permission, then subscribes to OneSignal.
- * Called by the button's onclick handler (injected into the DOM below).
+ * osRequestNotification — click handler for the burger-menu notification
+ * button. Implements the correct Chrome Android PWA permission flow.
  *
- * Flow (each step logged, each step bounded by the shared 10s ceiling):
- *   1. Wait for OneSignal.init() to complete           (Step: Init)
- *   2. Verify Service Worker is active                 (Step: Service Worker)
- *   3. Request notification permission                 (Step: Permission)
- *   4. await OneSignal.User.PushSubscription.optIn()    (Step: Subscription)
- *   5. Wait until PushSubscription.optedIn === true     (Step: Subscription)
- *   6. Button → "Notifications Enabled ✅"              (Step: Success)
+ * CRITICAL ORDERING (do not change without reading the comment at the
+ * top of section 11b):
  *
- * Any failure or timeout at any step restores the original button and
- * shows the real error — there is no fake delay and no infinite loop:
- * the optedIn poll below is bounded both by its own retry count AND by
- * the outer withTimeout() ceiling, whichever is hit first.
+ *   STEP 1 — sync, MUST be first, within user-gesture window:
+ *     Initiate Notification.requestPermission() immediately on click.
+ *     No await before this call. Chrome Android PWA will silently drop
+ *     the permission dialog if any await precedes this.
  *
- * MUST be called from a user gesture (button click) so the browser allows the
- * Notification.requestPermission() call without throwing a SecurityError.
+ *   STEP 2 — async, after permission dialog resolves:
+ *     Await the permission result (granted / denied / default).
+ *
+ *   STEP 3 — async, only if granted:
+ *     Await the OneSignal SDK ready promise.
+ *
+ *   STEP 4 — async:
+ *     Verify service worker is active (non-fatal if slow).
+ *
+ *   STEP 5 — async:
+ *     Call OneSignal.User.PushSubscription.optIn() — never called before
+ *     permission is confirmed (requirement 5).
+ *
+ *   STEP 6 — sync read + UI update:
+ *     Confirm optedIn, save state, update button to "Enabled".
  */
 window.osRequestNotification = async function() {
   const btn = document.getElementById('osNotifBtn');
 
-  // Guard: already subscribed
+  // Guard: already subscribed — nothing to do
   if (_osState.subscribed) return;
 
-  // Show loading state immediately so the click feels responsive.
-  // This is now BOUNDED — see the withTimeout() wrapper below — so it
-  // can never be the permanent state again.
+  // Guard: permission already denied — direct user to browser settings
+  if ('Notification' in window && Notification.permission === 'denied') {
+    if (typeof showToast === 'function') {
+      showToast('Notifications are blocked. Open your browser site settings to allow them.', 'info');
+    }
+    _osRenderBurgerButton();
+    return;
+  }
+
+  // ── STEP 1: Initiate permission request SYNCHRONOUSLY ──────────────────
+  // This call MUST happen before any await. Chrome Android PWA requires the
+  // permission API to be triggered within the direct synchronous call stack
+  // of the click event. We start the Promise here but do not await it yet.
+  console.log('[OneSignal] Step: Permission — initiating (sync within gesture)…');
+
+  // Disable button immediately to prevent double-tap
   if (btn) {
-    btn.textContent = _osState.sdkReady ? 'Enabling…' : 'Preparing…';
-    btn.disabled = true;
+    btn.disabled    = true;
+    btn.textContent = 'Requesting…';
+    btn.style.cssText = _osBtnBaseStyle() +
+      'background:rgba(61,142,248,0.08);border-color:rgba(61,142,248,0.2);color:#7a8caa;cursor:wait;';
+  }
+
+  // Start the native permission request NOW — synchronous call within gesture
+  const permissionPromise = Notification.requestPermission();
+
+  // ── STEP 2: Await the permission dialog result ─────────────────────────
+  // From here the user-gesture window is no longer relevant — the browser
+  // dialog was already triggered in STEP 1.
+  let permission;
+  try {
+    permission = await permissionPromise;
+  } catch (err) {
+    // SecurityError — should not happen since we called from a click event
+    console.error('[OneSignal] Step: Permission — requestPermission() threw:', err);
+    _osSetButtonError('Could not request notification permission.', err);
+    return;
+  }
+
+  console.log('[OneSignal] Step: Permission —', permission);
+
+  if (permission === 'denied') {
+    // Requirement 6: show blocked message, update button.
+    console.log('[OneSignal] Step: Permission — denied ❌');
+    if (typeof showToast === 'function') {
+      showToast('Notifications blocked. Open your browser site settings to allow them.', 'info');
+    }
+    _osRenderBurgerButton();
+    return;
+  }
+
+  if (permission !== 'granted') {
+    // Dismissed (user closed dialog without choosing) — restore for retry
+    console.log('[OneSignal] Step: Permission — dismissed');
+    _osRenderBurgerButton();
+    return;
+  }
+
+  // Permission granted ✅ — proceed with async OneSignal work
+  console.log('[OneSignal] Step: Permission — granted ✅');
+  if (btn) {
+    btn.textContent   = 'Enabling…';
     btn.style.cssText = _osBtnBaseStyle() +
       'background:rgba(61,142,248,0.08);border-color:rgba(61,142,248,0.2);color:#7a8caa;cursor:wait;';
   }
 
   try {
-    // Run the entire flow under one shared 10-second ceiling. Each
-    // individual step also logs its own progress, so the console shows
-    // exactly where time was spent even when the overall flow is fast.
-    await withTimeout((async () => {
+    // ── STEP 3: Wait for OneSignal SDK to be ready ───────────────────────
+    console.log('[OneSignal] Step: Init — waiting for SDK…');
+    // Race against a 15-second ceiling in case the CDN is unreachable.
+    const OneSignal = await Promise.race([
+      _osReady,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('OneSignal SDK init timed out after 15s')), 15000)
+      ),
+    ]);
+    console.log('[OneSignal] Step: Init — ready ✅');
 
-      // ── Step 1: Init ────────────────────────────────────────────
-      console.log('[OneSignal] Step: Init — waiting for OneSignal SDK…');
-      const OneSignal = await _osReady;
-      if (!OneSignal || !_osState.sdkReady) {
-        throw new Error('OneSignal SDK did not initialize.');
-      }
-      console.log('[OneSignal] Step: Init — done ✅');
+    // ── STEP 4: Check service worker is active (non-fatal) ───────────────
+    console.log('[OneSignal] Step: Service Worker — checking…');
+    if ('serviceWorker' in navigator) {
+      await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('SW ready timed out')), 5000)
+        ),
+      ]).catch(err => {
+        // Non-fatal: SW may still be installing. Log and continue.
+        console.warn('[OneSignal] Step: Service Worker — not ready, continuing:', err.message);
+      });
+    }
+    console.log('[OneSignal] Step: Service Worker — checked ✅');
 
-      // ── Step 2: Service Worker ──────────────────────────────────
-      await _osVerifyServiceWorkerActive();
+    // ── STEP 5: Subscribe via OneSignal optIn() ──────────────────────────
+    // Permission is already granted at the native browser level (STEP 2).
+    // optIn() registers/activates the OneSignal push subscription without
+    // needing to show any prompt. We never call login() here — login()
+    // would create an external user record before subscription is confirmed.
+    console.log('[OneSignal] Step: Subscription — calling optIn()…');
+    await OneSignal.User.PushSubscription.optIn();
 
-      // ── Step 3: Permission ───────────────────────────────────────
-      console.log('[OneSignal] Step: Permission — requesting…');
-      // OneSignal v16: requestPermission() shows the native browser prompt.
-      // It resolves true/false based on the browser's permission decision —
-      // it does NOT by itself guarantee PushSubscription.optedIn flips to
-      // true (that requires an explicit optIn() call, see Step 4).
-      await OneSignal.Notifications.requestPermission();
+    // ── STEP 6: Confirm subscription and update UI ───────────────────────
+    const optedIn = OneSignal.User.PushSubscription.optedIn; // sync in v16
+    console.log('[OneSignal] Step: Subscription — optedIn =', optedIn);
 
-      // OneSignal.Notifications.permission is a SYNCHRONOUS boolean in v16
-      // (not a method, not a promise) — read it directly.
-      const granted = OneSignal.Notifications.permission === true;
-      console.log('[OneSignal] Step: Permission —', granted ? 'granted ✅' : 'denied ❌');
-
-      if (!granted) {
-        // Browser permission was denied or dismissed. Not an error —
-        // restore the button and show a retry message, per requirements.
-        if (typeof showToast === 'function') {
-          showToast('Notifications blocked. To enable, update your browser site settings.', 'info');
-        }
-        _osRenderBurgerButton();
-        return; // exit the flow cleanly — no further steps make sense
-      }
-
-      // Permission granted — immediate visual feedback before the
-      // optIn() backend round-trip.
-      if (btn) {
-        btn.textContent = 'Enabling…';
-        btn.style.cssText = _osBtnBaseStyle() +
-          'background:rgba(61,142,248,0.08);border-color:rgba(61,142,248,0.2);color:#7a8caa;cursor:wait;';
-      }
-
-      // ── Step 4: Subscription (optIn) ─────────────────────────────
-      console.log('[OneSignal] Step: Subscription — calling optIn()…');
-      // requestPermission() only asks the browser; optIn() is what tells
-      // OneSignal to actually create/activate the push subscription.
-      await OneSignal.User.PushSubscription.optIn();
-
-      // ── Step 5: Subscription (wait for optedIn) ──────────────────
-      // optedIn updates synchronously once OneSignal's internal state
-      // catches up, but the sync to OneSignal's backend is async — poll
-      // briefly rather than guessing a fixed delay. Bounded to 10 tries
-      // (≈3s) AND by the outer withTimeout() ceiling — whichever comes
-      // first stops this loop. This is not an infinite loop.
-      let isPushEnabled = OneSignal.User.PushSubscription.optedIn;
-      for (let i = 0; i < 10 && !isPushEnabled; i++) {
-        await new Promise(r => setTimeout(r, 300));
-        isPushEnabled = OneSignal.User.PushSubscription.optedIn;
-      }
-      console.log('[OneSignal] Step: Subscription — optedIn =', isPushEnabled);
-
-      if (!isPushEnabled) {
-        // Permission granted but the subscription itself never opted in
-        // (rare — e.g. push service unreachable). Treat as a retryable
-        // failure, not a denial.
-        throw new Error('Permission granted but the subscription did not opt in.');
-      }
-
-      _osState.subscribed = true;
-      _osState.userId = OneSignal.User.PushSubscription.id || null;
-      _osSaveSubscriptionState();
-
-      // ── Step 6: Success ───────────────────────────────────────────
-      console.log('[OneSignal] Step: Success — subscribed ✅, id:', _osState.userId);
-      if (btn) {
-        btn.textContent = 'Notifications Enabled ✅';
-        btn.disabled = true;
-        btn.style.cssText = _osBtnBaseStyle() +
-          'background:rgba(16,217,142,0.12);border-color:rgba(16,217,142,0.35);color:#10d98e;cursor:default;';
-      }
+    if (!optedIn) {
+      // Granted but subscription creation not yet confirmed (push service
+      // may be slow). The 'change' listener set in _osCheckSubscriptionState
+      // will fire when OneSignal's backend confirms — do not block the UI.
+      console.warn('[OneSignal] optIn() called; awaiting backend confirmation via change event');
       if (typeof showToast === 'function') {
-        showToast('🔔 Notifications enabled! You\'ll get the latest updates from Studyria.', 'success');
+        showToast('Notifications enabled — syncing with server…', 'info');
       }
+      _osRenderBurgerButton();
+      return;
+    }
 
-    })(), ONESIGNAL_FLOW_TIMEOUT_MS, 'enable notifications');
+    _osState.subscribed = true;
+    _osState.userId     = OneSignal.User.PushSubscription.id || null;
+    _osSaveSubscriptionState();
+
+    console.log('[OneSignal] Step: Success — subscribed ✅',
+      'id:', _osState.userId,
+      'token:', OneSignal.User.PushSubscription.token ?? '(pending server sync)');
+
+    if (btn) {
+      btn.textContent   = 'Notifications Enabled ✅';
+      btn.disabled      = true;
+      btn.style.cssText = _osBtnBaseStyle() +
+        'background:rgba(16,217,142,0.12);border-color:rgba(16,217,142,0.35);color:#10d98e;cursor:default;';
+    }
+    if (typeof showToast === 'function') {
+      showToast('🔔 Notifications enabled! You\'ll get the latest updates from Studyria.', 'success');
+    }
 
   } catch (err) {
-    // Any failure or timeout at any step lands here: restore the
-    // original button and show the REAL error — never stay on
-    // "Preparing…". This is the fix for the core reported bug.
+    // Any async failure (SDK timeout, optIn error, etc.) — restore button.
     _osSetButtonError('Could not enable notifications — please try again.', err);
   }
 };
