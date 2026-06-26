@@ -39,8 +39,8 @@
 // 'none', and the fetch-handler bypass below).
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-const CACHE_NAME   = 'studyria-v9';           // ← bump on every deploy
-const SW_BUILD     = '2026.06.26-r1-onesignal-flow-fix';
+const CACHE_NAME   = 'studyria-v10';           // ← bump on every deploy
+const SW_BUILD     = '2026.06.26-r2-permission-gesture-fix';
 const OFFLINE_PAGE = '/offline.html';          // FIX: was /404.html
 
 const WHATS_NEW = '✨ Faster offline caching, improved update detection, background sync & Career Hub improvements.';
