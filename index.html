@@ -4025,14 +4025,37 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
 .home-testim-card {
   flex: 0 0 300px; border-radius: 18px; padding: 20px;
   background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(14px);
+  transition: border-color 0.22s, box-shadow 0.22s;
+  position: relative;
+}
+.home-testim-card:hover {
+  border-color: rgba(61,142,248,0.28);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
 }
 .home-testim-stars { display: flex; gap: 2px; margin-bottom: 10px; }
 .home-testim-star { color: #fbbf24; font-size: .9rem; }
 .home-testim-text { font-size: .85rem; color: var(--text2); line-height: 1.7; margin-bottom: 14px; font-style: italic; }
 .home-testim-author { display: flex; align-items: center; gap: 10px; }
-.home-testim-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--grad-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; color: #fff; flex-shrink: 0; }
+.home-testim-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--grad-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .85rem; color: #fff; flex-shrink: 0;
+  overflow: hidden;
+}
+.home-testim-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+  display: block;
+}
 .home-testim-name { font-weight: 700; font-size: .85rem; }
 .home-testim-role { font-size: .72rem; color: var(--text2); }
+.home-testim-verified {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: .58rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: #10d98e;
+  background: rgba(16,217,142,0.10); border: 1px solid rgba(16,217,142,0.25);
+  border-radius: 20px; padding: 2px 6px; margin-top: 2px;
+}
 
 /* ── WHY STUDYRIA ──────────────────────────────────────────────── */
 .home-why-grid {
@@ -9088,7 +9111,53 @@ function studyriaApp() {
     </div>
   </section>
 
-  <section style="padding: 16px 0 8px">
+  <section style="padding: 16px 0 8px" id="testimonialsSection">
+    <div class="container">
+      <div class="home-section-head">
+        <div class="home-section-title"><span class="hs-accent"></span>💬 What Students Say</div>
+      </div>
+    </div>
+    <div class="home-testimonials" style="padding: 0 0 8px">
+      <div class="home-testimonials-track" id="testimTrack">
+        <!-- Populated by loadHomepageTestimonials() from Supabase -->
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 8px 0">
+    <div class="container">
+      <div class="home-flash-card">
+        <div class="home-flash-inner">
+          <div class="home-flash-left">
+            <div class="home-flash-tag"><span class="home-flash-tag-dot"></span>⚡ Flash Sale — Limited Time</div>
+            <div class="home-flash-title">Up to 70% Off Premium PDFs</div>
+            <div class="home-flash-sub">Exclusive deals on top-rated study materials. Don't miss out!</div>
+            <button class="home-flash-cta" onclick="navigate('library')">
+              ⚡ Shop Now
+            </button>
+          </div>
+          <div class="home-flash-timer">
+            <div class="flash-timer-item">
+              <span class="flash-timer-num" id="flashH">05</span>
+              <div class="flash-timer-lbl">Hours</div>
+            </div>
+            <span class="flash-timer-sep">:</span>
+            <div class="flash-timer-item">
+              <span class="flash-timer-num" id="flashM">59</span>
+              <div class="flash-timer-lbl">Mins</div>
+            </div>
+            <span class="flash-timer-sep">:</span>
+            <div class="flash-timer-item">
+              <span class="flash-timer-num" id="flashS">00</span>
+              <div class="flash-timer-lbl">Secs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 16px 0 8px" id="testimonialsSection">
     <div class="container">
       <div class="home-section-head">
         <div class="home-section-title"><span class="hs-accent"></span>💬 What Students Say</div>
@@ -16635,8 +16704,85 @@ function renderHomeCore() {
     if (featuredGrid) featuredGrid.innerHTML = featured.map(pdfCardHTML).join('');
 
     renderPopularDownloads();
+
+    // Load testimonials from Supabase (non-blocking)
+    loadHomepageTestimonials();
   } catch(e) {
     console.warn('renderHomeCore error:', e);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ── TESTIMONIALS — Dynamic Supabase loader ────────────────────────
+// ══════════════════════════════════════════════════════════════════
+
+/* Static fallback cards — shown instantly while Supabase loads,
+   and kept if the testimonials table is empty or unavailable.     */
+const _FALLBACK_TESTIMONIALS = [
+  { name:'Rohan Sharma',  role:'JEE Advanced Aspirant',      stars:5, image_url:null, verified:false, text:'Studyria completely changed how I prepare for JEE. The quality of PDFs here is unmatched — worth every rupee.' },
+  { name:'Priya Nair',    role:'NEET 2024 — 98 Percentile',  stars:5, image_url:null, verified:false, text:'I cracked NEET with 98 percentile. Studyria\'s biology notes were my secret weapon. Highly recommend!' },
+  { name:'Arjun Mehta',   role:'UPSC CSE Aspirant',          stars:5, image_url:null, verified:false, text:'The UPSC study material here saved me hundreds of hours of research. Clean, well-organized and very comprehensive.' },
+  { name:'Sneha Patel',   role:'GATE 2024 — AIR 47',         stars:5, image_url:null, verified:false, text:'Cleared GATE with AIR 47! The GATE-specific PDFs on Studyria are gold. Thank you for making this platform.' },
+  { name:'Vikram Singh',  role:'CAT 2024 — 99.2 Percentile', stars:5, image_url:null, verified:false, text:'Best investment for CAT prep! The quantitative aptitude PDF alone improved my score by 25 points. Amazing content.' },
+  { name:'Meera Kapoor',  role:'Class 9 Student',             stars:5, image_url:null, verified:false, text:'As a 9th grade student, finding quality notes used to be hard. Studyria makes it so easy and affordable. Love it!' },
+];
+
+function _buildTestimCard(t) {
+  const stars = Number(t.stars) || 5;
+  const starStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+  const initial = (t.name || '?').charAt(0).toUpperCase();
+  const avatarHTML = t.image_url
+    ? `<div class="home-testim-avatar"><img src="${t.image_url}" alt="${initial}" loading="lazy" onerror="this.style.display='none';this.parentNode.textContent='${initial}'"></div>`
+    : `<div class="home-testim-avatar">${initial}</div>`;
+  const verifiedBadge = t.verified
+    ? `<div class="home-testim-verified">✓ Verified</div>`
+    : '';
+  const textBody = (t.text || '').charAt(0) === '"' ? t.text : `"${t.text}"`;
+  return `<div class="home-testim-card">
+    <div class="home-testim-stars" style="color:#fbbf24;font-size:.9rem;letter-spacing:1px">${starStr}</div>
+    <div class="home-testim-text">${textBody}</div>
+    <div class="home-testim-author">
+      ${avatarHTML}
+      <div>
+        <div class="home-testim-name">${t.name || ''}</div>
+        ${t.role ? `<div class="home-testim-role">${t.role}</div>` : ''}
+        ${verifiedBadge}
+      </div>
+    </div>
+  </div>`;
+}
+
+function _renderTestimCards(list) {
+  const track = document.getElementById('testimTrack');
+  if (!track) return;
+  if (!list || !list.length) list = _FALLBACK_TESTIMONIALS;
+  // Duplicate list for seamless infinite scroll
+  const cards = [...list, ...list].map(_buildTestimCard).join('');
+  track.innerHTML = cards;
+  // Restart animation so timing resets with new content length
+  track.style.animation = 'none';
+  requestAnimationFrame(() => {
+    track.style.animation = '';
+    // Adjust scroll duration based on card count (≈2.5s per card)
+    const duration = Math.max(16, list.length * 2.5);
+    track.style.animationDuration = duration + 's';
+  });
+}
+
+async function loadHomepageTestimonials() {
+  // Render fallback first for instant display
+  _renderTestimCards(_FALLBACK_TESTIMONIALS);
+
+  try {
+    if (typeof window.loadTestimonials !== 'function') return;
+    const rows = await window.loadTestimonials(30);
+    if (rows && rows.length > 0) {
+      _renderTestimCards(rows);
+    }
+    // else keep fallback
+  } catch(e) {
+    console.warn('loadHomepageTestimonials:', e);
+    // fallback already rendered above
   }
 }
 

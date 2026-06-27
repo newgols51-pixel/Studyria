@@ -149,6 +149,31 @@
 // CREATE INDEX IF NOT EXISTS idx_pdf_reviews_verified ON public.pdf_reviews(verified);
 //
 // -- Career Hub tables → see supabase-setup.sql (generated separately)
+//
+// -- 5. Testimonials (student testimonials shown on homepage)
+// CREATE TABLE IF NOT EXISTS public.testimonials (
+//   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   name        text NOT NULL,
+//   role        text,                  -- e.g. "JEE 2024 — AIR 12"
+//   text        text NOT NULL,         -- review body
+//   stars       smallint NOT NULL DEFAULT 5 CHECK (stars BETWEEN 1 AND 5),
+//   image_url   text,                  -- optional photo URL (null = initials avatar)
+//   verified    boolean NOT NULL DEFAULT false,   -- admin-verified testimonial
+//   active      boolean NOT NULL DEFAULT true,    -- toggle visibility
+//   sort_order  integer NOT NULL DEFAULT 0,
+//   created_at  timestamptz DEFAULT now()
+// );
+// ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+// -- Public read (only active rows):
+// CREATE POLICY "Testimonials: public read active" ON public.testimonials
+//   FOR SELECT USING (active = true);
+// -- Admin full access:
+// CREATE POLICY "Testimonials: admin all" ON public.testimonials
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_testimonials_active      ON public.testimonials(active);
+// CREATE INDEX IF NOT EXISTS idx_testimonials_sort_order  ON public.testimonials(sort_order);
 // ─────────────────────────────────────────────────────────────────
 
 (function () {
@@ -818,6 +843,31 @@
         .maybeSingle();
       return data || null;
     } catch (_) { return null; }
+  };
+
+  // ── TESTIMONIALS ─────────────────────────────────────────────────
+
+  /**
+   * loadTestimonials(limit?)
+   * Fetches active testimonials ordered by sort_order for homepage display.
+   * Returns an array of { id, name, role, text, stars, image_url, verified }.
+   * Falls back to empty array on error — caller uses static fallback content.
+   * Cached for 5 minutes to avoid repeated loads on tab switches.
+   */
+  window.loadTestimonials = async function loadTestimonials(limit) {
+    const cacheKey = 'testimonials:home';
+    return window.cachedSupabaseQuery(cacheKey, async () => {
+      const client = window.supabaseClient;
+      if (!client) return [];
+      const { data, error } = await client
+        .from('testimonials')
+        .select('id,name,role,text,stars,image_url,verified')
+        .eq('active', true)
+        .order('sort_order', { ascending: true })
+        .limit(limit || 20);
+      if (error) { console.warn('loadTestimonials:', error.message); return []; }
+      return data || [];
+    }, 5 * 60 * 1000);
   };
 
   // ── BOOT ─────────────────────────────────────────────────────────
