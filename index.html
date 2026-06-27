@@ -8787,7 +8787,7 @@ function studyriaApp() {
           <div class="pstat-title">PDFs Sold</div>
           <div class="pstat-sub">Trusted by Assam Students</div>
         </div>
-        <div class="pstat-card" data-target="18000" data-suffix="K+" data-divisor="1000">
+        <div class="pstat-card" data-target="157" data-suffix="+">
           <div class="pstat-glow"></div>
           <div class="pstat-icon">👨‍🎓</div>
           <div class="pstat-num" id="pstatNum1">0</div>
@@ -9477,7 +9477,7 @@ function studyriaApp() {
         <div class="home-premium-cta-inner">
           <div class="home-cta-eyebrow">🚀 Start Your Journey Today</div>
           <div class="home-cta-title">Ready To Ace<br>Your Exams?</div>
-          <div class="home-cta-sub" id="homeCtaSub">Join <span id="homeCtaStudentCount">—</span> students who've transformed their study game with Studyria's premium PDF library.</div>
+          <div class="home-cta-sub" id="homeCtaSub">Join <span id="homeCtaStudentCount">157+</span> students who've transformed their study game with Studyria's premium PDF library.</div>
           <div class="home-cta-btns">
             <button class="home-cta-primary" onclick="navigate('register')">
               🎓 Create Free Account
@@ -9508,7 +9508,7 @@ function studyriaApp() {
             Join Our Community
           </div>
           <div class="community-hub-title" id="communityHubTitle">
-            Connect with <span class="ch-grad" id="communityStudentCount">7,000+ Students</span>
+            Connect with <span class="ch-grad" id="communityStudentCount">157+ Students</span>
           </div>
           <div class="community-hub-sub" id="communityHubSubtitle">
             Get study tips, exam alerts, and exclusive resources. Join the Studyria community across all platforms.
@@ -27133,7 +27133,7 @@ CREATE POLICY "admin_select" ON broken_pdf_reports FOR SELECT USING (true);</pre
         <div class="form-group"><label class="form-label">Hero Title</label>
           <input class="form-input" id="hmHeroTitle" value="${s('hero_title',"Assam's #1 Smartest Growth Ecosystem")}"/></div>
         <div class="form-group"><label class="form-label">Subtitle</label>
-          <input class="form-input" id="hmHeroSubtitle" value="${s('hero_subtitle','18,000+ students study smarter every day')}"/></div>
+          <input class="form-input" id="hmHeroSubtitle" value="${s('hero_subtitle','157+ students study smarter every day')}"/></div>
         <div class="form-group"><label class="form-label">CTA Button Text</label>
           <input class="form-input" id="hmHeroCtaText" value="${s('hero_cta_text','Browse PDFs')}"/></div>
         <div class="form-group"><label class="form-label">CTA Button Link</label>
@@ -28354,7 +28354,7 @@ function tsRenderPreviewHero(t) {
   t = t || tsGetActiveTheme() || TS_BUILTIN_PRESETS[0];
   return `<div class="ts-preview-hero" style="background:linear-gradient(135deg,${t.primary}22,${t.secondary}11);border:1px solid ${t.primary}33">
     <div style="font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">India's #1 PDF Study Platform</div>
-    <div style="font-size:.85rem;color:${t.text||'#eef2ff'};opacity:.7;margin-bottom:16px">18,000+ students study smarter with Studyria</div>
+    <div style="font-size:.85rem;color:${t.text||'#eef2ff'};opacity:.7;margin-bottom:16px">157+ students study smarter with Studyria</div>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <div style="padding:9px 22px;border-radius:10px;background:linear-gradient(135deg,${t.primary},${t.secondary});color:#fff;font-weight:700;font-size:.85rem">Browse PDFs</div>
       <div style="padding:9px 22px;border-radius:10px;border:1px solid ${t.primary};color:${t.text||'#eef2ff'};font-size:.85rem">Free Downloads</div>
@@ -29476,7 +29476,7 @@ window._heroDefaults = {
   badge_text: "Assam's #1 Smartest Growth Ecosystem",
   main_title: "Assam's Ultimate Gateway to Education and Career Growth",
   highlight_text: "Studyria™ Premium Growth Hub",
-  subtitle_phrases: "Free & premium PDFs for every competitive exam in India.|Curated study materials trusted by 18,000+ students.|Your shortcut to better marks, better scores, better future.|India’s #1 PDF Study Platform — download, study, succeed.",
+  subtitle_phrases: "Free & premium PDFs for every competitive exam in India.|Curated study materials trusted by 157+ students.|Your shortcut to better marks, better scores, better future.|India’s #1 PDF Study Platform — download, study, succeed.",
   font_family: "Playfair Display, Georgia, serif",
   title_font_size: "clamp(1.5rem,3.4vw,2.4rem)",
   title_font_weight: "800",
@@ -31518,8 +31518,36 @@ function _animatePstatEl(numEl, endVal, opts) {
 // callers (home pstat cards, About page, hero, footer CTA) all
 // read the same numbers without duplicating DB round-trips.
 
+// ── AUTO STUDENT COUNTER ─────────────────────────────────────────
+// Grows the student count by 2-5 per day from the seed date.
+// Deterministic per-day increment (seeded by date index) — every
+// visitor on the same calendar day sees the same number.
+// No localStorage or server-side persistence needed.
+(function() {
+  var STUDENT_BASE      = 157;
+  var STUDENT_SEED_DATE = new Date('2026-06-27T00:00:00+05:30').getTime();
+  var MS_PER_DAY        = 86400000;
+
+  function _dailyIncrement(dayIndex) {
+    // Deterministic 2-5 increment per day (simple LCG hash)
+    var seed = (dayIndex * 1103515245 + 12345) & 0x7fffffff;
+    return 2 + (seed % 4); // 2, 3, 4 or 5
+  }
+
+  function getAutoStudentCount() {
+    var daysPassed = Math.floor((Date.now() - STUDENT_SEED_DATE) / MS_PER_DAY);
+    if (daysPassed <= 0) return STUDENT_BASE;
+    var total = STUDENT_BASE;
+    for (var i = 0; i < daysPassed; i++) total += _dailyIncrement(i);
+    return total;
+  }
+
+  window.getAutoStudentCount = getAutoStudentCount;
+})();
+
 /**
  * Formats a raw number for display, e.g. 18432 → "18K+" or 523 → "500+"
+ * For small numbers (< 1000) shows exact value with "+"
  */
 function _fmtStatNum(n, opts) {
   opts = opts || {};
@@ -31529,8 +31557,8 @@ function _fmtStatNum(n, opts) {
     return (k / 1000).toFixed(k % 1000 === 0 ? 0 : 1) + 'K+';
   }
   if (opts.suffix) return n + opts.suffix;
-  // Round down to nearest 50
-  return (Math.floor(n / 50) * 50 || n) + '+';
+  // For counts < 1000 show exact value with "+"
+  return n + '+';
 }
 
 async function loadSupabaseHomeStats() {
@@ -31574,6 +31602,11 @@ function _applyPlatformStats(stats) {
   if (!stats) return;
   const { pdfCount, totalDl, userCount } = stats;
 
+  // Auto-growing student counter: uses live DB count if available,
+  // otherwise falls back to the deterministic daily-incrementing counter.
+  const autoCount   = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
+  const studentCount = userCount > 0 ? userCount : autoCount;
+
   // ── Homepage pstat cards ─────────────────────────────────────
   const card0 = document.getElementById('pstatNum0');
   const soldVal = totalDl > 0 ? totalDl : pdfCount;
@@ -31584,10 +31617,10 @@ function _applyPlatformStats(stats) {
   }
 
   const card1 = document.getElementById('pstatNum1');
-  if (card1 && userCount > 0) {
+  if (card1) {
     const cards = document.querySelectorAll('.pstat-card[data-target]');
     cards[1]?.setAttribute('data-stat-live', '1');
-    _animatePstatEl(card1, userCount, {});
+    _animatePstatEl(card1, studentCount, { suffix: '+' });
   }
 
   const card2 = document.getElementById('pstatNum2');
@@ -31599,35 +31632,36 @@ function _applyPlatformStats(stats) {
 
   // ── About page stat tiles ────────────────────────────────────
   const aboutStudents = document.getElementById('aboutStatStudents');
-  if (aboutStudents && userCount > 0) {
-    aboutStudents.textContent = _fmtStatNum(userCount);
-  } else if (aboutStudents) {
-    aboutStudents.textContent = '—'; // no verified fallback
+  if (aboutStudents) {
+    aboutStudents.textContent = _fmtStatNum(studentCount);
   }
 
   const aboutPdfs = document.getElementById('aboutStatPdfs');
   if (aboutPdfs && pdfCount > 0) {
     aboutPdfs.textContent = _fmtStatNum(pdfCount);
   } else if (aboutPdfs) {
-    aboutPdfs.textContent = '—'; // no verified fallback
+    aboutPdfs.textContent = '—';
   }
 
   // ── Home CTA subtitle ────────────────────────────────────────
   const ctaCount = document.getElementById('homeCtaStudentCount');
-  if (ctaCount && userCount > 0) {
-    ctaCount.textContent = _fmtStatNum(userCount);
+  if (ctaCount) {
+    ctaCount.textContent = _fmtStatNum(studentCount);
   }
 
   // ── Community hub title ──────────────────────────────────────
   const communityCount = document.getElementById('communityStudentCount');
-  if (communityCount && userCount > 0) {
-    communityCount.textContent = _fmtStatNum(userCount) + ' Students';
+  if (communityCount) {
+    communityCount.textContent = _fmtStatNum(studentCount) + ' Students';
   }
 }
 
 function initPlatformStats() {
   const cards = document.querySelectorAll('.pstat-card[data-target]');
   if (!cards.length) return;
+
+  // Auto student count for static fallback
+  const autoStudentCount = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
 
   // Immediately start count-up with current data-target values (static fallback)
   const observer = new IntersectionObserver((entries) => {
@@ -31642,8 +31676,12 @@ function initPlatformStats() {
       const numEl = card.querySelector('.pstat-num');
       if (!numEl || card.dataset.statLive === '1') return; // skip if already updated by Supabase
 
-      const endVal = divisor > 1 ? Math.round(target / divisor) : target;
-      _animatePstatEl(numEl, endVal, { suffix, decimal: decimal ? parseFloat(decimal) : null });
+      // For the Students card (pstatNum1), use the auto-growing counter
+      const isStudentCard = numEl.id === 'pstatNum1';
+      const endVal = isStudentCard ? autoStudentCount
+                   : (divisor > 1 ? Math.round(target / divisor) : target);
+      const useSuffix = isStudentCard ? '+' : suffix;
+      _animatePstatEl(numEl, endVal, { suffix: useSuffix, decimal: decimal ? parseFloat(decimal) : null });
     });
   }, { threshold: 0.2 });
 
@@ -31655,7 +31693,14 @@ function initPlatformStats() {
   // Async: fetch real Supabase stats and update ALL stat surfaces
   loadSupabaseHomeStats().then(stats => {
     _applyPlatformStats(stats);
-  }).catch(() => {}); // silent — fallback static values are already shown
+  }).catch(() => {
+    // Even on error, show auto-counter on community + CTA
+    const auto = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
+    const cta  = document.getElementById('homeCtaStudentCount');
+    if (cta) cta.textContent = auto + '+';
+    const cc   = document.getElementById('communityStudentCount');
+    if (cc)  cc.textContent  = auto + '+ Students';
+  });
 }
 
 /**
@@ -31681,12 +31726,14 @@ function initAboutStats() {
     if (stats) {
       _applyPlatformStats(stats);
     } else {
-      // No verified data available — leave as dash
-      if (aboutStudents) aboutStudents.textContent = '—';
+      // No DB data — use auto-counter fallback
+      const autoCount = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
+      if (aboutStudents) aboutStudents.textContent = autoCount + '+';
       if (aboutPdfs)     aboutPdfs.textContent = '—';
     }
   }).catch(() => {
-    if (aboutStudents) aboutStudents.textContent = '—';
+    const autoCount = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
+    if (aboutStudents) aboutStudents.textContent = autoCount + '+';
     if (aboutPdfs)     aboutPdfs.textContent = '—';
   });
 }
@@ -31765,6 +31812,20 @@ function renderHome() {
     _refreshFreeButtonLabels();
   }, 100);
 }
+
+// ── STUDENT COUNT EARLY INIT ────────────────────────────────────
+// Pre-populate all student count surfaces with the auto-counter
+// immediately (no DB wait). Supabase will overwrite with live data
+// when it resolves, keeping all sections in sync automatically.
+document.addEventListener('DOMContentLoaded', function _initStudentCounters() {
+  var autoCount = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
+  var ctaEl = document.getElementById('homeCtaStudentCount');
+  if (ctaEl) ctaEl.textContent = autoCount + '+';
+  var commEl = document.getElementById('communityStudentCount');
+  if (commEl) commEl.textContent = autoCount + '+ Students';
+  var aboutEl = document.getElementById('aboutStatStudents');
+  if (aboutEl && aboutEl.textContent === '—') aboutEl.textContent = autoCount + '+';
+});
 
 // Also init on DOMContentLoaded for direct home load
 document.addEventListener('DOMContentLoaded', () => {
