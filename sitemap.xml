@@ -6,82 +6,90 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://studyria.com/</loc>
+    <loc>https://studyria.qzz.io/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- Library — PDF browsing hub -->
   <url>
-    <loc>https://studyria.com/?page=library</loc>
+    <loc>https://studyria.qzz.io/?page=library</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- Discover — Search & filter PDFs -->
   <url>
-    <loc>https://studyria.com/?page=discover</loc>
+    <loc>https://studyria.qzz.io/?page=discover</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- Career Hub — Jobs, Scholarships, Results -->
   <url>
-    <loc>https://studyria.com/?page=career-hub</loc>
+    <loc>https://studyria.qzz.io/?page=career-hub</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- Free PDFs landing -->
   <url>
-    <loc>https://studyria.com/?page=library&amp;filter=free</loc>
+    <loc>https://studyria.qzz.io/?page=library&amp;filter=free</loc>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- JEE PDFs category -->
   <url>
-    <loc>https://studyria.com/?page=library&amp;cat=JEE</loc>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=JEE</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- NEET PDFs category -->
   <url>
-    <loc>https://studyria.com/?page=library&amp;cat=NEET</loc>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=NEET</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- UPSC PDFs category -->
   <url>
-    <loc>https://studyria.com/?page=library&amp;cat=UPSC</loc>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=UPSC</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
   <!-- Assam Exams category -->
   <url>
-    <loc>https://studyria.com/?page=library&amp;cat=Assam+Exams</loc>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+Exams</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-06-27</lastmod>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
-  <!-- Login (lower priority) -->
+  <!-- ADRE category -->
   <url>
-    <loc>https://studyria.com/?page=login</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-    <lastmod>2025-06-27</lastmod>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=ADRE</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-06-27</lastmod>
+  </url>
+
+  <!-- APSC category -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=APSC</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-06-27</lastmod>
   </url>
 
 </urlset>

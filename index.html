@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
 <meta charset="UTF-8" />
 <!-- ── SPA PATH → HASH REDIRECT ───────────────────────────────────────
@@ -58,6 +58,7 @@
 <meta property="og:image:alt" content="Studyria – Assam's Smart Education Platform" />
 <!-- ── SEO: Twitter Card ── -->
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://studyria.qzz.io/" />
 <meta name="twitter:title" content="Studyria – India's #1 PDF Study Platform" />
 <meta name="twitter:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams." />
 <meta name="twitter:image" content="https://studyria.qzz.io/og-cover.png" />
@@ -65,17 +66,39 @@
 <meta name="twitter:site" content="@studyria" />
 <meta name="twitter:creator" content="@studyria" />
 <meta property="og:locale" content="en_IN" />
+<meta property="og:locale:alternate" content="en_US" />
 
 <meta name="theme-color" content="#080c14" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#f0f4fb" media="(prefers-color-scheme: light)" />
+<!-- ── Resource Hints ── -->
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+<link rel="dns-prefetch" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" />
+<link rel="dns-prefetch" href="https://cdn.onesignal.com" />
+<link rel="dns-prefetch" href="https://checkout.razorpay.com" />
+<link rel="preconnect" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" crossorigin />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js" as="script" crossorigin />
 <title>Studyria – India's #1 PDF Study Platform</title>
 <link rel="manifest" href="manifest.json">
 
+<!-- ── Favicon & PWA Icons ── -->
 <link id="siteFavicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233d8ef8'/%3E%3Cstop offset='1' stop-color='%2300c8e8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,Helvetica,sans-serif' font-size='58' font-weight='800' fill='white' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/icon-192.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="/icon-152.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="/icon-144.png" />
+<link rel="apple-touch-icon" sizes="128x128" href="/icon-128.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Studyria" />
+<meta name="msapplication-TileImage" content="/icon-144.png" />
+<meta name="msapplication-TileColor" content="#3d8ef8" />
+<meta name="msapplication-config" content="none" />
 
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 
@@ -4679,6 +4702,51 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     "https://youtube.com/@studyria",
     "https://t.me/studyria"
   ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://studyria.qzz.io/#website",
+  "url": "https://studyria.qzz.io/",
+  "name": "Studyria",
+  "description": "India's #1 PDF Study Platform for JEE, NEET, UPSC, ADRE, APSC and Assam board exams.",
+  "inLanguage": "en-IN",
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://studyria.qzz.io/?page=library&q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": "https://studyria.qzz.io/#webapp",
+  "name": "Studyria",
+  "url": "https://studyria.qzz.io/",
+  "applicationCategory": "EducationApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "inLanguage": "en-IN",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "INR"
+  },
+  "author": {
+    "@id": "https://studyria.qzz.io/#organization"
+  }
 }
 </script>
 

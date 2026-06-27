@@ -2,24 +2,45 @@ User-agent: *
 Allow: /
 
 # Block private/admin/auth pages from indexing
+# Query-param variants
 Disallow: /?page=admin
 Disallow: /?page=admin-login
 Disallow: /?page=dashboard
 Disallow: /?page=login
 Disallow: /?page=register
 Disallow: /?page=reset-password
-Disallow: /?page=creator-register
 Disallow: /?page=wallet
 Disallow: /?page=marketplace
+
+# Hash-route variants (for crawlers that process fragment URLs)
+Disallow: /#admin
+Disallow: /#admin-login
+Disallow: /#dashboard
+Disallow: /#login
+Disallow: /#register
+Disallow: /#reset-password
+Disallow: /#wallet
+Disallow: /#marketplace
+Disallow: /#creator-dashboard
+Disallow: /#creator-register
+Disallow: /#upload
+Disallow: /#wishlist
 
 # Allow important public pages explicitly
 Allow: /?page=library
 Allow: /?page=discover
 Allow: /?page=detail
 Allow: /?page=career-hub
+Allow: /#library
+Allow: /#discover
+Allow: /#career-hub
+
+# Static assets — always allow
+Allow: /og-cover.png
+Allow: /favicon.ico
+Allow: /icon-*.png
+Allow: /manifest.json
+Allow: /sitemap.xml
 
 # Sitemap location
-Sitemap: https://studyria.com/sitemap.xml
-
-# Crawl-delay for respectful crawling
-Crawl-delay: 2
+Sitemap: https://studyria.qzz.io/sitemap.xml

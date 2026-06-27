@@ -13,6 +13,7 @@
   "lang": "en-IN",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "categories": ["education", "books", "productivity"],
   "icons": [
     {
@@ -74,6 +75,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-cover.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Studyria – PDF Study Platform home screen"
+    },
+    {
+      "src": "/og-cover.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Studyria – PDF Study Platform on mobile"
     }
   ],
   "shortcuts": [
