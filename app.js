@@ -1328,11 +1328,14 @@ window.osRequestNotification = async function() {
   const btn = document.getElementById('osNotifBtn');
 
   // Guard: already subscribed — nothing to do
-  if (_osState.subscribed) return;
+  if (_osState.subscribed) {
+    console.log('[OneSignal] Already subscribed — skipping');
+    return;
+  }
 
   // Guard: permission already denied — direct user to browser settings
   if ('Notification' in window && Notification.permission === 'denied') {
-    console.log('[OneSignal] Step: Permission — already denied; directing to settings');
+    console.log('[OneSignal] Permission — already denied; directing to settings');
     if (typeof showToast === 'function') {
       showToast('Notifications are blocked. Open your browser site settings to allow them.', 'info');
     }
@@ -1341,12 +1344,10 @@ window.osRequestNotification = async function() {
   }
 
   // ── STEP 1: Initiate permission request SYNCHRONOUSLY ──────────────────
-  // This call MUST happen before any await. Chrome Android PWA requires the
-  // permission API to be triggered within the direct synchronous call stack
-  // of the click event. We start the Promise here but do not await it yet.
+  // MUST be the very first thing — no await before this.
+  // Chrome Android PWA silently drops the dialog if any await precedes it.
   console.log('[OneSignal] Step: Permission requested (sync within gesture)…');
 
-  // Disable button immediately to prevent double-tap
   if (btn) {
     btn.disabled      = true;
     btn.textContent   = 'Requesting…';
@@ -1354,42 +1355,24 @@ window.osRequestNotification = async function() {
       'background:rgba(61,142,248,0.08);border-color:rgba(61,142,248,0.2);color:#7a8caa;cursor:wait;';
   }
 
-  // Start the native permission request NOW — synchronous call within gesture
   const permissionPromise = Notification.requestPermission();
 
-  // ── STEP 2: Await the permission dialog result ─────────────────────────
-  // From here the user-gesture window is no longer relevant — the browser
-  // dialog was already triggered in STEP 1.
+  // ── STEP 2: Await the permission result ───────────────────────────────
   let permission;
   try {
     permission = await permissionPromise;
-  } catch (err) {
-    // SecurityError — should not happen since we called from a click event
-    console.error('[OneSignal] Step: Permission — requestPermission() threw:', err);
-    // Do NOT show failure here — check actual Notification.permission first
-    const actualPerm = 'Notification' in window ? Notification.permission : 'default';
-    console.log('[OneSignal] Step: Permission — actual Notification.permission =', actualPerm);
-    if (actualPerm === 'granted') {
-      permission = 'granted';
-    } else if (actualPerm === 'denied') {
-      permission = 'denied';
-    } else {
-      // Truly indeterminate — restore button silently for retry
-      console.log('[OneSignal] Step: Permission — indeterminate, restoring button for retry');
-      _osRenderBurgerButton();
-      return;
-    }
+  } catch (_err) {
+    // Fallback: promise rejected on some browsers — read the actual value
+    permission = 'Notification' in window ? Notification.permission : 'default';
+    console.warn('[OneSignal] requestPermission() threw — using Notification.permission:', permission);
   }
 
-  // Always re-read Notification.permission as the authoritative source
+  // Always treat Notification.permission as the authoritative source
   const actualPermission = 'Notification' in window ? Notification.permission : permission;
-  console.log('[OneSignal] Step: Permission — result:', permission, '| Notification.permission:', actualPermission);
+  console.log('[OneSignal] Step: Permission — promise returned:', permission, '| Notification.permission:', actualPermission);
 
-  // Use the authoritative browser value
-  const effectivePermission = actualPermission || permission;
-
-  if (effectivePermission === 'denied') {
-    console.log('[OneSignal] Step: Permission — denied ❌');
+  if (actualPermission === 'denied') {
+    console.log('[OneSignal] Step: Permission denied ❌');
     if (typeof showToast === 'function') {
       showToast('Notifications blocked. Open your browser site settings to allow them.', 'info');
     }
@@ -1397,14 +1380,14 @@ window.osRequestNotification = async function() {
     return;
   }
 
-  if (effectivePermission !== 'granted') {
-    // 'default' means dismissed (user closed dialog without choosing) — keep waiting, restore for retry
-    console.log('[OneSignal] Step: Permission — dismissed / still default; restoring button for retry');
+  if (actualPermission !== 'granted') {
+    // User dismissed the dialog — restore button silently so they can retry
+    console.log('[OneSignal] Step: Permission dismissed (default) — restoring button for retry');
     _osRenderBurgerButton();
     return;
   }
 
-  // Permission granted ✅ — proceed with async OneSignal work
+  // ── STEP 3: Permission granted ✅ ─────────────────────────────────────
   console.log('[OneSignal] Step: Permission granted ✅');
   if (btn) {
     btn.textContent   = 'Enabling…';
@@ -1413,126 +1396,60 @@ window.osRequestNotification = async function() {
   }
 
   try {
-    // ── STEP 3: Wait for OneSignal SDK to be ready ───────────────────────
-    console.log('[OneSignal] Step: Init — waiting for SDK…');
-    // Race against a 15-second ceiling in case the CDN is unreachable.
+    // ── STEP 4: Wait for OneSignal SDK ───────────────────────────────────
+    console.log('[OneSignal] Step: Waiting for SDK…');
     const OneSignal = await Promise.race([
       _osReady,
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('OneSignal SDK init timed out after 15s')), 15000)
+        setTimeout(() => reject(new Error('OneSignal SDK timed out after 15s')), 15000)
       ),
     ]);
-    console.log('[OneSignal] Step: Init — SDK ready ✅');
+    console.log('[OneSignal] Step: SDK ready ✅');
 
-    // ── STEP 4: Check service worker is active (non-fatal) ───────────────
-    console.log('[OneSignal] Step: Service Worker — checking…');
+    // ── STEP 5: Service worker check (non-fatal) ──────────────────────────
     if ('serviceWorker' in navigator) {
       await Promise.race([
         navigator.serviceWorker.ready,
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('SW ready timed out')), 5000)
-        ),
-      ]).catch(err => {
-        // Non-fatal: SW may still be installing. Log and continue.
-        console.warn('[OneSignal] Step: Service Worker — not ready, continuing:', err.message);
-      });
+        new Promise(resolve => setTimeout(resolve, 5000)), // non-fatal timeout
+      ]).catch(() => {});
     }
-    console.log('[OneSignal] Step: Service Worker — checked ✅');
+    console.log('[OneSignal] Step: Service Worker checked ✅');
 
-    // ── STEP 5: Subscribe via OneSignal optIn() ──────────────────────────
-    // Permission is already granted at the native browser level (STEP 2).
-    // optIn() registers/activates the OneSignal push subscription without
-    // needing to show any prompt.
-    console.log('[OneSignal] Step: Subscription — calling optIn()…');
+    // ── STEP 6: Call optIn() ──────────────────────────────────────────────
+    // At this point Notification.permission === 'granted' so optIn() will not
+    // show any dialog. It registers the push subscription with OneSignal's
+    // backend. We treat optIn() resolving without throwing as success —
+    // optedIn may still be false synchronously on Chrome Android PWA because
+    // the token arrives asynchronously. The change event listener installed
+    // in _osCheckSubscriptionState will update _osState when the token lands.
+    console.log('[OneSignal] Step: Calling optIn()…');
     await OneSignal.User.PushSubscription.optIn();
-    console.log('[OneSignal] Step: Subscription — optIn() call completed');
+    console.log('[OneSignal] Step: OneSignal subscribed ✅ — optIn() resolved without error');
 
-    // ── STEP 6: Poll for optedIn confirmation with retries ───────────────
-    // OneSignal's backend confirmation is async — optedIn may still be false
-    // immediately after optIn() resolves. Poll for up to 10 seconds before
-    // giving up. Never show failure during this window.
-    console.log('[OneSignal] Step: Subscription — polling for optedIn confirmation…');
+    // Read whatever the SDK has synchronously — may be null on first subscribe
+    const subId    = OneSignal.User.PushSubscription.id    || null;
+    const optedIn  = OneSignal.User.PushSubscription.optedIn;
+    console.log('[OneSignal] Subscription ID:', subId, '| optedIn:', optedIn);
 
-    const POLL_INTERVAL_MS = 500;
-    const POLL_TIMEOUT_MS  = 10000;
-    const pollStart        = Date.now();
-
-    const confirmed = await new Promise((resolve) => {
-      function check() {
-        // Re-read Notification.permission on every poll tick to catch late denials
-        const perm = 'Notification' in window ? Notification.permission : 'granted';
-        if (perm === 'denied') {
-          console.log('[OneSignal] Step: Subscription — permission became denied during poll');
-          resolve(false);
-          return;
-        }
-
-        const optedIn = OneSignal.User.PushSubscription.optedIn;
-        const subId   = OneSignal.User.PushSubscription.id || null;
-        console.log('[OneSignal] Step: Subscription — poll tick: optedIn =', optedIn, '| id =', subId);
-
-        if (optedIn) {
-          resolve(true);
-          return;
-        }
-
-        if (Date.now() - pollStart >= POLL_TIMEOUT_MS) {
-          console.warn('[OneSignal] Step: Subscription — poll timed out after', POLL_TIMEOUT_MS, 'ms');
-          resolve(false);
-          return;
-        }
-
-        setTimeout(check, POLL_INTERVAL_MS);
-      }
-
-      // Also resolve immediately via change event if it fires first
-      OneSignal.User.PushSubscription.addEventListener('change', function onSubChange(event) {
-        OneSignal.User.PushSubscription.removeEventListener('change', onSubChange);
-        console.log('[OneSignal] Step: Subscription — change event fired: optedIn =', event.current.optedIn);
-        resolve(!!event.current.optedIn);
-      });
-
-      check();
-    });
-
-    if (!confirmed) {
-      // Permission is granted but OneSignal backend did not confirm in time.
-      // Check if permission is still granted — if so this is a server delay,
-      // not a user denial. Show a soft "syncing" message, do NOT show error.
-      const permNow = 'Notification' in window ? Notification.permission : 'granted';
-      if (permNow === 'denied') {
-        console.log('[OneSignal] Failure reason: permission denied during subscription');
-        if (typeof showToast === 'function') {
-          showToast('Notifications blocked. Open your browser site settings to allow them.', 'info');
-        }
-        _osRenderBurgerButton();
-      } else {
-        // Permission granted but subscription pending — treat as in-progress, not failure
-        console.log('[OneSignal] Failure reason: subscription not confirmed within timeout — will retry via change event');
-        // Mark as subscribed optimistically if permission is granted, to avoid showing error
-        _osState.subscribed = false; // keep false until confirmed
-        if (typeof showToast === 'function') {
-          showToast('Notifications enabled — finishing setup in background…', 'info');
-        }
-        // Keep the button in "Enabling…" state briefly, then restore
-        setTimeout(function() {
-          // Re-check — change event may have fired by now
-          if (!_osState.subscribed) {
-            _osRenderBurgerButton();
-          }
-        }, 3000);
-      }
-      return;
-    }
-
-    // ── Confirmed subscribed ✅ ──────────────────────────────────────────
+    // ── STEP 7: Mark success ──────────────────────────────────────────────
+    // Key insight: permission is granted AND optIn() resolved without error.
+    // That is sufficient to show "Notifications Enabled". The push token /
+    // subscription ID will arrive via the change event and be saved then.
     _osState.subscribed = true;
-    _osState.userId     = OneSignal.User.PushSubscription.id || null;
+    _osState.userId     = subId;
     _osSaveSubscriptionState();
 
-    console.log('[OneSignal] Step: OneSignal subscribed ✅');
-    console.log('[OneSignal] Subscription ID:', _osState.userId);
-    console.log('[OneSignal] Step: Success ✅ token:', OneSignal.User.PushSubscription.token ?? '(pending server sync)');
+    // Listen for the token to arrive so we can persist the real subscription ID
+    try {
+      OneSignal.User.PushSubscription.addEventListener('change', function onFirstToken(event) {
+        OneSignal.User.PushSubscription.removeEventListener('change', onFirstToken);
+        _osState.userId = event.current.id || _osState.userId;
+        _osSaveSubscriptionState();
+        console.log('[OneSignal] Subscription ID (token arrived):', _osState.userId);
+      });
+    } catch (_) { /* non-critical */ }
+
+    console.log('[OneSignal] Step: Success ✅');
 
     if (btn) {
       btn.textContent   = 'Notifications Enabled ✅';
@@ -1545,29 +1462,26 @@ window.osRequestNotification = async function() {
     }
 
   } catch (err) {
-    // Genuine unexpected async failure (SDK timeout, optIn network error, etc.)
-    // ONLY reach here for real errors, not for async timing / pending subscriptions.
+    // Only reaches here for genuine errors: SDK timeout, network failure, etc.
+    // NEVER shown for the normal async token-pending state.
     console.error('[OneSignal] Failure reason:', err && err.message ? err.message : err);
 
-    // Do NOT show error if Notification.permission is granted — the subscription
-    // may still be processing. Only show error for genuine failures.
-    const permAtFailure = 'Notification' in window ? Notification.permission : 'default';
-    if (permAtFailure === 'granted') {
-      console.warn('[OneSignal] Permission is granted — suppressing error UI; subscription may still complete via change event');
-      if (typeof showToast === 'function') {
-        showToast('Finishing notification setup — please wait a moment…', 'info');
-      }
-      // Restore button but keep it enabled for retry
-      setTimeout(_osRenderBurgerButton, 5000);
-    } else if (permAtFailure === 'denied') {
-      console.log('[OneSignal] Failure reason: permission denied');
+    // If permission is still granted, the failure is a backend/network issue —
+    // do NOT show "could not enable" because the subscription may still land.
+    // Just restore the button so they can retry.
+    const permNow = 'Notification' in window ? Notification.permission : 'default';
+    if (permNow === 'granted') {
+      console.warn('[OneSignal] Failure reason: SDK/network error with granted permission — suppressing error toast');
+      // Restore button for retry without showing an error message
+      _osRenderBurgerButton();
+    } else if (permNow === 'denied') {
+      console.log('[OneSignal] Failure reason: permission became denied');
       if (typeof showToast === 'function') {
         showToast('Notifications blocked. Open your browser site settings to allow them.', 'info');
       }
       _osRenderBurgerButton();
     } else {
-      // Truly indeterminate — restore silently
-      console.log('[OneSignal] Failure reason: SDK error with default permission —', err);
+      console.log('[OneSignal] Failure reason: SDK error, permission default — restoring button');
       _osRenderBurgerButton();
     }
   }
