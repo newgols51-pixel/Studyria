@@ -15620,7 +15620,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 
           <!-- PWA install badge -->
           <div class="sf-app-badge">
-            <a class="sf-app-badge-btn" onclick="triggerPWAInstall()" id="sfAppBadgeBtn" style="display:none">
+            <a class="sf-app-badge-btn" onclick="triggerPWAInstall()" id="sfAppBadgeBtn">
               <div class="sf-app-badge-icon">📱</div>
               <div class="sf-app-badge-text">
                 <span class="sf-app-badge-sub">Install Free App</span>
@@ -16718,37 +16718,41 @@ async function renderPopularDownloads() {
 }
 
 // ── PWA INSTALL (Feature 6) ──────────────────────────────────────
+// NOTE: The primary install/update logic lives in the App Center engine
+// below (pwaAppCenter). This section only manages the legacy navbar
+// install button (#pwaInstallBtn) so both co-exist safely.
+//
+// ✅ FIX: Use window._pwaInstallPrompt (not let) so inline HTML onclick
+//    handlers and footer badge can access it globally.
 window._pwaInstallPrompt = null;
-window._pwaInstallCooldown = false;
-
 window.addEventListener('beforeinstallprompt', (e) => {
+  // ✅ Prevent the browser's automatic mini-infobar / install banner.
+  //    The App Center card and footer badge are the only install CTAs.
   e.preventDefault();
   window._pwaInstallPrompt = e;
-  // Show footer badge only now that install is actually available
-  const footerBadge = document.getElementById('sfAppBadgeBtn');
-  if (footerBadge) footerBadge.style.display = '';
 });
-
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) btn.style.display = 'none';
+  window._pwaInstallPrompt = null;
+  // Toast is shown by the App Center engine; avoid double-toast.
+});
 function triggerPWAInstall() {
-  // Debounce: ignore if called within 3 seconds of last call
-  if (window._pwaInstallCooldown) return;
-  window._pwaInstallCooldown = true;
-  setTimeout(function() { window._pwaInstallCooldown = false; }, 3000);
-
+  // Prefer the App Center engine if available (it manages its own _installEvt)
   if (window.pwaAppCenter) {
     window.pwaAppCenter.install();
     return;
   }
   if (window._pwaInstallPrompt) {
     window._pwaInstallPrompt.prompt();
-    window._pwaInstallPrompt.userChoice.then(function(choice) {
+    window._pwaInstallPrompt.userChoice.then(choice => {
       if (choice.outcome === 'accepted') showToast('🚀 Studyria installed!', 'success');
       window._pwaInstallPrompt = null;
-      document.getElementById('pwaInstallBtn')?.style?.setProperty('display','none');
-      document.getElementById('sfAppBadgeBtn')?.style?.setProperty('display','none');
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) btn.style.display = 'none';
     });
   } else {
-    showToast('📱 Open Chrome menu (⋮) → "Add to Home Screen" to install', 'info');
+    showToast('📱 To install: tap browser menu → "Add to Home Screen"', 'info');
   }
 }
 
@@ -32009,9 +32013,6 @@ if (_origTrackReading) {
       // Browser confirms the app is running in standalone mode → installed
       hide('pwaHmInstallCard');
       show('pwaHmInstalledCard');
-      // Hide footer install badge — already installed
-      var footerBadge = document.getElementById('sfAppBadgeBtn');
-      if (footerBadge) footerBadge.style.display = 'none';
     } else {
       // Not installed — always show the install card regardless of whether
       // beforeinstallprompt has fired yet. On iOS and some browsers the
@@ -32033,21 +32034,6 @@ if (_origTrackReading) {
       }
     }
     renderDiagnostics();
-  }
-
-  // ── Async check for already-installed PWA (runs once after load) ──
-  // Chrome Android: getInstalledRelatedApps() returns the installed WebAPK/TWA.
-  // If found, update _isInstalled and re-render so the install card hides.
-  function checkAlreadyInstalled() {
-    if (_isInstalled) return; // already confirmed installed
-    if (!('getInstalledRelatedApps' in navigator)) return;
-    navigator.getInstalledRelatedApps().then(function(apps) {
-      if (apps && apps.length > 0) {
-        _isInstalled = true;
-        renderInstallCard();
-        console.log('[PWA] Already installed (getInstalledRelatedApps):', apps);
-      }
-    }).catch(function() { /* API unavailable or permission denied */ });
   }
 
   // ── Show update card with dynamic What's New from SW ────────────
@@ -32081,27 +32067,7 @@ if (_origTrackReading) {
   window.pwaAppCenter = {
 
     install: async function() {
-      // Debounce — shared with triggerPWAInstall() to prevent double-toast
-      if (window._pwaInstallCooldown) return;
-      window._pwaInstallCooldown = true;
-      setTimeout(function() { window._pwaInstallCooldown = false; }, 3000);
-
       if (!_installEvt) {
-        // Check if already installed via getInstalledRelatedApps (Chrome Android)
-        if ('getInstalledRelatedApps' in navigator) {
-          try {
-            var related = await navigator.getInstalledRelatedApps();
-            if (related && related.length > 0) {
-              if (typeof showToast === 'function') showToast('✅ Studyria is already installed! Open it from your home screen.', 'success');
-              // Update UI to reflect installed state
-              _isInstalled = true;
-              renderInstallCard();
-              var footerBadge = document.getElementById('sfAppBadgeBtn');
-              if (footerBadge) footerBadge.style.display = 'none';
-              return;
-            }
-          } catch(e) { /* API may be unavailable */ }
-        }
         // No install prompt available — show platform-appropriate guidance
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
@@ -32112,7 +32078,7 @@ if (_origTrackReading) {
           }
         } else {
           if (typeof showToast === 'function') {
-            showToast('📱 Open Chrome menu (⋮) → "Add to Home Screen" to install', 'info');
+            showToast('📱 Open browser menu → "Install app" or "Add to Home Screen" to install', 'info');
           }
         }
         return;
@@ -32292,7 +32258,6 @@ if (_origTrackReading) {
   function initRender() {
     renderInstallCard();
     renderDiagnostics();
-    setTimeout(checkAlreadyInstalled, 1500);
   }
 
   if (document.readyState === 'loading') {
