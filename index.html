@@ -15620,7 +15620,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 
           <!-- PWA install badge -->
           <div class="sf-app-badge">
-            <a class="sf-app-badge-btn" onclick="triggerPWAInstall()" id="sfAppBadgeBtn">
+            <a class="sf-app-badge-btn" onclick="triggerPWAInstall()" id="sfAppBadgeBtn" style="display:none">
               <div class="sf-app-badge-icon">📱</div>
               <div class="sf-app-badge-text">
                 <span class="sf-app-badge-sub">Install Free App</span>
@@ -16719,34 +16719,15 @@ async function renderPopularDownloads() {
 
 // ── PWA INSTALL (Feature 6) ──────────────────────────────────────
 window._pwaInstallPrompt = null;
-window._pwaInstallCooldown = false; // debounce flag — prevents rapid double-toast
+window._pwaInstallCooldown = false;
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   window._pwaInstallPrompt = e;
-  // Ensure footer badge is visible when install is actually available
+  // Show footer badge only now that install is actually available
   const footerBadge = document.getElementById('sfAppBadgeBtn');
   if (footerBadge) footerBadge.style.display = '';
 });
-
-window.addEventListener('appinstalled', () => {
-  window._pwaInstallPrompt = null;
-  document.getElementById('pwaInstallBtn')?.style?.setProperty('display','none');
-  document.getElementById('sfAppBadgeBtn')?.style?.setProperty('display','none');
-});
-
-// ── Auto-hide footer install badge if no prompt fires within 5s ────────
-// Chrome won't fire beforeinstallprompt when PWA is already installed.
-// Hide the badge so it doesn't show for already-installed users.
-(function _autohideBadge() {
-  var t = setTimeout(function() {
-    if (!window._pwaInstallPrompt) {
-      var b = document.getElementById('sfAppBadgeBtn');
-      if (b) b.style.display = 'none';
-    }
-  }, 5000);
-  window.addEventListener('beforeinstallprompt', function() { clearTimeout(t); }, { once: true });
-})();
 
 function triggerPWAInstall() {
   // Debounce: ignore if called within 3 seconds of last call
@@ -32311,18 +32292,7 @@ if (_origTrackReading) {
   function initRender() {
     renderInstallCard();
     renderDiagnostics();
-    // Async: detect already-installed PWA (e.g. user is browsing in Chrome
-    // while the app is also installed as a WebAPK on their home screen).
-    // If detected, hides the install card and footer badge automatically.
     setTimeout(checkAlreadyInstalled, 1500);
-    // Also hide the footer badge after 5s if no install prompt has fired
-    // (already installed, or browser doesn't support PWA install)
-    setTimeout(function() {
-      if (!_installEvt && !window._pwaInstallPrompt) {
-        var footerBadge = document.getElementById('sfAppBadgeBtn');
-        if (footerBadge) footerBadge.style.display = 'none';
-      }
-    }, 5000);
   }
 
   if (document.readyState === 'loading') {
