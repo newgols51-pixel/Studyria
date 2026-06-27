@@ -118,6 +118,36 @@
 // CREATE INDEX IF NOT EXISTS idx_creators_applied_at    ON public.creators(applied_at DESC);
 // CREATE INDEX IF NOT EXISTS idx_creators_total_earnings ON public.creators(total_earnings DESC);
 //
+// -- 4. Product Reviews (one row per user+pdf rating/comment)
+// CREATE TABLE IF NOT EXISTS public.pdf_reviews (
+//   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   pdf_id      uuid NOT NULL REFERENCES public.pdfs(id) ON DELETE CASCADE,
+//   user_id     uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+//   rating      smallint NOT NULL CHECK (rating BETWEEN 1 AND 5),
+//   comment     text,
+//   verified    boolean NOT NULL DEFAULT false,  -- true when user has purchased
+//   created_at  timestamptz DEFAULT now(),
+//   updated_at  timestamptz DEFAULT now(),
+//   UNIQUE (user_id, pdf_id)
+// );
+// ALTER TABLE public.pdf_reviews ENABLE ROW LEVEL SECURITY;
+// -- Anyone can read reviews:
+// CREATE POLICY "Reviews: public read" ON public.pdf_reviews
+//   FOR SELECT USING (true);
+// -- Authenticated users can insert their own review:
+// CREATE POLICY "Reviews: users insert own" ON public.pdf_reviews
+//   FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+// -- Users can update their own review:
+// CREATE POLICY "Reviews: users update own" ON public.pdf_reviews
+//   FOR UPDATE TO authenticated USING (auth.uid() = user_id);
+// -- Users can delete their own review:
+// CREATE POLICY "Reviews: users delete own" ON public.pdf_reviews
+//   FOR DELETE TO authenticated USING (auth.uid() = user_id);
+// -- Indexes for fast lookup:
+// CREATE INDEX IF NOT EXISTS idx_pdf_reviews_pdf_id  ON public.pdf_reviews(pdf_id);
+// CREATE INDEX IF NOT EXISTS idx_pdf_reviews_user_id ON public.pdf_reviews(user_id);
+// CREATE INDEX IF NOT EXISTS idx_pdf_reviews_verified ON public.pdf_reviews(verified);
+//
 // -- Career Hub tables → see supabase-setup.sql (generated separately)
 // ─────────────────────────────────────────────────────────────────
 
@@ -650,6 +680,144 @@
     if (typeof window._chSubscribeRealtime === 'function') {
       window._chSubscribeRealtime();
     }
+  };
+
+  // ── PRODUCT REVIEWS & RATINGS ────────────────────────────────────
+
+  /**
+   * fetchReviewStats(pdfId)
+   * Returns { avgRating, reviewCount, verified } for a PDF.
+   * Cached for 60 s to avoid hammering Supabase on card renders.
+   */
+  window.fetchReviewStats = async function fetchReviewStats(pdfId) {
+    const cacheKey = 'review_stats:' + pdfId;
+    return window.cachedSupabaseQuery(cacheKey, async () => {
+      const client = sb();
+      if (!client) return null;
+      const { data, error, count } = await client
+        .from('pdf_reviews')
+        .select('rating,verified', { count: 'exact' })
+        .eq('pdf_id', pdfId);
+      if (error || !data || data.length === 0) return { avgRating: null, reviewCount: 0, verifiedCount: 0 };
+      const ratings = data.map(r => Number(r.rating)).filter(r => r >= 1 && r <= 5);
+      const avgRating = ratings.length
+        ? Math.round((ratings.reduce((s, r) => s + r, 0) / ratings.length) * 10) / 10
+        : null;
+      const verifiedCount = data.filter(r => r.verified).length;
+      return { avgRating, reviewCount: count || data.length, verifiedCount };
+    }, 60000);
+  };
+
+  /**
+   * loadProductReviews(pdfId, limit?)
+   * Returns an array of review rows (most recent first) for display.
+   * Each row: { id, rating, comment, verified, created_at, user_display_name }
+   */
+  window.loadProductReviews = async function loadProductReviews(pdfId, limit) {
+    const client = sb();
+    if (!client || !pdfId) return [];
+    try {
+      const { data, error } = await client
+        .from('pdf_reviews')
+        .select('id,rating,comment,verified,created_at,user_id')
+        .eq('pdf_id', pdfId)
+        .order('created_at', { ascending: false })
+        .limit(limit || 20);
+      if (error) { console.warn('loadProductReviews error:', error); return []; }
+      return (data || []).map(r => ({
+        ...r,
+        user_display_name: r.verified ? 'Verified Buyer' : 'Student',
+      }));
+    } catch (e) {
+      console.warn('loadProductReviews exception:', e);
+      return [];
+    }
+  };
+
+  /**
+   * submitProductReview(pdfId, rating, comment)
+   * Inserts or updates the current user's review for a PDF.
+   * Automatically marks `verified = true` if the user has purchased the PDF.
+   * Returns { success, error, verified }
+   */
+  window.submitProductReview = async function submitProductReview(pdfId, rating, comment) {
+    const client = sb();
+    if (!client) return { success: false, error: 'Not connected' };
+
+    // Require auth
+    let userId = null;
+    try {
+      const { data: { user } } = await client.auth.getUser();
+      userId = user?.id ?? null;
+    } catch (e) { /* ignore */ }
+
+    if (!userId) {
+      return { success: false, error: 'Please sign in to leave a review.' };
+    }
+
+    // Validate rating
+    const numRating = Number(rating);
+    if (!numRating || numRating < 1 || numRating > 5) {
+      return { success: false, error: 'Please select a star rating (1–5).' };
+    }
+
+    // Check if user purchased this PDF (verified review)
+    let verified = false;
+    try {
+      const { count } = await client
+        .from('purchased_pdfs')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('pdf_uuid', String(pdfId))
+        .eq('status', 'paid');
+      verified = (count || 0) > 0;
+    } catch (_) { /* non-fatal — just mark unverified */ }
+
+    try {
+      const { error } = await client
+        .from('pdf_reviews')
+        .upsert(
+          {
+            pdf_id:  pdfId,
+            user_id: userId,
+            rating:  numRating,
+            comment: (comment || '').trim() || null,
+            verified,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id,pdf_id' }
+        );
+
+      if (error) return { success: false, error: error.message };
+
+      // Bust the cache for this PDF so card re-fetches fresh stats
+      const cacheKey = 'review_stats:' + pdfId;
+      if (window._supabaseCache) window._supabaseCache.delete(cacheKey);
+
+      return { success: true, verified };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  };
+
+  /**
+   * checkUserReview(pdfId)
+   * Returns the current user's existing review for a PDF, or null.
+   */
+  window.checkUserReview = async function checkUserReview(pdfId) {
+    const client = sb();
+    if (!client || !pdfId) return null;
+    try {
+      const { data: { user } } = await client.auth.getUser();
+      if (!user) return null;
+      const { data } = await client
+        .from('pdf_reviews')
+        .select('id,rating,comment,verified')
+        .eq('pdf_id', pdfId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      return data || null;
+    } catch (_) { return null; }
   };
 
   // ── BOOT ─────────────────────────────────────────────────────────

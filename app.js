@@ -396,19 +396,14 @@ function setupInstallPrompt() {
     e.preventDefault();
     _state.deferredPrompt = e;
 
-    // Show the professional install banner after a short delay so it doesn't
-    // immediately compete with page load. Only shows when not yet installed and
-    // not dismissed this session.
-    setTimeout(function() {
-      if (!_state.isInstalled && !_installBannerState.dismissed) {
-        showInstallBanner();
-      }
-    }, 2500);
+    // ⛔ NEVER show the legacy navbar install button.
+    //    The custom "Download / Install Studyria App" card in the Burger Menu
+    //    is the only install entry point.  prompt() fires only on explicit click.
 
     // Dispatch event so other handlers (pwaAppCenter, etc.) can react
     window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
 
-    console.log('[PWA] Install prompt captured ✅');
+    console.log('[PWA] Install prompt captured ✅ (burger-menu card is the sole CTA)');
   });
 
   // App successfully installed
@@ -416,11 +411,14 @@ function setupInstallPrompt() {
     console.log('[PWA] App installed ✅');
     _state.isInstalled = true;
     _state.deferredPrompt = null;
-    _installBannerState.dismissed = true;   // never show again this session
     document.documentElement.setAttribute('data-pwa-installed', 'true');
 
-    // Remove install banner immediately
-    _dismissInstallBannerAnimated();
+    // Legacy navbar install button — keep hidden (burger menu is the sole entry point)
+    const legacyBtn = document.getElementById('pwaInstallBtn');
+    if (legacyBtn) legacyBtn.style.display = 'none';
+
+    // Remove fallback install banner if somehow present
+    document.getElementById('_pwaInstallBanner')?.remove();
 
     // Mark burger-menu install card as installed
     _markBurgerInstalled();
@@ -437,259 +435,74 @@ function setupInstallPrompt() {
   });
 }
 
-// ── Install Banner: session-level dismiss state ────────────────────────────
-// Tracks whether user has dismissed the banner this session (not stored in
-// localStorage — using localStorage would persist across sessions and block
-// the banner even when the app is not installed yet after a browser restart).
-const _installBannerState = {
-  dismissed: false,   // user clicked "Later" or "✕" this session
-  shown:     false,   // banner was displayed at least once this session
-};
-
 /**
- * _injectInstallBannerStyles — adds CSS keyframes + base styles once.
- */
-function _injectInstallBannerStyles() {
-  if (document.getElementById('_pwaInstallStyles')) return;
-  const style = document.createElement('style');
-  style.id = '_pwaInstallStyles';
-  style.textContent = `
-    @keyframes _pwaInstallSlideUp {
-      from { opacity:0; transform:translateX(-50%) translateY(28px); }
-      to   { opacity:1; transform:translateX(-50%) translateY(0); }
-    }
-    @keyframes _pwaInstallSlideDown {
-      from { opacity:1; transform:translateX(-50%) translateY(0); }
-      to   { opacity:0; transform:translateX(-50%) translateY(28px); }
-    }
-    @keyframes _pwaInstallPulse {
-      0%,100% { box-shadow:0 0 0 0 rgba(61,142,248,0.35); }
-      50%     { box-shadow:0 0 0 8px rgba(61,142,248,0); }
-    }
-    #_pwaInstallBanner {
-      position:fixed;
-      bottom:20px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:99998;
-      max-width:440px;
-      width:calc(100% - 32px);
-      background:linear-gradient(145deg,#0f1e38 0%,#0a1628 100%);
-      border:1px solid rgba(61,142,248,0.28);
-      border-radius:18px;
-      padding:0;
-      box-shadow:0 12px 48px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04) inset;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      animation:_pwaInstallSlideUp .4s cubic-bezier(.22,.68,0,1.2) both;
-      overflow:hidden;
-    }
-    #_pwaInstallBanner._dismissing {
-      animation:_pwaInstallSlideDown .28s ease-in forwards;
-    }
-    #_pwaInstallBanner .pib-accent {
-      height:3px;
-      background:linear-gradient(90deg,#3d8ef8,#00c8e8,#3d8ef8);
-      background-size:200% 100%;
-    }
-    #_pwaInstallBanner .pib-body {
-      padding:16px 16px 18px;
-    }
-    #_pwaInstallBanner .pib-row1 {
-      display:flex;align-items:center;gap:12px;
-    }
-    #_pwaInstallBanner .pib-icon {
-      width:46px;height:46px;border-radius:12px;flex-shrink:0;
-      background:linear-gradient(135deg,#3d8ef8,#00c8e8);
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.4rem;
-      animation:_pwaInstallPulse 2.4s ease-in-out infinite;
-    }
-    #_pwaInstallBanner .pib-text { flex:1;min-width:0; }
-    #_pwaInstallBanner .pib-title {
-      color:#e8edf8;font-weight:700;font-size:.95rem;
-      letter-spacing:-.01em;line-height:1.3;
-    }
-    #_pwaInstallBanner .pib-sub {
-      color:#6b80a8;font-size:.76rem;margin-top:3px;line-height:1.4;
-    }
-    #_pwaInstallBanner .pib-close {
-      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
-      color:#6b80a8;width:28px;height:28px;border-radius:8px;
-      cursor:pointer;font-size:.85rem;display:flex;align-items:center;
-      justify-content:center;flex-shrink:0;transition:background .15s,color .15s;
-    }
-    #_pwaInstallBanner .pib-close:hover { background:rgba(255,255,255,0.12);color:#b0bdd4; }
-    #_pwaInstallBanner .pib-features {
-      display:flex;gap:6px;margin:12px 0;
-      flex-wrap:wrap;
-    }
-    #_pwaInstallBanner .pib-chip {
-      display:flex;align-items:center;gap:5px;
-      background:rgba(61,142,248,0.08);
-      border:1px solid rgba(61,142,248,0.18);
-      border-radius:20px;padding:4px 10px;
-      color:#7da9f0;font-size:.72rem;font-weight:500;
-      white-space:nowrap;
-    }
-    #_pwaInstallBanner .pib-actions {
-      display:flex;gap:8px;margin-top:4px;
-    }
-    #_pwaInstallBanner .pib-btn-install {
-      flex:1;padding:11px 16px;
-      background:linear-gradient(135deg,#3d8ef8 0%,#00c8e8 100%);
-      color:#fff;border:none;border-radius:11px;
-      font-weight:700;font-size:.9rem;cursor:pointer;
-      letter-spacing:-.01em;
-      transition:opacity .15s,transform .1s;
-      display:flex;align-items:center;justify-content:center;gap:7px;
-    }
-    #_pwaInstallBanner .pib-btn-install:hover { opacity:.9; }
-    #_pwaInstallBanner .pib-btn-install:active { transform:scale(.97); }
-    #_pwaInstallBanner .pib-btn-later {
-      padding:11px 14px;
-      background:rgba(255,255,255,0.05);
-      color:#6b80a8;
-      border:1px solid rgba(255,255,255,0.09);
-      border-radius:11px;font-size:.83rem;cursor:pointer;
-      transition:background .15s,color .15s;
-      white-space:nowrap;
-    }
-    #_pwaInstallBanner .pib-btn-later:hover {
-      background:rgba(255,255,255,0.1);color:#9ab0d4;
-    }
-    @media (prefers-color-scheme: light) {
-      #_pwaInstallBanner {
-        background:linear-gradient(145deg,#ffffff 0%,#f4f7fd 100%);
-        border-color:rgba(61,142,248,0.22);
-        box-shadow:0 12px 48px rgba(61,142,248,0.12),0 2px 8px rgba(0,0,0,0.08);
-      }
-      #_pwaInstallBanner .pib-title  { color:#1a2a4a; }
-      #_pwaInstallBanner .pib-sub    { color:#7a8caa; }
-      #_pwaInstallBanner .pib-close  { background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:#7a8caa; }
-      #_pwaInstallBanner .pib-chip   { background:rgba(61,142,248,0.07);color:#3d6cbf; }
-      #_pwaInstallBanner .pib-btn-later { background:rgba(0,0,0,0.05);color:#7a8caa;border-color:rgba(0,0,0,0.09); }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-/**
- * showInstallBanner — displays the professional PWA install prompt.
- *
- * Guards:
- *  • Already showing → no-op
- *  • Already installed (standalone mode) → no-op
- *  • User dismissed this session → no-op
- *  • No deferred prompt AND not iOS → no-op
+ * Fallback install banner (used if pwaAppCenter is NOT in the page)
  */
 function showInstallBanner() {
-  // Guard: already showing
   if (document.getElementById('_pwaInstallBanner')) return;
-  // Guard: running as installed PWA
-  if (_state.isInstalled) return;
-  // Guard: dismissed this session
-  if (_installBannerState.dismissed) return;
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const canNativeInstall = !!_state.deferredPrompt;
+  const banner = document.createElement('div');
+  banner.id = '_pwaInstallBanner';
+  banner.setAttribute('role', 'complementary');
+  banner.style.cssText = [
+    'position:fixed', 'bottom:16px', 'left:50%', 'transform:translateX(-50%)',
+    'z-index:99998', 'max-width:420px', 'width:calc(100% - 32px)',
+    'background:linear-gradient(135deg,#0d1830,#121e38)',
+    'border:1px solid rgba(61,142,248,0.25)',
+    'border-radius:16px', 'padding:16px',
+    'box-shadow:0 8px 40px rgba(0,0,0,0.6)',
+    'font-family:system-ui,sans-serif',
+    'animation:_pwaSlideUp .35s ease-out',
+  ].join(';');
 
-  // Only show if we can actually do something useful
-  if (!canNativeInstall && !isIOS) return;
-
-  _injectInstallBannerStyles();
-
-  // Also inject the animation keyframe needed by the offline bar (shared)
+  // Inline keyframe
   if (!document.getElementById('_pwaAnimStyles')) {
-    const s = document.createElement('style');
-    s.id = '_pwaAnimStyles';
-    s.textContent = `
+    const style = document.createElement('style');
+    style.id = '_pwaAnimStyles';
+    style.textContent = `
       @keyframes _pwaSlideUp {
         from { opacity:0; transform:translateX(-50%) translateY(24px); }
         to   { opacity:1; transform:translateX(-50%) translateY(0); }
       }
-      @keyframes _pwaPulse {
-        0%,100% { opacity:1; }
-        50%      { opacity:.4; }
-      }
     `;
-    document.head.appendChild(s);
+    document.head.appendChild(style);
   }
 
-  const banner = document.createElement('div');
-  banner.id   = '_pwaInstallBanner';
-  banner.setAttribute('role', 'complementary');
-  banner.setAttribute('aria-label', 'Install Studyria App');
-
-  const installLabel = isIOS ? '📱 Add to Home Screen' : '⬇ Install App';
-  const subText = isIOS
-    ? 'Add to your Home Screen for the full app experience.'
-    : 'Install for offline access. Works without a browser.';
-
   banner.innerHTML = `
-    <div class="pib-accent"></div>
-    <div class="pib-body">
-      <div class="pib-row1">
-        <div class="pib-icon" aria-hidden="true">📚</div>
-        <div class="pib-text">
-          <div class="pib-title">Install Studyria App</div>
-          <div class="pib-sub">${subText}</div>
-        </div>
-        <button class="pib-close" id="_pwaInstallClose" aria-label="Dismiss install prompt">✕</button>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-size:2rem;flex-shrink:0">📚</div>
+      <div style="flex:1">
+        <div style="color:#e4e8f0;font-weight:700;font-size:.95rem">Download / Install Studyria App</div>
+        <div style="color:#7a8caa;font-size:.78rem;margin-top:2px">Offline access to your PDFs. No browser needed.</div>
       </div>
-      <div class="pib-features">
-        <span class="pib-chip">⚡ Instant launch</span>
-        <span class="pib-chip">📶 Offline PDFs</span>
-        <span class="pib-chip">🔔 Notifications</span>
-      </div>
-      <div class="pib-actions">
-        <button class="pib-btn-install" id="_pwaInstallConfirm">${installLabel}</button>
-        <button class="pib-btn-later"   id="_pwaInstallLater">Not now</button>
-      </div>
+      <button id="_pwaInstallClose"
+        style="background:none;border:none;color:#7a8caa;font-size:1.2rem;cursor:pointer;padding:4px;line-height:1;flex-shrink:0"
+        aria-label="Close">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button id="_pwaInstallConfirm"
+        style="flex:1;padding:10px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer">
+        ⬇ Install
+      </button>
+      <button id="_pwaInstallLater"
+        style="padding:10px 14px;background:rgba(255,255,255,0.06);color:#7a8caa;border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:.85rem;cursor:pointer">
+        Later
+      </button>
     </div>
   `;
 
   document.body.appendChild(banner);
-  _installBannerState.shown = true;
 
-  // Wire buttons
-  document.getElementById('_pwaInstallConfirm').addEventListener('click', () => {
-    if (isIOS && !canNativeInstall) {
-      showiOSInstallTip();
-      _dismissInstallBannerAnimated();
-    } else {
-      promptInstall();
-    }
-  });
-  document.getElementById('_pwaInstallLater').addEventListener('click', () => {
-    _installBannerState.dismissed = true;
-    _dismissInstallBannerAnimated();
-  });
-  document.getElementById('_pwaInstallClose').addEventListener('click', () => {
-    _installBannerState.dismissed = true;
-    _dismissInstallBannerAnimated();
-  });
+  document.getElementById('_pwaInstallConfirm').addEventListener('click', promptInstall);
+  document.getElementById('_pwaInstallLater').addEventListener('click', dismissInstallBanner);
+  document.getElementById('_pwaInstallClose').addEventListener('click', dismissInstallBanner);
 
-  // Auto-dismiss after 18s if untouched
-  setTimeout(() => {
-    if (document.getElementById('_pwaInstallBanner')) {
-      _installBannerState.dismissed = true;
-      _dismissInstallBannerAnimated();
-    }
-  }, 18000);
-}
-
-function _dismissInstallBannerAnimated() {
-  const banner = document.getElementById('_pwaInstallBanner');
-  if (!banner) return;
-  banner.classList.add('_dismissing');
-  banner.addEventListener('animationend', () => banner.remove(), { once: true });
-  // Safety fallback
-  setTimeout(() => banner.remove(), 400);
+  // Auto-dismiss after 15s if untouched
+  setTimeout(dismissInstallBanner, 15000);
 }
 
 function dismissInstallBanner() {
-  _installBannerState.dismissed = true;
-  _dismissInstallBannerAnimated();
+  document.getElementById('_pwaInstallBanner')?.remove();
 }
 
 async function promptInstall() {

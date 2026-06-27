@@ -1326,6 +1326,119 @@ body.light .pdf-price-row { border-top-color: rgba(0,0,0,0.08); }
   box-shadow: 0 0 10px rgba(16,217,142,0.18);
 }
 
+/* ── PRODUCT REVIEWS & RATINGS ─────────────────────────────────── */
+.pdp-review-form {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 16px;
+}
+body.light .pdp-review-form {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.10);
+}
+.pdp-review-form-title {
+  font-family: var(--font-ui);
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+}
+.pdp-star-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.pdp-star-selector button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.55rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.18);
+  padding: 0;
+  transition: color 0.15s, transform 0.12s;
+}
+body.light .pdp-star-selector button { color: rgba(0,0,0,0.18); }
+.pdp-star-selector button.active,
+.pdp-star-selector button:hover { color: #f59e0b; transform: scale(1.15); }
+.pdp-review-textarea {
+  width: 100%;
+  min-height: 72px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 9px;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.80rem;
+  padding: 10px 12px;
+  resize: vertical;
+  box-sizing: border-box;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color 0.18s;
+}
+body.light .pdp-review-textarea {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.12);
+  color: #080e22;
+}
+.pdp-review-textarea:focus { border-color: rgba(61,142,248,0.45); }
+.pdp-review-textarea::placeholder { color: var(--text3); }
+.pdp-review-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 9px;
+  background: var(--grad-primary);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.12s;
+}
+.pdp-review-submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.pdp-review-submit-btn:active { transform: scale(0.97); }
+.pdp-review-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pdp-rev-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.60rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(16,217,142,0.12);
+  color: #10d98e;
+  border: 1px solid rgba(16,217,142,0.30);
+  border-radius: 20px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+.pdp-rev-login-prompt {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--text2);
+  padding: 12px 0 4px;
+}
+.pdp-rev-login-prompt a {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 600;
+}
+/* Rating pill on cards — async loaded */
+.pdf-rating-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
 /* ── ACTION AREA ─────────────────────────────────────────────── */
 .pdf-card-actions {
   padding: 8px 12px 14px;
@@ -17074,6 +17187,7 @@ function _pdpRenderShell(pdf) {
             <div class="pdp-section-title">⭐ Student Reviews</div>
             <div class="pdp-reviews-summary" id="pdpReviewsSummary"></div>
             <div class="pdp-reviews-list" id="pdpReviewsList"></div>
+            <div id="pdpWriteReviewWrap"></div>
           </div>
 
           ${relatedPdfs.length ? `
@@ -17462,17 +17576,27 @@ function _pdpApplyLiveStats({ dlCount, purchCount, revCount, avgRating, ratingDi
             <div class="pdp-rev-text">${_esc(r.text)}</div>
           </div>`;
         }).join('');
+
+        // Write a Review form (also shown in marketing mode)
+        const writeWrapMkt = document.getElementById('pdpWriteReviewWrap');
+        if (writeWrapMkt) _pdpRenderReviewForm(writeWrapMkt);
       } else if (revRows && revRows.length > 0) {
         // Real data mode: actual Supabase review rows
         list.innerHTML = revRows.map(r => {
           const rStars   = '★'.repeat(Math.round(r.rating||0)) + '☆'.repeat(5-Math.round(r.rating||0));
           const initials = (r.user_id||'?').slice(0,2).toUpperCase();
           const dateStr  = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'numeric'}) : '';
+          const verifiedBadge = r.verified
+            ? `<span class="pdp-rev-verified-badge">✓ Verified Purchase</span>`
+            : '';
           return `<div class="pdp-review-card">
             <div class="pdp-rev-header">
               <div class="pdp-rev-avatar">${initials}</div>
               <div class="pdp-rev-meta">
-                <div class="pdp-rev-name">Verified Buyer</div>
+                <div class="pdp-rev-name" style="display:flex;align-items:center;gap:6px;">
+                  ${r.verified ? 'Verified Buyer' : 'Student'}
+                  ${verifiedBadge}
+                </div>
                 ${dateStr ? `<div class="pdp-rev-loc">📅 ${dateStr}</div>` : ''}
               </div>
               <div class="pdp-rev-stars">${rStars}</div>
@@ -17482,9 +17606,158 @@ function _pdpApplyLiveStats({ dlCount, purchCount, revCount, avgRating, ratingDi
         }).join('');
       }
     }
+
+    // ── Write a Review form ──
+    const writeWrap = document.getElementById('pdpWriteReviewWrap');
+    if (writeWrap) {
+      _pdpRenderReviewForm(writeWrap);
+    }
   }
   // No reviews → section stays display:none
 }
+
+// ── Review submission form ───────────────────────────────────────────────
+async function _pdpRenderReviewForm(container) {
+  if (!container) return;
+  const pdf     = selectedPdf;
+  const pdfId   = pdf?.id;
+  const user    = window.currentUser;
+
+  if (!user) {
+    container.innerHTML = `<div class="pdp-rev-login-prompt">
+      Want to share your experience? <a onclick="navigate('login')">Sign in</a> to leave a review.
+    </div>`;
+    return;
+  }
+
+  // Check for existing review
+  let existingReview = null;
+  if (typeof window.checkUserReview === 'function') {
+    existingReview = await window.checkUserReview(pdfId);
+  }
+
+  const selectedRating = existingReview?.rating || 0;
+  const existingComment = existingReview?.comment || '';
+
+  container.innerHTML = `
+    <div class="pdp-review-form" id="pdpReviewFormBox">
+      <div class="pdp-review-form-title">${existingReview ? '✏️ Edit Your Review' : '✍️ Write a Review'}</div>
+      <div class="pdp-star-selector" id="pdpFormStars">
+        ${[1,2,3,4,5].map(s => `
+          <button type="button" class="${s <= selectedRating ? 'active' : ''}"
+            data-star="${s}"
+            onclick="pdpSetReviewStar(${s})"
+            title="${s} star${s > 1 ? 's' : ''}"
+            aria-label="${s} stars">★</button>`).join('')}
+      </div>
+      <textarea class="pdp-review-textarea" id="pdpReviewComment"
+        placeholder="Share your experience with this PDF… (optional)"
+        maxlength="500">${_esc(existingComment)}</textarea>
+      <button class="pdp-review-submit-btn" id="pdpReviewSubmitBtn"
+        onclick="pdpSubmitReview()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        ${existingReview ? 'Update Review' : 'Submit Review'}
+      </button>
+      <div id="pdpReviewFormMsg" style="margin-top:8px;font-size:.75rem;font-family:var(--font-ui);display:none"></div>
+    </div>`;
+
+  window._pdpCurrentReviewRating = selectedRating;
+}
+
+window.pdpSetReviewStar = function pdpSetReviewStar(star) {
+  window._pdpCurrentReviewRating = star;
+  const btns = document.querySelectorAll('#pdpFormStars button');
+  btns.forEach((b, i) => {
+    b.classList.toggle('active', i < star);
+  });
+};
+
+window.pdpSubmitReview = async function pdpSubmitReview() {
+  const btn     = document.getElementById('pdpReviewSubmitBtn');
+  const msgEl   = document.getElementById('pdpReviewFormMsg');
+  const comment = (document.getElementById('pdpReviewComment')?.value || '').trim();
+  const rating  = window._pdpCurrentReviewRating || 0;
+  const pdfId   = selectedPdf?.id;
+
+  if (!rating) {
+    if (msgEl) { msgEl.textContent = 'Please select a star rating.'; msgEl.style.color = 'var(--danger)'; msgEl.style.display = ''; }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+  const result = await (window.submitProductReview || function() { return { success: false, error: 'Not available' }; })(pdfId, rating, comment);
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
+
+  if (!result.success) {
+    if (msgEl) { msgEl.textContent = result.error || 'Failed to submit. Please try again.'; msgEl.style.color = 'var(--danger)'; msgEl.style.display = ''; }
+    return;
+  }
+
+  const verifiedNote = result.verified ? ' ✓ Marked as verified purchase.' : '';
+  if (msgEl) {
+    msgEl.textContent = 'Review submitted! Thank you.' + verifiedNote;
+    msgEl.style.color = 'var(--success)';
+    msgEl.style.display = '';
+  }
+
+  // Refresh the detail stats after a short delay
+  setTimeout(() => { if (pdfId) _pdpLoadLiveStats(pdfId); }, 800);
+};
+
+// ── Load real avg rating onto cards asynchronously ──────────────────────
+window._cardRatingCache = window._cardRatingCache || {};
+
+async function _loadCardRatings(pdfIds) {
+  if (!window.fetchReviewStats || !pdfIds || !pdfIds.length) return;
+  for (const pdfId of pdfIds) {
+    if (window._cardRatingCache[pdfId]) continue; // already loaded
+    try {
+      const stats = await window.fetchReviewStats(pdfId);
+      if (stats && stats.avgRating !== null) {
+        window._cardRatingCache[pdfId] = stats;
+        // Update all cards for this pdf on the page
+        document.querySelectorAll(`[data-pdf-id="${pdfId}"]`).forEach(card => {
+          const metaEl = card.querySelector('.pdf-meta');
+          if (!metaEl) return;
+          // Remove stale rating if present
+          const existing = metaEl.querySelector('.pdf-rating');
+          if (existing) existing.remove();
+          const oldCount = metaEl.querySelector('.pdf-meta-revcount');
+          if (oldCount) oldCount.remove();
+          // Insert fresh rating
+          const stars = Math.round(stats.avgRating);
+          const filledStar = `<svg width="11" height="11" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#f59e0b"/></svg>`;
+          const ratingSpan = document.createElement('span');
+          ratingSpan.className = 'pdf-rating pdf-rating-pill';
+          ratingSpan.innerHTML = filledStar + stats.avgRating.toFixed(1);
+          metaEl.insertBefore(ratingSpan, metaEl.firstChild);
+          if (stats.reviewCount > 0) {
+            const countSpan = document.createElement('span');
+            countSpan.className = 'pdf-meta-revcount';
+            countSpan.style.cssText = 'color:var(--text3);font-size:0.65rem;font-family:var(--font-ui)';
+            countSpan.textContent = `(${stats.reviewCount.toLocaleString()})`;
+            metaEl.insertBefore(countSpan, ratingSpan.nextSibling);
+          }
+        });
+      }
+    } catch (_) { /* non-critical */ }
+  }
+}
+
+// Hook into shelf / grid renders to trigger card rating loads
+(function() {
+  const _origRenderLibGrid = window.renderLibGrid;
+  window.renderLibGrid = function() {
+    const r = _origRenderLibGrid && _origRenderLibGrid.apply(this, arguments);
+    setTimeout(() => {
+      const ids = [...document.querySelectorAll('[data-pdf-id]')].map(el => el.dataset.pdfId).filter(Boolean);
+      _loadCardRatings([...new Set(ids)]);
+    }, 300);
+    return r;
+  };
+})();
 
 // ── Realtime subscriptions: auto-refresh stats on new activity ──────────
 function _pdpSubscribeRealtime(pdfId) {
