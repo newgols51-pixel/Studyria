@@ -16718,58 +16718,56 @@ async function renderPopularDownloads() {
 }
 
 // ── PWA INSTALL (Feature 6) ──────────────────────────────────────
-// NOTE: The primary install/update logic lives in the App Center engine
-// below (pwaAppCenter). This section only manages the legacy navbar
-// install button (#pwaInstallBtn) so both co-exist safely.
-//
-// ✅ FIX: Use window._pwaInstallPrompt (not let) so inline HTML onclick
-//    handlers and footer badge can access it globally.
 window._pwaInstallPrompt = null;
+window._pwaInstallCooldown = false; // debounce flag — prevents rapid double-toast
+
 window.addEventListener('beforeinstallprompt', (e) => {
-  // ✅ Prevent the browser's automatic mini-infobar / install banner.
-  //    The App Center card and footer badge are the only install CTAs.
   e.preventDefault();
   window._pwaInstallPrompt = e;
+  // Ensure footer badge is visible when install is actually available
+  const footerBadge = document.getElementById('sfAppBadgeBtn');
+  if (footerBadge) footerBadge.style.display = '';
 });
+
 window.addEventListener('appinstalled', () => {
-  const btn = document.getElementById('pwaInstallBtn');
-  if (btn) btn.style.display = 'none';
   window._pwaInstallPrompt = null;
-  // Toast is shown by the App Center engine; avoid double-toast.
+  document.getElementById('pwaInstallBtn')?.style?.setProperty('display','none');
+  document.getElementById('sfAppBadgeBtn')?.style?.setProperty('display','none');
 });
+
+// ── Auto-hide footer install badge if no prompt fires within 5s ────────
+// Chrome won't fire beforeinstallprompt when PWA is already installed.
+// Hide the badge so it doesn't show for already-installed users.
+(function _autohideBadge() {
+  var t = setTimeout(function() {
+    if (!window._pwaInstallPrompt) {
+      var b = document.getElementById('sfAppBadgeBtn');
+      if (b) b.style.display = 'none';
+    }
+  }, 5000);
+  window.addEventListener('beforeinstallprompt', function() { clearTimeout(t); }, { once: true });
+})();
+
 function triggerPWAInstall() {
-  // Prefer the App Center engine if available (it manages its own _installEvt)
+  // Debounce: ignore if called within 3 seconds of last call
+  if (window._pwaInstallCooldown) return;
+  window._pwaInstallCooldown = true;
+  setTimeout(function() { window._pwaInstallCooldown = false; }, 3000);
+
   if (window.pwaAppCenter) {
     window.pwaAppCenter.install();
     return;
   }
   if (window._pwaInstallPrompt) {
     window._pwaInstallPrompt.prompt();
-    window._pwaInstallPrompt.userChoice.then(choice => {
+    window._pwaInstallPrompt.userChoice.then(function(choice) {
       if (choice.outcome === 'accepted') showToast('🚀 Studyria installed!', 'success');
       window._pwaInstallPrompt = null;
-      const btn = document.getElementById('pwaInstallBtn');
-      if (btn) btn.style.display = 'none';
-      const footerBadge = document.getElementById('sfAppBadgeBtn');
-      if (footerBadge) footerBadge.style.display = 'none';
+      document.getElementById('pwaInstallBtn')?.style?.setProperty('display','none');
+      document.getElementById('sfAppBadgeBtn')?.style?.setProperty('display','none');
     });
   } else {
-    // Check if already installed before showing generic guidance
-    if ('getInstalledRelatedApps' in navigator) {
-      navigator.getInstalledRelatedApps().then(apps => {
-        if (apps && apps.length > 0) {
-          showToast('✅ Already installed! Open Studyria from your home screen.', 'success');
-          const footerBadge = document.getElementById('sfAppBadgeBtn');
-          if (footerBadge) footerBadge.style.display = 'none';
-        } else {
-          showToast('📱 Open Chrome menu (⋮) → "Add to Home Screen" to install', 'info');
-        }
-      }).catch(() => {
-        showToast('📱 Open Chrome menu (⋮) → "Add to Home Screen" to install', 'info');
-      });
-    } else {
-      showToast('📱 Open Chrome menu (⋮) → "Add to Home Screen" to install', 'info');
-    }
+    showToast('📱 Open Chrome menu (⋮) → "Add to Home Screen" to install', 'info');
   }
 }
 
@@ -32102,6 +32100,11 @@ if (_origTrackReading) {
   window.pwaAppCenter = {
 
     install: async function() {
+      // Debounce — shared with triggerPWAInstall() to prevent double-toast
+      if (window._pwaInstallCooldown) return;
+      window._pwaInstallCooldown = true;
+      setTimeout(function() { window._pwaInstallCooldown = false; }, 3000);
+
       if (!_installEvt) {
         // Check if already installed via getInstalledRelatedApps (Chrome Android)
         if ('getInstalledRelatedApps' in navigator) {
@@ -32312,6 +32315,14 @@ if (_origTrackReading) {
     // while the app is also installed as a WebAPK on their home screen).
     // If detected, hides the install card and footer badge automatically.
     setTimeout(checkAlreadyInstalled, 1500);
+    // Also hide the footer badge after 5s if no install prompt has fired
+    // (already installed, or browser doesn't support PWA install)
+    setTimeout(function() {
+      if (!_installEvt && !window._pwaInstallPrompt) {
+        var footerBadge = document.getElementById('sfAppBadgeBtn');
+        if (footerBadge) footerBadge.style.display = 'none';
+      }
+    }, 5000);
   }
 
   if (document.readyState === 'loading') {
@@ -34528,7 +34539,7 @@ async function loadDynamicMenuItems() {
       catMap[cat].push(item);
     });
 
-    const catEmojis = { 'Main':'🏠','Study':'📚','Careers':'??','Community':'🤝','Tools':'🔧','Resources':'📦','Premium':'💎' };
+    const catEmojis = { 'Main':'🏠','Study':'📚','Careers':'💼','Community':'🤝','Tools':'🔧','Resources':'📦','Premium':'💎' };
     const sections = catOrder.map(cat => ({
       section: (catEmojis[cat] || '📂') + ' ' + cat.toUpperCase(),
       items: catMap[cat]
