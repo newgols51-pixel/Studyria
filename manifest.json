@@ -104,21 +104,21 @@
       "name": "Browse Library",
       "short_name": "Library",
       "description": "Open the PDF study library",
-      "url": "/?tab=library&source=shortcut",
+      "url": "/#library",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "Career Hub",
       "short_name": "Jobs",
       "description": "Browse Assam job alerts",
-      "url": "/?tab=career-hub&source=shortcut",
+      "url": "/#career-hub",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "My Library",
       "short_name": "My PDFs",
       "description": "View your purchased PDFs",
-      "url": "/?tab=my-library&source=shortcut",
+      "url": "/#dashboard",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     }
   ]
