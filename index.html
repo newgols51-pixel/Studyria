@@ -39,7 +39,7 @@
 
 <meta name="color-scheme" content="dark light" />
 <!-- ── SEO: Description & Keywords ── -->
-<meta name="description" content="Studyria — India's #1 PDF Study Platform. Download free and premium PDFs for JEE, NEET, UPSC, ADRE, APSC, Assam board exams and more. 7000+ students trust Studyria." />
+<meta name="description" content="Studyria — India's #1 PDF Study Platform. Download free and premium PDFs for JEE, NEET, UPSC, ADRE, APSC, Assam board exams and more. 18,000+ students trust Studyria." />
 <meta name="keywords" content="studyria, PDF study material, free PDF download, JEE notes, NEET PDF, UPSC notes, ADRE question paper, APSC PDF, Assam exam PDF, study notes India" />
 <meta name="author" content="Studyria" />
 <meta name="robots" content="index, follow" />
@@ -49,7 +49,7 @@
 <meta property="og:url" content="https://studyria.qzz.io/" />
 <meta property="og:site_name" content="Studyria" />
 <meta property="og:title" content="Studyria – India's #1 PDF Study Platform" />
-<meta property="og:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams. Join 7000+ students studying smarter." />
+<meta property="og:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams. Join 18,000+ students studying smarter." />
 <meta property="og:image" content="https://studyria.qzz.io/og-cover.png" />
 <meta property="og:image:secure_url" content="https://studyria.qzz.io/og-cover.png" />
 <meta property="og:image:type" content="image/png" />
@@ -60,7 +60,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:url" content="https://studyria.qzz.io/" />
 <meta name="twitter:title" content="Studyria – India's #1 PDF Study Platform" />
-<meta name="twitter:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams." />
+<meta name="twitter:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams. Join 18,000+ students studying smarter." />
 <meta name="twitter:image" content="https://studyria.qzz.io/og-cover.png" />
 <meta name="twitter:image:alt" content="Studyria – Assam's Smart Education Platform" />
 <meta name="twitter:site" content="@studyria" />
@@ -832,6 +832,8 @@ body.light .nav { background: rgba(240,244,251,0.88); }
 .btn-primary:active { transform: translateY(0); }
 .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--glass-border); }
 .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(61,142,248,.08); }
+body.light .btn-secondary { background: rgba(61,142,248,0.12); border-color: rgba(61,142,248,0.3); }
+body.light .btn-secondary:hover { background: rgba(61,142,248,0.2); border-color: var(--accent); }
 .btn-ghost { background: transparent; color: var(--text2); }
 .btn-ghost:hover { color: var(--text); background: var(--surface); }
 .btn-success { background: var(--grad-success); color: #fff; box-shadow: 0 4px 16px rgba(16,217,142,0.3); }
@@ -1511,7 +1513,9 @@ body.light .pdf-price-row { border-top-color: rgba(0,0,0,0.08); }
   /* Ensure text wraps correctly; no clipping */
   overflow-wrap: break-word;
   word-break: break-word;
+  word-wrap: break-word;
   padding: 0 4px;
+  white-space: normal;
 }
 .hero-actions {
   display: flex;
@@ -2450,7 +2454,7 @@ body.light .mobile-nav-item.active .mni-label { -webkit-text-fill-color: transpa
   .hero-content{padding:0 16px}
   .hero-site-name{min-height:clamp(1.8rem,7vw,2.6rem)}
   .hero-title{font-size:clamp(1.35rem,6.5vw,1.7rem);margin-bottom:8px}
-  .hero-sub{font-size:.84rem;line-height:1.55;margin-bottom:14px}
+  .hero-sub{font-size:.84rem;line-height:1.55;margin-bottom:14px;max-width:100%;padding:0;min-height:auto !important;overflow-wrap:break-word;word-break:break-word}
   .hero-badge{font-size:.7rem;padding:5px 12px;gap:5px;margin-bottom:8px}
   .search-wrap{margin-top:14px}
   .hero-stats{gap:16px;margin-top:24px}
@@ -4861,8 +4865,8 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     font-size: clamp(.9rem, 2vw, 1.05rem); color: #7a8caa;
     max-width: 560px; width: 100%;
     margin: 0 auto 20px; line-height: 1.65; font-weight: 300;
-    overflow-wrap: break-word; word-break: break-word;
-    padding: 0 4px;
+    overflow-wrap: break-word; word-break: break-word; word-wrap: break-word;
+    padding: 0 4px; white-space: normal;
   }
   .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 6px; }
   .search-wrap { position: relative; max-width: 640px; margin: 20px auto 0; }
@@ -4871,7 +4875,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     .hero-content { padding: 0 20px; }
     .hero-site-name { min-height: clamp(2rem,8vw,3rem); }
     .hero-title { font-size: clamp(1.5rem,6vw,2rem); line-height: 1.2; margin-bottom: 10px; }
-    .hero-sub { font-size: .9rem; max-width: 100%; padding: 0; margin-bottom: 16px; min-height: auto !important; }
+    .hero-sub { font-size: .9rem; max-width: 100%; padding: 0; margin-bottom: 16px; min-height: auto !important; line-height: 1.65; overflow-wrap: break-word; word-break: break-word; word-wrap: break-word; }
     .search-wrap { margin-top: 16px; }
   }
   @media (max-width: 400px) {
@@ -4879,7 +4883,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     .hero-content { padding: 0 16px; }
     .hero-site-name { min-height: clamp(1.8rem,7vw,2.6rem); }
     .hero-title { font-size: clamp(1.35rem,6.5vw,1.7rem); margin-bottom: 8px; }
-    .hero-sub { font-size: .84rem; margin-bottom: 14px; }
+    .hero-sub { font-size: .84rem; max-width: 100%; padding: 0; margin-bottom: 14px; min-height: auto !important; line-height: 1.55; overflow-wrap: break-word; word-break: break-word; }
     .search-wrap { margin-top: 14px; }
   }
 </style>
@@ -8442,7 +8446,7 @@ function studyriaApp() {
           <div class="pstat-title">PDFs Sold</div>
           <div class="pstat-sub">Trusted by Assam Students</div>
         </div>
-        <div class="pstat-card" data-target="7000" data-suffix="K+" data-divisor="1000">
+        <div class="pstat-card" data-target="18000" data-suffix="K+" data-divisor="1000">
           <div class="pstat-glow"></div>
           <div class="pstat-icon">👨‍🎓</div>
           <div class="pstat-num" id="pstatNum1">0</div>
@@ -9086,7 +9090,7 @@ function studyriaApp() {
         <div class="home-premium-cta-inner">
           <div class="home-cta-eyebrow">🚀 Start Your Journey Today</div>
           <div class="home-cta-title">Ready To Ace<br>Your Exams?</div>
-          <div class="home-cta-sub">Join 7,000+ students who've transformed their study game with Studyria's premium PDF library.</div>
+          <div class="home-cta-sub">Join 18,000+ students who've transformed their study game with Studyria's premium PDF library.</div>
           <div class="home-cta-btns">
             <button class="home-cta-primary" onclick="navigate('register')">
               🎓 Create Free Account
