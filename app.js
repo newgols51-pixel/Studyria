@@ -30,7 +30,7 @@
 
 const PWA_CONFIG = {
   NAME:              'Studyria',
-  VERSION:           '3.0.1',
+  VERSION:           '3.1.0',
   SW_PATH:           '/sw.js',
   SW_SCOPE:          '/',
   OFFLINE_PAGE:      '/offline.html',
@@ -377,9 +377,12 @@ function _scheduleUpdateChecks() {
     if (!document.hidden) checkForUpdates();
   });
 
-  // Periodic check
+  // Periodic check (4 hours)
   if (_state.updateCheckTimer) clearInterval(_state.updateCheckTimer);
   _state.updateCheckTimer = setInterval(checkForUpdates, PWA_CONFIG.UPDATE_INTERVAL_MS);
+
+  // Also check once after 30 seconds (catches updates that land shortly after load)
+  setTimeout(checkForUpdates, 30000);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -609,6 +612,17 @@ function _onOnline() {
     _state.swRegistration.sync.register('sync-data').catch(() => {});
   }
 
+  // Re-load PDFs from Supabase so offline → online transition shows fresh data
+  setTimeout(function() {
+    if (typeof window.renderLibGrid === 'function') window.renderLibGrid();
+    if (typeof window.loadActivityBarStats === 'function') window.loadActivityBarStats();
+    if (typeof window.loadSupabaseHomeStats === 'function') window.loadSupabaseHomeStats();
+  }, 1200);
+
+  if (typeof showToast === 'function') {
+    showToast('📶 You\'re back online!', 'success');
+  }
+
   window.dispatchEvent(new CustomEvent('pwa:online', { detail: { ts: Date.now() } }));
 }
 
@@ -617,6 +631,7 @@ function _onOffline() {
   document.documentElement.setAttribute('data-online', 'false');
 
   if (!document.getElementById('_pwaOfflineBar')) {
+    const cachedCount = (window.PDFS || []).length;
     const bar = document.createElement('div');
     bar.id = '_pwaOfflineBar';
     bar.setAttribute('role', 'status');
@@ -630,7 +645,8 @@ function _onOffline() {
     ].join(';');
     bar.innerHTML = `
       <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;flex-shrink:0;animation:_pwaPulse 2s ease-in-out infinite"></span>
-      <span>📡 You're offline — some features may be unavailable</span>
+      <span style="flex:1">📡 You're offline${cachedCount > 0 ? ` — ${cachedCount} PDFs cached` : ' — some features may be unavailable'}</span>
+      <button onclick="window.location.reload()" style="padding:4px 10px;background:rgba(255,255,255,0.12);color:#fecaca;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:.75rem;cursor:pointer;flex-shrink:0">Retry</button>
     `;
 
     if (!document.getElementById('_pwaAnimStyles')) {
@@ -796,6 +812,11 @@ function getDiagnostics() {
       hitRate: (_metrics.cacheHits + _metrics.cacheMisses) > 0
         ? ((_metrics.cacheHits / (_metrics.cacheHits + _metrics.cacheMisses)) * 100).toFixed(1) + '%'
         : 'N/A',
+    },
+    data: {
+      pdfsLoaded:    (window.PDFS || []).length,
+      supabaseReady: !!window.supabaseClient,
+      currentPage:   window.currentPage || '—',
     },
     browser: {
       userAgent:           navigator.userAgent,

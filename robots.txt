@@ -1,9 +1,25 @@
 User-agent: *
 Allow: /
 
-# Block admin panel from indexing
+# Block private/admin/auth pages from indexing
 Disallow: /?page=admin
 Disallow: /?page=admin-login
 Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+Disallow: /?page=reset-password
+Disallow: /?page=creator-register
+Disallow: /?page=wallet
+Disallow: /?page=marketplace
 
+# Allow important public pages explicitly
+Allow: /?page=library
+Allow: /?page=discover
+Allow: /?page=detail
+Allow: /?page=career-hub
+
+# Sitemap location
 Sitemap: https://studyria.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 2

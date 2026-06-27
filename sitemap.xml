@@ -1,28 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
+  <!-- Homepage -->
   <url>
     <loc>https://studyria.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <lastmod>2025-06-27</lastmod>
   </url>
 
+  <!-- Library — PDF browsing hub -->
   <url>
     <loc>https://studyria.com/?page=library</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <lastmod>2025-06-27</lastmod>
   </url>
 
+  <!-- Discover — Search & filter PDFs -->
   <url>
     <loc>https://studyria.com/?page=discover</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2025-06-27</lastmod>
   </url>
 
+  <!-- Career Hub — Jobs, Scholarships, Results -->
+  <url>
+    <loc>https://studyria.com/?page=career-hub</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-06-27</lastmod>
+  </url>
+
+  <!-- Free PDFs landing -->
+  <url>
+    <loc>https://studyria.com/?page=library&amp;filter=free</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+    <lastmod>2025-06-27</lastmod>
+  </url>
+
+  <!-- JEE PDFs category -->
+  <url>
+    <loc>https://studyria.com/?page=library&amp;cat=JEE</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2025-06-27</lastmod>
+  </url>
+
+  <!-- NEET PDFs category -->
+  <url>
+    <loc>https://studyria.com/?page=library&amp;cat=NEET</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2025-06-27</lastmod>
+  </url>
+
+  <!-- UPSC PDFs category -->
+  <url>
+    <loc>https://studyria.com/?page=library&amp;cat=UPSC</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2025-06-27</lastmod>
+  </url>
+
+  <!-- Assam Exams category -->
+  <url>
+    <loc>https://studyria.com/?page=library&amp;cat=Assam+Exams</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2025-06-27</lastmod>
+  </url>
+
+  <!-- Login (lower priority) -->
   <url>
     <loc>https://studyria.com/?page=login</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <lastmod>2025-06-27</lastmod>
   </url>
 
 </urlset>
