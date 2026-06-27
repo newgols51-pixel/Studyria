@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080c14" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4fb" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Offline — Studyria</title>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { height: 100%; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #080c14;
+      color: #e4e8f0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 1.5rem 1.25rem env(safe-area-inset-bottom, 0px);
+      position: relative;
+    }
+
+    /* ── Animated background particles ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(61,142,248,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(0,200,232,.10) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(109,40,217,.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      animation: fadeUp .55s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      margin-bottom: 1.5rem;
+      animation: float 3.5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+
+    .logo-wrap svg { width: 64px; height: 64px; drop-shadow: 0 8px 24px rgba(61,142,248,.5); }
+
+    /* ── WiFi-slash illustration ── */
+    .illus {
+      width: 128px;
+      height: 128px;
+      margin-bottom: 1.75rem;
+      opacity: .9;
+      animation: pulse 2.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: .9; transform: scale(1); }
+      50%      { opacity: .55; transform: scale(.97); }
+    }
+
+    /* ── Heading ── */
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+      background: linear-gradient(120deg, #3d8ef8 0%, #00c8e8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .45rem;
+    }
+
+    .sub {
+      font-size: .95rem;
+      color: #8b9ab5;
+      line-height: 1.6;
+      margin-bottom: 1.4rem;
+      max-width: 320px;
+    }
+
+    /* ── Status pill ── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .5rem 1rem;
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.28);
+      border-radius: 100px;
+      margin-bottom: 1.6rem;
+      transition: background .4s, border-color .4s;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: blink 1.8s ease-in-out infinite;
+      transition: background .4s;
+    }
+
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .3; }
+    }
+
+    .pill-text {
+      font-size: .85rem;
+      font-weight: 600;
+      color: #fca5a5;
+      white-space: nowrap;
+      transition: color .4s;
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.4rem;
+      text-align: left;
+    }
+
+    .card-title {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #4b6080;
+      margin-bottom: .75rem;
+    }
+
+    .feat {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      padding: .55rem 0;
+      font-size: .88rem;
+      color: #a8b8cc;
+      line-height: 1.45;
+    }
+
+    .feat + .feat { border-top: 1px solid rgba(255,255,255,.05); }
+
+    .feat-icon {
+      font-size: 1rem;
+      line-height: 1;
+      margin-top: .1rem;
+      flex-shrink: 0;
+    }
+
+    .feat strong { color: #c5d8ff; font-weight: 600; }
+
+    /* ── Buttons ── */
+    .actions {
+      display: flex;
+      gap: .75rem;
+      width: 100%;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: .85rem 1rem;
+      font-size: .93rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      transition: transform .18s, box-shadow .18s, opacity .18s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: .01em;
+    }
+
+    .btn:active { transform: scale(.96); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(61,142,248,.38);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 6px 28px rgba(61,142,248,.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:disabled {
+      opacity: .65;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Spinner while loading */
+    .btn-primary.loading .btn-label::after {
+      content: '';
+      display: inline-block;
+      width: 1em; height: 1em;
+      margin-left: .4em;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      vertical-align: -.15em;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #c5d8ff;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.11);
+    }
+
+    /* ── Connection hint ── */
+    .hint {
+      font-size: .82rem;
+      color: #4b6080;
+      line-height: 1.6;
+      min-height: 2.6rem;
+      transition: color .3s;
+    }
+
+    .hint a {
+      color: #3d8ef8;
+      text-decoration: none;
+    }
+
+    .hint a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 1.5rem;
+      font-size: .78rem;
+      color: #2e3e55;
+    }
+
+    /* ── light mode ── */
+    @media (prefers-color-scheme: light) {
+      body { background: #f0f4fb; color: #1e293b; }
+      body::before {
+        background:
+          radial-gradient(ellipse 80% 60% at 20% 10%, rgba(61,142,248,.08) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 50% at 80% 90%, rgba(0,200,232,.07) 0%, transparent 60%);
+      }
+      h1 { background: linear-gradient(120deg, #2563eb 0%, #0891b2 100%); -webkit-background-clip: text; background-clip: text; }
+      .sub { color: #64748b; }
+      .card { background: rgba(0,0,0,.025); border-color: rgba(0,0,0,.07); }
+      .card-title { color: #94a3b8; }
+      .feat { color: #64748b; }
+      .feat strong { color: #1e40af; }
+      .feat + .feat { border-color: rgba(0,0,0,.05); }
+      .btn-secondary { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.1); color: #2563eb; }
+      .hint { color: #94a3b8; }
+      .footer { color: #cbd5e1; }
+    }
+
+    /* ── reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .wrap, .logo-wrap, .illus, .dot { animation: none !important; }
+    }
+
+    /* ── small screens ── */
+    @media (max-width: 380px) {
+      h1 { font-size: 1.65rem; }
+      .actions { flex-direction: column; }
+      .btn { font-size: .88rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+
+    <!-- Logo -->
+    <div class="logo-wrap" aria-hidden="true">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#3d8ef8"/>
+            <stop offset="1" stop-color="#00c8e8"/>
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="22" fill="url(#lg)"/>
+        <text x="50" y="68" font-family="Arial,Helvetica,sans-serif"
+          font-size="58" font-weight="800" fill="white" text-anchor="middle">S</text>
+      </svg>
+    </div>
+
+    <!-- WiFi-slash illustration -->
+    <svg class="illus" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3d8ef8" stop-opacity=".7"/>
+          <stop offset="1" stop-color="#00c8e8" stop-opacity=".5"/>
+        </linearGradient>
+      </defs>
+      <!-- outer ring -->
+      <circle cx="70" cy="70" r="60" fill="none" stroke="url(#wg)" stroke-width="1" opacity=".25"/>
+      <!-- wifi arcs -->
+      <path d="M30 88 Q70 48 110 88" fill="none" stroke="url(#wg)" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+      <path d="M44 102 Q70 75 96 102" fill="none" stroke="url(#wg)" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+      <!-- center dot -->
+      <circle cx="70" cy="116" r="5.5" fill="url(#wg)" opacity=".85"/>
+      <!-- red slash -->
+      <line x1="108" y1="34" x2="36" y2="115"
+        stroke="#ef4444" stroke-width="5.5" stroke-linecap="round" opacity=".9"/>
+    </svg>
+
+    <!-- Heading -->
+    <h1>You're Offline</h1>
+
+    <p class="sub">
+      No internet connection detected.<br>
+      Check your Wi-Fi or mobile data and try again.
+    </p>
+
+    <!-- Status pill -->
+    <div class="pill" id="pill" role="status" aria-live="polite">
+      <span class="dot" id="dot" aria-hidden="true"></span>
+      <span class="pill-text" id="pillText">No internet connection</span>
+    </div>
+
+    <!-- Offline features -->
+    <div class="card">
+      <div class="card-title">Available offline</div>
+      <div class="feat">
+        <span class="feat-icon">📚</span>
+        <span><strong>Cached PDFs</strong> from your last visit are still accessible</span>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">🔖</span>
+        <span><strong>Bookmarks &amp; saved items</strong> work without internet</span>
+      </div>
+      <div class="feat">
+        <span class="feat-icon">✍️</span>
+        <span><strong>Drafts are auto-saved</strong> and sync when you reconnect</span>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="actions">
+      <button class="btn btn-primary" id="retryBtn" aria-label="Try reconnecting to the internet">
+        <span class="btn-label" id="retryLabel">🔄 Try Again</span>
+      </button>
+      <a href="/" class="btn btn-secondary">🏠 Home</a>
+    </div>
+
+    <!-- Connection hint -->
+    <p class="hint" id="hint" aria-live="polite">
+      Waiting for connection…
+    </p>
+
+    <div class="footer">
+      Need help? <a href="https://studyria.qzz.io/#contact" style="color:#3d8ef8;text-decoration:none;">Contact Support</a>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const RETRY_DELAY  = 5000;
+      const MAX_AUTO     = 20;
+
+      let autoId      = null;
+      let attempts    = 0;
+      let isChecking  = false;
+
+      const retryBtn  = document.getElementById('retryBtn');
+      const retryLbl  = document.getElementById('retryLabel');
+      const pillText  = document.getElementById('pillText');
+      const pill      = document.getElementById('pill');
+      const dot       = document.getElementById('dot');
+      const hint      = document.getElementById('hint');
+
+      /* ── Probe ── */
+      async function probe() {
+        try {
+          const r = await fetch('/manifest.json?_nc=' + Date.now(), {
+            method: 'HEAD',
+            cache: 'no-store',
+            signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined,
+          });
+          return r.ok;
+        } catch { return false; }
+      }
+
+      /* ── On restored ── */
+      function onOnline() {
+        clearInterval(autoId);
+        autoId = null;
+
+        pillText.textContent = '✅ Connection restored!';
+        dot.style.background = '#10b981';
+        dot.style.animation  = 'none';
+        pill.style.background     = 'rgba(16,185,129,.1)';
+        pill.style.borderColor    = 'rgba(16,185,129,.3)';
+        retryLbl.textContent = '✅ Back online!';
+        retryBtn.disabled    = true;
+        hint.textContent     = 'Redirecting you to Studyria…';
+
+        setTimeout(() => window.location.replace('/'), 1200);
+      }
+
+      /* ── Single retry ── */
+      async function doRetry(manual) {
+        if (isChecking) return;
+        isChecking = true;
+
+        if (manual) { attempts = 0; clearInterval(autoId); autoId = null; }
+
+        retryBtn.disabled = true;
+        retryBtn.classList.add('loading');
+        retryLbl.textContent = 'Checking…';
+        hint.textContent = 'Checking your connection…';
+
+        const ok = await probe();
+
+        retryBtn.classList.remove('loading');
+
+        if (ok) {
+          onOnline();
+        } else {
+          attempts++;
+          retryBtn.disabled    = false;
+          retryLbl.textContent = '🔄 Try Again';
+
+          if (attempts >= 3) {
+            hint.innerHTML =
+              'Still offline. Try:<br>' +
+              '① Toggle Wi-Fi or mobile data off &amp; on<br>' +
+              '② Restart your router or turn airplane mode on/off<br>' +
+              '③ Tap "Try Again" once you\'re connected';
+          } else {
+            const sec = RETRY_DELAY / 1000;
+            hint.textContent = `Still offline. Auto-checking every ${sec}s…`;
+          }
+
+          if (!autoId) startAuto();
+        }
+
+        isChecking = false;
+      }
+
+      /* ── Auto-check ── */
+      function startAuto() {
+        if (autoId) return;
+        autoId = setInterval(async () => {
+          if (attempts >= MAX_AUTO) {
+            clearInterval(autoId); autoId = null;
+            hint.textContent = 'Auto-check stopped. Tap "Try Again" when ready.';
+            return;
+          }
+          if (!isChecking) {
+            const ok = await probe();
+            if (ok) onOnline();
+          }
+        }, RETRY_DELAY);
+      }
+
+      /* ── Wire events ── */
+      retryBtn.addEventListener('click', () => doRetry(true));
+
+      window.addEventListener('online',  () => probe().then(ok => { if (ok) onOnline(); }));
+      window.addEventListener('offline', () => {
+        pillText.textContent = 'No internet connection';
+        hint.textContent     = 'You went offline again.';
+      });
+
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.addEventListener('message', e => {
+          if (e.data?.type === 'ONLINE') onOnline();
+        });
+      }
+
+      /* ── Boot ── */
+      setTimeout(() => {
+        probe().then(ok => {
+          if (ok) { onOnline(); } else { startAuto(); }
+        });
+      }, 800);
+
+    })();
+  </script>
+</body>
+</html>
