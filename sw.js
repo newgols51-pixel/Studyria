@@ -39,11 +39,11 @@
 // 'none', and the fetch-handler bypass below).
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-const CACHE_NAME   = 'studyria-v11';           // ← bump on every deploy
-const SW_BUILD     = '2026.06.27-r1-spa-routing-fix';
+const CACHE_NAME   = 'studyria-v12';           // ← bump on every deploy
+const SW_BUILD     = '2026.06.27-r2-pwa-install-fix';
 const OFFLINE_PAGE = '/offline.html';          // FIX: was /404.html
 
-const WHATS_NEW = '✨ SPA routing fix: /library, /dashboard, /privacy, /terms, /refund, /about, /contact now open without 404 on direct visit or refresh.';
+const WHATS_NEW = '🔧 PWA install fix: native install prompt now always fires correctly on Android Chrome. Duplicate toast and double SW registration removed.';
 
 // Static assets to pre-cache on install
 const PRECACHE_ASSETS = [

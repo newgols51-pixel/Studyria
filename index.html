@@ -16718,41 +16718,56 @@ async function renderPopularDownloads() {
 }
 
 // ── PWA INSTALL (Feature 6) ──────────────────────────────────────
-// NOTE: The primary install/update logic lives in the App Center engine
-// below (pwaAppCenter). This section only manages the legacy navbar
-// install button (#pwaInstallBtn) so both co-exist safely.
+// This is the SINGLE canonical beforeinstallprompt capture point for
+// the entire page.  All install CTAs (navbar button, burger menu card,
+// footer badge, app.js fallback) read window._pwaInstallPrompt.
+// A sentinel flag (window.__pwaInstallPromptHandled) prevents app.js
+// from registering a duplicate listener.
 //
-// ✅ FIX: Use window._pwaInstallPrompt (not let) so inline HTML onclick
-//    handlers and footer badge can access it globally.
+// ✅ window._pwaInstallPrompt — shared, always up-to-date reference.
+// ✅ window.__pwaInstallPromptHandled — prevents double-registration.
+
 window._pwaInstallPrompt = null;
+window.__pwaInstallPromptHandled = true; // sentinel — app.js will defer to this
+
 window.addEventListener('beforeinstallprompt', (e) => {
-  // ✅ Prevent the browser's automatic mini-infobar / install banner.
-  //    The App Center card and footer badge are the only install CTAs.
+  // ✅ Prevent automatic mini-infobar. All install CTAs call prompt() explicitly.
   e.preventDefault();
   window._pwaInstallPrompt = e;
+  // Notify any subscribers (app.js _state.deferredPrompt, pwaAppCenter, etc.)
+  window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
+  console.log('[PWA] beforeinstallprompt captured ✅');
 });
+
 window.addEventListener('appinstalled', () => {
+  window._pwaInstallPrompt = null;
   const btn = document.getElementById('pwaInstallBtn');
   if (btn) btn.style.display = 'none';
-  window._pwaInstallPrompt = null;
-  // Toast is shown by the App Center engine; avoid double-toast.
+  // Toast shown by pwaAppCenter — no extra toast here to avoid duplicates.
 });
+
 function triggerPWAInstall() {
-  // Prefer the App Center engine if available (it manages its own _installEvt)
-  if (window.pwaAppCenter) {
+  // Always route through pwaAppCenter when available — it owns renderInstallCard().
+  if (window.pwaAppCenter && typeof window.pwaAppCenter.install === 'function') {
     window.pwaAppCenter.install();
     return;
   }
-  if (window._pwaInstallPrompt) {
-    window._pwaInstallPrompt.prompt();
-    window._pwaInstallPrompt.userChoice.then(choice => {
+  const prompt = window._pwaInstallPrompt;
+  if (prompt) {
+    prompt.prompt();
+    prompt.userChoice.then(choice => {
       if (choice.outcome === 'accepted') showToast('🚀 Studyria installed!', 'success');
       window._pwaInstallPrompt = null;
       const btn = document.getElementById('pwaInstallBtn');
       if (btn) btn.style.display = 'none';
     });
   } else {
-    showToast('📱 To install: tap browser menu → "Add to Home Screen"', 'info');
+    // No prompt available — browser doesn't support PWA install or already installed
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    showToast(isIOS
+      ? '📱 Tap Share ⬆ then "Add to Home Screen" to install on iPhone'
+      : '📱 Tap browser menu → "Install app" or "Add to Home Screen"',
+      'info');
   }
 }
 
@@ -32067,7 +32082,10 @@ if (_origTrackReading) {
   window.pwaAppCenter = {
 
     install: async function() {
-      if (!_installEvt) {
+      // Always read from the canonical shared reference first, then fall back
+      // to the local mirror (_installEvt) set via the pwa:installable event.
+      var prompt = window._pwaInstallPrompt || _installEvt;
+      if (!prompt) {
         // No install prompt available — show platform-appropriate guidance
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
@@ -32084,14 +32102,13 @@ if (_origTrackReading) {
         return;
       }
       try {
-        _installEvt.prompt();
-        var result = await _installEvt.userChoice;
+        prompt.prompt();
+        var result = await prompt.userChoice;
         _installEvt = null;
         window._pwaInstallPrompt = null;
         if (result.outcome === 'accepted') {
           if (typeof showToast === 'function') showToast('🚀 Studyria installed successfully!', 'success');
-          // Replace install button with "App Installed ✅" immediately
-          // (appinstalled event will also fire, but this gives instant feedback)
+          window._pwaInstallToastShown = true;
           var installBtn = document.getElementById('pwaHmInstallBtn');
           if (installBtn) {
             installBtn.textContent = 'App Installed ✅';
@@ -32164,14 +32181,14 @@ if (_origTrackReading) {
   };
 
   // ── beforeinstallprompt ────────────────────────────────────────
-  window.addEventListener('beforeinstallprompt', function(e) {
-    // ✅ Prevent automatic install banners / mini-infobar.
-    //    The install CTA lives exclusively in the Burger Menu card and footer badge.
-    e.preventDefault();
-    _installEvt = e;
-    // Keep the global reference in sync so triggerPWAInstall() and
-    // the footer badge onclick can always access the deferred prompt.
-    window._pwaInstallPrompt = e;
+  // The canonical beforeinstallprompt listener lives ABOVE this IIFE (see
+  // "PWA INSTALL Feature 6" block).  pwaAppCenter subscribes to the custom
+  // event it dispatches so _installEvt stays in sync without a second
+  // native listener — this avoids any risk of the event being preventDefault()'d
+  // twice or the prompt reference splitting between two owners.
+  window.addEventListener('pwa:installable', function(e) {
+    _installEvt = e.detail.prompt;
+    // window._pwaInstallPrompt is already set by the outer listener.
     renderInstallCard();
   });
 
@@ -32186,14 +32203,23 @@ if (_origTrackReading) {
     const footerBadge = document.getElementById('sfAppBadgeBtn');
     if (footerBadge) footerBadge.style.display = 'none';
     renderInstallCard();
-    if (typeof showToast === 'function') showToast('✅ Studyria App installed!', 'success');
+    // Show install success toast ONCE — the pwa:installable → install() flow
+    // shows it immediately on outcome === 'accepted'; only show here if not
+    // already shown (i.e. browser installed silently without our prompt).
+    if (typeof showToast === 'function' && !window._pwaInstallToastShown) {
+      window._pwaInstallToastShown = true;
+      showToast('✅ Studyria App installed!', 'success');
+    }
   });
 
   // ── Service Worker registration ────────────────────────────────
   if ('serviceWorker' in navigator) {
     _swStatus = 'registering';
     window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none',  // always re-fetch sw.js — avoids stale SW bugs
+      })
         .then(function(reg) {
           _swReg = reg;
           _swStatus = 'registered';

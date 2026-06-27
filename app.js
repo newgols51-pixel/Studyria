@@ -36,7 +36,7 @@ const PWA_CONFIG = {
   OFFLINE_PAGE:      '/offline.html',
 
   // Must match CACHE_NAME in sw.js
-  CACHE_NAME:        'studyria-v7',
+  CACHE_NAME:        'studyria-v12',
 
   // How often to poll for SW updates (4 hours)
   UPDATE_INTERVAL_MS: 4 * 60 * 60 * 1000,
@@ -146,41 +146,59 @@ async function registerServiceWorker() {
     return;
   }
 
+  // pwaAppCenter registers sw.js on the 'load' event — if it has already done
+  // so, reuse the existing registration instead of creating a second one.
+  // Double-registration to the same scope is allowed by spec and won't break
+  // anything, but it triggers an extra network fetch of sw.js and can cause a
+  // transient race between two installations running concurrently.
+  try {
+    // Prefer an existing registration over a fresh one.
+    const existing = await navigator.serviceWorker.getRegistration(PWA_CONFIG.SW_SCOPE);
+    if (existing) {
+      _state.swRegistration = existing;
+      _caps.sync         = 'sync'         in existing;
+      _caps.periodicSync = 'periodicSync' in existing;
+      _caps.pushManager  = 'pushManager'  in existing;
+      console.log('[PWA] Service Worker already registered — reusing ✅', existing.scope);
+
+      if (existing.active) _querySwVersion(existing.active);
+      if (existing.waiting && navigator.serviceWorker.controller) {
+        _state.waitingSW = existing.waiting;
+        _onUpdateReady(existing.waiting);
+      }
+      existing.addEventListener('updatefound', _onUpdateFound);
+      navigator.serviceWorker.addEventListener('controllerchange', _onControllerChange);
+      navigator.serviceWorker.addEventListener('message', _onSwMessage);
+      _scheduleUpdateChecks();
+      return;
+    }
+  } catch (_) { /* fall through to fresh registration */ }
+
   try {
     const reg = await navigator.serviceWorker.register(PWA_CONFIG.SW_PATH, {
       scope:          PWA_CONFIG.SW_SCOPE,
-      updateViaCache: 'none',   // always re-fetch sw.js from network
+      updateViaCache: 'none',
     });
     _state.swRegistration = reg;
 
-    // Detect capability support after registration
     _caps.sync         = 'sync'         in reg;
     _caps.periodicSync = 'periodicSync' in reg;
     _caps.pushManager  = 'pushManager'  in reg;
 
     console.log('[PWA] Service Worker registered ✅', reg.scope);
 
-    // If SW already active, get version info
     if (reg.active) {
       _querySwVersion(reg.active);
     }
 
-    // If a new SW is already waiting (e.g. user reloaded after update downloaded)
     if (reg.waiting && navigator.serviceWorker.controller) {
       _state.waitingSW = reg.waiting;
       _onUpdateReady(reg.waiting);
     }
 
-    // Watch for a new SW installing
     reg.addEventListener('updatefound', _onUpdateFound);
-
-    // SW controller changed → new version is now active
     navigator.serviceWorker.addEventListener('controllerchange', _onControllerChange);
-
-    // Messages from SW
     navigator.serviceWorker.addEventListener('message', _onSwMessage);
-
-    // Start polling for updates
     _scheduleUpdateChecks();
 
   } catch (err) {
@@ -390,48 +408,58 @@ function _scheduleUpdateChecks() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 function setupInstallPrompt() {
-  // Capture beforeinstallprompt (Android, Chrome Desktop, Edge, Samsung)
-  window.addEventListener('beforeinstallprompt', e => {
-    // ✅ Always prevent the browser's automatic install banner / mini-infobar.
-    e.preventDefault();
-    _state.deferredPrompt = e;
+  // ── IMPORTANT: pwaAppCenter (inline in index.html) is the SOLE owner of
+  // beforeinstallprompt and appinstalled.  This function must NOT add its
+  // own listeners when pwaAppCenter is (or will be) present, to avoid:
+  //   • triple e.preventDefault() calls consuming the event
+  //   • _installEvt vs _state.deferredPrompt split-brain state
+  //   • duplicate "App Installed" toasts
+  //
+  // Instead we use window._pwaInstallPrompt as the single shared reference
+  // that both pwaAppCenter and this module read/write.
 
-    // ⛔ NEVER show the legacy navbar install button.
-    //    The custom "Download / Install Studyria App" card in the Burger Menu
-    //    is the only install entry point.  prompt() fires only on explicit click.
+  // Capture beforeinstallprompt — ONLY if pwaAppCenter hasn't already
+  // registered its own listener (checked via sentinel flag).
+  if (!window.__pwaInstallPromptHandled) {
+    window.__pwaInstallPromptHandled = true;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      // Store on window so pwaAppCenter, promptInstall(), triggerPWAInstall()
+      // and the footer badge all share the same reference.
+      window._pwaInstallPrompt = e;
+      _state.deferredPrompt = e;
 
-    // Dispatch event so other handlers (pwaAppCenter, etc.) can react
-    window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
-
-    console.log('[PWA] Install prompt captured ✅ (burger-menu card is the sole CTA)');
-  });
+      window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
+      console.log('[PWA] Install prompt captured ✅');
+    });
+  } else {
+    // pwaAppCenter already set up — mirror its reference into our state
+    // by listening to our own custom event it dispatches on capture.
+    window.addEventListener('pwa:installable', e => {
+      _state.deferredPrompt = e.detail.prompt;
+    });
+  }
 
   // App successfully installed
   window.addEventListener('appinstalled', () => {
     console.log('[PWA] App installed ✅');
     _state.isInstalled = true;
     _state.deferredPrompt = null;
+    window._pwaInstallPrompt = null;
     document.documentElement.setAttribute('data-pwa-installed', 'true');
 
-    // Legacy navbar install button — keep hidden (burger menu is the sole entry point)
     const legacyBtn = document.getElementById('pwaInstallBtn');
     if (legacyBtn) legacyBtn.style.display = 'none';
 
-    // Remove fallback install banner if somehow present
     document.getElementById('_pwaInstallBanner')?.remove();
-
-    // Mark burger-menu install card as installed
     _markBurgerInstalled();
 
     window.dispatchEvent(new CustomEvent('pwa:installed'));
 
-    // Analytics
     if (window.gtag) {
       window.gtag('event', 'app_installed', { app_name: PWA_CONFIG.NAME });
     }
-    if (typeof showToast === 'function') {
-      showToast('✅ Studyria App installed!', 'success');
-    }
+    // Toast is shown by pwaAppCenter — skip to avoid double-toast.
   });
 }
 
@@ -506,9 +534,15 @@ function dismissInstallBanner() {
 }
 
 async function promptInstall() {
-  const prompt = _state.deferredPrompt;
+  // Always prefer pwaAppCenter's install() — it owns the canonical _installEvt
+  if (window.pwaAppCenter && typeof window.pwaAppCenter.install === 'function') {
+    window.pwaAppCenter.install();
+    return;
+  }
+
+  // Fallback: read from shared window reference (set by whoever captured first)
+  const prompt = window._pwaInstallPrompt || _state.deferredPrompt;
   if (!prompt) {
-    // iOS / unsupported — show instructions
     showiOSInstallTip();
     return;
   }
@@ -518,10 +552,10 @@ async function promptInstall() {
     const { outcome } = await prompt.userChoice;
     console.log('[PWA] Install prompt outcome:', outcome);
     _state.deferredPrompt = null;
+    window._pwaInstallPrompt = null;
     dismissInstallBanner();
 
     if (outcome === 'accepted') {
-      // Mark burger-menu install button as "App Installed ✅"
       _markBurgerInstalled();
       if (typeof showToast === 'function') showToast('🚀 Studyria installed!', 'success');
     }
