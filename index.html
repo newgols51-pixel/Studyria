@@ -32118,13 +32118,23 @@ if (_origTrackReading) {
   });
 
   // ── Service Worker registration ────────────────────────────────
+  // Guard: app.js also registers /sw.js; reuse existing registration if
+  // it already exists to avoid concurrent installs at the same scope.
   if ('serviceWorker' in navigator) {
     _swStatus = 'registering';
     window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/sw.js', {
-        scope: '/',
-        updateViaCache: 'none',  // always re-fetch sw.js — avoids stale SW bugs
-      })
+      var _doRegister = function(existingReg) {
+        if (existingReg) {
+          console.log('[PWA] SW already registered — reusing in pwaAppCenter');
+          return Promise.resolve(existingReg);
+        }
+        return navigator.serviceWorker.register('/sw.js', {
+          scope: '/',
+          updateViaCache: 'none',
+        });
+      };
+      navigator.serviceWorker.getRegistration('/')
+        .then(_doRegister)
         .then(function(reg) {
           _swReg = reg;
           _swStatus = 'registered';
