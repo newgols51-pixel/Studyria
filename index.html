@@ -15493,9 +15493,17 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
   flex-wrap: wrap;
   gap: 12px;
 }
-.sf-copy { font-size: .77rem; color: var(--text3); line-height: 1.6; }
+.sf-copy {
+  font-size: .77rem;
+  color: var(--text3);
+  line-height: 1.6;
+  white-space: normal;
+  word-break: keep-all;
+  flex: 1;
+  min-width: 0;
+}
 .sf-copy strong { color: var(--text2); font-weight: 600; }
-.sf-legal { display: flex; align-items: center; gap: 4px; }
+.sf-legal { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .sf-legal a,
 .sf-legal span[onclick] {
   font-size: .77rem;
@@ -15509,8 +15517,18 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 .sf-legal a:hover,
 .sf-legal span[onclick]:hover { color: var(--accent); background: rgba(61,142,248,0.08); }
 .sf-legal-sep { color: var(--text3); font-size: .7rem; opacity: .4; }
+@media (max-width: 640px) {
+  .sf-bottom {
+    padding: 20px 0 calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+  .sf-bottom-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .sf-copy { min-width: unset; width: 100%; }
+}
 @media (max-width: 540px) {
-  .sf-bottom-inner { flex-direction: column; align-items: flex-start; }
   .sf-newsletter-inner { flex-direction: column; align-items: flex-start; }
   .sf-newsletter-form { max-width: 100%; width: 100%; }
 }
@@ -19683,7 +19701,7 @@ async function switchMeTab(tab) {
       <div class="me-section-title" style="animation-delay:.1s"><span class="mst-accent"></span>Your Stats</div>
       <div class="me-stats-grid">
         <div class="me-stat-card msc-pdf" style="animation-delay:.12s" onclick="switchMeTab('purchased')" title="View My Library">
-          <div class="me-stat-icon">📚</div>
+          <div class="me-stat-icon">??</div>
           <div class="me-stat-val" id="dashStat0"><span class="me-skeleton" style="width:48px;height:28px;display:block"></span></div>
           <div class="me-stat-label">PDFs Purchased</div>
           <div class="me-stat-trend">↑ View Library →</div>
@@ -38899,7 +38917,7 @@ function _crdShowUploadFab() {
     @keyframes fabPop{from{opacity:0;transform:translateY(30px) scale(0.8)}to{opacity:1;transform:translateY(0) scale(1)}}
     #crdUploadFab:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 14px 40px rgba(16,217,142,0.6)!important}
     </style>
-    <span style="font-size:1.1rem">📤</span>
+    <span style="font-size:1.1rem">??</span>
     <span>Upload New PDF</span>
   `;
   fab.onclick = () => crdOpenUploadSinglePdf();
