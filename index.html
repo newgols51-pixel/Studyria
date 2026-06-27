@@ -51,13 +51,17 @@
 <meta property="og:title" content="Studyria – India's #1 PDF Study Platform" />
 <meta property="og:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams. Join 7000+ students studying smarter." />
 <meta property="og:image" content="https://studyria.qzz.io/og-cover.png" />
+<meta property="og:image:secure_url" content="https://studyria.qzz.io/og-cover.png" />
+<meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Studyria – Assam's Smart Education Platform" />
 <!-- ── SEO: Twitter Card ── -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Studyria – India's #1 PDF Study Platform" />
 <meta name="twitter:description" content="Download free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams." />
 <meta name="twitter:image" content="https://studyria.qzz.io/og-cover.png" />
+<meta name="twitter:image:alt" content="Studyria – Assam's Smart Education Platform" />
 <meta name="twitter:site" content="@studyria" />
 <meta name="twitter:creator" content="@studyria" />
 <meta property="og:locale" content="en_IN" />
@@ -11598,32 +11602,30 @@ body.light .me-stat-val { filter:none; }
 
 <div class="page" id="page-dashboard">
 
-  <div class="me-profile-hero">
+  <div class="me-profile-hero" id="dashProfileHero" style="display:none">
     <div class="me-hero-orb me-hero-orb-1"></div>
     <div class="me-hero-orb me-hero-orb-2"></div>
     <div class="me-hero-inner">
       <div class="me-hero-top">
 
         <div class="me-avatar-ring">
-          <div class="me-avatar" id="dashAvatar">AN</div>
+          <div class="me-avatar" id="dashAvatar"></div>
           <div class="me-avatar-online"></div>
         </div>
 
         <div class="me-hero-info">
           <div class="me-welcome-tag"><span class="wt-dot"></span>👋 Welcome Back</div>
-          <div class="me-hero-name" id="dashName">Studyria User</div>
+          <div class="me-hero-name" id="dashName"></div>
           <div class="me-hero-sub">
-            <span id="dashEmail">user@example.com</span>
-            <span class="join-date" id="dashJoinDate">· Member since 2024</span>
+            <span id="dashEmail"></span>
+            <span class="join-date" id="dashJoinDate"></span>
           </div>
-          <div class="me-badge-row">
-            <span class="me-member-badge mb-gold">🏆 Gold Learner</span>
-            <span class="me-member-badge mb-level" id="dashPlan">🎓 Free Plan</span>
-            <span class="me-member-badge mb-level" style="background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.28);color:#c4b5fd;">✨ Level 3</span>
+          <div class="me-badge-row" id="dashBadgeRow" style="display:none">
+            <span class="me-member-badge mb-level" id="dashPlan"></span>
           </div>
-          <div class="me-xp-wrap">
-            <div class="me-xp-label"><span>Level 3 → Level 4</span><span style="color:var(--accent);font-weight:700">70% Complete</span></div>
-            <div class="me-xp-track"><div class="me-xp-fill" style="width:70%"></div></div>
+          <div class="me-xp-wrap" id="dashXpWrap" style="display:none">
+            <div class="me-xp-label"><span id="dashXpLabel"></span></div>
+            <div class="me-xp-track"><div class="me-xp-fill" id="dashXpFill" style="width:0%"></div></div>
           </div>
         </div>
       </div>
@@ -18187,6 +18189,9 @@ async function renderDashboard() {
   }
 
   if (!user) {
+    // Hide profile hero, show login prompt in main content area
+    const heroEl = document.getElementById('dashProfileHero');
+    if (heroEl) heroEl.style.display = 'none';
     document.getElementById('dashMain').innerHTML = `
       <div style="text-align:center;padding:100px 20px;animation:dashFadeUp .4s ease both">
         <div style="font-size:3rem;margin-bottom:16px">🔒</div>
@@ -18200,17 +18205,25 @@ async function renderDashboard() {
     return;
   }
 
-  // Populate hero profile card
-  const avatarEl = document.getElementById('dashAvatar');
-  const nameEl   = document.getElementById('dashName');
-  const emailEl  = document.getElementById('dashEmail');
-  const planEl   = document.getElementById('dashPlan');
-  const joinEl   = document.getElementById('dashJoinDate');
+  // Show profile hero and populate with real user data
+  const heroEl = document.getElementById('dashProfileHero');
+  if (heroEl) heroEl.style.display = '';
 
-  if (avatarEl) avatarEl.textContent = user.avatar || (user.name ? user.name[0].toUpperCase() : '👤');
+  const avatarEl    = document.getElementById('dashAvatar');
+  const nameEl      = document.getElementById('dashName');
+  const emailEl     = document.getElementById('dashEmail');
+  const planEl      = document.getElementById('dashPlan');
+  const joinEl      = document.getElementById('dashJoinDate');
+  const badgeRowEl  = document.getElementById('dashBadgeRow');
+  const xpWrapEl    = document.getElementById('dashXpWrap');
+
+  if (avatarEl) avatarEl.textContent = user.avatar || (user.name ? user.name[0].toUpperCase() : '?');
   if (nameEl)   nameEl.textContent   = user.name || 'Studyria User';
   if (emailEl)  emailEl.textContent  = user.email || '';
-  if (planEl)   planEl.textContent   = '🎓 ' + (user.plan || 'Free') + ' Plan';
+  if (planEl) {
+    planEl.textContent = '🎓 ' + (user.plan || 'Free') + ' Plan';
+    if (badgeRowEl) badgeRowEl.style.display = '';
+  }
   if (joinEl) {
     const created = user.created_at || user.createdAt;
     if (created) {
@@ -18218,6 +18231,8 @@ async function renderDashboard() {
       joinEl.textContent = `· Member since ${d.toLocaleDateString('en-IN',{month:'short',year:'numeric'})}`;
     }
   }
+  // Hide XP / level — real data not available yet
+  if (xpWrapEl) xpWrapEl.style.display = 'none';
 
   // Bust cache so switching tabs always fetches fresh data
   window._dashCache = null;
