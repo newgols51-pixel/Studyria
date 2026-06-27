@@ -10,7 +10,7 @@
  *   - Offline / Online detection
  *   - Cache versioning & cleanup
  *   - Background Sync
- *   - Push Notification subscription
+ *   - Push Notifications via OneSignal (single push provider)
  *   - PWA diagnostics & performance monitoring
  *
  * USAGE: Include this file AFTER your main page scripts.
@@ -838,67 +838,16 @@ async function registerBackgroundSync(tag = 'sync-data') {
 // ═══════════════════════════════════════════════════════════════════════════
 // 9. PUSH NOTIFICATIONS
 // ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Request push notification permission.
- * MUST be called from a user gesture (e.g. button click).
- */
-async function requestNotificationPermission() {
-  if (!_caps.notification) return 'denied';
-  if (Notification.permission === 'granted') return 'granted';
-  if (Notification.permission === 'denied')  return 'denied';
-
-  const permission = await Notification.requestPermission();
-  return permission;
-}
-
-async function subscribeToPushNotifications(vapidPublicKey) {
-  try {
-    if (!_caps.pushManager || !_state.swRegistration) {
-      console.warn('[PWA] Push Manager not supported or SW not ready');
-      return null;
-    }
-    if (Notification.permission !== 'granted') {
-      console.warn('[PWA] Notification permission not granted');
-      return null;
-    }
-    const sub = await _state.swRegistration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: _urlBase64ToUint8Array(vapidPublicKey),
-    });
-    console.log('[PWA] Push subscription created ✅');
-    return sub;
-  } catch (e) {
-    console.warn('[PWA] Push subscribe failed:', e);
-    return null;
-  }
-}
-
-async function getPushSubscription() {
-  try {
-    if (!_state.swRegistration) return null;
-    return await _state.swRegistration.pushManager.getSubscription();
-  } catch (e) {
-    return null;
-  }
-}
-
-async function unsubscribeFromPush() {
-  try {
-    const sub = await getPushSubscription();
-    if (sub) { await sub.unsubscribe(); return true; }
-    return false;
-  } catch (e) {
-    return false;
-  }
-}
-
-function _urlBase64ToUint8Array(b64) {
-  const pad  = '='.repeat((4 - (b64.length % 4)) % 4);
-  const base = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
-  const raw  = atob(base);
-  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
-}
+//
+// All push notification handling is delegated exclusively to OneSignal
+// (see section 11b). There are no custom pushManager.subscribe() calls,
+// no VAPID / applicationServerKey references, and no native Web Push
+// subscriptions in this file. OneSignal's SDK (imported via sw.js and
+// index.html) is the single push provider for Studyria.
+//
+// The notification button in the burger menu calls osRequestNotification()
+// which uses OneSignal.User.PushSubscription.optIn() exclusively.
+// ═══════════════════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 10. DIAGNOSTICS
@@ -918,7 +867,7 @@ function getDiagnostics() {
       backgroundSync: _caps.sync,
       notifications:  _caps.notification,
       periodicSync:   _caps.periodicSync,
-      pushManager:    _caps.pushManager,
+      pushManager:    _caps.pushManager,   // push delivery handled by OneSignal
     },
     state: {
       isOnline:            _state.isOnline,
@@ -1560,13 +1509,7 @@ window.PWA = {
   // Sync
   registerBackgroundSync,
 
-  // Notifications (native Web Push — used as fallback / diagnostics)
-  requestNotificationPermission,
-  subscribeToPushNotifications,
-  getPushSubscription,
-  unsubscribeFromPush,
-
-  // OneSignal
+  // OneSignal (single push provider — all notification handling goes here)
   oneSignal: {
     isSubscribed: () => _osState.subscribed,
     isReady:      () => _osState.sdkReady,

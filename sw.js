@@ -24,13 +24,10 @@
 //   registration for the whole site — Studyria's caching/offline/PWA logic
 //   AND OneSignal's push delivery both run inside it.
 //
-//   The 'push' and 'notificationclick' listeners below are Studyria's own
-//   fallback handlers (used only for non-OneSignal pushes, e.g. raw
-//   PushManager subscriptions from subscribeToPushNotifications() in
-//   app.js). OneSignal's imported bundle registers its own internal
-//   'push' / 'notificationclick' listeners that run independently and
-//   handle all OneSignal-sent notifications — the two do not conflict
-//   because each only acts on the data shape it owns.
+//   OneSignal is the SOLE push provider. There are no custom 'push' or
+//   'notificationclick' handlers in this file — those are handled entirely
+//   by the OneSignal bundle imported below. This prevents duplicate event
+//   handling and ensures only one service worker owns push events.
 // ══════════════════════════════════════════════════════════════════
 
 // Must be the first statement that runs — wires this worker into
@@ -246,40 +243,6 @@ self.addEventListener('sync', event => {
       )
     );
   }
-});
-
-// ── PUSH NOTIFICATIONS ────────────────────────────────────────────
-self.addEventListener('push', event => {
-  if (!event.data) return;
-
-  let data = {};
-  try { data = event.data.json(); } catch { data = { title: event.data.text() }; }
-
-  const title   = data.title   || 'Studyria';
-  const options = {
-    body:    data.body    || 'You have a new notification',
-    icon:    data.icon    || '/icon-192.png',
-    badge:   data.badge   || '/icon-96.png',
-    image:   data.image   || undefined,
-    tag:     data.tag     || 'studyria-push',
-    data:    data.data    || { url: '/' },
-    vibrate: [100, 50, 100],
-    requireInteraction: false,
-  };
-
-  event.waitUntil(self.registration.showNotification(title, options));
-});
-
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  const url = event.notification.data?.url || '/';
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
-      const existing = cs.find(c => c.url === url && 'focus' in c);
-      if (existing) return existing.focus();
-      return clients.openWindow(url);
-    })
-  );
 });
 
 // ── MESSAGE HANDLER ───────────────────────────────────────────────
