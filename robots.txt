@@ -1,8 +1,42 @@
+# ══════════════════════════════════════════════════════════════
+# robots.txt — Studyria  (https://studyria.qzz.io)
+# Updated: 2026-06-27
+# ══════════════════════════════════════════════════════════════
+
+# ── All well-behaved crawlers ─────────────────────────────────
 User-agent: *
 Allow: /
 
-# Block private/admin/auth pages from indexing
-# Query-param variants
+# Public SPA pages — explicitly allow both path & query variants
+Allow: /
+Allow: /?page=library
+Allow: /?page=discover
+Allow: /?page=career-hub
+Allow: /?page=about
+Allow: /?page=contact
+Allow: /?page=privacy
+Allow: /?page=terms
+Allow: /?page=refund
+Allow: /#library
+Allow: /#discover
+Allow: /#career-hub
+Allow: /#about
+Allow: /#contact
+Allow: /#privacy
+Allow: /#terms
+Allow: /#refund
+
+# Static assets — always crawlable
+Allow: /og-cover.png
+Allow: /favicon.ico
+Allow: /icon-*.png
+Allow: /icons/
+Allow: /manifest.json
+Allow: /sitemap.xml
+Allow: /sitemap-index.xml
+Allow: /sw.js
+
+# Private / auth / admin pages — block indexing
 Disallow: /?page=admin
 Disallow: /?page=admin-login
 Disallow: /?page=dashboard
@@ -11,8 +45,12 @@ Disallow: /?page=register
 Disallow: /?page=reset-password
 Disallow: /?page=wallet
 Disallow: /?page=marketplace
+Disallow: /?page=upload
+Disallow: /?page=creator-dashboard
+Disallow: /?page=creator-register
+Disallow: /?page=wishlist
 
-# Hash-route variants (for crawlers that process fragment URLs)
+# Hash-route equivalents (for crawlers that follow fragments)
 Disallow: /#admin
 Disallow: /#admin-login
 Disallow: /#dashboard
@@ -26,21 +64,55 @@ Disallow: /#creator-register
 Disallow: /#upload
 Disallow: /#wishlist
 
-# Allow important public pages explicitly
-Allow: /?page=library
-Allow: /?page=discover
-Allow: /?page=detail
-Allow: /?page=career-hub
-Allow: /#library
-Allow: /#discover
-Allow: /#career-hub
+# Block development / API internals
+Disallow: /api/
+Disallow: /.well-known/
+Disallow: /cdn-cgi/
 
-# Static assets — always allow
+# Block duplicate/tracking query parameters
+Disallow: /*?source=pwa
+Disallow: /*?utm_*
+Disallow: /*?ref=*
+Disallow: /*?fbclid=*
+
+# Crawl-rate hint (optional — honoured by Google)
+Crawl-delay: 2
+
+# ── Googlebot specific ────────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# ── Googlebot Images ──────────────────────────────────────────
+User-agent: Googlebot-Image
 Allow: /og-cover.png
-Allow: /favicon.ico
 Allow: /icon-*.png
-Allow: /manifest.json
-Allow: /sitemap.xml
+Allow: /icons/
+Allow: /screenshots/
 
-# Sitemap location
+# ── Bingbot ───────────────────────────────────────────────────
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+# ── Block bad / scraper bots ─────────────────────────────────
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+# ── Sitemap locations ─────────────────────────────────────────
 Sitemap: https://studyria.qzz.io/sitemap.xml
