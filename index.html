@@ -15620,7 +15620,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 
           <!-- PWA install badge -->
           <div class="sf-app-badge">
-            <a class="sf-app-badge-btn" onclick="if(typeof window._pwaInstallPrompt!=='undefined'&&window._pwaInstallPrompt){window._pwaInstallPrompt.prompt();}else if(typeof PWA!=='undefined'&&PWA.promptInstall){PWA.promptInstall();}else{alert('Open in Chrome and tap Add to Home Screen');}">
+            <a class="sf-app-badge-btn" onclick="triggerPWAInstall()" id="sfAppBadgeBtn">
               <div class="sf-app-badge-icon">📱</div>
               <div class="sf-app-badge-text">
                 <span class="sf-app-badge-sub">Install Free App</span>
@@ -16721,29 +16721,33 @@ async function renderPopularDownloads() {
 // NOTE: The primary install/update logic lives in the App Center engine
 // below (pwaAppCenter). This section only manages the legacy navbar
 // install button (#pwaInstallBtn) so both co-exist safely.
-let _pwaInstallPrompt = null;
+//
+// ✅ FIX: Use window._pwaInstallPrompt (not let) so inline HTML onclick
+//    handlers and footer badge can access it globally.
+window._pwaInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
-  // ✅ Always prevent the browser's automatic mini-infobar / install banner.
-  //    The burger-menu card is the ONLY install CTA — never show the navbar button.
-  _pwaInstallPrompt = e;
+  // ✅ Prevent the browser's automatic mini-infobar / install banner.
+  //    The App Center card and footer badge are the only install CTAs.
+  e.preventDefault();
+  window._pwaInstallPrompt = e;
 });
 window.addEventListener('appinstalled', () => {
   const btn = document.getElementById('pwaInstallBtn');
   if (btn) btn.style.display = 'none';
-  _pwaInstallPrompt = null;
+  window._pwaInstallPrompt = null;
   // Toast is shown by the App Center engine; avoid double-toast.
 });
 function triggerPWAInstall() {
-  // Prefer the App Center engine if available
+  // Prefer the App Center engine if available (it manages its own _installEvt)
   if (window.pwaAppCenter) {
     window.pwaAppCenter.install();
     return;
   }
-  if (_pwaInstallPrompt) {
-    _pwaInstallPrompt.prompt();
-    _pwaInstallPrompt.userChoice.then(choice => {
+  if (window._pwaInstallPrompt) {
+    window._pwaInstallPrompt.prompt();
+    window._pwaInstallPrompt.userChoice.then(choice => {
       if (choice.outcome === 'accepted') showToast('🚀 Studyria installed!', 'success');
-      _pwaInstallPrompt = null;
+      window._pwaInstallPrompt = null;
       const btn = document.getElementById('pwaInstallBtn');
       if (btn) btn.style.display = 'none';
     });
@@ -31591,16 +31595,16 @@ async function loadSupabaseHomeStats() {
   }
 
   try {
-    // Parallel: count PDFs, sum downloads, count users
-    const [pdfsRes, dlRes, usersRes] = await Promise.all([
+    // Parallel: count PDFs, sum downloads
+    // (Student count is NOT fetched here — it always comes from the
+    // single global auto-growing counter, see getAutoStudentCount())
+    const [pdfsRes, dlRes] = await Promise.all([
       sb.from('pdfs').select('id', { count: 'exact', head: true }).eq('status', 'published'),
-      sb.from('pdfs').select('download_count').eq('status', 'published'),
-      sb.from('purchased_pdfs').select('user_id', { count: 'exact', head: true })
+      sb.from('pdfs').select('download_count').eq('status', 'published')
     ]);
     const pdfCount  = pdfsRes.count  || 0;
     const totalDl   = (dlRes.data || []).reduce((s, r) => s + (r.download_count || 0), 0);
-    const userCount = usersRes.count || 0;
-    const stats = { pdfCount, totalDl, userCount };
+    const stats = { pdfCount, totalDl };
     // Cache globally
     window._platformStats    = stats;
     window._platformStatTs   = Date.now();
@@ -31609,6 +31613,7 @@ async function loadSupabaseHomeStats() {
     console.warn('loadSupabaseHomeStats error:', e);
     return null;
   }
+
 }
 
 /**
@@ -31620,12 +31625,15 @@ async function loadSupabaseHomeStats() {
  */
 function _applyPlatformStats(stats) {
   if (!stats) return;
-  const { pdfCount, totalDl, userCount } = stats;
+  const { pdfCount, totalDl } = stats;
 
-  // Auto-growing student counter: uses live DB count if available,
-  // otherwise falls back to the deterministic daily-incrementing counter.
-  const autoCount   = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
-  const studentCount = userCount > 0 ? userCount : autoCount;
+  // Single global student counter — always the deterministic
+  // auto-growing counter (base 157, +2-5/day). This is the ONE
+  // source of truth for every "Students" display across the site
+  // (Home, About, Connect with, CTA, Footer, Hero, Library, etc).
+  // It is intentionally NOT replaced by live Supabase row counts,
+  // so every surface always shows the same number.
+  const studentCount = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
 
   // ── Homepage pstat cards ─────────────────────────────────────
   const card0 = document.getElementById('pstatNum0');
@@ -32079,6 +32087,7 @@ if (_origTrackReading) {
         _installEvt.prompt();
         var result = await _installEvt.userChoice;
         _installEvt = null;
+        window._pwaInstallPrompt = null;
         if (result.outcome === 'accepted') {
           if (typeof showToast === 'function') showToast('🚀 Studyria installed successfully!', 'success');
           // Replace install button with "App Installed ✅" immediately
@@ -32089,6 +32098,9 @@ if (_origTrackReading) {
             installBtn.disabled = true;
             installBtn.style.cssText += ';background:rgba(16,217,142,0.15);border-color:rgba(16,217,142,0.4);color:#10d98e;cursor:default;animation:none';
           }
+          // Hide footer badge immediately on accepted
+          var footerBadge = document.getElementById('sfAppBadgeBtn');
+          if (footerBadge) footerBadge.style.display = 'none';
           // Note: _isInstalled will be updated by the appinstalled event,
           // NOT set here — wait for browser confirmation.
         }
@@ -32096,6 +32108,7 @@ if (_origTrackReading) {
       } catch(e) {
         console.warn('[PWA] Install prompt error:', e);
         _installEvt = null;
+        window._pwaInstallPrompt = null;
         renderInstallCard();
       }
     },
@@ -32153,22 +32166,25 @@ if (_origTrackReading) {
   // ── beforeinstallprompt ────────────────────────────────────────
   window.addEventListener('beforeinstallprompt', function(e) {
     // ✅ Prevent automatic install banners / mini-infobar.
-    //    The install CTA lives exclusively in the Burger Menu card.
+    //    The install CTA lives exclusively in the Burger Menu card and footer badge.
     e.preventDefault();
     _installEvt = e;
-    // Also keep the legacy reference in sync (used by triggerPWAInstall fallback)
-    _pwaInstallPrompt = e;
-    // ⛔ Do NOT show pwaInstallBtn (navbar button) — burger menu is the only entry point.
+    // Keep the global reference in sync so triggerPWAInstall() and
+    // the footer badge onclick can always access the deferred prompt.
+    window._pwaInstallPrompt = e;
     renderInstallCard();
   });
 
   window.addEventListener('appinstalled', function() {
     _installEvt = null;
-    _pwaInstallPrompt = null;
+    window._pwaInstallPrompt = null;
     _isInstalled = true;
     // ⛔ Never show the navbar install button
     const legacyBtn = document.getElementById('pwaInstallBtn');
     if (legacyBtn) legacyBtn.style.display = 'none';
+    // Hide footer badge after install
+    const footerBadge = document.getElementById('sfAppBadgeBtn');
+    if (footerBadge) footerBadge.style.display = 'none';
     renderInstallCard();
     if (typeof showToast === 'function') showToast('✅ Studyria App installed!', 'success');
   });
