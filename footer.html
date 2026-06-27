@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Studyria Footer Component</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+<style>
+/* ── STUDYRIA DESIGN TOKENS (mirror of index.html :root) ── */
+:root {
+  --color-accent:  #3d8ef8;
+  --color-accent2: #00c8e8;
+  --color-accent3: #f59e0b;
+  --color-gold:    #f59e0b;
+  --color-danger:  #ff4d6d;
+  --color-success: #10d98e;
+  --grad-primary:  linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
+  --grad-hero:     linear-gradient(135deg, #3d8ef8 0%, #8b5cf6 50%, #00c8e8 100%);
+  --grad-success:  linear-gradient(135deg, #10d98e 0%, #06b6d4 100%);
+  --radius:    14px;
+  --radius-sm: 9px;
+  --radius-lg: 22px;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+
+  /* Dark theme defaults */
+  --bg:  #080c14;
+  --bg2: #0d1220;
+  --bg3: #121929;
+  --surface: rgba(255,255,255,0.03);
+  --glass:   rgba(255,255,255,0.055);
+  --glass-border: rgba(255,255,255,0.09);
+  --glass-border-hover: rgba(100,180,255,0.25);
+  --text:  #eef2ff;
+  --text2: #7a8caa;
+  --text3: #3d4f6a;
+  --shadow: 0 8px 40px rgba(0,0,0,0.55);
+  --accent:  var(--color-accent);
+  --accent2: var(--color-accent2);
+}
+body.light {
+  --bg:  #f0f4fb;
+  --bg2: #ffffff;
+  --bg3: #e4eaf6;
+  --surface: rgba(0,0,0,0.035);
+  --glass:   rgba(255,255,255,0.75);
+  --glass-border: rgba(0,0,0,0.07);
+  --glass-border-hover: rgba(61,142,248,0.3);
+  --text:  #0a1022;
+  --text2: #4a5f80;
+  --text3: #8fa0bb;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* ══════════════════════════════════════════════
+   STUDYRIA FOOTER — PREMIUM AMOLED DARK
+   Full standalone component, zero dependencies
+══════════════════════════════════════════════ */
+
+.studyria-footer {
+  position: relative;
+  background: rgba(5, 8, 15, 0.97);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+body.light .studyria-footer {
+  background: rgba(240,244,251,0.97);
+  border-top-color: rgba(0,0,0,0.08);
+}
+
+/* Ambient orbs — atmosphere only */
+.sf-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+.sf-orb-1 {
+  width: 500px; height: 500px;
+  top: -120px; left: -100px;
+  background: radial-gradient(circle, rgba(61,142,248,0.18) 0%, transparent 65%);
+  animation: sfOrb 14s ease-in-out infinite;
+}
+.sf-orb-2 {
+  width: 400px; height: 400px;
+  bottom: -80px; right: -80px;
+  background: radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 65%);
+  animation: sfOrb 18s ease-in-out infinite reverse;
+}
+.sf-orb-3 {
+  width: 300px; height: 300px;
+  top: 40%; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(0,200,232,0.09) 0%, transparent 65%);
+  animation: sfOrb 22s ease-in-out infinite;
+}
+@keyframes sfOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(20px, -20px) scale(1.06); }
+}
+
+/* Top gradient divider */
+.sf-top-bar {
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(61,142,248,0.5) 30%,
+    rgba(0,200,232,0.6) 50%,
+    rgba(139,92,246,0.5) 70%,
+    transparent 100%);
+}
+
+/* ── Newsletter strip ── */
+.sf-newsletter {
+  position: relative;
+  padding: 36px 0 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+body.light .sf-newsletter { border-bottom-color: rgba(0,0,0,0.06); }
+
+.sf-newsletter-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.sf-newsletter-text h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.sf-newsletter-text p {
+  font-size: .82rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.sf-newsletter-form {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  max-width: 420px;
+  min-width: 240px;
+}
+.sf-newsletter-input {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .85rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.sf-newsletter-input::placeholder { color: var(--text3); }
+.sf-newsletter-input:focus {
+  border-color: rgba(61,142,248,0.45);
+  box-shadow: 0 0 0 3px rgba(61,142,248,0.12);
+}
+body.light .sf-newsletter-input { background: rgba(255,255,255,0.8); }
+.sf-newsletter-btn {
+  padding: 11px 22px;
+  border-radius: var(--radius-sm);
+  background: var(--grad-primary);
+  border: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .2s, transform .15s;
+  letter-spacing: .02em;
+}
+.sf-newsletter-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+/* ── Main grid ── */
+.sf-main {
+  position: relative;
+  padding: 48px 0 44px;
+}
+.sf-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+@media (max-width: 900px)  { .sf-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+@media (max-width: 540px)  { .sf-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+/* Brand column */
+.sf-brand {}
+.sf-brand-logo {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 800;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+  display: inline-block;
+  line-height: 1;
+}
+.sf-brand-tagline {
+  font-size: .83rem;
+  color: var(--text2);
+  line-height: 1.75;
+  max-width: 250px;
+  margin-bottom: 20px;
+}
+
+/* Stat chips */
+.sf-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.sf-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  transition: border-color .2s, background .2s, transform .2s;
+  cursor: default;
+}
+.sf-stat:hover {
+  border-color: var(--glass-border-hover);
+  background: rgba(61,142,248,0.06);
+  transform: translateY(-2px);
+}
+.sf-stat-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+  flex-shrink: 0;
+}
+.sf-stat-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.sf-stat-val {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.sf-stat-sub {
+  font-size: .67rem;
+  color: var(--text3);
+  font-weight: 400;
+}
+
+/* Social icons */
+.sf-socials {
+  display: flex;
+  gap: 8px;
+}
+.sf-social {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text2);
+  text-decoration: none;
+  transition: all .22s;
+  cursor: pointer;
+}
+.sf-social:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(61,142,248,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(61,142,248,0.2);
+}
+.sf-social svg { display: block; }
+
+/* Link columns */
+.sf-col {}
+.sf-col-title {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 16px;
+  position: relative;
+  padding-bottom: 10px;
+}
+.sf-col-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 24px; height: 2px;
+  border-radius: 2px;
+  background: var(--grad-primary);
+}
+.sf-col-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sf-col-links li a,
+.sf-col-links li span {
+  font-size: .83rem;
+  color: var(--text2);
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: color .2s, gap .2s;
+}
+.sf-col-links li a:hover,
+.sf-col-links li span:hover {
+  color: var(--accent);
+  gap: 10px;
+}
+.sf-col-links li a .sf-link-arrow,
+.sf-col-links li span .sf-link-arrow {
+  opacity: 0;
+  font-size: .7rem;
+  transition: opacity .2s;
+}
+.sf-col-links li a:hover .sf-link-arrow,
+.sf-col-links li span:hover .sf-link-arrow {
+  opacity: 1;
+}
+
+/* ── App badge ── */
+.sf-app-badge {
+  margin-top: 20px;
+}
+.sf-app-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .8rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .22s;
+}
+.sf-app-badge-btn:hover {
+  border-color: rgba(61,142,248,0.4);
+  background: rgba(61,142,248,0.08);
+  transform: translateY(-2px);
+}
+.sf-app-badge-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--grad-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+.sf-app-badge-text {
+  display: flex; flex-direction: column; line-height: 1.25;
+}
+.sf-app-badge-sub { font-size: .65rem; color: var(--text2); font-weight: 400; }
+.sf-app-badge-name { font-size: .82rem; font-weight: 700; color: var(--text); }
+
+/* ── Bottom bar ── */
+.sf-bottom {
+  position: relative;
+  padding: 22px 0 28px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
+.sf-bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sf-copy {
+  font-size: .77rem;
+  color: var(--text3);
+  line-height: 1.6;
+}
+.sf-copy strong { color: var(--text2); font-weight: 600; }
+.sf-legal {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sf-legal a,
+.sf-legal span[onclick] {
+  font-size: .77rem;
+  color: var(--text3);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: color .18s, background .18s;
+}
+.sf-legal a:hover,
+.sf-legal span[onclick]:hover { color: var(--accent); background: rgba(61,142,248,0.08); }
+.sf-legal-sep { color: var(--text3); font-size: .7rem; opacity: .4; }
+
+.sf-made-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .75rem;
+  color: var(--text3);
+}
+.sf-made-badge svg { color: #ff4d6d; }
+
+@media (max-width: 540px) {
+  .sf-bottom-inner { flex-direction: column; align-items: flex-start; }
+  .sf-newsletter-inner { flex-direction: column; align-items: flex-start; }
+  .sf-newsletter-form { max-width: 100%; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     STUDYRIA FOOTER — Copy this <footer> block into index.html
+     Replace the existing <footer class="home-footer ..."> section
+════════════════════════════════════════════════════════ -->
+
+<footer class="studyria-footer">
+
+  <!-- Ambient orbs -->
+  <div class="sf-orb sf-orb-1"></div>
+  <div class="sf-orb sf-orb-2"></div>
+  <div class="sf-orb sf-orb-3"></div>
+
+  <!-- Gradient top accent line -->
+  <div class="sf-top-bar"></div>
+
+  <!-- Newsletter strip -->
+  <div class="sf-newsletter">
+    <div class="container">
+      <div class="sf-newsletter-inner">
+        <div class="sf-newsletter-text">
+          <h3>📬 Get Free Study Updates</h3>
+          <p>New PDFs, job alerts &amp; exam tips — straight to your inbox.</p>
+        </div>
+        <div class="sf-newsletter-form">
+          <input class="sf-newsletter-input" type="email" placeholder="your@email.com" aria-label="Email for newsletter" />
+          <button class="sf-newsletter-btn" onclick="handleNewsletterSubscribe(this)">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main link grid -->
+  <div class="sf-main">
+    <div class="container">
+      <div class="sf-grid">
+
+        <!-- Brand col -->
+        <div class="sf-brand">
+          <div class="sf-brand-logo">Studyria</div>
+          <p class="sf-brand-tagline">India's #1 PDF Study Platform for JEE, NEET, UPSC, ADRE, APSC and all Assam state exams. Built for students who study smarter.</p>
+
+          <!-- Quick stats -->
+          <div class="sf-stats">
+            <div class="sf-stat">
+              <div class="sf-stat-icon" style="background:rgba(61,142,248,0.12);">📚</div>
+              <div class="sf-stat-label">
+                <span class="sf-stat-val">500+ PDFs</span>
+                <span class="sf-stat-sub">Free &amp; Premium</span>
+              </div>
+            </div>
+            <div class="sf-stat">
+              <div class="sf-stat-icon" style="background:rgba(245,158,11,0.12);">🎯</div>
+              <div class="sf-stat-label">
+                <span class="sf-stat-val">Assam Focused</span>
+                <span class="sf-stat-sub">ADRE · APSC · Board</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Socials -->
+          <div class="sf-socials">
+            <a class="sf-social" href="https://instagram.com/studyria" title="Instagram" target="_blank" rel="noopener noreferrer" aria-label="Studyria on Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a class="sf-social" href="https://t.me/studyria" title="Telegram" target="_blank" rel="noopener noreferrer" aria-label="Studyria on Telegram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </a>
+            <a class="sf-social" href="https://youtube.com/@studyria" title="YouTube" target="_blank" rel="noopener noreferrer" aria-label="Studyria on YouTube">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+            </a>
+            <a class="sf-social" href="https://facebook.com/studyria" title="Facebook" target="_blank" rel="noopener noreferrer" aria-label="Studyria on Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            </a>
+            <a class="sf-social" href="https://wa.me/studyria" title="WhatsApp" target="_blank" rel="noopener noreferrer" aria-label="Studyria on WhatsApp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            </a>
+          </div>
+
+          <!-- PWA install badge -->
+          <div class="sf-app-badge">
+            <a class="sf-app-badge-btn" onclick="if(typeof window._pwaInstallPrompt!=='undefined'&&window._pwaInstallPrompt){window._pwaInstallPrompt.prompt();}else{alert('Open in Chrome and tap Add to Home Screen');}">
+              <div class="sf-app-badge-icon">📱</div>
+              <div class="sf-app-badge-text">
+                <span class="sf-app-badge-sub">Install Free App</span>
+                <span class="sf-app-badge-name">Studyria PWA</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links col -->
+        <div class="sf-col">
+          <div class="sf-col-title">Explore</div>
+          <ul class="sf-col-links">
+            <li><span onclick="if(typeof navigate==='function')navigate('home')">🏠 Home <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('library')">📚 Library <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('discover')">🔍 Discover <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('career-hub')">💼 Career Hub <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('wishlist')">❤️ Wishlist <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('dashboard')">📊 Dashboard <span class="sf-link-arrow">›</span></span></li>
+          </ul>
+        </div>
+
+        <!-- Creator / Company col -->
+        <div class="sf-col">
+          <div class="sf-col-title">Platform</div>
+          <ul class="sf-col-links">
+            <li><span onclick="if(typeof navigate==='function')navigate('creator-register')">✨ Become a Creator <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('about')">ℹ️ About Us <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('contact')">📩 Contact <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('contact')">🛟 Support <span class="sf-link-arrow">›</span></span></li>
+            <li>
+              <a href="https://t.me/studyria" target="_blank" rel="noopener noreferrer">
+                💬 Telegram Community <span class="sf-link-arrow">›</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Legal col -->
+        <div class="sf-col">
+          <div class="sf-col-title">Legal</div>
+          <ul class="sf-col-links">
+            <li><span onclick="if(typeof navigate==='function')navigate('privacy')">🔒 Privacy Policy <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('terms')">📜 Terms of Service <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('refund')">↩️ Refund Policy <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('privacy')">🍪 Cookie Policy <span class="sf-link-arrow">›</span></span></li>
+          </ul>
+
+          <!-- Trust badge -->
+          <div style="margin-top:24px;padding:14px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);">
+            <div style="font-size:.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🔐 Secured By</div>
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:6px;"><span style="color:#10d98e">✓</span> Supabase RLS</div>
+              <div style="font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:6px;"><span style="color:#10d98e">✓</span> Razorpay Payments</div>
+              <div style="font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:6px;"><span style="color:#10d98e">✓</span> SSL Encrypted</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="sf-bottom">
+    <div class="container">
+      <div class="sf-bottom-inner">
+
+        <div class="sf-copy">
+          © 2026 <strong>Studyria</strong> · Made with
+          <svg style="display:inline;vertical-align:-2px" width="12" height="12" viewBox="0 0 24 24" fill="#ff4d6d" stroke="none"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+          for Students of Assam, India
+        </div>
+
+        <div class="sf-legal">
+          <span onclick="if(typeof navigate==='function')navigate('privacy')">Privacy</span>
+          <span class="sf-legal-sep">·</span>
+          <span onclick="if(typeof navigate==='function')navigate('terms')">Terms</span>
+          <span class="sf-legal-sep">·</span>
+          <span onclick="if(typeof navigate==='function')navigate('refund')">Refund</span>
+          <span class="sf-legal-sep">·</span>
+          <span onclick="if(typeof navigate==='function')navigate('contact')">Contact</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+<!-- ══════════════════════════════════════════════════════
+     USAGE INSTRUCTIONS
+     ─────────────────────────────────────────────────────
+     1. In index.html, find:
+           <footer class="home-footer site-footer-always">
+             ...
+           </footer>
+     2. Replace the ENTIRE <footer>...</footer> block
+        with the <footer class="studyria-footer"> above.
+     3. Do NOT copy the <style> or <script> from this file —
+        those are for preview only. The CSS goes inside the
+        existing <style> block in index.html.
+     4. The newsletter subscribe handler (handleNewsletterSubscribe)
+        should be wired to your Supabase/Pipedream endpoint.
+════════════════════════════════════════════════════════ -->
+
+<script>
+/* Preview-only: mock navigate for standalone preview */
+window.navigate = window.navigate || function(p) {
+  console.log('[Footer preview] navigate →', p);
+};
+
+function handleNewsletterSubscribe(btn) {
+  const input = btn.previousElementSibling;
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    input.style.borderColor = '#ff4d6d';
+    setTimeout(() => input.style.borderColor = '', 1500);
+    return;
+  }
+  btn.textContent = '✓ Subscribed!';
+  btn.style.background = 'linear-gradient(135deg,#10d98e,#06b6d4)';
+  btn.disabled = true;
+  input.value = '';
+  // TODO: wire to Supabase/Pipedream webhook
+  // fetch('/api/subscribe', { method:'POST', body: JSON.stringify({ email }) });
+}
+</script>
+</body>
+</html>
