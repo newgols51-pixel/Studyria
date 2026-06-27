@@ -408,47 +408,47 @@ function _scheduleUpdateChecks() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 function setupInstallPrompt() {
-  // ── IMPORTANT: pwaAppCenter (inline in index.html) is the SOLE owner of
-  // beforeinstallprompt and appinstalled.  This function must NOT add its
-  // own listeners when pwaAppCenter is (or will be) present, to avoid:
-  //   • triple e.preventDefault() calls consuming the event
-  //   • _installEvt vs _state.deferredPrompt split-brain state
-  //   • duplicate "App Installed" toasts
+  // ── Single canonical beforeinstallprompt capture ──────────────────────────
+  // app.js is the sole owner of this event. It stores the prompt on
+  // window._pwaInstallPrompt so every install CTA (pwaAppCenter.install(),
+  // triggerPWAInstall(), footer badge, promptInstall()) always reads the
+  // same reference regardless of which inline script ran first.
   //
-  // Instead we use window._pwaInstallPrompt as the single shared reference
-  // that both pwaAppCenter and this module read/write.
+  // CRITICAL: We always register this listener unconditionally. The sentinel
+  // flag (window.__pwaInstallPromptHandled) approach was unreliable because
+  // the flag might be set before or after app.js loads, causing the native
+  // event to go uncaptured entirely. app.js loads with `defer` so it always
+  // runs after inline scripts — this listener is therefore the last one added,
+  // but Chrome delivers beforeinstallprompt to ALL listeners in order, so
+  // capturing here is guaranteed as long as no earlier script has already
+  // consumed the event without storing it globally.
+  //
+  // The pwaAppCenter IIFE in index.html must NOT add its own native
+  // beforeinstallprompt listener — it should only read window._pwaInstallPrompt.
 
-  // Capture beforeinstallprompt — ONLY if pwaAppCenter hasn't already
-  // registered its own listener (checked via sentinel flag).
-  if (!window.__pwaInstallPromptHandled) {
-    window.__pwaInstallPromptHandled = true;
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      // Store on window so pwaAppCenter, promptInstall(), triggerPWAInstall()
-      // and the footer badge all share the same reference.
-      window._pwaInstallPrompt = e;
-      _state.deferredPrompt = e;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    // Prevent the automatic mini-infobar — we show our own install CTA.
+    e.preventDefault();
 
-      window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
-      console.log('[PWA] Install prompt captured ✅');
-    });
-  } else {
-    // pwaAppCenter already set up — mirror its reference into our state
-    // by listening to our own custom event it dispatches on capture.
-    window.addEventListener('pwa:installable', e => {
-      _state.deferredPrompt = e.detail.prompt;
-    });
-  }
+    // Store on window as the single shared canonical reference.
+    window._pwaInstallPrompt = e;
+    _state.deferredPrompt    = e;
+
+    // Notify pwaAppCenter and any other subscribers.
+    window.dispatchEvent(new CustomEvent('pwa:installable', { detail: { prompt: e } }));
+
+    console.log('[PWA] beforeinstallprompt captured ✅ — prompt ready');
+  });
 
   // App successfully installed
-  window.addEventListener('appinstalled', () => {
+  window.addEventListener('appinstalled', function() {
     console.log('[PWA] App installed ✅');
-    _state.isInstalled = true;
-    _state.deferredPrompt = null;
+    _state.isInstalled       = true;
+    _state.deferredPrompt    = null;
     window._pwaInstallPrompt = null;
     document.documentElement.setAttribute('data-pwa-installed', 'true');
 
-    const legacyBtn = document.getElementById('pwaInstallBtn');
+    var legacyBtn = document.getElementById('pwaInstallBtn');
     if (legacyBtn) legacyBtn.style.display = 'none';
 
     document.getElementById('_pwaInstallBanner')?.remove();
@@ -459,7 +459,11 @@ function setupInstallPrompt() {
     if (window.gtag) {
       window.gtag('event', 'app_installed', { app_name: PWA_CONFIG.NAME });
     }
-    // Toast is shown by pwaAppCenter — skip to avoid double-toast.
+    // Toast already shown by pwaAppCenter on outcome === 'accepted'.
+    // Only show here if appinstalled fired without our prompt (silent install).
+    if (!window._pwaInstallToastShown && typeof showToast === 'function') {
+      showToast('✅ Studyria App installed!', 'success');
+    }
   });
 }
 
@@ -534,14 +538,12 @@ function dismissInstallBanner() {
 }
 
 async function promptInstall() {
-  // Always prefer pwaAppCenter's install() — it owns the canonical _installEvt
-  if (window.pwaAppCenter && typeof window.pwaAppCenter.install === 'function') {
-    window.pwaAppCenter.install();
-    return;
-  }
-
-  // Fallback: read from shared window reference (set by whoever captured first)
-  const prompt = window._pwaInstallPrompt || _state.deferredPrompt;
+  // Read from the single shared reference set by setupInstallPrompt().
+  // Do NOT delegate to pwaAppCenter.install() here — that function also
+  // reads window._pwaInstallPrompt, so delegating is safe but unnecessary
+  // and creates a call cycle when pwaAppCenter.install() itself calls
+  // promptInstall() as a fallback.
+  var prompt = window._pwaInstallPrompt || _state.deferredPrompt;
   if (!prompt) {
     showiOSInstallTip();
     return;
@@ -549,13 +551,14 @@ async function promptInstall() {
 
   try {
     prompt.prompt();
-    const { outcome } = await prompt.userChoice;
-    console.log('[PWA] Install prompt outcome:', outcome);
-    _state.deferredPrompt = null;
+    var result = await prompt.userChoice;
+    console.log('[PWA] Install prompt outcome:', result.outcome);
+    _state.deferredPrompt    = null;
     window._pwaInstallPrompt = null;
     dismissInstallBanner();
 
-    if (outcome === 'accepted') {
+    if (result.outcome === 'accepted') {
+      window._pwaInstallToastShown = true;
       _markBurgerInstalled();
       if (typeof showToast === 'function') showToast('🚀 Studyria installed!', 'success');
     }
