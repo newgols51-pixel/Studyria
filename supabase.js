@@ -150,6 +150,35 @@
 //
 // -- Career Hub tables → see supabase-setup.sql (generated separately)
 //
+// -- 5b. PDF Subscribers (opt-in for new PDF email + WhatsApp notifications)
+// CREATE TABLE IF NOT EXISTS public.pdf_subscribers (
+//   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   email        text NOT NULL,
+//   whatsapp     text,                    -- optional WhatsApp number (with country code)
+//   notify_email boolean NOT NULL DEFAULT true,
+//   notify_wa    boolean NOT NULL DEFAULT false,
+//   confirmed    boolean NOT NULL DEFAULT false,
+//   token        text UNIQUE DEFAULT encode(gen_random_bytes(24), 'hex'),
+//   created_at   timestamptz DEFAULT now(),
+//   UNIQUE (email)
+// );
+// ALTER TABLE public.pdf_subscribers ENABLE ROW LEVEL SECURITY;
+// -- Anyone can insert their own subscription (opt-in):
+// CREATE POLICY "Subscribers: public insert" ON public.pdf_subscribers
+//   FOR INSERT WITH CHECK (true);
+// -- Admins can read all subscribers:
+// CREATE POLICY "Subscribers: admin read" ON public.pdf_subscribers
+//   FOR SELECT TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// -- Admins can update (e.g. confirm) subscribers:
+// CREATE POLICY "Subscribers: admin update" ON public.pdf_subscribers
+//   FOR UPDATE TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_pdf_subscribers_email ON public.pdf_subscribers(email);
+// CREATE INDEX IF NOT EXISTS idx_pdf_subscribers_token ON public.pdf_subscribers(token);
+//
 // -- 5. Testimonials (student testimonials shown on homepage)
 // CREATE TABLE IF NOT EXISTS public.testimonials (
 //   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -868,6 +897,176 @@
       if (error) { console.warn('loadTestimonials:', error.message); return []; }
       return data || [];
     }, 5 * 60 * 1000);
+  };
+
+  // ── PDF SUBSCRIBER NOTIFICATIONS ────────────────────────────────
+
+  /**
+   * subscribeForPdfNotifications({ email, whatsapp, notifyEmail, notifyWa })
+   * Upserts a subscriber row. Returns { success, error, alreadyExists }.
+   * This is the opt-in entry point called from the footer newsletter strip.
+   */
+  window.subscribeForPdfNotifications = async function subscribeForPdfNotifications({ email, whatsapp, notifyEmail, notifyWa } = {}) {
+    const client = window.supabaseClient;
+    if (!client) return { success: false, error: 'Not connected' };
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { success: false, error: 'Enter a valid email address.' };
+    }
+
+    // Normalise WhatsApp — strip non-digits, ensure leading +
+    const waNorm = whatsapp
+      ? ('+' + whatsapp.replace(/\D/g, ''))
+      : null;
+
+    try {
+      const { data: existing } = await client
+        .from('pdf_subscribers')
+        .select('id, notify_email, notify_wa')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+
+      if (existing) {
+        // Update preferences silently — don't error on duplicate
+        await client
+          .from('pdf_subscribers')
+          .update({
+            whatsapp:     waNorm || existing.whatsapp || null,
+            notify_email: notifyEmail !== false,
+            notify_wa:    !!(notifyWa && waNorm),
+          })
+          .eq('email', email.toLowerCase());
+        return { success: true, alreadyExists: true };
+      }
+
+      const { error } = await client
+        .from('pdf_subscribers')
+        .insert({
+          email:        email.toLowerCase(),
+          whatsapp:     waNorm,
+          notify_email: notifyEmail !== false,
+          notify_wa:    !!(notifyWa && waNorm),
+          confirmed:    true, // opt-in from the site form = confirmed
+        });
+
+      if (error) return { success: false, error: error.message };
+      return { success: true, alreadyExists: false };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  };
+
+  /**
+   * notifyPdfSubscribers({ pdfId, title, category, coverUrl, pdfUrl })
+   * Called immediately after a PDF is published.
+   * Reads all confirmed subscribers and dispatches:
+   *   - Email via Pipedream webhook (each subscriber with notify_email = true)
+   *   - WhatsApp via Pipedream webhook (each subscriber with notify_wa = true)
+   * The Pipedream workflow is responsible for the actual sending.
+   * Returns { emailSent, waSent, errors }.
+   */
+  window.notifyPdfSubscribers = async function notifyPdfSubscribers({ pdfId, title, category, coverUrl, pdfUrl } = {}) {
+    const client = window.supabaseClient;
+    if (!client) { console.warn('notifyPdfSubscribers: no supabaseClient'); return; }
+
+    // Admin-only: fetch confirmed subscribers
+    let subscribers = [];
+    try {
+      const { data, error } = await client
+        .from('pdf_subscribers')
+        .select('email, whatsapp, notify_email, notify_wa')
+        .eq('confirmed', true);
+      if (error) { console.error('notifyPdfSubscribers: fetch error', error); return; }
+      subscribers = data || [];
+    } catch (e) {
+      console.error('notifyPdfSubscribers: exception', e);
+      return;
+    }
+
+    if (!subscribers.length) {
+      console.log('notifyPdfSubscribers: no confirmed subscribers');
+      return;
+    }
+
+    const webhookUrl = document.getElementById('stgPipedream')?.value?.trim()
+      || 'https://eod16l3iacfjwl6.m.pipedream.net';
+
+    const pdfLink  = pdfUrl  || `https://studyria.qzz.io/#library`;
+    const catLabel = category || 'Study Material';
+    const coverImg = coverUrl || '';
+
+    let emailSent = 0, waSent = 0, errors = 0;
+
+    const emailSubscribers = subscribers.filter(s => s.notify_email && s.email);
+    const waSubscribers    = subscribers.filter(s => s.notify_wa    && s.whatsapp);
+
+    // Batch email notification payload
+    if (emailSubscribers.length) {
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event:       'new_pdf_email_batch',
+            pdf_id:      pdfId,
+            title,
+            category:    catLabel,
+            cover_url:   coverImg,
+            pdf_link:    pdfLink,
+            subscribers: emailSubscribers.map(s => ({ email: s.email })),
+            sent_at:     new Date().toISOString(),
+          }),
+        });
+        emailSent = emailSubscribers.length;
+        console.log(`[Notify] Email batch dispatched to ${emailSent} subscribers`);
+      } catch (e) {
+        console.error('[Notify] Email batch failed:', e);
+        errors++;
+      }
+    }
+
+    // Batch WhatsApp notification payload
+    if (waSubscribers.length) {
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event:       'new_pdf_whatsapp_batch',
+            pdf_id:      pdfId,
+            title,
+            category:    catLabel,
+            cover_url:   coverImg,
+            pdf_link:    pdfLink,
+            subscribers: waSubscribers.map(s => ({ whatsapp: s.whatsapp })),
+            sent_at:     new Date().toISOString(),
+          }),
+        });
+        waSent = waSubscribers.length;
+        console.log(`[Notify] WhatsApp batch dispatched to ${waSent} subscribers`);
+      } catch (e) {
+        console.error('[Notify] WhatsApp batch failed:', e);
+        errors++;
+      }
+    }
+
+    return { emailSent, waSent, errors };
+  };
+
+  /**
+   * loadPdfSubscriberCount()
+   * Returns total confirmed subscriber count (for admin display).
+   */
+  window.loadPdfSubscriberCount = async function loadPdfSubscriberCount() {
+    const client = window.supabaseClient;
+    if (!client) return 0;
+    try {
+      const { count } = await client
+        .from('pdf_subscribers')
+        .select('id', { count: 'exact', head: true })
+        .eq('confirmed', true);
+      return count || 0;
+    } catch (_) { return 0; }
   };
 
   // ── BOOT ─────────────────────────────────────────────────────────

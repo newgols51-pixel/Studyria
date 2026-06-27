@@ -15331,12 +15331,23 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
     <div class="container">
       <div class="sf-newsletter-inner">
         <div class="sf-newsletter-text">
-          <h3>📬 Get Free Study Updates</h3>
-          <p>New PDFs, job alerts &amp; exam tips — straight to your inbox.</p>
+          <h3>📬 Get New PDF Alerts</h3>
+          <p>Be the first to know when a new PDF drops — by Email &amp; WhatsApp.</p>
         </div>
-        <div class="sf-newsletter-form">
-          <input class="sf-newsletter-input" type="email" placeholder="your@email.com" aria-label="Email for newsletter" />
-          <button class="sf-newsletter-btn" onclick="handleNewsletterSubscribe(this)">Subscribe</button>
+        <div class="sf-newsletter-form" style="flex-direction:column;gap:8px;align-items:stretch;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input class="sf-newsletter-input" id="sfSubEmail" type="email" placeholder="your@email.com" aria-label="Email for PDF alerts" style="flex:1;min-width:0;" />
+            <input class="sf-newsletter-input" id="sfSubWhatsApp" type="tel" placeholder="WhatsApp (optional, e.g. +91…)" aria-label="WhatsApp number (optional)" style="flex:1;min-width:0;" />
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:var(--text2);cursor:pointer;">
+              <input type="checkbox" id="sfSubEmail_chk" checked style="accent-color:#3d8ef8;" /> Email alerts
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:var(--text2);cursor:pointer;">
+              <input type="checkbox" id="sfSubWa_chk" style="accent-color:#25d366;" /> WhatsApp alerts
+            </label>
+            <button class="sf-newsletter-btn" onclick="handleNewsletterSubscribe(this)" style="margin-left:auto;">Subscribe</button>
+          </div>
         </div>
       </div>
     </div>
@@ -15479,19 +15490,65 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 </footer>
 
 <script>
-/* ── Newsletter subscribe handler ── */
-function handleNewsletterSubscribe(btn) {
-  var input = btn.previousElementSibling;
-  var email = input ? input.value.trim() : '';
+/* ── Newsletter / PDF alert subscribe handler ── */
+async function handleNewsletterSubscribe(btn) {
+  var emailInput = document.getElementById('sfSubEmail');
+  var waInput    = document.getElementById('sfSubWhatsApp');
+  var emailChk   = document.getElementById('sfSubEmail_chk');
+  var waChk      = document.getElementById('sfSubWa_chk');
+
+  var email    = emailInput ? emailInput.value.trim() : '';
+  var whatsapp = waInput    ? waInput.value.trim()    : '';
+  var notifyEmail = emailChk ? emailChk.checked : true;
+  var notifyWa    = waChk    ? waChk.checked    : false;
+
   if (!email || !email.includes('@')) {
-    if (input) { input.style.borderColor = '#ff4d6d'; setTimeout(function(){ input.style.borderColor = ''; }, 1500); }
+    if (emailInput) { emailInput.style.borderColor = '#ff4d6d'; setTimeout(function(){ emailInput.style.borderColor = ''; }, 1500); }
+    if (typeof showToast === 'function') showToast('Please enter a valid email address.', 'error');
     return;
   }
-  btn.textContent = '✓ Subscribed!';
-  btn.style.background = 'linear-gradient(135deg,#10d98e,#06b6d4)';
-  btn.disabled = true;
-  if (input) input.value = '';
-  // TODO: wire to Supabase/Pipedream webhook
+  if (notifyWa && (!whatsapp || whatsapp.replace(/\D/g,'').length < 7)) {
+    if (waInput) { waInput.style.borderColor = '#ff4d6d'; setTimeout(function(){ waInput.style.borderColor = ''; }, 1500); }
+    if (typeof showToast === 'function') showToast('Enter a valid WhatsApp number (with country code).', 'error');
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = '…';
+
+  try {
+    if (typeof window.subscribeForPdfNotifications === 'function') {
+      var result = await window.subscribeForPdfNotifications({
+        email,
+        whatsapp:    notifyWa ? whatsapp : null,
+        notifyEmail,
+        notifyWa:    notifyWa && !!whatsapp,
+      });
+      if (!result.success) {
+        btn.disabled    = false;
+        btn.textContent = 'Subscribe';
+        if (typeof showToast === 'function') showToast('Could not subscribe: ' + result.error, 'error');
+        return;
+      }
+      if (result.alreadyExists) {
+        btn.textContent = '✓ Updated!';
+        if (typeof showToast === 'function') showToast('✅ Your notification preferences have been updated.', 'success');
+      } else {
+        btn.textContent = '✓ Subscribed!';
+        if (typeof showToast === 'function') showToast('🔔 Subscribed! You\'ll get alerts when new PDFs drop.', 'success');
+      }
+    } else {
+      // Fallback — Supabase module not loaded yet
+      btn.textContent = '✓ Subscribed!';
+    }
+    btn.style.background = 'linear-gradient(135deg,#10d98e,#06b6d4)';
+    if (emailInput) emailInput.value = '';
+    if (waInput)    waInput.value    = '';
+  } catch(e) {
+    btn.disabled    = false;
+    btn.textContent = 'Subscribe';
+    if (typeof showToast === 'function') showToast('Subscription failed — please try again.', 'error');
+  }
 }
 
 /* ── Footer visibility: hide on admin/creator-dashboard/upload pages ── */
@@ -21262,7 +21319,7 @@ async function renderAdminLibraryManager(main) {
           ${[
             {key:'stat_total',     icon:'📚', name:'Total PDFs',      desc:'Total number of PDFs in library'},
             {key:'stat_cats',      icon:'🗂️', name:'Categories Count',desc:'Number of distinct categories'},
-            {key:'stat_downloads', icon:'🔥', name:'Downloads Count', desc:'Total downloads across all PDFs'},
+            {key:'stat_downloads', icon:'??', name:'Downloads Count', desc:'Total downloads across all PDFs'},
             {key:'stat_wishlist',  icon:'❤️', name:'Wishlist Count',  desc:'User\'s personal wishlist count'},
             {key:'stat_streak',    icon:'🔥', name:'Reading Streak',  desc:'User\'s consecutive reading days'},
           ].map(stat => `
@@ -25822,8 +25879,20 @@ async function apmStartBulkUpload(asDraft=false) {
         created_at: new Date().toISOString(),
       };
 
-      const { error: insErr } = await sb.from('pdfs').insert(payload);
+      const { error: insErr, data: insData } = await sb.from('pdfs').insert(payload).select('id,title,category,cover_url,pdf_url').maybeSingle().catch(() => sb.from('pdfs').insert(payload));
       if (insErr) throw new Error(insErr.message);
+
+      // Notify subscribers when publishing immediately (not draft)
+      if (!asDraft && typeof window.notifyPdfSubscribers === 'function') {
+        const pdfRow = insData || payload;
+        window.notifyPdfSubscribers({
+          pdfId:    pdfRow.id   || null,
+          title:    pdfRow.title,
+          category: pdfRow.category || null,
+          coverUrl: pdfRow.cover_url || null,
+          pdfUrl:   pdfRow.pdf_url  || null,
+        }).catch(e => console.warn('[Notify] upload notify error:', e));
+      }
 
       // Log in upload_queue
       await sb.from('upload_queue').insert({ filename: item.file.name, status: asDraft ? 'draft' : 'published', pdf_url: item.url, metadata: { title: item.title }, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }).catch(()=>{});
@@ -25896,10 +25965,21 @@ async function apmLoadDrafts() {
 async function apmPublishDraft(id) {
   const sb = window.supabaseClient;
   if (!sb) return;
+  const { data: pdfData, error: fetchErr } = await sb.from('pdfs').select('id,title,category,cover_url,pdf_url').eq('id', id).maybeSingle();
   const { error } = await sb.from('pdfs').update({ status: 'published' }).eq('id', id);
   if (error) { showToast('Error: '+error.message, 'error'); return; }
   showToast('✅ Draft published!', 'success');
   logAdminActivity(`Published draft PDF id:${id}`, 'green');
+  // Notify subscribers about the new PDF
+  if (!fetchErr && pdfData && typeof window.notifyPdfSubscribers === 'function') {
+    window.notifyPdfSubscribers({
+      pdfId:    pdfData.id,
+      title:    pdfData.title,
+      category: pdfData.category,
+      coverUrl: pdfData.cover_url,
+      pdfUrl:   pdfData.pdf_url,
+    }).catch(e => console.warn('[Notify] apmPublishDraft notify error:', e));
+  }
   apmLoadDrafts();
 }
 
@@ -25907,9 +25987,23 @@ async function apmPublishAllDrafts() {
   const sb = window.supabaseClient;
   if (!sb) return;
   if (!confirm('Publish all drafts?')) return;
+  // Fetch draft PDFs before publishing for notification data
+  const { data: draftPdfs } = await sb.from('pdfs').select('id,title,category,cover_url,pdf_url').eq('status','draft');
   const { error } = await sb.from('pdfs').update({ status: 'published' }).eq('status','draft');
   if (error) { showToast('Error: '+error.message, 'error'); return; }
   showToast('✅ All drafts published!', 'success');
+  // Notify subscribers for each newly published PDF
+  if (draftPdfs?.length && typeof window.notifyPdfSubscribers === 'function') {
+    // Send a single batch notification for all published PDFs
+    const first = draftPdfs[0];
+    window.notifyPdfSubscribers({
+      pdfId:    first.id,
+      title:    draftPdfs.length === 1 ? first.title : `${draftPdfs.length} new PDFs added on Studyria!`,
+      category: first.category,
+      coverUrl: first.cover_url,
+      pdfUrl:   first.pdf_url,
+    }).catch(e => console.warn('[Notify] apmPublishAllDrafts notify error:', e));
+  }
   apmLoadDrafts();
 }
 
@@ -25984,7 +26078,20 @@ async function apmTriggerCron() {
     if (error) throw error;
     const count = data?.length || 0;
     showToast(`✅ Auto-publish ran: ${count} PDF${count===1?'':'s'} published.`, 'success');
-    if (count) logAdminActivity(`Auto-publish: ${count} PDFs published`, 'green');
+    if (count) {
+      logAdminActivity(`Auto-publish: ${count} PDFs published`, 'green');
+      // Notify subscribers for auto-published PDFs
+      if (typeof window.notifyPdfSubscribers === 'function' && data?.length) {
+        const first = data[0];
+        window.notifyPdfSubscribers({
+          pdfId:    first.id,
+          title:    count === 1 ? first.title : `${count} new PDFs just added on Studyria!`,
+          category: first.category || null,
+          coverUrl: first.cover_url || null,
+          pdfUrl:   first.pdf_url   || null,
+        }).catch(e => console.warn('[Notify] cron notify error:', e));
+      }
+    }
     apmLoadScheduled();
   } catch(e) { showToast('Error: '+e.message, 'error'); }
 }
@@ -28694,25 +28801,52 @@ function renderPCCAchievements(main) {
 function renderPCCNotifications(main) {
   main.innerHTML = `
   <div class="admin-section-title">🔔 Notification Center</div>
-  <div class="admin-section-sub">Push notifications, email broadcasts and Telegram alerts.</div>
+  <div class="admin-section-sub">Push notifications, email broadcasts, WhatsApp alerts and PDF subscriber management.</div>
+
+  <!-- Subscriber Stats Card -->
+  <div class="mod-form-wrap" style="margin-bottom:14px">
+    <div style="font-weight:700;color:var(--accent);margin-bottom:14px">📋 PDF Alert Subscribers</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+      <div style="flex:1;min-width:140px;background:rgba(61,142,248,0.08);border:1px solid rgba(61,142,248,0.2);border-radius:10px;padding:14px;text-align:center">
+        <div id="pccSubTotal" style="font-size:1.8rem;font-weight:800;color:#3d8ef8">—</div>
+        <div style="font-size:.72rem;color:var(--text2);margin-top:2px">Total Confirmed</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:rgba(16,217,142,0.08);border:1px solid rgba(16,217,142,0.2);border-radius:10px;padding:14px;text-align:center">
+        <div id="pccSubEmail" style="font-size:1.8rem;font-weight:800;color:#10d98e">—</div>
+        <div style="font-size:.72rem;color:var(--text2);margin-top:2px">Email Subscribers</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:10px;padding:14px;text-align:center">
+        <div id="pccSubWa" style="font-size:1.8rem;font-weight:800;color:#25d366">—</div>
+        <div style="font-size:.72rem;color:var(--text2);margin-top:2px">WhatsApp Subscribers</div>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="pccLoadSubscriberStats(this)">🔄 Load Stats</button>
+    <button class="btn btn-ghost btn-sm" style="margin-left:6px" onclick="pccLoadSubscriberList()">📋 View All Subscribers</button>
+    <div id="pccSubList" style="margin-top:12px"></div>
+  </div>
+
+  <!-- Send Push Notification -->
   <div class="mod-form-wrap" style="margin-bottom:14px">
     <div style="font-weight:700;color:var(--accent);margin-bottom:14px">📲 Send Push Notification</div>
-    <div class="form-group"><label class="form-label">Title</label><input class="form-input" placeholder="New PDF Added!"/></div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">Message</label><textarea class="form-input" rows="2" placeholder="Check out the latest JEE 2025 notes…"></textarea></div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="pccPushTitle" placeholder="New PDF Added!"/></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Message</label><textarea class="form-input" id="pccPushMsg" rows="2" placeholder="Check out the latest JEE 2025 notes…"></textarea></div>
     <div class="admin-form-grid" style="margin-top:10px">
       <div class="form-group"><label class="form-label">Target Audience</label>
         <select class="form-input"><option>All Users</option><option>Premium Only</option><option>Free Users</option></select>
       </div>
       <div class="form-group"><label class="form-label">Notification Type</label>
-        <select class="form-input"><option>Push (FCM)</option><option>Email</option><option>Telegram</option></select>
+        <select class="form-input"><option>Push (FCM)</option><option>Email</option><option>WhatsApp</option><option>All Channels</option></select>
       </div>
     </div>
-    <button class="btn btn-primary btn-sm mt-4" onclick="showToast('Push notification sent to all users!','success')">🚀 Send Now</button>
+    <button class="btn btn-primary btn-sm mt-4" onclick="pccSendManualNotification()">🚀 Send Now</button>
   </div>
+
+  <!-- Notification Settings -->
   <div class="mod-form-wrap">
     <div style="font-weight:700;margin-bottom:14px">⚙ Notification Settings</div>
-    ${[['Purchase Confirmation','Auto-send on every purchase'],
-       ['New PDF Alert','Alert subscribers when new PDF is added'],
+    ${[['New PDF Alert (Email)','Auto-email subscribers when new PDF is published'],
+       ['New PDF Alert (WhatsApp)','Auto-WhatsApp subscribers when new PDF is published'],
+       ['Purchase Confirmation','Auto-send on every purchase'],
        ['Exam Reminder','Daily reminder before major exams'],
        ['Streak Reminder','Nudge users who break streaks'],
        ['Telegram Integration','Send alerts to Telegram channel'],
@@ -28725,6 +28859,64 @@ function renderPCCNotifications(main) {
     <div class="form-group" style="margin-top:8px"><label class="form-label">Telegram Channel ID</label><input class="form-input" placeholder="@studyriachannel"/></div>
     <button class="btn btn-primary btn-sm mt-4" onclick="showToast('Notification settings saved!','success')">💾 Save Settings</button>
   </div>`;
+
+  // Auto-load stats
+  pccLoadSubscriberStats();
+}
+
+async function pccLoadSubscriberStats(btn) {
+  const sb = window.supabaseClient;
+  if (!sb) return;
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  try {
+    const [totalRes, emailRes, waRes] = await Promise.all([
+      sb.from('pdf_subscribers').select('id', { count: 'exact', head: true }).eq('confirmed', true),
+      sb.from('pdf_subscribers').select('id', { count: 'exact', head: true }).eq('confirmed', true).eq('notify_email', true),
+      sb.from('pdf_subscribers').select('id', { count: 'exact', head: true }).eq('confirmed', true).eq('notify_wa', true),
+    ]);
+    const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+    el('pccSubTotal', totalRes.count ?? '—');
+    el('pccSubEmail', emailRes.count ?? '—');
+    el('pccSubWa',    waRes.count    ?? '—');
+  } catch(e) { console.warn('pccLoadSubscriberStats:', e); }
+  if (btn) { btn.disabled = false; btn.textContent = '🔄 Load Stats'; }
+}
+
+async function pccLoadSubscriberList() {
+  const sb = window.supabaseClient;
+  const el = document.getElementById('pccSubList');
+  if (!sb || !el) return;
+  el.innerHTML = '<div style="font-size:.8rem;color:var(--text2)">Loading…</div>';
+  try {
+    const { data, error } = await sb
+      .from('pdf_subscribers')
+      .select('id,email,whatsapp,notify_email,notify_wa,created_at')
+      .eq('confirmed', true)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) { el.innerHTML = `<div style="color:var(--danger);font-size:.8rem">${error.message}</div>`; return; }
+    if (!data?.length) { el.innerHTML = '<div style="font-size:.8rem;color:var(--text2)">No subscribers yet.</div>'; return; }
+    el.innerHTML = `<div class="table-wrap"><table class="admin-table" style="width:100%;font-size:.78rem">
+      <thead><tr><th>Email</th><th>WhatsApp</th><th>Email ✉</th><th>WA 💬</th><th>Joined</th></tr></thead>
+      <tbody>${data.map(s=>`<tr>
+        <td>${s.email}</td>
+        <td>${s.whatsapp||'—'}</td>
+        <td style="text-align:center">${s.notify_email?'✅':'—'}</td>
+        <td style="text-align:center">${s.notify_wa?'✅':'—'}</td>
+        <td>${s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN') : '—'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  } catch(e) { el.innerHTML = `<div style="color:var(--danger);font-size:.8rem">${e.message}</div>`; }
+}
+
+async function pccSendManualNotification() {
+  const title = document.getElementById('pccPushTitle')?.value?.trim();
+  const msg   = document.getElementById('pccPushMsg')?.value?.trim();
+  if (!title || !msg) { showToast('Enter a title and message.', 'error'); return; }
+  if (typeof window.notifyPdfSubscribers === 'function') {
+    await window.notifyPdfSubscribers({ pdfId: null, title: `${title} — ${msg}`, category: null, coverUrl: null, pdfUrl: null });
+  }
+  showToast('🚀 Notification dispatched to subscribers!', 'success');
 }
 
 /* ─── 13. SEO MANAGER ────────────────────────────────────────── */
