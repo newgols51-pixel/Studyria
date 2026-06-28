@@ -20,7 +20,7 @@
 
   const MAX_RETRIES   = 2;       // retry on transient network error
   const PAGE_SIZE     = 200;     // rows per Supabase page (max 1000)
-  const STATUSES      = ['published', 'approved']; // show both
+  const STATUSES      = ['published']; // show ONLY published — approved stays in Draft Queue (Smart Publish Manager)
 
   const client = window.supabaseClient;
   if (!client) {
@@ -123,7 +123,7 @@
 
       // ── Status normalisation ──────────────────────────────────
       // Treat 'approved' the same as 'published' for all UI logic
-      status: (p.status === 'approved') ? 'published' : (p.status || 'published'),
+      status: p.status || 'published',
     }));
 
   // ── 4. Mutate the SHARED PDFS array IN PLACE ────────────────────

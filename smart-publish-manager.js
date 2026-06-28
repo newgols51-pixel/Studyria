@@ -1,6 +1,6 @@
 /**
  * ══════════════════════════════════════════════════════════════════════
- * STUDYRIA — SMART PUBLISH MANAGER  v2.0.0
+ * STUDYRIA — SMART PUBLISH MANAGER  v3.0.0
  * ══════════════════════════════════════════════════════════════════════
  *
  * HOW TO USE:
@@ -9,24 +9,27 @@
  *
  *     <script src="smart-publish-manager.js"></script>
  *
- * WHAT THIS ADDS (non-breaking — all existing features intact):
- *   • Shows ONLY Draft/Pending PDFs — never Published
- *   • After Publish: auto-moves PDF from Draft Queue → Published Library
- *   • Single / Multiple / Bulk / Drag-Drop PDF Upload → saved as Draft
+ * WHAT THIS ADDS:
+ *   • Draft Queue — ONLY Draft/Pending/Approved/Rejected/Archived PDFs
+ *     → NEVER shows Published PDFs
+ *     → After Publish, auto-moves PDFs from Draft Queue → Published Library
+ *   • Upload: Single / Multiple / Bulk (100+) / Drag & Drop
+ *     → Every upload saved as Draft immediately
  *   • Bulk Actions: Select All, Deselect All, Publish, Approve, Reject,
  *     Archive, Delete
- *   • 14-point pre-publish validation (blocks on failure with reason)
- *   • AI Suggestions: Category, Badge, Tags, SEO Title, Meta Desc,
+ *   • 15-point pre-publish validation (blocks on failure with exact error)
+ *   • AI Suggestions: Category, Badge, Tags, SEO Title, Meta Description,
  *     Selling Price, Slug
  *   • Publish Preview: Total Selected / Ready / Failed / Errors
  *   • Post-Publish Report: Published / Failed / Time Taken
- *   • Supports 1000+ PDFs with virtual rendering
- *   • Mobile responsive
- *   • Undo Publish within 5-minute window
+ *   • Lazy Loading + Pagination (supports 1000+ PDFs)
+ *   • Mobile Responsive
+ *   • Undo Publish (5-minute window)
+ *   • Subscriber notification hook via supabase.js
  *
  * BACKWARD COMPAT:
  *   • Does NOT override adminSavePDF, renderAdminPDFs, adminPDFRow
- *   • Only adds new functions / tab / hook into switchAdminTab
+ *   • Only hooks into switchAdminTab — non-breaking
  *   • Uses existing showToast, logAdminActivity, supabaseClient, PDFS
  * ══════════════════════════════════════════════════════════════════════
  */
@@ -38,27 +41,26 @@
      SECTION 0 — CONSTANTS & STATE
   ───────────────────────────────────────────────────────────────── */
 
-  const SPM_VERSION = '2.0.0';
+  const SPM_VERSION = '3.0.0';
   const SPM_TAB     = 'smart-publish';
   const UNDO_TTL_MS = 5 * 60 * 1000; // 5 minutes
-  const PAGE_SIZE   = 50;             // virtual paging for 1000+ PDFs
+  const PAGE_SIZE   = 50;             // rows per virtual page
 
-  // Statuses that belong in the Draft Queue
+  // Statuses that belong in the Draft Queue (NEVER include 'published')
   const DRAFT_STATUSES = new Set(['draft', 'pending', 'approved', 'rejected', 'archived']);
 
   // Module state
   const SPM = {
-    pdfs:            [],   // draft/pending PDFs loaded from Supabase
-    filtered:        [],   // after search/filter
-    page:            0,    // current virtual page
+    pdfs:            [],
+    filtered:        [],
+    page:            0,
     selected:        new Set(),
     validationCache: {},
     undoStack:       [],
     aiCache:         {},
     lastReport:      null,
     loading:         false,
-    dragOver:        false,
-    uploadQueue:     [],   // files queued for upload
+    uploadQueue:     [],
     uploading:       false,
   };
 
@@ -86,30 +88,30 @@
 .spm-upload-tab.active { background:linear-gradient(135deg,#3d8ef8,#1d4ed8); color:#fff; border-color:transparent; }
 .spm-upload-panel { display:none; }
 .spm-upload-panel.active { display:block; }
-.spm-dropzone { border:2px dashed rgba(61,142,248,.35); border-radius:14px; padding:40px 20px; text-align:center; cursor:pointer; transition:all .2s; background:rgba(61,142,248,.04); position:relative; }
-.spm-dropzone.dragover { border-color:#3d8ef8; background:rgba(61,142,248,.1); transform:scale(1.01); }
+.spm-dropzone { border:2px dashed rgba(61,142,248,.35); border-radius:14px; padding:40px 20px; text-align:center; cursor:pointer; transition:all .2s; background:rgba(61,142,248,.04); position:relative; overflow:hidden; }
+.spm-dropzone.dragover { border-color:#3d8ef8; background:rgba(61,142,248,.12); transform:scale(1.01); }
 .spm-dropzone:hover { border-color:rgba(61,142,248,.6); background:rgba(61,142,248,.07); }
 .spm-dropzone-icon { font-size:2.5rem; margin-bottom:10px; }
 .spm-dropzone-label { font-size:.9rem; font-weight:700; color:var(--text,#e2e8f0); margin-bottom:6px; }
 .spm-dropzone-sub { font-size:.75rem; color:var(--text2,#94a3b8); }
-.spm-drop-input { position:absolute; inset:0; opacity:0; cursor:pointer; }
-.spm-upload-list { margin-top:12px; display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; }
+.spm-drop-input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.spm-upload-list { margin-top:12px; display:flex; flex-direction:column; gap:6px; max-height:240px; overflow-y:auto; }
 .spm-upload-item { display:flex; align-items:center; gap:10px; padding:8px 12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:8px; font-size:.78rem; }
 .spm-upload-item-name { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .spm-upload-item-size { color:var(--text2,#94a3b8); white-space:nowrap; }
 .spm-upload-item-status { font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:12px; white-space:nowrap; }
-.spm-ustat-pending  { background:rgba(148,163,184,.12); color:#94a3b8; }
-.spm-ustat-uploading{ background:rgba(61,142,248,.15); color:#3d8ef8; }
-.spm-ustat-done     { background:rgba(16,217,142,.15); color:#10d98e; }
-.spm-ustat-error    { background:rgba(239,68,68,.15); color:#ef4444; }
-.spm-upload-progress { height:2px; background:rgba(255,255,255,.06); border-radius:2px; margin-top:6px; overflow:hidden; }
-.spm-upload-progress-bar { height:100%; background:linear-gradient(90deg,#3d8ef8,#10d98e); transition:width .3s; }
+.spm-ustat-pending   { background:rgba(148,163,184,.12); color:#94a3b8; }
+.spm-ustat-uploading { background:rgba(61,142,248,.15); color:#3d8ef8; }
+.spm-ustat-done      { background:rgba(16,217,142,.15); color:#10d98e; }
+.spm-ustat-error     { background:rgba(239,68,68,.15); color:#ef4444; }
+.spm-upload-progress { height:3px; background:rgba(255,255,255,.06); border-radius:3px; margin-top:8px; overflow:hidden; }
+.spm-upload-progress-bar { height:100%; background:linear-gradient(90deg,#3d8ef8,#10d98e); transition:width .3s; border-radius:3px; }
 
 /* ── Stats Bar ── */
-.spm-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; margin-bottom:18px; }
+.spm-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; margin-bottom:18px; }
 .spm-stat { background:var(--glass,rgba(255,255,255,.05)); border:1px solid var(--glass-border,rgba(255,255,255,.08)); border-radius:12px; padding:14px 12px; text-align:center; }
 .spm-stat-val { font-size:1.4rem; font-weight:900; font-family:var(--font-display,inherit); background:linear-gradient(135deg,#3d8ef8,#10d98e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.spm-stat-label { font-size:.68rem; color:var(--text2,#94a3b8); text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+.spm-stat-label { font-size:.67rem; color:var(--text2,#94a3b8); text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
 
 /* ── Toolbar ── */
 .spm-toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:12px 14px; background:var(--glass,rgba(255,255,255,.05)); border:1px solid var(--glass-border,rgba(255,255,255,.08)); border-radius:12px; margin-bottom:14px; }
@@ -138,7 +140,7 @@
 /* ── Table ── */
 .spm-table-card { background:var(--glass,rgba(255,255,255,.05)); border:1px solid var(--glass-border,rgba(255,255,255,.08)); border-radius:14px; overflow:hidden; }
 .spm-table-wrap { overflow-x:auto; }
-.spm-table { width:100%; border-collapse:collapse; min-width:920px; }
+.spm-table { width:100%; border-collapse:collapse; min-width:940px; }
 .spm-table th { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text2,#94a3b8); padding:10px 13px; background:rgba(61,142,248,.04); border-bottom:1px solid var(--glass-border,rgba(255,255,255,.08)); white-space:nowrap; }
 .spm-table td { padding:10px 13px; font-size:.81rem; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
 .spm-table tr:last-child td { border-bottom:none; }
@@ -148,21 +150,16 @@
 .spm-cover { width:30px; height:40px; object-fit:cover; border-radius:4px; border:1px solid var(--glass-border,rgba(255,255,255,.08)); }
 .spm-cover-ph { width:30px; height:40px; border-radius:4px; background:linear-gradient(135deg,#1d4ed8,#3d8ef8); display:flex; align-items:center; justify-content:center; font-size:.75rem; }
 .spm-status-badge { display:inline-flex; align-items:center; gap:3px; padding:2px 8px; border-radius:20px; font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
-.spm-badge-draft     { background:rgba(148,163,184,.12); color:#94a3b8; }
-.spm-badge-pending   { background:rgba(245,158,11,.15); color:#f59e0b; }
-.spm-badge-rejected  { background:rgba(239,68,68,.15); color:#ef4444; }
-.spm-badge-archived  { background:rgba(139,92,246,.15); color:#8b5cf6; }
-.spm-badge-approved  { background:rgba(6,182,212,.15); color:#06b6d4; }
-.spm-badge-published { background:rgba(16,217,142,.15); color:#10d98e; }
+.spm-badge-draft    { background:rgba(148,163,184,.12); color:#94a3b8; }
+.spm-badge-pending  { background:rgba(245,158,11,.15); color:#f59e0b; }
+.spm-badge-rejected { background:rgba(239,68,68,.15); color:#ef4444; }
+.spm-badge-archived { background:rgba(139,92,246,.15); color:#8b5cf6; }
+.spm-badge-approved { background:rgba(6,182,212,.15); color:#06b6d4; }
+.spm-badge-published{ background:rgba(16,217,142,.15); color:#10d98e; }
 .spm-val-ok   { color:#10d98e; font-size:.73rem; font-weight:700; }
 .spm-val-fail { color:#ef4444; font-size:.73rem; font-weight:700; cursor:pointer; text-decoration:underline dotted; }
+.spm-val-warn { color:#f59e0b; font-size:.73rem; font-weight:600; cursor:pointer; text-decoration:underline dotted; }
 .spm-val-pending { color:#94a3b8; font-size:.73rem; }
-
-/* ── Validation Error List ── */
-.spm-err-list { list-style:none; padding:0; margin:0; }
-.spm-err-list li { display:flex; align-items:flex-start; gap:6px; padding:5px 0; font-size:.77rem; color:var(--text,#e2e8f0); border-bottom:1px solid rgba(255,255,255,.04); }
-.spm-err-list li:last-child { border-bottom:none; }
-.spm-err-icon { font-size:.73rem; margin-top:1px; flex-shrink:0; }
 
 /* ── Modal Overlay ── */
 .spm-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:9000; display:flex; align-items:center; justify-content:center; padding:16px; animation:spmFadeIn .2s ease; }
@@ -221,7 +218,7 @@
 .spm-section-label::after { content:''; flex:1; height:1px; background:var(--glass-border,rgba(255,255,255,.08)); }
 
 /* ── Responsive ── */
-@media(max-width:640px) {
+@media(max-width:640px){
   .spm-toolbar { flex-direction:column; align-items:stretch; }
   .spm-toolbar-right { justify-content:flex-start; overflow-x:auto; padding-bottom:4px; }
   .spm-search { width:100%; }
@@ -231,13 +228,14 @@
   .spm-ai-grid { grid-template-columns:1fr; }
   .spm-header { flex-direction:column; }
   .spm-upload-tabs { overflow-x:auto; }
+  .spm-table { min-width:700px; }
 }
     `;
     document.head.appendChild(style);
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     SECTION 2 — VALIDATION ENGINE (14 checks)
+     SECTION 2 — VALIDATION ENGINE (15 checks)
   ───────────────────────────────────────────────────────────────── */
 
   const VALIDATION_CHECKS = [
@@ -258,7 +256,8 @@
     },
     {
       id:'description', label:'Description', required:true,
-      check: p => !!(p.description?.trim() || p.preview?.trim()) && (p.description||p.preview||'').trim().length >= 10,
+      check: p => !!(p.description?.trim() || p.preview?.trim()) &&
+                  (p.description || p.preview || '').trim().length >= 10,
       failMsg: 'Description is missing or too short (min 10 characters).',
     },
     {
@@ -269,12 +268,14 @@
     {
       id:'price', label:'Selling Price', required:true,
       check: p => p.free === true || p.free === 'true' || p.free === 1 ||
-                  (!isNaN(parseFloat(p.price ?? p.selling_price)) && parseFloat(p.price ?? p.selling_price) >= 0),
+                  (!isNaN(parseFloat(p.price ?? p.selling_price)) &&
+                   parseFloat(p.price ?? p.selling_price) >= 0),
       failMsg: 'Selling price is invalid. Set a valid price (or mark as Free).',
     },
     {
       id:'origprice', label:'Original Price', required:false, warn:true,
-      check: p => !p.original_price || parseFloat(p.original_price) >= parseFloat(p.price ?? p.selling_price ?? 0),
+      check: p => !p.original_price ||
+                  parseFloat(p.original_price) >= parseFloat(p.price ?? p.selling_price ?? 0),
       failMsg: 'Original price is lower than selling price.',
     },
     {
@@ -301,9 +302,19 @@
       id:'integrity', label:'File Integrity', required:true,
       check: p => {
         const url = p.pdf_url || p.file_url || '';
-        return !url || (url.startsWith('http') && url.includes('.'));
+        if (!url) return false; // required + file check #1 must pass first
+        return url.startsWith('http') && url.includes('.');
       },
-      failMsg: 'PDF file URL appears invalid or malformed.',
+      failMsg: 'PDF file URL appears invalid or malformed (must be a valid https URL).',
+    },
+    {
+      id:'metadata', label:'Metadata Completeness', required:false, warn:true,
+      check: p => {
+        const hasSlug = !!(p.slug?.trim());
+        const hasSeoDesc = !!(p.seo_description?.trim() || p.seo_desc?.trim());
+        return hasSlug && hasSeoDesc;
+      },
+      failMsg: 'Slug or SEO description missing — metadata incomplete.',
     },
     {
       id:'dupeTitle', label:'Duplicate Title', required:true, async:true,
@@ -312,9 +323,14 @@
           String(x.id) !== String(p.id) &&
           x.title?.trim().toLowerCase() === p.title?.trim().toLowerCase()
         );
-        return same.length === 0;
+        // Also check published PDFs in the global PDFS array
+        const publishedSame = (global.PDFS || []).filter(x =>
+          String(x.id) !== String(p.id) &&
+          x.title?.trim().toLowerCase() === p.title?.trim().toLowerCase()
+        );
+        return same.length === 0 && publishedSame.length === 0;
       },
-      failMsg: 'A PDF with this exact title already exists.',
+      failMsg: 'A PDF with this exact title already exists in the library.',
     },
     {
       id:'dupePDF', label:'Duplicate PDF URL', required:false, warn:true,
@@ -326,14 +342,19 @@
           String(x.id) !== String(p.id) &&
           ((x.pdf_url || x.file_url) === url)
         );
-        return same.length === 0;
+        const publishedSame = (global.PDFS || []).filter(x =>
+          String(x.id) !== String(p.id) &&
+          ((x.pdf_url || x.file_url) === url)
+        );
+        return same.length === 0 && publishedSame.length === 0;
       },
       failMsg: 'Another PDF already uses this same file URL.',
     },
   ];
 
   async function spmValidate(pdf, allPdfs) {
-    if (SPM.validationCache[pdf.id]) return SPM.validationCache[pdf.id];
+    const cacheKey = String(pdf.id) + ':' + (pdf.updated_at || '');
+    if (SPM.validationCache[cacheKey]) return SPM.validationCache[cacheKey];
 
     const errors = [];
     let blockingFail = false;
@@ -360,12 +381,18 @@
     }
 
     const result = { ok: !blockingFail, errors };
-    SPM.validationCache[pdf.id] = result;
+    SPM.validationCache[cacheKey] = result;
+    // Also store by id for quick invalidation
+    SPM.validationCache[String(pdf.id)] = result;
     return result;
   }
 
   function spmInvalidateCache(id) {
-    delete SPM.validationCache[String(id)];
+    const key = String(id);
+    // Remove any cache entries that start with this id
+    Object.keys(SPM.validationCache).forEach(k => {
+      if (k === key || k.startsWith(key + ':')) delete SPM.validationCache[k];
+    });
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -374,15 +401,18 @@
 
   function spmGenerateSlug(title) {
     if (typeof generateSlug === 'function') return generateSlug(title);
-    return (title||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);
+    return (title || '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 80);
   }
 
   function spmNow() { return new Date().toISOString(); }
 
   function spmAutoFillFields(pdf) {
     const out = { ...pdf };
-    if (!out.slug)         out.slug         = spmGenerateSlug(pdf.title || '');
-    if (!out.published_at) out.published_at  = spmNow();
+    if (!out.slug) out.slug = spmGenerateSlug(pdf.title || '');
+    if (!out.published_at) out.published_at = spmNow();
     out.updated_at = spmNow();
     return out;
   }
@@ -391,39 +421,35 @@
      SECTION 4 — PDF UPLOAD (Single / Multiple / Bulk / Drag-Drop)
   ───────────────────────────────────────────────────────────────── */
 
-  /**
-   * Upload a single File to Supabase Storage bucket "pdfs"
-   * then insert a row in the `pdfs` table with status='draft'.
-   * Returns the inserted row or null on error.
-   */
   async function spmUploadPDF(file, onProgress) {
     const sb = global.supabaseClient;
     if (!sb) { spmToast('Supabase not connected', 'error'); return null; }
 
-    const ext      = file.name.split('.').pop().toLowerCase();
     const safeName = file.name.replace(/[^a-z0-9._-]/gi, '_');
     const path     = `uploads/${Date.now()}_${safeName}`;
 
     try {
-      // Try to upload to storage bucket
       onProgress?.('uploading');
       let pdf_url = '';
 
       const { data: storageData, error: storageErr } = await sb.storage
         .from('pdfs')
-        .upload(path, file, { cacheControl:'3600', upsert:false });
+        .upload(path, file, { cacheControl: '3600', upsert: false });
 
       if (!storageErr && storageData) {
         const { data: urlData } = sb.storage.from('pdfs').getPublicUrl(path);
         pdf_url = urlData?.publicUrl || '';
       } else {
-        // Storage bucket may not exist — still create the draft row without URL
         console.warn('SPM storage upload skipped:', storageErr?.message);
       }
 
-      // Insert draft row
+      const titleFromFile = file.name
+        .replace(/\.[^.]+$/, '')
+        .replace(/[_-]+/g, ' ')
+        .trim();
+
       const payload = {
-        title:      file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g,' ').trim(),
+        title:      titleFromFile || 'Untitled PDF',
         status:     'draft',
         pdf_url:    pdf_url || null,
         file_url:   pdf_url || null,
@@ -431,7 +457,12 @@
         updated_at: spmNow(),
       };
 
-      const { data: rowData, error: rowErr } = await sb.from('pdfs').insert(payload).select().single();
+      const { data: rowData, error: rowErr } = await sb
+        .from('pdfs')
+        .insert(payload)
+        .select()
+        .single();
+
       if (rowErr) throw rowErr;
 
       onProgress?.('done');
@@ -443,18 +474,25 @@
     }
   }
 
-  /** Queue files for upload and start the upload worker */
   function spmQueueFiles(files) {
-    const arr = Array.from(files).filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+    const arr = Array.from(files).filter(
+      f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+    );
     if (!arr.length) { spmToast('No PDF files detected', 'warning'); return; }
 
-    arr.forEach(f => SPM.uploadQueue.push({ file: f, status: 'pending', id: Math.random().toString(36).slice(2) }));
+    arr.forEach(f => SPM.uploadQueue.push({
+      file:   f,
+      status: 'pending',
+      id:     Math.random().toString(36).slice(2),
+    }));
     spmRenderUploadList();
     if (!SPM.uploading) spmRunUploadWorker();
   }
 
   async function spmRunUploadWorker() {
     SPM.uploading = true;
+    let successCount = 0;
+
     while (SPM.uploadQueue.some(q => q.status === 'pending')) {
       const item = SPM.uploadQueue.find(q => q.status === 'pending');
       if (!item) break;
@@ -468,40 +506,57 @@
 
       if (row) {
         item.status = 'done';
-        // Add to SPM.pdfs immediately
+        successCount++;
         SPM.pdfs.unshift(row);
-        if (global.PDFS) global.PDFS.unshift(row);
         spmInvalidateCache(row.id);
       } else {
         item.status = 'error';
       }
       spmRenderUploadList();
     }
+
     SPM.uploading = false;
     spmRender();
-    spmToast(`✅ Upload complete`, 'success');
-    if (typeof logAdminActivity === 'function') logAdminActivity('PDF(s) uploaded as Draft', 'blue');
+    if (successCount > 0) {
+      spmToast(`✅ ${successCount} PDF${successCount > 1 ? 's' : ''} uploaded as Draft`, 'success');
+      if (typeof logAdminActivity === 'function')
+        logAdminActivity(`${successCount} PDF(s) uploaded as Draft via SPM`, 'blue');
+    } else {
+      spmToast('Upload failed — check console', 'error');
+    }
   }
 
   function spmRenderUploadList() {
     const el = document.getElementById('spmUploadList');
     if (!el || !SPM.uploadQueue.length) return;
+
     const done  = SPM.uploadQueue.filter(q => q.status === 'done').length;
     const total = SPM.uploadQueue.length;
-    el.innerHTML = SPM.uploadQueue.slice(-20).map(q => `
+    const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    el.innerHTML = SPM.uploadQueue.slice(-30).map(q => `
       <div class="spm-upload-item">
-        <span style="font-size:.9rem">${q.status==='done'?'✅':q.status==='error'?'❌':q.status==='uploading'?'⏳':'📄'}</span>
+        <span style="font-size:.9rem">${
+          q.status === 'done'      ? '✅' :
+          q.status === 'error'     ? '❌' :
+          q.status === 'uploading' ? '⏳' : '📄'
+        }</span>
         <span class="spm-upload-item-name">${_safeEsc(q.file.name)}</span>
         <span class="spm-upload-item-size">${_fmtSize(q.file.size)}</span>
         <span class="spm-upload-item-status spm-ustat-${q.status}">${q.status}</span>
       </div>`).join('') +
-      (total > 1 ? `<div class="spm-upload-progress"><div class="spm-upload-progress-bar" style="width:${Math.round(done/total*100)}%"></div></div>` : '');
+      (total > 1 ? `
+        <div class="spm-upload-progress">
+          <div class="spm-upload-progress-bar" style="width:${pct}%"></div>
+        </div>
+        <div style="font-size:.71rem;color:var(--text2,#94a3b8);text-align:right;margin-top:4px">${done}/${total} files</div>
+      ` : '');
   }
 
   function _fmtSize(bytes) {
-    if (bytes < 1024) return bytes + 'B';
-    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + 'KB';
-    return (bytes/1024/1024).toFixed(1) + 'MB';
+    if (bytes < 1024)         return bytes + ' B';
+    if (bytes < 1024 * 1024)  return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -509,27 +564,31 @@
   ───────────────────────────────────────────────────────────────── */
 
   async function spmGetAISuggestions(pdf) {
-    if (SPM.aiCache[pdf.id]) return SPM.aiCache[pdf.id];
+    const cacheKey = String(pdf.id) + ':ai';
+    if (SPM.aiCache[cacheKey]) return SPM.aiCache[cacheKey];
 
-    const prompt = `You are Studyria's AI publishing assistant. Analyze this PDF metadata and return smart suggestions.
+    const prompt = `You are Studyria's AI publishing assistant for an Indian student exam prep platform (JEE, NEET, UPSC, ADRE, APSC, Assam focus).
+
+Analyze this PDF metadata and return publishing suggestions.
 
 PDF Metadata:
 Title: ${pdf.title || 'Unknown'}
-Description: ${(pdf.description || pdf.preview || '').slice(0, 400)}
+Description: ${(pdf.description || pdf.preview || '').slice(0, 500)}
 Category: ${pdf.category || ''}
 Current Price: ${pdf.price ?? pdf.selling_price ?? 0}
 Original Price: ${pdf.original_price ?? ''}
+Author: ${pdf.author || ''}
 
-Return ONLY valid JSON (no markdown, no backticks, no explanation):
+Return ONLY valid JSON (no markdown, no backticks, no extra text):
 {
   "badge": "one of: New|Hot|Trending|Bestseller|Free|Limited|Sale|Premium",
-  "category": "best matching category for Indian students",
-  "tags": "6-8 comma-separated SEO keywords",
+  "category": "best category for Indian exam prep students",
+  "tags": "6-8 comma-separated SEO keywords relevant to Indian students",
   "seo_title": "SEO optimized title under 60 chars",
-  "meta_description": "meta description under 155 chars",
+  "meta_description": "compelling meta description under 155 chars",
   "selling_price": 0,
-  "slug": "url-friendly-slug-here",
-  "price_reasoning": "one sentence explanation"
+  "slug": "url-friendly-slug-max-60-chars",
+  "price_reasoning": "one sentence explanation of suggested price"
 }`;
 
     try {
@@ -545,18 +604,19 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       if (!resp.ok) throw new Error(`AI API ${resp.status}`);
       const data = await resp.json();
       const raw  = (data.content || []).map(b => b.text || '').join('');
-      const clean = raw.replace(/```json|```/g,'').trim();
+      const clean = raw.replace(/```json|```/g, '').trim();
       const s = JSON.parse(clean);
-      SPM.aiCache[pdf.id] = s;
+      SPM.aiCache[cacheKey] = s;
       return s;
     } catch(e) {
       console.warn('SPM AI failed:', e);
+      // Graceful fallback
       return {
         badge:            pdf.free ? 'Free' : 'New',
         category:         pdf.category || '',
         tags:             pdf.seo_keywords || '',
-        seo_title:        (pdf.seo_title || pdf.title || '').slice(0,60),
-        meta_description: (pdf.seo_description || pdf.description || '').slice(0,155),
+        seo_title:        (pdf.seo_title || pdf.title || '').slice(0, 60),
+        meta_description: (pdf.seo_description || pdf.description || '').slice(0, 155),
         selling_price:    pdf.price ?? pdf.selling_price ?? 0,
         slug:             spmGenerateSlug(pdf.title || ''),
         price_reasoning:  'Based on existing price data.',
@@ -576,26 +636,28 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     let success = 0;
     for (const id of ids) {
       try {
-        const { error } = await sb.from('pdfs').update({ status, updated_at: spmNow() }).eq('id', id);
+        const { error } = await sb
+          .from('pdfs')
+          .update({ status, updated_at: spmNow() })
+          .eq('id', id);
         if (!error) {
           success++;
           spmInvalidateCache(id);
           const p = SPM.pdfs.find(x => String(x.id) === String(id));
           if (p) p.status = status;
-          const wp = (global.PDFS||[]).find(x => String(x.id) === String(id));
-          if (wp) wp.status = status;
         }
       } catch(e) { /* continue */ }
     }
 
     spmToast(`✅ ${success}/${ids.length} PDFs ${label}`, 'success');
-    if (typeof logAdminActivity === 'function') logAdminActivity(`Bulk ${label}: ${success} PDFs`, 'blue');
+    if (typeof logAdminActivity === 'function')
+      logAdminActivity(`Bulk ${label}: ${success} PDFs`, 'blue');
     return success;
   }
 
   async function spmBulkDelete(ids) {
     if (!ids.length) { spmToast('No PDFs selected', 'info'); return; }
-    if (!confirm(`Delete ${ids.length} PDF(s) permanently? This cannot be undone.`)) return;
+    if (!confirm(`⚠️ Delete ${ids.length} PDF(s) permanently?\n\nThis cannot be undone.`)) return;
     const sb = global.supabaseClient;
     if (!sb) { spmToast('Supabase not connected', 'error'); return; }
 
@@ -614,7 +676,8 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     }
     SPM.selected.clear();
     spmToast(`🗑 ${success} PDF(s) deleted`, success > 0 ? 'info' : 'error');
-    if (typeof logAdminActivity === 'function') logAdminActivity(`Bulk deleted ${success} PDFs`, 'red');
+    if (typeof logAdminActivity === 'function')
+      logAdminActivity(`Bulk deleted ${success} PDFs`, 'red');
     spmRender();
   }
 
@@ -649,10 +712,10 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     const sb = global.supabaseClient;
     if (!sb) { spmToast('Supabase not connected', 'error'); return; }
 
-    const startTime = Date.now();
-    const undoData  = [];
-    let published   = 0;
-    let errors      = 0;
+    const startTime  = Date.now();
+    const undoData   = [];
+    const published  = [];
+    let   errors     = 0;
 
     spmShowLoader('Publishing…');
 
@@ -667,12 +730,16 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       const payload = {
         status:          'published',
         slug:            edits.slug            || enriched.slug,
-        badge:           edits.badge           || pdf.badge || null,
-        seo_title:       edits.seo_title       || pdf.seo_title || null,
+        badge:           edits.badge           || pdf.badge           || null,
+        seo_title:       edits.seo_title       || pdf.seo_title       || null,
         seo_description: edits.meta_description|| pdf.seo_description || null,
-        seo_keywords:    edits.tags            || pdf.seo_keywords || null,
-        selling_price:   edits.selling_price !== undefined ? Number(edits.selling_price) : (pdf.price ?? 0),
-        price:           edits.selling_price !== undefined ? Number(edits.selling_price) : (pdf.price ?? 0),
+        seo_keywords:    edits.tags            || pdf.seo_keywords    || null,
+        selling_price:   edits.selling_price !== undefined
+                          ? Number(edits.selling_price)
+                          : (pdf.price ?? 0),
+        price:           edits.selling_price !== undefined
+                          ? Number(edits.selling_price)
+                          : (pdf.price ?? 0),
         updated_at:      spmNow(),
         published_at:    enriched.published_at || spmNow(),
       };
@@ -681,9 +748,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
         const { error } = await sb.from('pdfs').update(payload).eq('id', id);
         if (error) throw error;
         Object.assign(pdf, payload);
-        const wp = (global.PDFS||[]).find(x => String(x.id) === String(id));
-        if (wp) Object.assign(wp, payload);
-        published++;
+        published.push({ ...pdf, ...payload });
         spmInvalidateCache(id);
       } catch(e) {
         errors++;
@@ -696,17 +761,45 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     // Push undo entry
     if (undoData.length) {
       SPM.undoStack.push({ ids: readyIds, undoData, timestamp: Date.now() });
-      setTimeout(() => { SPM.undoStack = SPM.undoStack.filter(x => Date.now()-x.timestamp < UNDO_TTL_MS); }, UNDO_TTL_MS + 1000);
+      setTimeout(() => {
+        SPM.undoStack = SPM.undoStack.filter(x => Date.now() - x.timestamp < UNDO_TTL_MS);
+      }, UNDO_TTL_MS + 1000);
     }
 
-    SPM.lastReport = { published, errors, timeTaken, total: readyIds.length };
+    SPM.lastReport = {
+      published: published.length,
+      errors,
+      timeTaken,
+      total: readyIds.length,
+    };
 
-    // Remove newly published PDFs from Draft Queue display
-    SPM.pdfs = SPM.pdfs.filter(p => p.status !== 'published');
+    // ── Auto-move: remove published PDFs from Draft Queue ──────────
+    const publishedIds = new Set(published.map(p => String(p.id)));
+    SPM.pdfs = SPM.pdfs.filter(p => !publishedIds.has(String(p.id)));
     SPM.selected.clear();
 
+    // ── Add to global PDFS (Published Library) ─────────────────────
+    if (global.PDFS) {
+      published.forEach(row => {
+        const idx = global.PDFS.findIndex(p => String(p.id) === String(row.id));
+        if (idx >= 0) Object.assign(global.PDFS[idx], row);
+        else global.PDFS.unshift(row);
+      });
+    }
+
+    // ── Trigger subscriber notifications via supabase.js hook ──────
+    if (typeof global.spmOnPublishSuccess === 'function' && published.length) {
+      global.spmOnPublishSuccess(published).catch(() => {});
+    }
+
+    // ── Re-render public library if it's currently open ────────────
+    if (typeof global.renderLibGrid === 'function') {
+      setTimeout(global.renderLibGrid, 300);
+    }
+
     spmHideLoader();
-    if (typeof logAdminActivity === 'function') logAdminActivity(`Smart Publish: ${published} published, ${errors} failed`, 'green');
+    if (typeof logAdminActivity === 'function')
+      logAdminActivity(`Smart Publish: ${published.length} published, ${errors} failed`, 'green');
     spmRender();
     spmShowReport(SPM.lastReport);
   }
@@ -714,25 +807,41 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   async function spmUndoPublish() {
     const entry = SPM.undoStack[SPM.undoStack.length - 1];
     if (!entry) { spmToast('Nothing to undo', 'info'); return; }
-    if (Date.now() - entry.timestamp > UNDO_TTL_MS) { spmToast('Undo window expired', 'info'); return; }
-    if (!confirm(`Undo publish for ${entry.ids.length} PDF(s)? They will be set back to Draft.`)) return;
+    if (Date.now() - entry.timestamp > UNDO_TTL_MS) {
+      spmToast('Undo window expired (5 min limit)', 'info');
+      return;
+    }
+    if (!confirm(`Undo publish for ${entry.ids.length} PDF(s)?\nThey will be set back to Draft.`)) return;
 
     let undone = 0;
     for (const { id, prev } of entry.undoData) {
       const { error } = await global.supabaseClient.from('pdfs').update({
-        status: prev.status || 'draft', updated_at: spmNow()
+        status: prev.status || 'draft', updated_at: spmNow(),
       }).eq('id', id);
+
       if (!error) {
         undone++;
-        // Reload the PDF row
-        const { data } = await global.supabaseClient.from('pdfs').select('*').eq('id', id).single();
-        if (data) SPM.pdfs.unshift(data);
+        // Re-fetch the row and add back to draft queue
+        try {
+          const { data } = await global.supabaseClient
+            .from('pdfs').select('*').eq('id', id).single();
+          if (data) {
+            SPM.pdfs.unshift(data);
+            // Remove from global PDFS (published library)
+            if (global.PDFS) {
+              const idx = global.PDFS.findIndex(p => String(p.id) === String(id));
+              if (idx > -1) global.PDFS.splice(idx, 1);
+            }
+          }
+        } catch(_) {}
         spmInvalidateCache(id);
       }
     }
+
     SPM.undoStack.pop();
     spmToast(`↩ Undone: ${undone} PDFs reverted to Draft`, 'success');
-    if (typeof logAdminActivity === 'function') logAdminActivity(`Undo Publish: ${undone} PDFs reverted`, 'yellow');
+    if (typeof logAdminActivity === 'function')
+      logAdminActivity(`Undo Publish: ${undone} PDFs reverted`, 'yellow');
     spmRender();
   }
 
@@ -763,11 +872,13 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     spmHideLoader();
 
     const rows = result.errors.map(e => `
-      <div class="spm-val-err-item ${e.fail?'fail':e.warn?'warn':'pass'}">
-        <span style="font-size:.85rem;flex-shrink:0">${e.fail?'✗':e.warn?'⚠':'✓'}</span>
+      <div class="spm-val-err-item ${e.fail ? 'fail' : e.warn ? 'warn' : 'pass'}">
+        <span style="font-size:.85rem;flex-shrink:0">${e.fail ? '✗' : e.warn ? '⚠' : '✓'}</span>
         <div style="flex:1">
           <div style="font-weight:700;font-size:.78rem">${_safeEsc(e.label)}</div>
-          ${!e.pass && e.failMsg ? `<div style="font-size:.72rem;opacity:.8;margin-top:2px">${_safeEsc(e.failMsg)}</div>` : ''}
+          ${!e.pass && e.failMsg
+            ? `<div style="font-size:.72rem;opacity:.8;margin-top:2px">${_safeEsc(e.failMsg)}</div>`
+            : ''}
         </div>
         <span style="font-size:.7rem;opacity:.65;white-space:nowrap">${e.msg}</span>
       </div>`).join('');
@@ -776,11 +887,13 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       <div class="spm-modal">
         <button class="spm-modal-close" onclick="window._SPM._closeModal()">✕</button>
         <div class="spm-modal-title">🔍 Validation Report</div>
-        <div class="spm-modal-sub">${_safeEsc(pdf.title||'Untitled')}</div>
+        <div class="spm-modal-sub">${_safeEsc(pdf.title || 'Untitled')}</div>
         <div>${rows}</div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
           <button class="spm-btn spm-btn-ghost" onclick="window._SPM._closeModal()">Close</button>
-          ${result.ok ? `<button class="spm-btn spm-btn-success" onclick="window._SPM._publishOne('${id}')">🚀 Publish Now</button>` : ''}
+          ${result.ok
+            ? `<button class="spm-btn spm-btn-success" onclick="window._SPM._publishOne('${id}')">🚀 Publish Now</button>`
+            : ''}
         </div>
       </div>`);
   }
@@ -793,7 +906,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       <div class="spm-modal">
         <button class="spm-modal-close" onclick="window._SPM._closeModal()">✕</button>
         <div class="spm-modal-title">🤖 AI Suggestions</div>
-        <div class="spm-modal-sub">Generating suggestions for: <em>${_safeEsc(pdf.title||'Untitled')}</em></div>
+        <div class="spm-modal-sub">Generating for: <em>${_safeEsc(pdf.title || 'Untitled')}</em></div>
         <div style="text-align:center;padding:30px 0">
           <div class="spm-spinner" style="width:32px;height:32px;border-width:3px"></div>
           <div style="margin-top:10px;font-size:.8rem;color:var(--text2,#94a3b8)">Asking AI…</div>
@@ -806,49 +919,51 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       <div class="spm-modal spm-modal-lg">
         <button class="spm-modal-close" onclick="window._SPM._closeModal()">✕</button>
         <div class="spm-modal-title">🤖 AI Suggestions</div>
-        <div class="spm-modal-sub">Review and edit before applying · <em>${_safeEsc(pdf.title||'')}</em></div>
+        <div class="spm-modal-sub">Review and edit all fields before applying · <em>${_safeEsc(pdf.title || '')}</em></div>
         <div class="spm-ai-panel">
-          <div class="spm-ai-label">✨ AI Generated — Edit freely before applying</div>
+          <div class="spm-ai-label">✨ AI Generated — All fields are editable</div>
           <div class="spm-ai-grid">
             <div class="spm-ai-field">
               <label>Badge</label>
               <select id="spmAiBadge" class="spm-ai-input">
-                ${['New','Hot','Trending','Bestseller','Free','Limited','Sale','Premium'].map(b=>`<option value="${b}" ${s.badge===b?'selected':''}>${b}</option>`).join('')}
+                ${['New','Hot','Trending','Bestseller','Free','Limited','Sale','Premium']
+                  .map(b => `<option value="${b}" ${s.badge === b ? 'selected' : ''}>${b}</option>`)
+                  .join('')}
               </select>
             </div>
             <div class="spm-ai-field">
               <label>Category</label>
-              <input id="spmAiCat" class="spm-ai-input" value="${_safeEsc(s.category||'')}"/>
+              <input id="spmAiCat" class="spm-ai-input" value="${_safeEsc(s.category || '')}"/>
             </div>
             <div class="spm-ai-field">
-              <label>SEO Title</label>
-              <input id="spmAiSeoTitle" class="spm-ai-input" value="${_safeEsc(s.seo_title||'')}"/>
+              <label>SEO Title <span style="opacity:.5;font-size:.66rem">(max 60 chars)</span></label>
+              <input id="spmAiSeoTitle" class="spm-ai-input" maxlength="60" value="${_safeEsc(s.seo_title || '')}"/>
             </div>
             <div class="spm-ai-field">
               <label>Slug</label>
-              <input id="spmAiSlug" class="spm-ai-input" value="${_safeEsc(s.slug||'')}"/>
+              <input id="spmAiSlug" class="spm-ai-input" value="${_safeEsc(s.slug || '')}"/>
             </div>
             <div class="spm-ai-field">
               <label>Selling Price (₹)</label>
-              <input id="spmAiPrice" type="number" min="0" class="spm-ai-input" value="${s.selling_price||0}"/>
+              <input id="spmAiPrice" type="number" min="0" class="spm-ai-input" value="${s.selling_price || 0}"/>
             </div>
             <div class="spm-ai-field" style="align-self:end">
               <label style="opacity:.6">Price Reasoning</label>
-              <div style="font-size:.72rem;color:var(--text2,#94a3b8);padding:8px 0">${_safeEsc(s.price_reasoning||'')}</div>
+              <div style="font-size:.72rem;color:var(--text2,#94a3b8);padding:8px 0">${_safeEsc(s.price_reasoning || '')}</div>
             </div>
           </div>
           <div class="spm-ai-field">
-            <label>Tags / Keywords</label>
-            <input id="spmAiTags" class="spm-ai-input" value="${_safeEsc(s.tags||'')}"/>
+            <label>Tags / Keywords <span style="opacity:.5;font-size:.66rem">(comma separated)</span></label>
+            <input id="spmAiTags" class="spm-ai-input" value="${_safeEsc(s.tags || '')}"/>
           </div>
           <div class="spm-ai-field">
-            <label>Meta Description</label>
-            <textarea id="spmAiMetaDesc" class="spm-ai-input" rows="2">${_safeEsc(s.meta_description||'')}</textarea>
+            <label>Meta Description <span style="opacity:.5;font-size:.66rem">(max 155 chars)</span></label>
+            <textarea id="spmAiMetaDesc" class="spm-ai-input" rows="2" maxlength="155">${_safeEsc(s.meta_description || '')}</textarea>
           </div>
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
           <button class="spm-btn spm-btn-ghost" onclick="window._SPM._closeModal()">Discard</button>
-          <button class="spm-btn spm-btn-primary" onclick="window._SPM._applyAI('${id}')">✅ Apply & Publish</button>
+          <button class="spm-btn spm-btn-primary" onclick="window._SPM._applyAI('${id}')">✅ Apply &amp; Publish</button>
         </div>
       </div>`);
   }
@@ -857,7 +972,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     const failedReports = reports.filter(r => !r.result.ok);
     const blockingErrors = reports.flatMap(r => r.result.errors.filter(e => e.fail));
 
-    // Group unique blocking errors
+    // Unique blocking errors across all selected PDFs
     const uniqueErrors = [...new Map(blockingErrors.map(e => [e.id, e])).values()];
 
     const errSection = uniqueErrors.length ? `
@@ -875,15 +990,20 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
 
     const failedSection = failedReports.length ? `
       <div style="margin-bottom:14px">
-        <div style="font-size:.76rem;color:var(--text2,#94a3b8);margin-bottom:6px">Failed PDFs (${failedReports.length}) — fix errors to include them:</div>
-        ${failedReports.map(r => `<div style="font-size:.76rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04)">${_safeEsc(r.pdf.title||'Untitled')}</div>`).join('')}
+        <div style="font-size:.76rem;color:var(--text2,#94a3b8);margin-bottom:6px">
+          ✗ Failed PDFs (${failedReports.length}) — fix errors to include:
+        </div>
+        ${failedReports.map(r => `
+          <div style="font-size:.76rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+            ${_safeEsc(r.pdf.title || 'Untitled')}
+          </div>`).join('')}
       </div>` : '';
 
     spmOpenModal(`
       <div class="spm-modal">
         <button class="spm-modal-close" onclick="window._SPM._closeModal()">✕</button>
         <div class="spm-modal-title">📋 Publish Preview</div>
-        <div class="spm-modal-sub">Review validation results before confirming</div>
+        <div class="spm-modal-sub">Review validation results before confirming publish</div>
         <div class="spm-preview-grid">
           <div class="spm-preview-card">
             <div class="spm-preview-num spm-preview-num-info">${reports.length}</div>
@@ -899,17 +1019,25 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
           </div>
         </div>
         ${errSection}${failedSection}
-        ${readyIds.length === 0 ? `<div style="text-align:center;color:#ef4444;font-size:.83rem;padding:10px 0">No valid PDFs to publish. Fix the errors listed above first.</div>` : ''}
-        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px">
+        ${readyIds.length === 0
+          ? `<div style="text-align:center;color:#ef4444;font-size:.83rem;padding:10px 0;border:1px solid rgba(239,68,68,.2);border-radius:10px;background:rgba(239,68,68,.05)">
+               ⛔ No valid PDFs to publish. Fix the errors listed above first.
+             </div>`
+          : ''}
+        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px">
           <button class="spm-btn spm-btn-ghost" onclick="window._SPM._closeModal()">Cancel</button>
-          ${readyIds.length > 0 ? `<button class="spm-btn spm-btn-success" onclick="window._SPM._confirmPublish(${JSON.stringify(readyIds)})">🚀 Publish ${readyIds.length} PDF${readyIds.length>1?'s':''}</button>` : ''}
+          ${readyIds.length > 0
+            ? `<button class="spm-btn spm-btn-success" onclick="window._SPM._confirmPublish(${JSON.stringify(readyIds)})">
+                 🚀 Publish ${readyIds.length} PDF${readyIds.length > 1 ? 's' : ''}
+               </button>`
+            : ''}
         </div>
       </div>`);
   }
 
   function spmShowReport(report) {
-    const undoEntry = SPM.undoStack[SPM.undoStack.length-1];
-    const canUndo   = undoEntry && (Date.now()-undoEntry.timestamp < UNDO_TTL_MS);
+    const undoEntry = SPM.undoStack[SPM.undoStack.length - 1];
+    const canUndo   = undoEntry && (Date.now() - undoEntry.timestamp < UNDO_TTL_MS);
 
     spmOpenModal(`
       <div class="spm-modal">
@@ -930,13 +1058,17 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
             <div class="spm-report-lbl">Time Taken</div>
           </div>
         </div>
-        ${report.published > 0 ? `<div style="font-size:.78rem;color:var(--text2,#94a3b8);margin-bottom:14px">✨ ${report.published} PDF${report.published>1?'s':''} moved to Published Library</div>` : ''}
+        ${report.published > 0
+          ? `<div style="font-size:.78rem;color:var(--text2,#94a3b8);margin-bottom:14px">
+               ✨ ${report.published} PDF${report.published > 1 ? 's' : ''} moved to Published Library automatically
+             </div>`
+          : ''}
         ${canUndo ? `
-        <div class="spm-undo-bar">
-          <span class="spm-undo-bar-msg">⏱ Undo window active — revert all ${report.published} publish actions</span>
-          <span id="spmUndoTimerLabel" class="spm-undo-timer">5:00</span>
-          <button class="spm-btn spm-btn-warning spm-btn-sm" onclick="window._SPM._undo()">↩ Undo</button>
-        </div>` : ''}
+          <div class="spm-undo-bar">
+            <span class="spm-undo-bar-msg">⏱ Undo window — revert all ${report.published} publish actions</span>
+            <span id="spmUndoTimerLabel" class="spm-undo-timer">5:00</span>
+            <button class="spm-btn spm-btn-warning spm-btn-sm" onclick="window._SPM._undo()">↩ Undo</button>
+          </div>` : ''}
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px">
           <button class="spm-btn spm-btn-ghost" onclick="window._SPM._closeModal()">Close</button>
         </div>
@@ -963,7 +1095,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       }
       const m = Math.floor(remaining / 60000);
       const s = Math.floor((remaining % 60000) / 1000);
-      el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+      el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
     }, 1000);
   }
 
@@ -975,8 +1107,12 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     spmCloseModal();
     const overlay = document.createElement('div');
     overlay.id = 'spmLoaderOverlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9001;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px';
-    overlay.innerHTML = `<div class="spm-spinner" style="width:40px;height:40px;border-width:4px"></div><div style="color:#e2e8f0;font-size:.85rem">${_safeEsc(msg)}</div>`;
+    overlay.style.cssText =
+      'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9001;' +
+      'display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px';
+    overlay.innerHTML = `
+      <div class="spm-spinner" style="width:40px;height:40px;border-width:4px"></div>
+      <div style="color:#e2e8f0;font-size:.85rem">${_safeEsc(msg)}</div>`;
     document.body.appendChild(overlay);
   }
 
@@ -991,7 +1127,8 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     SECTION 11 — DATA LOADING (Draft/Pending only)
+     SECTION 11 — DATA LOADING (Draft/Pending/Approved/Rejected/Archived)
+     NEVER loads 'published' PDFs — those belong in the public library.
   ───────────────────────────────────────────────────────────────── */
 
   async function spmLoadPDFs() {
@@ -1000,25 +1137,38 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
 
     if (global.supabaseClient) {
       try {
-        // Only load non-published PDFs
-        const { data } = await global.supabaseClient
-          .from('pdfs')
-          .select('*')
-          .not('status', 'eq', 'published')
-          .order('created_at', { ascending: false });
-        if (data?.length) pdfs = data;
+        // Fetch all non-published PDFs with pagination support for 1000+
+        const PAGE = 200;
+        let page = 0, keepGoing = true;
+
+        while (keepGoing) {
+          const from = page * PAGE;
+          const to   = from + PAGE - 1;
+          const { data, error } = await global.supabaseClient
+            .from('pdfs')
+            .select('*')
+            .not('status', 'eq', 'published')
+            .order('created_at', { ascending: false })
+            .range(from, to);
+
+          if (error) throw error;
+          pdfs = pdfs.concat(data || []);
+          keepGoing = (data || []).length === PAGE;
+          page++;
+          if (page > 20) break; // safety cap: 4000 PDFs
+        }
       } catch(e) {
         console.warn('SPM load error:', e);
         // Fallback: filter global PDFS
         if (global.PDFS?.length) {
-          pdfs = global.PDFS.filter(p => !p.status || DRAFT_STATUSES.has(p.status));
+          pdfs = global.PDFS.filter(p => p.status && DRAFT_STATUSES.has(p.status));
         }
       }
     } else if (global.PDFS?.length) {
-      pdfs = global.PDFS.filter(p => !p.status || DRAFT_STATUSES.has(p.status));
+      pdfs = global.PDFS.filter(p => p.status && DRAFT_STATUSES.has(p.status));
     }
 
-    // Double-safety: strip published
+    // Double-safety: strip any published PDFs that slipped through
     SPM.pdfs    = pdfs.filter(p => p.status !== 'published');
     SPM.loading = false;
     return SPM.pdfs;
@@ -1032,29 +1182,32 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     spmInjectStyles();
     SPM.page = 0;
     SPM.selected.clear();
+    SPM.uploadQueue = []; // clear stale upload list on re-enter
 
     main.innerHTML = `
       <div class="spm-wrap">
         <div class="spm-header">
           <div>
             <div class="spm-header-title">⚡ Smart Publish Manager</div>
-            <div class="spm-header-sub">Draft Queue · Upload · Validate · AI Suggestions · Bulk Publish</div>
+            <div class="spm-header-sub">Draft Queue · Upload · Validate · AI Suggestions · Bulk Publish · Auto-Move to Library</div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            ${SPM.undoStack.length && (Date.now()-SPM.undoStack[SPM.undoStack.length-1].timestamp < UNDO_TTL_MS)
-              ? `<button class="spm-btn spm-btn-warning spm-btn-sm" onclick="window._SPM._undo()">↩ Undo Last Publish</button>` : ''}
+            ${SPM.undoStack.length &&
+              (Date.now() - SPM.undoStack[SPM.undoStack.length - 1].timestamp < UNDO_TTL_MS)
+              ? `<button class="spm-btn spm-btn-warning spm-btn-sm" onclick="window._SPM._undo()">↩ Undo Last Publish</button>`
+              : ''}
             <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._refresh()">↻ Refresh</button>
           </div>
         </div>
 
-        <!-- UPLOAD SECTION -->
+        <!-- ── UPLOAD SECTION ── -->
         <div class="spm-upload-section">
-          <div class="spm-section-label">📤 Upload PDFs</div>
+          <div class="spm-section-label">📤 Upload PDFs as Draft</div>
           <div class="spm-upload-tabs">
             <button class="spm-upload-tab active" onclick="window._SPM._switchUploadTab(this,'single')">Single</button>
             <button class="spm-upload-tab" onclick="window._SPM._switchUploadTab(this,'multiple')">Multiple</button>
-            <button class="spm-upload-tab" onclick="window._SPM._switchUploadTab(this,'bulk')">Bulk</button>
-            <button class="spm-upload-tab" onclick="window._SPM._switchUploadTab(this,'dragdrop')">Drag & Drop</button>
+            <button class="spm-upload-tab" onclick="window._SPM._switchUploadTab(this,'bulk')">Bulk (100+)</button>
+            <button class="spm-upload-tab" onclick="window._SPM._switchUploadTab(this,'dragdrop')">Drag &amp; Drop</button>
           </div>
 
           <!-- Single -->
@@ -1062,9 +1215,9 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
             <div class="spm-dropzone" onclick="document.getElementById('spmFileSingle').click()">
               <div class="spm-dropzone-icon">📄</div>
               <div class="spm-dropzone-label">Select one PDF</div>
-              <div class="spm-dropzone-sub">Click to browse · PDF only</div>
+              <div class="spm-dropzone-sub">Click to browse · PDF only · Saved as Draft</div>
               <input id="spmFileSingle" type="file" accept=".pdf,application/pdf" class="spm-drop-input"
-                onchange="window._SPM._onFileInput(this.files)" style="opacity:0;position:absolute;inset:0;cursor:pointer"/>
+                onchange="window._SPM._onFileInput(this.files)"/>
             </div>
           </div>
 
@@ -1073,9 +1226,9 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
             <div class="spm-dropzone" onclick="document.getElementById('spmFileMultiple').click()">
               <div class="spm-dropzone-icon">📚</div>
               <div class="spm-dropzone-label">Select multiple PDFs</div>
-              <div class="spm-dropzone-sub">Hold Ctrl/Cmd to pick several files</div>
+              <div class="spm-dropzone-sub">Hold Ctrl/Cmd to select several · All saved as Draft</div>
               <input id="spmFileMultiple" type="file" accept=".pdf,application/pdf" multiple class="spm-drop-input"
-                onchange="window._SPM._onFileInput(this.files)" style="opacity:0;position:absolute;inset:0;cursor:pointer"/>
+                onchange="window._SPM._onFileInput(this.files)"/>
             </div>
           </div>
 
@@ -1084,9 +1237,9 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
             <div class="spm-dropzone" onclick="document.getElementById('spmFileBulk').click()">
               <div class="spm-dropzone-icon">📦</div>
               <div class="spm-dropzone-label">Bulk Upload — 100+ PDFs at once</div>
-              <div class="spm-dropzone-sub">Select as many as needed · All saved as Draft</div>
+              <div class="spm-dropzone-sub">Select as many as needed · All saved as Draft · Processed in queue</div>
               <input id="spmFileBulk" type="file" accept=".pdf,application/pdf" multiple class="spm-drop-input"
-                onchange="window._SPM._onFileInput(this.files)" style="opacity:0;position:absolute;inset:0;cursor:pointer"/>
+                onchange="window._SPM._onFileInput(this.files)"/>
             </div>
           </div>
 
@@ -1097,29 +1250,33 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
               ondragleave="window._SPM._onDragLeave(event)"
               ondrop="window._SPM._onDrop(event)">
               <div class="spm-dropzone-icon">🎯</div>
-              <div class="spm-dropzone-label">Drag & Drop PDFs here</div>
-              <div class="spm-dropzone-sub">Drop any number of PDF files · All saved as Draft</div>
+              <div class="spm-dropzone-label">Drag &amp; Drop PDFs here</div>
+              <div class="spm-dropzone-sub">Drop any number of PDF files · All saved as Draft automatically</div>
             </div>
           </div>
 
           <div id="spmUploadList" class="spm-upload-list"></div>
         </div>
 
-        <!-- STATS -->
+        <!-- ── STATS BAR ── -->
         <div class="spm-stats">
-          <div class="spm-stat"><div class="spm-stat-val" id="spmStatDraft">–</div><div class="spm-stat-label">In Queue</div></div>
+          <div class="spm-stat"><div class="spm-stat-val" id="spmStatDraft">–</div><div class="spm-stat-label">Draft</div></div>
           <div class="spm-stat"><div class="spm-stat-val" id="spmStatPending">–</div><div class="spm-stat-label">Pending</div></div>
           <div class="spm-stat"><div class="spm-stat-val" id="spmStatApproved">–</div><div class="spm-stat-label">Approved</div></div>
           <div class="spm-stat"><div class="spm-stat-val" id="spmStatRejected">–</div><div class="spm-stat-label">Rejected</div></div>
+          <div class="spm-stat"><div class="spm-stat-val" id="spmStatArchived">–</div><div class="spm-stat-label">Archived</div></div>
+          <div class="spm-stat"><div class="spm-stat-val" id="spmStatTotal">–</div><div class="spm-stat-label">Total</div></div>
           <div class="spm-stat"><div class="spm-stat-val" id="spmStatSelected">0</div><div class="spm-stat-label">Selected</div></div>
         </div>
 
-        <!-- TOOLBAR -->
+        <!-- ── TOOLBAR ── -->
         <div class="spm-toolbar">
           <div class="spm-toolbar-left">
-            <input class="spm-search" id="spmSearch" placeholder="Search drafts…" oninput="window._SPM._search(this.value)"/>
-            <select class="spm-filter-select" id="spmStatusFilter" onchange="window._SPM._filter()">
-              <option value="">All Draft Statuses</option>
+            <input class="spm-search" id="spmSearch" placeholder="Search drafts…"
+              oninput="window._SPM._search(this.value)"/>
+            <select class="spm-filter-select" id="spmStatusFilter"
+              onchange="window._SPM._filter()">
+              <option value="">All Statuses</option>
               <option value="draft">Draft</option>
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
@@ -1128,24 +1285,34 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
             </select>
           </div>
           <div class="spm-toolbar-right">
-            <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._selectAll()">☑ All</button>
-            <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._deselectAll()">☐ None</button>
+            <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._selectAll()">☑ Select All</button>
+            <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._deselectAll()">☐ Deselect</button>
             <span class="spm-sel-count" id="spmSelCount">0 selected</span>
-            <button class="spm-btn spm-btn-success spm-btn-sm" id="spmBulkPublishBtn" onclick="window._SPM._bulkPublish()" disabled>🚀 Publish</button>
-            <button class="spm-btn spm-btn-ghost spm-btn-sm" id="spmBulkApproveBtn" onclick="window._SPM._bulkApprove()" disabled>✅ Approve</button>
-            <button class="spm-btn spm-btn-ghost spm-btn-sm" id="spmBulkRejectBtn" onclick="window._SPM._bulkReject()" disabled>✗ Reject</button>
-            <button class="spm-btn spm-btn-ghost spm-btn-sm" id="spmBulkArchiveBtn" onclick="window._SPM._bulkArchive()" disabled>🗄 Archive</button>
-            <button class="spm-btn spm-btn-danger spm-btn-sm" id="spmBulkDeleteBtn" onclick="window._SPM._bulkDelete()" disabled>🗑 Delete</button>
+            <button class="spm-btn spm-btn-success spm-btn-sm" id="spmBulkPublishBtn"
+              onclick="window._SPM._bulkPublish()" disabled>🚀 Bulk Publish</button>
+            <button class="spm-btn spm-btn-ghost spm-btn-sm" id="spmBulkApproveBtn"
+              onclick="window._SPM._bulkApprove()" disabled>✅ Approve</button>
+            <button class="spm-btn spm-btn-ghost spm-btn-sm" id="spmBulkRejectBtn"
+              onclick="window._SPM._bulkReject()" disabled>✗ Reject</button>
+            <button class="spm-btn spm-btn-ghost spm-btn-sm" id="spmBulkArchiveBtn"
+              onclick="window._SPM._bulkArchive()" disabled>🗄 Archive</button>
+            <button class="spm-btn spm-btn-danger spm-btn-sm" id="spmBulkDeleteBtn"
+              onclick="window._SPM._bulkDelete()" disabled>🗑 Delete</button>
           </div>
         </div>
 
-        <!-- TABLE -->
+        <!-- ── DRAFT QUEUE TABLE ── -->
+        <div class="spm-queue-notice">
+          <span>📋</span>
+          <span>Showing <strong>Draft Queue only</strong> — Published PDFs are automatically moved to the Library and never shown here.</span>
+        </div>
         <div class="spm-table-card">
           <div class="spm-table-wrap">
             <table class="spm-table" id="spmTable">
               <thead>
                 <tr>
-                  <th><input type="checkbox" class="spm-cb" id="spmSelectAllCb" onchange="window._SPM._toggleAll(this.checked)"/></th>
+                  <th><input type="checkbox" class="spm-cb" id="spmSelectAllCb"
+                    onchange="window._SPM._toggleAll(this.checked)"/></th>
                   <th>#</th>
                   <th>Cover</th>
                   <th>Title</th>
@@ -1181,16 +1348,17 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   }
 
   function spmBuildFiltered() {
-    const query        = document.getElementById('spmSearch')?.value || '';
+    const query        = (document.getElementById('spmSearch')?.value || '').toLowerCase();
     const statusFilter = document.getElementById('spmStatusFilter')?.value || '';
 
     let filtered = SPM.pdfs;
+
     if (query) {
-      const q = query.toLowerCase();
       filtered = filtered.filter(p =>
-        (p.title||'').toLowerCase().includes(q) ||
-        (p.category||'').toLowerCase().includes(q) ||
-        (p.author||'').toLowerCase().includes(q)
+        (p.title    || '').toLowerCase().includes(query) ||
+        (p.category || '').toLowerCase().includes(query) ||
+        (p.author   || '').toLowerCase().includes(query) ||
+        (p.badge    || '').toLowerCase().includes(query)
       );
     }
     if (statusFilter) {
@@ -1208,7 +1376,9 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
 
     if (!SPM.filtered.length) {
       tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text2,#94a3b8)">
-        ${SPM.pdfs.length === 0 ? '📭 No draft PDFs. Upload some above.' : '🔍 No PDFs match your filter.'}
+        ${SPM.pdfs.length === 0
+          ? '📭 No draft PDFs in queue. Upload PDFs above to get started.'
+          : '🔍 No PDFs match your search/filter.'}
       </td></tr>`;
       return;
     }
@@ -1227,19 +1397,26 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     el.innerHTML = `
       <span>Showing ${start}–${end} of ${SPM.filtered.length} PDFs</span>
       <div class="spm-pagination-btns">
-        <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._prevPage()" ${SPM.page===0?'disabled':''}>← Prev</button>
-        <span style="padding:0 8px;font-weight:700">${SPM.page+1} / ${totalPages}</span>
-        <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._nextPage()" ${SPM.page>=totalPages-1?'disabled':''}>Next →</button>
+        <button class="spm-btn spm-btn-ghost spm-btn-sm"
+          onclick="window._SPM._prevPage()" ${SPM.page === 0 ? 'disabled' : ''}>← Prev</button>
+        <span style="padding:0 8px;font-weight:700">${SPM.page + 1} / ${totalPages}</span>
+        <button class="spm-btn spm-btn-ghost spm-btn-sm"
+          onclick="window._SPM._nextPage()" ${SPM.page >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
       </div>`;
   }
 
   function spmUpdateStats() {
     const pdfs = SPM.pdfs;
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
     set('spmStatDraft',    pdfs.filter(p => !p.status || p.status === 'draft').length);
     set('spmStatPending',  pdfs.filter(p => p.status === 'pending').length);
     set('spmStatApproved', pdfs.filter(p => p.status === 'approved').length);
     set('spmStatRejected', pdfs.filter(p => p.status === 'rejected').length);
+    set('spmStatArchived', pdfs.filter(p => p.status === 'archived').length);
+    set('spmStatTotal',    pdfs.length);
     set('spmStatSelected', SPM.selected.size);
   }
 
@@ -1253,30 +1430,47 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     const valCell = cached
       ? (cached.ok
           ? `<span class="spm-val-ok">✓ Valid</span>`
-          : `<span class="spm-val-fail" onclick="window._SPM._valDetail('${id}')">✗ ${cached.errors.filter(e=>e.fail).length} error(s)</span>`)
-      : `<span class="spm-val-pending" onclick="window._SPM._validateOne('${id}')" style="cursor:pointer;text-decoration:underline dotted">Run →</span>`;
+          : `<span class="spm-val-fail" onclick="window._SPM._valDetail('${id}')">
+               ✗ ${cached.errors.filter(e => e.fail).length} error(s)
+             </span>`)
+      : `<span class="spm-val-pending"
+           onclick="window._SPM._validateOne('${id}')"
+           style="cursor:pointer;text-decoration:underline dotted">
+           Run Check →
+         </span>`;
 
     const coverHTML = (p.cover_url || p.cover_image)
-      ? `<img src="${_safeEsc(p.cover_url||p.cover_image)}" class="spm-cover" loading="lazy"/>`
+      ? `<img src="${_safeEsc(p.cover_url || p.cover_image)}"
+              class="spm-cover" loading="lazy"
+              onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="spm-cover-ph" style="display:none">📄</div>`
       : `<div class="spm-cover-ph">📄</div>`;
 
-    return `<tr id="spmRow_${id}" class="${selected?'spm-row-selected':''}">
-      <td><input type="checkbox" class="spm-cb" ${selected?'checked':''} onchange="window._SPM._toggleRow('${id}',this.checked)"/></td>
-      <td style="color:var(--text2,#94a3b8);font-size:.73rem">${i+1}</td>
+    return `<tr id="spmRow_${id}" class="${selected ? 'spm-row-selected' : ''}">
+      <td><input type="checkbox" class="spm-cb" ${selected ? 'checked' : ''}
+        onchange="window._SPM._toggleRow('${id}',this.checked)"/></td>
+      <td style="color:var(--text2,#94a3b8);font-size:.73rem">${i + 1}</td>
       <td>${coverHTML}</td>
       <td>
-        <div style="font-size:.81rem;font-weight:600;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_safeEsc(p.title||'—')}</div>
-        <div style="font-size:.68rem;color:var(--text2,#94a3b8)">${_safeEsc(p.author||'')}</div>
+        <div style="font-size:.81rem;font-weight:600;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
+          title="${_safeEsc(p.title || '')}">${_safeEsc(p.title || '—')}</div>
+        <div style="font-size:.68rem;color:var(--text2,#94a3b8)">${_safeEsc(p.author || '')}</div>
       </td>
-      <td><span style="font-size:.73rem;background:rgba(61,142,248,.1);border-radius:6px;padding:2px 8px">${_safeEsc(p.category||'—')}</span></td>
-      <td style="font-weight:700;color:var(--accent,#3d8ef8)">${(p.free||price===0)?'Free':'₹'+price}</td>
+      <td><span style="font-size:.73rem;background:rgba(61,142,248,.1);border-radius:6px;padding:2px 8px">
+        ${_safeEsc(p.category || '—')}
+      </span></td>
+      <td style="font-weight:700;color:var(--accent,#3d8ef8)">
+        ${(p.free || price === 0) ? 'Free' : '₹' + price}
+      </td>
       <td><span class="spm-status-badge spm-badge-${status}">${status}</span></td>
       <td>${valCell}</td>
       <td>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
-          <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._validateOne('${id}')" title="Validate">🔍</button>
-          <button class="spm-btn spm-btn-ghost spm-btn-sm" onclick="window._SPM._aiSuggest('${id}')" title="AI Suggest">🤖</button>
-          <button class="spm-btn spm-btn-success spm-btn-sm" onclick="window._SPM._publishOne('${id}')" title="Publish">🚀</button>
+          <button class="spm-btn spm-btn-ghost spm-btn-sm"
+            onclick="window._SPM._validateOne('${id}')" title="Validate">🔍</button>
+          <button class="spm-btn spm-btn-ghost spm-btn-sm"
+            onclick="window._SPM._aiSuggest('${id}')" title="AI Suggestions">🤖</button>
+          <button class="spm-btn spm-btn-success spm-btn-sm"
+            onclick="window._SPM._publishOne('${id}')" title="Publish">🚀</button>
         </div>
       </td>
     </tr>`;
@@ -1286,26 +1480,31 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     const n = SPM.selected.size;
     const el = document.getElementById('spmSelCount');
     if (el) el.textContent = `${n} selected`;
-    const setBtn = (id, val) => { const b = document.getElementById(id); if (b) b.disabled = !val; };
+
+    const setBtn = (id, enabled) => {
+      const b = document.getElementById(id);
+      if (b) b.disabled = !enabled;
+    };
     setBtn('spmBulkPublishBtn', n > 0);
     setBtn('spmBulkApproveBtn', n > 0);
-    setBtn('spmBulkRejectBtn', n > 0);
+    setBtn('spmBulkRejectBtn',  n > 0);
     setBtn('spmBulkArchiveBtn', n > 0);
-    setBtn('spmBulkDeleteBtn', n > 0);
+    setBtn('spmBulkDeleteBtn',  n > 0);
 
     const cb = document.getElementById('spmSelectAllCb');
     if (cb) {
       const vis = spmVisibleIds();
-      cb.checked = vis.length > 0 && vis.every(id => SPM.selected.has(id));
+      cb.checked       = vis.length > 0 && vis.every(id => SPM.selected.has(id));
       cb.indeterminate = vis.some(id => SPM.selected.has(id)) && !cb.checked;
     }
+
     const statEl = document.getElementById('spmStatSelected');
     if (statEl) statEl.textContent = n;
   }
 
   function spmVisibleIds() {
     return Array.from(document.querySelectorAll('#spmTableBody tr[id^="spmRow_"]'))
-      .map(tr => tr.id.replace('spmRow_',''));
+      .map(tr => tr.id.replace('spmRow_', ''));
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -1313,20 +1512,35 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   ───────────────────────────────────────────────────────────────── */
 
   Object.assign(SPM, {
-    _closeModal:    spmCloseModal,
+    _closeModal: spmCloseModal,
 
     _refresh: async () => {
       SPM.validationCache = {};
-      SPM.uploadQueue = [];
+      SPM.uploadQueue     = [];
+      SPM.aiCache         = {};
       await spmLoadPDFs();
       spmRender();
-      spmToast('Refreshed', 'info');
+      spmToast('Draft queue refreshed', 'info');
     },
 
-    _search: (q) => { SPM.page = 0; spmBuildFiltered(); spmRenderPage(); spmRenderPagination(); spmUpdateToolbar(); },
-    _filter: ()  => { SPM.page = 0; spmBuildFiltered(); spmRenderPage(); spmRenderPagination(); spmUpdateToolbar(); },
+    _search: (q) => {
+      SPM.page = 0;
+      spmBuildFiltered();
+      spmRenderPage();
+      spmRenderPagination();
+      spmUpdateToolbar();
+    },
+    _filter: () => {
+      SPM.page = 0;
+      spmBuildFiltered();
+      spmRenderPage();
+      spmRenderPagination();
+      spmUpdateToolbar();
+    },
 
-    _prevPage: () => { if (SPM.page > 0) { SPM.page--; spmRenderPage(); spmRenderPagination(); } },
+    _prevPage: () => {
+      if (SPM.page > 0) { SPM.page--; spmRenderPage(); spmRenderPagination(); }
+    },
     _nextPage: () => {
       const totalPages = Math.ceil(SPM.filtered.length / PAGE_SIZE);
       if (SPM.page < totalPages - 1) { SPM.page++; spmRenderPage(); spmRenderPagination(); }
@@ -1336,50 +1550,78 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       SPM.filtered.forEach(p => SPM.selected.add(String(p.id)));
       spmRenderPage();
       spmUpdateToolbar();
+      spmUpdateStats();
     },
-    _deselectAll: () => { SPM.selected.clear(); spmRenderPage(); spmUpdateToolbar(); },
-
-    _toggleAll: (checked) => {
-      spmVisibleIds().forEach(id => { if (checked) SPM.selected.add(id); else SPM.selected.delete(id); });
+    _deselectAll: () => {
+      SPM.selected.clear();
       spmRenderPage();
       spmUpdateToolbar();
+      spmUpdateStats();
+    },
+
+    _toggleAll: (checked) => {
+      spmVisibleIds().forEach(id => {
+        if (checked) SPM.selected.add(id);
+        else SPM.selected.delete(id);
+      });
+      spmRenderPage();
+      spmUpdateToolbar();
+      spmUpdateStats();
     },
     _toggleRow: (id, checked) => {
-      if (checked) SPM.selected.add(id); else SPM.selected.delete(id);
+      if (checked) SPM.selected.add(id);
+      else SPM.selected.delete(id);
       const row = document.getElementById(`spmRow_${id}`);
       if (row) row.classList.toggle('spm-row-selected', checked);
       spmUpdateToolbar();
+      spmUpdateStats();
     },
 
     _validateOne: async (id) => {
       spmInvalidateCache(id);
       const pdf = SPM.pdfs.find(p => String(p.id) === id);
       if (!pdf) return;
-      await spmValidate(pdf, SPM.pdfs);
+      // Show running indicator
       const cell = document.querySelector(`#spmRow_${id} td:nth-child(8)`);
+      if (cell) cell.innerHTML = `<span class="spm-val-pending"><span class="spm-spinner"></span></span>`;
+
+      await spmValidate(pdf, SPM.pdfs);
+
       if (cell) {
         const cached = SPM.validationCache[id];
         cell.innerHTML = cached
           ? (cached.ok
-            ? `<span class="spm-val-ok">✓ Valid</span>`
-            : `<span class="spm-val-fail" onclick="window._SPM._valDetail('${id}')">✗ ${cached.errors.filter(e=>e.fail).length} error(s)</span>`)
+              ? `<span class="spm-val-ok">✓ Valid</span>`
+              : `<span class="spm-val-fail" onclick="window._SPM._valDetail('${id}')">
+                   ✗ ${cached.errors.filter(e => e.fail).length} error(s)
+                 </span>`)
           : `<span class="spm-val-pending">—</span>`;
       }
     },
 
-    _valDetail:    (id) => spmShowValidationDetail(id),
-    _aiSuggest:    (id) => spmShowAISuggest(id),
+    _valDetail:  (id) => spmShowValidationDetail(id),
+    _aiSuggest:  (id) => spmShowAISuggest(id),
 
     _publishOne: async (id) => {
       spmCloseModal();
       await spmStartPublish([id]);
     },
 
-    _bulkPublish:  () => spmStartPublish([...SPM.selected]),
-    _bulkApprove:  async () => { await spmBulkUpdateStatus([...SPM.selected], 'approved', 'approved'); spmRender(); },
-    _bulkReject:   async () => { await spmBulkUpdateStatus([...SPM.selected], 'rejected', 'rejected'); spmRender(); },
-    _bulkArchive:  async () => { await spmBulkUpdateStatus([...SPM.selected], 'archived', 'archived'); spmRender(); },
-    _bulkDelete:   () => spmBulkDelete([...SPM.selected]),
+    _bulkPublish: () => spmStartPublish([...SPM.selected]),
+
+    _bulkApprove: async () => {
+      const n = await spmBulkUpdateStatus([...SPM.selected], 'approved', 'approved');
+      if (n > 0) { SPM.selected.clear(); spmRender(); }
+    },
+    _bulkReject: async () => {
+      const n = await spmBulkUpdateStatus([...SPM.selected], 'rejected', 'rejected');
+      if (n > 0) { SPM.selected.clear(); spmRender(); }
+    },
+    _bulkArchive: async () => {
+      const n = await spmBulkUpdateStatus([...SPM.selected], 'archived', 'archived');
+      if (n > 0) { SPM.selected.clear(); spmRender(); }
+    },
+    _bulkDelete: () => spmBulkDelete([...SPM.selected]),
 
     _confirmPublish: (readyIds) => {
       spmCloseModal();
@@ -1388,12 +1630,12 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
 
     _applyAI: async (id) => {
       const edits = {
-        badge:            document.getElementById('spmAiBadge')?.value    || '',
-        tags:             document.getElementById('spmAiTags')?.value     || '',
-        seo_title:        document.getElementById('spmAiSeoTitle')?.value || '',
-        meta_description: document.getElementById('spmAiMetaDesc')?.value || '',
+        badge:            document.getElementById('spmAiBadge')?.value      || '',
+        tags:             document.getElementById('spmAiTags')?.value        || '',
+        seo_title:        document.getElementById('spmAiSeoTitle')?.value   || '',
+        meta_description: document.getElementById('spmAiMetaDesc')?.value   || '',
         selling_price:    parseFloat(document.getElementById('spmAiPrice')?.value || 0),
-        slug:             document.getElementById('spmAiSlug')?.value     || '',
+        slug:             document.getElementById('spmAiSlug')?.value        || '',
       };
       const catVal = document.getElementById('spmAiCat')?.value || '';
       if (catVal) {
@@ -1456,18 +1698,21 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     SECTION 15 — INJECT SIDEBAR NAV BUTTON
+     SECTION 15 — INJECT SIDEBAR NAV BUTTON (idempotent)
   ───────────────────────────────────────────────────────────────── */
 
   function spmInjectNavButton() {
+    // Already in HTML — just ensure it's wired up
     if (document.querySelector(`.admin-nav-item[data-atab="${SPM_TAB}"]`)) return;
-    const pdfsBtn = document.querySelector('.admin-nav-item[data-atab="pdfs"]');
+    // Fallback injection if it somehow wasn't in HTML
+    const pdfsBtn = document.querySelector('.admin-nav-item[data-atab="add-pdf"]');
     if (!pdfsBtn) return;
     const btn = document.createElement('button');
     btn.className = 'admin-nav-item';
     btn.dataset.atab = SPM_TAB;
     btn.setAttribute('onclick', `switchAdminTab('${SPM_TAB}')`);
-    btn.style.cssText = 'background:linear-gradient(90deg,rgba(61,142,248,.14),rgba(16,217,142,.07));border-left:2px solid #3d8ef8';
+    btn.style.cssText =
+      'background:linear-gradient(90deg,rgba(61,142,248,.14),rgba(16,217,142,.07));border-left:2px solid #3d8ef8';
     btn.innerHTML = `<span style="font-size:.85rem">⚡</span> Smart Publish`;
     pdfsBtn.insertAdjacentElement('afterend', btn);
   }
@@ -1479,11 +1724,11 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
   function _safeEsc(str) {
     if (!str) return '';
     return String(str)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#x27;');
+      .replace(/&/g,  '&amp;')
+      .replace(/</g,  '&lt;')
+      .replace(/>/g,  '&gt;')
+      .replace(/"/g,  '&quot;')
+      .replace(/'/g,  '&#x27;');
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -1495,7 +1740,7 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
     spmHookSwitchAdminTab();
     spmInjectNavButton();
 
-    // Re-inject nav when admin panel opens
+    // Re-inject nav when admin panel opens (via navigate)
     const origNavigate = global.navigate;
     if (typeof origNavigate === 'function' && !global._spmNavigatePatched) {
       global._spmNavigatePatched = true;
@@ -1505,17 +1750,20 @@ Return ONLY valid JSON (no markdown, no backticks, no explanation):
       };
     }
 
+    // MutationObserver to re-inject if admin panel visibility changes
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) {
       const obs = new MutationObserver(spmInjectNavButton);
-      obs.observe(adminPanel, { attributes: true, attributeFilter: ['style','class'] });
+      obs.observe(adminPanel, { attributes: true, attributeFilter: ['style', 'class'] });
     }
 
     console.log(`[SmartPublishManager] ✅ v${SPM_VERSION} loaded`);
-    console.log('[SmartPublishManager] Shows: Draft/Pending only · Published PDFs hidden');
-    console.log('[SmartPublishManager] Upload: Single / Multiple / Bulk / Drag-Drop');
-    console.log('[SmartPublishManager] Validation: 14-point pre-publish checks');
+    console.log('[SmartPublishManager] Draft Queue: shows only non-published PDFs');
+    console.log('[SmartPublishManager] After Publish: auto-moves to Published Library');
+    console.log('[SmartPublishManager] Upload: Single / Multiple / Bulk (100+) / Drag-Drop');
+    console.log('[SmartPublishManager] Validation: 15-point pre-publish checks');
     console.log('[SmartPublishManager] AI: Category / Badge / Tags / SEO / Price / Slug');
+    console.log('[SmartPublishManager] Bulk: Publish / Approve / Reject / Archive / Delete');
   }
 
   if (document.readyState === 'loading') {

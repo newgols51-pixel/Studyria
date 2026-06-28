@@ -1354,6 +1354,48 @@
     } catch (_) { return 0; }
   };
 
+
+  // ── SPM PUBLISH HOOK ─────────────────────────────────────────────
+  // Called by smart-publish-manager.js after each successful publish.
+  // Triggers subscriber notifications and refreshes the live PDFS array.
+  window.spmOnPublishSuccess = async function spmOnPublishSuccess(publishedRows) {
+    if (!publishedRows || !publishedRows.length) return;
+    const client = sb();
+    if (!client) return;
+
+    // Refresh the public PDFS array to include newly published PDFs
+    try {
+      const ids = publishedRows.map(r => r.id);
+      const { data: freshRows } = await client
+        .from('pdfs')
+        .select('*')
+        .in('id', ids)
+        .eq('status', 'published');
+      if (freshRows?.length) {
+        if (Array.isArray(window.PDFS)) {
+          freshRows.forEach(row => {
+            const idx = window.PDFS.findIndex(p => String(p.id) === String(row.id));
+            if (idx >= 0) Object.assign(window.PDFS[idx], row);
+            else window.PDFS.push(row);
+          });
+        }
+      }
+    } catch(e) { console.warn('spmOnPublishSuccess: PDFS refresh failed', e); }
+
+    // Notify subscribers for each newly published PDF (non-blocking)
+    for (const row of publishedRows) {
+      try {
+        await window.notifyPdfSubscribers({
+          pdfId:    row.id,
+          title:    row.title,
+          category: row.category,
+          coverUrl: row.cover_url || row.cover_image,
+          pdfUrl:   row.pdf_url  || row.file_url,
+        });
+      } catch(e) { console.warn('spmOnPublishSuccess: notify failed for', row.id, e); }
+    }
+  };
+
   // ── BOOT ─────────────────────────────────────────────────────────
   // Phase 1 — restore session before DOMContentLoaded
   window._supabaseSessionReady = (async function _restoreSession() {

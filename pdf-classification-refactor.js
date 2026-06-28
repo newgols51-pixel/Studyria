@@ -196,7 +196,7 @@ async function adminSavePDF() {
       seo_keywords:      seoKeywords     || null,
       cover_url:         coverUrl,
       pdf_url:           pdfUrl,
-      status:            'published',
+      status:            (window._spmSaveAsDraft ? 'draft' : 'published'),
       ...(isEditing ? {
         download_count: dlCount,
       } : {})
@@ -213,7 +213,8 @@ async function adminSavePDF() {
       const { error: insertErr } = await window.supabaseClient.from('pdfs').insert(payload);
       if (insertErr) throw new Error(`Database insert failed: ${insertErr.message}`);
       logAdminActivity(`Published PDF: "${title}" in ${category}`, 'green');
-      showToast(`✅ "${title}" published instantly!`, 'success');
+      const _savedMsg = window._spmSaveAsDraft ? `✅ "${title}" saved as Draft!` : `✅ "${title}" published instantly!`;
+      showToast(_savedMsg, 'success');
     }
 
     window.adminEditingPDFId    = null;
