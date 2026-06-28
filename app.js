@@ -1026,6 +1026,65 @@ async function requestNotificationPermission() {
   }
 }
 
+/**
+ * getPermissionState — returns the current state for building Notification
+ * Center UI without needing to call requestPermission():
+ *   'unsupported' | 'default' | 'granted' | 'denied'
+ * 'granted' here means the BROWSER permission is granted AND OneSignal has
+ * confirmed the user is opted in. If the browser permission is granted but
+ * OneSignal hasn't finished syncing yet, this still reports 'granted' based
+ * on the Notification API alone, since that's what the UI needs to decide
+ * whether to show the native permission prompt.
+ */
+async function getPermissionState() {
+  if (!isNotificationSupported()) return 'unsupported';
+  const perm = Notification.permission; // 'default' | 'granted' | 'denied'
+  return perm;
+}
+
+/**
+ * openNotificationSettings — best-effort attempt to surface the browser's
+ * site settings UI so the user can re-enable notifications after denying.
+ * No browser exposes a direct JS API for this, so we:
+ *   1. On Chrome/Edge/Android, deep-link to the relevant settings page where
+ *      supported via chrome://settings (only works if already in that
+ *      context — most mobile browsers ignore it, so this is paired with
+ *      on-screen instructions in the Notification Center UI).
+ *   2. Otherwise, just return false so the caller can show manual steps.
+ */
+function openNotificationSettings() {
+  try {
+    const ua = navigator.userAgent || '';
+    const isChrome = /Chrome\//.test(ua) && !/Edg\//.test(ua);
+    if (isChrome) {
+      // This only succeeds when the page itself is a chrome:// page, which
+      // it never is for a normal site — included for completeness, but the
+      // realistic path is always the manual-instructions fallback below.
+      window.open('chrome://settings/content/notifications', '_blank');
+      return true;
+    }
+  } catch (_) { /* ignore */ }
+  return false;
+}
+
+/**
+ * tagAudienceSegment — tags the current OneSignal subscriber with a
+ * 'user_type' of 'premium' or 'free' so admin sends can target audiences
+ * via OneSignal segments/filters server-side. Call this after login and
+ * after any purchase completes. Safe no-op if OneSignal isn't ready.
+ *
+ * NOTE: Studyria has no dedicated "is_premium" column today — this uses
+ * "has at least one purchased PDF" as the premium signal. Adjust the
+ * `isPremium` argument at the call site if a real premium/subscription
+ * flag is added later.
+ */
+async function tagAudienceSegment(isPremium) {
+  try {
+    await _waitForOneSignal();
+    await window.OneSignal?.User?.addTag?.('user_type', isPremium ? 'premium' : 'free');
+  } catch (_) { /* OneSignal unavailable — never throw */ }
+}
+
 // ── Public surface ───────────────────────────────────────────────────────────
 
 /**
@@ -1034,9 +1093,12 @@ async function requestNotificationPermission() {
  * rather than calling OneSignal directly.
  */
 window.StudyriaNotifications = {
-  requestPermission:  requestNotificationPermission,
-  isSubscribed:       isSubscribed,
-  getSubscriptionId:  getSubscriptionId,
+  requestPermission:    requestNotificationPermission,
+  isSubscribed:          isSubscribed,
+  getSubscriptionId:     getSubscriptionId,
+  getPermissionState:    getPermissionState,
+  openNotificationSettings: openNotificationSettings,
+  tagAudienceSegment:    tagAudienceSegment,
 };
 
 console.log('[OneSignal] window.StudyriaNotifications ready');

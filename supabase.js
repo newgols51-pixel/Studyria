@@ -203,7 +203,65 @@
 //     AND raw_user_meta_data->>'role' = 'admin'));
 // CREATE INDEX IF NOT EXISTS idx_testimonials_active      ON public.testimonials(active);
 // CREATE INDEX IF NOT EXISTS idx_testimonials_sort_order  ON public.testimonials(sort_order);
-// ─────────────────────────────────────────────────────────────────
+//
+// -- 6. Push Notifications (OneSignal) — history + scheduling
+// CREATE TABLE IF NOT EXISTS public.push_notifications (
+//   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   title         text NOT NULL,
+//   message       text NOT NULL,
+//   image_url     text,
+//   click_url     text,
+//   audience      text NOT NULL DEFAULT 'all' CHECK (audience IN ('all','premium','free')),
+//   status        text NOT NULL DEFAULT 'pending'
+//                   CHECK (status IN ('pending','scheduled','sent','cancelled','failed','test')),
+//   scheduled_at  timestamptz,              -- null = send now
+//   sent_at       timestamptz,
+//   onesignal_id  text,                     -- OneSignal notification id (for delivery lookup)
+//   recipients    integer DEFAULT 0,
+//   delivered     integer DEFAULT 0,
+//   clicked       integer DEFAULT 0,
+//   created_by    text,
+//   created_at    timestamptz NOT NULL DEFAULT now()
+// );
+// ALTER TABLE public.push_notifications ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Push notif: admin all" ON public.push_notifications
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_push_notif_status       ON public.push_notifications(status);
+// CREATE INDEX IF NOT EXISTS idx_push_notif_scheduled_at ON public.push_notifications(scheduled_at);
+// CREATE INDEX IF NOT EXISTS idx_push_notif_created_at   ON public.push_notifications(created_at DESC);
+//
+// -- 7. WhatsApp Community broadcast log
+// CREATE TABLE IF NOT EXISTS public.whatsapp_broadcasts (
+//   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   invite_link   text,
+//   title         text NOT NULL,
+//   message       text NOT NULL,
+//   image_url     text,
+//   status        text NOT NULL DEFAULT 'sent' CHECK (status IN ('sent','test','failed')),
+//   created_by    text,
+//   created_at    timestamptz NOT NULL DEFAULT now()
+// );
+// ALTER TABLE public.whatsapp_broadcasts ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "WA broadcasts: admin all" ON public.whatsapp_broadcasts
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_wa_broadcasts_created_at ON public.whatsapp_broadcasts(created_at DESC);
+//
+// -- NOTE on sending: this app is client-only (no custom backend), so actual
+// -- OneSignal REST sends and WhatsApp dispatch happen via the same Pipedream
+// -- webhook already used for email/WhatsApp (see stgPipedream / webhookUrl
+// -- below). Configure the Pipedream workflow to:
+// --   1. Receive { event:'push_send', title, message, image_url, click_url,
+// --      audience, onesignal_app_id } and call OneSignal's REST API
+// --      (POST https://onesignal.com/api/v1/notifications) using your
+// --      OneSignal REST API key — NEVER put that key in this client code.
+// --   2. Receive { event:'wa_broadcast', invite_link, title, message,
+// --      image_url } and forward to your WhatsApp Business API / Cloud API
+// --      integration of choice.
+// -- ─────────────────────────────────────────────────────────────────
 
 (function () {
   'use strict';
@@ -1051,6 +1109,233 @@
     }
 
     return { emailSent, waSent, errors };
+  };
+
+  // ══════════════════════════════════════════════════════════════════
+  // 🔔 PUSH NOTIFICATIONS (OneSignal) — admin send / schedule / history
+  // ══════════════════════════════════════════════════════════════════
+  //
+  // This app has no custom server, so the actual OneSignal REST call is
+  // delegated to the same Pipedream webhook already used for email/WA
+  // (see _pushWebhookUrl below). These functions only manage Supabase
+  // history rows + trigger the webhook; they never touch a REST API key.
+
+  function _pushWebhookUrl() {
+    return document.getElementById('stgPipedream')?.value?.trim()
+      || 'https://eod16l3iacfjwl6.m.pipedream.net';
+  }
+
+  /**
+   * sendPushNotification({ title, message, imageUrl, clickUrl, audience, scheduleAt, isTest })
+   * - isTest=true   → fires only to the admin's own device, never logged as a real send.
+   * - scheduleAt    → ISO datetime string; if provided and in the future, stores as 'scheduled'
+   *                    instead of dispatching immediately.
+   * Returns the created/updated push_notifications row, or null on failure.
+   */
+  window.sendPushNotification = async function sendPushNotification({
+    title, message, imageUrl = null, clickUrl = null, audience = 'all', scheduleAt = null, isTest = false,
+  } = {}) {
+    const client = window.supabaseClient;
+    if (!client) { console.warn('sendPushNotification: no supabaseClient'); return null; }
+    if (!title || !message) { console.warn('sendPushNotification: title and message are required'); return null; }
+
+    const isFuture = scheduleAt && new Date(scheduleAt).getTime() > Date.now();
+    const status = isTest ? 'test' : (isFuture ? 'scheduled' : 'pending');
+
+    let row = null;
+    try {
+      const { data, error } = await client
+        .from('push_notifications')
+        .insert({
+          title, message, image_url: imageUrl, click_url: clickUrl,
+          audience, status,
+          scheduled_at: isFuture ? scheduleAt : null,
+          created_by: window.currentUser?.email || window.adminSession?.email || 'admin',
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      row = data;
+    } catch (e) {
+      console.error('sendPushNotification: insert failed', e);
+      return null;
+    }
+
+    // If scheduled for later, stop here — a scheduled job / cron on the
+    // Pipedream side (or a periodic admin check) should pick this up at
+    // scheduled_at and call dispatchPushNotification(row.id).
+    if (isFuture && !isTest) return row;
+
+    return window.dispatchPushNotification(row.id, isTest);
+  };
+
+  /**
+   * dispatchPushNotification(id, isTest)
+   * Actually fires the webhook for a given push_notifications row id.
+   * Marks the row 'sent' / 'failed' based on the webhook response.
+   */
+  window.dispatchPushNotification = async function dispatchPushNotification(id, isTest = false) {
+    const client = window.supabaseClient;
+    if (!client) return null;
+
+    const { data: row, error: fetchErr } = await client
+      .from('push_notifications').select('*').eq('id', id).single();
+    if (fetchErr || !row) { console.error('dispatchPushNotification: row not found', fetchErr); return null; }
+
+    try {
+      const resp = await fetch(_pushWebhookUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event:        'push_send',
+          notification_id: row.id,
+          title:        row.title,
+          message:      row.message,
+          image_url:    row.image_url,
+          click_url:    row.click_url,
+          audience:     row.audience,     // 'all' | 'premium' | 'free' — map to OneSignal segments/tags server-side
+          test:         !!isTest,
+          sent_at:      new Date().toISOString(),
+        }),
+      });
+      const ok = resp.ok;
+      const { data: updated } = await client
+        .from('push_notifications')
+        .update({
+          status:  isTest ? 'test' : (ok ? 'sent' : 'failed'),
+          sent_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .select()
+        .single();
+      return updated || row;
+    } catch (e) {
+      console.error('dispatchPushNotification: webhook failed', e);
+      await client.from('push_notifications').update({ status: 'failed' }).eq('id', id);
+      return null;
+    }
+  };
+
+  /**
+   * cancelScheduledNotification(id) — only works while status === 'scheduled'.
+   */
+  window.cancelScheduledNotification = async function cancelScheduledNotification(id) {
+    const client = window.supabaseClient;
+    if (!client) return false;
+    try {
+      const { error } = await client
+        .from('push_notifications')
+        .update({ status: 'cancelled' })
+        .eq('id', id)
+        .eq('status', 'scheduled');
+      return !error;
+    } catch (e) { console.error('cancelScheduledNotification:', e); return false; }
+  };
+
+  /**
+   * loadPushNotificationHistory(limit) — most recent notifications first.
+   */
+  window.loadPushNotificationHistory = async function loadPushNotificationHistory(limit = 50) {
+    const client = window.supabaseClient;
+    if (!client) return [];
+    try {
+      const { data, error } = await client
+        .from('push_notifications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    } catch (e) { console.error('loadPushNotificationHistory:', e); return []; }
+  };
+
+  /**
+   * checkDueScheduledNotifications() — call periodically (e.g. on admin tab
+   * open) to dispatch any 'scheduled' rows whose time has arrived. Since
+   * there's no server cron, this is a best-effort client-side trigger.
+   */
+  window.checkDueScheduledNotifications = async function checkDueScheduledNotifications() {
+    const client = window.supabaseClient;
+    if (!client) return;
+    try {
+      const { data } = await client
+        .from('push_notifications')
+        .select('id,scheduled_at')
+        .eq('status', 'scheduled')
+        .lte('scheduled_at', new Date().toISOString());
+      for (const row of (data || [])) {
+        await window.dispatchPushNotification(row.id, false);
+      }
+    } catch (e) { console.warn('checkDueScheduledNotifications:', e); }
+  };
+
+  // ══════════════════════════════════════════════════════════════════
+  // 📱 WHATSAPP COMMUNITY BROADCASTS
+  // ══════════════════════════════════════════════════════════════════
+
+  /**
+   * sendWhatsAppCommunityMessage({ inviteLink, title, message, imageUrl, isTest })
+   * Logs the broadcast in Supabase and forwards it to the Pipedream webhook,
+   * which is expected to relay it to your WhatsApp Business/Cloud API setup.
+   */
+  window.sendWhatsAppCommunityMessage = async function sendWhatsAppCommunityMessage({
+    inviteLink = null, title, message, imageUrl = null, isTest = false,
+  } = {}) {
+    const client = window.supabaseClient;
+    if (!client) { console.warn('sendWhatsAppCommunityMessage: no supabaseClient'); return null; }
+    if (!title || !message) { console.warn('sendWhatsAppCommunityMessage: title and message are required'); return null; }
+
+    let ok = false;
+    try {
+      const resp = await fetch(_pushWebhookUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event:       'wa_broadcast',
+          invite_link: inviteLink,
+          title, message, image_url: imageUrl,
+          test:        !!isTest,
+          sent_at:     new Date().toISOString(),
+        }),
+      });
+      ok = resp.ok;
+    } catch (e) {
+      console.error('sendWhatsAppCommunityMessage: webhook failed', e);
+    }
+
+    try {
+      const { data, error } = await client
+        .from('whatsapp_broadcasts')
+        .insert({
+          invite_link: inviteLink, title, message, image_url: imageUrl,
+          status: isTest ? 'test' : (ok ? 'sent' : 'failed'),
+          created_by: window.currentUser?.email || window.adminSession?.email || 'admin',
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (e) {
+      console.error('sendWhatsAppCommunityMessage: history insert failed', e);
+      return null;
+    }
+  };
+
+  /**
+   * loadWhatsAppBroadcastHistory(limit)
+   */
+  window.loadWhatsAppBroadcastHistory = async function loadWhatsAppBroadcastHistory(limit = 50) {
+    const client = window.supabaseClient;
+    if (!client) return [];
+    try {
+      const { data, error } = await client
+        .from('whatsapp_broadcasts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    } catch (e) { console.error('loadWhatsAppBroadcastHistory:', e); return []; }
   };
 
   /**

@@ -5504,6 +5504,20 @@ function studyriaApp() {
 
               <div style="padding:4px 0 6px">
                 <div class="hm-admin-section">
+                  <div class="hm-admin-label" style="color:#fbbf24">🔔 NOTIFICATIONS</div>
+                  <button class="hm-admin-btn" id="hmNotifBtn" style="border-color:rgba(251,191,36,0.3);background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(245,158,11,0.04))"
+                    @click="sidebarOpen = false" onclick="toggleNotificationCenter()">
+                    <span class="hm-admin-crown" style="animation:none">🔔</span>
+                    <span class="hm-admin-text">
+                      <span class="hm-admin-title" id="hmNotifTitle">Notifications</span>
+                    </span>
+                    <span class="hm-admin-secure" id="hmNotifBadge" style="background:rgba(251,191,36,0.15);color:#fbbf24;border-color:rgba(251,191,36,0.3)">SETUP</span>
+                  </button>
+                </div>
+              </div>
+
+              <div style="padding:4px 0 6px">
+                <div class="hm-admin-section">
                   <div class="hm-admin-label">⚙️ CONTROL CENTER</div>
                   <button class="hm-admin-btn" @click="sidebarOpen = false; openAdminEntry()">
                     <span class="hm-admin-crown">👑</span>
@@ -5521,6 +5535,51 @@ function studyriaApp() {
     </div>
   </div>
 </nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     🔔 NOTIFICATION CENTER — toggled from the burger menu
+     ══════════════════════════════════════════════════════════════ -->
+<style>
+  .notif-center-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px; }
+  .notif-center-icon-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .notif-center-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .notif-center-status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: .76rem; font-weight: 700; }
+  .notif-center-status-pill.granted { background: rgba(16,217,142,.14); color: #10d98e; border: 1px solid rgba(16,217,142,.3); }
+  .notif-center-status-pill.denied  { background: rgba(255,77,109,.14); color: #ff6b85; border: 1px solid rgba(255,77,109,.3); }
+  .notif-center-status-pill.default { background: rgba(251,191,36,.14); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
+  .notif-center-status-pill.unsupported { background: rgba(148,163,184,.14); color: #94a3b8; border: 1px solid rgba(148,163,184,.3); }
+</style>
+<div class="overlay" id="notifCenterOverlay" style="display:none;z-index:300">
+  <div class="overlay-bg" onclick="toggleNotificationCenter()"></div>
+  <div class="modal" id="notifCenterModal" style="max-width:380px;text-align:left;background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(20px)">
+    <button class="modal-close icon-btn" aria-label="Close" onclick="toggleNotificationCenter()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="notif-center-icon-row">
+      <div class="notif-center-icon" style="background:rgba(251,191,36,.15)">🔔</div>
+      <div>
+        <div style="font-weight:800;font-size:1.05rem">Notifications</div>
+        <div style="font-size:.78rem;color:var(--text2)">Stay updated on new PDFs &amp; alerts</div>
+      </div>
+    </div>
+
+    <div class="notif-center-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <span style="font-size:.85rem;font-weight:600">Push Notification Status</span>
+        <span id="notifCenterStatusPill" class="notif-center-status-pill default">Checking…</span>
+      </div>
+      <div id="notifCenterBody" style="font-size:.82rem;color:var(--text2);line-height:1.5">
+        Checking your notification permission…
+      </div>
+      <div id="notifCenterActions" style="margin-top:14px;display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <div style="margin-top:14px;font-size:.74rem;color:var(--text2);text-align:center">
+      You can change this anytime from your browser's site settings.
+    </div>
+  </div>
+</div>
 
 <main style="flex:1">
 
@@ -12392,6 +12451,10 @@ body.light .me-stat-val { filter:none; }
         <button class="admin-nav-item" data-atab="community-manager" onclick="switchAdminTab('community-manager')" style="background:linear-gradient(90deg,rgba(16,217,142,0.13),rgba(37,211,102,0.07));border-left:2px solid #10d98e">
           🌐 Community Manager
           <span class="admin-nav-badge" style="background:rgba(16,217,142,0.12);color:#10d98e;border-color:rgba(16,217,142,0.3)">New</span>
+        </button>
+        <button class="admin-nav-item" data-atab="whatsapp-community" onclick="switchAdminTab('whatsapp-community')" style="background:linear-gradient(90deg,rgba(37,211,102,0.13),rgba(16,217,142,0.07));border-left:2px solid #25d366">
+          <span style="font-size:1rem">📱</span>WhatsApp Community
+          <span class="admin-nav-badge" style="background:rgba(37,211,102,0.12);color:#25d366;border-color:rgba(37,211,102,0.3)">New</span>
         </button>
 
         <div class="admin-nav-section-label" style="margin-top:16px">🎓 CREATOR PROGRAM</div>
@@ -19745,7 +19808,7 @@ async function switchMeTab(tab) {
           <div class="me-action-icon" style="background:rgba(16,217,142,0.15)">🛒</div>
           <div class="me-action-label">Browse PDFs</div>
         </div>
-        <div class="me-action-card" style="animation-delay:.50s" onclick="showToast('Notifications coming soon!','info')">
+        <div class="me-action-card" style="animation-delay:.50s" onclick="toggleNotificationCenter()">
           <div class="me-action-icon" style="background:rgba(245,158,11,0.15)">🔔</div>
           <div class="me-action-label">Notifications</div>
         </div>
@@ -20968,6 +21031,137 @@ function openAdminEntry() {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// 🔔 NOTIFICATION CENTER — burger menu item + permission flow
+// ══════════════════════════════════════════════════════════════════
+
+function toggleNotificationCenter() {
+  const overlay = document.getElementById('notifCenterOverlay');
+  if (!overlay) return;
+  const isOpen = overlay.style.display !== 'none';
+  if (isOpen) {
+    overlay.style.display = 'none';
+  } else {
+    overlay.style.display = 'flex';
+    refreshNotificationCenter();
+  }
+}
+
+/**
+ * refreshNotificationCenter — checks the current browser/OneSignal
+ * permission state and renders the right UI:
+ *   default     → "Enable Notifications" button that triggers the native prompt
+ *   denied      → "Enable Notifications" button with manual settings instructions
+ *   granted     → "Notifications Enabled" status, no action needed
+ *   unsupported → explains the browser/context doesn't support push
+ */
+async function refreshNotificationCenter() {
+  const pill   = document.getElementById('notifCenterStatusPill');
+  const body   = document.getElementById('notifCenterBody');
+  const actions= document.getElementById('notifCenterActions');
+  const hmBadge= document.getElementById('hmNotifBadge');
+  if (!pill || !body || !actions) return;
+
+  const api = window.StudyriaNotifications;
+  const state = api ? await api.getPermissionState() : 'unsupported';
+
+  pill.className = 'notif-center-status-pill ' + state;
+  actions.innerHTML = '';
+
+  if (state === 'unsupported') {
+    pill.textContent = 'Unsupported';
+    body.textContent = 'Push notifications aren\'t supported in this browser. Try Chrome, Edge, or installing the Studyria app.';
+    if (hmBadge) { hmBadge.textContent = 'N/A'; hmBadge.style.color = '#94a3b8'; hmBadge.style.background = 'rgba(148,163,184,.15)'; }
+    return;
+  }
+
+  if (state === 'granted') {
+    pill.textContent = 'Enabled';
+    body.textContent = 'You\'re all set! You\'ll receive alerts for new PDFs, results, scholarships and more.';
+    if (hmBadge) { hmBadge.textContent = 'ON'; hmBadge.style.color = '#10d98e'; hmBadge.style.background = 'rgba(16,217,142,.15)'; }
+    actions.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:#10d98e;font-size:.82rem;font-weight:600;justify-content:center;padding:6px 0">
+      <span>✅</span><span>Notifications Enabled</span>
+    </div>`;
+    return;
+  }
+
+  if (state === 'denied') {
+    pill.textContent = 'Blocked';
+    body.innerHTML = 'You previously blocked notifications. To re-enable, open your browser\'s site settings for Studyria and allow notifications, then tap below.';
+    if (hmBadge) { hmBadge.textContent = 'OFF'; hmBadge.style.color = '#ff6b85'; hmBadge.style.background = 'rgba(255,77,109,.15)'; }
+    actions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="notifCenterOpenSettings()">⚙️ Enable Notifications</button>`;
+    return;
+  }
+
+  // state === 'default'
+  pill.textContent = 'Not Set';
+  body.textContent = 'Turn on notifications to get notified the moment new PDFs, results, scholarships and exam alerts drop.';
+  if (hmBadge) { hmBadge.textContent = 'SETUP'; hmBadge.style.color = '#fbbf24'; hmBadge.style.background = 'rgba(251,191,36,.15)'; }
+  actions.innerHTML = `<button class="btn btn-primary btn-sm" id="notifCenterEnableBtn" onclick="notifCenterRequestPermission()">🔔 Enable Notifications</button>`;
+}
+
+async function notifCenterRequestPermission() {
+  const btn = document.getElementById('notifCenterEnableBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Requesting…'; }
+
+  const api = window.StudyriaNotifications;
+  const result = api ? await api.requestPermission() : { success: false, reason: 'unsupported' };
+
+  if (result.success) {
+    if (typeof showToast === 'function') showToast('🔔 Notifications enabled!', 'success');
+    // Tag audience segment for admin targeting (premium vs free)
+    try {
+      const hasPurchases = !!(window._purchasedPdfIds && window._purchasedPdfIds.size > 0);
+      if (api.tagAudienceSegment) api.tagAudienceSegment(hasPurchases);
+    } catch (_) {}
+  } else if (result.reason === 'denied') {
+    if (typeof showToast === 'function') showToast('Notifications were blocked. You can enable them from site settings.', 'error');
+  } else if (result.reason !== 'dismissed') {
+    if (typeof showToast === 'function') showToast('Could not enable notifications right now.', 'error');
+  }
+
+  await refreshNotificationCenter();
+}
+
+function notifCenterOpenSettings() {
+  const api = window.StudyriaNotifications;
+  const opened = api ? api.openNotificationSettings() : false;
+  if (!opened && typeof showToast === 'function') {
+    showToast('Open your browser menu → Site settings → Notifications → Allow.', 'info');
+  }
+}
+
+// Listen for subscription changes from any source (e.g. OneSignal's own UI)
+// and keep the burger-menu badge in sync without requiring the panel to be open.
+window.addEventListener('onesignal:subscriptionchange', function () {
+  const overlay = document.getElementById('notifCenterOverlay');
+  if (overlay && overlay.style.display !== 'none') {
+    refreshNotificationCenter();
+  } else {
+    // Still refresh the small burger badge even when panel is closed
+    const hmBadge = document.getElementById('hmNotifBadge');
+    if (hmBadge && window.StudyriaNotifications) {
+      window.StudyriaNotifications.getPermissionState().then(function (state) {
+        if (state === 'granted') { hmBadge.textContent = 'ON'; hmBadge.style.color = '#10d98e'; hmBadge.style.background = 'rgba(16,217,142,.15)'; }
+      });
+    }
+  }
+});
+
+// Set the initial burger-menu badge state once the page has loaded
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    const hmBadge = document.getElementById('hmNotifBadge');
+    if (!hmBadge || !window.StudyriaNotifications) return;
+    window.StudyriaNotifications.getPermissionState().then(function (state) {
+      if (state === 'granted')      { hmBadge.textContent = 'ON';  hmBadge.style.color = '#10d98e'; hmBadge.style.background = 'rgba(16,217,142,.15)'; }
+      else if (state === 'denied')  { hmBadge.textContent = 'OFF'; hmBadge.style.color = '#ff6b85'; hmBadge.style.background = 'rgba(255,77,109,.15)'; }
+      else if (state === 'unsupported') { hmBadge.textContent = 'N/A'; hmBadge.style.color = '#94a3b8'; hmBadge.style.background = 'rgba(148,163,184,.15)'; }
+      // 'default' keeps the initial "SETUP" label already in the markup
+    });
+  }, 800);
+});
+
 // ── Admin Login ──────────────────────────────────────────────────
 async function adminDoLogin() {
   const email = document.getElementById('adminLoginEmail')?.value?.trim();
@@ -21073,7 +21267,7 @@ function switchAdminTab(tab) {
     'pdf-manager-pro':'Advanced PDF Manager', 'category-manager-pro':'Advanced Category Manager', 'homepage-manager':'Homepage Manager', 'header-manager':'Header Manager', 'nav-manager':'Navigation Manager', 'customization':'Website Customization', 'users-pro':'User Management Pro',
     'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
     'seo-manager':'SEO Manager', 'live-analytics':'Live Analytics Center', 'ai-center':'AI Control Center', 'security':'Security Center', 'system-advanced':'Advanced System Settings',
-    'library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager' };
+    'library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community' };
   if (bc) bc.textContent = tabNames[tab] || tab;
 
   const main = document.getElementById('adminMain');
@@ -21107,6 +21301,7 @@ function switchAdminTab(tab) {
     case 'library-manager':       renderAdminLibraryManager(main); break;
     case 'career-hub-manager':    renderAdminCareerHubManager(main); break;
     case 'community-manager':     renderAdminCommunityManager(main); break;
+    case 'whatsapp-community':    renderAdminWhatsAppCommunity(main); break;
     case 'testimonials':          renderPCCTestimonials(main); break;
     case 'achievements':          renderPCCAchievements(main); break;
     case 'notifications-pro':     renderPCCNotifications(main); break;
@@ -22228,6 +22423,143 @@ function trackCommunityClick(id) {
     tryLoadCommunity();
   }
 })();
+
+// ══════════════════════════════════════════════════════════════════
+// 📱 WHATSAPP COMMUNITY — Admin Panel (broadcast to your WA community)
+// ══════════════════════════════════════════════════════════════════
+
+function renderAdminWhatsAppCommunity(main) {
+  main.innerHTML = `
+  <div class="admin-section" style="animation:dashFadeUp .35s ease both">
+    <div class="admin-section-title">📱 WhatsApp Community</div>
+    <div class="admin-section-sub">Send announcements straight to your WhatsApp community / channel members.</div>
+
+    <div class="mod-form-wrap" style="margin-bottom:14px">
+      <div style="font-weight:700;color:#25d366;margin-bottom:14px">🔗 Community Invite Link</div>
+      <div class="form-group">
+        <label class="form-label">Invite Link</label>
+        <input class="form-input" id="waInviteLink" placeholder="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R" value="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R"/>
+        <div class="form-hint">Used as the fallback link in test/broadcast messages and copy actions below.</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="waCopyInviteLink()">📋 Copy Link</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.open(document.getElementById('waInviteLink').value,'_blank')">🔗 Open Community</button>
+      </div>
+    </div>
+
+    <div class="mod-form-wrap" style="margin-bottom:14px">
+      <div style="font-weight:700;color:#25d366;margin-bottom:14px">📨 Compose Message</div>
+      <div class="form-group"><label class="form-label">Message Title</label><input class="form-input" id="waMsgTitle" placeholder="📚 New JEE 2026 Notes Are Live!" maxlength="80"/></div>
+      <div class="form-group" style="margin-top:8px"><label class="form-label">Message</label><textarea class="form-input" id="waMsgBody" rows="3" placeholder="Fresh JEE Main 2026 notes just dropped on Studyria. Tap to grab your copy 👇"></textarea></div>
+      <div class="form-group" style="margin-top:8px"><label class="form-label">Image URL</label><input class="form-input" id="waMsgImage" placeholder="https://studyria.com/banners/jee-2026.jpg"/></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" id="waTestBtn" onclick="waSendTest()">📱 Send Test</button>
+        <button class="btn btn-primary btn-sm" id="waSendBtn" onclick="waSendCommunityMessage()">📢 Send Community Message</button>
+      </div>
+      <div id="waStatusMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
+    </div>
+
+    <div class="mod-form-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-weight:700">📜 Broadcast History</div>
+        <button class="btn btn-ghost btn-sm" onclick="waLoadHistory()">🔄 Refresh</button>
+      </div>
+      <div id="waHistoryList" style="font-size:.8rem;color:var(--text2)">Loading…</div>
+    </div>
+  </div>`;
+
+  waLoadHistory();
+}
+
+function waCopyInviteLink() {
+  const link = document.getElementById('waInviteLink')?.value?.trim();
+  if (!link) return;
+  navigator.clipboard?.writeText(link).then(() => {
+    showToast('Invite link copied!', 'success');
+  }).catch(() => {
+    showToast('Could not copy — copy it manually.', 'error');
+  });
+}
+
+function waReadForm() {
+  return {
+    inviteLink: document.getElementById('waInviteLink')?.value?.trim() || null,
+    title:      document.getElementById('waMsgTitle')?.value?.trim() || '',
+    message:    document.getElementById('waMsgBody')?.value?.trim() || '',
+    imageUrl:   document.getElementById('waMsgImage')?.value?.trim() || null,
+  };
+}
+
+function waShowStatus(msg, type) {
+  const el = document.getElementById('waStatusMsg');
+  if (!el) return;
+  el.style.display = 'block';
+  el.style.color = type === 'error' ? 'var(--danger)' : (type === 'success' ? 'var(--success)' : 'var(--text2)');
+  el.textContent = msg;
+}
+
+async function waSendTest() {
+  const { inviteLink, title, message, imageUrl } = waReadForm();
+  if (!title || !message) { showToast('Enter a title and message first.', 'error'); return; }
+
+  const btn = document.getElementById('waTestBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Sending…'; }
+  try {
+    if (typeof window.sendWhatsAppCommunityMessage !== 'function') throw new Error('WhatsApp backend not loaded');
+    const row = await window.sendWhatsAppCommunityMessage({ inviteLink, title, message, imageUrl, isTest: true });
+    if (row) { waShowStatus('📱 Test message sent.', 'success'); showToast('Test message sent!', 'success'); }
+    else { waShowStatus('Test send failed — check your Pipedream webhook config.', 'error'); }
+  } catch (e) {
+    waShowStatus('Error: ' + e.message, 'error');
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '📱 Send Test'; }
+  waLoadHistory();
+}
+
+async function waSendCommunityMessage() {
+  const { inviteLink, title, message, imageUrl } = waReadForm();
+  if (!title || !message) { showToast('Enter a title and message.', 'error'); return; }
+  if (!confirm('Send this message to your entire WhatsApp community now?')) return;
+
+  const btn = document.getElementById('waSendBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Sending…'; }
+  try {
+    if (typeof window.sendWhatsAppCommunityMessage !== 'function') throw new Error('WhatsApp backend not loaded');
+    const row = await window.sendWhatsAppCommunityMessage({ inviteLink, title, message, imageUrl, isTest: false });
+    if (row && row.status === 'sent') {
+      waShowStatus('📢 Message dispatched to the community.', 'success');
+      showToast('Community message sent!', 'success');
+      document.getElementById('waMsgTitle').value = '';
+      document.getElementById('waMsgBody').value = '';
+      document.getElementById('waMsgImage').value = '';
+    } else {
+      waShowStatus('Send failed — check your Pipedream webhook configuration.', 'error');
+    }
+  } catch (e) {
+    waShowStatus('Error: ' + e.message, 'error');
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '📢 Send Community Message'; }
+  waLoadHistory();
+}
+
+async function waLoadHistory() {
+  const el = document.getElementById('waHistoryList');
+  if (!el) return;
+  const rows = typeof window.loadWhatsAppBroadcastHistory === 'function'
+    ? await window.loadWhatsAppBroadcastHistory(50)
+    : [];
+  if (!rows.length) { el.innerHTML = '<div>No broadcasts sent yet.</div>'; return; }
+
+  const styleFor = (s) => s === 'sent' ? '#10d98e' : (s === 'test' ? '#b794f4' : '#ff6b85');
+  el.innerHTML = `<div class="table-wrap"><table class="admin-table" style="width:100%;font-size:.78rem">
+    <thead><tr><th>Title</th><th>Status</th><th>When</th></tr></thead>
+    <tbody>${rows.map(r => `<tr>
+      <td>${(r.title||'').replace(/</g,'&lt;')}</td>
+      <td style="color:${styleFor(r.status)};font-weight:600;text-transform:capitalize">${r.status}</td>
+      <td>${r.created_at ? new Date(r.created_at).toLocaleString('en-IN') : '—'}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
 
 // ══════════════════════════════════════════════════════════════════
 // 🌐 COMMUNITY MANAGER — Admin Panel
@@ -28994,7 +29326,7 @@ function renderPCCAchievements(main) {
 function renderPCCNotifications(main) {
   main.innerHTML = `
   <div class="admin-section-title">🔔 Notification Center</div>
-  <div class="admin-section-sub">Push notifications, email broadcasts, WhatsApp alerts and PDF subscriber management.</div>
+  <div class="admin-section-sub">Push notifications via OneSignal, plus email/WhatsApp PDF-alert subscriber management.</div>
 
   <!-- Subscriber Stats Card -->
   <div class="mod-form-wrap" style="margin-bottom:14px">
@@ -29018,43 +29350,57 @@ function renderPCCNotifications(main) {
     <div id="pccSubList" style="margin-top:12px"></div>
   </div>
 
-  <!-- Send Push Notification -->
+  <!-- 📢 New Push Notification -->
   <div class="mod-form-wrap" style="margin-bottom:14px">
-    <div style="font-weight:700;color:var(--accent);margin-bottom:14px">📲 Send Push Notification</div>
-    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="pccPushTitle" placeholder="New PDF Added!"/></div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">Message</label><textarea class="form-input" id="pccPushMsg" rows="2" placeholder="Check out the latest JEE 2025 notes…"></textarea></div>
+    <div style="font-weight:700;color:var(--accent);margin-bottom:14px">📢 New Push Notification</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="pnTitle" placeholder="New PDF Added!" maxlength="60"/></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Message</label><textarea class="form-input" id="pnMessage" rows="2" placeholder="Check out the latest JEE 2025 notes…" maxlength="160"></textarea></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Image URL (Optional)</label><input class="form-input" id="pnImageUrl" placeholder="https://studyria.com/banners/new-pdf.jpg"/></div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Click URL</label><input class="form-input" id="pnClickUrl" placeholder="https://studyria.qzz.io/library"/></div>
     <div class="admin-form-grid" style="margin-top:10px">
-      <div class="form-group"><label class="form-label">Target Audience</label>
-        <select class="form-input"><option>All Users</option><option>Premium Only</option><option>Free Users</option></select>
+      <div class="form-group"><label class="form-label">Audience</label>
+        <select class="form-input" id="pnAudience">
+          <option value="all">All Users</option>
+          <option value="premium">Premium Only</option>
+          <option value="free">Free Users</option>
+        </select>
       </div>
-      <div class="form-group"><label class="form-label">Notification Type</label>
-        <select class="form-input"><option>Push (FCM)</option><option>Email</option><option>WhatsApp</option><option>All Channels</option></select>
+      <div class="form-group"><label class="form-label">Schedule</label>
+        <select class="form-input" id="pnSchedule" onchange="document.getElementById('pnScheduleRow').style.display=this.value==='later'?'block':'none'">
+          <option value="now">Send Now</option>
+          <option value="later">Schedule for Later</option>
+        </select>
       </div>
     </div>
-    <button class="btn btn-primary btn-sm mt-4" onclick="pccSendManualNotification()">🚀 Send Now</button>
+    <div class="form-group" id="pnScheduleRow" style="margin-top:8px;display:none">
+      <label class="form-label">Schedule Date &amp; Time</label>
+      <input class="form-input" id="pnScheduleAt" type="datetime-local"/>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-secondary btn-sm" id="pnTestBtn" onclick="pnSendTest()">🚀 Send Test</button>
+      <button class="btn btn-primary btn-sm" id="pnSendBtn" onclick="pnSendToAll()">📤 Send to All</button>
+    </div>
+    <div id="pnStatusMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
   </div>
 
-  <!-- Notification Settings -->
+  <!-- 📊 Delivery Status -->
+  <div class="mod-form-wrap" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-weight:700;color:var(--gold)">📊 Delivery Status</div>
+      <button class="btn btn-ghost btn-sm" onclick="pnLoadHistory()">🔄 Refresh</button>
+    </div>
+    <div id="pnDeliveryStatus" style="font-size:.82rem;color:var(--text2)">No recent sends yet.</div>
+  </div>
+
+  <!-- 📜 Notification History -->
   <div class="mod-form-wrap">
-    <div style="font-weight:700;margin-bottom:14px">⚙ Notification Settings</div>
-    ${[['New PDF Alert (Email)','Auto-email subscribers when new PDF is published'],
-       ['New PDF Alert (WhatsApp)','Auto-WhatsApp subscribers when new PDF is published'],
-       ['Purchase Confirmation','Auto-send on every purchase'],
-       ['Exam Reminder','Daily reminder before major exams'],
-       ['Streak Reminder','Nudge users who break streaks'],
-       ['Telegram Integration','Send alerts to Telegram channel'],
-    ].map(([t,d]) => `
-      <div class="admin-toggle-row">
-        <div><div style="font-size:.85rem;font-weight:600">${t}</div><div class="text-muted text-xs">${d}</div></div>
-        <button class="admin-toggle on" onclick="this.classList.toggle('on')"></button>
-      </div>`).join('')}
-    <div class="form-group" style="margin-top:14px"><label class="form-label">Telegram Bot Token</label><input class="form-input" type="password" placeholder="••••••••••••"/></div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">Telegram Channel ID</label><input class="form-input" placeholder="@studyriachannel"/></div>
-    <button class="btn btn-primary btn-sm mt-4" onclick="showToast('Notification settings saved!','success')">💾 Save Settings</button>
+    <div style="font-weight:700;margin-bottom:14px">📜 Notification History</div>
+    <div id="pnHistoryList" style="font-size:.8rem;color:var(--text2)">Loading…</div>
   </div>`;
 
-  // Auto-load stats
+  // Auto-load stats + history
   pccLoadSubscriberStats();
+  pnLoadHistory();
 }
 
 async function pccLoadSubscriberStats(btn) {
@@ -29102,14 +29448,175 @@ async function pccLoadSubscriberList() {
   } catch(e) { el.innerHTML = `<div style="color:var(--danger);font-size:.8rem">${e.message}</div>`; }
 }
 
-async function pccSendManualNotification() {
-  const title = document.getElementById('pccPushTitle')?.value?.trim();
-  const msg   = document.getElementById('pccPushMsg')?.value?.trim();
-  if (!title || !msg) { showToast('Enter a title and message.', 'error'); return; }
-  if (typeof window.notifyPdfSubscribers === 'function') {
-    await window.notifyPdfSubscribers({ pdfId: null, title: `${title} — ${msg}`, category: null, coverUrl: null, pdfUrl: null });
+// ── Push Notification Dashboard — read form fields ──────────────────
+function pnReadForm() {
+  const title    = document.getElementById('pnTitle')?.value?.trim() || '';
+  const message  = document.getElementById('pnMessage')?.value?.trim() || '';
+  const imageUrl = document.getElementById('pnImageUrl')?.value?.trim() || null;
+  const clickUrl = document.getElementById('pnClickUrl')?.value?.trim() || null;
+  const audience = document.getElementById('pnAudience')?.value || 'all';
+  const schedule = document.getElementById('pnSchedule')?.value || 'now';
+  const scheduleAtRaw = document.getElementById('pnScheduleAt')?.value || null;
+  const scheduleAt = (schedule === 'later' && scheduleAtRaw) ? new Date(scheduleAtRaw).toISOString() : null;
+  return { title, message, imageUrl, clickUrl, audience, schedule, scheduleAt };
+}
+
+function pnShowStatus(msg, type) {
+  const el = document.getElementById('pnStatusMsg');
+  if (!el) return;
+  el.style.display = 'block';
+  el.style.color = type === 'error' ? 'var(--danger)' : (type === 'success' ? 'var(--success)' : 'var(--text2)');
+  el.textContent = msg;
+}
+
+async function pnSendTest() {
+  const { title, message, imageUrl, clickUrl, audience } = pnReadForm();
+  if (!title || !message) { showToast('Enter a title and message first.', 'error'); return; }
+
+  const btn = document.getElementById('pnTestBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Sending…'; }
+
+  try {
+    if (typeof window.sendPushNotification !== 'function') throw new Error('Notification backend not loaded');
+    const row = await window.sendPushNotification({ title, message, imageUrl, clickUrl, audience, isTest: true });
+    if (row) {
+      pnShowStatus('🚀 Test notification sent to your device.', 'success');
+      showToast('Test notification sent!', 'success');
+    } else {
+      pnShowStatus('Test send failed — check your Pipedream webhook config.', 'error');
+    }
+  } catch (e) {
+    pnShowStatus('Error: ' + e.message, 'error');
   }
-  showToast('🚀 Notification dispatched to subscribers!', 'success');
+  if (btn) { btn.disabled = false; btn.textContent = '🚀 Send Test'; }
+  pnLoadHistory();
+}
+
+async function pnSendToAll() {
+  const { title, message, imageUrl, clickUrl, audience, schedule, scheduleAt } = pnReadForm();
+  if (!title || !message) { showToast('Enter a title and message.', 'error'); return; }
+  if (schedule === 'later' && !scheduleAt) { showToast('Pick a date and time to schedule for.', 'error'); return; }
+
+  const confirmMsg = schedule === 'later'
+    ? `Schedule this notification for ${new Date(scheduleAt).toLocaleString('en-IN')}?`
+    : `Send this notification to ${audience === 'all' ? 'ALL users' : audience + ' users'} now?`;
+  if (!confirm(confirmMsg)) return;
+
+  const btn = document.getElementById('pnSendBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Sending…'; }
+
+  try {
+    if (typeof window.sendPushNotification !== 'function') throw new Error('Notification backend not loaded');
+    const row = await window.sendPushNotification({ title, message, imageUrl, clickUrl, audience, scheduleAt, isTest: false });
+    if (row) {
+      if (row.status === 'scheduled') {
+        pnShowStatus(`📅 Scheduled for ${new Date(row.scheduled_at).toLocaleString('en-IN')}.`, 'success');
+        showToast('Notification scheduled!', 'success');
+      } else if (row.status === 'sent') {
+        pnShowStatus('📤 Notification sent to all matching subscribers.', 'success');
+        showToast('Notification sent!', 'success');
+      } else {
+        pnShowStatus('Notification saved but the send may have failed — check Delivery Status below.', 'error');
+      }
+      document.getElementById('pnTitle').value = '';
+      document.getElementById('pnMessage').value = '';
+      document.getElementById('pnImageUrl').value = '';
+      document.getElementById('pnClickUrl').value = '';
+    } else {
+      pnShowStatus('Send failed — check your Supabase connection and Pipedream webhook.', 'error');
+    }
+  } catch (e) {
+    pnShowStatus('Error: ' + e.message, 'error');
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '📤 Send to All'; }
+  pnLoadHistory();
+}
+
+async function pnCancelScheduled(id, btn) {
+  if (!confirm('Cancel this scheduled notification?')) return;
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  const ok = typeof window.cancelScheduledNotification === 'function'
+    ? await window.cancelScheduledNotification(id)
+    : false;
+  if (ok) { showToast('Scheduled notification cancelled.', 'success'); }
+  else { showToast('Could not cancel — it may have already been sent.', 'error'); }
+  pnLoadHistory();
+}
+
+async function pnRetrySend(id, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  const row = typeof window.dispatchPushNotification === 'function'
+    ? await window.dispatchPushNotification(id, false)
+    : null;
+  if (row && row.status === 'sent') showToast('Notification re-sent successfully.', 'success');
+  else showToast('Retry failed — check your webhook configuration.', 'error');
+  pnLoadHistory();
+}
+
+const PN_STATUS_STYLE = {
+  pending:   { label: '⏳ Pending',   color: '#fbbf24' },
+  scheduled: { label: '📅 Scheduled', color: '#60a5fa' },
+  sent:      { label: '✅ Sent',      color: '#10d98e' },
+  cancelled: { label: '🚫 Cancelled', color: '#94a3b8' },
+  failed:    { label: '❌ Failed',    color: '#ff6b85' },
+  test:      { label: '🧪 Test',      color: '#b794f4' },
+};
+
+async function pnLoadHistory() {
+  const statusEl  = document.getElementById('pnDeliveryStatus');
+  const historyEl = document.getElementById('pnHistoryList');
+  if (!historyEl) return;
+
+  const rows = typeof window.loadPushNotificationHistory === 'function'
+    ? await window.loadPushNotificationHistory(50)
+    : [];
+
+  if (!rows.length) {
+    if (statusEl)  statusEl.innerHTML  = '<div>No recent sends yet.</div>';
+    if (historyEl) historyEl.innerHTML = '<div>No notifications sent yet — your first one will appear here.</div>';
+    return;
+  }
+
+  // Delivery Status = the most recent non-test send
+  const lastReal = rows.find(r => r.status !== 'test');
+  if (statusEl) {
+    if (lastReal) {
+      const st = PN_STATUS_STYLE[lastReal.status] || { label: lastReal.status, color: 'var(--text2)' };
+      statusEl.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-weight:700;color:var(--text)">${lastReal.title}</div>
+            <div style="font-size:.74rem;margin-top:2px">Audience: ${lastReal.audience} · ${lastReal.recipients || 0} recipients · ${lastReal.delivered || 0} delivered</div>
+          </div>
+          <span style="font-weight:700;color:${st.color}">${st.label}</span>
+        </div>`;
+    } else {
+      statusEl.innerHTML = '<div>No real sends yet — only test notifications so far.</div>';
+    }
+  }
+
+  historyEl.innerHTML = `<div class="table-wrap"><table class="admin-table" style="width:100%;font-size:.78rem">
+    <thead><tr><th>Title</th><th>Audience</th><th>Status</th><th>When</th><th>Actions</th></tr></thead>
+    <tbody>${rows.map(r => {
+      const st = PN_STATUS_STYLE[r.status] || { label: r.status, color: 'var(--text2)' };
+      const when = r.status === 'scheduled'
+        ? `Scheduled: ${r.scheduled_at ? new Date(r.scheduled_at).toLocaleString('en-IN') : '—'}`
+        : (r.sent_at ? new Date(r.sent_at).toLocaleString('en-IN') : new Date(r.created_at).toLocaleString('en-IN'));
+      let actions = '';
+      if (r.status === 'scheduled') {
+        actions = `<button class="btn btn-ghost btn-sm" onclick="pnCancelScheduled('${r.id}', this)">❌ Cancel</button>`;
+      } else if (r.status === 'failed') {
+        actions = `<button class="btn btn-ghost btn-sm" onclick="pnRetrySend('${r.id}', this)">🔁 Retry</button>`;
+      }
+      return `<tr>
+        <td>${(r.title||'').replace(/</g,'&lt;')}</td>
+        <td style="text-transform:capitalize">${r.audience}</td>
+        <td style="color:${st.color};font-weight:600">${st.label}</td>
+        <td>${when}</td>
+        <td>${actions}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
 }
 
 /* ─── 13. SEO MANAGER ────────────────────────────────────────── */
