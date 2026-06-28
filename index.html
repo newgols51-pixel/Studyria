@@ -111,7 +111,6 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 <link rel="dns-prefetch" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" />
-<link rel="dns-prefetch" href="https://cdn.onesignal.com" />
 <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
 <link rel="preconnect" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" crossorigin />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -5233,14 +5232,6 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   crossorigin="anonymous"
 ></script>
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-// OneSignal deferred queue — app.js pushes the full OneSignal.init() call
-// (with serviceWorkerPath, serviceWorkerParam, autoResubscribe, etc.) once it
-// loads. Do NOT add a second init() call here; that would cause a duplicate
-// initialisation and the second call silently wins with incomplete config.
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-</script>
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -34938,20 +34929,16 @@ async function hlmSaveTheme() {
 
 <!--
   ══════════════════════════════════════════════════════════════════════
-  PWA APPLICATION LAYER + ONESIGNAL INTEGRATION
+  PWA APPLICATION LAYER
   app.js handles:
     • Service Worker registration & lifecycle
     • Install prompt (burger menu card)
     • Offline / online detection
     • Cache versioning & cleanup
     • Background Sync
-    • OneSignal Web Push (user-initiated, button in burger menu)
   ══════════════════════════════════════════════════════════════════════
 -->
 
-<!-- OneSignal SDK and deferred queue are now initialised in <head>.
-     app.js reads window.OneSignalDeferred and pushes its init callback
-     once the SDK fires — no separate pre-initialiser needed here. -->
 <script src="app.js" defer></script>
 
 </body>
