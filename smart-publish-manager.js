@@ -217,8 +217,27 @@
 .spm-section-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text2,#94a3b8); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
 .spm-section-label::after { content:''; flex:1; height:1px; background:var(--glass-border,rgba(255,255,255,.08)); }
 
+/* ── Edit Draft Modal ── */
+.spm-edit-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+.spm-edit-field { display:flex; flex-direction:column; gap:4px; }
+.spm-edit-field.full-width { grid-column:1/-1; }
+.spm-edit-label { font-size:.71rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text2,#94a3b8); }
+.spm-edit-label .spm-req { color:#ef4444; margin-left:2px; }
+.spm-edit-label .spm-opt { color:#94a3b8; font-weight:400; font-size:.65rem; margin-left:4px; }
+.spm-edit-input { padding:8px 11px; border-radius:8px; border:1px solid var(--glass-border,rgba(255,255,255,.1)); background:rgba(255,255,255,.04); color:var(--text,#e2e8f0); font-size:.82rem; font-family:inherit; outline:none; transition:border .18s; box-sizing:border-box; width:100%; }
+.spm-edit-input:focus { border-color:#3d8ef8; background:rgba(61,142,248,.05); }
+.spm-edit-textarea { resize:vertical; min-height:80px; }
+.spm-edit-section-head { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#3d8ef8; margin:16px 0 10px; display:flex; align-items:center; gap:8px; }
+.spm-edit-section-head::after { content:''; flex:1; height:1px; background:rgba(61,142,248,.2); }
+.spm-cover-preview-wrap { display:flex; align-items:center; gap:12px; }
+.spm-cover-preview-img { width:60px; height:80px; object-fit:cover; border-radius:6px; border:1px solid var(--glass-border,rgba(255,255,255,.1)); flex-shrink:0; }
+.spm-cover-preview-ph { width:60px; height:80px; border-radius:6px; background:linear-gradient(135deg,#1d4ed8,#3d8ef8); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+.spm-draft-saved { display:inline-flex; align-items:center; gap:5px; font-size:.72rem; color:#10d98e; opacity:0; transition:opacity .3s; }
+.spm-draft-saved.show { opacity:1; }
+
 /* ── Responsive ── */
 @media(max-width:640px){
+  .spm-edit-grid { grid-template-columns:1fr; }
   .spm-toolbar { flex-direction:column; align-items:stretch; }
   .spm-toolbar-right { justify-content:flex-start; overflow-x:auto; padding-bottom:4px; }
   .spm-search { width:100%; }
@@ -893,7 +912,7 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
           <button class="spm-btn spm-btn-ghost" onclick="window._SPM._closeModal()">Close</button>
           ${result.ok
             ? `<button class="spm-btn spm-btn-success" onclick="window._SPM._publishOne('${id}')">🚀 Publish Now</button>`
-            : ''}
+            : `<button class="spm-btn spm-btn-primary" onclick="window._SPM._editDraft('${id}')">✏️ Fix &amp; Edit Draft</button>`}
         </div>
       </div>`);
   }
@@ -1078,8 +1097,279 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     SECTION 9 — UNDO TIMER
+     SECTION 8B — EDIT DRAFT MODAL
+     All fields editable: Cover, Title, Description, Category, Author,
+     Language, Original Price, Selling Price, Badge, Tags, SEO Title,
+     Meta Description, Preview Pages.
+     Saves as Draft. Validation ONLY on Publish.
   ───────────────────────────────────────────────────────────────── */
+
+  const BADGE_OPTIONS = ['','New','Hot','Trending','Bestseller','Free','Limited','Sale','Premium'];
+  const LANGUAGE_OPTIONS = ['English','Hindi','Assamese','Bengali','Tamil','Telugu','Kannada','Malayalam','Marathi','Gujarati','Punjabi','Odia','Urdu'];
+
+  async function spmShowEditModal(id) {
+    const pdf = SPM.pdfs.find(p => String(p.id) === String(id));
+    if (!pdf) return;
+
+    const coverSrc = pdf.cover_url || pdf.cover_image || '';
+    const coverPreview = coverSrc
+      ? `<img id="spmEditCoverPreview" src="${_safeEsc(coverSrc)}" class="spm-cover-preview-img"
+            onerror="this.style.display='none';document.getElementById('spmEditCoverPh').style.display='flex'"/><div id="spmEditCoverPh" class="spm-cover-preview-ph" style="display:none">📄</div>`
+      : `<div id="spmEditCoverPh" class="spm-cover-preview-ph">📄</div>`;
+
+    const badgeOpts = BADGE_OPTIONS.map(b =>
+      `<option value="${b}" ${(pdf.badge || '') === b ? 'selected' : ''}>${b || '— None —'}</option>`
+    ).join('');
+
+    const langOpts = LANGUAGE_OPTIONS.map(l =>
+      `<option value="${l}" ${(pdf.language || 'English') === l ? 'selected' : ''}>${l}</option>`
+    ).join('');
+
+    spmOpenModal(`
+      <div class="spm-modal spm-modal-lg" style="max-width:860px">
+        <button class="spm-modal-close" onclick="window._SPM._closeModal()">✕</button>
+        <div class="spm-modal-title">✏️ Edit Draft</div>
+        <div class="spm-modal-sub" style="display:flex;align-items:center;gap:10px">
+          <span>${_safeEsc(pdf.title || 'Untitled PDF')}</span>
+          <span class="spm-draft-saved" id="spmDraftSavedMsg">✅ Draft saved</span>
+        </div>
+
+        <!-- Cover -->
+        <div class="spm-edit-section-head">🖼 Cover Image</div>
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px">
+          <div class="spm-cover-preview-wrap" style="flex-shrink:0">${coverPreview}</div>
+          <div style="flex:1">
+            <label class="spm-edit-label">Cover Image URL <span class="spm-req">*</span></label>
+            <input id="spmEditCoverUrl" class="spm-edit-input" placeholder="https://…/cover.jpg"
+              value="${_safeEsc(coverSrc)}"
+              oninput="window._SPM._previewCover(this.value)"/>
+            <div style="font-size:.7rem;color:var(--text2,#94a3b8);margin-top:5px">Paste a public image URL or Supabase storage URL</div>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="spm-edit-section-head">📝 Basic Information</div>
+        <div class="spm-edit-grid">
+          <div class="spm-edit-field full-width">
+            <label class="spm-edit-label">Title <span class="spm-req">*</span></label>
+            <input id="spmEditTitle" class="spm-edit-input" placeholder="PDF title…"
+              value="${_safeEsc(pdf.title || '')}"/>
+          </div>
+          <div class="spm-edit-field">
+            <label class="spm-edit-label">Author <span class="spm-opt">(optional)</span></label>
+            <input id="spmEditAuthor" class="spm-edit-input" placeholder="Author name…"
+              value="${_safeEsc(pdf.author || '')}"/>
+          </div>
+          <div class="spm-edit-field">
+            <label class="spm-edit-label">Language</label>
+            <select id="spmEditLanguage" class="spm-edit-input">${langOpts}</select>
+          </div>
+          <div class="spm-edit-field full-width">
+            <label class="spm-edit-label">Description <span class="spm-req">*</span></label>
+            <textarea id="spmEditDescription" class="spm-edit-input spm-edit-textarea"
+              placeholder="Describe this PDF — what it covers, who it's for…">${_safeEsc(pdf.description || pdf.preview || '')}</textarea>
+          </div>
+          <div class="spm-edit-field">
+            <label class="spm-edit-label">Category <span class="spm-req">*</span></label>
+            <input id="spmEditCategory" class="spm-edit-input" placeholder="e.g. JEE, NEET, UPSC…"
+              value="${_safeEsc(pdf.category || '')}"/>
+          </div>
+          <div class="spm-edit-field">
+            <label class="spm-edit-label">Badge <span class="spm-opt">(recommended)</span></label>
+            <select id="spmEditBadge" class="spm-edit-input">${badgeOpts}</select>
+          </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="spm-edit-section-head">💰 Pricing</div>
+        <div class="spm-edit-grid">
+          <div class="spm-edit-field">
+            <label class="spm-edit-label">Original Price (₹) <span class="spm-opt">MRP</span></label>
+            <input id="spmEditOrigPrice" type="number" min="0" class="spm-edit-input"
+              placeholder="0" value="${pdf.original_price ?? ''}"/>
+          </div>
+          <div class="spm-edit-field">
+            <label class="spm-edit-label">Selling Price (₹) <span class="spm-req">*</span></label>
+            <input id="spmEditPrice" type="number" min="0" class="spm-edit-input"
+              placeholder="0 = Free" value="${pdf.price ?? pdf.selling_price ?? 0}"/>
+          </div>
+        </div>
+
+        <!-- SEO & Tags -->
+        <div class="spm-edit-section-head">🔍 SEO & Tags</div>
+        <div class="spm-edit-grid">
+          <div class="spm-edit-field full-width">
+            <label class="spm-edit-label">Tags / Keywords <span class="spm-opt">comma separated · recommended</span></label>
+            <input id="spmEditTags" class="spm-edit-input"
+              placeholder="JEE chemistry, organic chemistry notes, NEET prep…"
+              value="${_safeEsc(pdf.seo_keywords || '')}"/>
+          </div>
+          <div class="spm-edit-field full-width">
+            <label class="spm-edit-label">SEO Title <span class="spm-opt">max 60 chars · recommended</span></label>
+            <input id="spmEditSeoTitle" class="spm-edit-input" maxlength="60"
+              placeholder="SEO optimised title…"
+              value="${_safeEsc(pdf.seo_title || '')}"/>
+          </div>
+          <div class="spm-edit-field full-width">
+            <label class="spm-edit-label">Meta Description <span class="spm-opt">max 155 chars · recommended</span></label>
+            <textarea id="spmEditMetaDesc" class="spm-edit-input spm-edit-textarea" maxlength="155"
+              placeholder="Compelling 1–2 sentence description for search engines…"
+              rows="2">${_safeEsc(pdf.seo_description || pdf.seo_desc || '')}</textarea>
+          </div>
+        </div>
+
+        <!-- Preview Pages -->
+        <div class="spm-edit-section-head">👁 Preview Pages</div>
+        <div class="spm-edit-field" style="margin-bottom:20px">
+          <label class="spm-edit-label">Preview PDF URL <span class="spm-opt">recommended</span></label>
+          <input id="spmEditPreviewUrl" class="spm-edit-input"
+            placeholder="https://…/preview.pdf"
+            value="${_safeEsc(pdf.preview_pdf_url || pdf.preview_url || pdf.previewUrl || '')}"/>
+          <div style="font-size:.7rem;color:var(--text2,#94a3b8);margin-top:5px">A shorter preview version of the PDF (first few pages)</div>
+        </div>
+
+        <!-- Slug -->
+        <div class="spm-edit-section-head">🔗 URL Slug</div>
+        <div class="spm-edit-field" style="margin-bottom:20px">
+          <label class="spm-edit-label">Slug <span class="spm-opt">auto-generated from title if left blank</span></label>
+          <input id="spmEditSlug" class="spm-edit-input"
+            placeholder="url-friendly-slug"
+            value="${_safeEsc(pdf.slug || '')}"/>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.06);padding-top:16px">
+          <button class="spm-btn spm-btn-ghost" onclick="window._SPM._closeModal()">Cancel</button>
+          <button class="spm-btn spm-btn-ghost" onclick="window._SPM._aiSuggestInEdit('${id}')">🤖 AI Fill</button>
+          <button class="spm-btn spm-btn-primary" onclick="window._SPM._saveDraft('${id}')">💾 Save Draft</button>
+          <button class="spm-btn spm-btn-success" onclick="window._SPM._saveAndPublish('${id}')">🚀 Save &amp; Publish</button>
+        </div>
+      </div>`);
+  }
+
+  async function spmSaveDraft(id, closeAfter = false) {
+    const sb = global.supabaseClient;
+    const pdf = SPM.pdfs.find(p => String(p.id) === String(id));
+    if (!pdf) return false;
+
+    const title      = document.getElementById('spmEditTitle')?.value.trim()       || pdf.title || '';
+    const coverUrl   = document.getElementById('spmEditCoverUrl')?.value.trim()    || '';
+    const author     = document.getElementById('spmEditAuthor')?.value.trim()      || '';
+    const language   = document.getElementById('spmEditLanguage')?.value           || 'English';
+    const description= document.getElementById('spmEditDescription')?.value.trim() || '';
+    const category   = document.getElementById('spmEditCategory')?.value.trim()    || '';
+    const badge      = document.getElementById('spmEditBadge')?.value              || '';
+    const origPrice  = document.getElementById('spmEditOrigPrice')?.value;
+    const price      = document.getElementById('spmEditPrice')?.value;
+    const tags       = document.getElementById('spmEditTags')?.value.trim()        || '';
+    const seoTitle   = document.getElementById('spmEditSeoTitle')?.value.trim()    || '';
+    const metaDesc   = document.getElementById('spmEditMetaDesc')?.value.trim()    || '';
+    const previewUrl = document.getElementById('spmEditPreviewUrl')?.value.trim()  || '';
+    const slug       = document.getElementById('spmEditSlug')?.value.trim()        || spmGenerateSlug(title);
+
+    const sellingPrice = price !== '' && price !== null ? parseFloat(price) : (pdf.price ?? pdf.selling_price ?? 0);
+    const originalPrice= origPrice !== '' && origPrice !== null ? parseFloat(origPrice) : (pdf.original_price ?? null);
+
+    const payload = {
+      title,
+      cover_url:       coverUrl || null,
+      cover_image:     coverUrl || null,
+      author:          author   || null,
+      language,
+      description,
+      preview:         description,
+      category:        category || null,
+      badge:           badge    || null,
+      original_price:  isNaN(originalPrice) ? null : originalPrice,
+      price:           sellingPrice,
+      selling_price:   sellingPrice,
+      free:            sellingPrice === 0,
+      seo_keywords:    tags     || null,
+      seo_title:       seoTitle || null,
+      seo_description: metaDesc || null,
+      preview_pdf_url: previewUrl || null,
+      slug:            slug     || null,
+      status:          pdf.status || 'draft',
+      updated_at:      spmNow(),
+    };
+
+    // Update in-memory
+    Object.assign(pdf, payload);
+    spmInvalidateCache(id);
+
+    // Persist to Supabase if available
+    if (sb) {
+      try {
+        const { error } = await sb.from('pdfs').update(payload).eq('id', id);
+        if (error) throw error;
+      } catch(e) {
+        console.warn('SPM saveDraft error:', e);
+        spmToast('⚠ Draft saved locally but DB update failed', 'warning');
+        if (closeAfter) { spmCloseModal(); spmRender(); }
+        return false;
+      }
+    }
+
+    // Show saved feedback
+    const msg = document.getElementById('spmDraftSavedMsg');
+    if (msg) { msg.classList.add('show'); setTimeout(() => msg.classList.remove('show'), 2500); }
+
+    spmRender();
+    if (closeAfter) spmCloseModal();
+    return true;
+  }
+
+  /* Cover URL live preview inside edit modal */
+  function spmPreviewCover(url) {
+    const img = document.getElementById('spmEditCoverPreview');
+    const ph  = document.getElementById('spmEditCoverPh');
+    if (!url) {
+      if (img) img.style.display = 'none';
+      if (ph)  ph.style.display  = 'flex';
+      return;
+    }
+    if (!img) {
+      // Create image element dynamically
+      const newImg = document.createElement('img');
+      newImg.id = 'spmEditCoverPreview';
+      newImg.className = 'spm-cover-preview-img';
+      newImg.onerror = () => { newImg.style.display='none'; if(ph) ph.style.display='flex'; };
+      newImg.onload  = () => { if(ph) ph.style.display='none'; };
+      newImg.src = url;
+      if (ph) ph.parentNode.insertBefore(newImg, ph);
+    } else {
+      img.src = url;
+      img.style.display = 'block';
+      img.onerror = () => { img.style.display='none'; if(ph) ph.style.display='flex'; };
+      if (ph) ph.style.display = 'none';
+    }
+  }
+
+  /* AI fill inside edit modal — fills form fields without closing */
+  async function spmAISuggestInEdit(id) {
+    const pdf = SPM.pdfs.find(p => String(p.id) === String(id));
+    if (!pdf) return;
+
+    // Snapshot current title from the form
+    const titleEl = document.getElementById('spmEditTitle');
+    if (titleEl?.value) pdf.title = titleEl.value.trim();
+
+    spmToast('🤖 Asking AI…', 'info');
+    const s = await spmGetAISuggestions(pdf);
+
+    const set = (elId, val) => { const el = document.getElementById(elId); if (el && val) el.value = val; };
+    set('spmEditBadge',    s.badge);
+    set('spmEditCategory', s.category);
+    set('spmEditSeoTitle', s.seo_title);
+    set('spmEditSlug',     s.slug);
+    set('spmEditTags',     s.tags);
+    const mdEl = document.getElementById('spmEditMetaDesc');
+    if (mdEl && s.meta_description) mdEl.value = s.meta_description;
+    if (s.selling_price !== undefined) set('spmEditPrice', s.selling_price);
+    spmToast('✅ AI suggestions filled — review and save', 'success');
+  }
+
+
 
   function spmStartUndoTimer(startTs) {
     const interval = setInterval(() => {
@@ -1301,10 +1591,10 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
           </div>
         </div>
 
-        <!-- ── DRAFT QUEUE TABLE ── -->
+        <!-- ── QUEUE NOTICE ── -->
         <div class="spm-queue-notice">
           <span>📋</span>
-          <span>Showing <strong>Draft Queue only</strong> — Published PDFs are automatically moved to the Library and never shown here.</span>
+          <span><strong>Draft Queue</strong> — Upload PDFs → click <strong>✏️ Edit</strong> to fill metadata → click <strong>🚀</strong> to validate &amp; publish. Validation runs <em>only</em> on Publish. Published PDFs move to the Library automatically.</span>
         </div>
         <div class="spm-table-card">
           <div class="spm-table-wrap">
@@ -1319,7 +1609,7 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
                   <th>Category</th>
                   <th>Price</th>
                   <th>Status</th>
-                  <th>Validation</th>
+                  <th>Validation Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -1427,17 +1717,16 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
     const status   = p.status || 'draft';
     const cached   = SPM.validationCache[id];
 
+    // Validation cell:
+    // - Only shows result if admin explicitly ran a check (cached)
+    // - Newly uploaded PDFs show neutral "─ Not checked" — NEVER auto-error
     const valCell = cached
       ? (cached.ok
-          ? `<span class="spm-val-ok">✓ Valid</span>`
+          ? `<span class="spm-val-ok">✓ Ready</span>`
           : `<span class="spm-val-fail" onclick="window._SPM._valDetail('${id}')">
-               ✗ ${cached.errors.filter(e => e.fail).length} error(s)
+               ✗ ${cached.errors.filter(e => e.fail).length} issue(s)
              </span>`)
-      : `<span class="spm-val-pending"
-           onclick="window._SPM._validateOne('${id}')"
-           style="cursor:pointer;text-decoration:underline dotted">
-           Run Check →
-         </span>`;
+      : `<span class="spm-val-pending" style="cursor:default">─ Not checked</span>`;
 
     const coverHTML = (p.cover_url || p.cover_image)
       ? `<img src="${_safeEsc(p.cover_url || p.cover_image)}"
@@ -1451,7 +1740,7 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
       <td style="color:var(--text2,#94a3b8);font-size:.73rem">${i + 1}</td>
       <td>${coverHTML}</td>
       <td>
-        <div style="font-size:.81rem;font-weight:600;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
+        <div style="font-size:.81rem;font-weight:600;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
           title="${_safeEsc(p.title || '')}">${_safeEsc(p.title || '—')}</div>
         <div style="font-size:.68rem;color:var(--text2,#94a3b8)">${_safeEsc(p.author || '')}</div>
       </td>
@@ -1465,16 +1754,17 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
       <td>${valCell}</td>
       <td>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
-          <button class="spm-btn spm-btn-ghost spm-btn-sm"
-            onclick="window._SPM._validateOne('${id}')" title="Validate">🔍</button>
+          <button class="spm-btn spm-btn-primary spm-btn-sm"
+            onclick="window._SPM._editDraft('${id}')" title="Edit metadata">✏️ Edit</button>
+          <button class="spm-btn spm-btn-success spm-btn-sm"
+            onclick="window._SPM._publishOne('${id}')" title="Validate &amp; Publish">🚀</button>
           <button class="spm-btn spm-btn-ghost spm-btn-sm"
             onclick="window._SPM._aiSuggest('${id}')" title="AI Suggestions">🤖</button>
-          <button class="spm-btn spm-btn-success spm-btn-sm"
-            onclick="window._SPM._publishOne('${id}')" title="Publish">🚀</button>
         </div>
       </td>
     </tr>`;
   }
+
 
   function spmUpdateToolbar() {
     const n = SPM.selected.size;
@@ -1591,16 +1881,32 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
         const cached = SPM.validationCache[id];
         cell.innerHTML = cached
           ? (cached.ok
-              ? `<span class="spm-val-ok">✓ Valid</span>`
+              ? `<span class="spm-val-ok">✓ Ready</span>`
               : `<span class="spm-val-fail" onclick="window._SPM._valDetail('${id}')">
-                   ✗ ${cached.errors.filter(e => e.fail).length} error(s)
+                   ✗ ${cached.errors.filter(e => e.fail).length} issue(s)
                  </span>`)
-          : `<span class="spm-val-pending">—</span>`;
+          : `<span class="spm-val-pending">─ Not checked</span>`;
       }
     },
 
     _valDetail:  (id) => spmShowValidationDetail(id),
     _aiSuggest:  (id) => spmShowAISuggest(id),
+    _editDraft:  (id) => spmShowEditModal(id),
+    _previewCover: (url) => spmPreviewCover(url),
+    _aiSuggestInEdit: (id) => spmAISuggestInEdit(id),
+
+    _saveDraft: async (id) => {
+      await spmSaveDraft(id, false);
+      spmToast('💾 Draft saved', 'success');
+    },
+
+    _saveAndPublish: async (id) => {
+      const saved = await spmSaveDraft(id, false);
+      if (saved !== false) {
+        spmCloseModal();
+        await spmStartPublish([id]);
+      }
+    },
 
     _publishOne: async (id) => {
       spmCloseModal();
