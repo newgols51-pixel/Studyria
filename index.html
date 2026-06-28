@@ -24553,7 +24553,10 @@ function sbpOpenEditor(id) {
   window._sbp.editingId = id;
   const item = window._sbp.queue.find(x => x.id === id);
   if (!item) return;
-  const panel = document.getElementById('sbpEditorPanel');
+  const isMobile = window.innerWidth <= 900;
+  const panel = isMobile
+    ? document.getElementById('sbpMobileEditorBody')
+    : document.getElementById('sbpEditorPanel');
   if (!panel) return;
 
   const dbCats = window._dbCategories || [];
@@ -24612,7 +24615,7 @@ function sbpOpenEditor(id) {
     </div>
 
     <!-- Author + Category -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="sbp-field-row">
       <div>
         <label class="ap-label">Author</label>
         <input class="ap-input" id="sbeAuthor" value="${(item.author||'').replace(/"/g,'&quot;')}" placeholder="Author" oninput="sbpEditorLive()" style="margin-top:5px"/>
@@ -24647,7 +24650,7 @@ function sbpOpenEditor(id) {
     </div>
 
     <!-- Pricing -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="sbp-field-row">
       <div>
         <label class="ap-label">Original Price (₹)</label>
         <input class="ap-input" id="sbeOrigPrice" type="number" min="0" value="${item.originalPrice||''}" placeholder="499" oninput="sbpEditorLive()" style="margin-top:5px"/>
@@ -24682,14 +24685,30 @@ function sbpOpenEditor(id) {
       <button onclick="sbpCloseEditor()" style="padding:10px 16px;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text2);cursor:pointer;font-family:var(--font-body)">Cancel</button>
     </div>`;
 
-  panel.style.display = '';
-  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const isMob = window.innerWidth <= 900;
+  if (isMob) {
+    const modal = document.getElementById('sbpMobileEditorModal');
+    if (modal) { modal.classList.add('open'); modal.scrollTop = 0; }
+  } else {
+    const desktopPanel = document.getElementById('sbpEditorPanel');
+    if (desktopPanel) desktopPanel.style.display = '';
+    const ph = document.getElementById('sbpEditorPlaceholder');
+    if (ph) ph.style.display = 'none';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function sbpCloseEditor() {
   window._sbp.editingId = null;
+  // Close desktop panel
   const panel = document.getElementById('sbpEditorPanel');
   if (panel) panel.style.display = 'none';
+  // Close mobile modal
+  const modal = document.getElementById('sbpMobileEditorModal');
+  if (modal) modal.classList.remove('open');
+  // Show placeholder
+  const ph = document.getElementById('sbpEditorPlaceholder');
+  if (ph) ph.style.display = '';
 }
 
 function sbpEditorLive() {
@@ -24737,10 +24756,9 @@ function sbpEditorAutoSEO() {
 
 function sbpEditorSave() {
   sbpEditorLive();
-  const id = window._sbp.editingId;
   sbpCloseEditor();
   sbpRenderQueue(); sbpUpdateStats();
-  showToast('Draft saved!', 'success');
+  showToast('✅ Draft saved!', 'success');
 }
 
 /* ─── Bulk Edit Modal ────────────────────────────────────────────── */
@@ -24758,11 +24776,11 @@ function sbpOpenBulkEdit() {
 
   document.getElementById('sbpBulkModalBody').innerHTML = `
     <div style="font-size:.82rem;color:var(--text2);margin-bottom:16px">Applying to <strong>${sel.length}</strong> selected PDF(s). Leave blank to skip that field.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="sbp-field-row">
       <div><label class="ap-label">Category</label><select class="ap-input" id="bulkCat" style="margin-top:5px"><option value="">— skip —</option>${catOpts}</select></div>
       <div><label class="ap-label">Badge</label><select class="ap-input" id="bulkBadge" style="margin-top:5px"><option value="">— skip —</option>${badges.map(b=>`<option>${b}</option>`).join('')}</select></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="sbp-field-row">
       <div><label class="ap-label">Selling Price (₹)</label><input class="ap-input" id="bulkPrice" type="number" min="0" placeholder="skip" style="margin-top:5px"/></div>
       <div><label class="ap-label">Author</label><input class="ap-input" id="bulkAuthor" placeholder="skip" style="margin-top:5px"/></div>
     </div>
@@ -24920,7 +24938,7 @@ function sbpShowReport({ published, failed, skipped, elapsed, total, failedItems
   if (!modal || !body) return;
 
   body.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px">
       <div style="text-align:center;background:rgba(16,217,142,0.08);border:1px solid rgba(16,217,142,0.2);border-radius:10px;padding:14px">
         <div style="font-size:1.8rem;font-weight:900;color:#10d98e">${published}</div>
         <div style="font-size:.72rem;color:var(--text2);margin-top:2px">Published</div>
@@ -25016,6 +25034,16 @@ function renderAdminAddPDF(main) {
     position:sticky; top:80px; max-height:calc(100vh - 100px);
     overflow-y:auto;
   }
+  /* Mobile: editor opens as full-screen modal */
+  .sbp-editor-modal {
+    display:none; position:fixed; inset:0; z-index:900;
+    background:var(--bg2); overflow-y:auto; padding:0;
+  }
+  .sbp-editor-modal.open { display:block; }
+  .sbp-editor-modal-inner {
+    padding:16px; max-width:600px; margin:0 auto;
+    padding-bottom:80px;
+  }
   .sbp-modal-overlay {
     display:none; position:fixed; inset:0; z-index:820;
     align-items:center; justify-content:center;
@@ -25032,7 +25060,19 @@ function renderAdminAddPDF(main) {
   }
   .sbp-progress-track { background:var(--surface); border-radius:4px; height:6px; overflow:hidden; margin:8px 0; }
   .sbp-progress-fill  { height:100%; background:var(--grad-primary); width:0%; transition:width .3s; border-radius:4px; }
-  @media(max-width:900px) { .sbp-layout { grid-template-columns:1fr !important; } }
+  /* On desktop: side panel. On mobile: hide side panel, use modal instead */
+  @media(max-width:900px) {
+    .sbp-layout { grid-template-columns:1fr !important; }
+    .sbp-desktop-editor { display:none !important; }
+  }
+  @media(min-width:901px) {
+    .sbp-editor-modal { display:none !important; }
+  }
+  /* Full-width inputs on mobile */
+  .sbp-field-row {
+    display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;
+  }
+  @media(max-width:600px) { .sbp-field-row { grid-template-columns:1fr; } }
   </style>
 
   <!-- PAGE HEADER -->
@@ -25044,7 +25084,7 @@ function renderAdminAddPDF(main) {
       </div>
       <div class="ap-page-sub">Upload up to 12 PDFs at once · AI-powered suggestions · One-click bulk publish</div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
       <button class="btn btn-secondary btn-sm" onclick="sbpSelectAll()">☑ Select All</button>
       <button class="btn btn-secondary btn-sm" id="sbpBulkEditBtn" onclick="sbpOpenBulkEdit()" disabled>⚙️ Bulk Edit</button>
       <button class="btn btn-secondary btn-sm" onclick="adminCancelEdit()">✕ Exit</button>
@@ -25055,7 +25095,7 @@ function renderAdminAddPDF(main) {
   </div>
 
   <!-- STATS BAR -->
-  <div class="sbp-stat-bar">
+  <div class="sbp-stat-bar" style="overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px">
     <div class="sbp-stat">
       <div class="sbp-stat-num" id="sbpStatTotal">0</div>
       <div class="sbp-stat-lbl">Total</div>
@@ -25143,8 +25183,8 @@ function renderAdminAddPDF(main) {
       </div>
     </div>
 
-    <!-- RIGHT: Editor Panel -->
-    <div>
+    <!-- RIGHT: Editor Panel (desktop only) -->
+    <div class="sbp-desktop-editor">
       <div id="sbpEditorPanel" class="sbp-editor-panel" style="display:none">
         <!-- Editor injected by sbpOpenEditor() -->
       </div>
@@ -25163,6 +25203,23 @@ function renderAdminAddPDF(main) {
             5. Hit 🚀 Publish Ready PDFs when done
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE FULL-SCREEN EDITOR MODAL -->
+  <div class="sbp-editor-modal" id="sbpMobileEditorModal">
+    <div class="sbp-editor-modal-inner">
+      <!-- Sticky header -->
+      <div style="position:sticky;top:0;z-index:10;background:var(--bg2);padding:14px 0 12px;margin-bottom:4px;border-bottom:1px solid var(--glass-border);margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <button onclick="sbpCloseEditor()" style="background:rgba(61,142,248,0.12);border:1px solid rgba(61,142,248,0.25);color:var(--accent);width:36px;height:36px;border-radius:10px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">←</button>
+          <div style="font-weight:800;font-size:1rem;flex:1">Edit PDF Details</div>
+          <button onclick="sbpEditorSave()" style="padding:8px 16px;border-radius:10px;border:none;background:var(--grad-primary);color:#fff;font-weight:700;cursor:pointer;font-size:.82rem;font-family:var(--font-body)">💾 Save</button>
+        </div>
+      </div>
+      <div id="sbpMobileEditorBody">
+        <!-- Content injected by sbpOpenEditor() -->
       </div>
     </div>
   </div>
@@ -25192,16 +25249,6 @@ function renderAdminAddPDF(main) {
 
   // Mark session active so queue persists on tab switches
   window._sbp._sessionActive = true;
-
-  // Hide placeholder when editor opens
-  const origOpen = sbpOpenEditor;
-  window.sbpOpenEditor = function(id) {
-    origOpen(id);
-    const ph = document.getElementById('sbpEditorPlaceholder');
-    if (ph) ph.style.display = 'none';
-    const panel = document.getElementById('sbpEditorPanel');
-    if (panel) panel.style.display = '';
-  };
 
   // Slot badge update
   function updateSlotBadge() {
