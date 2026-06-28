@@ -932,13 +932,19 @@ function _waitForOneSignal() {
 
 /**
  * isNotificationSupported — true when the browser has everything needed for
- * push notifications (Notification API + Service Worker + PushManager).
+ * push notifications (Notification API + Service Worker + PushManager +
+ * secure context).  This is the canonical check used by all Notification
+ * Center UI paths; it never falls back to UA sniffing.
+ *
+ * Android Chrome passes all four conditions once the Service Worker is
+ * registered and the page is served over HTTPS (or localhost).
  */
 function isNotificationSupported() {
   return (
-    typeof Notification !== 'undefined' &&
-    'serviceWorker' in navigator &&
-    'PushManager'   in window
+    'Notification'    in window &&
+    'serviceWorker'   in navigator &&
+    'PushManager'     in window &&
+    window.isSecureContext === true
   );
 }
 
@@ -1027,19 +1033,91 @@ async function requestNotificationPermission() {
 }
 
 /**
- * getPermissionState — returns the current state for building Notification
- * Center UI without needing to call requestPermission():
- *   'unsupported' | 'default' | 'granted' | 'denied'
- * 'granted' here means the BROWSER permission is granted AND OneSignal has
- * confirmed the user is opted in. If the browser permission is granted but
- * OneSignal hasn't finished syncing yet, this still reports 'granted' based
- * on the Notification API alone, since that's what the UI needs to decide
- * whether to show the native permission prompt.
+ * getPermissionState — returns the current notification support/permission
+ * state for building Notification Center UI without calling requestPermission():
+ *
+ *   'unsupported' — browser lacks Notification / SW / PushManager / secure ctx
+ *   'default'     — supported, user hasn't been asked yet  → show Enable button
+ *   'granted'     — permission granted                     → show "Enabled" status
+ *   'denied'      — permission denied                      → show "Open Browser Settings"
+ *
+ * Never returns 'unsupported' on Android Chrome when SW is registered and
+ * the page is served over HTTPS.
  */
 async function getPermissionState() {
   if (!isNotificationSupported()) return 'unsupported';
-  const perm = Notification.permission; // 'default' | 'granted' | 'denied'
-  return perm;
+  return Notification.permission; // 'default' | 'granted' | 'denied'
+}
+
+/**
+ * renderNotificationCenterUI — updates a Notification Center container with
+ * the correct button/label for the current permission state.
+ *
+ * Expected DOM inside `container`:
+ *   .notif-unsupported  — shown only when truly unsupported
+ *   .notif-enable-btn   — "Enable Notifications" button (default state)
+ *   .notif-enabled-msg  — "Notifications Enabled" label (granted state)
+ *   .notif-settings-btn — "Open Browser Settings" button (denied state)
+ *
+ * Call this on page load and after any permission change.
+ *
+ * @param {Element} container  — wrapper element containing the four UI nodes
+ */
+async function renderNotificationCenterUI(container) {
+  if (!container) return;
+
+  const unsupportedEl = container.querySelector('.notif-unsupported');
+  const enableBtn     = container.querySelector('.notif-enable-btn');
+  const enabledMsg    = container.querySelector('.notif-enabled-msg');
+  const settingsBtn   = container.querySelector('.notif-settings-btn');
+
+  // Helper: hide all, then reveal one
+  function _show(el) {
+    [unsupportedEl, enableBtn, enabledMsg, settingsBtn].forEach(function(n) {
+      if (n) n.style.display = 'none';
+    });
+    if (el) el.style.display = '';
+  }
+
+  const state = await getPermissionState();
+
+  if (state === 'unsupported') {
+    _show(unsupportedEl);
+    return;
+  }
+
+  if (state === 'granted') {
+    _show(enabledMsg);
+    return;
+  }
+
+  if (state === 'denied') {
+    _show(settingsBtn);
+    // Wire up click to best-effort settings deep-link
+    if (settingsBtn && !settingsBtn.__notifSettingsBound) {
+      settingsBtn.__notifSettingsBound = true;
+      settingsBtn.addEventListener('click', function() {
+        openNotificationSettings();
+      });
+    }
+    return;
+  }
+
+  // state === 'default'
+  _show(enableBtn);
+  if (enableBtn && !enableBtn.__notifEnableBound) {
+    enableBtn.__notifEnableBound = true;
+    enableBtn.addEventListener('click', async function() {
+      enableBtn.disabled = true;
+      try {
+        const result = await requestNotificationPermission();
+        // Re-render after the prompt resolves
+        await renderNotificationCenterUI(container);
+      } catch (_) {
+        enableBtn.disabled = false;
+      }
+    });
+  }
 }
 
 /**
@@ -1093,12 +1171,13 @@ async function tagAudienceSegment(isPremium) {
  * rather than calling OneSignal directly.
  */
 window.StudyriaNotifications = {
-  requestPermission:    requestNotificationPermission,
-  isSubscribed:          isSubscribed,
-  getSubscriptionId:     getSubscriptionId,
-  getPermissionState:    getPermissionState,
+  requestPermission:        requestNotificationPermission,
+  isSubscribed:             isSubscribed,
+  getSubscriptionId:        getSubscriptionId,
+  getPermissionState:       getPermissionState,
+  renderNotificationCenterUI: renderNotificationCenterUI,
   openNotificationSettings: openNotificationSettings,
-  tagAudienceSegment:    tagAudienceSegment,
+  tagAudienceSegment:       tagAudienceSegment,
 };
 
 console.log('[OneSignal] window.StudyriaNotifications ready');
