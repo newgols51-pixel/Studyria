@@ -21062,7 +21062,23 @@ async function refreshNotificationCenter() {
   const hmBadge= document.getElementById('hmNotifBadge');
   if (!pill || !body || !actions) return;
 
-  const api = window.StudyriaNotifications;
+  // app.js defines window.StudyriaNotifications, but it may not have run
+  // yet if the panel is opened immediately after page load. Wait up to
+  // ~3s for it to appear before concluding the browser is unsupported —
+  // otherwise a normal Chrome/Edge user briefly sees a false "Unsupported".
+  let api = window.StudyriaNotifications;
+  if (!api) {
+    pill.className = 'notif-center-status-pill default';
+    pill.textContent = 'Checking…';
+    body.textContent = 'Checking your notification permission…';
+    actions.innerHTML = '';
+    const deadline = Date.now() + 3000;
+    while (!api && Date.now() < deadline) {
+      await new Promise(r => setTimeout(r, 150));
+      api = window.StudyriaNotifications;
+    }
+  }
+
   const state = api ? await api.getPermissionState() : 'unsupported';
 
   pill.className = 'notif-center-status-pill ' + state;
@@ -21150,9 +21166,19 @@ window.addEventListener('onesignal:subscriptionchange', function () {
 
 // Set the initial burger-menu badge state once the page has loaded
 window.addEventListener('load', function () {
-  setTimeout(function () {
+  setTimeout(async function () {
     const hmBadge = document.getElementById('hmNotifBadge');
-    if (!hmBadge || !window.StudyriaNotifications) return;
+    if (!hmBadge) return;
+
+    // Wait up to ~5s total for app.js to finish setting up StudyriaNotifications
+    // before concluding push isn't supported — avoids a false "N/A" on slow loads.
+    let tries = 0;
+    while (!window.StudyriaNotifications && tries < 30) {
+      await new Promise(r => setTimeout(r, 150));
+      tries++;
+    }
+    if (!window.StudyriaNotifications) return;
+
     window.StudyriaNotifications.getPermissionState().then(function (state) {
       if (state === 'granted')      { hmBadge.textContent = 'ON';  hmBadge.style.color = '#10d98e'; hmBadge.style.background = 'rgba(16,217,142,.15)'; }
       else if (state === 'denied')  { hmBadge.textContent = 'OFF'; hmBadge.style.color = '#ff6b85'; hmBadge.style.background = 'rgba(255,77,109,.15)'; }
