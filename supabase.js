@@ -232,6 +232,126 @@
 // CREATE INDEX IF NOT EXISTS idx_push_notif_scheduled_at ON public.push_notifications(scheduled_at);
 // CREATE INDEX IF NOT EXISTS idx_push_notif_created_at   ON public.push_notifications(created_at DESC);
 //
+// -- 6b. Classification Tables (Categories, Subcategories, Academic Levels, Streams, Semester/Classes, Subjects)
+//
+// -- 6b-1. Categories
+// CREATE TABLE IF NOT EXISTS public.categories (
+//   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   name        text NOT NULL UNIQUE,
+//   slug        text NOT NULL UNIQUE,
+//   sort_order  integer NOT NULL DEFAULT 0,
+//   created_at  timestamptz DEFAULT now()
+// );
+// ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+// -- Public read:
+// CREATE POLICY "Categories: public read" ON public.categories FOR SELECT USING (true);
+// -- Admin full access:
+// CREATE POLICY "Categories: admin all" ON public.categories
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_categories_slug       ON public.categories(slug);
+// CREATE INDEX IF NOT EXISTS idx_categories_sort_order ON public.categories(sort_order);
+//
+// -- 6b-2. Subcategories
+// CREATE TABLE IF NOT EXISTS public.subcategories (
+//   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   category_id  uuid NOT NULL REFERENCES public.categories(id) ON DELETE CASCADE,
+//   name         text NOT NULL,
+//   slug         text NOT NULL,
+//   sort_order   integer NOT NULL DEFAULT 0,
+//   created_at   timestamptz DEFAULT now(),
+//   UNIQUE (category_id, slug)
+// );
+// ALTER TABLE public.subcategories ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Subcategories: public read" ON public.subcategories FOR SELECT USING (true);
+// CREATE POLICY "Subcategories: admin all" ON public.subcategories
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_subcategories_category_id ON public.subcategories(category_id);
+// CREATE INDEX IF NOT EXISTS idx_subcategories_sort_order  ON public.subcategories(sort_order);
+//
+// -- 6b-3. Academic Levels
+// CREATE TABLE IF NOT EXISTS public.academic_levels (
+//   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   subcategory_id  uuid NOT NULL REFERENCES public.subcategories(id) ON DELETE CASCADE,
+//   name            text NOT NULL,
+//   slug            text NOT NULL,
+//   sort_order      integer NOT NULL DEFAULT 0,
+//   created_at      timestamptz DEFAULT now(),
+//   UNIQUE (subcategory_id, slug)
+// );
+// ALTER TABLE public.academic_levels ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "AcademicLevels: public read" ON public.academic_levels FOR SELECT USING (true);
+// CREATE POLICY "AcademicLevels: admin all" ON public.academic_levels
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_academic_levels_subcategory_id ON public.academic_levels(subcategory_id);
+//
+// -- 6b-4. Streams
+// CREATE TABLE IF NOT EXISTS public.streams (
+//   id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   academic_level_id uuid NOT NULL REFERENCES public.academic_levels(id) ON DELETE CASCADE,
+//   name              text NOT NULL,
+//   slug              text NOT NULL,
+//   sort_order        integer NOT NULL DEFAULT 0,
+//   created_at        timestamptz DEFAULT now(),
+//   UNIQUE (academic_level_id, slug)
+// );
+// ALTER TABLE public.streams ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Streams: public read" ON public.streams FOR SELECT USING (true);
+// CREATE POLICY "Streams: admin all" ON public.streams
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_streams_academic_level_id ON public.streams(academic_level_id);
+//
+// -- 6b-5. Semester / Classes
+// CREATE TABLE IF NOT EXISTS public.semester_classes (
+//   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   stream_id   uuid NOT NULL REFERENCES public.streams(id) ON DELETE CASCADE,
+//   name        text NOT NULL,
+//   slug        text NOT NULL,
+//   sort_order  integer NOT NULL DEFAULT 0,
+//   created_at  timestamptz DEFAULT now(),
+//   UNIQUE (stream_id, slug)
+// );
+// ALTER TABLE public.semester_classes ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "SemesterClasses: public read" ON public.semester_classes FOR SELECT USING (true);
+// CREATE POLICY "SemesterClasses: admin all" ON public.semester_classes
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_semester_classes_stream_id ON public.semester_classes(stream_id);
+//
+// -- 6b-6. Subjects
+// CREATE TABLE IF NOT EXISTS public.subjects (
+//   id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   semester_class_id   uuid NOT NULL REFERENCES public.semester_classes(id) ON DELETE CASCADE,
+//   name                text NOT NULL,
+//   slug                text NOT NULL,
+//   sort_order          integer NOT NULL DEFAULT 0,
+//   created_at          timestamptz DEFAULT now(),
+//   UNIQUE (semester_class_id, slug)
+// );
+// ALTER TABLE public.subjects ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Subjects: public read" ON public.subjects FOR SELECT USING (true);
+// CREATE POLICY "Subjects: admin all" ON public.subjects
+//   FOR ALL TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid() AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE INDEX IF NOT EXISTS idx_subjects_semester_class_id ON public.subjects(semester_class_id);
+//
+// -- 6b-7. pdfs table — classification FK columns (add if missing)
+// ALTER TABLE public.pdfs ADD COLUMN IF NOT EXISTS category_id       uuid REFERENCES public.categories(id)       ON DELETE SET NULL;
+// ALTER TABLE public.pdfs ADD COLUMN IF NOT EXISTS subcategory_id    uuid REFERENCES public.subcategories(id)    ON DELETE SET NULL;
+// ALTER TABLE public.pdfs ADD COLUMN IF NOT EXISTS academic_level_id uuid REFERENCES public.academic_levels(id)  ON DELETE SET NULL;
+// ALTER TABLE public.pdfs ADD COLUMN IF NOT EXISTS stream_id         uuid REFERENCES public.streams(id)          ON DELETE SET NULL;
+// ALTER TABLE public.pdfs ADD COLUMN IF NOT EXISTS semester_class_id uuid REFERENCES public.semester_classes(id) ON DELETE SET NULL;
+// ALTER TABLE public.pdfs ADD COLUMN IF NOT EXISTS subject_id        uuid REFERENCES public.subjects(id)         ON DELETE SET NULL;
+// CREATE INDEX IF NOT EXISTS idx_pdfs_category_id       ON public.pdfs(category_id);
+// CREATE INDEX IF NOT EXISTS idx_pdfs_subcategory_id    ON public.pdfs(subcategory_id);
+// CREATE INDEX IF NOT EXISTS idx_pdfs_academic_level_id ON public.pdfs(academic_level_id);
+// CREATE INDEX IF NOT EXISTS idx_pdfs_stream_id         ON public.pdfs(stream_id);
+// CREATE INDEX IF NOT EXISTS idx_pdfs_semester_class_id ON public.pdfs(semester_class_id);
+// CREATE INDEX IF NOT EXISTS idx_pdfs_subject_id        ON public.pdfs(subject_id);
+//
 // -- 7. WhatsApp Community broadcast log
 // CREATE TABLE IF NOT EXISTS public.whatsapp_broadcasts (
 //   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -792,6 +912,9 @@
     if (typeof window._chSubscribeRealtime === 'function') {
       window._chSubscribeRealtime();
     }
+
+    // ── Classification Realtime ───────────────────────────────────
+    window.initClassifRealtime();
   };
 
   // ── PRODUCT REVIEWS & RATINGS ────────────────────────────────────
@@ -1353,6 +1476,114 @@
       return count || 0;
     } catch (_) { return 0; }
   };
+
+
+  // ══════════════════════════════════════════════════════════════════
+  // 📚 CLASSIFICATION CRUD — Categories, Subcategories, Academic Levels,
+  //    Streams, Semester/Classes, Subjects
+  // ══════════════════════════════════════════════════════════════════
+
+  /**
+   * classifFetch(table, filters?)
+   * Generic fetch for any classification table. Ordered by sort_order, name.
+   * Returns array of { id, name, slug, sort_order }. Cached 5 min.
+   */
+  window.classifFetch = async function classifFetch(table, filters) {
+    const cacheKey = 'classif:' + table + ':' + JSON.stringify(filters || {});
+    return window.cachedSupabaseQuery(cacheKey, async () => {
+      const client = window.supabaseClient;
+      if (!client) return [];
+      let q = client.from(table).select('id,name,slug,sort_order').order('sort_order').order('name');
+      if (filters) { Object.entries(filters).forEach(([k, v]) => { q = q.eq(k, v); }); }
+      const { data, error } = await q;
+      if (error) { console.warn('classifFetch', table, error.message); return []; }
+      return data || [];
+    }, 5 * 60 * 1000);
+  };
+
+  /**
+   * classifCreate(table, name, extraFields?)
+   * Inserts a new classification row. Busts cache. Returns row or null.
+   */
+  window.classifCreate = async function classifCreate(table, name, extraFields) {
+    const client = window.supabaseClient;
+    if (!client) return null;
+    const payload = {
+      name: name.trim(),
+      slug: name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+      sort_order: 0,
+      ...(extraFields || {}),
+    };
+    try {
+      const { data, error } = await client.from(table).insert(payload).select().single();
+      if (error) throw error;
+      if (window._supabaseCache) {
+        window._supabaseCache.forEach((_, k) => { if (k.startsWith('classif:' + table)) window._supabaseCache.delete(k); });
+      }
+      return data;
+    } catch (e) { console.error('classifCreate', table, e.message); return null; }
+  };
+
+  /**
+   * classifUpdate(table, id, name)
+   * Updates name+slug. Busts cache. Returns true on success.
+   */
+  window.classifUpdate = async function classifUpdate(table, id, name) {
+    const client = window.supabaseClient;
+    if (!client) return false;
+    try {
+      const { error } = await client.from(table).update({
+        name: name.trim(),
+        slug: name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+      }).eq('id', id);
+      if (error) throw error;
+      if (window._supabaseCache) {
+        window._supabaseCache.forEach((_, k) => { if (k.startsWith('classif:' + table)) window._supabaseCache.delete(k); });
+      }
+      return true;
+    } catch (e) { console.error('classifUpdate', table, e.message); return false; }
+  };
+
+  /**
+   * classifDelete(table, id)
+   * Deletes row. Child rows cascade via FK. Busts full classif cache.
+   */
+  window.classifDelete = async function classifDelete(table, id) {
+    const client = window.supabaseClient;
+    if (!client) return false;
+    try {
+      const { error } = await client.from(table).delete().eq('id', id);
+      if (error) throw error;
+      if (window._supabaseCache) {
+        window._supabaseCache.forEach((_, k) => { if (k.startsWith('classif:')) window._supabaseCache.delete(k); });
+      }
+      return true;
+    } catch (e) { console.error('classifDelete', table, e.message); return false; }
+  };
+
+  /**
+   * initClassifRealtime()
+   * Subscribes to realtime on all 6 classification tables.
+   * Busts classif cache on any change + refreshes open dropdowns.
+   */
+  window.initClassifRealtime = function initClassifRealtime() {
+    const client = window.supabaseClient;
+    if (!client) return;
+    ['categories','subcategories','academic_levels','streams','semester_classes','subjects'].forEach(t => {
+      client
+        .channel('classif_' + t)
+        .on('postgres_changes', { event: '*', schema: 'public', table: t }, () => {
+          if (window._supabaseCache) {
+            window._supabaseCache.forEach((_, k) => { if (k.startsWith('classif:' + t)) window._supabaseCache.delete(k); });
+          }
+          if (typeof window.apRefreshCategories === 'function') {
+            try { window.apRefreshCategories(); } catch (_) {}
+          }
+        })
+        .subscribe();
+    });
+  };
+
 
 
   // ── SPM PUBLISH HOOK ─────────────────────────────────────────────

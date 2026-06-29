@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
+<link rel="stylesheet" href="premium-edit-pdf-styles.css">
 <meta charset="UTF-8" />
 <!-- ── SPA PATH → HASH REDIRECT ───────────────────────────────────────
      Runs synchronously before any paint so direct URL visits (/library,
@@ -24894,7 +24895,19 @@ async function sbpPublishReady() {
         cover_url:       coverUrl,
         pdf_url:         pdfUrl,
         status:          'published',
-        created_at:      item.publishDate || new Date().toISOString()
+        created_at:      item.publishDate || new Date().toISOString(),
+        // ── Premium Edit PDF: cascading classification FKs ─────────
+        subcategory_id:    item.subcategoryId    || null,
+        academic_level_id: item.academicLevelId  || null,
+        stream_id:         item.streamId         || null,
+        semester_class_id: item.semesterClassId  || null,
+        subject_id:        item.subjectId        || null,
+        // Text display columns (denormalised for search / display)
+        subcategory:       item.subcategory      || null,
+        academic_level:    item.academicLevel    || null,
+        stream:            item.stream           || null,
+        semester_class:    item.semesterClass    || null,
+        subject:           item.subject          || null,
       };
 
       const { error: insErr } = await sb.from('pdfs').insert(payload);
@@ -36573,6 +36586,8 @@ async function hlmSaveTheme() {
 
 <script src="app.js" defer></script>
 <script src="smart-publish-manager.js"></script>
+<script src="pdf-classification-refactor.js"></script>
+<script src="premium-edit-pdf-ui.js"></script>
 
 </body>
 </html>

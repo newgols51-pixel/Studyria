@@ -1027,3 +1027,70 @@ if (document.readyState === 'loading') {
   // DOM already ready (script placed at end of body)
   setTimeout(_classifRefactorInit, 0);
 }
+
+// ─────────────────────────────────────────────────────────────────────
+// SECTION 19 — PREMIUM EDIT UI INTEGRATION
+// Patches adminSavePDF payload to also include IDs from the premium
+// cascading dropdowns (pepCat, pepSubcat, etc.) when editing via SBP.
+// Also syncs pepCat → sbeCat to keep the original save pipeline intact.
+// ─────────────────────────────────────────────────────────────────────
+
+(function _pepIntegrationPatch() {
+
+  /**
+   * getSelectIdFromEl(selectId)
+   * Returns data-id of the currently selected option, or null.
+   */
+  function _pepGetId(selectId) {
+    const el = document.getElementById(selectId);
+    if (!el) return null;
+    const opt = el.options[el.selectedIndex];
+    return opt?.dataset?.id || null;
+  }
+
+  /**
+   * Patch the SPM publish flow to include new classification FK IDs
+   * from the premium editor dropdowns (pepCat → category_id, etc.).
+   * These are merged into the item object before sbpBuildPublishPayload
+   * converts item → Supabase row.
+   */
+  if (typeof window.sbpBuildPublishPayload === 'function') {
+    const _origBuild = window.sbpBuildPublishPayload;
+    window.sbpBuildPublishPayload = function(item) {
+      const payload = _origBuild(item);
+      // Merge premium dropdown IDs if present
+      if (item.categoryId)      payload.category_id       = item.categoryId;
+      if (item.subcategoryId)   payload.subcategory_id    = item.subcategoryId;
+      if (item.academicLevelId) payload.academic_level_id = item.academicLevelId;
+      if (item.streamId)        payload.stream_id         = item.streamId;
+      if (item.semesterClassId) payload.semester_class_id = item.semesterClassId;
+      if (item.subjectId)       payload.subject_id        = item.subjectId;
+      // Also write text values for display columns
+      if (item.subcategory)  payload.subcategory    = item.subcategory  || null;
+      if (item.academicLevel)payload.academic_level = item.academicLevel|| null;
+      if (item.stream)       payload.stream         = item.stream       || null;
+      if (item.semesterClass)payload.semester_class = item.semesterClass|| null;
+      if (item.subject)      payload.subject        = item.subject      || null;
+      return payload;
+    };
+  }
+
+  /**
+   * Patch the existing adminSavePDF (used by legacy Add/Edit PDF tab)
+   * to also read classification IDs from premium dropdowns if they exist
+   * in the DOM (i.e. when premium-edit-pdf-ui.js is loaded).
+   * Safe no-op if the pep* elements don't exist.
+   */
+  const _origAdminSavePDF = window.adminSavePDF;
+  if (typeof _origAdminSavePDF === 'function') {
+    window.adminSavePDF = async function() {
+      // Sync pepCat → apCat if premium editor is active
+      const pepCatEl = document.getElementById('pepCat');
+      const apCatEl  = document.getElementById('apCat');
+      if (pepCatEl?.value && apCatEl) apCatEl.value = pepCatEl.value;
+      return _origAdminSavePDF.apply(this, arguments);
+    };
+  }
+
+  console.log('[ClassifRefactor] ✅ Section 19 — Premium Edit UI integration patch applied.');
+})();
