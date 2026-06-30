@@ -408,7 +408,9 @@
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZGZtZ2Nla2RwamRjeXFodWhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTE2NDcsImV4cCI6MjA5NjIyNzY0N30.kDOEYxUQyLTp1blasuX2kVSIy2olGLhdqqtOMTlEX5g';
 
   // ── INIT CLIENT ─────────────────────────────────────────────────
-  const _supabaseSDK = window.supabase;
+  // Prefer window.supabaseLib (set by index.html right after the CDN script loads)
+  // to avoid colliding with window.supabase being re-assigned later to the client.
+  const _supabaseSDK = window.supabaseLib || window.supabase;
   if (!_supabaseSDK || typeof _supabaseSDK.createClient !== 'function') {
     console.error('❌ Supabase SDK not found. Check CDN script load order.');
     return;
@@ -829,7 +831,7 @@
       const { error } = await client.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin + '/',
+          redirectTo: 'https://studyria.qzz.io',
           queryParams: { access_type: 'offline', prompt: 'select_account' },
         },
       });
