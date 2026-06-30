@@ -17997,8 +17997,11 @@ async function pdpInitPreview(pdf) {
 
   track.classList.add('active');
 
-  const SLOT_VH = 90; // scroll distance per page, in vh — tune for feel
-  track.style.height = (numPages * SLOT_VH) + 'vh';
+  const SLOT_RATIO = 0.9; // scroll distance per page, as a fraction of viewport height — tune for feel
+  function sizeTrack() {
+    track.style.height = (numPages * window.innerHeight * SLOT_RATIO) + 'px';
+  }
+  sizeTrack();
 
   const pageCache = {};   // pageNum -> rendered data URL
   const renderQueue = {}; // pageNum -> in-flight render promise
@@ -18064,10 +18067,21 @@ async function pdpInitPreview(pdf) {
     });
   }
 
+  let resizeTicking = false;
+  function onResize() {
+    if (resizeTicking) return;
+    resizeTicking = true;
+    requestAnimationFrame(() => {
+      sizeTrack();
+      showPage(computePageFromScroll());
+      resizeTicking = false;
+    });
+  }
+
   window._pdpPreviewScrollHandler = onScroll;
-  window._pdpPreviewResizeHandler = onScroll;
+  window._pdpPreviewResizeHandler = onResize;
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', onResize);
 
   showPage(1); // first page as soon as it's ready
   onScroll();  // correct immediately if the page was opened mid-scroll
@@ -37016,6 +37030,9 @@ async function hlmSaveTheme() {
   position: relative;
   margin-top: 14px;
   display: none; /* shown via JS once a previewPdfUrl + pdf.js are confirmed available */
+  grid-column: 1 / -1; /* on mobile/tablet .pdp-left becomes a 2-col grid (cover | text) —
+                           this keeps the preview block spanning full width instead of being
+                           squeezed into one of those columns alongside other content */
 }
 .pdp-preview-track.active { display: block; }
 
@@ -37023,7 +37040,11 @@ async function hlmSaveTheme() {
   position: sticky;
   top: 88px;
   display: flex; flex-direction: column; gap: 10px;
+  /* 100dvh tracks the *visible* viewport, so the box doesn't resize every time
+     a mobile browser's address bar collapses/expands mid-scroll. Fall back to
+     100vh first for older browsers, dvh overrides it where supported. */
   height: calc(100vh - 88px - 24px);
+  height: calc(100dvh - 88px - 24px);
   max-height: 720px;
   padding: 14px;
   border-radius: 18px;
@@ -37074,14 +37095,30 @@ async function hlmSaveTheme() {
 
 /* ── Responsive: tablet & mobile ──────────────────────────────────── */
 @media(max-width: 1100px) {
-  .pdp-preview-sticky { top: 76px; height: calc(100vh - 76px - 20px); max-height: 620px; }
+  .pdp-preview-sticky {
+    top: 76px;
+    height: calc(100vh - 76px - 20px);
+    height: calc(100dvh - 76px - 20px);
+    max-height: 620px;
+  }
 }
 @media(max-width: 720px) {
-  .pdp-preview-sticky { top: 64px; height: calc(100vh - 64px - 18px); max-height: 520px; padding: 10px; }
+  .pdp-preview-sticky {
+    top: 64px;
+    height: calc(100vh - 64px - 18px);
+    height: calc(100dvh - 64px - 18px);
+    max-height: 520px;
+    padding: 10px;
+  }
   .pdp-preview-pageindicator { font-size: .7rem; }
 }
 @media(max-width: 480px) {
-  .pdp-preview-sticky { height: calc(100vh - 64px - 14px); max-height: 440px; border-radius: 14px; }
+  .pdp-preview-sticky {
+    height: calc(100vh - 64px - 14px);
+    height: calc(100dvh - 64px - 14px);
+    max-height: 440px;
+    border-radius: 14px;
+  }
   .pdp-preview-stage { border-radius: 10px; }
 }
 
