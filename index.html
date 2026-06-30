@@ -230,7 +230,15 @@ body.low-battery *, body.low-battery *::before, body.low-battery *::after {
   filter: none !important;
   opacity: 1 !important;
   mix-blend-mode: normal !important;
-  transform: translateZ(0);
+  /* NOTE: translateZ(0) removed — forcing a GPU compositing layer here
+     was the root cause of the mobile "zoomed/stretched after scroll" bug:
+     iOS Safari evicts and rebuilds offscreen composite layers, and on
+     rebuild the layer can come back sized/scaled incorrectly. CSS
+     containment gives the same paint-isolation benefit without that risk. */
+  contain: layout paint;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* 2. Cover <img> — absolute zero visual processing */
@@ -932,7 +940,10 @@ body.light .btn-secondary:hover { background: rgba(61,142,248,0.2); border-color
     transform 0.42s cubic-bezier(0.34,1.15,0.64,1),
     box-shadow 0.42s cubic-bezier(0.25,0.46,0.45,0.94),
     border-color 0.30s ease;
-  will-change: transform;
+  /* will-change moved to :hover/:active only — see PERF comment above:
+     a permanent will-change here was creating a composite layer that
+     mobile Safari could lose and rebuild at the wrong size on scroll. */
+  contain: layout paint;
 }
 body.light .pdf-card {
   background: linear-gradient(160deg,
@@ -976,6 +987,7 @@ body.light .pdf-card {
 .pdf-card:hover {
   transform: translateY(-10px) scale(1.024);
   border-color: rgba(61,142,248,0.42);
+  will-change: transform;
   box-shadow:
     0 2px 0 rgba(255,255,255,0.10) inset,
     0 32px 80px rgba(0,0,0,0.62),
@@ -987,12 +999,15 @@ body.light .pdf-card {
 .pdf-card:active {
   transform: translateY(-4px) scale(1.012);
   transition-duration: 0.10s;
+  will-change: transform;
 }
 
 /* ── COVER IMAGE AREA — book-portrait aspect ratio ─────────────── */
 .pdf-cover {
   position: relative;
   aspect-ratio: 2 / 3;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   flex-shrink: 0;
   background: linear-gradient(145deg,
@@ -1003,7 +1018,11 @@ body.light .pdf-card {
   justify-content: center;
   /* ── PDF THUMBNAIL FIX: Isolate cover from parent filters/blends ── */
   isolation: isolate;
-  transform: translateZ(0);
+  /* translateZ(0) removed — forcing a GPU compositing layer here was
+     the root cause of the mobile "zoomed/stretched after scroll" bug.
+     contain: layout paint isolates layout/paint just as well, without
+     the offscreen-layer-eviction risk that broke sizing on rescroll. */
+  contain: layout paint;
   filter: none !important;
   opacity: 1 !important;
   mix-blend-mode: normal !important;
@@ -1021,12 +1040,14 @@ body.light .pdf-card {
   opacity: 1 !important;
   mix-blend-mode: normal !important;
   isolation: isolate;
-  transform: translateZ(0);
   image-rendering: auto;
-  will-change: transform;
+  /* will-change removed from default state — only applied on hover
+     (below), so mobile Safari never has to evict/rebuild a permanent
+     composite layer for an image that isn't actively animating. */
 }
 .pdf-card:hover .pdf-cover img {
   transform: scale(1.05);
+  will-change: transform;
   /* No filter on hover either — cover must look exactly as uploaded */
   filter: none !important;
 }
@@ -6988,12 +7009,15 @@ function studyriaApp() {
   /* ── Cover image area ──────────────────────────────────────────── */
   .pdl-ott-cover {
     aspect-ratio: 2/3;
+    width: 100%; max-width: 100%;
     position: relative; overflow: hidden;
     background: linear-gradient(145deg, #060d1f, #0d1a40, #120e05);
     display: flex; align-items: center; justify-content: center;
     /* PDF THUMBNAIL FIX: isolate cover from parent glass/blend effects */
     isolation: isolate;
-    transform: translateZ(0);
+    /* translateZ(0) removed — see .pdf-cover fix notes; forced GPU
+       layers here caused the mobile scroll resize/zoom bug. */
+    contain: layout paint;
     filter: none !important;
     opacity: 1 !important;
   }
@@ -16740,7 +16764,7 @@ async function renderPopularDownloads() {
     const priceText = isFree ? 'FREE' : '₹' + Number(pdf.price).toLocaleString();
     const coverSrc  = pdf.cover_url || pdf.coverImage || '';
     const coverHTML = coverSrc
-      ? `<img src="${coverSrc}" alt="${(pdf.title||'').replace(/"/g,'')}" loading="lazy" onerror="this.style.display='none'">`
+      ? `<img src="${coverSrc}" alt="${(pdf.title||'').replace(/"/g,'')}" loading="lazy" decoding="async" onerror="this.style.display='none'">`
       : `<div style="font-size:2.8rem;opacity:.35">📄</div>`;
 
     return `
@@ -20155,7 +20179,7 @@ async function switchMeTab(tab) {
         const initials = (p.title||'PDF').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
         return `<div class="sdl-cover-card${opts.wide?' sdl-wide':''}" onclick="bsfOpenBook('${p.id}')" data-id="${p.id}">
           <div class="sdl-cover-img-wrap" style="${!coverUrl?'background:'+fallbackGrad:''}">
-            ${coverUrl ? `<img src="${coverUrl}" alt="${(p.title||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+            ${coverUrl ? `<img src="${coverUrl}" alt="${(p.title||'').replace(/"/g,'&quot;')}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
             <div class="sdl-cover-fallback" style="${coverUrl?'display:none':''}">${initials}</div>
             <div class="sdl-cover-scrim"></div>
             ${prog > 0 ? `<div class="sdl-cover-progress-bar"><div style="width:${prog}%"></div></div>` : ''}
@@ -36663,7 +36687,12 @@ async function hlmSaveTheme() {
 .pdp-cover-wrap {
   position: relative; border-radius: 18px 18px 0 0; overflow: hidden;
   aspect-ratio: 2/3; background: var(--bg3);
+  width: 100%; max-width: 100%;
   display: flex; align-items: center; justify-content: center;
+  /* Containment locks layout/paint to this box so nothing outside it
+     (sticky parent, scroll position, etc.) can ever cause a resize,
+     reflow, or repaint of the preview after the initial render. */
+  contain: layout paint;
 }
 .pdp-cover-img {
   width: 100%; height: 100%;
@@ -38238,12 +38267,16 @@ body.light #bsfSearch { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1
 .sdl-cover-img-wrap {
   position: relative;
   aspect-ratio: 2 / 3;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   flex-shrink: 0;
   background: linear-gradient(145deg, #0a0f1e, #0d1740);
   /* PDF THUMBNAIL FIX: isolate from parent glass effects */
   isolation: isolate;
-  transform: translateZ(0);
+  /* translateZ(0) removed — see .pdf-cover fix notes; forced GPU
+     layers here caused the mobile scroll resize/zoom bug. */
+  contain: layout paint;
   filter: none !important;
   opacity: 1 !important;
 }
