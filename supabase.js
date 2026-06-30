@@ -148,6 +148,23 @@
 // CREATE INDEX IF NOT EXISTS idx_pdf_reviews_user_id ON public.pdf_reviews(user_id);
 // CREATE INDEX IF NOT EXISTS idx_pdf_reviews_verified ON public.pdf_reviews(verified);
 //
+// -- 0. Users profile table (Google OAuth + email/password profile sync)
+// CREATE TABLE IF NOT EXISTS public.users (
+//   id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+//   email       text,
+//   full_name   text,
+//   avatar_url  text,
+//   provider    text,
+//   last_login  timestamptz,
+//   created_at  timestamptz DEFAULT now(),
+//   updated_at  timestamptz DEFAULT now()
+// );
+// ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Users manage own profile" ON public.users
+//   FOR ALL TO authenticated
+//   USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+// CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
+//
 // -- Career Hub tables → see supabase-setup.sql (generated separately)
 //
 // -- 5b. PDF Subscribers (opt-in for new PDF email + WhatsApp notifications)
@@ -435,13 +452,16 @@
 
   // ── BUILD currentUser OBJECT ─────────────────────────────────────
   function _buildCurrentUser(user) {
-    const name     = user.user_metadata?.full_name || user.email || '';
+    const name     = user.user_metadata?.full_name || user.user_metadata?.name || user.email || '';
     const initials = name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'U';
+    const provider = user.app_metadata?.provider || (user.identities && user.identities[0]?.provider) || 'email';
     return {
       uid:        user.id,
       name,
       email:      user.email,
       avatar:     initials,
+      avatarUrl:  user.user_metadata?.avatar_url || user.user_metadata?.picture || '',
+      provider,
       plan:       'Pro',
       joined:     new Date(user.created_at).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }),
       purchased:  0,
@@ -459,14 +479,17 @@
       window.currentUser = _buildCurrentUser(user);
 
       if (area) {
-        const { name, avatar } = window.currentUser;
+        const { name, avatar, avatarUrl } = window.currentUser;
+        const avatarInner = avatarUrl
+          ? `<img src="${avatarUrl}" alt="${name}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" referrerpolicy="no-referrer" onerror="this.style.display='none';this.parentElement.innerHTML='<span id=&quot;navAvatarText&quot;>${avatar}</span>';" />`
+          : `<span id="navAvatarText">${avatar}</span>`;
         area.innerHTML = `
           <div style="display:flex;align-items:center;gap:8px;">
             <button class="avatar-btn" id="navAvatarBtn"
               title="${name}"
-              style="width:38px;height:38px;font-size:.9rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-body);"
+              style="width:38px;height:38px;font-size:.9rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-body);overflow:hidden;"
               onclick="navigate('dashboard')"
-            ><span id="navAvatarText">${avatar}</span></button>
+            >${avatarInner}</button>
             <button class="btn btn-ghost btn-sm" onclick="authLogout()" title="Sign out" style="font-size:.78rem;">Sign Out</button>
           </div>`;
       }
@@ -478,6 +501,13 @@
     }
 
     const pg = window.currentPage || (typeof currentPage !== 'undefined' ? currentPage : '');
+
+    // ── Already logged in? Bounce away from the login/register screen ──
+    if (user && (pg === 'login' || pg === 'register') && typeof window.navigate === 'function') {
+      window.navigate('dashboard');
+      return;
+    }
+
     if (pg === 'dashboard' && typeof window.renderDashboard === 'function') {
       window.renderDashboard();
     }
@@ -745,6 +775,78 @@
       const emailEl = document.getElementById('verifyEmail');
       if (emailEl) emailEl.textContent = email;
       if (typeof window.showAuthPage === 'function') window.showAuthPage('verify');
+    }
+  };
+
+  // ── PROFILE SYNC — users table ───────────────────────────────────
+  // Creates/updates the row in public.users with avatar, name, email,
+  // provider and last_login. Safe no-op if the table doesn't exist yet
+  // (logs a warning instead of breaking the login flow).
+  window.syncUserProfile = async function syncUserProfile(user) {
+    if (!user) return;
+    const client = sb();
+    if (!client) return;
+    try {
+      const meta     = user.user_metadata || {};
+      const provider = user.app_metadata?.provider || (user.identities && user.identities[0]?.provider) || 'email';
+      const payload  = {
+        id:         user.id,
+        email:      user.email,
+        full_name:  meta.full_name || meta.name || '',
+        avatar_url: meta.avatar_url || meta.picture || '',
+        provider,
+        last_login: new Date().toISOString(),
+      };
+      const { error } = await client.from('users').upsert(payload, { onConflict: 'id' });
+      if (error) console.warn('⚠️ syncUserProfile: upsert failed (create the public.users table — see SQL at top of supabase.js):', error.message);
+    } catch (e) {
+      console.warn('⚠️ syncUserProfile exception:', e);
+    }
+  };
+
+  // ── GOOGLE SIGN-IN (OAuth) ───────────────────────────────────────
+  window.authLoginWithGoogle = async function authLoginWithGoogle(btnId) {
+    const client = sb();
+    if (!client) { alert('Supabase not configured.'); return; }
+
+    clearAuthErr('loginError');
+    clearAuthErr('signupError');
+
+    const btn = (btnId && document.getElementById(btnId))
+      || document.getElementById('googleLoginBtn')
+      || document.getElementById('googleSignupBtn');
+    const original = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="auth-spinner"></span>Redirecting to Google…';
+    }
+
+    try {
+      // Flag so we know to land on the Dashboard (not Home) once Google
+      // redirects back and the SIGNED_IN event fires on page load.
+      try { sessionStorage.setItem('studyria_oauth_pending', '1'); } catch (_) {}
+
+      const { error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/',
+          queryParams: { access_type: 'offline', prompt: 'select_account' },
+        },
+      });
+
+      if (error) {
+        try { sessionStorage.removeItem('studyria_oauth_pending'); } catch (_) {}
+        if (btn) { btn.disabled = false; btn.innerHTML = original; }
+        showAuthErr('loginError', error.message || 'Google sign-in failed. Please try again.');
+        showAuthErr('signupError', error.message || 'Google sign-in failed. Please try again.');
+      }
+      // On success the browser is redirected to Google — nothing more to do here.
+    } catch (e) {
+      try { sessionStorage.removeItem('studyria_oauth_pending'); } catch (_) {}
+      if (btn) { btn.disabled = false; btn.innerHTML = original; }
+      const msg = 'Google sign-in failed: ' + (e?.message || 'unknown error');
+      showAuthErr('loginError', msg);
+      showAuthErr('signupError', msg);
     }
   };
 
@@ -1688,6 +1790,9 @@
         window._dashCache = null;
         await window.loadWishlistFromSupabase();
 
+        // Create/update public.users profile (avatar, name, email, provider, last_login)
+        if (user) window.syncUserProfile(user);
+
         // Pre-warm purchased PDF IDs for ownership-aware buttons
         try {
           const { data: purchases } = await sb()
@@ -1707,10 +1812,23 @@
           window._chLoadSavedFromSupabase();
         }
 
+        // ── Google OAuth redirect-back: land on Dashboard, not Home ──
+        let cameFromOAuthRedirect = false;
+        try {
+          if (sessionStorage.getItem('studyria_oauth_pending') === '1') {
+            cameFromOAuthRedirect = true;
+            sessionStorage.removeItem('studyria_oauth_pending');
+          }
+        } catch (_) {}
+
         if (typeof window.showToast === 'function') {
-          const name  = user?.user_metadata?.full_name || user?.email || '';
+          const name  = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || '';
           const first = name.split(/[\s@]/)[0];
           window.showToast('Welcome back' + (first ? ', ' + first : '') + '! 👋', 'success');
+        }
+
+        if (cameFromOAuthRedirect && typeof window.navigate === 'function') {
+          window.navigate('dashboard');
         }
         return;
       }
