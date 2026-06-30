@@ -17686,6 +17686,23 @@ function _pdpRenderShell(pdf) {
             </div>
           </div>
 
+          <!-- PDF Page Preview — cover above scrolls normally; this block
+               only engages sticky behavior for its own scroll range, after
+               the cover card has scrolled past. Hidden until JS confirms
+               a usable preview PDF + pdf.js are available. -->
+          <div class="pdp-preview-track" id="pdpPreviewTrack">
+            <div class="pdp-preview-sticky" id="pdpPreviewSticky">
+              <div class="pdp-preview-stage" id="pdpPreviewStage">
+                <img class="pdp-preview-img" id="pdpPreviewImg" alt="PDF page preview">
+                <div class="pdp-preview-loading" id="pdpPreviewLoading">
+                  <div class="pdp-preview-spinner"></div>
+                  <span>Loading preview…</span>
+                </div>
+              </div>
+              <div class="pdp-preview-pageindicator" id="pdpPreviewPageIndicator"></div>
+            </div>
+          </div>
+
           <!-- Title / meta block -->
           <div class="pdp-meta-block">
             <div class="pdp-tags-row">
@@ -17858,6 +17875,9 @@ function _pdpRenderShell(pdf) {
 
   document.getElementById('pdpWrap').innerHTML = pdpHTML;
 
+  // Scroll-driven sticky PDF page preview
+  pdpInitPreview(pdf);
+
   // Sticky bar
   const stickyBar   = document.getElementById('pdpStickyBar');
   const stickyTitle = document.getElementById('pdpStickyTitle');
@@ -17911,6 +17931,146 @@ function _pdpRenderShell(pdf) {
     const btn      = document.getElementById('pdpReadMoreBtn');
     if (descText && btn && descText.scrollHeight <= 100) btn.style.display = 'none';
   }, 50);
+}
+
+// ── Scroll-driven sticky PDF page preview ───────────────────────────────
+// How it works:
+//  • .pdp-preview-track is a normal-flow block sized to (numPages × a
+//    fixed viewport-height slot). Scrolling through that block is what
+//    drives which page is shown.
+//  • .pdp-preview-sticky inside it uses plain CSS `position: sticky`, so
+//    it pins itself at `top` only while the track is taller than the
+//    viewport and still scrolling underneath it — once the track's own
+//    height is used up (i.e. after the last page), it naturally falls
+//    back into normal flow and stops being sticky. No manual unpin logic
+//    needed for that part.
+//  • A passive scroll listener maps how far we've scrolled through the
+//    track into a page index (1..numPages), rendering + caching each
+//    page from the real preview PDF via pdf.js so it is always shown in
+//    full (object-fit: contain — never cropped). Works identically for
+//    scrolling up (shows earlier pages again) and down.
+async function pdpInitPreview(pdf) {
+  const track     = document.getElementById('pdpPreviewTrack');
+  const stickyEl  = document.getElementById('pdpPreviewSticky');
+  const img       = document.getElementById('pdpPreviewImg');
+  const loading   = document.getElementById('pdpPreviewLoading');
+  const indicator = document.getElementById('pdpPreviewPageIndicator');
+  if (!track || !img) return;
+
+  // Always clear out any previous PDP's listener/state first (re-renders
+  // happen every time the user opens a new PDP).
+  if (window._pdpPreviewScrollHandler) {
+    window.removeEventListener('scroll', window._pdpPreviewScrollHandler);
+    window._pdpPreviewScrollHandler = null;
+  }
+  if (window._pdpPreviewResizeHandler) {
+    window.removeEventListener('resize', window._pdpPreviewResizeHandler);
+    window._pdpPreviewResizeHandler = null;
+  }
+  track.classList.remove('active');
+  img.classList.remove('loaded');
+  img.removeAttribute('src');
+  if (loading) loading.style.display = '';
+  if (indicator) indicator.textContent = '';
+
+  const previewUrl = (pdf.previewPdfUrl || pdf.preview_pdf_url || '').trim();
+  if (!previewUrl) return; // no preview file for this PDF — leave the block hidden
+
+  if (!window.pdfjsLib) {
+    console.warn('pdpInitPreview: pdf.js not available — skipping page preview');
+    return;
+  }
+
+  let pdfDoc, numPages = 0;
+  try {
+    pdfDoc = await window.pdfjsLib.getDocument(previewUrl).promise;
+    numPages = pdfDoc.numPages || 0;
+  } catch (e) {
+    console.warn('pdpInitPreview: failed to load preview PDF', e);
+    return;
+  }
+  if (!numPages) return;
+
+  // Make sure this is still the PDP the user is looking at (they may have
+  // navigated away while the PDF was loading).
+  if (!document.getElementById('pdpPreviewTrack')) return;
+
+  track.classList.add('active');
+
+  const SLOT_VH = 90; // scroll distance per page, in vh — tune for feel
+  track.style.height = (numPages * SLOT_VH) + 'vh';
+
+  const pageCache = {};   // pageNum -> rendered data URL
+  const renderQueue = {}; // pageNum -> in-flight render promise
+  let currentPage = 0;
+
+  function renderPage(n) {
+    if (pageCache[n]) return Promise.resolve(pageCache[n]);
+    if (renderQueue[n]) return renderQueue[n];
+    renderQueue[n] = pdfDoc.getPage(n).then(page => {
+      const viewport = page.getViewport({ scale: 1.6 });
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext('2d');
+      return page.render({ canvasContext: ctx, viewport }).promise.then(() => {
+        const url = canvas.toDataURL('image/jpeg', 0.85);
+        pageCache[n] = url;
+        delete renderQueue[n];
+        return url;
+      });
+    }).catch(e => {
+      delete renderQueue[n];
+      throw e;
+    });
+    return renderQueue[n];
+  }
+
+  async function showPage(n) {
+    n = Math.min(numPages, Math.max(1, n));
+    if (n === currentPage) return;
+    currentPage = n;
+    if (indicator) indicator.textContent = `Page ${n} of ${numPages}`;
+    try {
+      const url = await renderPage(n);
+      if (currentPage !== n) return; // a newer page request won the race
+      img.src = url;
+      img.classList.add('loaded');
+      if (loading) loading.style.display = 'none';
+    } catch (e) {
+      console.warn('pdpInitPreview: page render failed', n, e);
+    }
+    // Pre-warm neighbours so scrolling feels instant in both directions
+    if (n + 1 <= numPages) renderPage(n + 1).catch(() => {});
+    if (n - 1 >= 1) renderPage(n - 1).catch(() => {});
+  }
+
+  function computePageFromScroll() {
+    const rect = track.getBoundingClientRect();
+    const stickyHeight = stickyEl ? stickyEl.offsetHeight : window.innerHeight;
+    const scrollable = rect.height - stickyHeight;
+    if (scrollable <= 0) return 1;
+    const progress = Math.max(0, Math.min(1, -rect.top / scrollable));
+    return Math.floor(progress * numPages) + 1;
+  }
+
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      showPage(computePageFromScroll());
+      ticking = false;
+    });
+  }
+
+  window._pdpPreviewScrollHandler = onScroll;
+  window._pdpPreviewResizeHandler = onScroll;
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  showPage(1); // first page as soon as it's ready
+  onScroll();  // correct immediately if the page was opened mid-scroll
 }
 
 // ── Fetch all live counters + reviews from Supabase in one parallel pass ──
@@ -36702,6 +36862,16 @@ async function hlmSaveTheme() {
   ══════════════════════════════════════════════════════════════════════
 -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js" defer></script>
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+    }
+  });
+</script>
+
 <script src="app.js" defer></script>
 <script src="smart-publish-manager.js"></script>
 <script src="pdf-classification-refactor.js"></script>
@@ -36770,8 +36940,11 @@ async function hlmSaveTheme() {
 .pdp-bc-cur { color: var(--text2); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ── Left Column ────────────────────────────────────────────────── */
-.pdp-left { position: sticky; top: 88px; }
-@media(max-width:720px) { .pdp-left { position: static; } }
+/* NOTE: the left column itself must NOT be sticky — it holds the cover,
+   title, description, etc. and should scroll normally with the page.
+   Only the dedicated PDF preview block (.pdp-preview-track) below
+   becomes sticky, and only for its own scroll range. */
+.pdp-left { position: static; }
 
 .pdp-cover-card {
   border-radius: 20px; overflow: visible;
@@ -36827,6 +37000,90 @@ async function hlmSaveTheme() {
 }
 .pdp-cover-action-btn:last-child { border-right: none; }
 .pdp-cover-action-btn:hover { background: rgba(61,142,248,0.08); color: var(--accent); }
+
+/* ── PDF Page Preview (scroll-driven sticky) ───────────────────────
+   .pdp-preview-track  → tall scroll "runway", height = pages × slot.
+                          A plain block in normal flow — this is what
+                          makes the cover above it scroll away normally
+                          and what makes the sticky preview exit after
+                          the last page (CSS `position: sticky` simply
+                          stops pinning once the track's own height
+                          runs out — no JS needed for that part).
+   .pdp-preview-sticky  → the pinned viewer. Stays at `top` while the
+                          track scrolls underneath it.
+   ────────────────────────────────────────────────────────────────── */
+.pdp-preview-track {
+  position: relative;
+  margin-top: 14px;
+  display: none; /* shown via JS once a previewPdfUrl + pdf.js are confirmed available */
+}
+.pdp-preview-track.active { display: block; }
+
+.pdp-preview-sticky {
+  position: sticky;
+  top: 88px;
+  display: flex; flex-direction: column; gap: 10px;
+  height: calc(100vh - 88px - 24px);
+  max-height: 720px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.pdp-preview-stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 0; /* allow flex child to shrink so the page never overflows the card */
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg3);
+  border-radius: 14px;
+  overflow: hidden;
+  contain: layout paint; /* same containment trick used on the cover — no reflow from sticky/scroll */
+}
+
+/* Always shows ONE full page, never cropped — object-fit:contain is mandatory here */
+.pdp-preview-img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  object-fit: contain; object-position: center;
+  display: none; /* toggled on once the first page has rendered */
+}
+.pdp-preview-img.loaded { display: block; }
+
+.pdp-preview-loading {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+  font-size: .78rem; font-weight: 600; color: var(--text2);
+}
+.pdp-preview-spinner {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2.5px solid rgba(61,142,248,0.25); border-top-color: var(--accent);
+  animation: pdpPvSpin .7s linear infinite;
+}
+@keyframes pdpPvSpin { to { transform: rotate(360deg); } }
+
+.pdp-preview-pageindicator {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: .75rem; font-weight: 700; color: var(--text2);
+  letter-spacing: .02em;
+}
+
+/* ── Responsive: tablet & mobile ──────────────────────────────────── */
+@media(max-width: 1100px) {
+  .pdp-preview-sticky { top: 76px; height: calc(100vh - 76px - 20px); max-height: 620px; }
+}
+@media(max-width: 720px) {
+  .pdp-preview-sticky { top: 64px; height: calc(100vh - 64px - 18px); max-height: 520px; padding: 10px; }
+  .pdp-preview-pageindicator { font-size: .7rem; }
+}
+@media(max-width: 480px) {
+  .pdp-preview-sticky { height: calc(100vh - 64px - 14px); max-height: 440px; border-radius: 14px; }
+  .pdp-preview-stage { border-radius: 10px; }
+}
 
 /* ── Trust Grid ─────────────────────────────────────────────────── */
 .pdp-trust-grid {
