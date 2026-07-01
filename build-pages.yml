@@ -1,0 +1,55 @@
+name: Build & Deploy Studyria Pages
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Nightly at 02:00 UTC — catches new PDFs/jobs added via admin panel
+    # so their static pages exist even without a code push.
+    - cron: '0 2 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install build deps
+        run: npm install @supabase/supabase-js --no-save
+
+      - name: Generate static PDF/Job pages + sitemap
+        run: node build/generate-static-pages.mjs
+        env:
+          # Public anon key — safe to keep inline (same one shipped in
+          # supabase.js). Override with repo secrets if you rotate keys.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON: ${{ secrets.SUPABASE_ANON }}
+          SITE_ORIGIN: https://studyria.qzz.io
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
