@@ -7,7 +7,13 @@
 // ── REQUIRED SUPABASE TABLES ────────────────────────────────────
 // Run these in Supabase → SQL Editor if they don't exist yet:
 //
-// -- 1. Wishlist (one row per user+pdf combo)
+// -- 1. Wishlist (one row per user+item combo — PDFs AND Jobs)
+// -- No migration needed if this table already exists: the app now
+// -- writes composite values into the same `pdf_id` column, e.g.
+// -- "pdf:123" or "job:45". Old un-prefixed rows keep loading fine as
+// -- PDF items (see _wlParse() below), so nothing breaks for existing
+// -- users. The UNIQUE constraint on (user_id, pdf_id) still guarantees
+// -- no duplicates, now across both item types.
 // CREATE TABLE IF NOT EXISTS public.user_wishlist (
 //   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
 //   user_id     uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -18,6 +24,8 @@
 // ALTER TABLE public.user_wishlist ENABLE ROW LEVEL SECURITY;
 // CREATE POLICY "Users manage own wishlist" ON public.user_wishlist
 //   USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+// -- Enable realtime (Database → Replication) on user_wishlist so the
+// -- multi-device sync subscription below receives live updates.
 //
 // -- 2. Reading sessions (one row per open event)
 // CREATE TABLE IF NOT EXISTS public.reading_sessions (
@@ -520,49 +528,115 @@
     }
   };
 
-  // ── WISHLIST — GUEST (LOGGED-OUT) LOCAL STORAGE SUPPORT ───────────
-  // Guests get a fully working wishlist stored in localStorage. When
-  // they log in, _mergeGuestWishlistIntoSupabase() pushes everything
+  // ── WISHLIST — UNIFIED ENGINE (PDFs + Jobs, unlimited items) ───────
+  // Single source of truth for both PDF and Job wishlists. Items are
+  // stored as composite keys "pdf:<id>" / "job:<id>" inside the existing
+  // user_wishlist.pdf_id column — no schema migration required, and any
+  // legacy un-prefixed rows (saved before this fix) still load correctly
+  // as PDF items. This guarantees a PDF and a Job can never collide even
+  // if they happen to share the same numeric/UUID id ("unique IDs").
+  //
+  // window.wishlist      → array of saved PDF ids  (unchanged shape —
+  //                         every existing UI call site keeps working)
+  // window.jobWishlist   → array of saved Job ids   (new)
+  // window._wishlistRaw  → array of composite keys, the real source of
+  //                         truth persisted to Supabase / localStorage
+
+  function _wlKey(type, id) { return `${type}:${id}`; }
+  function _wlParse(raw) {
+    const s = String(raw);
+    const i = s.indexOf(':');
+    if (i === -1) return { type: 'pdf', id: s }; // legacy un-prefixed row
+    const type = s.slice(0, i);
+    if (type !== 'pdf' && type !== 'job') return { type: 'pdf', id: s };
+    return { type, id: s.slice(i + 1) };
+  }
+  function _wlDedupe(rawArr) {
+    const seen = new Set();
+    const out = [];
+    (rawArr || []).forEach(raw => {
+      const { type, id } = _wlParse(raw);
+      const k = _wlKey(type, id);
+      if (!seen.has(k)) { seen.add(k); out.push(k); }
+    });
+    return out;
+  }
+  function _wlNormId(id) {
+    const n = Number(id);
+    return isNaN(n) ? String(id) : n;
+  }
+  function _wlDerive() {
+    const raw = window._wishlistRaw || [];
+    const pdfIds = [], jobIds = [];
+    raw.forEach(k => {
+      const { type, id } = _wlParse(k);
+      (type === 'job' ? jobIds : pdfIds).push(_wlNormId(id));
+    });
+    window.wishlist = pdfIds;
+    try { wishlist = pdfIds; } catch (_) {}
+    window.jobWishlist = jobIds;
+  }
+  // Public helper — usable from career-hub.js or anywhere else once wired.
+  window.isWishlisted = function (type, id) {
+    return (window._wishlistRaw || []).includes(_wlKey(type === 'job' ? 'job' : 'pdf', String(id)));
+  };
+
+  // ── WISHLIST — GUEST (LOGGED-OUT) LOCAL STORAGE SUPPORT ────────────
+  // Guests get a fully working PDF + Job wishlist stored in localStorage.
+  // When they log in, _mergeGuestWishlistIntoSupabase() pushes everything
   // into user_wishlist and the local copy is cleared.
-  const GUEST_WISH_KEY = 'studyria_wishlist';
+  const GUEST_WISH_KEY        = 'studyria_wishlist_v2';
+  const LEGACY_GUEST_WISH_KEY = 'studyria_wishlist'; // old PDF-only key
 
   function _readGuestWishlist() {
     try {
       const raw = localStorage.getItem(GUEST_WISH_KEY);
-      const arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr) ? arr : [];
+      if (raw) {
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? _wlDedupe(arr) : [];
+      }
+      // One-time migration from the old pdf-only guest key, if present.
+      const legacy = localStorage.getItem(LEGACY_GUEST_WISH_KEY);
+      if (legacy) {
+        const arr = JSON.parse(legacy);
+        if (Array.isArray(arr) && arr.length) {
+          const migrated = _wlDedupe(arr.map(id => _wlKey('pdf', id)));
+          _writeGuestWishlist(migrated);
+          return migrated;
+        }
+      }
+      return [];
     } catch (_) { return []; }
   }
-
   function _writeGuestWishlist(arr) {
     try {
-      // Dedupe (prevents duplicate wishlist items)
-      const deduped = [...new Set(arr.map(String))].map(x => {
-        const n = Number(x);
-        return isNaN(n) ? x : n;
-      });
+      const deduped = _wlDedupe(arr);
       localStorage.setItem(GUEST_WISH_KEY, JSON.stringify(deduped));
       return deduped;
     } catch (_) { return arr; }
   }
 
-  // ── WISHLIST — BROADCAST CHANGES TO EVERY PAGE / COMPONENT ────────
+  // ── WISHLIST — BROADCAST CHANGES TO EVERY PAGE / COMPONENT ─────────
   // Called after every load, toggle, or guest merge. Refreshes heart
-  // icons + counters on whatever page happens to be mounted right now
-  // and notifies any other listener (career-hub.js, etc.) via a
-  // CustomEvent, so nothing needs a manual page refresh.
+  // icons + counters wherever they're mounted right now (Home, Library,
+  // PDF Details, Career Hub, Job Details, Wishlist, Me) and notifies any
+  // other listener (career-hub.js, etc.) via a CustomEvent, so nothing
+  // needs a manual page refresh.
   window._syncWishlistUI = function _syncWishlistUI() {
-    const current = (() => { try { return wishlist; } catch (_) { return window.wishlist || []; } })();
-
     if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
     window._dashCache = null;
 
     const pg = window.currentPage || (typeof currentPage !== 'undefined' ? currentPage : '');
     if (pg === 'dashboard' && typeof window._refreshDashStats === 'function') window._refreshDashStats();
     if (pg === 'wishlist' && typeof window.renderWishlist === 'function') window.renderWishlist();
+    if (pg === 'dashboard' && window.dashTab === 'wishlist' && typeof window.switchMeTab === 'function') {
+      window.switchMeTab('wishlist');
+    }
 
     try {
-      window.dispatchEvent(new CustomEvent('studyria:wishlistChanged', { detail: { wishlist: [...current] } }));
+      window.dispatchEvent(new CustomEvent('studyria:wishlistChanged', {
+        detail: { wishlist: [...(window.wishlist || [])], jobWishlist: [...(window.jobWishlist || [])] }
+      }));
     } catch (_) {}
   };
 
@@ -595,10 +669,9 @@
     if (!userId) {
       // Logged out — show the guest wishlist stored locally, instead
       // of wiping it. It auto-syncs to Supabase on next login.
-      const guest = _readGuestWishlist();
-      if (typeof window.wishlist !== 'undefined') window.wishlist = guest;
-      try { wishlist = guest; } catch (_) {}
-      console.log('👤 loadWishlistFromSupabase: guest mode —', guest.length, 'local item(s)');
+      window._wishlistRaw = _readGuestWishlist();
+      _wlDerive();
+      console.log('👤 loadWishlistFromSupabase: guest mode —', window._wishlistRaw.length, 'local item(s)');
       _wishlistLoading = false;
       window._syncWishlistUI();
       return;
@@ -612,8 +685,6 @@
         .select('pdf_id')
         .eq('user_id', userId);
 
-      console.log('Wishlist Load Result:', { data, error });
-
       if (error) {
         console.error('❌ loadWishlistFromSupabase error:', error);
         _wishlistLoading = false;
@@ -622,17 +693,13 @@
 
       // Dedupe defensively — prevents duplicate items even if the DB
       // ever ends up with stray duplicate rows.
-      const loaded = [...new Set((data || []).map(r => String(r.pdf_id)))].map(id => {
-        const n = Number(id);
-        return isNaN(n) ? id : n;
-      });
+      window._wishlistRaw = _wlDedupe((data || []).map(r => r.pdf_id));
+      _wlDerive();
 
-      if (typeof window.wishlist !== 'undefined') window.wishlist = loaded;
-      try { wishlist = loaded; } catch (_) {}
-
-      console.log('✅ Wishlist loaded:', loaded.length, 'items');
+      console.log('✅ Wishlist loaded:', window.wishlist.length, 'PDF(s),', window.jobWishlist.length, 'job(s)');
 
       window._syncWishlistUI();
+      _wlSubscribeRealtime(userId);
 
     } catch (e) {
       console.error('❌ loadWishlistFromSupabase exception:', e);
@@ -641,7 +708,25 @@
     }
   };
 
-  // ── WISHLIST — MERGE GUEST ITEMS INTO SUPABASE ON LOGIN ───────────
+  // ── WISHLIST — MULTI-DEVICE REALTIME SYNC ───────────────────────────
+  // Keeps the wishlist in sync instantly if the same account adds/removes
+  // an item from another tab or another device.
+  function _wlSubscribeRealtime(userId) {
+    const client = window.supabaseClient;
+    if (!client || !userId) return;
+    if (window._wlRealtimeSub) { try { window._wlRealtimeSub.unsubscribe(); } catch (_) {} }
+    try {
+      window._wlRealtimeSub = client
+        .channel(`user_wishlist_${userId}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'user_wishlist', filter: `user_id=eq.${userId}` },
+          () => { if (!_wishlistLoading) window.loadWishlistFromSupabase(); })
+        .subscribe();
+    } catch (e) {
+      console.warn('_wlSubscribeRealtime:', e);
+    }
+  }
+
+  // ── WISHLIST — MERGE GUEST ITEMS INTO SUPABASE ON LOGIN ─────────────
   window._mergeGuestWishlistIntoSupabase = async function _mergeGuestWishlistIntoSupabase(userId) {
     const client = window.supabaseClient;
     const guest = _readGuestWishlist();
@@ -649,7 +734,7 @@
 
     console.log('🔄 Merging', guest.length, 'guest wishlist item(s) into Supabase for', userId);
     try {
-      const rows = guest.map(id => ({ user_id: userId, pdf_id: String(id) }));
+      const rows = guest.map(k => ({ user_id: userId, pdf_id: k }));
       const { error } = await client
         .from('user_wishlist')
         .upsert(rows, { onConflict: 'user_id,pdf_id' });
@@ -657,17 +742,26 @@
         console.error('❌ Guest wishlist merge failed:', error);
         return; // keep local copy so we can retry next login
       }
-      try { localStorage.removeItem(GUEST_WISH_KEY); } catch (_) {}
+      try {
+        localStorage.removeItem(GUEST_WISH_KEY);
+        localStorage.removeItem(LEGACY_GUEST_WISH_KEY);
+      } catch (_) {}
       console.log('✅ Guest wishlist merged and cleared.');
     } catch (e) {
       console.error('❌ Guest wishlist merge exception:', e);
     }
   };
 
-  // ── WISHLIST — TOGGLE (ADD / REMOVE) ────────────────────────────
-  window.toggleWishlistItem = async function toggleWishlistItem(id) {
+  // ── WISHLIST — TOGGLE (ADD / REMOVE) ────────────────────────────────
+  // The ONLY place that mutates wishlist state. `type` is 'pdf' (default
+  // — every existing 1-argument call site across the UI keeps working
+  // unchanged) or 'job'. Always touches exactly the one item requested.
+  window.toggleWishlistItem = async function toggleWishlistItem(id, type) {
+    type = (type === 'job') ? 'job' : 'pdf';
     const client = window.supabaseClient;
     if (!client) { console.error('❌ toggleWishlistItem: no supabaseClient'); return; }
+
+    const itemKey = _wlKey(type, String(id));
 
     let userId = null;
     try {
@@ -680,17 +774,11 @@
     // ── GUEST MODE: no forced redirect to login. Toggle locally in
     // localStorage; it auto-merges into Supabase on next login. ──
     if (!userId) {
-      const pdfId = String(id);
-      const numId = Number(id);
       const guest = _readGuestWishlist();
-      const inWish = guest.some(x => String(x) === pdfId);
-      const nextGuest = inWish
-        ? guest.filter(x => String(x) !== pdfId)
-        : [...guest, isNaN(numId) ? pdfId : numId];
-      const saved = _writeGuestWishlist(nextGuest);
-
-      if (typeof window.wishlist !== 'undefined') window.wishlist = saved;
-      try { wishlist = saved; } catch (_) {}
+      const inWish = guest.includes(itemKey);
+      const next = inWish ? guest.filter(k => k !== itemKey) : [...guest, itemKey];
+      window._wishlistRaw = _writeGuestWishlist(next);
+      _wlDerive();
 
       if (typeof showToast === 'function') {
         showToast(inWish ? 'Removed from wishlist' : 'Saved! Sign in to keep it forever ❤️', inWish ? 'info' : 'success');
@@ -706,30 +794,16 @@
       } catch (_) {}
     }
 
-    const pdfId = String(id);
-    const numId = Number(id);
+    const prevRaw = [...(window._wishlistRaw || [])];
+    const inWish  = prevRaw.includes(itemKey);
 
-    const currentWishlist = (() => {
-      try { return wishlist; } catch (_) { return window.wishlist || []; }
-    })();
-
-    const inWish = currentWishlist.includes(numId) || currentWishlist.includes(pdfId);
-
-    // Dedupe on add — never push a duplicate entry.
-    const newWishlist = inWish
-      ? currentWishlist.filter(x => Number(x) !== numId && String(x) !== pdfId)
-      : [...new Set([...currentWishlist, numId])];
-
-    try { wishlist = newWishlist; } catch (_) {}
-    if (typeof window.wishlist !== 'undefined') window.wishlist = newWishlist;
-
-    const btn = document.getElementById(`wish-${id}`);
-    if (btn) {
-      const nowIn = !inWish;
-      btn.classList.toggle('active', nowIn);
-      btn.title = nowIn ? 'Remove from wishlist' : 'Save to wishlist';
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${nowIn ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
-    }
+    // Dedupe on add — never push a duplicate entry. Filter removes only
+    // the exact matching key — every other saved item is untouched.
+    window._wishlistRaw = inWish
+      ? prevRaw.filter(k => k !== itemKey)
+      : _wlDedupe([...prevRaw, itemKey]);
+    _wlDerive();
+    window._syncWishlistUI(); // optimistic — instant heart flip + counts everywhere
 
     try {
       if (inWish) {
@@ -737,69 +811,49 @@
           .from('user_wishlist')
           .delete()
           .eq('user_id', userId)
-          .eq('pdf_id', pdfId);
+          .eq('pdf_id', itemKey);
 
         if (delError) {
           console.error('❌ Wishlist delete failed:', delError);
-          try { wishlist = currentWishlist; } catch (_) {}
-          if (typeof window.wishlist !== 'undefined') window.wishlist = currentWishlist;
-          if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
+          window._wishlistRaw = prevRaw; _wlDerive(); window._syncWishlistUI();
           if (typeof showToast === 'function')
             showToast(`Failed to remove — ${delError.message || 'please try again.'}`, 'error');
-        } else {
-          if (typeof showToast === 'function') showToast('Removed from wishlist', 'info');
+        } else if (typeof showToast === 'function') {
+          showToast('Removed from wishlist', 'info');
         }
       } else {
         const { error: upsertError } = await client
           .from('user_wishlist')
-          .upsert({ user_id: userId, pdf_id: pdfId }, { onConflict: 'user_id,pdf_id' });
+          .upsert({ user_id: userId, pdf_id: itemKey }, { onConflict: 'user_id,pdf_id' });
 
         if (upsertError) {
           console.error('❌ Wishlist upsert failed:', upsertError);
-          try { wishlist = currentWishlist; } catch (_) {}
-          if (typeof window.wishlist !== 'undefined') window.wishlist = currentWishlist;
-          if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
+          window._wishlistRaw = prevRaw; _wlDerive(); window._syncWishlistUI();
           if (typeof showToast === 'function')
             showToast(`Failed to save — ${upsertError.message || 'unknown error'}`, 'error');
-        } else {
-          // Verify the row is readable (guards against RLS SELECT gap)
-          const { data: verifyData, error: verifyErr } = await client
-            .from('user_wishlist')
-            .select('pdf_id')
-            .eq('user_id', userId)
-            .eq('pdf_id', pdfId);
-
-          if (verifyErr || !verifyData?.length) {
-            console.error('❌ Wishlist verification failed — row unreadable after upsert.', verifyErr);
-            try { wishlist = currentWishlist; } catch (_) {}
-            if (typeof window.wishlist !== 'undefined') window.wishlist = currentWishlist;
-            if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
-            if (typeof showToast === 'function')
-              showToast('Save may have failed — check RLS SELECT policy on user_wishlist.', 'error');
-          } else {
-            const pdf = (window.PDFS || []).find(p => Number(p.id) === numId);
-            if (typeof showToast === 'function')
-              showToast((pdf ? pdf.title + ' ' : '') + 'saved! ❤️', 'success');
-          }
+        } else if (typeof showToast === 'function') {
+          const label = type === 'job'
+            ? ((window._chAdmin?.jobs || []).find(j => String(j.id) === String(id))?.title || 'Job')
+            : ((window.PDFS || []).find(p => String(p.id) === String(id))?.title || 'Item');
+          showToast(label + ' saved! ❤️', 'success');
         }
       }
-
-      window._syncWishlistUI();
-
     } catch (e) {
       console.error('❌ toggleWishlistItem exception:', e);
-      try { wishlist = currentWishlist; } catch (_) {}
-      if (typeof window.wishlist !== 'undefined') window.wishlist = currentWishlist;
-      window._syncWishlistUI();
+      window._wishlistRaw = prevRaw; _wlDerive(); window._syncWishlistUI();
     }
   };
 
   // Aliases — several places in the UI (Library cards, PDF-of-the-day
   // carousel, PDP page, Career Hub) call the wishlist toggle under
-  // different historical names. All of them must resolve to the same
+  // different historical names. All of them resolve to the same
   // authoritative function so state never drifts between pages.
-  window.toggleWish = window.toggleWishlistItem;
-  window.toggleWishlist = window.toggleWishlistItem;
+  window.toggleWish        = (id) => window.toggleWishlistItem(id, 'pdf');
+  window.toggleWishlist    = (id) => window.toggleWishlistItem(id, 'pdf');
+  // New — for Career Hub / Job Details heart buttons, once wired there.
+  window.toggleJobWishlist = (id) => window.toggleWishlistItem(id, 'job');
+  window.toggleWishJob     = (id) => window.toggleWishlistItem(id, 'job');
+
 
   // ── LOGIN ────────────────────────────────────────────────────────
   window.authLogin = async function () {

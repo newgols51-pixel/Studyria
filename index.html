@@ -12231,6 +12231,12 @@ body.light .me-stat-val { filter:none; }
         </div>
         <div id="wishContent"></div>
 
+        <div class="wl-section-head">
+          <h2 class="wl-section-title">💼 Saved Jobs</h2>
+          <p class="text-muted text-sm" id="wishJobsCount">0 saved jobs</p>
+        </div>
+        <div id="wishJobsContent"></div>
+
         <div id="wlRecommendedSection" style="display:none;">
           <div class="wl-section-head">
             <h2 class="wl-section-title">⭐ Recommended For You</h2>
@@ -14456,7 +14462,7 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
     <button class="ch-cat-btn" data-cat="govt"               onclick="chSelectCat(this,'govt')">🏛️ Govt Jobs</button>
     <button class="ch-cat-btn" data-cat="assam"              onclick="chSelectCat(this,'assam')">🗺️ Assam Jobs</button>
     <button class="ch-cat-btn" data-cat="adre"               onclick="chSelectCat(this,'adre')">📝 ADRE</button>
-    <button class="ch-cat-btn" data-cat="apsc"               onclick="chSelectCat(this,'apsc')">🎯 APSC</button>
+    <button class="ch-cat-btn" data-cat="apsc"               onclick="chSelectCat(this,'apsc')">?? APSC</button>
     <button class="ch-cat-btn" data-cat="ssc"                onclick="chSelectCat(this,'ssc')">📋 SSC</button>
     <button class="ch-cat-btn" data-cat="railway"            onclick="chSelectCat(this,'railway')">🚂 Railway</button>
     <button class="ch-cat-btn" data-cat="banking"            onclick="chSelectCat(this,'banking')">🏦 Banking</button>
@@ -18186,7 +18192,7 @@ async function _pdpLoadLiveStats(pdfId) {
       client.from('downloads').select('id', { count:'exact', head:true  }).eq('pdf_id', pdfId),
       // Query by pdf_uuid (canonical column only — no legacy pdf_id in schema)
       client.from('purchased_pdfs').select('id', { count:'exact', head:true }).eq('pdf_uuid', String(pdfId)).eq('status', 'paid'),
-      client.from('user_wishlist' ).select('id', { count:'exact', head:true  }).eq('pdf_id', String(pdfId)),
+      client.from('user_wishlist' ).select('id', { count:'exact', head:true  }).or(`pdf_id.eq.pdf:${pdfId},pdf_id.eq.${pdfId}`),
       client.from('pdf_reviews'   ).select('rating', { count:'exact' }        ).eq('pdf_id', pdfId),
       client.from('pdf_reviews'   ).select('id,rating,comment,created_at,user_id').eq('pdf_id', pdfId).order('created_at',{ascending:false}).limit(10),
     ]);
@@ -18523,12 +18529,18 @@ function _pdpSubscribeRealtime(pdfId) {
   window._pdpRealtimeSubs = [];
   const client = window.supabaseClient;
   if (!client || !pdfId) return;
-  ['downloads','purchases','wishlist','reviews'].forEach(table => {
+  ['downloads','purchases','user_wishlist','reviews'].forEach(table => {
     try {
+      // user_wishlist.pdf_id now stores composite "pdf:<id>"/"job:<id>"
+      // keys (see supabase.js wishlist engine), so it can't be matched
+      // with a plain eq filter here — listen unfiltered instead and let
+      // _pdpLoadLiveStats() do its own scoped count query.
+      const config = table === 'user_wishlist'
+        ? { event:'*', schema:'public', table }
+        : { event:'*', schema:'public', table, filter:`pdf_id=eq.${pdfId}` };
       const sub = client
         .channel(`pdp_${table}_${pdfId}_${Date.now()}`)
-        .on('postgres_changes', { event:'*', schema:'public', table, filter:`pdf_id=eq.${pdfId}` },
-          () => { _pdpLoadLiveStats(pdfId); })
+        .on('postgres_changes', config, () => { _pdpLoadLiveStats(pdfId); })
         .subscribe();
       window._pdpRealtimeSubs.push(sub);
     } catch(e) { console.warn(`_pdpSubscribeRealtime(${table}):`, e); }
@@ -18602,116 +18614,71 @@ function pdpZoomCover() {
 
 // ── WISHLIST ──────────────────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════════
-// WISHLIST SYSTEM — fixed
-// All reads come from user_wishlist table via Supabase.
-// No localStorage. No cached counters. No stale variables.
+// WISHLIST SYSTEM — unified PDF + Job engine.
+// supabase.js owns all state (window.wishlist / window.jobWishlist /
+// window._wishlistRaw) and all Supabase reads/writes. Everything below
+// is thin UI wiring: heart-button rendering + the Wishlist page.
 // ══════════════════════════════════════════════════════════════════
 
-// loadWishlistFromSupabase: always resolves user from live session,
-// never from window.currentUser alone (which may be null on refresh).
-// Delegates to supabase.js version if available (it has the loop guard).
+// loadWishlistFromSupabase: always delegates to the authoritative
+// supabase.js implementation (loop-guarded, guest-local fallback,
+// realtime multi-device sync). Kept as a wrapper only so any legacy
+// inline call site in this file keeps resolving.
 async function loadWishlistFromSupabase() {
-  // Prefer the supabase.js version — it has the _wishlistLoading guard
-  // that prevents the renderWishlist → loadWishlist infinite loop.
-  if (typeof window.loadWishlistFromSupabase === 'function' &&
-      window.loadWishlistFromSupabase !== loadWishlistFromSupabase) {
+  if (typeof window.loadWishlistFromSupabase === 'function') {
     return window.loadWishlistFromSupabase();
-  }
-
-  const client = window.supabaseClient;
-  if (!client) { console.error('❌ loadWishlistFromSupabase: no supabaseClient'); return; }
-
-  // FIX: get userId from live session — NOT from window.currentUser which
-  // may not be set yet on a hard refresh.
-  // FIX: Supabase user objects use .id not .uid
-  let userId = window.currentUser?.id || window.currentUser?.uid || null;
-  if (!userId) {
-    try {
-      const { data: { session } } = await client.auth.getSession();
-      if (session?.user) {
-        if (!window.currentUser) window.syncNavToAuth(session.user);
-        userId = session.user.id;
-      }
-    } catch (e) {
-      console.error('❌ loadWishlistFromSupabase: getSession failed', e);
-    }
-  }
-
-  console.log('📋 loadWishlistFromSupabase — user_id:', userId);
-
-  if (!userId) {
-    console.log('loadWishlistFromSupabase: no authenticated user — clearing wishlist');
-    wishlist = [];
-    // Also clear ownership cache on logout
-    window._ownedPdfIds = new Set();
-    window._ownedCacheReady = false;
-    return;
-  }
-
-  // Remove stale localStorage wishlist
-  try { localStorage.removeItem('studyria_wishlist'); } catch(e) {}
-
-  try {
-    const { data, error } = await client
-      .from('user_wishlist')
-      .select('pdf_id')
-      .eq('user_id', userId);
-
-    console.log('📋 Wishlist DB result — rows:', data?.length ?? 0, '| error:', error?.message ?? null);
-
-    if (error) {
-      console.error('❌ loadWishlistFromSupabase error:', {
-        message: error.message, code: error.code, hint: error.hint, details: error.details
-      });
-      return;
-    }
-
-    const loaded = (data || []).map(r => {
-      const n = Number(r.pdf_id);
-      return isNaN(n) ? r.pdf_id : n;
-    });
-
-    wishlist = loaded;
-    if (typeof window.wishlist !== 'undefined') window.wishlist = loaded;
-
-    console.log('✅ Wishlist loaded:', loaded.length, 'items', loaded);
-
-    _refreshAllWishButtons();
-    window._dashCache = null;
-  } catch (e) {
-    console.error('❌ loadWishlistFromSupabase exception:', e);
   }
 }
 
+// ── REFRESH HEART BUTTONS + COUNTS EVERYWHERE ───────────────────────
+// Called by supabase.js's _syncWishlistUI() after every load/toggle,
+// so Home, Library, PDF Details, Career Hub, Job Details, Wishlist
+// and Me all flip their hearts / counters instantly without a reload.
 function _refreshAllWishButtons() {
-  const inList = (id) => wishlist.includes(Number(id)) || wishlist.includes(String(id));
+  const pdfIds = window.wishlist    || [];
+  const jobIds = window.jobWishlist || [];
+  const inPdf  = (id) => pdfIds.includes(Number(id)) || pdfIds.includes(String(id));
+  const inJob  = (id) => jobIds.includes(Number(id)) || jobIds.includes(String(id));
+  const heartSvg = (on) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
 
-  // Standard heart buttons (Home / Search / PDP related / Wishlist page)
+  // Standard heart buttons (Home / Search / PDP / Wishlist page) — PDFs.
+  // Job heart buttons use the "wish-job-<id>" id prefix so they never
+  // collide with a PDF of the same numeric id.
   document.querySelectorAll('[id^="wish-"]').forEach(btn => {
-    const id = btn.id.replace('wish-', '');
-    const nowIn = inList(id);
+    const isJob = btn.id.startsWith('wish-job-');
+    const id    = isJob ? btn.id.replace('wish-job-', '') : btn.id.replace('wish-', '');
+    const nowIn = isJob ? inJob(id) : inPdf(id);
     btn.classList.toggle('active', nowIn);
     btn.title = nowIn ? 'Remove from wishlist' : 'Save to wishlist';
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${nowIn ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
+    btn.innerHTML = heartSvg(nowIn);
   });
 
-  // Library "OTT" cards — emoji heart, keyed by data-wish-id
+  // Library "OTT" cards — emoji heart, keyed by data-wish-id (PDFs)
   document.querySelectorAll('.ottlib-wish[data-wish-id]').forEach(btn => {
-    const nowIn = inList(btn.dataset.wishId);
+    const nowIn = inPdf(btn.dataset.wishId);
     btn.classList.toggle('active', nowIn);
     btn.textContent = nowIn ? '❤️' : '🤍';
   });
 
-  // "PDF of the Day" / trending carousel cards — emoji heart, keyed by data-wish-id
+  // "PDF of the Day" / trending carousel cards — emoji heart (PDFs)
   document.querySelectorAll('.pdl-ott-wish[data-wish-id]').forEach(btn => {
-    const nowIn = inList(btn.dataset.wishId);
+    const nowIn = inPdf(btn.dataset.wishId);
     btn.classList.toggle('active', nowIn);
     btn.textContent = nowIn ? '❤️' : '♡';
   });
 
+  // Job save buttons on Career Hub / Job Details cards, if present —
+  // keyed by data-wish-job-id so career-hub.js can adopt this same
+  // convention without any risk of colliding with PDF ids.
+  document.querySelectorAll('[data-wish-job-id]').forEach(btn => {
+    const nowIn = inJob(btn.dataset.wishJobId);
+    btn.classList.toggle('active', nowIn);
+    btn.classList.toggle('saved', nowIn);
+  });
+
   // Product Details page buttons, if mounted right now
   if (typeof selectedPdf !== 'undefined' && selectedPdf) {
-    const nowIn = inList(selectedPdf.id);
+    const nowIn = inPdf(selectedPdf.id);
     ['pdpWishBtn', 'pdpCoverWishBtn', 'pdpStickyWish'].forEach(id => {
       const btn = document.getElementById(id);
       if (!btn) return;
@@ -18726,135 +18693,25 @@ function _refreshAllWishButtons() {
 
   // Counters that live outside renderWishlist()/renderDashboard() cycles
   const libWishEl = document.getElementById('libStatWishlist');
-  if (libWishEl) libWishEl.textContent = wishlist.length;
+  if (libWishEl) libWishEl.textContent = pdfIds.length;
+  const chSavedEl = document.getElementById('chSavedCount');
+  if (chSavedEl) chSavedEl.textContent = jobIds.length;
 }
 // Also expose globally so supabase.js's _syncWishlistUI() can always reach it
 window._refreshAllWishButtons = _refreshAllWishButtons;
 
-// toggleWish: delegates to supabase.js toggleWishlistItem (the authoritative
-// version with getUser() live-auth, upsert, rollback, and post-save verification).
-// Falls back to inline implementation only if supabase.js hasn't loaded yet.
-async function toggleWish(id) {
-  // Prefer supabase.js version — it does live getUser(), upsert, rollback,
-  // verification, and correct window.currentPage checks.
-  if (typeof window.toggleWishlistItem === 'function') {
-    return window.toggleWishlistItem(id);
-  }
-
-  // ── Inline fallback (should never run if supabase.js is loaded) ──
-  const numId = Number(id);
-  const pdfId = String(id);
-  const client = window.supabaseClient;
-
-  // FIX: always fetch live userId — never trust window.currentUser alone
-  let userId = null;
-  try {
-    const { data: { user: authUser } } = await client.auth.getUser();
-    userId = authUser?.id ?? null;
-  } catch(e) { console.error('❌ toggleWish: getUser failed', e); }
-
-  console.log('toggleWish — user_id:', userId, '| pdf_id:', pdfId);
-
-  if (!userId) {
-    showToast('Please sign in to save to wishlist.', 'info');
-    navigate('login');
-    return;
-  }
-
-  const prevWishlist = [...wishlist]; // snapshot for rollback
-  const inWish = wishlist.includes(numId) || wishlist.includes(pdfId);
-
-  // Optimistic UI update — heart flips immediately, NO toast yet
-  if (inWish) {
-    wishlist = wishlist.filter(x => Number(x) !== numId && String(x) !== pdfId);
-  } else {
-    wishlist = [...wishlist, numId];
-  }
-
-  const btn = document.getElementById(`wish-${id}`);
-  if (btn) {
-    const nowIn = !inWish;
-    btn.classList.toggle('active', nowIn);
-    btn.title = nowIn ? 'Remove from wishlist' : 'Save to wishlist';
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${nowIn ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
-  }
-  // ── NO toast here — wait for DB result below ─────────────────
-
-  if (!client) return;
-
-  try {
-    if (inWish) {
-      const { error: delErr } = await client.from('user_wishlist')
-        .delete().eq('user_id', userId).eq('pdf_id', pdfId);
-      if (delErr) {
-        console.error('❌ wishlist delete failed — FULL ERROR:', {
-          message: delErr.message, code: delErr.code, hint: delErr.hint, details: delErr.details
-        });
-        // Revert
-        wishlist = prevWishlist;
-        _refreshAllWishButtons();
-        showToast(`Failed to remove — ${delErr.message || 'please try again.'} (code: ${delErr.code ?? 'n/a'})`, 'error');
-        return;
-      }
-      console.log('✅ Wishlist: removed pdf_id', pdfId, 'for user', userId);
-      // ✅ DB confirmed delete — now show success toast
-      showToast('Removed from wishlist', 'info');
-    } else {
-      console.log('Wishlist upsert attempt:', { user_id: userId, pdf_id: pdfId });
-      const { error: insErr } = await client.from('user_wishlist')
-        .upsert({ user_id: userId, pdf_id: pdfId }, { onConflict: 'user_id,pdf_id' });
-      if (insErr) {
-        console.error('❌ wishlist upsert failed — FULL ERROR:', {
-          message: insErr.message, code: insErr.code, hint: insErr.hint, details: insErr.details
-        });
-        console.error('❌ Failing query payload:', { user_id: userId, pdf_id: pdfId });
-        // Revert
-        wishlist = prevWishlist;
-        _refreshAllWishButtons();
-        showToast(`Failed to save — ${insErr.message || 'please try again.'} (code: ${insErr.code ?? 'n/a'})`, 'error');
-        return;
-      }
-
-      // ── Verification: confirm row actually exists in DB ──────────
-      const { data: verifyData, error: verifyErr } = await client
-        .from('user_wishlist')
-        .select('pdf_id')
-        .eq('user_id', userId)
-        .eq('pdf_id', pdfId);
-      if (verifyErr || !verifyData || verifyData.length === 0) {
-        console.error('❌ Wishlist verification FAILED — upsert reported success but row unreadable!',
-          verifyErr ? { message: verifyErr.message, code: verifyErr.code, hint: verifyErr.hint, details: verifyErr.details } : 'empty result',
-          '| LIKELY CAUSE: RLS policy missing SELECT grant, or pdf_id type mismatch (text vs int)');
-        // Revert — row is unconfirmed
-        wishlist = prevWishlist;
-        _refreshAllWishButtons();
-        showToast('Save may have failed — could not verify. Check RLS SELECT policy on user_wishlist.', 'error');
-        return;
-      }
-      console.log('✅ Wishlist: verified pdf_id', pdfId, 'exists in DB for user', userId);
-      // ✅ DB confirmed insert AND verified — NOW show success toast
-      const pdf = (window.PDFS || []).find(p => Number(p.id) === numId);
-      showToast((pdf ? pdf.title + ' ' : '') + 'saved! ❤️', 'success');
-    }
-
-    window._dashCache = null;
-
-    // FIX: use script-scope currentPage (not window.currentPage which was
-    // previously never set — now both are kept in sync by navigate()).
-    const pg = window.currentPage || currentPage || '';
-    if (pg === 'dashboard') _refreshDashStats();
-    if (pg === 'wishlist') renderWishlist();
-
-  } catch (e) {
-    console.error('❌ toggleWish Supabase exception:', e);
-  }
-}
-
-// toggleWishlist: alias used by Library "OTT" cards and the pdf-of-the-day
-// carousel. These onclick handlers previously called a function that was
-// never defined anywhere, so those heart buttons silently did nothing.
+// toggleWish / toggleWishlist: PDF hearts — delegates to supabase.js's
+// toggleWishlistItem (the authoritative version with live getUser(),
+// upsert, rollback, guest-local fallback and cross-page broadcast).
+async function toggleWish(id) { return window.toggleWishlistItem(id, 'pdf'); }
 function toggleWishlist(id) { return toggleWish(id); }
 window.toggleWishlist = toggleWishlist;
+
+// toggleJobWish: Job hearts — same engine, 'job' namespace. Wire this
+// up from Career Hub / Job Details save buttons, e.g.
+//   onclick="event.stopPropagation();toggleJobWish('${job.id}')"
+async function toggleJobWish(id) { return window.toggleWishlistItem(id, 'job'); }
+window.toggleJobWish = toggleJobWish;
 
 function renderWishlist() {
   const pdfs = (window.PDFS || []).filter(p => wishlist.includes(Number(p.id)) || wishlist.includes(String(p.id)));
@@ -18937,6 +18794,9 @@ function renderWishlist() {
     }
   }
 
+  // ── Saved Jobs (new — unified wishlist now covers Career Hub too) ──
+  renderWishlistJobs();
+
   // ── Recommended For You (based on wishlist categories) ───────────
   const recoEl = document.getElementById('wlRecommendedCarousel');
   const recoSection = document.getElementById('wlRecommendedSection');
@@ -18994,6 +18854,75 @@ function renderWishlist() {
   const sumEngEl = document.getElementById('wlSumEngagement');
   if (sumEngEl) sumEngEl.textContent = `${engagementPct}%`;
 }
+window.renderWishlist = renderWishlist;
+
+// ── SAVED JOBS — Wishlist page section ──────────────────────────────
+// Fetches full job rows for every id in window.jobWishlist and renders
+// them with the same card look used on Career Hub (window.csCardHTML,
+// provided by career-hub.js) so the UI stays consistent everywhere.
+let _wlJobsCache = null;
+async function renderWishlistJobs(contentId, countId) {
+  contentId = contentId || 'wishJobsContent';
+  countId   = countId   || 'wishJobsCount';
+  const countEl = document.getElementById(countId);
+  const el = document.getElementById(contentId);
+  if (!el) return; // page markup not present — nothing to do
+
+  const jobIds = window.jobWishlist || [];
+
+  if (jobIds.length === 0) {
+    if (countEl) countEl.textContent = '0 saved jobs';
+    el.innerHTML = `<div class="wl-empty">
+      <div class="wl-empty-illustration">💼</div>
+      <h3>No saved jobs yet</h3>
+      <p class="text-muted mb-4">Tap the heart on any job in Career Hub to save it here.</p>
+      <button class="btn btn-primary btn-lg" onclick="navigate('career-hub')">Explore Career Hub</button>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div style="text-align:center;padding:40px 0;opacity:.6">Loading saved jobs…</div>`;
+
+  let jobs = [];
+  const client = window.supabaseClient;
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from('jobs')
+        .select('*')
+        .in('id', jobIds.map(String));
+      if (!error && data) jobs = data;
+    } catch (e) { console.warn('renderWishlistJobs: fetch failed', e); }
+  }
+  // Fallback to whatever's already cached from the Career Hub admin/list view
+  if (jobs.length === 0 && window._chAdmin?.jobs?.length) {
+    jobs = window._chAdmin.jobs.filter(j => jobIds.includes(Number(j.id)) || jobIds.includes(String(j.id)));
+  }
+  _wlJobsCache = jobs;
+
+  if (countEl) countEl.textContent = `${jobs.length} saved job${jobs.length === 1 ? '' : 's'}`;
+
+  if (jobs.length === 0) {
+    el.innerHTML = `<div class="wl-empty">
+      <div class="wl-empty-illustration">💼</div>
+      <h3>Couldn't load your saved jobs</h3>
+      <p class="text-muted mb-4">They're still saved — please refresh.</p>
+    </div>`;
+    return;
+  }
+
+  const cardFn = window.csCardHTML || (typeof _csCardHTMLLegacy === 'function' ? _csCardHTMLLegacy : null);
+  el.innerHTML = cardFn
+    ? `<div class="pdf-grid wl-cards-grid">${jobs.map(cardFn).join('')}</div>`
+    : `<div class="pdf-grid wl-cards-grid">${jobs.map(j => `
+        <div class="pdf-card" onclick="if(typeof csOpenJob==='function')csOpenJob('${j.id}')">
+          <div class="pdf-card-body">
+            <div class="pdf-title">${(j.title||'Job Opportunity').replace(/</g,'&lt;')}</div>
+            <div class="pdf-author">${(j.org||j.organization||'').replace(/</g,'&lt;')}</div>
+          </div>
+        </div>`).join('')}</div>`;
+}
+window.renderWishlistJobs = renderWishlistJobs;
 
 // ══════════════════════════════════════════════════════════════════
 // ── UNIFIED OWNERSHIP SYSTEM ──────────────────────────────────────
@@ -19847,15 +19776,27 @@ async function _fetchDashStats() {
   const user = window.currentUser;
   if (!client || !user) return null;
 
+  // Make sure the central wishlist engine has run at least once this
+  // session so window.wishlist / window.jobWishlist aren't stale [0,0].
+  if (typeof window._wishlistRaw === 'undefined' && typeof window.loadWishlistFromSupabase === 'function') {
+    await window.loadWishlistFromSupabase();
+  }
+
   // window.currentUser is built by _buildCurrentUser() in supabase.js which sets .uid (not .id)
   const _userId = user.uid || user.id;
   console.log('📊 _fetchDashStats: loading stats for uid:', _userId, '| email:', user.email);
 
   try {
-    // Run all three queries in parallel for speed.
+    // Run both queries in parallel for speed.
     // purchased_pdfs: query by user_id (canonical, RLS-friendly).
     // Schema columns: id, user_id, email, pdf_uuid, payment_id, status, created_at
-    const [purchaseRes, wishlistRes, readingRes] = await Promise.all([
+    // NOTE: wishlist counts come from the central engine (window.wishlist /
+    // window.jobWishlist, owned by supabase.js) — NOT a separate query here.
+    // Re-querying user_wishlist directly used to overwrite the global
+    // `wishlist` array with raw (possibly composite "pdf:<id>"/"job:<id>")
+    // rows, corrupting every heart-button check on the page. Always go
+    // through loadWishlistFromSupabase()/window.wishlist instead.
+    const [purchaseRes, readingRes] = await Promise.all([
       client
         .from('purchased_pdfs')
         .select('pdf_uuid, payment_id, status, created_at, amount')
@@ -19863,23 +19804,17 @@ async function _fetchDashStats() {
         .in('status', ['paid', 'owned'])
         .order('created_at', { ascending: false }),
       client
-        .from('user_wishlist')
-        .select('pdf_id')
-        .eq('user_id', _userId),
-      client
         .from('reading_sessions')
         .select('total_seconds')
         .eq('user_id', _userId)
     ]);
 
     if (purchaseRes.error)  console.warn('⚠️ purchased_pdfs query error:', purchaseRes.error.message, purchaseRes.error);
-    if (wishlistRes.error)  console.warn('⚠️ user_wishlist query error:', wishlistRes.error.message);
     if (readingRes.error)   console.warn('⚠️ reading_sessions query error:', readingRes.error.message);
 
     console.log('📦 purchased_pdfs rows returned:', purchaseRes.data?.length ?? 0, purchaseRes.data);
 
     const purchases    = purchaseRes.data  || [];
-    const wishItems    = wishlistRes.data  || [];
     const readingSess  = readingRes.data   || [];
 
     // Compute stats
@@ -19898,15 +19833,10 @@ async function _fetchDashStats() {
         : 0;
       return sum + fallbackPrice;
     }, 0);
-    const wishlistCount  = wishItems.length;
-    const totalSeconds   = readingSess.reduce((sum, r) => sum + (Number(r.total_seconds) || 0), 0);
-    const hoursRead      = parseFloat((totalSeconds / 3600).toFixed(1));
-
-    // Sync local wishlist array so wish buttons render correctly
-    wishlist = wishItems.map(r => {
-      const n = Number(r.pdf_id);
-      return isNaN(n) ? r.pdf_id : n;
-    });
+    const wishlistCount    = (window.wishlist || []).length;
+    const jobWishlistCount = (window.jobWishlist || []).length;
+    const totalSeconds     = readingSess.reduce((sum, r) => sum + (Number(r.total_seconds) || 0), 0);
+    const hoursRead        = parseFloat((totalSeconds / 3600).toFixed(1));
 
     // Resolve purchased PDFs by pdf_uuid against the PDFS catalogue
     const purchasedPdfs = purchases.map(row => {
@@ -19923,7 +19853,7 @@ async function _fetchDashStats() {
       };
     });
 
-    const stats = { purchasedCount, totalSpent, wishlistCount, hoursRead, purchasedPdfs, rawPurchases: purchases };
+    const stats = { purchasedCount, totalSpent, wishlistCount, jobWishlistCount, hoursRead, purchasedPdfs, rawPurchases: purchases };
     window._dashCache = stats;
     console.log('✅ Dashboard stats:', stats);
     return stats;
@@ -19951,7 +19881,7 @@ async function _refreshDashStats() {
   const libBadge = document.getElementById('dashLibBadge');
   if (libBadge) libBadge.textContent = stats.purchasedCount;
   const wishBadge = document.getElementById('dashWishBadge');
-  if (wishBadge) wishBadge.textContent = stats.wishlistCount;
+  if (wishBadge) wishBadge.textContent = stats.wishlistCount + stats.jobWishlistCount;
 
   // Refresh recently purchased section
   const recentEl = document.getElementById('dashRecentlyPurchased');
@@ -19963,7 +19893,7 @@ async function _refreshDashStats() {
 
   // Refresh wishlist count badge
   const wishCountEl = document.getElementById('dashWishCount');
-  if (wishCountEl) wishCountEl.textContent = stats.wishlistCount;
+  if (wishCountEl) wishCountEl.textContent = stats.wishlistCount + stats.jobWishlistCount;
 }
 
 // Renders the dashboard. If window.currentUser is already set (auth
@@ -20224,7 +20154,7 @@ async function switchMeTab(tab) {
     const libBadge = document.getElementById('dashLibBadge');
     if (libBadge) libBadge.textContent = stats.purchasedCount;
     const wishBadge = document.getElementById('dashWishBadge');
-    if (wishBadge) wishBadge.textContent = stats.wishlistCount;
+    if (wishBadge) wishBadge.textContent = stats.wishlistCount + (stats.jobWishlistCount || 0);
 
     // Learning overview cards — fetch real opened count from pdf_analytics
     const _userId2 = (_fetchDashStats && (window.currentUser?.id || window.currentUser?.uid));
@@ -21094,7 +21024,12 @@ CREATE TRIGGER trg_progress_updated
           <button class="btn btn-primary btn-lg" onclick="navigate('library')">Browse Library</button>
         </div>` :
         `<div class="pdf-grid">${wishPdfs.map(pdfCardHTML).join('')}</div>`}
+
+      <div class="me-section-title" style="margin-top:32px"><span class="mst-accent"></span>💼 Saved Jobs</div>
+      <p class="text-muted text-sm" style="margin-bottom:20px" id="dashWishJobsCount">0 saved jobs</p>
+      <div id="dashWishJobsContent"></div>
     </div>`;
+    renderWishlistJobs('dashWishJobsContent', 'dashWishJobsCount');
   }
 
   // ── PROFILE ────────────────────────────────────────────────────────
