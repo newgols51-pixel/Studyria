@@ -520,7 +520,53 @@
     }
   };
 
-  // ── WISHLIST — LOAD FROM SUPABASE ────────────────────────────────
+  // ── WISHLIST — GUEST (LOGGED-OUT) LOCAL STORAGE SUPPORT ───────────
+  // Guests get a fully working wishlist stored in localStorage. When
+  // they log in, _mergeGuestWishlistIntoSupabase() pushes everything
+  // into user_wishlist and the local copy is cleared.
+  const GUEST_WISH_KEY = 'studyria_wishlist';
+
+  function _readGuestWishlist() {
+    try {
+      const raw = localStorage.getItem(GUEST_WISH_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) { return []; }
+  }
+
+  function _writeGuestWishlist(arr) {
+    try {
+      // Dedupe (prevents duplicate wishlist items)
+      const deduped = [...new Set(arr.map(String))].map(x => {
+        const n = Number(x);
+        return isNaN(n) ? x : n;
+      });
+      localStorage.setItem(GUEST_WISH_KEY, JSON.stringify(deduped));
+      return deduped;
+    } catch (_) { return arr; }
+  }
+
+  // ── WISHLIST — BROADCAST CHANGES TO EVERY PAGE / COMPONENT ────────
+  // Called after every load, toggle, or guest merge. Refreshes heart
+  // icons + counters on whatever page happens to be mounted right now
+  // and notifies any other listener (career-hub.js, etc.) via a
+  // CustomEvent, so nothing needs a manual page refresh.
+  window._syncWishlistUI = function _syncWishlistUI() {
+    const current = (() => { try { return wishlist; } catch (_) { return window.wishlist || []; } })();
+
+    if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
+    window._dashCache = null;
+
+    const pg = window.currentPage || (typeof currentPage !== 'undefined' ? currentPage : '');
+    if (pg === 'dashboard' && typeof window._refreshDashStats === 'function') window._refreshDashStats();
+    if (pg === 'wishlist' && typeof window.renderWishlist === 'function') window.renderWishlist();
+
+    try {
+      window.dispatchEvent(new CustomEvent('studyria:wishlistChanged', { detail: { wishlist: [...current] } }));
+    } catch (_) {}
+  };
+
+  // ── WISHLIST — LOAD (Supabase for logged-in users, local for guests) ──
   let _wishlistLoading = false;
 
   window.loadWishlistFromSupabase = async function loadWishlistFromSupabase() {
@@ -547,13 +593,16 @@
     }
 
     if (!userId) {
-      console.log('loadWishlistFromSupabase: no authenticated user — clearing wishlist');
-      if (typeof window.wishlist !== 'undefined') window.wishlist = [];
+      // Logged out — show the guest wishlist stored locally, instead
+      // of wiping it. It auto-syncs to Supabase on next login.
+      const guest = _readGuestWishlist();
+      if (typeof window.wishlist !== 'undefined') window.wishlist = guest;
+      try { wishlist = guest; } catch (_) {}
+      console.log('👤 loadWishlistFromSupabase: guest mode —', guest.length, 'local item(s)');
       _wishlistLoading = false;
+      window._syncWishlistUI();
       return;
     }
-
-    try { localStorage.removeItem('studyria_wishlist'); } catch (_) {}
 
     try {
       console.log('📋 Loading wishlist for user:', userId);
@@ -571,9 +620,11 @@
         return;
       }
 
-      const loaded = (data || []).map(r => {
-        const n = Number(r.pdf_id);
-        return isNaN(n) ? r.pdf_id : n;
+      // Dedupe defensively — prevents duplicate items even if the DB
+      // ever ends up with stray duplicate rows.
+      const loaded = [...new Set((data || []).map(r => String(r.pdf_id)))].map(id => {
+        const n = Number(id);
+        return isNaN(n) ? id : n;
       });
 
       if (typeof window.wishlist !== 'undefined') window.wishlist = loaded;
@@ -581,13 +632,35 @@
 
       console.log('✅ Wishlist loaded:', loaded.length, 'items');
 
-      if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
-      window._dashCache = null;
+      window._syncWishlistUI();
 
     } catch (e) {
       console.error('❌ loadWishlistFromSupabase exception:', e);
     } finally {
       _wishlistLoading = false;
+    }
+  };
+
+  // ── WISHLIST — MERGE GUEST ITEMS INTO SUPABASE ON LOGIN ───────────
+  window._mergeGuestWishlistIntoSupabase = async function _mergeGuestWishlistIntoSupabase(userId) {
+    const client = window.supabaseClient;
+    const guest = _readGuestWishlist();
+    if (!client || !userId || guest.length === 0) return;
+
+    console.log('🔄 Merging', guest.length, 'guest wishlist item(s) into Supabase for', userId);
+    try {
+      const rows = guest.map(id => ({ user_id: userId, pdf_id: String(id) }));
+      const { error } = await client
+        .from('user_wishlist')
+        .upsert(rows, { onConflict: 'user_id,pdf_id' });
+      if (error) {
+        console.error('❌ Guest wishlist merge failed:', error);
+        return; // keep local copy so we can retry next login
+      }
+      try { localStorage.removeItem(GUEST_WISH_KEY); } catch (_) {}
+      console.log('✅ Guest wishlist merged and cleared.');
+    } catch (e) {
+      console.error('❌ Guest wishlist merge exception:', e);
     }
   };
 
@@ -604,9 +677,25 @@
       console.error('❌ toggleWishlistItem: getUser failed', e);
     }
 
+    // ── GUEST MODE: no forced redirect to login. Toggle locally in
+    // localStorage; it auto-merges into Supabase on next login. ──
     if (!userId) {
-      if (typeof showToast === 'function') showToast('Please sign in to save to wishlist.', 'info');
-      if (typeof navigate === 'function') navigate('login');
+      const pdfId = String(id);
+      const numId = Number(id);
+      const guest = _readGuestWishlist();
+      const inWish = guest.some(x => String(x) === pdfId);
+      const nextGuest = inWish
+        ? guest.filter(x => String(x) !== pdfId)
+        : [...guest, isNaN(numId) ? pdfId : numId];
+      const saved = _writeGuestWishlist(nextGuest);
+
+      if (typeof window.wishlist !== 'undefined') window.wishlist = saved;
+      try { wishlist = saved; } catch (_) {}
+
+      if (typeof showToast === 'function') {
+        showToast(inWish ? 'Removed from wishlist' : 'Saved! Sign in to keep it forever ❤️', inWish ? 'info' : 'success');
+      }
+      window._syncWishlistUI();
       return;
     }
 
@@ -626,9 +715,10 @@
 
     const inWish = currentWishlist.includes(numId) || currentWishlist.includes(pdfId);
 
+    // Dedupe on add — never push a duplicate entry.
     const newWishlist = inWish
       ? currentWishlist.filter(x => Number(x) !== numId && String(x) !== pdfId)
-      : [...currentWishlist, numId];
+      : [...new Set([...currentWishlist, numId])];
 
     try { wishlist = newWishlist; } catch (_) {}
     if (typeof window.wishlist !== 'undefined') window.wishlist = newWishlist;
@@ -694,23 +784,22 @@
         }
       }
 
-      window._dashCache = null;
-      const pg = window.currentPage || (typeof currentPage !== 'undefined' ? currentPage : '');
-      if (pg === 'dashboard' && typeof window._refreshDashStats === 'function') window._refreshDashStats();
-      if (pg === 'wishlist') {
-        await window.loadWishlistFromSupabase();
-        if (typeof window.renderWishlist === 'function') window.renderWishlist();
-      }
+      window._syncWishlistUI();
 
     } catch (e) {
       console.error('❌ toggleWishlistItem exception:', e);
       try { wishlist = currentWishlist; } catch (_) {}
       if (typeof window.wishlist !== 'undefined') window.wishlist = currentWishlist;
-      if (typeof window._refreshAllWishButtons === 'function') window._refreshAllWishButtons();
+      window._syncWishlistUI();
     }
   };
 
+  // Aliases — several places in the UI (Library cards, PDF-of-the-day
+  // carousel, PDP page, Career Hub) call the wishlist toggle under
+  // different historical names. All of them must resolve to the same
+  // authoritative function so state never drifts between pages.
   window.toggleWish = window.toggleWishlistItem;
+  window.toggleWishlist = window.toggleWishlistItem;
 
   // ── LOGIN ────────────────────────────────────────────────────────
   window.authLogin = async function () {
@@ -1790,6 +1879,11 @@
       if (event === 'SIGNED_IN') {
         window.syncNavToAuth(user);
         window._dashCache = null;
+
+        // ── Auto-sync: push any guest (logged-out) wishlist items into
+        // Supabase before loading, so nothing saved while logged out
+        // is ever lost. ──
+        if (user) await window._mergeGuestWishlistIntoSupabase(user.id);
         await window.loadWishlistFromSupabase();
 
         // Create/update public.users profile (avatar, name, email, provider, last_login)
@@ -1838,8 +1932,7 @@
       if (event === 'SIGNED_OUT') {
         window.syncNavToAuth(null);
         window._purchasedPdfIds = new Set();
-        try { wishlist = []; } catch (_) {}
-        if (typeof window.wishlist !== 'undefined') window.wishlist = [];
+        await window.loadWishlistFromSupabase(); // falls back to guest-local (empty) wishlist
         window._dashCache = null;
 
         // ── NEW: clear Career Hub saved jobs on logout ────────────

@@ -10590,7 +10590,7 @@ function ottlibCardHTML(p, opts = {}) {
           ${discountBadge}
           ${dlBadge}
           ${rankNum}
-          <button class="ottlib-wish${inWish?' active':''}" onclick="event.stopPropagation();toggleWishlist('${p.id}')" title="Wishlist">
+          <button class="ottlib-wish${inWish?' active':''}" data-wish-id="${p.id}" onclick="event.stopPropagation();toggleWishlist('${p.id}')" title="Wishlist">
             ${inWish ? '❤️' : '🤍'}
           </button>
           ${progressBar}
@@ -16860,6 +16860,7 @@ async function renderPopularDownloads() {
     const coverHTML = coverSrc
       ? `<img src="${coverSrc}" alt="${(pdf.title||'').replace(/"/g,'')}" loading="lazy" decoding="async" onerror="this.style.display='none'">`
       : `<div style="font-size:2.8rem;opacity:.35">📄</div>`;
+    const inWish = wishlist.includes(pdf.id) || wishlist.includes(String(pdf.id));
 
     return `
     <div class="pdl-ott-card" onclick="openPDFDetail('${pdf.id}')">
@@ -16870,7 +16871,7 @@ async function renderPopularDownloads() {
           <div class="pdl-ott-badge ${badge.cls}">${badge.label}</div>
           ${dlStr ? `<div class="pdl-ott-dl-badge">⬇ ${dlStr}</div>` : ''}
           <div class="pdl-ott-rank-num ${rankCls(i)}">${i+1}</div>
-          <button class="pdl-ott-wish" onclick="event.stopPropagation();toggleWishlist('${pdf.id}')" title="Wishlist">♡</button>
+          <button class="pdl-ott-wish${inWish?' active':''}" data-wish-id="${pdf.id}" onclick="event.stopPropagation();toggleWishlist('${pdf.id}')" title="Wishlist">${inWish ? '❤️' : '♡'}</button>
         </div>
         <div class="pdl-ott-body">
           <div class="pdl-ott-card-title">${pdf.title || 'Untitled'}</div>
@@ -18545,11 +18546,11 @@ function pdpHandleBuy() {
   else buyPDF(pdf.id, price);
 }
 
-function pdpToggleWish() {
+async function pdpToggleWish() {
   const pdf = selectedPdf;
   if (!pdf) return;
-  toggleWish(pdf.id);
-  setTimeout(() => {
+  await toggleWish(pdf.id); // wait for the full toggle (incl. DB write/guest save) before reading state back
+  {
     const inWish = wishlist.includes(pdf.id) || wishlist.includes(String(pdf.id));
     // Update all wish buttons on page
     ['pdpWishBtn','pdpCoverWishBtn','pdpStickyWish'].forEach(id => {
@@ -18562,7 +18563,7 @@ function pdpToggleWish() {
       }
       btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${inWish?'var(--danger)':'none'}" stroke="${inWish?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${inWish?'Saved to Wishlist':'❤️ Add to Wishlist'}`;
     });
-  }, 200);
+  }
 }
 
 function pdpToggleDesc() {
@@ -18683,14 +18684,52 @@ async function loadWishlistFromSupabase() {
 }
 
 function _refreshAllWishButtons() {
+  const inList = (id) => wishlist.includes(Number(id)) || wishlist.includes(String(id));
+
+  // Standard heart buttons (Home / Search / PDP related / Wishlist page)
   document.querySelectorAll('[id^="wish-"]').forEach(btn => {
-    const id = Number(btn.id.replace('wish-', ''));
-    const nowIn = wishlist.includes(id) || wishlist.includes(String(id));
+    const id = btn.id.replace('wish-', '');
+    const nowIn = inList(id);
     btn.classList.toggle('active', nowIn);
     btn.title = nowIn ? 'Remove from wishlist' : 'Save to wishlist';
     btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${nowIn ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
   });
+
+  // Library "OTT" cards — emoji heart, keyed by data-wish-id
+  document.querySelectorAll('.ottlib-wish[data-wish-id]').forEach(btn => {
+    const nowIn = inList(btn.dataset.wishId);
+    btn.classList.toggle('active', nowIn);
+    btn.textContent = nowIn ? '❤️' : '🤍';
+  });
+
+  // "PDF of the Day" / trending carousel cards — emoji heart, keyed by data-wish-id
+  document.querySelectorAll('.pdl-ott-wish[data-wish-id]').forEach(btn => {
+    const nowIn = inList(btn.dataset.wishId);
+    btn.classList.toggle('active', nowIn);
+    btn.textContent = nowIn ? '❤️' : '♡';
+  });
+
+  // Product Details page buttons, if mounted right now
+  if (typeof selectedPdf !== 'undefined' && selectedPdf) {
+    const nowIn = inList(selectedPdf.id);
+    ['pdpWishBtn', 'pdpCoverWishBtn', 'pdpStickyWish'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      if (id === 'pdpStickyWish') { btn.textContent = nowIn ? '💔' : '❤️'; return; }
+      if (id === 'pdpCoverWishBtn') {
+        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="${nowIn?'var(--danger)':'none'}" stroke="${nowIn?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${nowIn?'Saved':'Wishlist'}`;
+        return;
+      }
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${nowIn?'var(--danger)':'none'}" stroke="${nowIn?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${nowIn?'Saved to Wishlist':'❤️ Add to Wishlist'}`;
+    });
+  }
+
+  // Counters that live outside renderWishlist()/renderDashboard() cycles
+  const libWishEl = document.getElementById('libStatWishlist');
+  if (libWishEl) libWishEl.textContent = wishlist.length;
 }
+// Also expose globally so supabase.js's _syncWishlistUI() can always reach it
+window._refreshAllWishButtons = _refreshAllWishButtons;
 
 // toggleWish: delegates to supabase.js toggleWishlistItem (the authoritative
 // version with getUser() live-auth, upsert, rollback, and post-save verification).
@@ -18810,6 +18849,12 @@ async function toggleWish(id) {
     console.error('❌ toggleWish Supabase exception:', e);
   }
 }
+
+// toggleWishlist: alias used by Library "OTT" cards and the pdf-of-the-day
+// carousel. These onclick handlers previously called a function that was
+// never defined anywhere, so those heart buttons silently did nothing.
+function toggleWishlist(id) { return toggleWish(id); }
+window.toggleWishlist = toggleWishlist;
 
 function renderWishlist() {
   const pdfs = (window.PDFS || []).filter(p => wishlist.includes(Number(p.id)) || wishlist.includes(String(p.id)));
