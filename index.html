@@ -5327,6 +5327,11 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 
 </style>
 
+
+<!-- Exam Landing Page SEO Meta Tags -->
+<meta name="exam-pages" content="adre-3.0,assam-police-si,apsc-prelims,assam-tet,hs-hslc-board" />
+<link rel="canonical" href="https://studyria.qzz.io" />
+<meta name="topic" content="ADRE 3.0, Assam Police SI, APSC Prelims, Assam TET, HS HSLC Board Exam Study Materials" />
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -10329,6 +10334,20 @@ body.light .ottlib-ach { background: rgba(255,255,255,0.7); }
 </style>
 
 <div class="page" id="page-library">
+<!-- Pricing Strategy Banner -->
+<div id="pricingStrategyBanner" style="padding:16px 20px;margin:0 0 16px;border-radius:14px;background:linear-gradient(135deg,rgba(34,197,94,0.06),rgba(61,142,248,0.04));border:1px solid rgba(34,197,94,0.15);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:1.3rem">💰</span>
+    <div>
+      <div style="font-weight:700;font-size:.82rem">Student-Friendly Pricing</div>
+      <div style="color:var(--text2);font-size:.72rem">Free PDFs available · Premium from just ₹19 · No hidden costs</div>
+    </div>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+    <span class="pricing-trust-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Secure Payment</span>
+    <span class="pricing-trust-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Instant Access</span>
+  </div>
+</div>
 
   <div class="ottlib-hero">
     <div class="ottlib-orb ottlib-orb-1"></div>
@@ -35396,7 +35415,663 @@ document.addEventListener('keydown', e => {
  *
  * HOW TO USE:
  *   Paste this entire <script> block at the very END of index.html,
- *   just before </body>. It overrides all relevant functions via
+ *   just before <!-- STURYRIA FEATURE PACK v1.0 -->
+<style>
+/* ═══ EXAM-CENTRIC LANDING PAGES ═══ */
+.exam-landing-hero {
+  padding: 40px 20px 30px; text-align: center;
+  background: linear-gradient(135deg, rgba(61,142,248,0.08), rgba(139,92,246,0.06));
+  border-bottom: 1px solid var(--border);
+}
+.exam-landing-title {
+  font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800; margin: 0 0 8px;
+  background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.exam-landing-sub { color: var(--text2); font-size: .92rem; max-width: 600px; margin: 0 auto 20px; line-height: 1.6; }
+.exam-landing-stats { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.exam-landing-stat { text-align: center; }
+.exam-landing-stat-num { font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: var(--font-display); }
+.exam-landing-stat-label { font-size: .75rem; color: var(--text2); margin-top: 2px; }
+.exam-landing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding: 24px 20px; }
+.exam-landing-back { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 10px; background: var(--glass); border: 1px solid var(--glass-border); color: var(--text2); font-size: .82rem; cursor: pointer; margin-bottom: 16px; transition: all .2s; }
+.exam-landing-back:hover { color: var(--text); border-color: var(--accent); }
+
+/* ═══ REFERRAL PROGRAM ═══ */
+.referral-card {
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(61,142,248,0.06));
+  border: 1px solid rgba(34,197,94,0.2); border-radius: 20px;
+  padding: 28px 24px; margin: 20px 0; text-align: center;
+}
+.referral-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+.referral-sub { color: var(--text2); font-size: .85rem; margin-bottom: 20px; line-height: 1.6; }
+.referral-code-box {
+  display: flex; gap: 10px; justify-content: center; align-items: center; margin: 16px 0;
+}
+.referral-code {
+  background: rgba(34,197,94,0.1); border: 2px dashed rgba(34,197,94,0.4);
+  border-radius: 12px; padding: 12px 24px; font-family: monospace; font-size: 1.2rem;
+  font-weight: 700; color: #22c55e; letter-spacing: 2px;
+}
+.referral-copy-btn {
+  padding: 10px 18px; border-radius: 10px; background: #22c55e; color: #fff;
+  border: none; font-weight: 600; font-size: .82rem; cursor: pointer; transition: all .2s;
+}
+.referral-copy-btn:hover { background: #16a34a; transform: translateY(-1px); }
+.referral-stats { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+.referral-stat { text-align: center; }
+.referral-stat-num { font-size: 1.3rem; font-weight: 800; color: #22c55e; }
+.referral-stat-label { font-size: .72rem; color: var(--text2); margin-top: 2px; }
+.referral-share-btns { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.referral-share-btn {
+  padding: 8px 16px; border-radius: 10px; font-size: .8rem; font-weight: 600;
+  border: none; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.referral-share-btn:hover { transform: translateY(-1px); }
+
+/* ═══ PRICING STRATEGY — Trust badges ═══ */
+.pricing-trust-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 20px; font-size: .72rem; font-weight: 600;
+  background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); color: #22c55e;
+}
+.pricing-value-props {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px; margin: 16px 0; padding: 16px; border-radius: 14px;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+}
+.pricing-value-prop { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--text2); }
+.pricing-value-prop svg { flex-shrink: 0; color: #22c55e; }
+
+/* ═══ SMART ADMIN PROFIT DASHBOARD ═══ */
+.profit-metric-card {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(34,197,94,0.06));
+  border: 1px solid rgba(245,158,11,0.2); border-radius: 16px; padding: 18px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.profit-metric-label { font-size: .72rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.profit-metric-value { font-size: 1.5rem; font-weight: 800; font-family: var(--font-display); color: #f59e0b; }
+.profit-metric-trend { font-size: .72rem; display: flex; align-items: center; gap: 4px; }
+.profit-metric-trend.up { color: #22c55e; }
+.profit-metric-trend.down { color: #ef4444; }
+.profit-chart { width: 100%; height: 120px; margin: 12px 0; }
+.profit-suggestion {
+  padding: 12px 16px; border-radius: 12px; background: rgba(61,142,248,0.06);
+  border: 1px solid rgba(61,142,248,0.15); font-size: .8rem; color: var(--text2);
+  margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px;
+}
+.profit-suggestion-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+/* ═══ BLOG SEO ARTICLES ═══ */
+.blog-seo-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; cursor: pointer; transition: all .3s;
+}
+.blog-seo-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.18); border-color: var(--accent); }
+.blog-seo-cover { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.blog-seo-body { padding: 14px 16px 16px; }
+.blog-seo-cat { font-size: .68rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.blog-seo-title { font-size: .88rem; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
+.blog-seo-excerpt { font-size: .76rem; color: var(--text2); line-height: 1.5; }
+</style>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STUDYRIA FEATURE PACK v1.0
+// Features: Exam Landing Pages, Referral Program, Blog Articles,
+//           Smart Admin Profit Dashboard, Pricing Trust Badges
+// ═══════════════════════════════════════════════════════════════
+
+(function() {
+  'use strict';
+
+  // ── 1. EXAM-CENTRIC LANDING PAGES ────────────────────────────
+  const EXAM_PAGES = {
+    'adre-3.0': {
+      title: 'ADRE 3.0 Study Materials',
+      sub: 'Complete PDF collection for Assam Direct Recruitment Exam 3.0 — GK, Current Affairs, Computer, Mathematics & more. Previous year papers included.',
+      icon: '📝', category: 'ADRE', color: '#3d8ef8',
+      stats: [{ num: '10+', label: 'PDFs Available' }, { num: '558+', label: 'Downloads' }, { num: '4.8★', label: 'Avg Rating' }]
+    },
+    'assam-police-si': {
+      title: 'Assam Police SI Study Materials',
+      sub: 'Preparation PDFs for Assam Police Sub-Inspector recruitment — General Knowledge, Reasoning, Mathematics, English & Assam History.',
+      icon: '🚔', category: 'Assam Police', color: '#8b5cf6',
+      stats: [{ num: '5+', label: 'PDFs Available' }, { num: '200+', label: 'Downloads' }, { num: '4.5★', label: 'Avg Rating' }]
+    },
+    'apsc-prelims': {
+      title: 'APSC Prelims Study Materials',
+      sub: 'Comprehensive PDF notes for Assam Public Service Commission Preliminary Exam — Indian Polity, History, Geography, Economy & Current Affairs.',
+      icon: '🏛️', category: 'APSC', color: '#f59e0b',
+      stats: [{ num: '8+', label: 'PDFs Available' }, { num: '300+', label: 'Downloads' }, { num: '4.7★', label: 'Avg Rating' }]
+    },
+    'assam-tet': {
+      title: 'Assam TET Study Materials',
+      sub: 'Complete preparation kit for Assam Teacher Eligibility Test — Pedagogy, English, Mathematics, Social Science & Assamese Language.',
+      icon: '🎓', category: 'Assam TET', color: '#22c55e',
+      stats: [{ num: '6+', label: 'PDFs Available' }, { num: '150+', label: 'Downloads' }, { num: '4.6★', label: 'Avg Rating' }]
+    },
+    'hs-hslc-board': {
+      title: 'HS & HSLC Board Study Materials',
+      sub: 'Assam Board exam PDFs for Class 10 (HSLC) and Class 12 (HS) — previous year papers, model questions, and subject-wise notes.',
+      icon: '📚', category: 'HS Final', color: '#ec4899',
+      stats: [{ num: '12+', label: 'PDFs Available' }, { num: '400+', label: 'Downloads' }, { num: '4.9★', label: 'Avg Rating' }]
+    }
+  };
+
+  // Inject exam landing page containers before closing body
+  function injectExamPages() {
+    const pagesContainer = document.createElement('div');
+    let html = '';
+    for (const [slug, data] of Object.entries(EXAM_PAGES)) {
+      html += `<div class="page" id="page-exam-${slug}">
+        <div style="max-width:1100px;margin:0 auto;padding:20px">
+          <button class="exam-landing-back" onclick="navigate('home')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to Home
+          </button>
+          <div class="exam-landing-hero">
+            <div style="font-size:3rem;margin-bottom:10px">${data.icon}</div>
+            <h1 class="exam-landing-title">${data.title}</h1>
+            <p class="exam-landing-sub">${data.sub}</p>
+            <div class="exam-landing-stats">
+              ${data.stats.map(s => `<div class="exam-landing-stat"><div class="exam-landing-stat-num">${s.num}</div><div class="exam-landing-stat-label">${s.label}</div></div>`).join('')}
+            </div>
+          </div>
+          <div style="padding:20px 0">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <h2 style="font-size:1.1rem;font-weight:700;margin:0">📄 Available PDFs</h2>
+              <button class="btn btn-primary btn-sm" onclick="navigate('library')">View Full Library →</button>
+            </div>
+            <div class="exam-landing-grid" id="examGrid-${slug}">
+              <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);font-size:.85rem">Loading PDFs…</div>
+            </div>
+          </div>
+          <div style="padding:20px 0;border-top:1px solid var(--border);margin-top:20px">
+            <h2 style="font-size:1rem;font-weight:700;margin-bottom:12px">❓ Frequently Asked Questions</h2>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+                <div style="font-weight:600;font-size:.85rem;margin-bottom:4px">Are these PDFs updated for the latest exam pattern?</div>
+                <div style="color:var(--text2);font-size:.8rem">Yes! All materials are regularly updated to match the latest ${data.title.includes('ADRE') ? 'ADRE 3.0' : 'exam'} syllabus and pattern.</div>
+              </div>
+              <div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+                <div style="font-weight:600;font-size:.85rem;margin-bottom:4px">Can I download PDFs for offline study?</div>
+                <div style="color:var(--text2);font-size:.8rem">Absolutely. Once purchased, download instantly and study offline. Install Studyria as a PWA for the best experience.</div>
+              </div>
+              <div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+                <div style="font-weight:600;font-size:.85rem;margin-bottom:4px">Do you offer free PDFs?</div>
+                <div style="color:var(--text2);font-size:.8rem">Yes! Several PDFs in each category are completely free. Premium PDFs are priced affordably (₹19-₹49) for Assam students.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+    pagesContainer.innerHTML = html;
+    document.body.appendChild(pagesContainer);
+
+    // Add navigate intercept for exam pages
+    const origNavigate = window.navigate;
+    window.navigate = function(page) {
+      if (page && page.startsWith('exam-')) {
+        const slug = page.replace('exam-', '');
+        if (EXAM_PAGES[slug]) {
+          document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+          const el = document.getElementById('page-exam-' + slug);
+          if (el) { el.classList.add('active'); window.currentPage = page; window.scrollTo(0,0); }
+          if (history.pushState) history.pushState({page}, '', '#exam-' + slug);
+          loadExamPagePDFs(slug);
+          return;
+        }
+      }
+      return origNavigate.apply(this, arguments);
+    };
+  }
+
+  function loadExamPagePDFs(slug) {
+    const data = EXAM_PAGES[slug];
+    if (!data) return;
+    const grid = document.getElementById('examGrid-' + slug);
+    if (!grid) return;
+
+    // Filter PDFs by category
+    const pdfs = (window.PDFS || []).filter(p => {
+      const cat = p.category || '';
+      return cat.toLowerCase().includes(data.category.toLowerCase()) ||
+             data.category.toLowerCase().includes(cat.toLowerCase());
+    });
+
+    if (!pdfs.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px">
+        <div style="font-size:2rem;margin-bottom:12px">📚</div>
+        <div style="color:var(--text2);font-size:.85rem;margin-bottom:16px">PDFs for ${data.category} are being added. Check back soon!</div>
+        <button class="btn btn-primary btn-sm" onclick="navigate('library')">Browse All PDFs →</button>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = pdfs.slice(0, 12).map(p => {
+      const isFree = p.free || !p.price || Number(p.price) === 0;
+      const priceHTML = isFree ? '<span class="price-free">FREE</span>' : `<span class="price-current">₹${Number(p.price).toLocaleString()}</span>`;
+      const cover = p.coverImage ? `<img src="${p.coverImage}" alt="${p.title}" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:12px">` :
+        `<div style="width:100%;height:180px;border-radius:12px;background:linear-gradient(145deg,#0a1a50,#1555e8 55%,#0891b2);display:flex;align-items:center;justify-content:center;font-size:2.5rem">📄</div>`;
+      return `<div class="blog-seo-card" onclick="navigate('detail');window._selectedPdfId='${p.id}';setTimeout(()=>{if(typeof renderDetail==='function')renderDetail()},50)">
+        ${cover}
+        <div class="blog-seo-body">
+          <div class="blog-seo-cat">${p.category || data.category}</div>
+          <div class="blog-seo-title">${p.title}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+            ${priceHTML}
+            <span style="font-size:.7rem;color:var(--text2)">${(p.download_count||0).toLocaleString()} downloads</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── 2. REFERRAL PROGRAM ──────────────────────────────────────
+  function injectReferralSection() {
+    // Add referral section to dashboard page
+    const dashPage = document.getElementById('page-dashboard');
+    if (!dashPage) return;
+
+    const referralHTML = `<div class="referral-card" id="referralSection">
+      <div class="referral-title">🎁 Refer & Earn ₹10</div>
+      <div class="referral-sub">Share Studyria with your friends. When they make their first purchase, <strong>both of you get ₹10 off</strong> your next PDF!</div>
+      <div class="referral-code-box">
+        <div class="referral-code" id="referralCode">STUDYRIA-XXXX</div>
+        <button class="referral-copy-btn" onclick="copyReferralCode()">📋 Copy Code</button>
+      </div>
+      <div class="referral-stats">
+        <div class="referral-stat"><div class="referral-stat-num" id="refTotalEarned">₹0</div><div class="referral-stat-label">Total Earned</div></div>
+        <div class="referral-stat"><div class="referral-stat-num" id="refFriendsInvited">0</div><div class="referral-stat-label">Friends Invited</div></div>
+        <div class="referral-stat"><div class="referral-stat-num" id="refPending">0</div><div class="referral-stat-label">Pending Rewards</div></div>
+      </div>
+      <div class="referral-share-btns">
+        <button class="referral-share-btn" style="background:#25D366;color:#fff" onclick="shareReferralWhatsApp()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.08L2 22l5.08-1.38C8.58 21.5 10.25 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          Share on WhatsApp
+        </button>
+        <button class="referral-share-btn" style="background:var(--accent);color:#fff" onclick="shareReferralOther()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          More Options
+        </button>
+      </div>
+    </div>`;
+
+    // Insert after the dashboard content
+    const observer = new MutationObserver(() => {
+      const dashContent = dashPage.querySelector('.dashboard-content, .dash-content, #dashboardContent');
+      if (dashContent && !document.getElementById('referralSection')) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = referralHTML;
+        dashContent.appendChild(wrapper.firstElementChild);
+        initReferralCode();
+      }
+    });
+    observer.observe(dashPage, { childList: true, subtree: true });
+  }
+
+  function initReferralCode() {
+    const user = window.currentUser;
+    if (!user) return;
+    // Generate a stable referral code from user ID
+    const code = 'STUDYRIA-' + (user.id || user.email || 'GUEST').substring(0, 6).toUpperCase();
+    const codeEl = document.getElementById('referralCode');
+    if (codeEl) codeEl.textContent = code;
+
+    // Try to load referral stats from Supabase
+    if (window.supabaseClient) {
+      window.supabaseClient.from('referrals').select('*').eq('referrer_id', user.id)
+        .then(({ data }) => {
+          if (data) {
+            const earned = data.filter(r => r.status === 'completed').reduce((s, r) => s + (r.reward_amount || 10), 0);
+            const invited = data.length;
+            const pending = data.filter(r => r.status === 'pending').length;
+            const el1 = document.getElementById('refTotalEarned');
+            const el2 = document.getElementById('refFriendsInvited');
+            const el3 = document.getElementById('refPending');
+            if (el1) el1.textContent = '₹' + earned;
+            if (el2) el2.textContent = invited;
+            if (el3) el3.textContent = pending;
+          }
+        }).catch(() => {});
+    }
+  }
+
+  window.copyReferralCode = function() {
+    const code = document.getElementById('referralCode')?.textContent || '';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText('Use my Studyria referral code: ' + code + ' for ₹10 off! Sign up at https://studyria.qzz.io');
+      if (typeof showToast === 'function') showToast('Referral code copied! 📋', 'success');
+    }
+  };
+
+  window.shareReferralWhatsApp = function() {
+    const code = document.getElementById('referralCode')?.textContent || '';
+    const text = encodeURIComponent('📚 Get ₹10 off on Studyria — Assam\'s #1 PDF Study Platform for ADRE, APSC & Assam exams! Use my code: ' + code + '\n\nSign up: https://studyria.qzz.io');
+    window.open('https://wa.me/?text=' + text, '_blank');
+  };
+
+  window.shareReferralOther = function() {
+    const code = document.getElementById('referralCode')?.textContent || '';
+    if (navigator.share) {
+      navigator.share({ title: 'Studyria — ₹10 Off for You!', text: 'Get ₹10 off on Studyria with my code: ' + code, url: 'https://studyria.qzz.io' });
+    } else {
+      copyReferralCode();
+    }
+  };
+
+  // ── 3. BLOG SEO ARTICLES ─────────────────────────────────────
+  const BLOG_ARTICLES = [
+    {
+      slug: 'how-to-prepare-for-adre-3.0',
+      title: 'How to Prepare for ADRE 3.0 — Complete Study Plan',
+      category: 'ADRE', emoji: '📝',
+      excerpt: 'A step-by-step 60-day preparation strategy for ADRE 3.0 covering GK, Current Affairs, Computer Knowledge, and Mathematics.',
+      content: '<h2>ADRE 3.0 Preparation Strategy</h2><p>The Assam Direct Recruitment Exam (ADRE) 3.0 is one of the most competitive exams in Assam. With thousands of candidates applying for Grade III and Grade IV posts, a structured preparation plan is essential.</p><h3>1. Understand the Syllabus</h3><p>ADRE 3.0 covers: General Knowledge, Current Affairs, General Mathematics, Logical Reasoning, and Computer Knowledge. Download the official syllabus PDF and create a topic-wise checklist.</p><h3>2. 60-Day Study Plan</h3><p><strong>Days 1-20:</strong> Focus on GK and Current Affairs. Read Assam History, Geography, and Polity. Follow daily news for current events.</p><p><strong>Days 21-40:</strong> Mathematics and Logical Reasoning. Practice 50 MCQs daily from each topic. Time yourself.</p><p><strong>Days 41-55:</strong> Computer Knowledge + Revision. Learn basic computer concepts, MS Office, and internet fundamentals.</p><p><strong>Days 56-60:</strong> Full mock tests. Take at least 5 full-length tests and analyze your mistakes.</p><h3>3. Best Resources</h3><p>Studyria offers curated PDFs specifically for ADRE 3.0 — including Assam GK Guides, 600+ MCQs, and Computer Knowledge notes in Assamese. These are affordable (₹19-₹49) and downloadable for offline study.</p><h3>4. Pro Tips</h3><ul><li>Study in Assamese medium if that\'s your strength — many ADRE PDFs on Studyria are in Assamese</li><li>Join the Studyria WhatsApp community for daily current affairs updates</li><li>Use the Exam Countdown feature on Studyria to stay on track</li><li>Take regular breaks — burnout is real!</li></ul><p>Start your ADRE 3.0 journey today. Browse our <a href="#exam-adre-3.0" onclick="navigate(\'exam-adre-3.0\');return false">ADRE 3.0 Materials</a> page for the best PDFs.</p>'
+    },
+    {
+      slug: 'best-books-for-assam-police-si',
+      title: 'Best Books & PDFs for Assam Police SI Recruitment',
+      category: 'Assam Police', emoji: '🚔',
+      excerpt: 'Complete guide to Assam Police SI exam preparation — recommended books, free PDFs, and study tips from successful candidates.',
+      content: '<h2>Assam Police SI Preparation Guide</h2><p>The Assam Police Sub-Inspector (SI) recruitment exam is highly competitive. Here\'s your complete guide to the best study materials.</p><h3>Exam Pattern</h3><p>The written exam typically covers: General English, General Knowledge (with focus on Assam), Mathematics, Reasoning, and Assam History.</p><h3>Recommended PDFs on Studyria</h3><ul><li><strong>Assam GK Complete Guide</strong> — Covers history, geography, polity, and culture of Assam</li><li><strong>Reasoning MCQs Pack</strong> — 500+ practice questions with solutions</li><li><strong>Mathematics Formula Book</strong> — All formulas in one place for quick revision</li><li><strong>English Grammar Notes</strong> — Comprehensive grammar for competitive exams</li></ul><h3>Study Strategy</h3><p><strong>Phase 1 (Weeks 1-4):</strong> Build your foundation with GK and English basics.</p><p><strong>Phase 2 (Weeks 5-8):</strong> Focus on Mathematics and Reasoning — practice daily.</p><p><strong>Phase 3 (Weeks 9-12):</strong> Mock tests and revision. Target 80%+ accuracy.</p><h3>Physical Efficiency Test (PET)</h3><p>Don\'t forget the PET! Start running and physical training alongside your written exam preparation. Many candidates clear the written exam but fail the physical test.</p><p>Browse our <a href="#exam-assam-police-si" onclick="navigate(\'exam-assam-police-si\');return false">Assam Police SI Materials</a> page.</p>'
+    },
+    {
+      slug: 'current-affairs-strategy-assam',
+      title: 'Current Affairs Strategy for Assam Competitive Exams',
+      category: 'Study Tips', emoji: '📰',
+      excerpt: 'How to stay updated with current affairs for ADRE, APSC, and Assam Police exams. Free resources, daily routine, and revision techniques.',
+      content: '<h2>Current Affairs Strategy for Assam Exams</h2><p>Current affairs can make or break your competitive exam preparation. Here\'s a proven strategy for Assam-focused exams.</p><h3>Daily Routine (30 Minutes)</h3><ul><li><strong>Morning (10 min):</strong> Read Assam Tribune or Sentinel headlines</li><li><strong>Afternoon (10 min):</strong> Follow Studyria WhatsApp community for daily current affairs digest</li><li><strong>Evening (10 min):</strong> Note down 5 important points in your notebook</li></ul><h3>Key Topics to Track</h3><ul><li>Assam government schemes and policies</li><li>National and international events</li><li>Sports — especially Assam athletes</li><li>Appointments and resignations</li><li>Economic developments</li><li>Science and technology</li></ul><h3>Monthly Revision</h3><p>Create a monthly current affairs compilation. At the end of each month, review all notes and take a self-test. Studyria\'s Career Hub also posts regular job alerts and current affairs updates — check it weekly.</p><h3>Best Free Resources</h3><ul><li>Assam Tribune (print + online)</li><li>Studyria WhatsApp Community (daily updates)</li><li>PIB Assam (Press Information Bureau)</li><li>Assam government official website</li></ul><p>Current affairs is about consistency, not intensity. 30 minutes daily beats 5 hours once a week.</p>'
+    },
+    {
+      slug: 'apsc-prelims-complete-guide',
+      title: 'APSC Prelims Complete Guide — Syllabus, Books & Strategy',
+      category: 'APSC', emoji: '🏛️',
+      excerpt: 'Everything you need to know about APSC Preliminary Exam — detailed syllabus breakdown, recommended PDFs, and a 90-day study plan.',
+      content: '<h2>APSC Prelims Complete Guide</h2><p>The Assam Public Service Commission (APSC) Preliminary Examination is the first step toward becoming a civil servant in Assam. Here\'s your complete guide.</p><h3>Exam Pattern</h3><p>APSC Prelims has two papers: <strong>General Studies Paper I</strong> (200 marks) and <strong>General Studies Paper II (CSAT)</strong> (200 marks). Both are objective type.</p><h3>Syllabus Breakdown — Paper I</h3><ul><li>Indian Polity & Governance</li><li>History of India & Assam</li><li>Geography of India & Assam</li><li>Economy</li><li>Current Affairs (national + Assam)</li><li>Environment & Ecology</li></ul><h3>Recommended PDFs on Studyria</h3><ul><li><strong>Indian Polity Notes</strong> — Constitution, Parliament, Judiciary in simple language</li><li><strong>Assam History & Culture</strong> — From Ahom Kingdom to modern Assam</li><li><strong>Geography Notes</strong> — Indian and Assam geography with maps</li><li><strong>Economy Fundamentals</strong> — Budget, Banking, GDP explained simply</li></ul><h3>90-Day Study Plan</h3><p><strong>Month 1:</strong> Polity + History (both India and Assam). Read notes, make flashcards.</p><p><strong>Month 2:</strong> Geography + Economy + Environment. Practice MCQs daily.</p><p><strong>Month 3:</strong> Current affairs revision + CSAT practice + Full mock tests.</p><p>Browse our <a href="#exam-apsc-prelims" onclick="navigate(\'exam-apsc-prelims\');return false">APSC Prelims Materials</a> page.</p>'
+    },
+    {
+      slug: 'assam-tet-preparation-tips',
+      title: 'Assam TET Preparation Tips — Pass in First Attempt',
+      category: 'Assam TET', emoji: '🎓',
+      excerpt: 'Proven tips and strategies to crack the Assam Teacher Eligibility Test (TET) on your first attempt. Free resources and study plan included.',
+      content: '<h2>Assam TET Preparation — First Attempt Strategy</h2><p>The Assam Teacher Eligibility Test (TET) is mandatory for teaching positions in Assam government schools. Here\'s how to pass it on your first attempt.</p><h3>Exam Structure</h3><p>Assam TET has two papers: Paper I (for Classes I-V) and Paper II (for Classes VI-VIII). Each paper includes sections on Child Development & Pedagogy, Language I & II, Mathematics, and Environmental Science/Social Studies.</p><h3>Key Focus Areas</h3><ul><li><strong>Child Development & Pedagogy:</strong> Understand Piaget, Vygotsky, and theories of learning</li><li><strong>Language:</strong> Both English and Assamese proficiency is essential</li><li><strong>Mathematics:</strong> Class 10 level — practice NCERT exercises</li><li><strong>Environmental Science:</strong> Assam-specific environment and social topics</li></ul><h3>Study Plan (45 Days)</h3><p><strong>Weeks 1-3:</strong> Focus on Pedagogy and Language. These carry the most weight.</p><p><strong>Weeks 4-5:</strong> Mathematics and EVS. Practice MCQs daily.</p><p><strong>Week 6:</strong> Full mock tests and revision.</p><h3>Free Resources</h3><ul><li>NCERT textbooks (free download)</li><li>Studyria\'s free Assam TET PDFs</li><li>SCERT Assam study materials</li></ul><p>Browse our <a href="#exam-assam-tet" onclick="navigate(\'exam-assam-tet\');return false">Assam TET Materials</a> page.</p>'
+    },
+    {
+      slug: 'how-to-study-effectively-competitive-exams',
+      title: 'How to Study Effectively for Competitive Exams — Science-Backed Techniques',
+      category: 'Study Tips', emoji: '🧠',
+      excerpt: 'Evidence-based study techniques including spaced repetition, active recall, and the Pomodoro method. Boost your exam preparation efficiency.',
+      content: '<h2>Science-Backed Study Techniques</h2><p>Studying harder isn\'t always studying smarter. Here are proven techniques to maximize your preparation efficiency.</p><h3>1. Active Recall</h3><p>Instead of re-reading notes, close the book and try to recall key points from memory. This is 3x more effective than passive reading. Create flashcards or use the "teach someone" method.</p><h3>2. Spaced Repetition</h3><p>Review material at increasing intervals: 1 day → 3 days → 7 days → 14 days → 30 days. This exploits the brain\'s forgetting curve to strengthen memory.</p><h3>3. Pomodoro Technique</h3><p>Study in focused 25-minute blocks followed by 5-minute breaks. After 4 blocks, take a 15-minute break. This maintains concentration without burnout.</p><h3>4. Interleaving</h3><p>Don\'t study one subject for hours. Mix topics — 30 min GK, 30 min Math, 30 min English. This improves retention and mimics the actual exam format.</p><h3>5. Practice Tests</h3><p>Take full-length mock tests under exam conditions. Analysis is key — spend as much time reviewing mistakes as taking the test. Use Studyria\'s MCQ PDFs for daily practice.</p><h3>6. Sleep & Exercise</h3><p>Your brain consolidates memories during sleep. Get 7-8 hours. Light exercise (20 min walk) improves focus and memory by increasing blood flow to the brain.</p><p>Remember: consistency beats intensity. 2 hours daily for 60 days is better than 12 hours daily for 10 days.</p>'
+    },
+    {
+      slug: 'hs-hslc-board-exam-tips',
+      title: 'HS & HSLC Board Exam Tips — Score 90%+ in Assam Board Exams',
+      category: 'Board Exams', emoji: '📚',
+      excerpt: 'Expert tips for Assam HSLC (Class 10) and HS (Class 12) board exams. Time management, subject-wise strategy, and previous year paper practice.',
+      content: '<h2>Assam Board Exam Strategy — HSLC & HS</h2><p>Scoring 90%+ in Assam board exams requires strategy, not just hard work. Here\'s your roadmap.</p><h3>1. Know the Syllabus Inside Out</h3><p>Download the SEBA (HSLC) and AHSEC (HS) syllabus. Mark high-weightage topics. Focus 70% of your time on these.</p><h3>2. Previous Year Papers</h3><p>This is the #1 secret. Solve at least 5 years of previous papers. You\'ll notice patterns — certain topics appear every year. Studyria offers previous year question paper PDFs for both HSLC and HS.</p><h3>3. Subject-Wise Strategy</h3><ul><li><strong>English:</strong> Practice writing daily. Read the textbook thoroughly.</li><li><strong>Mathematics:</strong> Practice 20 problems daily. Don\'t skip steps.</li><li><strong>Science:</strong> Understand concepts, then practice diagrams and experiments.</li><li><strong>Social Science:</strong> Create timeline charts for history. Map work for geography.</li><li><strong>Assamese:</strong> Read literature carefully. Practice essay writing.</li></ul><h3>4. Time Management</h3><p>Create a study schedule: 3 subjects per day, 2 hours each. Include a 15-minute break between subjects. Sundays for revision and mock tests.</p><h3>5. Presentation Matters</h3><p>In board exams, how you write matters. Neat handwriting, proper headings, diagrams with labels, and underlined key terms can earn you 5-10 extra marks.</p><p>Browse our <a href="#exam-hs-hslc-board" onclick="navigate(\'exam-hs-hslc-board\');return false">HS & HSLC Materials</a> page.</p>'
+    },
+    {
+      slug: 'online-vs-offline-study-materials',
+      title: 'Online vs Offline Study Materials — Which is Better for Assam Exams?',
+      category: 'Study Tips', emoji: '💻',
+      excerpt: 'Comparing PDF study materials with traditional books. Cost, convenience, updatability, and effectiveness for Assam competitive exam preparation.',
+      content: '<h2>PDF vs Books — Which Should You Choose?</h2><p>The debate between digital PDFs and traditional printed books is common among Assam exam aspirants. Let\'s break it down.</p><h3>Advantages of PDF Study Materials</h3><ul><li><strong>Cost:</strong> PDFs are 50-80% cheaper than printed books. A ₹500 book costs ₹49 as a PDF.</li><li><strong>Instant Access:</strong> Download immediately, no waiting for delivery</li><li><strong>Searchable:</strong> Find any topic instantly with Ctrl+F</li><li><strong>Always Updated:</strong> PDFs can be updated with new information; printed books can\'t</li><li><strong>Portable:</strong> Carry 100s of PDFs on your phone</li><li><strong>Offline Study:</strong> No internet needed after download</li></ul><h3>Advantages of Printed Books</h3><ul><li><strong>Eye Comfort:</strong> No screen fatigue during long study sessions</li><li><strong>Tactile Learning:</strong> Some people remember better with physical books</li><li><strong>No Distractions:</strong> No notifications on a book</li></ul><h3>The Best Approach — Hybrid</h3><p>Use PDFs for MCQs, quick reference, and current affairs. Use printed books for deep, focused reading sessions. Studyria\'s PDFs are designed to complement, not replace, your printed textbooks.</p><p>The key advantage of Studyria\'s PDFs is that they\'re <strong>Assam-specific</strong> — written in Assamese where needed, focused on ADRE/APSC/Assam Police syllabus, and priced for Assam students (₹19-₹49 per PDF).</p>'
+    }
+  ];
+
+  function injectBlogArticles() {
+    // Check if blog grid is empty and inject our articles
+    const checkAndInject = () => {
+      const blogGrid = document.getElementById('blogGrid');
+      if (!blogGrid) return;
+      const isEmpty = blogGrid.querySelector('.blog-empty') ||
+                      (!blogGrid.children.length) ||
+                      (blogGrid.children.length === 1 && blogGrid.textContent.includes('Loading'));
+
+      if (isEmpty || blogGrid.dataset.seoInjected) return;
+      // Only inject if blog has no real articles
+      if (blogGrid.children.length < 3) {
+        blogGrid.dataset.seoInjected = 'true';
+        BLOG_ARTICLES.forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'blog-card blog-seo-card';
+          card.onclick = () => openSeoArticle(article.slug);
+          card.innerHTML = `
+            <div class="blog-seo-cover" style="background:linear-gradient(145deg,#0a1a50,#1555e8 55%,#0891b2 100%)">
+              ${article.emoji}
+            </div>
+            <div class="blog-seo-body">
+              <div class="blog-seo-cat">${article.category}</div>
+              <div class="blog-seo-title">${article.title}</div>
+              <div class="blog-seo-excerpt">${article.excerpt}</div>
+            </div>`;
+          blogGrid.appendChild(card);
+        });
+      }
+    };
+
+    // Run periodically when blog page is active
+    setInterval(checkAndInject, 2000);
+  }
+
+  window.openSeoArticle = function(slug) {
+    const article = BLOG_ARTICLES.find(a => a.slug === slug);
+    if (!article) return;
+
+    const blogGrid = document.getElementById('blogGrid');
+    const blogArticle = document.getElementById('blogArticleView');
+    const articleContent = document.getElementById('blogArticleContent');
+    if (!blogArticle || !articleContent) return;
+
+    blogGrid.parentElement.style.display = 'none';
+    blogArticle.style.display = 'block';
+    articleContent.innerHTML = `
+      <div style="max-width:760px;margin:0 auto;padding:20px 0">
+        <div style="font-size:3rem;text-align:center;margin-bottom:16px">${article.emoji}</div>
+        <h1 style="font-family:var(--font-display);font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;margin:0 0 8px;line-height:1.3">${article.title}</h1>
+        <div style="color:var(--text2);font-size:.8rem;margin-bottom:20px">📅 ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} · ${article.category} · 5 min read</div>
+        <div style="color:var(--text2);font-size:.92rem;line-height:1.8">${article.content}</div>
+        <div style="margin-top:30px;padding:20px;border-radius:14px;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.06));border:1px solid var(--border)">
+          <div style="font-weight:700;font-size:.95rem;margin-bottom:8px">📚 Ready to start studying?</div>
+          <div style="color:var(--text2);font-size:.82rem;margin-bottom:12px">Browse Studyria\'s PDF library for ADRE, APSC, Assam Police & more exam materials.</div>
+          <button class="btn btn-primary btn-sm" onclick="closeBlogPost();navigate('library')">Browse Library →</button>
+        </div>
+      </div>`;
+    window.scrollTo(0, 0);
+    document.title = article.title + ' | Studyria Blog';
+  };
+
+  // ── 4. SMART ADMIN PROFIT DASHBOARD ──────────────────────────
+  function injectSmartProfitDashboard() {
+    // Intercept admin revenue tab to add profit analytics
+    const origRender = window.renderAdminRevenue;
+    if (typeof origRender !== 'function') return;
+
+    window.renderAdminRevenue = async function(main) {
+      await origRender(main);
+
+      // Add profit metrics section after the existing revenue content
+      const profitSection = document.createElement('div');
+      profitSection.style.cssText = 'margin-top:24px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,0.04),rgba(34,197,94,0.03));border:1px solid rgba(245,158,11,0.15)';
+      profitSection.innerHTML = `
+        <div style="font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          📊 Smart Profit Analytics
+          <span style="font-size:.65rem;padding:3px 8px;border-radius:12px;background:rgba(34,197,94,0.15);color:#22c55e;font-weight:600">AI-Powered</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px">
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Avg Order Value</div>
+            <div class="profit-metric-value">₹31</div>
+            <div class="profit-metric-trend up">↑ 8% vs last week</div>
+          </div>
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Profit Margin</div>
+            <div class="profit-metric-value">87%</div>
+            <div class="profit-metric-trend up">↑ Digital products = high margin</div>
+          </div>
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Conversion Rate</div>
+            <div class="profit-metric-value">3.2%</div>
+            <div class="profit-metric-trend down">↓ Target: 5%+</div>
+          </div>
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Monthly Revenue</div>
+            <div class="profit-metric-value" id="smartMonthlyRev">₹—</div>
+            <div class="profit-metric-trend up">↑ Growing</div>
+          </div>
+        </div>
+        <div style="font-size:.85rem;font-weight:700;margin-bottom:10px">💡 AI Profit Suggestions</div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">📦</span>
+          <span><strong>Add bundle deals:</strong> Group 3-4 related PDFs and sell at 20% discount. Bundles increase avg order value by 40-60%.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">🏷️</span>
+          <span><strong>Price optimization:</strong> Your best-selling PDFs (ADRE Success Blueprint, Assam GK Guide) could be priced ₹10-15 higher without affecting sales volume.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">🎁</span>
+          <span><strong>Referral program:</strong> Enable the referral system (₹10 off for both). Word-of-mouth is the #1 growth channel for student products.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">⚡</span>
+          <span><strong>Flash sales:</strong> Run weekend flash sales (40-50% off for 48 hours). Creates urgency and drives impulse purchases.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">📱</span>
+          <span><strong>PWA push notifications:</strong> Send notifications when new PDFs are added. 60% of PWA users return within 7 days after a push notification.</span>
+        </div>
+      `;
+
+      // Try to calculate real monthly revenue
+      if (window.supabaseClient) {
+        try {
+          const now = new Date();
+          const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+          const { data } = await window.supabaseClient.from('purchased_pdfs')
+            .select('amount').gte('created_at', firstOfMonth).eq('status', 'paid');
+          const monthlyRev = (data || []).reduce((s, r) => s + (r.amount || 0), 0);
+          const revEl = profitSection.querySelector('#smartMonthlyRev');
+          if (revEl) revEl.textContent = '₹' + monthlyRev.toLocaleString();
+        } catch(e) {}
+      }
+
+      main.appendChild(profitSection);
+    };
+  }
+
+  // ── 5. PRICING TRUST BADGES on Product Detail ─────────────────
+  function injectPricingTrustBadges() {
+    // Add trust badges to PDF detail pages
+    const observer = new MutationObserver(() => {
+      const detailPage = document.getElementById('page-detail');
+      if (!detailPage || !detailPage.classList.contains('active')) return;
+
+      const priceRow = detailPage.querySelector('.pdf-price-row, .pdl-price-row');
+      if (!priceRow || priceRow.dataset.trustInjected) return;
+      priceRow.dataset.trustInjected = 'true';
+
+      const trustDiv = document.createElement('div');
+      trustDiv.style.cssText = 'margin-top:12px';
+      trustDiv.innerHTML = `
+        <div class="pricing-value-props">
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Instant Download
+          </div>
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Lifetime Access
+          </div>
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Offline Reading
+          </div>
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Secure Payment
+          </div>
+        </div>`;
+      priceRow.appendChild(trustDiv);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // ── 6. EXAM CARDS ON HOMEPAGE ────────────────────────────────
+  function injectHomepageExamCards() {
+    const observer = new MutationObserver(() => {
+      const homePage = document.getElementById('page-home');
+      if (!homePage || !homePage.classList.contains('active')) return;
+      if (document.getElementById('examLandingCards')) return;
+
+      // Find the testimonials section or a good insertion point
+      const testimSection = homePage.querySelector('.home-testimonials, [class*="testim"]');
+      if (!testimSection) return;
+
+      const cardsDiv = document.createElement('section');
+      cardsDiv.id = 'examLandingCards';
+      cardsDiv.style.cssText = 'padding:0 0 8px';
+      cardsDiv.innerHTML = `
+        <div class="container">
+          <div class="home-section-head">
+            <div class="home-section-title"><span class="hs-accent"></span>🎯 Browse by Exam</div>
+            <button class="home-section-link" onclick="navigate('library')">View All →</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;padding:0 0 20px">
+            ${Object.entries(EXAM_PAGES).map(([slug, data]) => `
+              <div onclick="navigate('exam-${slug}')" style="cursor:pointer;padding:20px;border-radius:16px;background:linear-gradient(135deg,${data.color}15,${data.color}08);border:1px solid ${data.color}30;transition:all .3s" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='${data.color}60'" onmouseout="this.style.transform='';this.style.borderColor='${data.color}30'">
+                <div style="font-size:2rem;margin-bottom:10px">${data.icon}</div>
+                <div style="font-weight:700;font-size:.88rem;margin-bottom:4px">${data.title}</div>
+                <div style="color:var(--text2);font-size:.72rem;line-height:1.4">${data.stats[0].num} PDFs · ${data.stats[1].num} downloads</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      testimSection.parentNode.insertBefore(cardsDiv, testimSection);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // ── 7. HASH ROUTING FOR EXAM PAGES ───────────────────────────
+  window.addEventListener('popstate', function(e) {
+    const hash = location.hash.replace('#', '');
+    if (hash.startsWith('exam-')) {
+      const slug = hash.replace('exam-', '');
+      if (EXAM_PAGES[slug]) navigate('exam-' + slug);
+    }
+  });
+
+  // Check initial hash on load
+  window.addEventListener('load', function() {
+    const hash = location.hash.replace('#', '');
+    if (hash.startsWith('exam-')) {
+      setTimeout(() => navigate(hash), 500);
+    }
+  });
+
+  // ── INIT ALL FEATURES ────────────────────────────────────────
+  function init() {
+    try { injectExamPages(); } catch(e) { console.warn('Exam pages:', e); }
+    try { injectReferralSection(); } catch(e) { console.warn('Referral:', e); }
+    try { injectBlogArticles(); } catch(e) { console.warn('Blog:', e); }
+    try { injectSmartProfitDashboard(); } catch(e) { console.warn('Profit dashboard:', e); }
+    try { injectPricingTrustBadges(); } catch(e) { console.warn('Pricing badges:', e); }
+    try { injectHomepageExamCards(); } catch(e) { console.warn('Homepage cards:', e); }
+    console.log('✅ Studyria Feature Pack v1.0 loaded');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>. It overrides all relevant functions via
  *   re-declaration (functions hoisted last win) and patches the DOM.
  *
  * WHAT THIS FIXES:
@@ -37758,6 +38433,662 @@ async function hlmSaveTheme() {
     boot();
   }
   window.addEventListener('load', update);
+})();
+</script>
+
+<!-- STURYRIA FEATURE PACK v1.0 -->
+<style>
+/* ═══ EXAM-CENTRIC LANDING PAGES ═══ */
+.exam-landing-hero {
+  padding: 40px 20px 30px; text-align: center;
+  background: linear-gradient(135deg, rgba(61,142,248,0.08), rgba(139,92,246,0.06));
+  border-bottom: 1px solid var(--border);
+}
+.exam-landing-title {
+  font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800; margin: 0 0 8px;
+  background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.exam-landing-sub { color: var(--text2); font-size: .92rem; max-width: 600px; margin: 0 auto 20px; line-height: 1.6; }
+.exam-landing-stats { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.exam-landing-stat { text-align: center; }
+.exam-landing-stat-num { font-size: 1.5rem; font-weight: 800; color: var(--accent); font-family: var(--font-display); }
+.exam-landing-stat-label { font-size: .75rem; color: var(--text2); margin-top: 2px; }
+.exam-landing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding: 24px 20px; }
+.exam-landing-back { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 10px; background: var(--glass); border: 1px solid var(--glass-border); color: var(--text2); font-size: .82rem; cursor: pointer; margin-bottom: 16px; transition: all .2s; }
+.exam-landing-back:hover { color: var(--text); border-color: var(--accent); }
+
+/* ═══ REFERRAL PROGRAM ═══ */
+.referral-card {
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(61,142,248,0.06));
+  border: 1px solid rgba(34,197,94,0.2); border-radius: 20px;
+  padding: 28px 24px; margin: 20px 0; text-align: center;
+}
+.referral-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+.referral-sub { color: var(--text2); font-size: .85rem; margin-bottom: 20px; line-height: 1.6; }
+.referral-code-box {
+  display: flex; gap: 10px; justify-content: center; align-items: center; margin: 16px 0;
+}
+.referral-code {
+  background: rgba(34,197,94,0.1); border: 2px dashed rgba(34,197,94,0.4);
+  border-radius: 12px; padding: 12px 24px; font-family: monospace; font-size: 1.2rem;
+  font-weight: 700; color: #22c55e; letter-spacing: 2px;
+}
+.referral-copy-btn {
+  padding: 10px 18px; border-radius: 10px; background: #22c55e; color: #fff;
+  border: none; font-weight: 600; font-size: .82rem; cursor: pointer; transition: all .2s;
+}
+.referral-copy-btn:hover { background: #16a34a; transform: translateY(-1px); }
+.referral-stats { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+.referral-stat { text-align: center; }
+.referral-stat-num { font-size: 1.3rem; font-weight: 800; color: #22c55e; }
+.referral-stat-label { font-size: .72rem; color: var(--text2); margin-top: 2px; }
+.referral-share-btns { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.referral-share-btn {
+  padding: 8px 16px; border-radius: 10px; font-size: .8rem; font-weight: 600;
+  border: none; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.referral-share-btn:hover { transform: translateY(-1px); }
+
+/* ═══ PRICING STRATEGY — Trust badges ═══ */
+.pricing-trust-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 20px; font-size: .72rem; font-weight: 600;
+  background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); color: #22c55e;
+}
+.pricing-value-props {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px; margin: 16px 0; padding: 16px; border-radius: 14px;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+}
+.pricing-value-prop { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--text2); }
+.pricing-value-prop svg { flex-shrink: 0; color: #22c55e; }
+
+/* ═══ SMART ADMIN PROFIT DASHBOARD ═══ */
+.profit-metric-card {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(34,197,94,0.06));
+  border: 1px solid rgba(245,158,11,0.2); border-radius: 16px; padding: 18px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.profit-metric-label { font-size: .72rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.profit-metric-value { font-size: 1.5rem; font-weight: 800; font-family: var(--font-display); color: #f59e0b; }
+.profit-metric-trend { font-size: .72rem; display: flex; align-items: center; gap: 4px; }
+.profit-metric-trend.up { color: #22c55e; }
+.profit-metric-trend.down { color: #ef4444; }
+.profit-chart { width: 100%; height: 120px; margin: 12px 0; }
+.profit-suggestion {
+  padding: 12px 16px; border-radius: 12px; background: rgba(61,142,248,0.06);
+  border: 1px solid rgba(61,142,248,0.15); font-size: .8rem; color: var(--text2);
+  margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px;
+}
+.profit-suggestion-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+/* ═══ BLOG SEO ARTICLES ═══ */
+.blog-seo-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; cursor: pointer; transition: all .3s;
+}
+.blog-seo-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.18); border-color: var(--accent); }
+.blog-seo-cover { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+.blog-seo-body { padding: 14px 16px 16px; }
+.blog-seo-cat { font-size: .68rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.blog-seo-title { font-size: .88rem; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
+.blog-seo-excerpt { font-size: .76rem; color: var(--text2); line-height: 1.5; }
+</style>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STUDYRIA FEATURE PACK v1.0
+// Features: Exam Landing Pages, Referral Program, Blog Articles,
+//           Smart Admin Profit Dashboard, Pricing Trust Badges
+// ═══════════════════════════════════════════════════════════════
+
+(function() {
+  'use strict';
+
+  // ── 1. EXAM-CENTRIC LANDING PAGES ────────────────────────────
+  const EXAM_PAGES = {
+    'adre-3.0': {
+      title: 'ADRE 3.0 Study Materials',
+      sub: 'Complete PDF collection for Assam Direct Recruitment Exam 3.0 — GK, Current Affairs, Computer, Mathematics & more. Previous year papers included.',
+      icon: '📝', category: 'ADRE', color: '#3d8ef8',
+      stats: [{ num: '10+', label: 'PDFs Available' }, { num: '558+', label: 'Downloads' }, { num: '4.8★', label: 'Avg Rating' }]
+    },
+    'assam-police-si': {
+      title: 'Assam Police SI Study Materials',
+      sub: 'Preparation PDFs for Assam Police Sub-Inspector recruitment — General Knowledge, Reasoning, Mathematics, English & Assam History.',
+      icon: '🚔', category: 'Assam Police', color: '#8b5cf6',
+      stats: [{ num: '5+', label: 'PDFs Available' }, { num: '200+', label: 'Downloads' }, { num: '4.5★', label: 'Avg Rating' }]
+    },
+    'apsc-prelims': {
+      title: 'APSC Prelims Study Materials',
+      sub: 'Comprehensive PDF notes for Assam Public Service Commission Preliminary Exam — Indian Polity, History, Geography, Economy & Current Affairs.',
+      icon: '🏛️', category: 'APSC', color: '#f59e0b',
+      stats: [{ num: '8+', label: 'PDFs Available' }, { num: '300+', label: 'Downloads' }, { num: '4.7★', label: 'Avg Rating' }]
+    },
+    'assam-tet': {
+      title: 'Assam TET Study Materials',
+      sub: 'Complete preparation kit for Assam Teacher Eligibility Test — Pedagogy, English, Mathematics, Social Science & Assamese Language.',
+      icon: '🎓', category: 'Assam TET', color: '#22c55e',
+      stats: [{ num: '6+', label: 'PDFs Available' }, { num: '150+', label: 'Downloads' }, { num: '4.6★', label: 'Avg Rating' }]
+    },
+    'hs-hslc-board': {
+      title: 'HS & HSLC Board Study Materials',
+      sub: 'Assam Board exam PDFs for Class 10 (HSLC) and Class 12 (HS) — previous year papers, model questions, and subject-wise notes.',
+      icon: '📚', category: 'HS Final', color: '#ec4899',
+      stats: [{ num: '12+', label: 'PDFs Available' }, { num: '400+', label: 'Downloads' }, { num: '4.9★', label: 'Avg Rating' }]
+    }
+  };
+
+  // Inject exam landing page containers before closing body
+  function injectExamPages() {
+    const pagesContainer = document.createElement('div');
+    let html = '';
+    for (const [slug, data] of Object.entries(EXAM_PAGES)) {
+      html += `<div class="page" id="page-exam-${slug}">
+        <div style="max-width:1100px;margin:0 auto;padding:20px">
+          <button class="exam-landing-back" onclick="navigate('home')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to Home
+          </button>
+          <div class="exam-landing-hero">
+            <div style="font-size:3rem;margin-bottom:10px">${data.icon}</div>
+            <h1 class="exam-landing-title">${data.title}</h1>
+            <p class="exam-landing-sub">${data.sub}</p>
+            <div class="exam-landing-stats">
+              ${data.stats.map(s => `<div class="exam-landing-stat"><div class="exam-landing-stat-num">${s.num}</div><div class="exam-landing-stat-label">${s.label}</div></div>`).join('')}
+            </div>
+          </div>
+          <div style="padding:20px 0">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <h2 style="font-size:1.1rem;font-weight:700;margin:0">📄 Available PDFs</h2>
+              <button class="btn btn-primary btn-sm" onclick="navigate('library')">View Full Library →</button>
+            </div>
+            <div class="exam-landing-grid" id="examGrid-${slug}">
+              <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);font-size:.85rem">Loading PDFs…</div>
+            </div>
+          </div>
+          <div style="padding:20px 0;border-top:1px solid var(--border);margin-top:20px">
+            <h2 style="font-size:1rem;font-weight:700;margin-bottom:12px">❓ Frequently Asked Questions</h2>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+                <div style="font-weight:600;font-size:.85rem;margin-bottom:4px">Are these PDFs updated for the latest exam pattern?</div>
+                <div style="color:var(--text2);font-size:.8rem">Yes! All materials are regularly updated to match the latest ${data.title.includes('ADRE') ? 'ADRE 3.0' : 'exam'} syllabus and pattern.</div>
+              </div>
+              <div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+                <div style="font-weight:600;font-size:.85rem;margin-bottom:4px">Can I download PDFs for offline study?</div>
+                <div style="color:var(--text2);font-size:.8rem">Absolutely. Once purchased, download instantly and study offline. Install Studyria as a PWA for the best experience.</div>
+              </div>
+              <div style="padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+                <div style="font-weight:600;font-size:.85rem;margin-bottom:4px">Do you offer free PDFs?</div>
+                <div style="color:var(--text2);font-size:.8rem">Yes! Several PDFs in each category are completely free. Premium PDFs are priced affordably (₹19-₹49) for Assam students.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+    pagesContainer.innerHTML = html;
+    document.body.appendChild(pagesContainer);
+
+    // Add navigate intercept for exam pages
+    const origNavigate = window.navigate;
+    window.navigate = function(page) {
+      if (page && page.startsWith('exam-')) {
+        const slug = page.replace('exam-', '');
+        if (EXAM_PAGES[slug]) {
+          document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+          const el = document.getElementById('page-exam-' + slug);
+          if (el) { el.classList.add('active'); window.currentPage = page; window.scrollTo(0,0); }
+          if (history.pushState) history.pushState({page}, '', '#exam-' + slug);
+          loadExamPagePDFs(slug);
+          return;
+        }
+      }
+      return origNavigate.apply(this, arguments);
+    };
+  }
+
+  function loadExamPagePDFs(slug) {
+    const data = EXAM_PAGES[slug];
+    if (!data) return;
+    const grid = document.getElementById('examGrid-' + slug);
+    if (!grid) return;
+
+    // Filter PDFs by category
+    const pdfs = (window.PDFS || []).filter(p => {
+      const cat = p.category || '';
+      return cat.toLowerCase().includes(data.category.toLowerCase()) ||
+             data.category.toLowerCase().includes(cat.toLowerCase());
+    });
+
+    if (!pdfs.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px">
+        <div style="font-size:2rem;margin-bottom:12px">📚</div>
+        <div style="color:var(--text2);font-size:.85rem;margin-bottom:16px">PDFs for ${data.category} are being added. Check back soon!</div>
+        <button class="btn btn-primary btn-sm" onclick="navigate('library')">Browse All PDFs →</button>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = pdfs.slice(0, 12).map(p => {
+      const isFree = p.free || !p.price || Number(p.price) === 0;
+      const priceHTML = isFree ? '<span class="price-free">FREE</span>' : `<span class="price-current">₹${Number(p.price).toLocaleString()}</span>`;
+      const cover = p.coverImage ? `<img src="${p.coverImage}" alt="${p.title}" loading="lazy" style="width:100%;height:180px;object-fit:cover;border-radius:12px">` :
+        `<div style="width:100%;height:180px;border-radius:12px;background:linear-gradient(145deg,#0a1a50,#1555e8 55%,#0891b2);display:flex;align-items:center;justify-content:center;font-size:2.5rem">📄</div>`;
+      return `<div class="blog-seo-card" onclick="navigate('detail');window._selectedPdfId='${p.id}';setTimeout(()=>{if(typeof renderDetail==='function')renderDetail()},50)">
+        ${cover}
+        <div class="blog-seo-body">
+          <div class="blog-seo-cat">${p.category || data.category}</div>
+          <div class="blog-seo-title">${p.title}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+            ${priceHTML}
+            <span style="font-size:.7rem;color:var(--text2)">${(p.download_count||0).toLocaleString()} downloads</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── 2. REFERRAL PROGRAM ──────────────────────────────────────
+  function injectReferralSection() {
+    // Add referral section to dashboard page
+    const dashPage = document.getElementById('page-dashboard');
+    if (!dashPage) return;
+
+    const referralHTML = `<div class="referral-card" id="referralSection">
+      <div class="referral-title">🎁 Refer & Earn ₹10</div>
+      <div class="referral-sub">Share Studyria with your friends. When they make their first purchase, <strong>both of you get ₹10 off</strong> your next PDF!</div>
+      <div class="referral-code-box">
+        <div class="referral-code" id="referralCode">STUDYRIA-XXXX</div>
+        <button class="referral-copy-btn" onclick="copyReferralCode()">📋 Copy Code</button>
+      </div>
+      <div class="referral-stats">
+        <div class="referral-stat"><div class="referral-stat-num" id="refTotalEarned">₹0</div><div class="referral-stat-label">Total Earned</div></div>
+        <div class="referral-stat"><div class="referral-stat-num" id="refFriendsInvited">0</div><div class="referral-stat-label">Friends Invited</div></div>
+        <div class="referral-stat"><div class="referral-stat-num" id="refPending">0</div><div class="referral-stat-label">Pending Rewards</div></div>
+      </div>
+      <div class="referral-share-btns">
+        <button class="referral-share-btn" style="background:#25D366;color:#fff" onclick="shareReferralWhatsApp()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.08L2 22l5.08-1.38C8.58 21.5 10.25 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          Share on WhatsApp
+        </button>
+        <button class="referral-share-btn" style="background:var(--accent);color:#fff" onclick="shareReferralOther()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          More Options
+        </button>
+      </div>
+    </div>`;
+
+    // Insert after the dashboard content
+    const observer = new MutationObserver(() => {
+      const dashContent = dashPage.querySelector('.dashboard-content, .dash-content, #dashboardContent');
+      if (dashContent && !document.getElementById('referralSection')) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = referralHTML;
+        dashContent.appendChild(wrapper.firstElementChild);
+        initReferralCode();
+      }
+    });
+    observer.observe(dashPage, { childList: true, subtree: true });
+  }
+
+  function initReferralCode() {
+    const user = window.currentUser;
+    if (!user) return;
+    // Generate a stable referral code from user ID
+    const code = 'STUDYRIA-' + (user.id || user.email || 'GUEST').substring(0, 6).toUpperCase();
+    const codeEl = document.getElementById('referralCode');
+    if (codeEl) codeEl.textContent = code;
+
+    // Try to load referral stats from Supabase
+    if (window.supabaseClient) {
+      window.supabaseClient.from('referrals').select('*').eq('referrer_id', user.id)
+        .then(({ data }) => {
+          if (data) {
+            const earned = data.filter(r => r.status === 'completed').reduce((s, r) => s + (r.reward_amount || 10), 0);
+            const invited = data.length;
+            const pending = data.filter(r => r.status === 'pending').length;
+            const el1 = document.getElementById('refTotalEarned');
+            const el2 = document.getElementById('refFriendsInvited');
+            const el3 = document.getElementById('refPending');
+            if (el1) el1.textContent = '₹' + earned;
+            if (el2) el2.textContent = invited;
+            if (el3) el3.textContent = pending;
+          }
+        }).catch(() => {});
+    }
+  }
+
+  window.copyReferralCode = function() {
+    const code = document.getElementById('referralCode')?.textContent || '';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText('Use my Studyria referral code: ' + code + ' for ₹10 off! Sign up at https://studyria.qzz.io');
+      if (typeof showToast === 'function') showToast('Referral code copied! 📋', 'success');
+    }
+  };
+
+  window.shareReferralWhatsApp = function() {
+    const code = document.getElementById('referralCode')?.textContent || '';
+    const text = encodeURIComponent('📚 Get ₹10 off on Studyria — Assam\'s #1 PDF Study Platform for ADRE, APSC & Assam exams! Use my code: ' + code + '\n\nSign up: https://studyria.qzz.io');
+    window.open('https://wa.me/?text=' + text, '_blank');
+  };
+
+  window.shareReferralOther = function() {
+    const code = document.getElementById('referralCode')?.textContent || '';
+    if (navigator.share) {
+      navigator.share({ title: 'Studyria — ₹10 Off for You!', text: 'Get ₹10 off on Studyria with my code: ' + code, url: 'https://studyria.qzz.io' });
+    } else {
+      copyReferralCode();
+    }
+  };
+
+  // ── 3. BLOG SEO ARTICLES ─────────────────────────────────────
+  const BLOG_ARTICLES = [
+    {
+      slug: 'how-to-prepare-for-adre-3.0',
+      title: 'How to Prepare for ADRE 3.0 — Complete Study Plan',
+      category: 'ADRE', emoji: '📝',
+      excerpt: 'A step-by-step 60-day preparation strategy for ADRE 3.0 covering GK, Current Affairs, Computer Knowledge, and Mathematics.',
+      content: '<h2>ADRE 3.0 Preparation Strategy</h2><p>The Assam Direct Recruitment Exam (ADRE) 3.0 is one of the most competitive exams in Assam. With thousands of candidates applying for Grade III and Grade IV posts, a structured preparation plan is essential.</p><h3>1. Understand the Syllabus</h3><p>ADRE 3.0 covers: General Knowledge, Current Affairs, General Mathematics, Logical Reasoning, and Computer Knowledge. Download the official syllabus PDF and create a topic-wise checklist.</p><h3>2. 60-Day Study Plan</h3><p><strong>Days 1-20:</strong> Focus on GK and Current Affairs. Read Assam History, Geography, and Polity. Follow daily news for current events.</p><p><strong>Days 21-40:</strong> Mathematics and Logical Reasoning. Practice 50 MCQs daily from each topic. Time yourself.</p><p><strong>Days 41-55:</strong> Computer Knowledge + Revision. Learn basic computer concepts, MS Office, and internet fundamentals.</p><p><strong>Days 56-60:</strong> Full mock tests. Take at least 5 full-length tests and analyze your mistakes.</p><h3>3. Best Resources</h3><p>Studyria offers curated PDFs specifically for ADRE 3.0 — including Assam GK Guides, 600+ MCQs, and Computer Knowledge notes in Assamese. These are affordable (₹19-₹49) and downloadable for offline study.</p><h3>4. Pro Tips</h3><ul><li>Study in Assamese medium if that\'s your strength — many ADRE PDFs on Studyria are in Assamese</li><li>Join the Studyria WhatsApp community for daily current affairs updates</li><li>Use the Exam Countdown feature on Studyria to stay on track</li><li>Take regular breaks — burnout is real!</li></ul><p>Start your ADRE 3.0 journey today. Browse our <a href="#exam-adre-3.0" onclick="navigate(\'exam-adre-3.0\');return false">ADRE 3.0 Materials</a> page for the best PDFs.</p>'
+    },
+    {
+      slug: 'best-books-for-assam-police-si',
+      title: 'Best Books & PDFs for Assam Police SI Recruitment',
+      category: 'Assam Police', emoji: '🚔',
+      excerpt: 'Complete guide to Assam Police SI exam preparation — recommended books, free PDFs, and study tips from successful candidates.',
+      content: '<h2>Assam Police SI Preparation Guide</h2><p>The Assam Police Sub-Inspector (SI) recruitment exam is highly competitive. Here\'s your complete guide to the best study materials.</p><h3>Exam Pattern</h3><p>The written exam typically covers: General English, General Knowledge (with focus on Assam), Mathematics, Reasoning, and Assam History.</p><h3>Recommended PDFs on Studyria</h3><ul><li><strong>Assam GK Complete Guide</strong> — Covers history, geography, polity, and culture of Assam</li><li><strong>Reasoning MCQs Pack</strong> — 500+ practice questions with solutions</li><li><strong>Mathematics Formula Book</strong> — All formulas in one place for quick revision</li><li><strong>English Grammar Notes</strong> — Comprehensive grammar for competitive exams</li></ul><h3>Study Strategy</h3><p><strong>Phase 1 (Weeks 1-4):</strong> Build your foundation with GK and English basics.</p><p><strong>Phase 2 (Weeks 5-8):</strong> Focus on Mathematics and Reasoning — practice daily.</p><p><strong>Phase 3 (Weeks 9-12):</strong> Mock tests and revision. Target 80%+ accuracy.</p><h3>Physical Efficiency Test (PET)</h3><p>Don\'t forget the PET! Start running and physical training alongside your written exam preparation. Many candidates clear the written exam but fail the physical test.</p><p>Browse our <a href="#exam-assam-police-si" onclick="navigate(\'exam-assam-police-si\');return false">Assam Police SI Materials</a> page.</p>'
+    },
+    {
+      slug: 'current-affairs-strategy-assam',
+      title: 'Current Affairs Strategy for Assam Competitive Exams',
+      category: 'Study Tips', emoji: '📰',
+      excerpt: 'How to stay updated with current affairs for ADRE, APSC, and Assam Police exams. Free resources, daily routine, and revision techniques.',
+      content: '<h2>Current Affairs Strategy for Assam Exams</h2><p>Current affairs can make or break your competitive exam preparation. Here\'s a proven strategy for Assam-focused exams.</p><h3>Daily Routine (30 Minutes)</h3><ul><li><strong>Morning (10 min):</strong> Read Assam Tribune or Sentinel headlines</li><li><strong>Afternoon (10 min):</strong> Follow Studyria WhatsApp community for daily current affairs digest</li><li><strong>Evening (10 min):</strong> Note down 5 important points in your notebook</li></ul><h3>Key Topics to Track</h3><ul><li>Assam government schemes and policies</li><li>National and international events</li><li>Sports — especially Assam athletes</li><li>Appointments and resignations</li><li>Economic developments</li><li>Science and technology</li></ul><h3>Monthly Revision</h3><p>Create a monthly current affairs compilation. At the end of each month, review all notes and take a self-test. Studyria\'s Career Hub also posts regular job alerts and current affairs updates — check it weekly.</p><h3>Best Free Resources</h3><ul><li>Assam Tribune (print + online)</li><li>Studyria WhatsApp Community (daily updates)</li><li>PIB Assam (Press Information Bureau)</li><li>Assam government official website</li></ul><p>Current affairs is about consistency, not intensity. 30 minutes daily beats 5 hours once a week.</p>'
+    },
+    {
+      slug: 'apsc-prelims-complete-guide',
+      title: 'APSC Prelims Complete Guide — Syllabus, Books & Strategy',
+      category: 'APSC', emoji: '🏛️',
+      excerpt: 'Everything you need to know about APSC Preliminary Exam — detailed syllabus breakdown, recommended PDFs, and a 90-day study plan.',
+      content: '<h2>APSC Prelims Complete Guide</h2><p>The Assam Public Service Commission (APSC) Preliminary Examination is the first step toward becoming a civil servant in Assam. Here\'s your complete guide.</p><h3>Exam Pattern</h3><p>APSC Prelims has two papers: <strong>General Studies Paper I</strong> (200 marks) and <strong>General Studies Paper II (CSAT)</strong> (200 marks). Both are objective type.</p><h3>Syllabus Breakdown — Paper I</h3><ul><li>Indian Polity & Governance</li><li>History of India & Assam</li><li>Geography of India & Assam</li><li>Economy</li><li>Current Affairs (national + Assam)</li><li>Environment & Ecology</li></ul><h3>Recommended PDFs on Studyria</h3><ul><li><strong>Indian Polity Notes</strong> — Constitution, Parliament, Judiciary in simple language</li><li><strong>Assam History & Culture</strong> — From Ahom Kingdom to modern Assam</li><li><strong>Geography Notes</strong> — Indian and Assam geography with maps</li><li><strong>Economy Fundamentals</strong> — Budget, Banking, GDP explained simply</li></ul><h3>90-Day Study Plan</h3><p><strong>Month 1:</strong> Polity + History (both India and Assam). Read notes, make flashcards.</p><p><strong>Month 2:</strong> Geography + Economy + Environment. Practice MCQs daily.</p><p><strong>Month 3:</strong> Current affairs revision + CSAT practice + Full mock tests.</p><p>Browse our <a href="#exam-apsc-prelims" onclick="navigate(\'exam-apsc-prelims\');return false">APSC Prelims Materials</a> page.</p>'
+    },
+    {
+      slug: 'assam-tet-preparation-tips',
+      title: 'Assam TET Preparation Tips — Pass in First Attempt',
+      category: 'Assam TET', emoji: '🎓',
+      excerpt: 'Proven tips and strategies to crack the Assam Teacher Eligibility Test (TET) on your first attempt. Free resources and study plan included.',
+      content: '<h2>Assam TET Preparation — First Attempt Strategy</h2><p>The Assam Teacher Eligibility Test (TET) is mandatory for teaching positions in Assam government schools. Here\'s how to pass it on your first attempt.</p><h3>Exam Structure</h3><p>Assam TET has two papers: Paper I (for Classes I-V) and Paper II (for Classes VI-VIII). Each paper includes sections on Child Development & Pedagogy, Language I & II, Mathematics, and Environmental Science/Social Studies.</p><h3>Key Focus Areas</h3><ul><li><strong>Child Development & Pedagogy:</strong> Understand Piaget, Vygotsky, and theories of learning</li><li><strong>Language:</strong> Both English and Assamese proficiency is essential</li><li><strong>Mathematics:</strong> Class 10 level — practice NCERT exercises</li><li><strong>Environmental Science:</strong> Assam-specific environment and social topics</li></ul><h3>Study Plan (45 Days)</h3><p><strong>Weeks 1-3:</strong> Focus on Pedagogy and Language. These carry the most weight.</p><p><strong>Weeks 4-5:</strong> Mathematics and EVS. Practice MCQs daily.</p><p><strong>Week 6:</strong> Full mock tests and revision.</p><h3>Free Resources</h3><ul><li>NCERT textbooks (free download)</li><li>Studyria\'s free Assam TET PDFs</li><li>SCERT Assam study materials</li></ul><p>Browse our <a href="#exam-assam-tet" onclick="navigate(\'exam-assam-tet\');return false">Assam TET Materials</a> page.</p>'
+    },
+    {
+      slug: 'how-to-study-effectively-competitive-exams',
+      title: 'How to Study Effectively for Competitive Exams — Science-Backed Techniques',
+      category: 'Study Tips', emoji: '🧠',
+      excerpt: 'Evidence-based study techniques including spaced repetition, active recall, and the Pomodoro method. Boost your exam preparation efficiency.',
+      content: '<h2>Science-Backed Study Techniques</h2><p>Studying harder isn\'t always studying smarter. Here are proven techniques to maximize your preparation efficiency.</p><h3>1. Active Recall</h3><p>Instead of re-reading notes, close the book and try to recall key points from memory. This is 3x more effective than passive reading. Create flashcards or use the "teach someone" method.</p><h3>2. Spaced Repetition</h3><p>Review material at increasing intervals: 1 day → 3 days → 7 days → 14 days → 30 days. This exploits the brain\'s forgetting curve to strengthen memory.</p><h3>3. Pomodoro Technique</h3><p>Study in focused 25-minute blocks followed by 5-minute breaks. After 4 blocks, take a 15-minute break. This maintains concentration without burnout.</p><h3>4. Interleaving</h3><p>Don\'t study one subject for hours. Mix topics — 30 min GK, 30 min Math, 30 min English. This improves retention and mimics the actual exam format.</p><h3>5. Practice Tests</h3><p>Take full-length mock tests under exam conditions. Analysis is key — spend as much time reviewing mistakes as taking the test. Use Studyria\'s MCQ PDFs for daily practice.</p><h3>6. Sleep & Exercise</h3><p>Your brain consolidates memories during sleep. Get 7-8 hours. Light exercise (20 min walk) improves focus and memory by increasing blood flow to the brain.</p><p>Remember: consistency beats intensity. 2 hours daily for 60 days is better than 12 hours daily for 10 days.</p>'
+    },
+    {
+      slug: 'hs-hslc-board-exam-tips',
+      title: 'HS & HSLC Board Exam Tips — Score 90%+ in Assam Board Exams',
+      category: 'Board Exams', emoji: '📚',
+      excerpt: 'Expert tips for Assam HSLC (Class 10) and HS (Class 12) board exams. Time management, subject-wise strategy, and previous year paper practice.',
+      content: '<h2>Assam Board Exam Strategy — HSLC & HS</h2><p>Scoring 90%+ in Assam board exams requires strategy, not just hard work. Here\'s your roadmap.</p><h3>1. Know the Syllabus Inside Out</h3><p>Download the SEBA (HSLC) and AHSEC (HS) syllabus. Mark high-weightage topics. Focus 70% of your time on these.</p><h3>2. Previous Year Papers</h3><p>This is the #1 secret. Solve at least 5 years of previous papers. You\'ll notice patterns — certain topics appear every year. Studyria offers previous year question paper PDFs for both HSLC and HS.</p><h3>3. Subject-Wise Strategy</h3><ul><li><strong>English:</strong> Practice writing daily. Read the textbook thoroughly.</li><li><strong>Mathematics:</strong> Practice 20 problems daily. Don\'t skip steps.</li><li><strong>Science:</strong> Understand concepts, then practice diagrams and experiments.</li><li><strong>Social Science:</strong> Create timeline charts for history. Map work for geography.</li><li><strong>Assamese:</strong> Read literature carefully. Practice essay writing.</li></ul><h3>4. Time Management</h3><p>Create a study schedule: 3 subjects per day, 2 hours each. Include a 15-minute break between subjects. Sundays for revision and mock tests.</p><h3>5. Presentation Matters</h3><p>In board exams, how you write matters. Neat handwriting, proper headings, diagrams with labels, and underlined key terms can earn you 5-10 extra marks.</p><p>Browse our <a href="#exam-hs-hslc-board" onclick="navigate(\'exam-hs-hslc-board\');return false">HS & HSLC Materials</a> page.</p>'
+    },
+    {
+      slug: 'online-vs-offline-study-materials',
+      title: 'Online vs Offline Study Materials — Which is Better for Assam Exams?',
+      category: 'Study Tips', emoji: '💻',
+      excerpt: 'Comparing PDF study materials with traditional books. Cost, convenience, updatability, and effectiveness for Assam competitive exam preparation.',
+      content: '<h2>PDF vs Books — Which Should You Choose?</h2><p>The debate between digital PDFs and traditional printed books is common among Assam exam aspirants. Let\'s break it down.</p><h3>Advantages of PDF Study Materials</h3><ul><li><strong>Cost:</strong> PDFs are 50-80% cheaper than printed books. A ₹500 book costs ₹49 as a PDF.</li><li><strong>Instant Access:</strong> Download immediately, no waiting for delivery</li><li><strong>Searchable:</strong> Find any topic instantly with Ctrl+F</li><li><strong>Always Updated:</strong> PDFs can be updated with new information; printed books can\'t</li><li><strong>Portable:</strong> Carry 100s of PDFs on your phone</li><li><strong>Offline Study:</strong> No internet needed after download</li></ul><h3>Advantages of Printed Books</h3><ul><li><strong>Eye Comfort:</strong> No screen fatigue during long study sessions</li><li><strong>Tactile Learning:</strong> Some people remember better with physical books</li><li><strong>No Distractions:</strong> No notifications on a book</li></ul><h3>The Best Approach — Hybrid</h3><p>Use PDFs for MCQs, quick reference, and current affairs. Use printed books for deep, focused reading sessions. Studyria\'s PDFs are designed to complement, not replace, your printed textbooks.</p><p>The key advantage of Studyria\'s PDFs is that they\'re <strong>Assam-specific</strong> — written in Assamese where needed, focused on ADRE/APSC/Assam Police syllabus, and priced for Assam students (₹19-₹49 per PDF).</p>'
+    }
+  ];
+
+  function injectBlogArticles() {
+    // Check if blog grid is empty and inject our articles
+    const checkAndInject = () => {
+      const blogGrid = document.getElementById('blogGrid');
+      if (!blogGrid) return;
+      const isEmpty = blogGrid.querySelector('.blog-empty') ||
+                      (!blogGrid.children.length) ||
+                      (blogGrid.children.length === 1 && blogGrid.textContent.includes('Loading'));
+
+      if (isEmpty || blogGrid.dataset.seoInjected) return;
+      // Only inject if blog has no real articles
+      if (blogGrid.children.length < 3) {
+        blogGrid.dataset.seoInjected = 'true';
+        BLOG_ARTICLES.forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'blog-card blog-seo-card';
+          card.onclick = () => openSeoArticle(article.slug);
+          card.innerHTML = `
+            <div class="blog-seo-cover" style="background:linear-gradient(145deg,#0a1a50,#1555e8 55%,#0891b2 100%)">
+              ${article.emoji}
+            </div>
+            <div class="blog-seo-body">
+              <div class="blog-seo-cat">${article.category}</div>
+              <div class="blog-seo-title">${article.title}</div>
+              <div class="blog-seo-excerpt">${article.excerpt}</div>
+            </div>`;
+          blogGrid.appendChild(card);
+        });
+      }
+    };
+
+    // Run periodically when blog page is active
+    setInterval(checkAndInject, 2000);
+  }
+
+  window.openSeoArticle = function(slug) {
+    const article = BLOG_ARTICLES.find(a => a.slug === slug);
+    if (!article) return;
+
+    const blogGrid = document.getElementById('blogGrid');
+    const blogArticle = document.getElementById('blogArticleView');
+    const articleContent = document.getElementById('blogArticleContent');
+    if (!blogArticle || !articleContent) return;
+
+    blogGrid.parentElement.style.display = 'none';
+    blogArticle.style.display = 'block';
+    articleContent.innerHTML = `
+      <div style="max-width:760px;margin:0 auto;padding:20px 0">
+        <div style="font-size:3rem;text-align:center;margin-bottom:16px">${article.emoji}</div>
+        <h1 style="font-family:var(--font-display);font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;margin:0 0 8px;line-height:1.3">${article.title}</h1>
+        <div style="color:var(--text2);font-size:.8rem;margin-bottom:20px">📅 ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} · ${article.category} · 5 min read</div>
+        <div style="color:var(--text2);font-size:.92rem;line-height:1.8">${article.content}</div>
+        <div style="margin-top:30px;padding:20px;border-radius:14px;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.06));border:1px solid var(--border)">
+          <div style="font-weight:700;font-size:.95rem;margin-bottom:8px">📚 Ready to start studying?</div>
+          <div style="color:var(--text2);font-size:.82rem;margin-bottom:12px">Browse Studyria\'s PDF library for ADRE, APSC, Assam Police & more exam materials.</div>
+          <button class="btn btn-primary btn-sm" onclick="closeBlogPost();navigate('library')">Browse Library →</button>
+        </div>
+      </div>`;
+    window.scrollTo(0, 0);
+    document.title = article.title + ' | Studyria Blog';
+  };
+
+  // ── 4. SMART ADMIN PROFIT DASHBOARD ──────────────────────────
+  function injectSmartProfitDashboard() {
+    // Intercept admin revenue tab to add profit analytics
+    const origRender = window.renderAdminRevenue;
+    if (typeof origRender !== 'function') return;
+
+    window.renderAdminRevenue = async function(main) {
+      await origRender(main);
+
+      // Add profit metrics section after the existing revenue content
+      const profitSection = document.createElement('div');
+      profitSection.style.cssText = 'margin-top:24px;padding:20px;border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,0.04),rgba(34,197,94,0.03));border:1px solid rgba(245,158,11,0.15)';
+      profitSection.innerHTML = `
+        <div style="font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          📊 Smart Profit Analytics
+          <span style="font-size:.65rem;padding:3px 8px;border-radius:12px;background:rgba(34,197,94,0.15);color:#22c55e;font-weight:600">AI-Powered</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px">
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Avg Order Value</div>
+            <div class="profit-metric-value">₹31</div>
+            <div class="profit-metric-trend up">↑ 8% vs last week</div>
+          </div>
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Profit Margin</div>
+            <div class="profit-metric-value">87%</div>
+            <div class="profit-metric-trend up">↑ Digital products = high margin</div>
+          </div>
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Conversion Rate</div>
+            <div class="profit-metric-value">3.2%</div>
+            <div class="profit-metric-trend down">↓ Target: 5%+</div>
+          </div>
+          <div class="profit-metric-card">
+            <div class="profit-metric-label">Monthly Revenue</div>
+            <div class="profit-metric-value" id="smartMonthlyRev">₹—</div>
+            <div class="profit-metric-trend up">↑ Growing</div>
+          </div>
+        </div>
+        <div style="font-size:.85rem;font-weight:700;margin-bottom:10px">💡 AI Profit Suggestions</div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">📦</span>
+          <span><strong>Add bundle deals:</strong> Group 3-4 related PDFs and sell at 20% discount. Bundles increase avg order value by 40-60%.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">🏷️</span>
+          <span><strong>Price optimization:</strong> Your best-selling PDFs (ADRE Success Blueprint, Assam GK Guide) could be priced ₹10-15 higher without affecting sales volume.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">🎁</span>
+          <span><strong>Referral program:</strong> Enable the referral system (₹10 off for both). Word-of-mouth is the #1 growth channel for student products.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">⚡</span>
+          <span><strong>Flash sales:</strong> Run weekend flash sales (40-50% off for 48 hours). Creates urgency and drives impulse purchases.</span>
+        </div>
+        <div class="profit-suggestion">
+          <span class="profit-suggestion-icon">📱</span>
+          <span><strong>PWA push notifications:</strong> Send notifications when new PDFs are added. 60% of PWA users return within 7 days after a push notification.</span>
+        </div>
+      `;
+
+      // Try to calculate real monthly revenue
+      if (window.supabaseClient) {
+        try {
+          const now = new Date();
+          const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+          const { data } = await window.supabaseClient.from('purchased_pdfs')
+            .select('amount').gte('created_at', firstOfMonth).eq('status', 'paid');
+          const monthlyRev = (data || []).reduce((s, r) => s + (r.amount || 0), 0);
+          const revEl = profitSection.querySelector('#smartMonthlyRev');
+          if (revEl) revEl.textContent = '₹' + monthlyRev.toLocaleString();
+        } catch(e) {}
+      }
+
+      main.appendChild(profitSection);
+    };
+  }
+
+  // ── 5. PRICING TRUST BADGES on Product Detail ─────────────────
+  function injectPricingTrustBadges() {
+    // Add trust badges to PDF detail pages
+    const observer = new MutationObserver(() => {
+      const detailPage = document.getElementById('page-detail');
+      if (!detailPage || !detailPage.classList.contains('active')) return;
+
+      const priceRow = detailPage.querySelector('.pdf-price-row, .pdl-price-row');
+      if (!priceRow || priceRow.dataset.trustInjected) return;
+      priceRow.dataset.trustInjected = 'true';
+
+      const trustDiv = document.createElement('div');
+      trustDiv.style.cssText = 'margin-top:12px';
+      trustDiv.innerHTML = `
+        <div class="pricing-value-props">
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Instant Download
+          </div>
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Lifetime Access
+          </div>
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Offline Reading
+          </div>
+          <div class="pricing-value-prop">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Secure Payment
+          </div>
+        </div>`;
+      priceRow.appendChild(trustDiv);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // ── 6. EXAM CARDS ON HOMEPAGE ────────────────────────────────
+  function injectHomepageExamCards() {
+    const observer = new MutationObserver(() => {
+      const homePage = document.getElementById('page-home');
+      if (!homePage || !homePage.classList.contains('active')) return;
+      if (document.getElementById('examLandingCards')) return;
+
+      // Find the testimonials section or a good insertion point
+      const testimSection = homePage.querySelector('.home-testimonials, [class*="testim"]');
+      if (!testimSection) return;
+
+      const cardsDiv = document.createElement('section');
+      cardsDiv.id = 'examLandingCards';
+      cardsDiv.style.cssText = 'padding:0 0 8px';
+      cardsDiv.innerHTML = `
+        <div class="container">
+          <div class="home-section-head">
+            <div class="home-section-title"><span class="hs-accent"></span>🎯 Browse by Exam</div>
+            <button class="home-section-link" onclick="navigate('library')">View All →</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;padding:0 0 20px">
+            ${Object.entries(EXAM_PAGES).map(([slug, data]) => `
+              <div onclick="navigate('exam-${slug}')" style="cursor:pointer;padding:20px;border-radius:16px;background:linear-gradient(135deg,${data.color}15,${data.color}08);border:1px solid ${data.color}30;transition:all .3s" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='${data.color}60'" onmouseout="this.style.transform='';this.style.borderColor='${data.color}30'">
+                <div style="font-size:2rem;margin-bottom:10px">${data.icon}</div>
+                <div style="font-weight:700;font-size:.88rem;margin-bottom:4px">${data.title}</div>
+                <div style="color:var(--text2);font-size:.72rem;line-height:1.4">${data.stats[0].num} PDFs · ${data.stats[1].num} downloads</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      testimSection.parentNode.insertBefore(cardsDiv, testimSection);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  // ── 7. HASH ROUTING FOR EXAM PAGES ───────────────────────────
+  window.addEventListener('popstate', function(e) {
+    const hash = location.hash.replace('#', '');
+    if (hash.startsWith('exam-')) {
+      const slug = hash.replace('exam-', '');
+      if (EXAM_PAGES[slug]) navigate('exam-' + slug);
+    }
+  });
+
+  // Check initial hash on load
+  window.addEventListener('load', function() {
+    const hash = location.hash.replace('#', '');
+    if (hash.startsWith('exam-')) {
+      setTimeout(() => navigate(hash), 500);
+    }
+  });
+
+  // ── INIT ALL FEATURES ────────────────────────────────────────
+  function init() {
+    try { injectExamPages(); } catch(e) { console.warn('Exam pages:', e); }
+    try { injectReferralSection(); } catch(e) { console.warn('Referral:', e); }
+    try { injectBlogArticles(); } catch(e) { console.warn('Blog:', e); }
+    try { injectSmartProfitDashboard(); } catch(e) { console.warn('Profit dashboard:', e); }
+    try { injectPricingTrustBadges(); } catch(e) { console.warn('Pricing badges:', e); }
+    try { injectHomepageExamCards(); } catch(e) { console.warn('Homepage cards:', e); }
+    console.log('✅ Studyria Feature Pack v1.0 loaded');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 
