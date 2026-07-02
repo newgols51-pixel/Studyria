@@ -1427,8 +1427,44 @@
   window._slugify = _slugify;
 
   /**
+   * ── BLOG DATA LAYER ─────────────────────────────────────────────
+   * IMPORTANT: the live Supabase project has a table called `blogs`
+   * (columns: id, slug, title, content, published (bool), created_at,
+   * featured_image) — NOT `blog_posts`. An earlier version of this
+   * file was written against an aspirational `blog_posts` schema that
+   * was never actually created, which silently made every blog query
+   * fail and the Blog page always show "No articles found". Fixed by
+   * targeting the real `blogs` table and shaping each row into the
+   * richer shape the front-end expects (excerpt/category/tags/author/
+   * view_count are derived or defaulted since the table doesn't store
+   * them yet).
+   */
+  function _shapeBlogRow(row) {
+    if (!row) return row;
+    const plain = String(row.content || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const excerpt = plain.slice(0, 160) + (plain.length > 160 ? '…' : '');
+    return {
+      id: row.id,
+      slug: row.slug,
+      title: row.title,
+      content: row.content,
+      excerpt,
+      cover_image: row.featured_image || null,
+      category: null,
+      tags: [],
+      author_name: 'Studyria Team',
+      view_count: 0,
+      published_at: row.created_at,
+      created_at: row.created_at,
+      published: row.published,
+    };
+  }
+
+  /**
    * loadBlogPosts({category, tag, search, limit, offset})
    * Public, published-only post list, newest first.
+   * (category/tag filters are accepted for API compatibility but are
+   * no-ops until the `blogs` table grows those columns.)
    */
   window.loadBlogPosts = async function loadBlogPosts(opts) {
     opts = opts || {};
@@ -1436,19 +1472,17 @@
     if (!client) return { posts: [], total: 0 };
     try {
       let q = client
-        .from('blog_posts')
-        .select('id,slug,title,excerpt,cover_image,category,tags,author_name,view_count,published_at,created_at', { count: 'exact' })
-        .eq('status', 'published')
-        .order('published_at', { ascending: false, nullsFirst: false });
-      if (opts.category) q = q.eq('category', opts.category);
-      if (opts.tag)      q = q.contains('tags', [opts.tag]);
-      if (opts.search)   q = q.or(`title.ilike.%${opts.search}%,excerpt.ilike.%${opts.search}%`);
+        .from('blogs')
+        .select('id,slug,title,content,featured_image,created_at,published', { count: 'exact' })
+        .eq('published', true)
+        .order('created_at', { ascending: false, nullsFirst: false });
+      if (opts.search) q = q.ilike('title', `%${opts.search}%`);
       const from = opts.offset || 0;
       const to   = from + (opts.limit || 12) - 1;
       q = q.range(from, to);
       const { data, error, count } = await q;
       if (error) { console.warn('loadBlogPosts:', error.message); return { posts: [], total: 0 }; }
-      return { posts: data || [], total: count || 0 };
+      return { posts: (data || []).map(_shapeBlogRow), total: count || 0 };
     } catch (e) {
       console.warn('loadBlogPosts exception:', e);
       return { posts: [], total: 0 };
@@ -1457,22 +1491,20 @@
 
   /**
    * loadBlogPostBySlug(slug)
-   * Returns the full published post row, or null. Fires a best-effort
-   * view-count increment (non-blocking, never fails the read).
+   * Returns the full published post row, or null.
    */
   window.loadBlogPostBySlug = async function loadBlogPostBySlug(slug) {
     const client = sb();
     if (!client || !slug) return null;
     try {
       const { data, error } = await client
-        .from('blog_posts')
+        .from('blogs')
         .select('*')
         .eq('slug', slug)
-        .eq('status', 'published')
+        .eq('published', true)
         .maybeSingle();
       if (error || !data) return null;
-      try { await client.rpc('increment_blog_view', { post_slug: slug }); } catch (_) { /* RPC optional */ }
-      return data;
+      return _shapeBlogRow(data);
     } catch (e) {
       console.warn('loadBlogPostBySlug exception:', e);
       return null;
@@ -1481,35 +1513,22 @@
 
   /**
    * loadRelatedBlogPosts(post, limit?)
-   * Prefers same-category posts, falls back to shared tags, excludes self.
+   * No category/tags column yet on `blogs` — falls back to "latest
+   * other posts" so the related-articles rail is never empty.
    */
   window.loadRelatedBlogPosts = async function loadRelatedBlogPosts(post, limit) {
     const client = sb();
     if (!client || !post) return [];
     try {
-      let q = client
-        .from('blog_posts')
-        .select('id,slug,title,excerpt,cover_image,category,tags,published_at')
-        .eq('status', 'published')
+      const { data, error } = await client
+        .from('blogs')
+        .select('id,slug,title,content,featured_image,created_at,published')
+        .eq('published', true)
         .neq('id', post.id)
-        .order('published_at', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(limit || 3);
-      if (post.category) q = q.eq('category', post.category);
-      else if (post.tags && post.tags.length) q = q.overlaps('tags', post.tags);
-      const { data, error } = await q;
       if (error) return [];
-      if ((data || []).length === 0 && post.tags && post.tags.length) {
-        const { data: byTag } = await client
-          .from('blog_posts')
-          .select('id,slug,title,excerpt,cover_image,category,tags,published_at')
-          .eq('status', 'published')
-          .neq('id', post.id)
-          .overlaps('tags', post.tags)
-          .order('published_at', { ascending: false })
-          .limit(limit || 3);
-        return byTag || [];
-      }
-      return data || [];
+      return (data || []).map(_shapeBlogRow);
     } catch (e) {
       return [];
     }
@@ -1517,27 +1536,15 @@
 
   /**
    * loadBlogCategories() / loadBlogTags()
-   * Distinct facets for the filter bar, cached 5 min.
+   * `blogs` has no category/tags columns yet — return [] so the
+   * filter-chip UI gracefully collapses to just "All".
    */
   window.loadBlogCategories = async function loadBlogCategories() {
-    return window.cachedSupabaseQuery('blog_categories', async () => {
-      const client = sb();
-      if (!client) return [];
-      const { data } = await client.from('blog_posts').select('category').eq('status', 'published');
-      const set = new Set((data || []).map(r => r.category).filter(Boolean));
-      return [...set].sort();
-    }, 5 * 60 * 1000);
+    return [];
   };
 
   window.loadBlogTags = async function loadBlogTags() {
-    return window.cachedSupabaseQuery('blog_tags', async () => {
-      const client = sb();
-      if (!client) return [];
-      const { data } = await client.from('blog_posts').select('tags').eq('status', 'published');
-      const set = new Set();
-      (data || []).forEach(r => (r.tags || []).forEach(t => set.add(t)));
-      return [...set].sort();
-    }, 5 * 60 * 1000);
+    return [];
   };
 
   // ── Admin CRUD (RLS enforces admin-only writes; these just call through) ──
@@ -1545,11 +1552,11 @@
   window.adminListBlogPosts = async function adminListBlogPosts(search) {
     const client = sb();
     if (!client) return [];
-    let q = client.from('blog_posts').select('*').order('created_at', { ascending: false });
+    let q = client.from('blogs').select('*').order('created_at', { ascending: false });
     if (search) q = q.ilike('title', `%${search}%`);
     const { data, error } = await q;
     if (error) { console.warn('adminListBlogPosts:', error.message); return []; }
-    return data || [];
+    return (data || []).map(_shapeBlogRow);
   };
 
   window.adminSaveBlogPost = async function adminSaveBlogPost(post) {
@@ -1559,38 +1566,29 @@
     if (!post.content || !post.content.trim()) return { success: false, error: 'Article content is required.' };
 
     const row = {
-      title:             post.title.trim(),
-      slug:              post.slug ? _slugify(post.slug) : _slugify(post.title),
-      excerpt:           (post.excerpt || '').trim() || null,
-      content:           post.content,
-      cover_image:       post.cover_image || null,
-      category:          post.category || null,
-      tags:              Array.isArray(post.tags) ? post.tags : (post.tags ? String(post.tags).split(',').map(t => t.trim()).filter(Boolean) : []),
-      author_name:       post.author_name || 'Studyria Team',
-      meta_title:        (post.meta_title || '').trim() || post.title.trim(),
-      meta_description:  (post.meta_description || '').trim() || (post.excerpt || '').trim() || null,
-      status:            post.status === 'published' ? 'published' : 'draft',
-      updated_at:        new Date().toISOString(),
+      title:          post.title.trim(),
+      slug:           post.slug ? _slugify(post.slug) : _slugify(post.title),
+      content:        post.content,
+      featured_image: post.cover_image || post.featured_image || null,
+      published:      post.status === 'published' || post.published === true,
     };
-    if (row.status === 'published') row.published_at = post.published_at || new Date().toISOString();
 
     try {
       let result;
       if (post.id) {
-        result = await client.from('blog_posts').update(row).eq('id', post.id).select().maybeSingle();
+        result = await client.from('blogs').update(row).eq('id', post.id).select().maybeSingle();
       } else {
-        result = await client.from('blog_posts').insert(row).select().maybeSingle();
+        result = await client.from('blogs').insert(row).select().maybeSingle();
       }
       if (result.error) {
         // Unique slug collision — retry once with a short random suffix.
         if (String(result.error.message || '').toLowerCase().includes('duplicate') && !post.id) {
           row.slug = row.slug + '-' + Math.random().toString(36).slice(2, 6);
-          result = await client.from('blog_posts').insert(row).select().maybeSingle();
+          result = await client.from('blogs').insert(row).select().maybeSingle();
         }
         if (result.error) return { success: false, error: result.error.message };
       }
-      if (window._supabaseCache) { window._supabaseCache.delete('blog_categories'); window._supabaseCache.delete('blog_tags'); }
-      return { success: true, post: result.data };
+      return { success: true, post: _shapeBlogRow(result.data) };
     } catch (e) {
       return { success: false, error: e.message };
     }
@@ -1600,7 +1598,7 @@
     const client = sb();
     if (!client) return { success: false, error: 'Not connected' };
     try {
-      const { error } = await client.from('blog_posts').delete().eq('id', id);
+      const { error } = await client.from('blogs').delete().eq('id', id);
       if (error) return { success: false, error: error.message };
       return { success: true };
     } catch (e) {
