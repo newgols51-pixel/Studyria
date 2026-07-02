@@ -11217,9 +11217,9 @@ body.light .user-dropdown { background: rgba(255,255,255,0.97); box-shadow: 0 16
           <div class="form-group">
             <label class="form-label">I'm primarily studying for</label>
             <select class="form-input">
-              <option>Engineering (JEE / GATE)</option><option>Medical (NEET / AIIMS)</option>
+              <option>ADRE (Assam Direct Recruitment)</option><option>APSC (Assam Public Service)</option>
               <option>Law (CLAT / LLB)</option><option>MBA (CAT / XAT)</option>
-              <option>Finance (CA / CFA)</option><option>UPSC / Govt Exams</option><option>Other</option>
+              <option>Assam Police SI/Constable</option><option>Assam TET</option><option>HS / HSLC Board</option><option>Other</option>
             </select>
           </div>
           <div class="alert alert-success mb-4">
@@ -13026,9 +13026,9 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
       <div class="crp-card-title">🗂️ Content Categories <span style="color:var(--danger)">*</span></div>
       <div style="font-size:.78rem;color:var(--text2);margin-bottom:10px;line-height:1.5">Select up to 5 categories that best describe the PDFs you'll create.</div>
       <div class="crp-cat-grid" id="crpCatGrid">
-        <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="JEE / IIT">📐 JEE / IIT</div>
-        <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="NEET">🧬 NEET</div>
-        <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="UPSC">🏛️ UPSC</div>
+        <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="ADRE">📝 ADRE</div>
+        <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="APSC">🏛️ APSC</div>
+        <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="Assam Police">🚔 Assam Police</div>
         <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="SSC / Banking">🏦 SSC / Banking</div>
         <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="State PSC">📜 State PSC</div>
         <div class="crp-cat-chip" onclick="crpToggleCat(this)" data-val="Class 9–10">🏫 Class 9–10</div>
@@ -31874,7 +31874,7 @@ function renderPCCAICenter(main) {
     <div style="font-weight:700;margin-bottom:14px">✍️ AI Description Generator</div>
     <div class="form-group"><label class="form-label">PDF Title</label><input class="form-input" id="aiPdfTitle" placeholder="ADRE 3.0 Complete Solutions 2026"/></div>
     <div class="form-group" style="margin-top:8px"><label class="form-label">Category</label>
-      <select class="form-input"><option>JEE / NEET</option><option>UPSC</option><option>Banking</option><option>Board Exams</option></select>
+      <select class="form-input"><option>ADRE</option><option>APSC</option><option>Assam Police</option><option>Board Exams</option></select>
     </div>
     <button class="btn btn-primary btn-sm mt-4" onclick="adminAIGenerateDesc()">🤖 Generate with AI</button>
     <div id="aiDescOutput" style="margin-top:14px;display:none">
@@ -32044,7 +32044,7 @@ window._heroDefaults = {
   badge_text: "Assam's #1 Smartest Growth Ecosystem",
   main_title: "Assam's Ultimate Gateway to Education and Career Growth",
   highlight_text: "Studyria™ Premium Growth Hub",
-  subtitle_phrases: "Free & premium PDFs for every competitive exam in India.|Curated study materials trusted by 157+ students.|Your shortcut to better marks, better scores, better future.|India’s #1 PDF Study Platform — download, study, succeed.",
+  subtitle_phrases: "Free & premium PDFs for every Assam competitive exam.|Curated study materials trusted by 500+ students.|Your shortcut to better marks, better scores, better future.|Assam’s #1 PDF Study Platform — download, study, succeed.",
   font_family: "Playfair Display, Georgia, serif",
   title_font_size: "clamp(1.5rem,3.4vw,2.4rem)",
   title_font_weight: "800",
@@ -33900,7 +33900,7 @@ function ecmEditExam(id) {
   const customInput = document.getElementById('ecmCustomName');
   const customWrap = document.getElementById('ecmCustomWrap');
   const cancelBtn = document.getElementById('ecmCancelEdit');
-  const builtins = ['ADRE','APSC','Assam University','Gauhati University','HS Final','HSLC','NEET','JEE','GATE','CAT'];
+  const builtins = ['ADRE','APSC','Assam Police SI','Assam Police Constable','Assam TET','Assam University','Gauhati University','HS Final','HSLC','NEET','JEE','GATE','CAT'];
   if (builtins.includes(exam.name)) {
     if (sel) sel.value = exam.name;
     if (customWrap) customWrap.style.display = 'none';
@@ -41835,11 +41835,11 @@ function crdOpenUploadSinglePdf() {
       <div id="crdSinglePdfMeta" style="margin-bottom:14px">
         <div class="crp-field" style="margin-bottom:10px">
           <div class="crp-label">PDF Title / Name</div>
-          <input class="crp-input" id="crdSinglePdfTitle" placeholder="e.g. JEE Chemistry Notes 2025" style="margin-top:4px"/>
+          <input class="crp-input" id="crdSinglePdfTitle" placeholder="e.g. ADRE Assam GK Notes 2026" style="margin-top:4px"/>
         </div>
         <div class="crp-field" style="margin-bottom:10px">
           <div class="crp-label">Category</div>
-          <input class="crp-input" id="crdSinglePdfCategory" placeholder="e.g. JEE, NEET, UPSC" style="margin-top:4px"/>
+          <input class="crp-input" id="crdSinglePdfCategory" placeholder="e.g. ADRE, APSC, Assam Police" style="margin-top:4px"/>
         </div>
         <div class="crp-field" style="margin-bottom:14px">
           <div class="crp-label">Exam / Subject Context (optional)</div>
