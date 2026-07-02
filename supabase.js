@@ -156,6 +156,57 @@
 // CREATE INDEX IF NOT EXISTS idx_pdf_reviews_user_id ON public.pdf_reviews(user_id);
 // CREATE INDEX IF NOT EXISTS idx_pdf_reviews_verified ON public.pdf_reviews(verified);
 //
+// -- 5. Blog / SEO Content Marketing
+// CREATE TABLE IF NOT EXISTS public.blog_posts (
+//   id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   slug              text UNIQUE NOT NULL,
+//   title             text NOT NULL,
+//   excerpt           text,
+//   content           text NOT NULL,             -- rich HTML body
+//   cover_image       text,
+//   category          text,
+//   tags              text[] NOT NULL DEFAULT '{}',
+//   author_name       text NOT NULL DEFAULT 'Studyria Team',
+//   meta_title        text,
+//   meta_description  text,
+//   status            text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published')),
+//   view_count        integer NOT NULL DEFAULT 0,
+//   published_at      timestamptz,
+//   created_at        timestamptz NOT NULL DEFAULT now(),
+//   updated_at        timestamptz NOT NULL DEFAULT now()
+// );
+// ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
+// -- Anyone can read published posts:
+// CREATE POLICY "Blog: public read published" ON public.blog_posts
+//   FOR SELECT USING (status = 'published');
+// -- Admins can read every post (drafts included):
+// CREATE POLICY "Blog: admin read all" ON public.blog_posts
+//   FOR SELECT TO authenticated
+//   USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// -- Admins can insert/update/delete:
+// CREATE POLICY "Blog: admin write" ON public.blog_posts
+//   FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE POLICY "Blog: admin update" ON public.blog_posts
+//   FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// CREATE POLICY "Blog: admin delete" ON public.blog_posts
+//   FOR DELETE TO authenticated USING (EXISTS (SELECT 1 FROM auth.users WHERE id = auth.uid()
+//     AND raw_user_meta_data->>'role' = 'admin'));
+// -- Indexes:
+// CREATE INDEX IF NOT EXISTS idx_blog_posts_slug       ON public.blog_posts(slug);
+// CREATE INDEX IF NOT EXISTS idx_blog_posts_status      ON public.blog_posts(status);
+// CREATE INDEX IF NOT EXISTS idx_blog_posts_category    ON public.blog_posts(category);
+// CREATE INDEX IF NOT EXISTS idx_blog_posts_published_at ON public.blog_posts(published_at DESC);
+// CREATE INDEX IF NOT EXISTS idx_blog_posts_tags        ON public.blog_posts USING GIN (tags);
+// -- Optional: view-count increment as a SECURITY DEFINER RPC so anonymous
+// -- readers can bump views without needing UPDATE rights on the table:
+// CREATE OR REPLACE FUNCTION public.increment_blog_view(post_slug text)
+// RETURNS void LANGUAGE sql SECURITY DEFINER AS $$
+//   UPDATE public.blog_posts SET view_count = view_count + 1 WHERE slug = post_slug AND status = 'published';
+// $$;
+//
 // -- 0. Users profile table (Google OAuth + email/password profile sync)
 // CREATE TABLE IF NOT EXISTS public.users (
 //   id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -1152,6 +1203,37 @@
       })
       .subscribe();
 
+    // ── PRODUCT REVIEWS Realtime — live ratings on cards + PDP ──────
+    // Any insert/update/delete on pdf_reviews busts that PDF's cached
+    // stats and refreshes whichever cards / detail page are currently
+    // on screen, site-wide, without a manual reload.
+    let _reviewRealtimeTimer = null;
+    const _dirtyReviewPdfIds = new Set();
+    client
+      .channel('pdf_reviews_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pdf_reviews' }, (payload) => {
+        const pdfId = payload?.new?.pdf_id || payload?.old?.pdf_id;
+        if (pdfId) {
+          _dirtyReviewPdfIds.add(pdfId);
+          if (window._cardRatingCache) delete window._cardRatingCache[pdfId];
+          if (window._supabaseCache) window._supabaseCache.delete('review_stats:' + pdfId);
+        }
+        clearTimeout(_reviewRealtimeTimer);
+        _reviewRealtimeTimer = setTimeout(() => {
+          const ids = [..._dirtyReviewPdfIds];
+          _dirtyReviewPdfIds.clear();
+          if (typeof window._loadCardRatings === 'function' && ids.length) {
+            window._loadCardRatings(ids);
+          }
+          // If the Product Detail page is open on one of the affected PDFs, refresh it live.
+          if (typeof window.selectedPdf !== 'undefined' && window.selectedPdf && ids.includes(window.selectedPdf.id)
+              && typeof window._pdpLoadLiveStats === 'function') {
+            window._pdpLoadLiveStats(window.selectedPdf.id);
+          }
+        }, 800);
+      })
+      .subscribe();
+
     // ── NEW: Career Hub Realtime ─────────────────────────────────
     // Ensures career-hub.js's own subscription is started as soon as
     // the client is available, even if the Career Hub tab hasn't been
@@ -1167,9 +1249,39 @@
   // ── PRODUCT REVIEWS & RATINGS ────────────────────────────────────
 
   /**
+   * hasUserPurchasedPdf(pdfId, userId?)
+   * Returns true if the given (or currently signed-in) user has a
+   * paid purchase of this PDF. Shared by the review gate and the
+   * verified-purchase flag on submission, so both always agree.
+   */
+  window.hasUserPurchasedPdf = async function hasUserPurchasedPdf(pdfId, userId) {
+    const client = sb();
+    if (!client || !pdfId) return false;
+    try {
+      let uid = userId;
+      if (!uid) {
+        const { data: { user } } = await client.auth.getUser();
+        uid = user?.id ?? null;
+      }
+      if (!uid) return false;
+      const { count } = await client
+        .from('purchased_pdfs')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', uid)
+        .eq('pdf_uuid', String(pdfId))
+        .eq('status', 'paid');
+      return (count || 0) > 0;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  /**
    * fetchReviewStats(pdfId)
    * Returns { avgRating, reviewCount, verified } for a PDF.
-   * Cached for 60 s to avoid hammering Supabase on card renders.
+   * Only counts verified-purchase reviews (public ratings must reflect
+   * real buyers only). Cached for 60 s to avoid hammering Supabase on
+   * card renders.
    */
   window.fetchReviewStats = async function fetchReviewStats(pdfId) {
     const cacheKey = 'review_stats:' + pdfId;
@@ -1179,7 +1291,8 @@
       const { data, error, count } = await client
         .from('pdf_reviews')
         .select('rating,verified', { count: 'exact' })
-        .eq('pdf_id', pdfId);
+        .eq('pdf_id', pdfId)
+        .eq('verified', true);
       if (error || !data || data.length === 0) return { avgRating: null, reviewCount: 0, verifiedCount: 0 };
       const ratings = data.map(r => Number(r.rating)).filter(r => r >= 1 && r <= 5);
       const avgRating = ratings.length
@@ -1193,6 +1306,7 @@
   /**
    * loadProductReviews(pdfId, limit?)
    * Returns an array of review rows (most recent first) for display.
+   * Only verified-purchase reviews are shown publicly.
    * Each row: { id, rating, comment, verified, created_at, user_display_name }
    */
   window.loadProductReviews = async function loadProductReviews(pdfId, limit) {
@@ -1203,12 +1317,13 @@
         .from('pdf_reviews')
         .select('id,rating,comment,verified,created_at,user_id')
         .eq('pdf_id', pdfId)
+        .eq('verified', true)
         .order('created_at', { ascending: false })
         .limit(limit || 20);
       if (error) { console.warn('loadProductReviews error:', error); return []; }
       return (data || []).map(r => ({
         ...r,
-        user_display_name: r.verified ? 'Verified Buyer' : 'Student',
+        user_display_name: 'Verified Buyer',
       }));
     } catch (e) {
       console.warn('loadProductReviews exception:', e);
@@ -1219,7 +1334,9 @@
   /**
    * submitProductReview(pdfId, rating, comment)
    * Inserts or updates the current user's review for a PDF.
-   * Automatically marks `verified = true` if the user has purchased the PDF.
+   * Only users who purchased the PDF (status='paid' in purchased_pdfs)
+   * may submit — everyone else is rejected up front, both here and via
+   * the RLS-safe `verified` flag stored on the row.
    * Returns { success, error, verified }
    */
   window.submitProductReview = async function submitProductReview(pdfId, rating, comment) {
@@ -1243,17 +1360,11 @@
       return { success: false, error: 'Please select a star rating (1–5).' };
     }
 
-    // Check if user purchased this PDF (verified review)
-    let verified = false;
-    try {
-      const { count } = await client
-        .from('purchased_pdfs')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('pdf_uuid', String(pdfId))
-        .eq('status', 'paid');
-      verified = (count || 0) > 0;
-    } catch (_) { /* non-fatal — just mark unverified */ }
+    // Reviews are limited to verified buyers only.
+    const verified = await window.hasUserPurchasedPdf(pdfId, userId);
+    if (!verified) {
+      return { success: false, error: 'Only students who have purchased this PDF can leave a review.' };
+    }
 
     try {
       const { error } = await client
@@ -1300,6 +1411,201 @@
         .maybeSingle();
       return data || null;
     } catch (_) { return null; }
+  };
+
+  // ── BLOG / SEO CONTENT MARKETING ─────────────────────────────────
+
+  function _slugify(str) {
+    return String(str || '')
+      .toLowerCase().trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 90) || 'post';
+  }
+  window._slugify = _slugify;
+
+  /**
+   * loadBlogPosts({category, tag, search, limit, offset})
+   * Public, published-only post list, newest first.
+   */
+  window.loadBlogPosts = async function loadBlogPosts(opts) {
+    opts = opts || {};
+    const client = sb();
+    if (!client) return { posts: [], total: 0 };
+    try {
+      let q = client
+        .from('blog_posts')
+        .select('id,slug,title,excerpt,cover_image,category,tags,author_name,view_count,published_at,created_at', { count: 'exact' })
+        .eq('status', 'published')
+        .order('published_at', { ascending: false, nullsFirst: false });
+      if (opts.category) q = q.eq('category', opts.category);
+      if (opts.tag)      q = q.contains('tags', [opts.tag]);
+      if (opts.search)   q = q.or(`title.ilike.%${opts.search}%,excerpt.ilike.%${opts.search}%`);
+      const from = opts.offset || 0;
+      const to   = from + (opts.limit || 12) - 1;
+      q = q.range(from, to);
+      const { data, error, count } = await q;
+      if (error) { console.warn('loadBlogPosts:', error.message); return { posts: [], total: 0 }; }
+      return { posts: data || [], total: count || 0 };
+    } catch (e) {
+      console.warn('loadBlogPosts exception:', e);
+      return { posts: [], total: 0 };
+    }
+  };
+
+  /**
+   * loadBlogPostBySlug(slug)
+   * Returns the full published post row, or null. Fires a best-effort
+   * view-count increment (non-blocking, never fails the read).
+   */
+  window.loadBlogPostBySlug = async function loadBlogPostBySlug(slug) {
+    const client = sb();
+    if (!client || !slug) return null;
+    try {
+      const { data, error } = await client
+        .from('blog_posts')
+        .select('*')
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .maybeSingle();
+      if (error || !data) return null;
+      try { await client.rpc('increment_blog_view', { post_slug: slug }); } catch (_) { /* RPC optional */ }
+      return data;
+    } catch (e) {
+      console.warn('loadBlogPostBySlug exception:', e);
+      return null;
+    }
+  };
+
+  /**
+   * loadRelatedBlogPosts(post, limit?)
+   * Prefers same-category posts, falls back to shared tags, excludes self.
+   */
+  window.loadRelatedBlogPosts = async function loadRelatedBlogPosts(post, limit) {
+    const client = sb();
+    if (!client || !post) return [];
+    try {
+      let q = client
+        .from('blog_posts')
+        .select('id,slug,title,excerpt,cover_image,category,tags,published_at')
+        .eq('status', 'published')
+        .neq('id', post.id)
+        .order('published_at', { ascending: false })
+        .limit(limit || 3);
+      if (post.category) q = q.eq('category', post.category);
+      else if (post.tags && post.tags.length) q = q.overlaps('tags', post.tags);
+      const { data, error } = await q;
+      if (error) return [];
+      if ((data || []).length === 0 && post.tags && post.tags.length) {
+        const { data: byTag } = await client
+          .from('blog_posts')
+          .select('id,slug,title,excerpt,cover_image,category,tags,published_at')
+          .eq('status', 'published')
+          .neq('id', post.id)
+          .overlaps('tags', post.tags)
+          .order('published_at', { ascending: false })
+          .limit(limit || 3);
+        return byTag || [];
+      }
+      return data || [];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  /**
+   * loadBlogCategories() / loadBlogTags()
+   * Distinct facets for the filter bar, cached 5 min.
+   */
+  window.loadBlogCategories = async function loadBlogCategories() {
+    return window.cachedSupabaseQuery('blog_categories', async () => {
+      const client = sb();
+      if (!client) return [];
+      const { data } = await client.from('blog_posts').select('category').eq('status', 'published');
+      const set = new Set((data || []).map(r => r.category).filter(Boolean));
+      return [...set].sort();
+    }, 5 * 60 * 1000);
+  };
+
+  window.loadBlogTags = async function loadBlogTags() {
+    return window.cachedSupabaseQuery('blog_tags', async () => {
+      const client = sb();
+      if (!client) return [];
+      const { data } = await client.from('blog_posts').select('tags').eq('status', 'published');
+      const set = new Set();
+      (data || []).forEach(r => (r.tags || []).forEach(t => set.add(t)));
+      return [...set].sort();
+    }, 5 * 60 * 1000);
+  };
+
+  // ── Admin CRUD (RLS enforces admin-only writes; these just call through) ──
+
+  window.adminListBlogPosts = async function adminListBlogPosts(search) {
+    const client = sb();
+    if (!client) return [];
+    let q = client.from('blog_posts').select('*').order('created_at', { ascending: false });
+    if (search) q = q.ilike('title', `%${search}%`);
+    const { data, error } = await q;
+    if (error) { console.warn('adminListBlogPosts:', error.message); return []; }
+    return data || [];
+  };
+
+  window.adminSaveBlogPost = async function adminSaveBlogPost(post) {
+    const client = sb();
+    if (!client) return { success: false, error: 'Not connected' };
+    if (!post.title || !post.title.trim()) return { success: false, error: 'Title is required.' };
+    if (!post.content || !post.content.trim()) return { success: false, error: 'Article content is required.' };
+
+    const row = {
+      title:             post.title.trim(),
+      slug:              post.slug ? _slugify(post.slug) : _slugify(post.title),
+      excerpt:           (post.excerpt || '').trim() || null,
+      content:           post.content,
+      cover_image:       post.cover_image || null,
+      category:          post.category || null,
+      tags:              Array.isArray(post.tags) ? post.tags : (post.tags ? String(post.tags).split(',').map(t => t.trim()).filter(Boolean) : []),
+      author_name:       post.author_name || 'Studyria Team',
+      meta_title:        (post.meta_title || '').trim() || post.title.trim(),
+      meta_description:  (post.meta_description || '').trim() || (post.excerpt || '').trim() || null,
+      status:            post.status === 'published' ? 'published' : 'draft',
+      updated_at:        new Date().toISOString(),
+    };
+    if (row.status === 'published') row.published_at = post.published_at || new Date().toISOString();
+
+    try {
+      let result;
+      if (post.id) {
+        result = await client.from('blog_posts').update(row).eq('id', post.id).select().maybeSingle();
+      } else {
+        result = await client.from('blog_posts').insert(row).select().maybeSingle();
+      }
+      if (result.error) {
+        // Unique slug collision — retry once with a short random suffix.
+        if (String(result.error.message || '').toLowerCase().includes('duplicate') && !post.id) {
+          row.slug = row.slug + '-' + Math.random().toString(36).slice(2, 6);
+          result = await client.from('blog_posts').insert(row).select().maybeSingle();
+        }
+        if (result.error) return { success: false, error: result.error.message };
+      }
+      if (window._supabaseCache) { window._supabaseCache.delete('blog_categories'); window._supabaseCache.delete('blog_tags'); }
+      return { success: true, post: result.data };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  };
+
+  window.adminDeleteBlogPost = async function adminDeleteBlogPost(id) {
+    const client = sb();
+    if (!client) return { success: false, error: 'Not connected' };
+    try {
+      const { error } = await client.from('blog_posts').delete().eq('id', id);
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
   };
 
   // ── TESTIMONIALS ─────────────────────────────────────────────────

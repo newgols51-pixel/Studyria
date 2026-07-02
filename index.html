@@ -5260,6 +5260,73 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   window.OneSignalDeferred = window.OneSignalDeferred || [];
 </script>
 
+<!-- ══════════════════════════════════════════════════════════════
+     FEATURE 4 — CLEAN UI IMPROVEMENTS  (additive polish layer)
+     Purely additive: fixes spacing/typography/responsiveness/
+     overflow edge-cases. Does NOT alter existing colors, layout
+     structure, component markup, or animations. Placed last so it
+     only patches gaps in the cascade above — safe to delete this
+     single <style> block to fully revert Feature 4 with zero risk
+     to any other feature (PWA/auth/payments/wishlist/Career Hub).
+     ══════════════════════════════════════════════════════════════ -->
+<style id="feature4-ui-polish">
+
+  /* 1) iOS Safari auto-zoom fix ─────────────────────────────────
+     Any focusable input rendering below 16px triggers an
+     automatic viewport zoom on iPhone Safari on focus, which then
+     doesn't reliably zoom back out — a common mobile UX complaint.
+     Mobile-only; the ~1–2px size delta is visually negligible so
+     the design is unchanged on the devices where it matters. */
+  @media (max-width: 768px) {
+    .form-input, .search-input, .discover-search-input,
+    .lib-search-wrap .search-input, .sf-newsletter-input {
+      font-size: 16px !important;
+    }
+    #contactName, #contactEmail, #contactMsg {
+      font-size: 16px !important;
+    }
+  }
+
+  /* 2) Touch target sizing ──────────────────────────────────────
+     Brings primary interactive controls up to the ~44px minimum
+     tap area recommended for touch accuracy, without changing
+     padding/colors/border-radius (so the visual style is retained,
+     only the hit area grows via min-height/min-width). */
+  @media (max-width: 900px) {
+    .btn { min-height: 44px; }
+    .filter-chip { min-height: 36px; display: inline-flex; align-items: center; }
+  }
+
+  /* 3) Long-text overflow safety net ────────────────────────────
+     Career Hub / blog content is user-authored and can contain
+     long unbroken strings (URLs, codes). Only touched the two
+     title rules that didn't already define wrap/clamp behaviour;
+     every other title class already handles this upstream. */
+  .ch-featured-title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* 4) Small-phone spacing polish (≤380px) ──────────────────────
+     Trims a little excess vertical rhythm and edge padding on the
+     smallest common screens only; every larger breakpoint already
+     defined above is untouched. */
+  @media (max-width: 380px) {
+    .section { padding: 40px 0; }
+    .container { padding: 0 14px; }
+  }
+
+  /* 5) Table density on small screens ────────────────────────────
+     Slightly tighter cell padding so data-heavy tables need less
+     horizontal scroll inside their existing .table-wrap/overflow-x
+     containers — structure and columns are unchanged. */
+  @media (max-width: 480px) {
+    .table-wrap th, .table-wrap td { padding: 10px 12px; }
+  }
+
+
+</style>
+
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -5407,6 +5474,7 @@ function studyriaApp() {
       <div class="nav-links">
         <button class="nav-link active" data-page="home" onclick="navigate('home')"><svg width="15" height="15"><use href="#ic-home"/></svg>Home</button>
         <button class="nav-link" data-page="library" onclick="navigate('library')"><svg width="15" height="15"><use href="#ic-library"/></svg>Library</button>
+        <button class="nav-link" data-page="blog" onclick="navigate('blog')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</button>
         <button class="nav-link" data-page="dashboard" onclick="navigate('dashboard')"><svg width="15" height="15"><use href="#ic-dashboard"/></svg>My Dashboard</button>
 
       </div>
@@ -15302,6 +15370,357 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   </script>
 </div>
 
+<div class="page" id="page-blog">
+  <style>
+    .blog-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 70px; }
+    .blog-header { text-align:center; margin-bottom: 28px; }
+    .blog-header h1 { font-family:var(--font-editorial); font-size:clamp(1.7rem,4.5vw,2.4rem); font-weight:800;
+      background:var(--grad-primary); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:0 0 8px; }
+    .blog-header p { color:var(--text2); font-size:.92rem; max-width:520px; margin:0 auto; }
+
+    .blog-toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .blog-search { flex:1; min-width:220px; position:relative; }
+    .blog-search input { width:100%; padding:10px 14px 10px 38px; border-radius: 12px; border:1px solid var(--glass-border);
+      background:var(--glass); color:var(--text); font-family:var(--font-body); font-size:.85rem; outline:none; }
+    .blog-search input:focus { border-color: var(--accent); }
+    .blog-search svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text3); }
+    .blog-filters { display:flex; gap:8px; flex-wrap:wrap; }
+    .blog-chip { padding:6px 14px; border-radius:20px; font-size:.78rem; font-weight:600; cursor:pointer;
+      border:1px solid var(--glass-border); background:var(--glass); color:var(--text2); transition:.15s; white-space:nowrap; }
+    .blog-chip:hover { border-color: var(--accent); color: var(--text); }
+    .blog-chip.active { background: var(--grad-primary); color:#fff; border-color:transparent; }
+
+    .blog-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(270px,1fr)); gap: 20px; margin-bottom: 30px; }
+    .blog-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; cursor:pointer;
+      transition: transform .2s, box-shadow .2s, border-color .2s; display:flex; flex-direction:column; }
+    .blog-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.18); border-color: var(--accent); }
+    .blog-card-cover { width:100%; aspect-ratio: 16/9; background:linear-gradient(145deg,#0a1a50,#1555e8 55%,#0891b2 100%);
+      display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .blog-card-cover img { width:100%; height:100%; object-fit:cover; }
+    .blog-card-body { padding: 16px 16px 18px; display:flex; flex-direction:column; gap:8px; flex:1; }
+    .blog-card-cat { font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color: var(--accent); }
+    .blog-card-title { font-family:var(--font-editorial); font-size:1.02rem; font-weight:700; color:var(--text); line-height:1.35; overflow-wrap:break-word; word-break:break-word; }
+    .blog-card-excerpt { font-size:.8rem; color:var(--text2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .blog-card-meta { margin-top:auto; padding-top:8px; display:flex; align-items:center; gap:8px; font-size:.7rem; color:var(--text3); }
+
+    .blog-empty { text-align:center; padding:60px 20px; color:var(--text2); }
+    .blog-pagination { display:flex; justify-content:center; gap:8px; margin-top: 10px; }
+    .blog-pagination button { padding:8px 16px; border-radius:10px; border:1px solid var(--glass-border); background:var(--glass); color:var(--text); font-size:.82rem; cursor:pointer; }
+    .blog-pagination button:disabled { opacity:.4; cursor:default; }
+    .blog-pagination button.active { background: var(--grad-primary); color:#fff; border-color:transparent; }
+
+    /* Article view */
+    .blog-article-back { display:inline-flex; align-items:center; gap:6px; font-size:.82rem; font-weight:600; color:var(--accent); cursor:pointer; margin-bottom:18px; background:none; border:none; padding:0; }
+    .blog-article-header { margin-bottom: 22px; }
+    .blog-article-cat { font-size:.72rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+    .blog-article-title { font-family:var(--font-editorial); font-size:clamp(1.6rem,4.5vw,2.3rem); font-weight:800; color:var(--text); line-height:1.25; margin: 0 0 12px; overflow-wrap:break-word; word-break:break-word; }
+    .blog-article-meta { display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-size:.8rem; color:var(--text2); }
+    .blog-article-cover { width:100%; border-radius:16px; overflow:hidden; margin: 18px 0 26px; aspect-ratio:16/7; background:linear-gradient(145deg,#0a1a50,#1555e8 55%,#0891b2 100%); }
+    .blog-article-cover img { width:100%; height:100%; object-fit:cover; }
+    .blog-article-body { max-width: 760px; margin: 0 auto; font-size:1rem; line-height:1.8; color:var(--text); }
+    .blog-article-body h2 { font-family:var(--font-editorial); font-size:1.4rem; font-weight:750; margin: 30px 0 12px; }
+    .blog-article-body h3 { font-family:var(--font-editorial); font-size:1.15rem; font-weight:700; margin: 24px 0 10px; }
+    .blog-article-body p { margin: 0 0 16px; }
+    .blog-article-body img { max-width:100%; border-radius:12px; margin: 10px 0; }
+    .blog-article-body a { color: var(--accent); }
+    .blog-article-body ul, .blog-article-body ol { margin: 0 0 16px; padding-left: 22px; }
+    .blog-article-body blockquote { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; color: var(--text2); margin: 16px 0; font-style: italic; }
+    .blog-article-tags { display:flex; gap:8px; flex-wrap:wrap; margin: 24px auto 0; max-width:760px; }
+    .blog-tag-pill { font-size:.72rem; padding:5px 12px; border-radius:14px; background:var(--glass); border:1px solid var(--glass-border); color:var(--text2); }
+    .blog-related { max-width: 980px; margin: 46px auto 0; }
+    .blog-related h3 { font-family:var(--font-editorial); font-size:1.15rem; font-weight:700; margin-bottom:16px; }
+
+    @media (max-width: 640px) {
+      .blog-grid { grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 14px; }
+      .blog-article-body { font-size:.95rem; }
+    }
+  </style>
+
+  <div class="blog-wrap" id="blogListView">
+    <div class="blog-header">
+      <h1>📝 Studyria Blog</h1>
+      <p>Exam tips, study guides and career advice for Assam's students — written to help you study smarter.</p>
+    </div>
+
+    <div class="blog-toolbar">
+      <div class="blog-search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="blogSearchInput" placeholder="Search articles…" oninput="blogDebouncedSearch()">
+      </div>
+      <div class="blog-filters" id="blogCategoryFilters"></div>
+    </div>
+    <div class="blog-filters" id="blogTagFilters" style="margin-bottom:20px"></div>
+
+    <div class="blog-grid" id="blogGrid">
+      <div class="blog-empty">⏳ Loading articles…</div>
+    </div>
+    <div class="blog-pagination" id="blogPagination"></div>
+  </div>
+
+  <div class="blog-wrap" id="blogArticleView" style="display:none">
+    <button class="blog-article-back" onclick="closeBlogPost()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Blog
+    </button>
+    <div id="blogArticleContent"></div>
+  </div>
+
+  <script>
+  // ══════════════════════════════════════════════════════════════════
+  // BLOG — front-end logic (list, filters, article view, SEO metadata)
+  // Self-contained: reads/writes only blog-* DOM ids and window.loadBlog*
+  // helpers from supabase.js. Does not touch any other page's code.
+  // ══════════════════════════════════════════════════════════════════
+  window._blogState = { page: 0, pageSize: 12, category: '', tag: '', search: '' };
+
+  async function renderBlogList() {
+    await Promise.all([_blogRenderCategoryChips(), _blogRenderTagChips()]);
+    await _blogFetchAndRenderGrid();
+  }
+
+  async function _blogRenderCategoryChips() {
+    const wrap = document.getElementById('blogCategoryFilters');
+    if (!wrap || !window.loadBlogCategories) return;
+    const cats = await window.loadBlogCategories();
+    const s = window._blogState;
+    wrap.innerHTML = `<span class="blog-chip ${!s.category ? 'active' : ''}" onclick="blogSetCategory('')">All</span>` +
+      cats.map(c => `<span class="blog-chip ${s.category === c ? 'active' : ''}" onclick="blogSetCategory('${c.replace(/'/g, "\\'")}')">${_esc(c)}</span>`).join('');
+  }
+
+  async function _blogRenderTagChips() {
+    const wrap = document.getElementById('blogTagFilters');
+    if (!wrap || !window.loadBlogTags) return;
+    const tags = await window.loadBlogTags();
+    const s = window._blogState;
+    if (!tags.length) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = tags.slice(0, 14).map(t =>
+      `<span class="blog-chip ${s.tag === t ? 'active' : ''}" style="font-size:.72rem;padding:5px 12px" onclick="blogSetTag('${t.replace(/'/g, "\\'")}')">#${_esc(t)}</span>`
+    ).join('');
+  }
+
+  window.blogSetCategory = function (cat) {
+    window._blogState.category = window._blogState.category === cat ? '' : cat;
+    window._blogState.page = 0;
+    renderBlogList();
+  };
+  window.blogSetTag = function (tag) {
+    window._blogState.tag = window._blogState.tag === tag ? '' : tag;
+    window._blogState.page = 0;
+    renderBlogList();
+  };
+  let _blogSearchTimer = null;
+  window.blogDebouncedSearch = function () {
+    clearTimeout(_blogSearchTimer);
+    _blogSearchTimer = setTimeout(() => {
+      window._blogState.search = (document.getElementById('blogSearchInput')?.value || '').trim();
+      window._blogState.page = 0;
+      _blogFetchAndRenderGrid();
+    }, 350);
+  };
+
+  async function _blogFetchAndRenderGrid() {
+    const grid = document.getElementById('blogGrid');
+    const pager = document.getElementById('blogPagination');
+    if (!grid) return;
+    grid.innerHTML = `<div class="blog-empty">⏳ Loading articles…</div>`;
+    const s = window._blogState;
+    if (!window.loadBlogPosts) { grid.innerHTML = `<div class="blog-empty">Blog is temporarily unavailable.</div>`; return; }
+    const { posts, total } = await window.loadBlogPosts({
+      category: s.category || undefined,
+      tag: s.tag || undefined,
+      search: s.search || undefined,
+      limit: s.pageSize,
+      offset: s.page * s.pageSize,
+    });
+    if (!posts.length) {
+      grid.innerHTML = `<div class="blog-empty">📭 No articles found${s.search ? ` for "${_esc(s.search)}"` : ''}. Check back soon!</div>`;
+      if (pager) pager.innerHTML = '';
+      return;
+    }
+    grid.innerHTML = posts.map(_blogCardHTML).join('');
+    const pageCount = Math.max(1, Math.ceil(total / s.pageSize));
+    if (pager) {
+      if (pageCount <= 1) { pager.innerHTML = ''; }
+      else {
+        let btns = '';
+        for (let i = 0; i < pageCount; i++) {
+          btns += `<button class="${i === s.page ? 'active' : ''}" onclick="blogGoPage(${i})">${i + 1}</button>`;
+        }
+        pager.innerHTML = btns;
+      }
+    }
+  }
+
+  window.blogGoPage = function (n) {
+    window._blogState.page = n;
+    _blogFetchAndRenderGrid();
+    document.getElementById('blogListView')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  function _blogCardHTML(p) {
+    const dateStr = p.published_at ? new Date(p.published_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    const cover = p.cover_image
+      ? `<img src="${p.cover_image}" alt="${_esc(p.title)}" loading="lazy">`
+      : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.2" opacity="0.85"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+    return `
+    <div class="blog-card" onclick="openBlogPost('${p.slug}')">
+      <div class="blog-card-cover">${cover}</div>
+      <div class="blog-card-body">
+        ${p.category ? `<div class="blog-card-cat">${_esc(p.category)}</div>` : ''}
+        <div class="blog-card-title">${_esc(p.title)}</div>
+        ${p.excerpt ? `<div class="blog-card-excerpt">${_esc(p.excerpt)}</div>` : ''}
+        <div class="blog-card-meta">
+          <span>✍️ ${_esc(p.author_name || 'Studyria Team')}</span>
+          ${dateStr ? `<span>· ${dateStr}</span>` : ''}
+          ${p.view_count ? `<span>· 👁 ${Number(p.view_count).toLocaleString()}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── Article view ──────────────────────────────────────────────────
+  window.openBlogPost = async function (slug, fromRoute) {
+    const listV = document.getElementById('blogListView');
+    const artV  = document.getElementById('blogArticleView');
+    const body  = document.getElementById('blogArticleContent');
+    if (!listV || !artV || !body) return;
+
+    listV.style.display = 'none';
+    artV.style.display  = '';
+    body.innerHTML = `<div class="blog-empty">⏳ Loading article…</div>`;
+    window.scrollTo(0, 0);
+
+    if (!fromRoute) {
+      const hash = '#blog/' + encodeURIComponent(slug);
+      if (location.hash !== hash) history.pushState({ page: 'blog/' + slug }, '', hash);
+    }
+
+    const post = window.loadBlogPostBySlug ? await window.loadBlogPostBySlug(slug) : null;
+    if (!post) {
+      body.innerHTML = `<div class="blog-empty">😕 This article couldn't be found. <a onclick="closeBlogPost()" style="color:var(--accent);cursor:pointer">Back to Blog</a></div>`;
+      return;
+    }
+    window._blogCurrentPost = post;
+
+    const dateStr = post.published_at ? new Date(post.published_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+    const coverHTML = post.cover_image ? `<div class="blog-article-cover"><img src="${post.cover_image}" alt="${_esc(post.title)}" decoding="async"></div>` : '';
+    const tagsHTML = (post.tags && post.tags.length)
+      ? `<div class="blog-article-tags">${post.tags.map(t => `<span class="blog-tag-pill">#${_esc(t)}</span>`).join('')}</div>` : '';
+
+    body.innerHTML = `
+      <div class="blog-article-header">
+        ${post.category ? `<div class="blog-article-cat">${_esc(post.category)}</div>` : ''}
+        <h1 class="blog-article-title">${_esc(post.title)}</h1>
+        <div class="blog-article-meta">
+          <span>✍️ ${_esc(post.author_name || 'Studyria Team')}</span>
+          ${dateStr ? `<span>· ${dateStr}</span>` : ''}
+          <span>· 👁 ${Number(post.view_count || 0).toLocaleString()} views</span>
+        </div>
+      </div>
+      ${coverHTML}
+      <div class="blog-article-body">${post.content}</div>
+      ${tagsHTML}
+      <div class="blog-related" id="blogRelatedWrap"></div>
+    `;
+
+    _blogSetMeta(post);
+
+    // Related posts
+    const relWrap = document.getElementById('blogRelatedWrap');
+    if (relWrap && window.loadRelatedBlogPosts) {
+      const related = await window.loadRelatedBlogPosts(post, 3);
+      if (related.length) {
+        relWrap.innerHTML = `<h3>You might also like</h3><div class="blog-grid">${related.map(_blogCardHTML).join('')}</div>`;
+      }
+    }
+  };
+
+  window.closeBlogPost = function () {
+    _blogResetMeta();
+    if (location.hash.indexOf('#blog/') === 0) history.pushState({ page: 'blog' }, '', '#blog');
+    navigate('blog');
+  };
+
+  // ── Dynamic SEO metadata (first feature on this site to do this) ───
+  window._blogDefaultMeta = null;
+  function _blogSetMeta(post) {
+    if (!window._blogDefaultMeta) {
+      window._blogDefaultMeta = {
+        title: document.title,
+        description: document.querySelector('meta[name="description"]')?.content || '',
+        ogTitle: document.querySelector('meta[property="og:title"]')?.content || '',
+        ogDesc: document.querySelector('meta[property="og:description"]')?.content || '',
+        ogImage: document.querySelector('meta[property="og:image"]')?.content || '',
+        canonical: document.querySelector('link[rel="canonical"]')?.href || '',
+      };
+    }
+    const title = (post.meta_title || post.title) + ' | Studyria Blog';
+    const desc  = post.meta_description || post.excerpt || '';
+    document.title = title;
+    _blogSetTag('meta[name="description"]', 'content', desc);
+    _blogSetTag('meta[property="og:title"]', 'content', title);
+    _blogSetTag('meta[property="og:description"]', 'content', desc);
+    if (post.cover_image) _blogSetTag('meta[property="og:image"]', 'content', post.cover_image);
+    const canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (canonicalEl) canonicalEl.href = 'https://studyria.qzz.io/#blog/' + encodeURIComponent(post.slug);
+
+    // JSON-LD Article structured data
+    let ld = document.getElementById('blogArticleLd');
+    if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'blogArticleLd'; document.head.appendChild(ld); }
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description: desc,
+      image: post.cover_image ? [post.cover_image] : undefined,
+      datePublished: post.published_at || post.created_at,
+      dateModified: post.updated_at || post.published_at || post.created_at,
+      author: { '@type': 'Organization', name: post.author_name || 'Studyria Team' },
+      publisher: { '@type': 'Organization', name: 'Studyria' },
+    });
+  }
+  window._blogResetMeta = function _blogResetMeta() {
+    const d = window._blogDefaultMeta;
+    if (!d) return;
+    document.title = d.title;
+    _blogSetTag('meta[name="description"]', 'content', d.description);
+    _blogSetTag('meta[property="og:title"]', 'content', d.ogTitle);
+    _blogSetTag('meta[property="og:description"]', 'content', d.ogDesc);
+    _blogSetTag('meta[property="og:image"]', 'content', d.ogImage);
+    const canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (canonicalEl && d.canonical) canonicalEl.href = d.canonical;
+    const ld = document.getElementById('blogArticleLd');
+    if (ld) ld.remove();
+  };
+  function _blogSetTag(selector, attr, value) {
+    if (value == null) return;
+    const el = document.querySelector(selector);
+    if (el) el.setAttribute(attr, value);
+  }
+
+  // ── Slug routing: #blog/{slug} works from direct links, back/forward,
+  // and page refresh — without touching the core navigate()/popstate code.
+  (function () {
+    function wrapForBlogRouting() {
+      if (typeof window.navigate !== 'function' || window.navigate.__blogWrapped) return;
+      const original = window.navigate;
+      const wrapped = function (page) {
+        if (typeof page === 'string' && page.indexOf('blog/') === 0) {
+          const slug = decodeURIComponent(page.slice(5));
+          const p = original('blog');
+          return (p && p.then ? p : Promise.resolve()).then(() => { window.openBlogPost(slug, true); });
+        }
+        return original.apply(this, arguments);
+      };
+      wrapped.__blogWrapped = true;
+      window.navigate = wrapped;
+    }
+    let attempts = 0;
+    const t = setInterval(() => { wrapForBlogRouting(); if (++attempts > 40) clearInterval(t); }, 250);
+  })();
+  </script>
+</div>
+
 <div class="page" id="page-404" style="display:none">
   <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:20px;">
     <div style="font-size:5rem;line-height:1;">🔍</div>
@@ -16690,7 +17109,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload',
-  'privacy','terms','refund','about','contact'
+  'privacy','terms','refund','about','contact','blog'
 ]);
 
 async function navigate(page) {
@@ -16754,6 +17173,15 @@ async function navigate(page) {
   if (page === 'about') {
     // Populate About page stats from the shared Supabase source
     if (typeof initAboutStats === 'function') initAboutStats();
+  }
+  if (page === 'blog') {
+    // Reset to the article-list view (openBlogPost switches to article view)
+    const listV = document.getElementById('blogListView');
+    const artV  = document.getElementById('blogArticleView');
+    if (listV) listV.style.display = '';
+    if (artV)  artV.style.display  = 'none';
+    if (typeof renderBlogList === 'function') renderBlogList();
+    if (typeof _blogResetMeta === 'function') _blogResetMeta();
   }
 }
 
@@ -18392,6 +18820,19 @@ async function _pdpRenderReviewForm(container) {
     return;
   }
 
+  // Only students who purchased this PDF may write a review.
+  const purchased = typeof window.hasUserPurchasedPdf === 'function'
+    ? await window.hasUserPurchasedPdf(pdfId, user.id)
+    : false;
+
+  if (!purchased) {
+    container.innerHTML = `<div class="pdp-rev-login-prompt">
+      Only students who've purchased this PDF can leave a review.
+      <a onclick="pdpHandleBuy()">Buy this PDF</a> to unlock reviewing.
+    </div>`;
+    return;
+  }
+
   // Check for existing review
   let existingReview = null;
   if (typeof window.checkUserReview === 'function') {
@@ -18508,6 +18949,8 @@ async function _loadCardRatings(pdfIds) {
   }
 }
 
+window._loadCardRatings = _loadCardRatings; // expose for realtime hook in supabase.js
+
 // Hook into shelf / grid renders to trigger card rating loads
 (function() {
   const _origRenderLibGrid = window.renderLibGrid;
@@ -18521,6 +18964,31 @@ async function _loadCardRatings(pdfIds) {
   };
 })();
 
+// ── Universal card-rating loader ─────────────────────────────────────────
+// Product cards render in many places (Home trending/new-arrivals shelves,
+// Library grid, Wishlist grid, related-products on Product Details, search
+// results). Rather than patching every render function individually (risky
+// on a codebase this size), watch the DOM for any new [data-pdf-id] card
+// and load its rating automatically — covers every current and future
+// card surface with zero changes to existing render logic.
+(function() {
+  let scanTimer = null;
+  function scanForNewCards() {
+    const ids = [...document.querySelectorAll('[data-pdf-id]')]
+      .map(el => el.dataset.pdfId)
+      .filter(id => id && !window._cardRatingCache[id]);
+    if (ids.length) _loadCardRatings([...new Set(ids)]);
+  }
+  const cardObserver = new MutationObserver(() => {
+    clearTimeout(scanTimer);
+    scanTimer = setTimeout(scanForNewCards, 350);
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    cardObserver.observe(document.body, { childList: true, subtree: true });
+    scanForNewCards();
+  });
+})();
+
 // ── Realtime subscriptions: auto-refresh stats on new activity ──────────
 function _pdpSubscribeRealtime(pdfId) {
   if (window._pdpRealtimeSubs) {
@@ -18529,7 +18997,7 @@ function _pdpSubscribeRealtime(pdfId) {
   window._pdpRealtimeSubs = [];
   const client = window.supabaseClient;
   if (!client || !pdfId) return;
-  ['downloads','purchases','user_wishlist','reviews'].forEach(table => {
+  ['downloads','purchases','user_wishlist','pdf_reviews'].forEach(table => {
     try {
       // user_wishlist.pdf_id now stores composite "pdf:<id>"/"job:<id>"
       // keys (see supabase.js wishlist engine), so it can't be matched
@@ -30291,32 +30759,228 @@ function renderPCCCoupons(main) {
 /* ─── 8. BLOG MANAGER ────────────────────────────────────────── */
 function renderPCCBlog(main) {
   main.innerHTML = `
+  <style>
+    .bam-toolbar { display:flex; gap:6px; flex-wrap:wrap; padding:8px; border:1px solid var(--glass-border); border-bottom:none;
+      border-radius:12px 12px 0 0; background:var(--glass); }
+    .bam-toolbar button { width:30px; height:30px; border-radius:7px; border:1px solid transparent; background:transparent;
+      color:var(--text2); cursor:pointer; font-size:.85rem; font-weight:700; }
+    .bam-toolbar button:hover { background:rgba(61,142,248,0.12); color:var(--accent); border-color:rgba(61,142,248,0.25); }
+    .bam-editor { min-height:220px; max-height:420px; overflow-y:auto; padding:14px 16px; border:1px solid var(--glass-border);
+      border-radius:0 0 12px 12px; background:var(--card); color:var(--text); font-size:.9rem; line-height:1.7; outline:none; }
+    .bam-editor:empty:before { content: attr(data-placeholder); color: var(--text3); }
+    .bam-editor h2, .bam-editor h3 { font-family:var(--font-editorial); }
+    .bam-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+    .bam-row .form-group { flex:1; min-width:200px; margin-bottom:0; }
+    .bam-status-badge { font-size:.68rem; font-weight:700; padding:2px 9px; border-radius:20px; letter-spacing:.04em; text-transform:uppercase; }
+    .bam-status-badge.published { background:rgba(16,217,142,0.12); color:var(--success); border:1px solid rgba(16,217,142,0.25); }
+    .bam-status-badge.draft { background:rgba(255,255,255,0.05); color:var(--text3); border:1px solid var(--glass-border); }
+  </style>
+
   <div class="admin-section-title">📰 Blog Manager</div>
-  <div class="admin-section-sub">Publish study tips, exam guides and news articles.</div>
-  <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
-    <button class="btn btn-primary btn-sm" onclick="showToast('New blog editor — coming soon.','info')">✏️ New Article</button>
-    <button class="btn btn-secondary btn-sm" onclick="showToast('Categories — coming soon.','info')">🗂 Blog Categories</button>
+  <div class="admin-section-sub">Publish study tips, exam guides and news articles — SEO metadata included.</div>
+
+  <div class="ann-admin-form" style="margin-bottom:20px">
+    <div class="ann-admin-form-title" id="bamFormLabel">➕ New Article</div>
+    <input type="hidden" id="bamEditId" value="">
+
+    <div class="bam-row">
+      <div class="form-group">
+        <label class="form-label">Title <span style="color:var(--danger)">*</span></label>
+        <input class="form-input" id="bamTitle" placeholder="e.g. How to Crack JEE in 3 Months" maxlength="140" oninput="bamAutoSlug()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL Slug</label>
+        <input class="form-input" id="bamSlug" placeholder="how-to-crack-jee-in-3-months" maxlength="90">
+      </div>
+    </div>
+
+    <div class="bam-row">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <input class="form-input" id="bamCategory" placeholder="e.g. JEE Tips">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags (comma separated)</label>
+        <input class="form-input" id="bamTags" placeholder="jee, physics, revision">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cover Image URL</label>
+        <input class="form-input" id="bamCover" placeholder="https://…">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Excerpt (short summary shown on cards)</label>
+      <input class="form-input" id="bamExcerpt" placeholder="One or two sentences…" maxlength="220">
+    </div>
+
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Article Content <span style="color:var(--danger)">*</span></label>
+      <div class="bam-toolbar">
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('bold')" title="Bold"><b>B</b></button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('italic')" title="Italic"><i>I</i></button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('formatBlock','H2')" title="Heading">H2</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('formatBlock','H3')" title="Subheading">H3</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('formatBlock','P')" title="Paragraph">¶</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('insertUnorderedList')" title="Bullet list">•—</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('insertOrderedList')" title="Numbered list">1.</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('formatBlock','BLOCKQUOTE')" title="Quote">❝</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamLink()" title="Insert link">🔗</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamImage()" title="Insert image">🖼</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="bamCmd('removeFormat')" title="Clear formatting">✕</button>
+      </div>
+      <div class="bam-editor" id="bamEditor" contenteditable="true" data-placeholder="Write your article here…"></div>
+    </div>
+
+    <div class="bam-row">
+      <div class="form-group">
+        <label class="form-label">SEO Meta Title</label>
+        <input class="form-input" id="bamMetaTitle" placeholder="Defaults to article title" maxlength="70">
+      </div>
+      <div class="form-group">
+        <label class="form-label">SEO Meta Description</label>
+        <input class="form-input" id="bamMetaDesc" placeholder="Defaults to excerpt" maxlength="160">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <label style="display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="bamPublished"> Publish immediately
+      </label>
+      <button class="btn btn-primary btn-sm" onclick="bamSave()">💾 Save Article</button>
+      <button class="btn btn-ghost btn-sm" onclick="bamCancelEdit()" id="bamCancelBtn" style="display:none">✕ Cancel Edit</button>
+      <span id="bamFormMsg" style="font-size:.78rem;display:none"></span>
+    </div>
   </div>
+
   <div class="admin-table-card">
-    <div class="admin-table-header"><div style="font-size:.9rem;font-weight:700">Published Articles</div></div>
+    <div class="admin-table-header">
+      <div style="font-size:.9rem;font-weight:700">All Articles</div>
+      <input class="admin-table-search" placeholder="Search articles…" oninput="bamSearchList(this.value)">
+    </div>
     <div class="table-wrap"><table class="admin-table" style="width:100%">
       <thead><tr><th>Title</th><th>Category</th><th>Views</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>
-        ${[
-          ['How to crack JEE in 3 months','JEE Tips','4,210','Published'],
-          ['Top 10 UPSC books 2025','UPSC','2,840','Published'],
-          ['NEET Biology quick revision','NEET','1,560','Draft'],
-        ].map(([t,c,v,s]) => `<tr>
-          <td style="font-weight:600">${t}</td><td>${c}</td><td>${v}</td>
-          <td><span class="admin-nav-badge ${s==='Published'?'':'admin-nav-badge-orange'}">${s}</span></td>
-          <td style="display:flex;gap:5px">
-            <button class="btn btn-ghost btn-sm" onclick="showToast('Edit — coming soon.','info')">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="showToast('Deleted.','info')">🗑</button>
-          </td>
-        </tr>`).join('')}
-      </tbody>
+      <tbody id="bamListBody"><tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">⏳ Loading…</td></tr></tbody>
     </table></div>
   </div>`;
+
+  bamLoadList();
+}
+
+/* ── BLOG ADMIN — rich text + CRUD ─────────────────────────────── */
+function bamCmd(cmd, val) {
+  document.getElementById('bamEditor')?.focus();
+  document.execCommand(cmd, false, val || null);
+}
+function bamLink() {
+  const url = prompt('Link URL:');
+  if (url) bamCmd('createLink', url);
+}
+function bamImage() {
+  const url = prompt('Image URL:');
+  if (url) bamCmd('insertImage', url);
+}
+function bamAutoSlug() {
+  const slugEl = document.getElementById('bamSlug');
+  if (!slugEl || slugEl.dataset.touched === '1') return;
+  const title = document.getElementById('bamTitle')?.value || '';
+  slugEl.value = typeof _slugify === 'function' ? _slugify(title) : title.toLowerCase().replace(/\s+/g, '-');
+}
+(function () {
+  document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'bamSlug') e.target.dataset.touched = '1';
+  });
+})();
+
+let _bamAllPosts = [];
+async function bamLoadList() {
+  const tbody = document.getElementById('bamListBody');
+  if (!tbody) return;
+  if (!window.adminListBlogPosts) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px">Blog module not loaded.</td></tr>`; return; }
+  _bamAllPosts = await window.adminListBlogPosts();
+  bamRenderList(_bamAllPosts);
+}
+function bamRenderList(posts) {
+  const tbody = document.getElementById('bamListBody');
+  if (!tbody) return;
+  if (!posts.length) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">📭 No articles yet — create one above.</td></tr>`; return; }
+  tbody.innerHTML = posts.map(p => `<tr>
+    <td style="font-weight:600">${escHtml(p.title)}</td>
+    <td>${escHtml(p.category || '—')}</td>
+    <td>${Number(p.view_count || 0).toLocaleString()}</td>
+    <td><span class="bam-status-badge ${p.status}">${p.status}</span></td>
+    <td style="display:flex;gap:5px">
+      <button class="btn btn-ghost btn-sm" onclick="bamEdit('${p.id}')">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="bamDelete('${p.id}')">🗑</button>
+    </td>
+  </tr>`).join('');
+}
+function bamSearchList(q) {
+  q = (q || '').toLowerCase();
+  bamRenderList(!q ? _bamAllPosts : _bamAllPosts.filter(p => (p.title || '').toLowerCase().includes(q)));
+}
+
+function bamEdit(id) {
+  const p = _bamAllPosts.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('bamFormLabel').textContent = '✏️ Edit Article';
+  document.getElementById('bamEditId').value = p.id;
+  document.getElementById('bamTitle').value = p.title || '';
+  const slugEl = document.getElementById('bamSlug'); slugEl.value = p.slug || ''; slugEl.dataset.touched = '1';
+  document.getElementById('bamCategory').value = p.category || '';
+  document.getElementById('bamTags').value = (p.tags || []).join(', ');
+  document.getElementById('bamCover').value = p.cover_image || '';
+  document.getElementById('bamExcerpt').value = p.excerpt || '';
+  document.getElementById('bamEditor').innerHTML = p.content || '';
+  document.getElementById('bamMetaTitle').value = p.meta_title || '';
+  document.getElementById('bamMetaDesc').value = p.meta_description || '';
+  document.getElementById('bamPublished').checked = p.status === 'published';
+  document.getElementById('bamCancelBtn').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function bamCancelEdit() {
+  document.getElementById('bamFormLabel').textContent = '➕ New Article';
+  ['bamEditId','bamTitle','bamSlug','bamCategory','bamTags','bamCover','bamExcerpt','bamMetaTitle','bamMetaDesc'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const slugEl = document.getElementById('bamSlug'); if (slugEl) slugEl.dataset.touched = '';
+  const ed = document.getElementById('bamEditor'); if (ed) ed.innerHTML = '';
+  document.getElementById('bamPublished').checked = false;
+  document.getElementById('bamCancelBtn').style.display = 'none';
+}
+async function bamSave() {
+  const msgEl = document.getElementById('bamFormMsg');
+  const post = {
+    id: document.getElementById('bamEditId').value || null,
+    title: document.getElementById('bamTitle').value.trim(),
+    slug: document.getElementById('bamSlug').value.trim(),
+    category: document.getElementById('bamCategory').value.trim(),
+    tags: document.getElementById('bamTags').value,
+    cover_image: document.getElementById('bamCover').value.trim(),
+    excerpt: document.getElementById('bamExcerpt').value.trim(),
+    content: document.getElementById('bamEditor').innerHTML.trim(),
+    meta_title: document.getElementById('bamMetaTitle').value.trim(),
+    meta_description: document.getElementById('bamMetaDesc').value.trim(),
+    status: document.getElementById('bamPublished').checked ? 'published' : 'draft',
+  };
+  if (!window.adminSaveBlogPost) { showToast('Blog module not loaded.', 'error'); return; }
+  const result = await window.adminSaveBlogPost(post);
+  if (!result.success) {
+    if (msgEl) { msgEl.textContent = result.error; msgEl.style.color = 'var(--danger)'; msgEl.style.display = ''; }
+    showToast(result.error || 'Failed to save article', 'error');
+    return;
+  }
+  showToast(post.id ? 'Article updated!' : 'Article created!', 'success');
+  if (msgEl) msgEl.style.display = 'none';
+  bamCancelEdit();
+  bamLoadList();
+}
+async function bamDelete(id) {
+  if (!confirm('Delete this article? This cannot be undone.')) return;
+  const result = await window.adminDeleteBlogPost(id);
+  if (!result.success) { showToast(result.error || 'Delete failed', 'error'); return; }
+  showToast('Article deleted.', 'success');
+  bamLoadList();
 }
 
 /* ─── 9. ANNOUNCEMENT CENTER ─────────────────────────────────── */
@@ -36252,6 +36916,7 @@ async function loadDynamicMenuItems() {
       section: '📚 STUDY',
       items: [
         { id:'req',  label:'PDF Requests',   icon:'📩', link:'career-hub', linkType:'internal', badge:'NEW', color:'' },
+        { id:'blog', label:'Blog',           icon:'📝', link:'blog',       linkType:'internal', badge:'',    color:'' },
       ]
     },
     {
@@ -36870,6 +37535,163 @@ async function hlmSaveTheme() {
 <script src="smart-publish-manager.js"></script>
 <script src="pdf-classification-refactor.js"></script>
 <script src="premium-edit-pdf-ui.js"></script>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     WHATSAPP FLOATING SUPPORT BUTTON
+     Self-contained: does not touch any existing function, only reads
+     window.currentPage / listens to navigate + popstate. Safe to
+     remove by deleting this block only.
+══════════════════════════════════════════════════════════════════ -->
+<style>
+.wa-fab {
+  position: fixed;
+  right: 18px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #25D366, #128C7E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(37, 211, 102, 0.45), 0 0 0 rgba(37, 211, 102, 0.55);
+  z-index: 480;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  animation: wa-pulse 2.4s ease-in-out infinite;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .25s ease, visibility .25s;
+  opacity: 1;
+  visibility: visible;
+}
+.wa-fab:hover { transform: scale(1.08); }
+.wa-fab:active { transform: scale(0.94); }
+.wa-fab.wa-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.6);
+}
+.wa-fab svg { width: 30px; height: 30px; }
+@keyframes wa-pulse {
+  0%   { box-shadow: 0 4px 18px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.45); }
+  70%  { box-shadow: 0 4px 18px rgba(37,211,102,0.45), 0 0 0 14px rgba(37,211,102,0); }
+  100% { box-shadow: 0 4px 18px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0); }
+}
+.wa-fab-tooltip {
+  position: fixed;
+  right: 84px;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  background: rgba(15,20,30,0.94);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 480;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(6px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+.wa-fab-wrap:hover .wa-fab-tooltip { opacity: 1; visibility: visible; transform: translateX(0); }
+@media (min-width: 769px) {
+  .wa-fab { bottom: 26px; right: 26px; width: 60px; height: 60px; }
+  .wa-fab-tooltip { bottom: 40px; }
+}
+@media (max-width: 480px) {
+  .wa-fab { width: 52px; height: 52px; right: 14px; }
+  .wa-fab svg { width: 26px; height: 26px; }
+}
+</style>
+
+<div class="wa-fab-wrap">
+  <span class="wa-fab-tooltip" id="waFabTooltip">Chat with us</span>
+  <button type="button" class="wa-fab" id="waFabBtn" aria-label="Chat with Studyria support on WhatsApp">
+    <svg viewBox="0 0 32 32" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.004 2.667c-7.363 0-13.333 5.97-13.333 13.333 0 2.353.615 4.646 1.784 6.667L2.667 29.333l6.84-1.795a13.27 13.27 0 006.497 1.687h.006c7.362 0 13.333-5.97 13.333-13.333s-5.977-13.225-13.339-13.225zm0 24.395a11.03 11.03 0 01-5.63-1.542l-.404-.24-4.06 1.066 1.084-3.96-.264-.407a11.02 11.02 0 01-1.69-5.877c0-6.096 4.96-11.057 11.068-11.057 2.956 0 5.735 1.152 7.826 3.244a10.985 10.985 0 013.238 7.822c-.002 6.099-4.963 11.05-11.068 11.05zm6.062-8.283c-.332-.166-1.965-.97-2.27-1.08-.305-.11-.527-.166-.75.166-.222.333-.86 1.08-1.055 1.303-.194.222-.388.25-.72.083-.333-.166-1.404-.518-2.674-1.652-.988-.882-1.656-1.972-1.85-2.305-.194-.333-.02-.513.146-.679.15-.15.333-.389.5-.583.166-.194.222-.333.333-.555.11-.222.055-.417-.028-.583-.083-.166-.75-1.808-1.028-2.475-.27-.65-.545-.563-.75-.573-.194-.01-.416-.012-.638-.012-.222 0-.583.083-.888.417-.305.333-1.166 1.14-1.166 2.782 0 1.642 1.194 3.23 1.361 3.452.166.222 2.351 3.59 5.696 5.034.796.343 1.417.548 1.902.702.799.254 1.526.218 2.101.132.641-.096 1.965-.803 2.242-1.578.277-.775.277-1.44.194-1.579-.083-.138-.305-.222-.638-.388z"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+(function () {
+  var WA_NUMBER = '918011267054'; // +91 8011267054, E.164 without '+'
+  var WA_MESSAGE = 'Hello Studyria Team, I need help regarding your PDFs.';
+
+  // Pages the button is allowed to appear on (per spec: Home, Library,
+  // Product Details, Career Hub, Job Details*, Wishlist, Me, Blog).
+  // 'detail' = Product Details, 'career-hub' also hosts the Job Details
+  // modal, 'dashboard' = the "Me" tab, 'blog' is reserved for the
+  // upcoming Blog section so the button lights up automatically once
+  // that page ships.
+  var WA_ALLOWED_PAGES = ['home', 'library', 'detail', 'career-hub', 'wishlist', 'dashboard', 'blog'];
+
+  var btn = document.getElementById('waFabBtn');
+  var wrap = btn ? btn.closest('.wa-fab-wrap') : null;
+  if (!btn || !wrap) return;
+
+  btn.addEventListener('click', function () {
+    var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(WA_MESSAGE);
+    window.open(url, '_blank', 'noopener');
+  });
+
+  function isCheckoutOrPaymentOpen() {
+    // Razorpay renders an iframe named like "razorpay-checkout-frame-..."
+    // and a full-screen backdrop while its modal is open.
+    if (document.querySelector('iframe[name^="razorpay"]')) return true;
+    if (document.querySelector('.razorpay-container, .razorpay-backdrop')) return true;
+    // Any explicit checkout/payment modal the site may show.
+    var el = document.querySelector('[id*="checkout" i].active, [id*="checkout" i][style*="flex"], [id*="payment" i].modal-open, [id*="payment" i].active');
+    return !!el;
+  }
+
+  function updateWaFabVisibility() {
+    var page = window.currentPage || 'home';
+    var shouldShow = WA_ALLOWED_PAGES.indexOf(page) !== -1 && !isCheckoutOrPaymentOpen();
+    btn.classList.toggle('wa-hidden', !shouldShow);
+    wrap.style.pointerEvents = shouldShow ? '' : 'none';
+  }
+
+  // Hook the SPA's navigate() without altering its original behaviour.
+  function wrapNavigate() {
+    if (typeof window.navigate !== 'function' || window.navigate.__waWrapped) return;
+    var original = window.navigate;
+    var wrapped = function (page) {
+      var result = original.apply(this, arguments);
+      setTimeout(updateWaFabVisibility, 30);
+      return result;
+    };
+    wrapped.__waWrapped = true;
+    window.navigate = wrapped;
+  }
+
+  // navigate() may be (re)assigned by later inline scripts during initial
+  // page construction, so retry the wrap for a short window after load.
+  var wrapAttempts = 0;
+  var wrapTimer = setInterval(function () {
+    wrapNavigate();
+    wrapAttempts++;
+    if (wrapAttempts > 40) clearInterval(wrapTimer); // ~10s ceiling
+  }, 250);
+
+  window.addEventListener('popstate', function () { setTimeout(updateWaFabVisibility, 50); });
+  document.addEventListener('studyria:navigate', updateWaFabVisibility);
+
+  // Catch Razorpay/checkout modals opening or closing even when they
+  // don't go through navigate() at all.
+  var mo = new MutationObserver(function () { updateWaFabVisibility(); });
+  mo.observe(document.body, { childList: true, subtree: false });
+
+  document.addEventListener('DOMContentLoaded', updateWaFabVisibility);
+  window.addEventListener('load', updateWaFabVisibility);
+  setTimeout(updateWaFabVisibility, 100);
+  updateWaFabVisibility();
+})();
+</script>
 
 </body>
 </html>
