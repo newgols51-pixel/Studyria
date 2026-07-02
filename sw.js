@@ -36,11 +36,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v13';           // ← bumped: fixed icon paths
-const SW_BUILD     = '2026.07.02-r3-icon-path-fix';
+const CACHE_NAME   = 'studyria-v14';           // ← bumped: navigation cache-first bugfix
+const SW_BUILD     = '2026.07.02-r4-nav-cache-fix';
 const OFFLINE_PAGE = '/offline.html';
 
-const WHATS_NEW = '🔧 Icon path fix: all PWA icons now served from root. No more 404s in Chrome DevTools Manifest panel.';
+const WHATS_NEW = '🐛 Fixed a bug where new deploys (like the WhatsApp support button) could stay invisible for returning visitors because navigation was served cache-first instead of network-first.';
 
 // Static assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -169,35 +169,42 @@ self.addEventListener('fetch', event => {
   if (request.mode === 'navigate') {
     event.respondWith(
       (async () => {
+        const cache = await caches.open(CACHE_NAME);
+
+        // 1. Try navigation preload first (speeds up first frame when
+        //    enabled) — this IS a live network response, so treat it the
+        //    same as a fresh fetch: cache it, then serve it.
         try {
-          // 1. Try navigation preload (speeds up first frame when enabled)
           const preloadResponse = await event.preloadResponse;
-          if (preloadResponse && preloadResponse.ok) return preloadResponse;
+          if (preloadResponse && preloadResponse.ok) {
+            cache.put('/', preloadResponse.clone());
+            return preloadResponse;
+          }
+        } catch (_) { /* fall through to network fetch below */ }
 
-          // 2. Always attempt to serve the cached SPA shell (/) first.
-          //    This guarantees refresh on /library, /dashboard etc. never 404.
-          const cache = await caches.open(CACHE_NAME);
-          const cachedShell = await cache.match('/');
-          if (cachedShell) return cachedShell;
-
-          // 3. Cache miss — fetch the shell from the network and cache it.
-          const networkShell = await fetch('/');
+        // 2. NETWORK-FIRST for the SPA shell. This is the fix: previously
+        //    step 2 served the cached shell before ever touching the
+        //    network, so a fresh deploy (new index.html, new features like
+        //    the WhatsApp button) could stay invisible to any returning
+        //    visitor indefinitely — the SW would keep answering navigation
+        //    requests out of the old cached copy forever. Always try the
+        //    network first so new deploys are picked up on the very next
+        //    visit; only fall back to cache when the network genuinely
+        //    fails (offline / no connectivity).
+        try {
+          const networkShell = await fetch('/', { cache: 'no-store' });
           if (networkShell && networkShell.ok) {
             cache.put('/', networkShell.clone());
             return networkShell;
           }
-
-          // 4. Network also failed — try any cached copy of root.
-          const anyRoot = await caches.match('/');
-          if (anyRoot) return anyRoot;
-
-          // 5. Last resort: offline page.
-          const offlinePage = await caches.match(OFFLINE_PAGE);
-          return offlinePage || new Response('Offline', { status: 503 });
-        } catch {
-          // Network error — serve cached shell or offline page.
-          const cachedShell = await caches.match('/');
+          throw new Error('Network response not ok: ' + networkShell.status);
+        } catch (_) {
+          // 3. Network failed — fall back to whatever SPA shell we have
+          //    cached, so /library, /dashboard etc. still work offline.
+          const cachedShell = await cache.match('/');
           if (cachedShell) return cachedShell;
+
+          // 4. No cache at all — last resort offline page.
           const offlinePage = await caches.match(OFFLINE_PAGE);
           return offlinePage || new Response('Offline', { status: 503 });
         }
