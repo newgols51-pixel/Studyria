@@ -19099,15 +19099,13 @@ function pdpZoomCover() {
 // is thin UI wiring: heart-button rendering + the Wishlist page.
 // ══════════════════════════════════════════════════════════════════
 
-// loadWishlistFromSupabase: always delegates to the authoritative
-// supabase.js implementation (loop-guarded, guest-local fallback,
-// realtime multi-device sync). Kept as a wrapper only so any legacy
-// inline call site in this file keeps resolving.
-async function loadWishlistFromSupabase() {
-  if (typeof window.loadWishlistFromSupabase === 'function') {
-    return window.loadWishlistFromSupabase();
-  }
-}
+// NOTE: loadWishlistFromSupabase is defined by supabase.js as
+// window.loadWishlistFromSupabase (loop-guarded, guest-local fallback,
+// realtime multi-device sync). Do NOT redeclare it here — a global
+// `function loadWishlistFromSupabase(){}` declaration in this scope
+// becomes window.loadWishlistFromSupabase itself, so a wrapper that
+// calls window.loadWishlistFromSupabase() from inside would call
+// itself forever (RangeError: Maximum call stack size exceeded).
 
 // ── REFRESH HEART BUTTONS + COUNTS EVERYWHERE ───────────────────────
 // Called by supabase.js's _syncWishlistUI() after every load/toggle,
