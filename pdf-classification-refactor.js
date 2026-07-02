@@ -759,9 +759,9 @@ function _buildDetailClassifChips(pdf) {
 // which handles null. But we override to also use _isValidClassif to block
 // placeholder strings like "undefined", "—", "null", etc.
 
-const _origPdfCardHTML = typeof pdfCardHTML === 'function' ? pdfCardHTML : null;
+const _origPdfCardHTML = typeof window.pdfCardHTML === 'function' ? window.pdfCardHTML : null;
 
-function pdfCardHTML(pdf) {
+function _cmPatchedPdfCardHTML(pdf) {
   // Ensure null-safety on classification fields before passing to original
   if (pdf) {
     ['category','subcategory','academic_level','stream','semester_class','subject'].forEach(k => {
@@ -770,6 +770,7 @@ function pdfCardHTML(pdf) {
   }
   return _origPdfCardHTML ? _origPdfCardHTML(pdf) : '';
 }
+window.pdfCardHTML = _cmPatchedPdfCardHTML;
 
 // ─────────────────────────────────────────────────────────────────────
 // SECTION 12 — ADMIN PDF TABLE: show "—" for null category (not crash)
@@ -807,9 +808,9 @@ function adminFilterPDFs(query) {
 // Only show non-null parts in the live PDF preview panel
 // ─────────────────────────────────────────────────────────────────────
 
-const _origUpdateAdminPDFPreview = typeof updateAdminPDFPreview === 'function' ? updateAdminPDFPreview : null;
+const _origUpdateAdminPDFPreview = typeof window.updateAdminPDFPreview === 'function' ? window.updateAdminPDFPreview : null;
 
-function updateAdminPDFPreview() {
+function _cmPatchedUpdateAdminPDFPreview() {
   // Call original first (if it exists) to handle non-classification preview fields
   if (_origUpdateAdminPDFPreview) {
     try { _origUpdateAdminPDFPreview(); } catch(e) {}
@@ -826,6 +827,7 @@ function updateAdminPDFPreview() {
     classifLine.textContent = parts.join(' › ') || '—';
   }
 }
+window.updateAdminPDFPreview = _cmPatchedUpdateAdminPDFPreview;
 
 // ─────────────────────────────────────────────────────────────────────
 // SECTION 14 — "WHO SHOULD READ THIS" — don't assume subcategory
@@ -835,9 +837,9 @@ function updateAdminPDFPreview() {
 // fully override without duplicating 200+ lines. Instead we patch the DOM
 // after renderDetail fires by hooking into the navigate function.
 
-const _origNavigate = typeof navigate === 'function' ? navigate : null;
-function navigate(page, ...args) {
-  if (_origNavigate) _origNavigate(page, ...args);
+const _origNavigate = typeof window.navigate === 'function' ? window.navigate : null; // FIX: capture true original via window.navigate (avoids self-reference from function hoisting)
+function _cmPatchedNavigate(page, ...args) { // FIX: renamed from 'navigate' to prevent hoisting self-collision (was causing infinite recursion / Maximum call stack error)
+  if (typeof _origNavigate === 'function') _origNavigate(page, ...args);
   // After detail renders, fix "Who Should Read This" audience chips
   if (page === 'detail') {
     requestAnimationFrame(() => {
@@ -872,15 +874,16 @@ function navigate(page, ...args) {
     });
   }
 }
+window.navigate = _cmPatchedNavigate; // FIX: expose patched navigate globally after original is safely wrapped
 
 // ─────────────────────────────────────────────────────────────────────
 // SECTION 15 — CLASSIFICATION MANAGEMENT: "+ Create New" from dropdowns
 // Patches apCMSwitchLevel to refresh dropdowns after adding new item
 // ─────────────────────────────────────────────────────────────────────
 
-const _origApCMLoadAll = typeof apCMLoadAll === 'function' ? apCMLoadAll : null;
+const _origApCMLoadAll = typeof window.apCMLoadAll === 'function' ? window.apCMLoadAll : null;
 
-async function apCMLoadAll() {
+async function _cmPatchedApCMLoadAll() {
   // Call original load
   if (_origApCMLoadAll) await _origApCMLoadAll();
 
@@ -907,6 +910,7 @@ async function apCMLoadAll() {
     if (dCurrent) dCat.value = dCurrent;
   }
 }
+window.apCMLoadAll = _cmPatchedApCMLoadAll;
 
 // ─────────────────────────────────────────────────────────────────────
 // SECTION 16 — FORM LABEL UPDATES
