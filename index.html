@@ -32219,7 +32219,15 @@ function heroApplySettings(s) {
     subEl.classList.remove('hero-cursor');
     if(window._heroTypingTimer) clearTimeout(window._heroTypingTimer);
     const _liveStudentCount = (typeof window.getAutoStudentCount === 'function') ? window.getAutoStudentCount() : 157;
-    const phrases = (g('subtitle_phrases') || '').split('|').map(p => p.trim()).filter(Boolean)
+    const _rawPhrases = g('subtitle_phrases') || '';
+      let phrases;
+      try {
+        const _parsed = JSON.parse(_rawPhrases);
+        phrases = Array.isArray(_parsed) ? _parsed : [_rawPhrases];
+      } catch(_) {
+        phrases = _rawPhrases.split('|');
+      }
+      phrases = phrases.map(p => String(p).trim()).filter(Boolean)
       .map(p => p.replace(/\d[\d,]*\+?\s*students/gi, _liveStudentCount + '+ students'));
     if(phrases.length && g('enable_typing_effect')) {
       window._startTypedFallback(phrases);
