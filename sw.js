@@ -37,7 +37,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 const CACHE_NAME   = 'studyria-v13';           // ← bumped: fixed icon paths
-const SW_BUILD     = '2026.06.27-r3-icon-path-fix';
+const SW_BUILD     = '2026.07.02-r3-icon-path-fix';
 const OFFLINE_PAGE = '/offline.html';
 
 const WHATS_NEW = '🔧 Icon path fix: all PWA icons now served from root. No more 404s in Chrome DevTools Manifest panel.';
