@@ -1,19 +1,27 @@
 {
-  "name": "Studyria – India's #1 PDF Study Platform",
+  "name": "Studyria – Assam's #1 PDF Study Platform",
   "short_name": "Studyria",
-  "description": "Free & premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC & all Assam exams. Career Hub, job alerts & scholarships — all in one app.",
+  "description": "Free & premium PDF study materials for ADRE, APSC, Assam Police, Assam TET & all Assam state exams. Career Hub, job alerts & scholarships — all in one app.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
   "orientation": "portrait-primary",
   "background_color": "#080c14",
   "theme_color": "#3d8ef8",
   "lang": "en-IN",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "categories": ["education", "books", "productivity"],
+  "categories": [
+    "education",
+    "books",
+    "productivity"
+  ],
   "iarc_rating_id": "",
   "related_applications": [],
   "icons": [
@@ -91,7 +99,7 @@
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "PDF Library – JEE, NEET, UPSC, ADRE, APSC study PDFs"
+      "label": "PDF Library – ADRE, APSC, Assam Police & State Exam study PDFs"
     },
     {
       "src": "screenshots/career.png",
@@ -107,21 +115,39 @@
       "short_name": "Library",
       "description": "Open the full PDF study material library",
       "url": "/#library",
-      "icons": [{ "src": "icon-96.png", "sizes": "96x96", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Career Hub & Jobs",
       "short_name": "Jobs",
       "description": "Assam job alerts, scholarships and exam results",
       "url": "/#career-hub",
-      "icons": [{ "src": "icon-96.png", "sizes": "96x96", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "My Dashboard",
       "short_name": "My PDFs",
       "description": "View your purchased and saved PDFs",
       "url": "/#dashboard",
-      "icons": [{ "src": "icon-96.png", "sizes": "96x96", "type": "image/png" }]
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "share_target": {
