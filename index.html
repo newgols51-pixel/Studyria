@@ -10393,6 +10393,22 @@ body.light .ottlib-ach { background: rgba(255,255,255,0.7); }
 
   <div class="ottlib-cats" id="ottlibCatPills"></div>
 
+  <section class="ottlib-section" id="ottlibCatCardsSection">
+    <div class="ottlib-section-head">
+      <div class="ottlib-section-label">
+        <span class="ottlib-section-dot" style="background:#3d8ef8;box-shadow:0 0 8px #3d8ef8"></span>
+        <span class="ottlib-section-text">📚 Browse Categories</span>
+        <span class="ottlib-section-badge" style="background:rgba(61,142,248,0.12);color:#8fb8f7;border:1px solid rgba(61,142,248,0.3)">Swipe →</span>
+      </div>
+      <button class="ottlib-see-all" onclick="setLibCatFilter('All')">Show All →</button>
+    </div>
+    <div class="ottlib-track-outer">
+      <div class="ottlib-track" id="ottlibCatCardsTrack"></div>
+    </div>
+  </section>
+
+  <div class="ottlib-divider"></div>
+
   <section class="ottlib-section" id="ottlibContinueSection">
     <div class="ottlib-section-head">
       <div class="ottlib-section-label">
@@ -10757,6 +10773,46 @@ function ottlibRenderShelves() {
   }
 }
 
+// ── OTT-style horizontal category cards (Browse Categories row) ───
+// Live categories from Supabase (window._dbCategories), all enabled ones,
+// sorted by sort_order. Reuses the same .ott-card visuals as the Home
+// Featured Categories row for a consistent look. Clicking a card filters
+// the Library grid by that category (via the existing setLibCatFilter)
+// and smooth-scrolls down to the results grid.
+function ottlibRenderCatCards() {
+  const track = document.getElementById('ottlibCatCardsTrack');
+  const section = document.getElementById('ottlibCatCardsSection');
+  if (!track) return;
+  const cats = (window._dbCategories || [])
+    .filter(c => c.enabled !== false)
+    .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  if (!cats.length) { if (section) section.style.display = 'none'; return; }
+  if (section) section.style.display = '';
+  const pdfs = window.PDFS || [];
+  track.innerHTML = cats.map(c => {
+    const count = pdfs.filter(p => p.category === c.name || p.category_id === c.id).length;
+    const bg = c.banner_url || c.thumbnail_url;
+    const color = (c.color && c.color.startsWith('#')) ? c.color : '#3d8ef8';
+    const active = libCat === c.name;
+    return `
+    <div class="ott-card${active ? ' continue-card' : ''}" style="width:132px;flex:0 0 132px;background:${bg ? `url('${bg}') center/cover` : `linear-gradient(160deg, ${color}33, ${color}11)`}${active ? `;outline:2px solid ${color}` : ''}" onclick="ottlibGoToCategory('${(c.name || '').replace(/'/g, "\\'")}')">
+      <div style="height:104px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;background:rgba(0,0,0,0.15)">${bg ? '' : (c.icon || '📘')}</div>
+      <div class="ott-card-body" style="padding:10px 12px">
+        <div class="ott-card-title" style="font-size:.78rem;white-space:normal;line-height:1.25;min-height:2em">${c.name}</div>
+        <div style="font-size:.66rem;color:var(--text2);margin-top:3px">${count} PDF${count === 1 ? '' : 's'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Category card click → filter Library grid + smooth-scroll to results
+function ottlibGoToCategory(name) {
+  setLibCatFilter(name);
+  ottlibRenderCatCards(); // refresh active outline
+  const grid = document.getElementById('libGrid');
+  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // ── Category pills ─────────────────────────────────────────────────
 function ottlibRenderCats() {
   const el = document.getElementById('ottlibCatPills');
@@ -10837,6 +10893,7 @@ function renderLibHeroStats() {
 // ── Main render (called by navigate → renderLibrary) ──────────────
 function renderLibrary() {
   ottlibRenderCats();
+  if (typeof ottlibRenderCatCards === 'function') ottlibRenderCatCards();
   renderLibGrid();
   renderLibHeroStats();
   ottlibRenderShelves();
@@ -17880,6 +17937,7 @@ function renderLibrary() {
     ottlibRenderAchievements();
     ottlibRenderStreakBanner();
   }
+  if (typeof ottlibRenderCatCards === 'function') ottlibRenderCatCards();
   // Also update category pills via old system
   const filtersEl = document.getElementById('libFilters');
   if (filtersEl) filtersEl.innerHTML = '';
@@ -24231,6 +24289,7 @@ async function loadCategoriesFromDB() {
 
     console.log('✅ Categories loaded from DB:', window._dbCategories.length, 'cats,', window._dbSubcategories.length, 'subcats');
     if (typeof ottRenderFeaturedCategories === 'function') ottRenderFeaturedCategories();
+    if (typeof ottlibRenderCatCards === 'function' && document.getElementById('page-library') && document.getElementById('page-library').classList.contains('active')) ottlibRenderCatCards();
   } catch(e) {
     console.warn('loadCategoriesFromDB error:', e);
   }
