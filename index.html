@@ -4874,7 +4874,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     }
   } };
 </script>
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com" defer></script>
 
 <!-- ══════════════════════════════════════════════════════════════
      JSON-LD STRUCTURED DATA
@@ -22625,7 +22625,7 @@ async function renderAdminLibraryManager(main) {
                 <tr style="border-top:1px solid rgba(255,255,255,0.05);transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">
                   <td style="padding:8px 12px">
                     <div style="width:32px;height:42px;border-radius:5px;overflow:hidden;background:rgba(61,142,248,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem">
-                      ${p.cover_image_url ? `<img src="${p.cover_image_url}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='📄'" loading="lazy" decoding="async">` : '📄'}
+                      ${p.cover_image_url ? `<img src="${p.cover_image_url}" alt="${(p.title || 'PDF cover').replace(/"/g,'&quot;')}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='📄'" loading="lazy" decoding="async">` : '📄'}
                     </div>
                   </td>
                   <td style="padding:8px 12px;max-width:200px">
@@ -24258,7 +24258,7 @@ async function renderAdminPDFs(main) {
 function adminPDFRow(p, i) {
   const price = p.price ?? 0;
   const coverHTML = p.cover_url
-    ? `<img src="${p.cover_url}" style="width:36px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--glass-border)"  loading="lazy" decoding="async" />`
+    ? `<img src="${p.cover_url}" alt="${(p.title || 'PDF cover').replace(/"/g,'&quot;')}" style="width:36px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--glass-border)"  loading="lazy" decoding="async" />`
     : `<div style="width:36px;height:48px;border-radius:4px;background:linear-gradient(135deg,${p.coverFrom||'#1d4ed8'},${p.coverTo||'#3d8ef8'});display:flex;align-items:center;justify-content:center">${adminIcon('file',16)}</div>`;
   return `<tr>
     <td style="font-size:.75rem;color:var(--text2)">${i+1}</td>
@@ -25556,7 +25556,7 @@ function sbpCardInner(item, st, col, thumb, sel) {
       </div>
       <!-- Thumbnail -->
       <div style="width:52px;height:70px;border-radius:6px;overflow:hidden;background:rgba(61,142,248,0.1);flex-shrink:0;border:1px solid var(--glass-border);position:relative;cursor:pointer" onclick="sbpTriggerCoverPick('${item.id}')">
-        ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async"/>` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:1.3rem">📄</div>'}
+        ${thumb ? `<img src="${thumb}" alt="${(item.title || 'PDF cover').replace(/"/g,'&quot;')}" style="width:100%;height:100%;object-fit:cover" loading="lazy" decoding="async"/>` : '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:1.3rem">📄</div>'}
         <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0" title="Change cover">🖼️</div>
         <input type="file" accept="image/*" style="display:none" id="sbpCoverPick_${item.id}" onchange="sbpSetCover('${item.id}',this.files[0])"/>
       </div>
@@ -25645,7 +25645,7 @@ function sbpOpenEditor(id) {
       <div class="ap-label" style="margin-bottom:6px">Cover Image *</div>
       <div style="border:2px dashed ${item.coverFile||item.coverThumb||item.coverUrl?'var(--success)':'var(--glass-border)'};border-radius:8px;padding:12px;text-align:center;cursor:pointer;position:relative;background:rgba(255,255,255,0.02)" onclick="document.getElementById('sbpEditCover').click()">
         <input type="file" id="sbpEditCover" accept="image/*" style="display:none" onchange="sbpEditorSetCover(this)"/>
-        ${item.coverThumb||item.coverUrl ? `<img src="${item.coverThumb||item.coverUrl}" style="max-height:80px;border-radius:6px;max-width:100%"/>
+        ${item.coverThumb||item.coverUrl ? `<img src="${item.coverThumb||item.coverUrl}" alt="${(item.title || 'PDF cover').replace(/"/g,'&quot;')}" style="max-height:80px;border-radius:6px;max-width:100%"/>
         <div style="font-size:.7rem;color:var(--success);margin-top:4px">✅ Cover ready · Click to change</div>` :
         '<div style="font-size:1.5rem">🖼️</div><div style="font-size:.75rem;color:var(--text2)">Click to upload cover</div>'}
       </div>
@@ -29866,7 +29866,7 @@ CREATE POLICY "admin_select" ON broken_pdf_reports FOR SELECT USING (true);</pre
         <div style="font-size:.72rem;color:var(--text2);margin-top:4px">Paste a direct image URL (Supabase Storage, Cloudinary, etc.). Leave blank to use default gradient.</div>
       </div>
       <div id="hmHeroBannerPreview" style="margin-top:10px;${s('hero_image') ? '' : 'display:none'}">
-        <img src="${s('hero_image','')}" style="max-height:120px;border-radius:10px;border:1px solid var(--glass-border);object-fit:cover" onerror="this.style.display='none'" loading="lazy" decoding="async" />
+        <img src="${s('hero_image','')}" alt="Homepage hero banner preview" style="max-height:120px;border-radius:10px;border:1px solid var(--glass-border);object-fit:cover" onerror="this.style.display='none'" loading="lazy" decoding="async" />
       </div>
       <div class="admin-toggle-row" style="margin-top:12px">
         <div><div style="font-size:.85rem;font-weight:600">Enable Hero Section</div><div class="text-muted text-xs">Show/hide the hero banner on homepage</div></div>
@@ -35326,12 +35326,12 @@ if (_origTrackReading) {
 })();
 </script>
 
-<script src="website-customization.js"></script>
-<script src="career-hub.js"></script>
-<script src="career-hub-poster-engine.js"></script>
-<script src="pipedream.js"></script>
-<script src="pdf-list.js"></script>
-<script src="main.js"></script>
+<script src="website-customization.js" defer></script>
+<script src="career-hub.js" defer></script>
+<script src="career-hub-poster-engine.js" defer></script>
+<script src="pipedream.js" defer></script>
+<script src="pdf-list.js" defer></script>
+<script src="main.js" defer></script>
 
 <div id="purchaseHistoryModal" onclick="if(event.target===this)closePurchaseHistory()">
   <div class="ph-modal-box">
@@ -37608,7 +37608,7 @@ async function renderOTTHomeLayoutManager(main) {
       ${pdfs.slice(0,50).map(p => `
         <label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
           <input type="checkbox" class="ott-featured-cb" value="${p.id}" ${savedFeaturedIds.includes(String(p.id))||savedFeaturedIds.includes(p.id)?'checked':''} style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0">
-          ${p.cover_url?`<img src="${p.cover_url}" style="width:28px;height:28px;object-fit:cover;border-radius:5px;flex-shrink:0" onerror="this.style.display='none'" loading="lazy" decoding="async">`:''}
+          ${p.cover_url?`<img src="${p.cover_url}" alt="${(p.title || 'PDF cover').replace(/"/g,'&quot;')}" style="width:28px;height:28px;object-fit:cover;border-radius:5px;flex-shrink:0" onerror="this.style.display='none'" loading="lazy" decoding="async">`:''}
           <span style="font-size:.82rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${p.title||'—'}</span>
           ${p.free?'<span style="font-size:.6rem;background:rgba(16,217,142,.15);color:#10d98e;border-radius:5px;padding:1px 6px;flex-shrink:0">FREE</span>':
             p.price?`<span style="font-size:.6rem;background:rgba(61,142,248,.1);color:var(--accent);border-radius:5px;padding:1px 6px;flex-shrink:0">₹${p.price}</span>`:''}
