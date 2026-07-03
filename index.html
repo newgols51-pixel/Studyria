@@ -5952,20 +5952,14 @@ function studyriaApp() {
     </div>
   </section>
 
-  <section class="ott-row-section" id="ottFeaturedCatSection">
-    <div class="container">
-      <div class="ott-section-head">
-        <div class="ott-section-label">
-          <span class="ott-label-dot" style="background:#3d8ef8"></span>
-          <span class="ott-label-text">📚 Featured Categories</span>
-        </div>
-        <button class="ott-see-all" onclick="navigate('library')">See All →</button>
-      </div>
-    </div>
-    <div class="ott-row-outer">
-      <div class="ott-row-track" id="ottFeaturedCatTrack"></div>
-    </div>
-  </section>
+  <!-- ── Dynamic per-category OTT rows ─────────────────────────────
+       One horizontal slider per category that actually has published
+       PDFs (empty categories are hidden entirely). Populated by
+       ottRenderCategoryRows() — see JS below. Uses the exact same
+       .ott-row-section / .ott-row-outer / .ott-row-track markup and
+       ottCardHTML() card component as Trending/Popular/New/Recent
+       above, so it's visually identical to the existing rows. -->
+  <div id="ottCategoryRowsContainer"></div>
 
   </div>
 
@@ -8686,39 +8680,80 @@ function studyriaApp() {
   // loadCategoriesFromDB), shows only featured + enabled ones, sorted by
   // sort_order, with a live PDF count computed from window.PDFS. Safe to
   // call before categories have loaded — it just no-ops until they have.
-  window.ottRenderFeaturedCategories = function() {
-    const track = document.getElementById('ottFeaturedCatTrack');
-    const section = document.getElementById('ottFeaturedCatSection');
-    if (!track) return;
-    const cats = (window._dbCategories || [])
-      .filter(c => c.featured && c.enabled !== false)
-      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-    if (!cats.length) { if (section) section.style.display = 'none'; return; }
-    if (section) section.style.display = '';
-    const pdfs = window.PDFS || [];
-    track.innerHTML = cats.map(c => {
-      const count = pdfs.filter(p => p.category === c.name || p.category_id === c.id).length;
-      const bg = c.banner_url || c.thumbnail_url;
-      const color = (c.color && c.color.startsWith('#')) ? c.color : '#3d8ef8';
-      return `
-      <div class="ott-card" style="width:132px;flex:0 0 132px;background:${bg ? `url('${bg}') center/cover` : `linear-gradient(160deg, ${color}33, ${color}11)`}" onclick="ottGoToCategory('${(c.name || '').replace(/'/g, "\\'")}')">
-        <div style="height:104px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;background:rgba(0,0,0,0.15)">${bg ? '' : (c.icon || '📘')}</div>
-        <div class="ott-card-body" style="padding:10px 12px">
-          <div class="ott-card-title" style="font-size:.78rem;white-space:normal;line-height:1.25;min-height:2em">${c.name}</div>
-          <div style="font-size:.66rem;color:var(--text2);margin-top:3px">${count} PDF${count === 1 ? '' : 's'}</div>
+  // Returns the PDFs that belong to a given category — category_id is
+  // the primary/authoritative match (a PDF's category_id already points
+  // at the top-level category regardless of which subcategory it was
+  // filed under, so subcategories are automatically included for free).
+  // Falls back to matching the plain-text `category` name for any older
+  // rows that predate category_id. Published-only, drafts/deleted/
+  // archived are excluded (defensive — window.PDFS is already
+  // published-only per pdf-list.js, this is just belt-and-braces).
+  function ottPdfsForCategory(pdfs, cat) {
+    return pdfs.filter(p => {
+      if (!p || !p.title) return false;
+      if (p.status === 'draft' || p.status === 'deleted' || p.status === 'archived') return false;
+      if (p.category_id != null && cat.id != null) return String(p.category_id) === String(cat.id);
+      return p.category === cat.name;
+    });
+  }
+
+  // Build one full OTT row (exact same markup as Trending/Popular/etc.)
+  // for a single category, pre-filled with its matching PDF cards.
+  function ottCategoryRowHTML(cat, pdfsInCat) {
+    const color = (cat.color && cat.color.startsWith('#')) ? cat.color : '#3d8ef8';
+    const sorted = [...pdfsInCat].sort((a, b) =>
+      (Number(b.download_count || b.sales || 0)) - (Number(a.download_count || a.sales || 0)));
+    const cards = sorted.slice(0, 15).map(p => ottCardHTML(p)).join('');
+    const safeName = (cat.name || '').replace(/'/g, "\\'");
+    return `
+    <section class="ott-row-section" id="ottCatRow_${cat.id}">
+      <div class="container">
+        <div class="ott-section-head">
+          <div class="ott-section-label">
+            <span class="ott-label-dot" style="background:${color}"></span>
+            <span class="ott-label-text">${cat.icon || '📚'} ${cat.name}</span>
+            <span class="ott-label-badge" style="background:${color}26;color:${color};border-color:${color}59">${pdfsInCat.length} PDF${pdfsInCat.length === 1 ? '' : 's'}</span>
+          </div>
+          <button class="ott-see-all" onclick="ottSeeAllCategory('${safeName}')">See All →</button>
         </div>
-      </div>`;
-    }).join('');
+      </div>
+      <div class="ott-row-outer">
+        <div class="ott-row-track">${cards}</div>
+      </div>
+    </section>`;
+  }
+
+  // ── Dynamic per-category rows (replaces the old Featured Category
+  // card carousel) — one horizontal PDF slider per category that has
+  // at least one published PDF; categories with zero PDFs are skipped
+  // entirely (never shown, never show "0 PDFs"). Fully automatic: pulls
+  // live categories from Supabase (window._dbCategories, loaded by
+  // loadCategoriesFromDB) and live PDFs from window.PDFS — no manual
+  // assignment, no hardcoded lists, no caching to bust.
+  window.ottRenderFeaturedCategories = function() {
+    const container = document.getElementById('ottCategoryRowsContainer');
+    if (!container) return;
+    const cats = (window._dbCategories || [])
+      .filter(c => c.enabled !== false)
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+    const pdfs = window.PDFS || [];
+    const rows = cats
+      .map(c => ({ cat: c, pdfsInCat: ottPdfsForCategory(pdfs, c) }))
+      .filter(r => r.pdfsInCat.length > 0)
+      .map(r => ottCategoryRowHTML(r.cat, r.pdfsInCat));
+    container.innerHTML = rows.join('');
   };
 
-  // Category card click → filter the Library page by this category name.
-  // (Dedicated category detail pages are next on the roadmap; for now this
-  // reuses the existing Library category filter so it's instantly useful.)
-  window.ottGoToCategory = function(name) {
-    if (typeof libCat !== 'undefined') libCat = name;
-    else window.libCat = name;
+  // "See All →" on a category row → jump to Library pre-filtered to
+  // that category (Library applies the filter itself once its own
+  // render cycle finishes).
+  window.ottSeeAllCategory = function(name) {
     navigate('library');
+    setTimeout(() => { if (typeof setLibCatFilter === 'function') setLibCatFilter(name); }, 350);
   };
+
+  // Legacy alias kept for any old onclick= references still around.
+  window.ottGoToCategory = function(name) { window.ottSeeAllCategory(name); };
 
   function ottGetAIReco(pdfs, userHistory) {
     // Simple score: combine downloads + recency + category match
@@ -10393,21 +10428,13 @@ body.light .ottlib-ach { background: rgba(255,255,255,0.7); }
 
   <div class="ottlib-cats" id="ottlibCatPills"></div>
 
-  <section class="ottlib-section" id="ottlibCatCardsSection">
-    <div class="ottlib-section-head">
-      <div class="ottlib-section-label">
-        <span class="ottlib-section-dot" style="background:#3d8ef8;box-shadow:0 0 8px #3d8ef8"></span>
-        <span class="ottlib-section-text">📚 Browse Categories</span>
-        <span class="ottlib-section-badge" style="background:rgba(61,142,248,0.12);color:#8fb8f7;border:1px solid rgba(61,142,248,0.3)">Swipe →</span>
-      </div>
-      <button class="ottlib-see-all" onclick="setLibCatFilter('All')">Show All →</button>
-    </div>
-    <div class="ottlib-track-outer">
-      <div class="ottlib-track" id="ottlibCatCardsTrack"></div>
-    </div>
-  </section>
-
-  <div class="ottlib-divider"></div>
+  <!-- ── Dynamic per-category OTT rows ─────────────────────────────
+       One horizontal PDF slider per category with published PDFs
+       (empty categories hidden entirely) — populated by
+       ottlibRenderCategoryRows(). Same .ottlib-section markup and
+       ottlibCardHTML() card component as Trending/Popular/New Arrivals
+       above, so it matches the existing Library rows exactly. -->
+  <div id="ottlibCategoryRowsContainer"></div>
 
   <section class="ottlib-section" id="ottlibContinueSection">
     <div class="ottlib-section-head">
@@ -10773,45 +10800,75 @@ function ottlibRenderShelves() {
   }
 }
 
-// ── OTT-style horizontal category cards (Browse Categories row) ───
-// Live categories from Supabase (window._dbCategories), all enabled ones,
-// sorted by sort_order. Reuses the same .ott-card visuals as the Home
-// Featured Categories row for a consistent look. Clicking a card filters
-// the Library grid by that category (via the existing setLibCatFilter)
-// and smooth-scrolls down to the results grid.
-function ottlibRenderCatCards() {
-  const track = document.getElementById('ottlibCatCardsTrack');
-  const section = document.getElementById('ottlibCatCardsSection');
-  if (!track) return;
+// ── Dynamic per-category OTT rows (Library page) ──────────────────
+// Replaces the old category-card carousel with one full horizontal PDF
+// slider per category — exact same .ottlib-section markup and
+// ottlibCardHTML() card component as Trending/Popular/New Arrivals, so
+// it's visually identical to the existing Library rows. Categories with
+// zero published PDFs are skipped entirely (no "0 PDFs" rows, ever).
+// Fully automatic: reads live window._dbCategories + window.PDFS, no
+// manual assignment, nothing hardcoded, nothing to cache-bust.
+
+// category_id is the primary/authoritative match — a PDF's category_id
+// already points at the top-level category regardless of which
+// subcategory it was filed under, so subcategories roll up for free.
+// Falls back to plain-text `category` name match for legacy rows.
+function ottlibPdfsForCategory(pdfs, cat) {
+  return pdfs.filter(p => {
+    if (!p || !p.title) return false;
+    if (p.status === 'draft' || p.status === 'deleted' || p.status === 'archived') return false;
+    if (p.category_id != null && cat.id != null) return String(p.category_id) === String(cat.id);
+    return p.category === cat.name;
+  });
+}
+
+function ottlibCategoryRowHTML(cat, pdfsInCat) {
+  const color = (cat.color && cat.color.startsWith('#')) ? cat.color : '#3d8ef8';
+  const sorted = [...pdfsInCat].sort((a, b) =>
+    (Number(b.download_count || b.sales || 0)) - (Number(a.download_count || a.sales || 0)));
+  const cards = sorted.slice(0, 15).map(p => ottlibCardHTML(p)).join('');
+  const safeName = (cat.name || '').replace(/'/g, "\\'");
+  return `
+  <section class="ottlib-section" id="ottlibCatRow_${cat.id}">
+    <div class="ottlib-section-head">
+      <div class="ottlib-section-label">
+        <span class="ottlib-section-dot" style="background:${color};box-shadow:0 0 8px ${color}"></span>
+        <span class="ottlib-section-text">${cat.icon || '📚'} ${cat.name}</span>
+        <span class="ottlib-section-badge" style="background:${color}1f;color:${color};border:1px solid ${color}4d">${pdfsInCat.length} PDF${pdfsInCat.length === 1 ? '' : 's'}</span>
+      </div>
+      <button class="ottlib-see-all" onclick="ottlibSeeAllCategory('${safeName}')">See All →</button>
+    </div>
+    <div class="ottlib-track-outer">
+      <div class="ottlib-track">${cards}</div>
+    </div>
+  </section>
+  <div class="ottlib-divider"></div>`;
+}
+
+function ottlibRenderCategoryRows() {
+  const container = document.getElementById('ottlibCategoryRowsContainer');
+  if (!container) return;
   const cats = (window._dbCategories || [])
     .filter(c => c.enabled !== false)
     .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-  if (!cats.length) { if (section) section.style.display = 'none'; return; }
-  if (section) section.style.display = '';
   const pdfs = window.PDFS || [];
-  track.innerHTML = cats.map(c => {
-    const count = pdfs.filter(p => p.category === c.name || p.category_id === c.id).length;
-    const bg = c.banner_url || c.thumbnail_url;
-    const color = (c.color && c.color.startsWith('#')) ? c.color : '#3d8ef8';
-    const active = libCat === c.name;
-    return `
-    <div class="ott-card${active ? ' continue-card' : ''}" style="width:132px;flex:0 0 132px;background:${bg ? `url('${bg}') center/cover` : `linear-gradient(160deg, ${color}33, ${color}11)`}${active ? `;outline:2px solid ${color}` : ''}" onclick="ottlibGoToCategory('${(c.name || '').replace(/'/g, "\\'")}')">
-      <div style="height:104px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;background:rgba(0,0,0,0.15)">${bg ? '' : (c.icon || '📘')}</div>
-      <div class="ott-card-body" style="padding:10px 12px">
-        <div class="ott-card-title" style="font-size:.78rem;white-space:normal;line-height:1.25;min-height:2em">${c.name}</div>
-        <div style="font-size:.66rem;color:var(--text2);margin-top:3px">${count} PDF${count === 1 ? '' : 's'}</div>
-      </div>
-    </div>`;
-  }).join('');
+  const rows = cats
+    .map(c => ({ cat: c, pdfsInCat: ottlibPdfsForCategory(pdfs, c) }))
+    .filter(r => r.pdfsInCat.length > 0)
+    .map(r => ottlibCategoryRowHTML(r.cat, r.pdfsInCat));
+  container.innerHTML = rows.join('');
 }
 
-// Category card click → filter Library grid + smooth-scroll to results
-function ottlibGoToCategory(name) {
+// Category row's "See All →" → filter the Library grid + smooth-scroll
+// down to the results.
+function ottlibSeeAllCategory(name) {
   setLibCatFilter(name);
-  ottlibRenderCatCards(); // refresh active outline
   const grid = document.getElementById('libGrid');
   if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// Legacy alias kept for any old onclick= references still around.
+function ottlibGoToCategory(name) { ottlibSeeAllCategory(name); }
 
 // ── Category pills ─────────────────────────────────────────────────
 function ottlibRenderCats() {
@@ -10893,7 +10950,7 @@ function renderLibHeroStats() {
 // ── Main render (called by navigate → renderLibrary) ──────────────
 function renderLibrary() {
   ottlibRenderCats();
-  if (typeof ottlibRenderCatCards === 'function') ottlibRenderCatCards();
+  if (typeof ottlibRenderCategoryRows === 'function') ottlibRenderCategoryRows();
   renderLibGrid();
   renderLibHeroStats();
   ottlibRenderShelves();
@@ -17937,7 +17994,7 @@ function renderLibrary() {
     ottlibRenderAchievements();
     ottlibRenderStreakBanner();
   }
-  if (typeof ottlibRenderCatCards === 'function') ottlibRenderCatCards();
+  if (typeof ottlibRenderCategoryRows === 'function') ottlibRenderCategoryRows();
   // Also update category pills via old system
   const filtersEl = document.getElementById('libFilters');
   if (filtersEl) filtersEl.innerHTML = '';
@@ -24289,7 +24346,7 @@ async function loadCategoriesFromDB() {
 
     console.log('✅ Categories loaded from DB:', window._dbCategories.length, 'cats,', window._dbSubcategories.length, 'subcats');
     if (typeof ottRenderFeaturedCategories === 'function') ottRenderFeaturedCategories();
-    if (typeof ottlibRenderCatCards === 'function' && document.getElementById('page-library') && document.getElementById('page-library').classList.contains('active')) ottlibRenderCatCards();
+    if (typeof ottlibRenderCategoryRows === 'function' && document.getElementById('page-library') && document.getElementById('page-library').classList.contains('active')) ottlibRenderCategoryRows();
   } catch(e) {
     console.warn('loadCategoriesFromDB error:', e);
   }
