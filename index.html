@@ -17037,6 +17037,21 @@ const _SPA_PUBLIC_PAGES = new Set([
   'privacy','terms','refund','about','contact','blog'
 ]);
 
+// Force-resets any leftover native browser pinch-zoom. Needed because a
+// changed viewport <meta> only takes effect on a genuine page reload — SPA
+// navigation to a new "page" doesn't reload the document, so if the user
+// (or an older cached build without user-scalable=no) ever pinch-zoomed
+// the tab, that zoom silently carries over into every page viewed after,
+// making a perfectly fine layout look zoomed/cropped. Toggling the meta
+// tag's content forces mobile Chrome/Safari to snap the zoom back to 1.
+function _pdpResetPageZoom() {
+  const vp = document.querySelector('meta[name="viewport"]');
+  if (!vp) return;
+  const base = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+  vp.setAttribute('content', base + ', shrink-to-fit=yes');
+  requestAnimationFrame(() => vp.setAttribute('content', base));
+}
+
 async function navigate(page) {
   window._realNavigate = navigate; // expose for stub flush
 
@@ -17045,6 +17060,7 @@ async function navigate(page) {
   // button), force it closed so its scroll-lock can never bleed into
   // the page we're about to show.
   if (typeof _pdpClearZoomLock === 'function') _pdpClearZoomLock();
+  _pdpResetPageZoom();
 
   // ── Already signed in? Don't show the login/register screen ─────
   if ((page === 'login' || page === 'register') && window.currentUser) {
@@ -17130,6 +17146,13 @@ window.addEventListener('popstate', function(e) {
   history.pushState = function() {};
   navigate(page).finally ? navigate(page).finally(() => { history.pushState = origPush; })
                           : (navigate(page), history.pushState = origPush);
+});
+
+// Also reset zoom when the page is restored from bfcache (Safari/Chrome
+// back-forward cache) — this can bring back a stale zoomed state without
+// running any of the normal navigate()/init JS.
+window.addEventListener('pageshow', function(e) {
+  if (typeof _pdpResetPageZoom === 'function') _pdpResetPageZoom();
 });
 
 // ── On initial load: honour hash URL for deep-linking ────────────
