@@ -17044,12 +17044,21 @@ const _SPA_PUBLIC_PAGES = new Set([
 // the tab, that zoom silently carries over into every page viewed after,
 // making a perfectly fine layout look zoomed/cropped. Toggling the meta
 // tag's content forces mobile Chrome/Safari to snap the zoom back to 1.
+//
+// IMPORTANT: only do this when the page is actually zoomed in (checked via
+// visualViewport.scale). Toggling the meta tag unconditionally on every
+// navigation — even when nothing was zoomed — forces a reflow/rescale on
+// every single page change, which shows up as a visible flash/jump. This
+// check keeps it a true no-op on the (vast majority of) normal navigations.
 function _pdpResetPageZoom() {
-  const vp = document.querySelector('meta[name="viewport"]');
-  if (!vp) return;
-  const base = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-  vp.setAttribute('content', base + ', shrink-to-fit=yes');
-  requestAnimationFrame(() => vp.setAttribute('content', base));
+  const vv = window.visualViewport;
+  if (vv && vv.scale && vv.scale > 1.02) {
+    const vp = document.querySelector('meta[name="viewport"]');
+    if (!vp) return;
+    const base = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    vp.setAttribute('content', base + ', shrink-to-fit=yes');
+    requestAnimationFrame(() => vp.setAttribute('content', base));
+  }
 }
 
 async function navigate(page) {
