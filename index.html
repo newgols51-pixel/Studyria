@@ -17040,6 +17040,12 @@ const _SPA_PUBLIC_PAGES = new Set([
 async function navigate(page) {
   window._realNavigate = navigate; // expose for stub flush
 
+  // Safety net: if a fullscreen cover preview was left open from a
+  // previous page (e.g. user hit back/bottom-nav instead of the close
+  // button), force it closed so its scroll-lock can never bleed into
+  // the page we're about to show.
+  if (typeof _pdpClearZoomLock === 'function') _pdpClearZoomLock();
+
   // ── Already signed in? Don't show the login/register screen ─────
   if ((page === 'login' || page === 'register') && window.currentUser) {
     page = 'dashboard';
@@ -19033,14 +19039,26 @@ function pdpSharePDF() {
   }
 }
 
+// Force-clears the fullscreen cover preview and its scroll lock, no matter
+// how it was left open. Called defensively from pdpZoomCover() itself and
+// from navigate() below, so a stray overlay can never survive a page change
+// and corrupt the layout of whatever page the user goes to next.
+function _pdpClearZoomLock() {
+  document.querySelectorAll('.pdp-zoom-overlay').forEach(el => el.remove());
+  document.body.classList.remove('pdp-zoom-lock');
+  document.body.style.top = ''; // clears any leftover value from older cached builds
+}
+
 function pdpZoomCover() {
   const pdf = selectedPdf;
   if (!pdf || !pdf.coverImage) { showToast('No cover image to zoom.', 'info'); return; }
 
-  // Lock background scroll (works across mobile browsers incl. iOS Safari/PWA)
-  const scrollY = window.scrollY || window.pageYOffset || 0;
+  // Defensive: clear any stray lock/overlay left behind by a previous
+  // session that didn't close cleanly (e.g. SPA navigation away from
+  // the page while the preview was still open).
+  _pdpClearZoomLock();
+
   document.body.classList.add('pdp-zoom-lock');
-  document.body.style.top = `-${scrollY}px`;
 
   const overlay = document.createElement('div');
   overlay.className = 'pdp-zoom-overlay';
@@ -19065,8 +19083,6 @@ function pdpZoomCover() {
     overlay.classList.add('pdp-zoom-closing');
     setTimeout(() => overlay.remove(), 150);
     document.body.classList.remove('pdp-zoom-lock');
-    document.body.style.top = '';
-    window.scrollTo(0, scrollY);
   }
   function onKeyDown(e) { if (e.key === 'Escape') closeZoom(); }
   document.addEventListener('keydown', onKeyDown);
@@ -38469,16 +38485,18 @@ body.light .pdp-sticky-bar { background: rgba(240,244,251,0.97); border-color: r
 @media(min-width:1101px) { .pdp-sticky-bar { display: none !important; } }
 
 /* ── Zoom Overlay ───────────────────────────────────────────────── */
-/* Locks background scroll while the fullscreen preview is open. Using
-   position:fixed on body (with the saved scrollY restored on close) is
-   the most reliable cross-browser way to stop iOS Safari / PWA rubber-
-   band scrolling from bleeding through the overlay. */
-body.pdp-zoom-lock {
-  position: fixed;
-  left: 0; right: 0;
-  width: 100%;
-  overflow: hidden;
-}
+/* Locks background scroll while the fullscreen preview is open.
+   Deliberately just overflow:hidden — NOT position:fixed. A fixed-position
+   scroll-lock needs an inline top offset that must be perfectly cleaned up
+   on close, and if the overlay is ever dismissed by something other than
+   its own close button (SPA navigation, back button, bottom nav), that
+   offset can get stuck and corrupt the layout of every page after it.
+   overflow:hidden has no such cleanup dependency — worst case if cleanup
+   is ever missed is the page temporarily can't scroll, never a layout
+   shift or horizontal overflow. The overlay itself still blocks touch
+   scroll/rubber-band via touch-action:none + preventDefault in the pinch/
+   pan handlers below. */
+body.pdp-zoom-lock { overflow: hidden; }
 .pdp-zoom-overlay {
   position: fixed; inset: 0; z-index: 500;
   display: flex; align-items: center; justify-content: center;
