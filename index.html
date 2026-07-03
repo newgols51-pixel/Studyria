@@ -28818,45 +28818,254 @@ async function apmGetPDFs() {
 
 /* ─── 2. ADVANCED CATEGORY MANAGER ──────────────────────────── */
 function renderPCCCategoryManager(main) {
-  const cats = ['JEE / NEET','UPSC / IAS','Banking / SSC','Board Exams','Engineering','Management','Language'];
-  main.innerHTML = `
-  <div class="admin-section-title">📂 Advanced Category Manager</div>
-  <div class="admin-section-sub">Create, reorder, style and SEO-optimize your content categories.</div>
-  <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
-    <button class="btn btn-primary btn-sm" onclick="showToast('New category form — coming soon.','info')">➕ Create Category</button>
-    <button class="btn btn-secondary btn-sm" onclick="showToast('Drag-to-reorder enabled.','info')">↕ Sort Categories</button>
+  main.innerHTML = `<div class="admin-section-title">📂 Advanced Category Manager</div>
+  <div class="admin-section-sub">Create, reorder, style and manage your content categories — fully synced with Supabase.</div>
+  <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+    <button class="btn btn-primary btn-sm" onclick="pccmOpenForm(null)">➕ Create Category</button>
+    <input class="form-input" id="pccmSearch" placeholder="🔎 Search categories…" style="max-width:240px" oninput="pccmRenderTable()"/>
+    <span id="pccmCount" style="font-size:.75rem;color:var(--text2);margin-left:auto"></span>
   </div>
+  <div id="pccmFormWrap"></div>
   <div class="admin-table-card">
-    <div class="admin-table-header"><div style="font-size:.9rem;font-weight:700">All Categories</div></div>
+    <div class="admin-table-header"><div style="font-size:.9rem;font-weight:700">All Categories</div><div style="font-size:.7rem;color:var(--text2)">Drag rows to reorder</div></div>
     <div class="table-wrap"><table class="admin-table" style="width:100%">
-      <thead><tr><th>Name</th><th>Icon</th><th>Color</th><th>PDFs</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>
-        ${cats.map((c,i) => `<tr>
-          <td style="font-weight:600">${c}</td>
-          <td>📘</td>
-          <td><span style="display:inline-block;width:18px;height:18px;border-radius:4px;background:hsl(${i*40+180},65%,55%)"></span></td>
-          <td>—</td>
-          <td><span class="admin-nav-badge" style="background:rgba(16,217,142,.12);color:var(--success);border-color:rgba(16,217,142,.2)">Active</span></td>
-          <td style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="btn btn-ghost btn-sm" onclick="showToast('Edit category — coming soon.','info')">✏️ Edit</button>
-            <button class="btn btn-ghost btn-sm" onclick="showToast('Category hidden.','info')">🙈 Hide</button>
-            <button class="btn btn-danger btn-sm" onclick="showToast('Delete requires confirmation.','info')">🗑</button>
-          </td>
-        </tr>`).join('')}
-      </tbody>
+      <thead><tr><th></th><th>Name</th><th>Icon</th><th>Color</th><th>PDFs</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="pccmTableBody"><tr><td colspan="7" style="padding:24px;text-align:center;color:var(--text2)">Loading categories…</td></tr></tbody>
     </table></div>
-  </div>
-  <div class="mod-form-wrap" style="margin-top:16px">
-    <div style="font-weight:700;margin-bottom:14px">🎨 Category Appearance</div>
-    <div class="admin-form-grid">
-      <div class="form-group"><label class="form-label">Category Name</label><input class="form-input" placeholder="e.g. Engineering"/></div>
-      <div class="form-group"><label class="form-label">Slug</label><input class="form-input" placeholder="engineering"/></div>
-      <div class="form-group"><label class="form-label">Icon Emoji</label><input class="form-input" placeholder="📘" maxlength="4"/></div>
-      <div class="form-group"><label class="form-label">Accent Color</label><input class="form-input" type="color" value="#3d8ef8"/></div>
-    </div>
-    <div class="form-group" style="margin-top:8px"><label class="form-label">Meta Description (SEO)</label><textarea class="form-input" rows="2" placeholder="Best engineering study materials…"></textarea></div>
-    <button class="btn btn-primary btn-sm mt-4" onclick="showToast('Category saved!','success')">💾 Save Category</button>
   </div>`;
+  pccmLoad();
+}
+
+/* ── Category Manager: state + data ─────────────────────────────── */
+window._pccm = { categories: [], counts: {}, subcats: {}, editingId: null, dragId: null, bannerFile: null, thumbFile: null };
+
+async function pccmLoad() {
+  const sb = window.supabaseClient;
+  if (!sb) { showToast('Supabase not connected.', 'error'); return; }
+  try {
+    const [{ data: cats, error: cErr }, { data: pdfRows }, { data: subRows }] = await Promise.all([
+      sb.from('categories').select('*').order('sort_order', { ascending: true }).order('name'),
+      sb.from('pdfs').select('category_id'),
+      sb.from('subcategories').select('*').order('sort_order'),
+    ]);
+    if (cErr) throw cErr;
+    window._pccm.categories = cats || [];
+    const counts = {};
+    (pdfRows || []).forEach(p => { if (p.category_id != null) counts[p.category_id] = (counts[p.category_id] || 0) + 1; });
+    window._pccm.counts = counts;
+    const subMap = {};
+    (subRows || []).forEach(s => { (subMap[s.category_id] = subMap[s.category_id] || []).push(s); });
+    window._pccm.subcats = subMap;
+    pccmRenderTable();
+  } catch (e) {
+    const tb = document.getElementById('pccmTableBody');
+    if (tb) tb.innerHTML = `<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--danger)">${e.message}</td></tr>`;
+  }
+}
+
+function pccmRenderTable() {
+  const q = (document.getElementById('pccmSearch')?.value || '').toLowerCase();
+  const tb = document.getElementById('pccmTableBody');
+  const countEl = document.getElementById('pccmCount');
+  if (!tb) return;
+  const rows = window._pccm.categories.filter(c => !q || c.name.toLowerCase().includes(q));
+  if (countEl) countEl.textContent = `${rows.length} of ${window._pccm.categories.length} categories`;
+  tb.innerHTML = rows.map(c => {
+    const pdfCount = window._pccm.counts[c.id] || 0;
+    const subCount = (window._pccm.subcats[c.id] || []).length;
+    const enabled = c.enabled !== false;
+    return `<tr draggable="true" data-cat-id="${c.id}" ondragstart="pccmDragStart(event,${c.id})" ondragover="event.preventDefault()" ondrop="pccmDrop(event,${c.id})" style="${enabled ? '' : 'opacity:.5'}">
+      <td style="cursor:grab;color:var(--text2)">⠿</td>
+      <td style="font-weight:600">${c.name}${c.featured ? ' <span class="admin-nav-badge" style="background:rgba(61,142,248,.12);color:#3d8ef8;border-color:rgba(61,142,248,.2);margin-left:6px">★ Featured</span>' : ''}${subCount ? ` <span style="font-size:.68rem;color:var(--text2)">(${subCount} subcats)</span>` : ''}</td>
+      <td style="font-size:1.1rem">${c.icon || '📘'}</td>
+      <td><span style="display:inline-block;width:18px;height:18px;border-radius:4px;background:${c.color || '#3d8ef8'};border:1px solid rgba(255,255,255,.15)"></span></td>
+      <td>${pdfCount}</td>
+      <td><span class="admin-nav-badge" style="background:${enabled ? 'rgba(16,217,142,.12)' : 'rgba(255,255,255,.08)'};color:${enabled ? 'var(--success)' : 'var(--text2)'};border-color:${enabled ? 'rgba(16,217,142,.2)' : 'rgba(255,255,255,.1)'}">${enabled ? 'Active' : 'Hidden'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="pccmOpenForm(${c.id})">✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="pccmToggleEnabled(${c.id})">${enabled ? '🙈 Hide' : '👁 Show'}</button>
+        <button class="btn btn-ghost btn-sm" onclick="pccmOpenSubcats(${c.id})">📁 Subcats</button>
+        <button class="btn btn-danger btn-sm" onclick="pccmDelete(${c.id})">🗑</button>
+      </td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="7" style="padding:24px;text-align:center;color:var(--text2)">No categories match.</td></tr>`;
+}
+
+/* ── Drag & drop reorder ──────────────────────────────────────────── */
+function pccmDragStart(e, id) { window._pccm.dragId = id; e.dataTransfer.effectAllowed = 'move'; }
+async function pccmDrop(e, targetId) {
+  e.preventDefault();
+  const dragId = window._pccm.dragId;
+  if (dragId == null || dragId === targetId) return;
+  const cats = window._pccm.categories;
+  const fromIdx = cats.findIndex(c => c.id === dragId);
+  const toIdx = cats.findIndex(c => c.id === targetId);
+  if (fromIdx < 0 || toIdx < 0) return;
+  const [moved] = cats.splice(fromIdx, 1);
+  cats.splice(toIdx, 0, moved);
+  pccmRenderTable();
+  const sb = window.supabaseClient;
+  try {
+    await Promise.all(cats.map((c, i) => sb.from('categories').update({ sort_order: i }).eq('id', c.id)));
+    cats.forEach((c, i) => { c.sort_order = i; });
+    showToast('Order saved ✅', 'success');
+  } catch (err) { showToast('Reorder failed: ' + err.message, 'error'); }
+}
+
+/* ── Create / Edit form ───────────────────────────────────────────── */
+function pccmOpenForm(id) {
+  window._pccm.editingId = id;
+  window._pccm.bannerFile = null;
+  window._pccm.thumbFile = null;
+  const c = id ? window._pccm.categories.find(x => x.id === id) : null;
+  const wrap = document.getElementById('pccmFormWrap');
+  wrap.innerHTML = `<div class="mod-form-wrap" style="margin-bottom:16px">
+    <div style="font-weight:700;margin-bottom:14px">🎨 ${c ? 'Edit' : 'Create'} Category</div>
+    <div class="admin-form-grid">
+      <div class="form-group"><label class="form-label">Category Name</label><input class="form-input" id="pccmName" value="${c ? c.name.replace(/"/g, '&quot;') : ''}" placeholder="e.g. Engineering"/></div>
+      <div class="form-group"><label class="form-label">Slug</label><input class="form-input" id="pccmSlug" value="${c ? c.slug : ''}" placeholder="engineering"/></div>
+      <div class="form-group"><label class="form-label">Icon Emoji</label><input class="form-input" id="pccmIcon" value="${c ? (c.icon || '') : '📘'}" maxlength="4"/></div>
+      <div class="form-group"><label class="form-label">Accent Color</label><input class="form-input" id="pccmColor" type="color" value="${c && c.color && c.color.startsWith('#') ? c.color : '#3d8ef8'}"/></div>
+    </div>
+    <div class="form-group" style="margin-top:8px"><label class="form-label">Description</label><textarea class="form-input" id="pccmDesc" rows="2" placeholder="Best engineering study materials…">${c ? (c.description || '') : ''}</textarea></div>
+    <div class="admin-form-grid" style="margin-top:8px">
+      <div class="form-group"><label class="form-label">Banner Image ${c && c.banner_url ? '<span style="color:var(--success)">✓ uploaded</span>' : ''}</label><input class="form-input" type="file" accept="image/*" onchange="window._pccm.bannerFile=this.files[0]"/></div>
+      <div class="form-group"><label class="form-label">Thumbnail Image ${c && c.thumbnail_url ? '<span style="color:var(--success)">✓ uploaded</span>' : ''}</label><input class="form-input" type="file" accept="image/*" onchange="window._pccm.thumbFile=this.files[0]"/></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.8rem;cursor:pointer">
+      <input type="checkbox" id="pccmFeatured" ${c && c.featured ? 'checked' : ''}/> Show in homepage Featured Categories row
+    </label>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn btn-primary btn-sm" onclick="pccmSave()">💾 Save Category</button>
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('pccmFormWrap').innerHTML=''">Cancel</button>
+    </div>
+  </div>`;
+  document.getElementById('pccmName').addEventListener('input', function() {
+    if (!c) document.getElementById('pccmSlug').value = this.value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  });
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function pccmSave() {
+  const sb = window.supabaseClient;
+  if (!sb) { showToast('Supabase not connected.', 'error'); return; }
+  const name = document.getElementById('pccmName').value.trim();
+  const slug = document.getElementById('pccmSlug').value.trim().toLowerCase();
+  if (!name || !slug) { showToast('Name and slug are required.', 'error'); return; }
+  const id = window._pccm.editingId;
+  const dup = window._pccm.categories.find(x => x.slug === slug && x.id !== id);
+  if (dup) { showToast('That slug is already used by "' + dup.name + '".', 'error'); return; }
+  const payload = {
+    name, slug,
+    icon: document.getElementById('pccmIcon').value.trim() || '📘',
+    color: document.getElementById('pccmColor').value,
+    description: document.getElementById('pccmDesc').value.trim(),
+    featured: document.getElementById('pccmFeatured').checked,
+  };
+  try {
+    if (window._pccm.bannerFile) {
+      const f = window._pccm.bannerFile;
+      const path = `category-banners/${slug}-${Date.now()}.${(f.name.split('.').pop() || 'jpg')}`;
+      const { error: upErr } = await sb.storage.from('covers').upload(path, f, { upsert: true, contentType: f.type });
+      if (upErr) throw upErr;
+      payload.banner_url = sb.storage.from('covers').getPublicUrl(path).data.publicUrl;
+    }
+    if (window._pccm.thumbFile) {
+      const f = window._pccm.thumbFile;
+      const path = `category-thumbs/${slug}-${Date.now()}.${(f.name.split('.').pop() || 'jpg')}`;
+      const { error: upErr } = await sb.storage.from('covers').upload(path, f, { upsert: true, contentType: f.type });
+      if (upErr) throw upErr;
+      payload.thumbnail_url = sb.storage.from('covers').getPublicUrl(path).data.publicUrl;
+    }
+    if (id) {
+      const { error } = await sb.from('categories').update(payload).eq('id', id);
+      if (error) throw error;
+    } else {
+      payload.sort_order = window._pccm.categories.length;
+      const { error } = await sb.from('categories').insert(payload);
+      if (error) throw error;
+    }
+    showToast('Category saved ✅', 'success');
+    document.getElementById('pccmFormWrap').innerHTML = '';
+    await pccmLoad();
+  } catch (e) { showToast('Save failed: ' + e.message, 'error'); }
+}
+
+async function pccmToggleEnabled(id) {
+  const sb = window.supabaseClient;
+  const c = window._pccm.categories.find(x => x.id === id);
+  if (!c || !sb) return;
+  const newVal = !(c.enabled !== false);
+  try {
+    const { error } = await sb.from('categories').update({ enabled: newVal }).eq('id', id);
+    if (error) throw error;
+    c.enabled = newVal;
+    pccmRenderTable();
+  } catch (e) { showToast('Update failed: ' + e.message, 'error'); }
+}
+
+async function pccmDelete(id) {
+  const c = window._pccm.categories.find(x => x.id === id);
+  if (!c) return;
+  const count = window._pccm.counts[id] || 0;
+  if (count > 0) { showToast(`Can't delete "${c.name}" — ${count} PDF(s) still use it. Move them to another category first.`, 'error'); return; }
+  if (!confirm(`Delete category "${c.name}"? This cannot be undone.`)) return;
+  const sb = window.supabaseClient;
+  try {
+    await sb.from('subcategories').delete().eq('category_id', id);
+    const { error } = await sb.from('categories').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Category deleted.', 'success');
+    await pccmLoad();
+  } catch (e) { showToast('Delete failed: ' + e.message, 'error'); }
+}
+
+/* ── Subcategory management ───────────────────────────────────────── */
+function pccmOpenSubcats(catId) {
+  const c = window._pccm.categories.find(x => x.id === catId);
+  const subs = window._pccm.subcats[catId] || [];
+  const wrap = document.getElementById('pccmFormWrap');
+  wrap.innerHTML = `<div class="mod-form-wrap" style="margin-bottom:16px">
+    <div style="font-weight:700;margin-bottom:14px">📁 Subcategories — ${c ? c.name : ''}</div>
+    <div id="pccmSubList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+      ${subs.map(s => `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px">
+        <span style="flex:1;font-size:.82rem">${s.name}</span>
+        <button class="btn btn-danger btn-sm" onclick="pccmDeleteSubcat(${s.id},${catId})">🗑</button>
+      </div>`).join('') || '<div style="font-size:.78rem;color:var(--text2)">No subcategories yet.</div>'}
+    </div>
+    <div style="display:flex;gap:8px">
+      <input class="form-input" id="pccmNewSubName" placeholder="New subcategory name…" style="flex:1"/>
+      <button class="btn btn-primary btn-sm" onclick="pccmAddSubcat(${catId})">➕ Add</button>
+    </div>
+    <button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="document.getElementById('pccmFormWrap').innerHTML=''">Close</button>
+  </div>`;
+}
+
+async function pccmAddSubcat(catId) {
+  const input = document.getElementById('pccmNewSubName');
+  const name = input.value.trim();
+  if (!name) return;
+  const sb = window.supabaseClient;
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  try {
+    const sortOrder = (window._pccm.subcats[catId] || []).length + 1;
+    const { data, error } = await sb.from('subcategories').insert({ category_id: catId, name, slug, sort_order: sortOrder }).select().single();
+    if (error) throw error;
+    window._pccm.subcats[catId] = [...(window._pccm.subcats[catId] || []), data];
+    pccmOpenSubcats(catId);
+    pccmRenderTable();
+  } catch (e) { showToast('Add failed: ' + e.message, 'error'); }
+}
+
+async function pccmDeleteSubcat(id, catId) {
+  const sb = window.supabaseClient;
+  try {
+    const { error } = await sb.from('subcategories').delete().eq('id', id);
+    if (error) throw error;
+    window._pccm.subcats[catId] = (window._pccm.subcats[catId] || []).filter(s => s.id !== id);
+    pccmOpenSubcats(catId);
+    pccmRenderTable();
+  } catch (e) { showToast('Delete failed: ' + e.message, 'error'); }
 }
 
 /* ─── 3. HOMEPAGE MANAGER ────────────────────────────────────── */
