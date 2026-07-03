@@ -5952,6 +5952,21 @@ function studyriaApp() {
     </div>
   </section>
 
+  <section class="ott-row-section" id="ottFeaturedCatSection">
+    <div class="container">
+      <div class="ott-section-head">
+        <div class="ott-section-label">
+          <span class="ott-label-dot" style="background:#3d8ef8"></span>
+          <span class="ott-label-text">📚 Featured Categories</span>
+        </div>
+        <button class="ott-see-all" onclick="navigate('library')">See All →</button>
+      </div>
+    </div>
+    <div class="ott-row-outer">
+      <div class="ott-row-track" id="ottFeaturedCatTrack"></div>
+    </div>
+  </section>
+
   </div>
 
   <section class="pdl-ott-section" id="popularDownloadsSection">
@@ -8666,6 +8681,45 @@ function studyriaApp() {
   }
 
   // ── AI RECOMMENDATION ENGINE ─────────────────────────────────────
+  // ── Featured Categories row (Home) ──────────────────────────────
+  // Pulls live categories from Supabase (window._dbCategories, loaded by
+  // loadCategoriesFromDB), shows only featured + enabled ones, sorted by
+  // sort_order, with a live PDF count computed from window.PDFS. Safe to
+  // call before categories have loaded — it just no-ops until they have.
+  window.ottRenderFeaturedCategories = function() {
+    const track = document.getElementById('ottFeaturedCatTrack');
+    const section = document.getElementById('ottFeaturedCatSection');
+    if (!track) return;
+    const cats = (window._dbCategories || [])
+      .filter(c => c.featured && c.enabled !== false)
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+    if (!cats.length) { if (section) section.style.display = 'none'; return; }
+    if (section) section.style.display = '';
+    const pdfs = window.PDFS || [];
+    track.innerHTML = cats.map(c => {
+      const count = pdfs.filter(p => p.category === c.name || p.category_id === c.id).length;
+      const bg = c.banner_url || c.thumbnail_url;
+      const color = (c.color && c.color.startsWith('#')) ? c.color : '#3d8ef8';
+      return `
+      <div class="ott-card" style="width:132px;flex:0 0 132px;background:${bg ? `url('${bg}') center/cover` : `linear-gradient(160deg, ${color}33, ${color}11)`}" onclick="ottGoToCategory('${(c.name || '').replace(/'/g, "\\'")}')">
+        <div style="height:104px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;background:rgba(0,0,0,0.15)">${bg ? '' : (c.icon || '📘')}</div>
+        <div class="ott-card-body" style="padding:10px 12px">
+          <div class="ott-card-title" style="font-size:.78rem;white-space:normal;line-height:1.25;min-height:2em">${c.name}</div>
+          <div style="font-size:.66rem;color:var(--text2);margin-top:3px">${count} PDF${count === 1 ? '' : 's'}</div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  // Category card click → filter the Library page by this category name.
+  // (Dedicated category detail pages are next on the roadmap; for now this
+  // reuses the existing Library category filter so it's instantly useful.)
+  window.ottGoToCategory = function(name) {
+    if (typeof libCat !== 'undefined') libCat = name;
+    else window.libCat = name;
+    navigate('library');
+  };
+
   function ottGetAIReco(pdfs, userHistory) {
     // Simple score: combine downloads + recency + category match
     const histCats = new Set((userHistory||[]).map(p => p.category).filter(Boolean));
@@ -8848,6 +8902,9 @@ function studyriaApp() {
         .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
         .slice(0, 15).map(p => ottCardHTML(p)).join('');
     }
+
+    // ── Featured Categories ────────────────────────────────────────
+    ottRenderFeaturedCategories();
 
     // ── Section labels from CMS settings ──────────────────────────
     const labelMap = {
@@ -24173,6 +24230,7 @@ async function loadCategoriesFromDB() {
     }
 
     console.log('✅ Categories loaded from DB:', window._dbCategories.length, 'cats,', window._dbSubcategories.length, 'subcats');
+    if (typeof ottRenderFeaturedCategories === 'function') ottRenderFeaturedCategories();
   } catch(e) {
     console.warn('loadCategoriesFromDB error:', e);
   }
