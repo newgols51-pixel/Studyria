@@ -19055,15 +19055,19 @@ function pdpZoomCover() {
 // is thin UI wiring: heart-button rendering + the Wishlist page.
 // ══════════════════════════════════════════════════════════════════
 
-// loadWishlistFromSupabase: always delegates to the authoritative
-// supabase.js implementation (loop-guarded, guest-local fallback,
-// realtime multi-device sync). Kept as a wrapper only so any legacy
-// inline call site in this file keeps resolving.
-async function loadWishlistFromSupabase() {
-  if (typeof window.loadWishlistFromSupabase === 'function') {
-    return window.loadWishlistFromSupabase();
-  }
-}
+// NOTE: loadWishlistFromSupabase is defined once, on window, by
+// supabase.js (the authoritative implementation — loop-guarded,
+// guest-local fallback, realtime multi-device sync). A local wrapper
+// used to be declared here as `function loadWishlistFromSupabase(){}`,
+// but because top-level function declarations in a non-module <script>
+// become properties of `window` themselves, that wrapper silently
+// overwrote window.loadWishlistFromSupabase with itself — and its body
+// called `window.loadWishlistFromSupabase()`, i.e. called itself,
+// forever. That infinite recursion is what threw "Maximum call stack
+// size exceeded" the moment SIGNED_IN fired (e.g. right after Admin
+// Login's signInWithPassword() call). Removed. All call sites in this
+// file already call window.loadWishlistFromSupabase() directly, so no
+// local wrapper is needed.
 
 // ── REFRESH HEART BUTTONS + COUNTS EVERYWHERE ───────────────────────
 // Called by supabase.js's _syncWishlistUI() after every load/toggle,
@@ -32622,7 +32626,7 @@ async function renderHeroDesigner(main) {
         ['enable_particles','🎆 Floating Particles','Ambient particle field in hero','30+ floating dots rising upward'],
         ['enable_glow_effects','✨ Glow Effects','Title text glow pulse','Breathing glow around title text'],
         ['enable_typing_effect','⌨ Typing Effect','Typewriter subtitle animation','Characters appear one by one'],
-        ['enable_shine_effect','💫 Shine Effect','Badge shimmer sweep','Light sweep passes over badge'],
+        ['enable_shine_effect','?? Shine Effect','Badge shimmer sweep','Light sweep passes over badge'],
       ].map(([k,t,d,hint]) => `
         <div class="hd-toggle-row" style="border:1px solid rgba(139,92,246,0.15)">
           <div>
