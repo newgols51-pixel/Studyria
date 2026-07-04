@@ -12905,19 +12905,19 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
   <div class="crp-steps-wrap">
     <div class="crp-progress-steps">
       <div class="crp-step">
-        <div class="crp-step-dot active" id="crpStep1">1</div>
+        <div class="crp-step-dot active" id="crpStep1" onclick="crpStepDotClick(1)" style="cursor:pointer">1</div>
         <div class="crp-step-line" id="crpLine1"></div>
       </div>
       <div class="crp-step">
-        <div class="crp-step-dot" id="crpStep2">2</div>
+        <div class="crp-step-dot" id="crpStep2" onclick="crpStepDotClick(2)" style="cursor:pointer">2</div>
         <div class="crp-step-line" id="crpLine2"></div>
       </div>
       <div class="crp-step">
-        <div class="crp-step-dot" id="crpStep3">3</div>
+        <div class="crp-step-dot" id="crpStep3" onclick="crpStepDotClick(3)" style="cursor:pointer">3</div>
         <div class="crp-step-line" id="crpLine3"></div>
       </div>
       <div class="crp-step">
-        <div class="crp-step-dot" id="crpStep4">4</div>
+        <div class="crp-step-dot" id="crpStep4" onclick="crpStepDotClick(4)" style="cursor:pointer">4</div>
       </div>
     </div>
     <div class="crp-step-labels">
@@ -12926,6 +12926,24 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
       <div class="crp-step-lbl" id="crpLbl3" style="margin-left:14px">Upload</div>
       <div class="crp-step-lbl" id="crpLbl4" style="margin-left:14px">Terms</div>
     </div>
+  </div>
+
+  <!-- ── Preview Mode banner (Creator Program 2.0) ───────────────── -->
+  <style>
+  .crp-preview-banner{display:none;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);font-size:.78rem;color:var(--text);margin-bottom:16px}
+  .crp-preview-banner.show{display:flex}
+  .crp-preview-banner .crp-preview-icon{font-size:1.1rem;flex-shrink:0}
+  .crp-preview-banner .crp-preview-text{flex:1;line-height:1.4}
+  .crp-preview-banner .crp-preview-text b{color:#f59e0b}
+  .crp-preview-back-btn{background:#f59e0b;color:#1a1200;border:none;font-size:.72rem;font-weight:800;padding:7px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+  .crp-preview-locked input,.crp-preview-locked textarea,.crp-preview-locked select{pointer-events:none;opacity:.55}
+  .crp-preview-locked .crp-pdf-dropzone,.crp-preview-locked .s3-thumb-zone,.crp-preview-locked .crp-kyc-box,.crp-preview-locked .crp-cat-chip,.crp-preview-locked .s3-type-tab{pointer-events:none;opacity:.55}
+  .crp-preview-locked .crp-submit-btn{pointer-events:none;opacity:.4}
+  </style>
+  <div class="crp-preview-banner" id="crpPreviewBanner">
+    <span class="crp-preview-icon">👁</span>
+    <span class="crp-preview-text"><b>Preview Mode</b> — Complete the previous steps to continue. This step is read-only until then.</span>
+    <button class="crp-preview-back-btn" onclick="crpExitPreview()">← Continue where I left off</button>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -40727,6 +40745,8 @@ const CP_LEVELS = {
 
 /* ─── Creator Registration State ───────────────────────────────── */
 let _crpStep = 1;
+let _crpMaxStepReached = 1; // highest step unlocked via real validation — used for Preview Mode gating
+let _crpInPreview = false;
 let _crpDocFile = null;
 let _crpPhotoFile = null;
 let _crpPdfFiles = [];
@@ -40833,6 +40853,8 @@ let _crpSaveTimer = null;
 
 function crpInitForm() {
   _crpStep = 1;
+  _crpMaxStepReached = 1;
+  _crpInPreview = false;
   _crpDocFile = null;
   _crpPhotoFile = null;
   _crpAadhaarFile = null;
@@ -41100,8 +41122,39 @@ function crpNextStep(n) {
   if (n > _crpStep) {
     if (!crpValidateStep(_crpStep)) return;
   }
+  _crpInPreview = false;
+  _crpMaxStepReached = Math.max(_crpMaxStepReached, n);
   crpGoStep(n);
   window.scrollTo({top: document.getElementById('page-creator-register')?.offsetTop || 0, behavior:'smooth'});
+}
+
+// ── Click any step dot at any time (Creator Program 2.0) ──────────
+// If the target step is beyond what's been validated so far, open it in
+// read-only Preview Mode instead of blocking the click entirely.
+function crpStepDotClick(n) {
+  const banner = document.getElementById('crpPreviewBanner');
+  if (n <= _crpMaxStepReached) {
+    // Already unlocked — normal editable navigation
+    _crpInPreview = false;
+    if (banner) banner.classList.remove('show');
+    crpGoStep(n);
+  } else {
+    // Locked ahead — Preview Mode: show read-only, no submission
+    _crpInPreview = true;
+    crpGoStep(n);
+    if (banner) banner.classList.add('show');
+  }
+  const panel = document.getElementById('crpPanel' + n);
+  if (panel) panel.classList.toggle('crp-preview-locked', _crpInPreview);
+  window.scrollTo({top: document.getElementById('page-creator-register')?.offsetTop || 0, behavior:'smooth'});
+}
+
+function crpExitPreview() {
+  _crpInPreview = false;
+  const banner = document.getElementById('crpPreviewBanner');
+  if (banner) banner.classList.remove('show');
+  [1,2,3,4].forEach(i => document.getElementById('crpPanel' + i)?.classList.remove('crp-preview-locked'));
+  crpGoStep(_crpMaxStepReached);
 }
 
 function crpValidateStep(step) {
@@ -42070,6 +42123,7 @@ function crpToggleCheck(n) {
 function crpToggleTerms() { crpToggleCheck(1); }
 
 async function crpSubmitApplication() {
+  if (_crpInPreview) { showToast('Complete the previous steps first', 'error'); return; }
   // Validate all three checkboxes
   if (!_crpChecks.every(Boolean)) {
     // Highlight un-ticked rows
