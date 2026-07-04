@@ -13380,7 +13380,81 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
   </div>
 
   <div id="crpPanel3" style="display:none">
-    <!-- ── STEP 3: Product Upload v2 ───────────────────────────── -->
+    <!-- ── STEP 3a: Creator Store Setup (Creator Program 2.0) ───── -->
+    <div class="crp-card">
+      <div class="crp-card-title">🏪 Set Up Your Creator Store</div>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:16px;line-height:1.6">This becomes your public storefront — students can browse all your PDFs, follow you, and see your ratings here.</p>
+
+      <div class="s3-row2">
+        <div class="crp-field">
+          <div class="crp-label">Store Name <span style="color:var(--danger)">*</span></div>
+          <input class="crp-input" id="csStoreName" placeholder="e.g. GATE Notes Hub" maxlength="60" oninput="csAutoSlug()"/>
+        </div>
+        <div class="crp-field">
+          <div class="crp-label">Store URL <span style="color:var(--danger)">*</span></div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:.75rem;color:var(--text2);white-space:nowrap">studyria.qzz.io/creator/</span>
+            <input class="crp-input" id="csStoreUrl" placeholder="gate-notes-hub" maxlength="40" oninput="csSlugInput(this)"/>
+          </div>
+          <div style="font-size:.68rem;margin-top:3px" id="csUrlStatus"></div>
+        </div>
+      </div>
+
+      <div class="crp-field">
+        <div class="crp-label">Store Description <span style="color:var(--danger)">*</span></div>
+        <textarea class="crp-input crp-textarea" id="csStoreDesc" placeholder="What makes your store worth following? (min 30 characters)" rows="3" maxlength="500"></textarea>
+      </div>
+
+      <div class="s3-row2">
+        <div class="crp-field">
+          <div class="crp-label">Specialization</div>
+          <input class="crp-input" id="csSpecialization" placeholder="e.g. GATE CS & Data Structures"/>
+        </div>
+        <div class="crp-field">
+          <div class="crp-label">Support Email</div>
+          <input class="crp-input" id="csSupportEmail" type="email" placeholder="support@yourstore.com"/>
+        </div>
+      </div>
+
+      <div class="s3-row2">
+        <div class="crp-field">
+          <div class="crp-label">Store Logo <span style="font-size:.68rem;font-weight:600;color:var(--text2)">(square, JPG/PNG)</span></div>
+          <div class="s3-thumb-zone" id="csLogoZone" onclick="document.getElementById('csLogoInput').click()" style="max-width:140px;aspect-ratio:1">
+            <img class="s3-thumb-preview" id="csLogoPreview" alt="Store logo preview"/>
+            <div class="s3-thumb-placeholder" id="csLogoPlaceholder">
+              <div style="font-size:1.4rem;margin-bottom:4px">🖼️</div>
+              <div style="font-size:.72rem;font-weight:700;color:var(--accent)">Upload logo</div>
+            </div>
+          </div>
+          <input type="file" id="csLogoInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="csHandleImage(this,'logo')"/>
+        </div>
+        <div class="crp-field">
+          <div class="crp-label">Store Banner <span style="font-size:.68rem;font-weight:600;color:var(--text2)">(1200×300 recommended)</span></div>
+          <div class="s3-thumb-zone" id="csBannerZone" onclick="document.getElementById('csBannerInput').click()" style="max-width:100%;aspect-ratio:4">
+            <img class="s3-thumb-preview" id="csBannerPreview" alt="Store banner preview" style="object-fit:cover"/>
+            <div class="s3-thumb-placeholder" id="csBannerPlaceholder">
+              <div style="font-size:1.4rem;margin-bottom:4px">🖼️</div>
+              <div style="font-size:.72rem;font-weight:700;color:var(--accent)">Upload banner</div>
+            </div>
+          </div>
+          <input type="file" id="csBannerInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="csHandleImage(this,'banner')"/>
+        </div>
+      </div>
+
+      <div class="crp-field">
+        <div class="crp-label">Social Links <span style="font-size:.68rem;font-weight:600;color:var(--text2)">(optional)</span></div>
+        <div class="s3-row2" style="margin-bottom:8px">
+          <input class="crp-input" id="csSocialInstagram" placeholder="Instagram URL"/>
+          <input class="crp-input" id="csSocialYoutube" placeholder="YouTube URL"/>
+        </div>
+        <div class="s3-row2">
+          <input class="crp-input" id="csSocialWhatsapp" placeholder="WhatsApp link"/>
+          <input class="crp-input" id="csSocialTelegram" placeholder="Telegram link"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STEP 3b: Product Upload v2 ───────────────────────────── -->
     <div class="crp-card">
       <div class="crp-card-title">📦 Upload Your Products <span style="font-size:.75rem;font-weight:600;color:var(--text2)">(minimum 3 required)</span></div>
       <p style="font-size:.82rem;color:var(--text2);margin-bottom:16px;line-height:1.6">Upload at least 3 products to complete registration. Each file is scanned by AI for copyright, duplicates, quality, 18+ content, viruses, spam, blank pages, and metadata before submission.</p>
@@ -41844,7 +41918,74 @@ function s3RenderTags() {
 // ── Validate Step 3 (override) ─────────────────────────────
 // Injected into crpValidateStep via the existing if(step===3) block below.
 // We overwrite it by reassigning via a wrapper approach.
+/* ═══════════════════════════════════════════════════════════
+   STEP 3a — CREATOR STORE SETUP  JS
+   ═══════════════════════════════════════════════════════════ */
+let _csLogoFile = null, _csBannerFile = null;
+let _csUrlCheckTimer = null, _csUrlAvailable = false, _csUrlTouched = false;
+
+function csAutoSlug() {
+  if (_csUrlTouched) return; // don't overwrite once user edits URL manually
+  const name = document.getElementById('csStoreName')?.value || '';
+  const slug = name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 40);
+  const urlEl = document.getElementById('csStoreUrl');
+  if (urlEl) { urlEl.value = slug; csCheckUrlAvailability(slug); }
+}
+function csSlugInput(el) {
+  _csUrlTouched = true;
+  el.value = el.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  csCheckUrlAvailability(el.value);
+}
+function csCheckUrlAvailability(slug) {
+  clearTimeout(_csUrlCheckTimer);
+  const statusEl = document.getElementById('csUrlStatus');
+  if (!slug || slug.length < 3) {
+    _csUrlAvailable = false;
+    if (statusEl) { statusEl.textContent = slug ? 'Too short (min 3 characters)' : ''; statusEl.style.color = 'var(--text2)'; }
+    return;
+  }
+  if (statusEl) { statusEl.textContent = 'Checking availability…'; statusEl.style.color = 'var(--text2)'; }
+  _csUrlCheckTimer = setTimeout(async () => {
+    const sb = window.supabaseClient;
+    if (!sb) return;
+    try {
+      const { data } = await sb.from('creator_stores').select('id, creator_id').eq('store_url', slug).maybeSingle();
+      const user = window.currentUser;
+      const existing = await crpCheckExistingCreator();
+      const isOwnStore = data && existing && data.creator_id === existing.id;
+      _csUrlAvailable = !data || isOwnStore;
+      if (statusEl) {
+        statusEl.textContent = _csUrlAvailable ? '✅ Available' : '❌ Already taken — try another';
+        statusEl.style.color = _csUrlAvailable ? 'var(--success)' : 'var(--danger)';
+      }
+    } catch(e) { _csUrlAvailable = true; if (statusEl) statusEl.textContent = ''; } // table may not exist yet — fail open, admin can catch dupes later
+  }, 400);
+}
+function csHandleImage(input, type) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) { showToast('Image must be under 3 MB', 'error'); return; }
+  if (!file.type.startsWith('image/')) { showToast('Please upload an image file', 'error'); return; }
+  if (type === 'logo') _csLogoFile = file; else _csBannerFile = file;
+  const preview     = document.getElementById(type === 'logo' ? 'csLogoPreview' : 'csBannerPreview');
+  const placeholder = document.getElementById(type === 'logo' ? 'csLogoPlaceholder' : 'csBannerPlaceholder');
+  if (preview) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = ''; if (placeholder) placeholder.style.display = 'none'; };
+    reader.readAsDataURL(file);
+  }
+}
+
 function s3ValidateStep3() {
+  // ── Store Setup fields (new in Creator Program 2.0) ──
+  const storeName = document.getElementById('csStoreName')?.value.trim();
+  const storeUrl  = document.getElementById('csStoreUrl')?.value.trim();
+  const storeDesc = document.getElementById('csStoreDesc')?.value.trim();
+  if (!storeName || storeName.length < 2) { showToast('Please enter your store name', 'error'); document.getElementById('csStoreName')?.focus(); return false; }
+  if (!storeUrl || storeUrl.length < 3) { showToast('Please choose a store URL (min 3 characters)', 'error'); document.getElementById('csStoreUrl')?.focus(); return false; }
+  if (!_csUrlAvailable) { showToast('That store URL is already taken — please choose another', 'error'); document.getElementById('csStoreUrl')?.focus(); return false; }
+  if (!storeDesc || storeDesc.length < 30) { showToast('Store description must be at least 30 characters', 'error'); document.getElementById('csStoreDesc')?.focus(); return false; }
+
   const approved = _s3PdfMeta.filter(m => m.status === 'approved').length;
   const scanning = _s3PdfMeta.filter(m => m.status === 'scanning').length;
 
@@ -42024,7 +42165,7 @@ async function crpSubmitApplication() {
     const creatorScore = Math.round((qualityScore * 0.4) + (originalityScore * 0.4) + (Math.min(bio.length/5,100)*0.2));
 
     // Store creator application
-    const { error } = await sb.from('creators').upsert({
+    const { error, data } = await sb.from('creators').upsert({
       user_id: userId,
       full_name: fullName,
       author_name: authorName,
@@ -42061,9 +42202,55 @@ async function crpSubmitApplication() {
       total_sales: 0,
       pdf_count: _crpPdfFiles.length,
       applied_at: new Date().toISOString(),
-    }, { onConflict: 'user_id' });
+    }, { onConflict: 'user_id' }).select('id').single();
 
     if (error) throw error;
+
+    // ── Creator Program 2.0: persist Store Setup (Step 3a) ──────────────
+    // Wrapped in its own try/catch — if creator_stores doesn't exist yet
+    // (migration not run), the core application above still succeeds.
+    try {
+      const creatorId = data?.id;
+      if (creatorId) {
+        let logoUrl = '', bannerUrl = '';
+        if (_csLogoFile) {
+          const lExt = (_csLogoFile.name.split('.').pop() || 'jpg').toLowerCase();
+          const lPath = `store_logos/${userId}_${Date.now()}.${lExt}`;
+          const { error: lErr } = await sb.storage.from('covers').upload(lPath, _csLogoFile, { upsert: true, contentType: _csLogoFile.type });
+          if (!lErr) { const { data: ld } = sb.storage.from('covers').getPublicUrl(lPath); logoUrl = ld?.publicUrl || ''; }
+        }
+        if (_csBannerFile) {
+          const bExt = (_csBannerFile.name.split('.').pop() || 'jpg').toLowerCase();
+          const bPath = `store_banners/${userId}_${Date.now()}.${bExt}`;
+          const { error: bErr } = await sb.storage.from('covers').upload(bPath, _csBannerFile, { upsert: true, contentType: _csBannerFile.type });
+          if (!bErr) { const { data: bd } = sb.storage.from('covers').getPublicUrl(bPath); bannerUrl = bd?.publicUrl || ''; }
+        }
+        const storeName = document.getElementById('csStoreName')?.value.trim() || authorName;
+        const storeUrl  = document.getElementById('csStoreUrl')?.value.trim() || '';
+        const storeDesc = document.getElementById('csStoreDesc')?.value.trim() || '';
+        const specialization = document.getElementById('csSpecialization')?.value.trim() || '';
+        const supportEmail = document.getElementById('csSupportEmail')?.value.trim() || email;
+        const socialLinks = {
+          instagram: document.getElementById('csSocialInstagram')?.value.trim() || '',
+          youtube:   document.getElementById('csSocialYoutube')?.value.trim()  || '',
+          whatsapp:  document.getElementById('csSocialWhatsapp')?.value.trim() || '',
+          telegram:  document.getElementById('csSocialTelegram')?.value.trim() || '',
+        };
+        const storePayload = {
+          creator_id: creatorId,
+          store_name: storeName,
+          store_url: storeUrl,
+          description: storeDesc,
+          specialization,
+          categories: _crpSelectedCats || [],
+          support_email: supportEmail,
+          social_links: socialLinks,
+        };
+        if (logoUrl)   storePayload.store_logo_url = logoUrl;
+        if (bannerUrl) storePayload.store_banner_url = bannerUrl;
+        await sb.from('creator_stores').upsert(storePayload, { onConflict: 'creator_id' });
+      }
+    } catch (storeErr) { console.warn('Store setup save skipped (creator_stores may not exist yet):', storeErr); }
 
     // Upload each product to Storage + insert one row per product into creator_pdf_submissions.
     // Now uses the rich metadata from Step 3 (title, description, category, exam, language,

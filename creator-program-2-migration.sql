@@ -96,36 +96,35 @@ CREATE POLICY IF NOT EXISTS "promotion_assets: owner read" ON public.promotion_a
   FOR SELECT USING (creator_id IN (SELECT id FROM public.creators WHERE user_id = auth.uid()));
 CREATE INDEX IF NOT EXISTS idx_promotion_assets_pdf ON public.promotion_assets(pdf_id);
 
--- 6. Extend `creators` with fields the new wizard/level system needs
---    (all nullable/defaulted — zero impact on existing rows)
+-- 6. Extend `creators` with fields the new wizard/level system needs.
+--    IMPORTANT: the app already has `level` (starter/rising/pro) and
+--    `revenue_share` (60/65/70) columns live and in active use across
+--    the admin panel + ledger — we build ON those, not new duplicates.
 ALTER TABLE public.creators
   ADD COLUMN IF NOT EXISTS display_name       text,
   ADD COLUMN IF NOT EXISTS country             text,
   ADD COLUMN IF NOT EXISTS state               text,
-  ADD COLUMN IF NOT EXISTS languages           text[] DEFAULT '{}',
   ADD COLUMN IF NOT EXISTS category_expertise  text[] DEFAULT '{}',
-  ADD COLUMN IF NOT EXISTS social_links        jsonb DEFAULT '{}',
-  ADD COLUMN IF NOT EXISTS creator_level       text NOT NULL DEFAULT 'starter'
-    CHECK (creator_level IN ('starter','rising','pro')),
-  ADD COLUMN IF NOT EXISTS commission_creator_pct integer NOT NULL DEFAULT 60,
+  ADD COLUMN IF NOT EXISTS social_links        jsonb DEFAULT '{}',  -- new multi-platform links; existing `social_link` (singular) stays untouched for backward compat
   ADD COLUMN IF NOT EXISTS commission_override boolean NOT NULL DEFAULT false,
   ADD COLUMN IF NOT EXISTS is_blocked          boolean NOT NULL DEFAULT false,
   ADD COLUMN IF NOT EXISTS strike_count        integer NOT NULL DEFAULT 0;
 
-CREATE INDEX IF NOT EXISTS idx_creators_level ON public.creators(creator_level);
+CREATE INDEX IF NOT EXISTS idx_creators_level ON public.creators(level);
 
 -- 7. Automatic level → commission sync trigger (Starter 60/40, Rising 65/35, Pro 70/30)
+--    Operates on the EXISTING `level` / `revenue_share` columns.
 CREATE OR REPLACE FUNCTION public.sync_creator_commission()
 RETURNS trigger AS $$
 BEGIN
   IF NEW.commission_override THEN
     RETURN NEW; -- admin has set a custom commission, don't overwrite
   END IF;
-  NEW.commission_creator_pct := CASE NEW.creator_level
+  NEW.revenue_share := CASE NEW.level
     WHEN 'starter' THEN 60
     WHEN 'rising'  THEN 65
     WHEN 'pro'     THEN 70
-    ELSE 60
+    ELSE COALESCE(NEW.revenue_share, 60)
   END;
   RETURN NEW;
 END;
@@ -133,7 +132,7 @@ $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS trg_sync_creator_commission ON public.creators;
 CREATE TRIGGER trg_sync_creator_commission
-  BEFORE INSERT OR UPDATE OF creator_level, commission_override ON public.creators
+  BEFORE INSERT OR UPDATE OF level, commission_override ON public.creators
   FOR EACH ROW EXECUTE FUNCTION public.sync_creator_commission();
 
 -- 8. Follower-count sync trigger on creator_stores
