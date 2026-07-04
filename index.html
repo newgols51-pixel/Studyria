@@ -25930,7 +25930,30 @@ async function sbpPublishReady() {
         pdfUrl = fp2;
       }
 
-      const categoryId = (window._dbCategories||[]).find(c=>c.name===item.category)?.id || null;
+      // ── Resolve classification IDs — prefer the ID already captured
+      //    by the premium classification editor (item.*Id), falling back
+      //    to a name→id lookup against the live category list. ─────────
+      const categoryId = item.categoryId || (window._dbCategories||[]).find(c=>c.name===item.category)?.id || null;
+      const subcategoryId    = item.subcategoryId    || null;
+      const academicLevelId  = item.academicLevelId  || null;
+      const streamId         = item.streamId         || null;
+      const semesterClassId  = item.semesterClassId  || null;
+      const subjectId        = item.subjectId        || null;
+
+      // ── VALIDATION: DB must only ever receive numeric IDs, never names.
+      //    category, category_id, subcategory_id, academic_level_id,
+      //    stream_id, semester_class_id, subject_id must each be numeric
+      //    (or null when the field is optional/unselected). If any
+      //    resolved value is non-numeric, STOP — do not send SQL. ──────
+      const _isNumericId = v => v === null || v === undefined || v === '' || /^\d+$/.test(String(v));
+      const _idFields = { categoryId, subcategoryId, academicLevelId, streamId, semesterClassId, subjectId };
+      const _badField = Object.entries(_idFields).find(([,v]) => !_isNumericId(v));
+      if (_badField) {
+        throw new Error(`Invalid category mapping. (${_badField[0]} = "${_badField[1]}" is not a valid ID — please re-select it from the dropdown.)`);
+      }
+      if (!categoryId) {
+        throw new Error('Invalid category mapping. (Category is required and must be selected from the dropdown.)');
+      }
 
       const payload = {
         title:           item.title,
@@ -25953,17 +25976,22 @@ async function sbpPublishReady() {
         status:          'published',
         created_at:      item.publishDate || new Date().toISOString(),
         // ── Premium Edit PDF: cascading classification FKs ─────────
-        subcategory_id:    item.subcategoryId    || null,
-        academic_level_id: item.academicLevelId  || null,
-        stream_id:         item.streamId         || null,
-        semester_class_id: item.semesterClassId  || null,
-        subject_id:        item.subjectId        || null,
-        // Text display columns (denormalised for search / display)
-        subcategory:       item.subcategory      || null,
-        academic_level:    item.academicLevel    || null,
-        stream:            item.stream           || null,
-        semester_class:    item.semesterClass    || null,
-        subject:           item.subject          || null,
+        //    (integer/uuid columns — always the resolved numeric ID)
+        subcategory_id:    subcategoryId,
+        academic_level_id: academicLevelId,
+        stream_id:         streamId,
+        semester_class_id: semesterClassId,
+        subject_id:        subjectId,
+        // ── Legacy denormalised columns are ACTUALLY bigint in the
+        //    live schema (verified against Supabase directly) — they
+        //    must mirror the numeric *_id columns, NEVER store the
+        //    display name (e.g. "Personal Finance"), or Postgres throws
+        //    "invalid input syntax for type bigint". ──────────────────
+        subcategory:       subcategoryId,
+        academic_level:    academicLevelId,
+        stream:            streamId,
+        semester_class:    semesterClassId,
+        subject:           subjectId,
       };
 
       const { error: insErr } = await sb.from('pdfs').insert(payload);
@@ -27064,6 +27092,22 @@ async function adminSavePDF() {
     const streamId        = apGetSelectedId('apStream');
     const semesterClassId = apGetSelectedId('apSemesterClass');
     const subjectId       = apGetSelectedId('apSubject');
+
+    // ── VALIDATION: DB must only ever receive numeric IDs, never names.
+    //    If any resolved classification ID is non-numeric, STOP — do not
+    //    send SQL. (Legacy bigint columns like subcategory/academic_level/
+    //    stream/semester_class/subject must never receive display text.) ──
+    {
+      const _isNumericId = v => v === null || v === undefined || v === '' || /^\d+$/.test(String(v));
+      const _idFields = { categoryId, subcategoryId, academicLevelId, streamId, semesterClassId, subjectId };
+      const _badField = Object.entries(_idFields).find(([,v]) => !_isNumericId(v));
+      if (_badField) {
+        showToast(`Invalid category mapping. (${_badField[0]} is not a valid ID)`, 'error');
+        btn.innerHTML = isEditing ? '💾 Update PDF' : '🚀 Publish PDF';
+        btn.disabled = false;
+        return;
+      }
+    }
 
     const payload = {
       title, author, category,
@@ -36109,6 +36153,22 @@ async function adminSavePDF() {
     const streamId        = apGetSelectedId('apStream')       || null;
     const semesterClassId = apGetSelectedId('apSemesterClass')|| null;
     const subjectId       = apGetSelectedId('apSubject')      || null;
+
+    // ── VALIDATION: DB must only ever receive numeric IDs, never names.
+    //    If any resolved classification ID is non-numeric, STOP — do not
+    //    send SQL. (Legacy bigint columns like subcategory/academic_level/
+    //    stream/semester_class/subject must never receive display text.) ──
+    {
+      const _isNumericId = v => v === null || v === undefined || v === '' || /^\d+$/.test(String(v));
+      const _idFields = { categoryId, subcategoryId, academicLevelId, streamId, semesterClassId, subjectId };
+      const _badField = Object.entries(_idFields).find(([,v]) => !_isNumericId(v));
+      if (_badField) {
+        showToast(`Invalid category mapping. (${_badField[0]} is not a valid ID)`, 'error');
+        btn.innerHTML = isEditing ? '💾 Update PDF' : '🚀 Publish PDF';
+        btn.disabled = false;
+        return;
+      }
+    }
 
     // ── Payload — all optional fields explicitly NULL when blank ──
     const payload = {

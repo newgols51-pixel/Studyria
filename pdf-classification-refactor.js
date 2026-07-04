@@ -171,6 +171,22 @@ async function adminSavePDF() {
     const semesterClassId = apGetSelectedId('apSemesterClass')|| null;
     const subjectId       = apGetSelectedId('apSubject')      || null;
 
+    // ── VALIDATION: DB must only ever receive numeric IDs, never names.
+    //    If any resolved classification ID is non-numeric, STOP — do not
+    //    send SQL. (Legacy bigint columns like subcategory/academic_level/
+    //    stream/semester_class/subject must never receive display text.) ──
+    {
+      const _isNumericId = v => v === null || v === undefined || v === '' || /^\d+$/.test(String(v));
+      const _idFields = { categoryId, subcategoryId, academicLevelId, streamId, semesterClassId, subjectId };
+      const _badField = Object.entries(_idFields).find(([,v]) => !_isNumericId(v));
+      if (_badField) {
+        showToast(`Invalid category mapping. (${_badField[0]} is not a valid ID)`, 'error');
+        btn.innerHTML = isEditing ? '💾 Update PDF' : '🚀 Publish PDF';
+        btn.disabled = false;
+        return;
+      }
+    }
+
     // ── Payload — only columns that exist in the pdfs table schema ──
     const payload = {
       title,
