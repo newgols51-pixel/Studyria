@@ -1288,18 +1288,21 @@
     return window.cachedSupabaseQuery(cacheKey, async () => {
       const client = sb();
       if (!client) return null;
+      // NOTE: pdf_reviews has NO 'verified' column on the live schema (the
+      // CREATE TABLE comment above aspired to one, but it was never migrated).
+      // 'Verified purchase' is enforced at submission time instead (see
+      // submitProductReview → hasUserPurchasedPdf), so every row here is
+      // already purchase-gated — no extra filter needed/possible.
       const { data, error, count } = await client
         .from('pdf_reviews')
-        .select('rating,verified', { count: 'exact' })
-        .eq('pdf_id', pdfId)
-        .eq('verified', true);
+        .select('rating', { count: 'exact' })
+        .eq('pdf_id', pdfId);
       if (error || !data || data.length === 0) return { avgRating: null, reviewCount: 0, verifiedCount: 0 };
       const ratings = data.map(r => Number(r.rating)).filter(r => r >= 1 && r <= 5);
       const avgRating = ratings.length
         ? Math.round((ratings.reduce((s, r) => s + r, 0) / ratings.length) * 10) / 10
         : null;
-      const verifiedCount = data.filter(r => r.verified).length;
-      return { avgRating, reviewCount: count || data.length, verifiedCount };
+      return { avgRating, reviewCount: count || data.length, verifiedCount: count || data.length };
     }, 60000);
   };
 
@@ -1313,16 +1316,18 @@
     const client = sb();
     if (!client || !pdfId) return [];
     try {
+      // NOTE: no 'verified' column exists on the live pdf_reviews table —
+      // every row is already purchase-gated at submission time.
       const { data, error } = await client
         .from('pdf_reviews')
-        .select('id,rating,comment,verified,created_at,user_id')
+        .select('id,rating,comment,created_at,user_id')
         .eq('pdf_id', pdfId)
-        .eq('verified', true)
         .order('created_at', { ascending: false })
         .limit(limit || 20);
       if (error) { console.warn('loadProductReviews error:', error); return []; }
       return (data || []).map(r => ({
         ...r,
+        verified: true,
         user_display_name: 'Verified Buyer',
       }));
     } catch (e) {
@@ -1367,6 +1372,11 @@
     }
 
     try {
+      // NOTE: pdf_reviews has no 'verified' column on the live schema — the
+      // purchase check above (hasUserPurchasedPdf) already gates who can
+      // reach this insert, so every stored row is implicitly a verified
+      // purchase. Writing a 'verified' field here would 42703-error on
+      // every single submission (confirmed against live schema).
       const { error } = await client
         .from('pdf_reviews')
         .upsert(
@@ -1375,7 +1385,6 @@
             user_id: userId,
             rating:  numRating,
             comment: (comment || '').trim() || null,
-            verified,
             updated_at: new Date().toISOString(),
           },
           { onConflict: 'user_id,pdf_id' }

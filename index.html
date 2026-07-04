@@ -36,7 +36,7 @@
   }
 })();
 </script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <meta name="color-scheme" content="dark light" />
 
@@ -117,7 +117,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js" as="script" crossorigin />
-<title>Studyria – India's #1 PDF Study Platform</title>
+<title>Studyria – Assam's #1 PDF Study Platform</title>
 <link rel="manifest" href="manifest.json">
 
 <!-- ── Favicon & PWA Icons ── -->
@@ -4887,7 +4887,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "@type": "EducationalOrganization",
   "@id": "https://studyria.qzz.io/#organization",
   "name": "Studyria",
-  "alternateName": ["Studyria India", "Studyria – India's #1 PDF Study Platform"],
+  "alternateName": ["Studyria India", "Studyria – Assam's #1 PDF Study Platform"],
   "url": "https://studyria.qzz.io",
   "logo": {
     "@type": "ImageObject",
@@ -8042,6 +8042,15 @@ function studyriaApp() {
     overflow: hidden;
     margin-bottom: 5px;
   }
+  .ott-card-rating {
+    display: flex; align-items: center; gap: 3px;
+    font-size: .68rem; font-weight: 700;
+    color: #f0b429;
+    margin-bottom: 4px;
+  }
+  .ott-card-rating-count {
+    font-weight: 500; color: var(--text2); font-size: .62rem;
+  }
   .ott-card-price {
     font-size: .75rem; font-weight: 800;
     background: linear-gradient(135deg, #3d8ef8, #00c8e8);
@@ -8382,6 +8391,25 @@ function studyriaApp() {
     </div>`;
   }
 
+  // ── Seeded deterministic rating (same pdf → same number always) ───
+  // Used ONLY until a PDF has real reviews — see _loadCardRatings() which
+  // swaps this out for the genuine Supabase average the moment real
+  // reviews exist (mirrors the same real-data-first pattern already used
+  // on the PDF detail page's _pdpLoadLiveStats/_pdpMarketingData).
+  function _ottSeededRating(id) {
+    // djb2-style string hash — spreads UUIDs across the full range instead
+    // of clustering (char-code sums collide too easily for near-identical
+    // UUID prefixes).
+    let h = 5381;
+    const s = String(id);
+    for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+    h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
+    const seed = (h >>> 0) / 4294967296;
+    return Math.round((4.7 + seed * 0.3) * 10) / 10; // 4.7 → 5.0
+  }
+  const _ottStarSvg = `<svg width="10" height="10" viewBox="0 0 24 24" style="vertical-align:-1px;margin-right:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#f59e0b"/></svg>`;
+  window._ottStarSvgHTML = _ottStarSvg; // expose for _loadCardRatings (different script scope)
+
   // ── OTT ROW CARD HTML ────────────────────────────────────────────
   function ottCardHTML(pdf, rank, showProgress, progressPct) {
     if (!pdf) return '';
@@ -8389,8 +8417,13 @@ function studyriaApp() {
     const tagClass = pdf.free ? 'tag-free' : pdf.badge === 'NEW' ? 'tag-new' : pdf.badge === 'BESTSELLER' ? 'tag-bestseller' : 'tag-trending';
     const priceText = (pdf.free || !pdf.price || Number(pdf.price)===0) ? 'FREE' : '₹'+Number(pdf.price).toLocaleString();
     const isFree = pdf.free || Number(pdf.price)===0;
+    // Real rating if already fetched this session, else an attractive
+    // deterministic placeholder (auto-upgrades to real once reviews exist).
+    const cached = window._cardRatingCache && window._cardRatingCache[String(pdf.id)];
+    const ratingVal   = cached ? cached.avgRating : _ottSeededRating(pdf.id);
+    const ratingCount = cached ? cached.reviewCount : 0;
     return `
-    <div class="ott-card${showProgress?' continue-card':''}" onclick="openPDFDetail('${pdf.id}')">
+    <div class="ott-card${showProgress?' continue-card':''}" onclick="openPDFDetail('${pdf.id}')" data-pdf-id="${pdf.id}">
       <div class="ott-card-cover">
         ${pdf.cover_url
           ? `<img src="${pdf.cover_url}" alt="${(pdf.title||'').replace(/"/g,'')}" loading="lazy" onerror="this.style.display='none'">`
@@ -8401,6 +8434,7 @@ function studyriaApp() {
       </div>
       <div class="ott-card-body">
         <div class="ott-card-title">${pdf.title||'Untitled'}</div>
+        <div class="ott-card-rating">${_ottStarSvg}<span>${ratingVal.toFixed(1)}</span>${ratingCount > 0 ? `<span class="ott-card-rating-count">(${ratingCount})</span>` : ''}</div>
         <div class="ott-card-price ${isFree?'free-p':''}">${priceText}</div>
         ${showProgress ? `<div class="ott-card-progress"><div class="ott-card-progress-fill" style="width:${progressPct||35}%"></div></div>` : ''}
       </div>
@@ -12857,7 +12891,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
   <div class="crp-hero-inner">
     <div class="crp-hero-badge"><span>🎓</span> Creator Program</div>
     <div class="crp-hero-title">Teach India.<br>Earn Every Month.</div>
-    <p class="crp-hero-sub">Upload your study materials, earn revenue on every sale, and build your audience on Studyria — India's #1 PDF study platform.</p>
+    <p class="crp-hero-sub">Upload your study materials, earn revenue on every sale, and build your audience on Studyria — Assam's #1 PDF study platform.</p>
     <div class="crp-tiers">
       <div class="crp-tier crp-tier-s">⭐ Starter 60%</div>
       <div class="crp-tier crp-tier-r">🚀 Rising 65%</div>
@@ -19095,10 +19129,19 @@ async function _loadCardRatings(pdfIds) {
     if (window._cardRatingCache[pdfId]) continue; // already loaded
     try {
       const stats = await window.fetchReviewStats(pdfId);
+      // Only swap in real data once at least one real review exists — until
+      // then the OTT card keeps its seeded placeholder (never blank/zero).
       if (stats && stats.avgRating !== null) {
         window._cardRatingCache[pdfId] = stats;
         // Update all cards for this pdf on the page
         document.querySelectorAll(`[data-pdf-id="${pdfId}"]`).forEach(card => {
+          // ── Netflix-style OTT row/grid cards (.ott-card) ──────────────
+          const ottRatingEl = card.querySelector('.ott-card-rating');
+          if (ottRatingEl) {
+            const countHTML = stats.reviewCount > 0 ? `<span class="ott-card-rating-count">(${stats.reviewCount.toLocaleString()})</span>` : '';
+            ottRatingEl.innerHTML = `${window._ottStarSvgHTML || ''}<span>${stats.avgRating.toFixed(1)}</span>${countHTML}`;
+          }
+          // ── Legacy list-style cards (.pdf-meta) ───────────────────────
           const metaEl = card.querySelector('.pdf-meta');
           if (!metaEl) return;
           // Remove stale rating if present
@@ -28058,7 +28101,7 @@ function renderAdminSettings(main) {
       <div class="card p-4">
         <div class="admin-form-grid">
           <div class="form-group"><label class="form-label">Site Name</label><input class="form-input" value="Studyria" /></div>
-          <div class="form-group"><label class="form-label">Tagline</label><input class="form-input" value="India's #1 PDF Study Platform" /></div>
+          <div class="form-group"><label class="form-label">Tagline</label><input class="form-input" value="Assam's #1 PDF Study Platform" /></div>
         </div>
         <div class="admin-toggle-row">
           <div><div style="font-size:.85rem;font-weight:600">Maintenance Mode</div><div class="text-muted text-xs mt-1">Show maintenance page to visitors</div></div>
@@ -31119,7 +31162,7 @@ function tsRenderPreviewNavbar(t) {
 function tsRenderPreviewHero(t) {
   t = t || tsGetActiveTheme() || TS_BUILTIN_PRESETS[0];
   return `<div class="ts-preview-hero" style="background:linear-gradient(135deg,${t.primary}22,${t.secondary}11);border:1px solid ${t.primary}33">
-    <div style="font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">India's #1 PDF Study Platform</div>
+    <div style="font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">Assam's #1 PDF Study Platform</div>
     <div style="font-size:.85rem;color:${t.text||'#eef2ff'};opacity:.7;margin-bottom:16px">157+ students study smarter with Studyria</div>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <div style="padding:9px 22px;border-radius:10px;background:linear-gradient(135deg,${t.primary},${t.secondary});color:#fff;font-weight:700;font-size:.85rem">Browse PDFs</div>
@@ -31159,7 +31202,7 @@ function tsRenderPreviewFooter(t) {
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:16px">
       <div>
         <div style="font-weight:800;font-size:1rem;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">Studyria</div>
-        <div style="font-size:.75rem;color:${t.text||'#eef2ff'};opacity:.5">India's #1 PDF Study Platform</div>
+        <div style="font-size:.75rem;color:${t.text||'#eef2ff'};opacity:.5">Assam's #1 PDF Study Platform</div>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap">
         ${['Explore','Company','Legal'].map(col => `
@@ -32263,7 +32306,7 @@ function renderPCCSEO(main) {
   <div class="admin-section-sub">Control meta tags, sitemaps, robots.txt and social sharing.</div>
   <div class="mod-form-wrap" style="margin-bottom:14px">
     <div style="font-weight:700;color:var(--accent);margin-bottom:14px">🌐 Global SEO</div>
-    <div class="form-group"><label class="form-label">Default Meta Title</label><input class="form-input" id="seoMetaTitle" placeholder="Studyria – India's #1 PDF Study Platform"/></div>
+    <div class="form-group"><label class="form-label">Default Meta Title</label><input class="form-input" id="seoMetaTitle" placeholder="Studyria – Assam's #1 PDF Study Platform"/></div>
     <div class="form-group" style="margin-top:8px"><label class="form-label">Default Meta Description</label><textarea class="form-input" id="seoMetaDesc" rows="2" placeholder="Download free and premium PDF study materials for JEE, NEET, UPSC and all competitive exams."></textarea></div>
     <div class="form-group" style="margin-top:8px"><label class="form-label">Meta Keywords</label><input class="form-input" id="seoMetaKeywords" placeholder="study PDF, JEE notes, NEET materials, UPSC books, free PDF download India"/></div>
   </div>
@@ -32958,7 +33001,7 @@ async function renderHeroDesigner(main) {
     <div class="hd-grid" style="margin-bottom:20px">
       <div class="hd-field">
         <label class="hd-label">Badge Text</label>
-        <input class="hd-input" id="hd_badge_text" value="${escH(g('badge_text'))}" oninput="hdLivePreview()" placeholder="India's #1 PDF Study Platform">
+        <input class="hd-input" id="hd_badge_text" value="${escH(g('badge_text'))}" oninput="hdLivePreview()" placeholder="Assam's #1 PDF Study Platform">
       </div>
       <div class="hd-field">
         <label class="hd-label">Main Title</label>
