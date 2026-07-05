@@ -42005,7 +42005,7 @@ function csCheckUrlAvailability(slug) {
       const { data } = await sb.from('creator_stores').select('id, creator_id').eq('store_url', slug).maybeSingle();
       const user = window.currentUser;
       const existing = await crpCheckExistingCreator();
-      const isOwnStore = data && existing && data.creator_id === existing.id;
+      const isOwnStore = data && existing && data.creator_id === existing.user_id;
       _csUrlAvailable = !data || isOwnStore;
       if (statusEl) {
         statusEl.textContent = _csUrlAvailable ? '✅ Available' : '❌ Already taken — try another';
@@ -42256,7 +42256,7 @@ async function crpSubmitApplication() {
       total_sales: 0,
       pdf_count: _crpPdfFiles.length,
       applied_at: new Date().toISOString(),
-    }, { onConflict: 'user_id' }).select('id').single();
+    }, { onConflict: 'user_id' });
 
     if (error) throw error;
 
@@ -42264,7 +42264,7 @@ async function crpSubmitApplication() {
     // Wrapped in its own try/catch — if creator_stores doesn't exist yet
     // (migration not run), the core application above still succeeds.
     try {
-      const creatorId = data?.id;
+      const creatorId = userId;
       if (creatorId) {
         let logoUrl = '', bannerUrl = '';
         if (_csLogoFile) {
@@ -43623,13 +43623,105 @@ async function cm2ProcessWithdrawal(wdId, status) {
   } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
+// Maps the fixed Step-3 registration category dropdown (which does NOT match
+// real site category names) to a real, existing category name. The `pdfs`
+// table has a DB-level trigger that REJECTS any insert whose `category` text
+// doesn't match an existing category — so creator-submitted category labels
+// must be remapped before publish, not passed through as-is.
+const CP_CATEGORY_MAP = {
+  'Engineering':          'Higher Education',
+  'Medicine / MBBS':      'Higher Education',
+  'Law':                  'Legal & Government',
+  'Finance / CA':         'Business & Finance',
+  'Design':               'Design & Creativity',
+  'Science':              'Education',
+  'Languages':            'Languages',
+  'MBA / Management':     'Business & Finance',
+  'Computer Science':     'Computer & Technology',
+  'Government Exams':     'Government Exams',
+  'School (K-12)':        'School Education',
+  'Aptitude / Reasoning': 'Education',
+  'Other':                'Education',
+};
+
 async function cm2ApprovePdf(pdfId) {
   const sb = window.supabaseClient;
   try {
-    await sb.from('creator_pdf_submissions').update({ status:'approved' }).eq('id', pdfId);
-    showToast('PDF approved ✅', 'success');
+    // 1. Fetch the full submission — need everything to construct a real pdfs row
+    const { data: sub, error: subErr } = await sb.from('creator_pdf_submissions').select('*, creators(user_id, author_name)').eq('id', pdfId).single();
+    if (subErr || !sub) throw new Error(subErr?.message || 'Submission not found');
+
+    // Idempotency guard — don't republish/duplicate if already done
+    if (sub.published_pdf_id) {
+      showToast('Already published ✅', 'info');
+      cm2SwitchTab('pdfs');
+      return;
+    }
+
+    // 2. Resolve category — must match a REAL category name or the DB trigger rejects the insert
+    const rawCategory  = sub.category || 'Other';
+    const realCategory = CP_CATEGORY_MAP[rawCategory] || rawCategory;
+    const catObj = (window._dbCategories || []).find(c => c.name === realCategory)
+                || (window._dbCategories || []).find(c => c.name === 'Education')
+                || (window._dbCategories || [])[0];
+    if (!catObj) throw new Error('No categories loaded — reload the admin panel and try again');
+
+    // 3. Copy the PDF file from the private creator-pdfs bucket into the public pdfs bucket
+    if (!sub.storage_path) throw new Error('Submission has no file — cannot publish');
+    const { data: fileBlob, error: dlErr } = await sb.storage.from('creator-pdfs').download(sub.storage_path);
+    if (dlErr || !fileBlob) throw new Error('Could not read the submitted PDF file: ' + (dlErr?.message || 'unknown error'));
+    const title = sub.title || sub.pdf_name || 'Untitled';
+    const slug  = generateSlug(title);
+    const pdfPath = `${Date.now()}_${slug.slice(0,40)}.pdf`;
+    const { error: upErr } = await sb.storage.from('pdfs').upload(pdfPath, fileBlob, { upsert: true, contentType: 'application/pdf' });
+    if (upErr) throw new Error('PDF upload to public bucket failed: ' + upErr.message);
+    const { data: pubData } = sb.storage.from('pdfs').getPublicUrl(pdfPath);
+    if (!pubData?.publicUrl) throw new Error('Could not generate a public PDF URL');
+
+    // 4. Build the payload — mirrors the same shape/validation as the main admin publish flow
+    const price = parseFloat(sub.price || 0);
+    const isFree = sub.access_type === 'free' || !price;
+    const payload = {
+      title,
+      author:            sub.creators?.author_name || null,
+      category:          catObj.name,
+      category_id:       catObj.id,
+      description:       sub.description || sub.exam || null,
+      preview:           sub.description || sub.exam || null,
+      selling_price:     isFree ? 0 : price,
+      original_price:    sub.mrp || null,
+      price:             isFree ? 0 : price,
+      free:              isFree,
+      exam_year:         null,
+      slug,
+      seo_title:         sub.seo_title || title,
+      seo_description:   sub.seo_description || null,
+      cover_url:         sub.thumbnail_url || null,
+      pdf_url:           pubData.publicUrl,
+      status:            'published',
+      creator_id:        sub.creators?.user_id || null,
+      created_at:        new Date().toISOString(),
+    };
+
+    // 5. Insert the real pdfs row — only mark the submission approved if this succeeds
+    const { data: newPdf, error: insErr } = await sb.from('pdfs').insert(payload).select('id').single();
+    if (insErr) throw new Error('Publish failed: ' + insErr.message);
+
+    // 6. Link the submission to the new live pdfs row
+    await sb.from('creator_pdf_submissions').update({
+      status: 'approved',
+      published_pdf_id: newPdf.id,
+      reviewed_at: new Date().toISOString(),
+    }).eq('id', pdfId);
+
+    showToast('PDF approved and published live ✅', 'success');
     cm2SwitchTab('pdfs');
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  } catch(e) {
+    console.error('cm2ApprovePdf error:', e);
+    showToast('❌ Publish failed: ' + e.message, 'error');
+    // Deliberately do NOT flip status to approved on failure — the old bug
+    // silently marked things approved even when nothing was actually published.
+  }
 }
 
 async function cm2RejectPdf(pdfId) {

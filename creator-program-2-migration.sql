@@ -9,7 +9,7 @@
 -- 1. Creator KYC documents (formalizes what's currently only in Storage)
 CREATE TABLE IF NOT EXISTS public.creator_documents (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  creator_id    uuid NOT NULL REFERENCES public.creators(id) ON DELETE CASCADE,
+  creator_id    uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
   doc_type      text NOT NULL CHECK (doc_type IN ('government_id','selfie','address_proof')),
   storage_path  text NOT NULL,
   status        text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','verified','rejected')),
@@ -28,7 +28,7 @@ CREATE INDEX IF NOT EXISTS idx_creator_documents_creator ON public.creator_docum
 -- 2. Creator public store profile (Step 3 — Store Setup)
 CREATE TABLE IF NOT EXISTS public.creator_stores (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  creator_id      uuid NOT NULL UNIQUE REFERENCES public.creators(id) ON DELETE CASCADE,
+  creator_id      uuid NOT NULL UNIQUE REFERENCES public.creators(user_id) ON DELETE CASCADE,
   store_name      text NOT NULL,
   store_url       text NOT NULL UNIQUE,   -- slug, e.g. /creator/store_url
   store_logo_url  text,
@@ -54,7 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_creator_stores_url ON public.creator_stores(store
 -- 3. Follow system
 CREATE TABLE IF NOT EXISTS public.creator_follows (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  creator_id  uuid NOT NULL REFERENCES public.creators(id) ON DELETE CASCADE,
+  creator_id  uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
   user_id     uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   created_at  timestamptz DEFAULT now(),
   UNIQUE (creator_id, user_id)
@@ -70,7 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_creator_follows_user ON public.creator_follows(us
 -- 4. Badge assignments (system-computed, e.g. Verified Creator / Top Rated / Featured)
 CREATE TABLE IF NOT EXISTS public.creator_badges (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  creator_id  uuid NOT NULL REFERENCES public.creators(id) ON DELETE CASCADE,
+  creator_id  uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
   badge       text NOT NULL,
   awarded_at  timestamptz DEFAULT now(),
   UNIQUE (creator_id, badge)
@@ -83,7 +83,7 @@ CREATE POLICY IF NOT EXISTS "creator_badges: public read" ON public.creator_badg
 CREATE TABLE IF NOT EXISTS public.promotion_assets (
   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   pdf_id       uuid NOT NULL REFERENCES public.pdfs(id) ON DELETE CASCADE,
-  creator_id   uuid NOT NULL REFERENCES public.creators(id) ON DELETE CASCADE,
+  creator_id   uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
   asset_type   text NOT NULL CHECK (asset_type IN
     ('instagram_post','facebook_post','whatsapp_poster','telegram_banner','linkedin_post',
      'seo_title','seo_description','keywords','hashtags','qr_code','short_link','email_campaign','blog_draft')),
@@ -152,3 +152,22 @@ DROP TRIGGER IF EXISTS trg_sync_store_follower_count ON public.creator_follows;
 CREATE TRIGGER trg_sync_store_follower_count
   AFTER INSERT OR DELETE ON public.creator_follows
   FOR EACH ROW EXECUTE FUNCTION public.sync_store_follower_count();
+
+-- ============================================================================
+-- Phase 2 addition: link creator submissions to the live pdfs catalog.
+-- CRITICAL FIX: cm2ApprovePdf() previously only flipped a status flag on
+-- creator_pdf_submissions — it never actually published anything into the
+-- `pdfs` table, so approved creator content never appeared on the live site.
+-- These columns let the fixed approval flow create the real pdfs row and
+-- track it back, and let creator analytics later query pdfs by creator_id
+-- directly instead of joining through submissions.
+-- ============================================================================
+
+ALTER TABLE public.pdfs
+  ADD COLUMN IF NOT EXISTS creator_id uuid REFERENCES public.creators(user_id);
+CREATE INDEX IF NOT EXISTS idx_pdfs_creator ON public.pdfs(creator_id);
+
+ALTER TABLE public.creator_pdf_submissions
+  ADD COLUMN IF NOT EXISTS published_pdf_id uuid REFERENCES public.pdfs(id),
+  ADD COLUMN IF NOT EXISTS reviewed_at timestamptz,
+  ADD COLUMN IF NOT EXISTS reviewed_by uuid;
