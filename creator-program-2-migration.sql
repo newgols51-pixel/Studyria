@@ -198,3 +198,42 @@ ALTER TABLE public.creator_pdf_submissions
   ADD COLUMN IF NOT EXISTS seo_description text,
   ADD COLUMN IF NOT EXISTS ai_quality_score numeric,
   ADD COLUMN IF NOT EXISTS ai_checks text;
+
+-- ============================================================================
+-- Phase 3 addition: Creator Dashboard's Wallet tab (crdRenderWallet /
+-- crdRequestWithdrawal) already has real, working code — but creator_ledger
+-- and creator_withdrawals tables don't exist yet, so the entire Wallet
+-- feature currently fails every time (wrapped safely in try/catch, degrades
+-- to "No transactions yet" / a failed-withdrawal toast, no crash — but zero
+-- real functionality). Confirmed via live schema read. Column names match
+-- exactly what the existing JS already sends.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS public.creator_ledger (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  type        text NOT NULL CHECK (type IN ('credit','debit')),
+  amount      numeric NOT NULL DEFAULT 0,
+  description text,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_creator_ledger_user ON public.creator_ledger(user_id, created_at DESC);
+ALTER TABLE public.creator_ledger ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "creators view own ledger" ON public.creator_ledger;
+CREATE POLICY "creators view own ledger" ON public.creator_ledger FOR SELECT USING (auth.uid() = user_id);
+
+CREATE TABLE IF NOT EXISTS public.creator_withdrawals (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  amount       numeric NOT NULL,
+  upi_id       text NOT NULL,
+  status       text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','processing','paid','rejected')),
+  requested_at timestamptz NOT NULL DEFAULT now(),
+  processed_at timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_creator_withdrawals_user ON public.creator_withdrawals(user_id, requested_at DESC);
+ALTER TABLE public.creator_withdrawals ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "creators view own withdrawals" ON public.creator_withdrawals;
+CREATE POLICY "creators view own withdrawals" ON public.creator_withdrawals FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "creators insert own withdrawals" ON public.creator_withdrawals;
+CREATE POLICY "creators insert own withdrawals" ON public.creator_withdrawals FOR INSERT WITH CHECK (auth.uid() = user_id);
