@@ -171,3 +171,30 @@ ALTER TABLE public.creator_pdf_submissions
   ADD COLUMN IF NOT EXISTS published_pdf_id uuid REFERENCES public.pdfs(id),
   ADD COLUMN IF NOT EXISTS reviewed_at timestamptz,
   ADD COLUMN IF NOT EXISTS reviewed_by uuid;
+
+-- ============================================================================
+-- Phase 2 addition #2: creator_pdf_submissions is missing the rich Step-3
+-- metadata columns that crpSubmitApplication() actually inserts (title,
+-- description, price, thumbnail, SEO, tags, AI quality score/checks).
+-- Confirmed via live schema read (Supabase connector) — real table currently
+-- only has: id, user_id, pdf_name, category, exam, storage_path,
+-- preview_path, file_size, page_count, status, admin_notes, created_at,
+-- updated_at. Without these columns, the FIRST real creator registration
+-- submission would fail outright with a "column does not exist" error.
+-- Purely additive/nullable — safe, no existing data affected.
+-- ============================================================================
+
+ALTER TABLE public.creator_pdf_submissions
+  ADD COLUMN IF NOT EXISTS title text,
+  ADD COLUMN IF NOT EXISTS description text,
+  ADD COLUMN IF NOT EXISTS language text,
+  ADD COLUMN IF NOT EXISTS product_type text,
+  ADD COLUMN IF NOT EXISTS access_type text,
+  ADD COLUMN IF NOT EXISTS price numeric,
+  ADD COLUMN IF NOT EXISTS mrp numeric,
+  ADD COLUMN IF NOT EXISTS tags text,
+  ADD COLUMN IF NOT EXISTS thumbnail_url text,
+  ADD COLUMN IF NOT EXISTS seo_title text,
+  ADD COLUMN IF NOT EXISTS seo_description text,
+  ADD COLUMN IF NOT EXISTS ai_quality_score numeric,
+  ADD COLUMN IF NOT EXISTS ai_checks text;
