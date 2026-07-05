@@ -43703,16 +43703,31 @@ async function cm2ApprovePdf(pdfId) {
       created_at:        new Date().toISOString(),
     };
 
-    // 5. Insert the real pdfs row — only mark the submission approved if this succeeds
-    const { data: newPdf, error: insErr } = await sb.from('pdfs').insert(payload).select('id').single();
+    // 5. Insert the real pdfs row — only mark the submission approved if this succeeds.
+    // creator_id may not exist yet (migration not run) — retry without it rather than
+    // blocking the actual publish, which is the important part.
+    let newPdf, insErr;
+    ({ data: newPdf, error: insErr } = await sb.from('pdfs').insert(payload).select('id').single());
+    if (insErr && /creator_id/.test(insErr.message || '')) {
+      const { creator_id, ...payloadNoCreator } = payload;
+      ({ data: newPdf, error: insErr } = await sb.from('pdfs').insert(payloadNoCreator).select('id').single());
+    }
     if (insErr) throw new Error('Publish failed: ' + insErr.message);
 
-    // 6. Link the submission to the new live pdfs row
-    await sb.from('creator_pdf_submissions').update({
-      status: 'approved',
-      published_pdf_id: newPdf.id,
-      reviewed_at: new Date().toISOString(),
-    }).eq('id', pdfId);
+    // 6. Link the submission to the new live pdfs row. published_pdf_id/reviewed_at may
+    // not exist yet either (same pending migration) — fall back to just the status flag
+    // so the publish itself is never blocked by these optional linking columns.
+    try {
+      const { error: linkErr } = await sb.from('creator_pdf_submissions').update({
+        status: 'approved',
+        published_pdf_id: newPdf.id,
+        reviewed_at: new Date().toISOString(),
+      }).eq('id', pdfId);
+      if (linkErr) throw linkErr;
+    } catch (linkErr) {
+      console.warn('Submission linking columns not available yet (run the pending migration):', linkErr.message);
+      await sb.from('creator_pdf_submissions').update({ status: 'approved' }).eq('id', pdfId);
+    }
 
     showToast('PDF approved and published live ✅', 'success');
     cm2SwitchTab('pdfs');
