@@ -1,0 +1,61 @@
+name: Build Static PDF/Job Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'pdf/**'
+      - 'job/**'
+      - 'sitemap.xml'
+  schedule:
+    # Nightly at 02:00 UTC — catches new PDFs/jobs added via admin panel
+    # so their static pages exist even without a code push.
+    - cron: '0 2 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install build deps
+        run: npm install @supabase/supabase-js ws --no-save
+
+      - name: Generate static PDF/Job pages + merge sitemap
+        run: node generate-static-pages.mjs
+        env:
+          # Public anon key — safe to keep inline (same one shipped in
+          # supabase.js). Override with repo secrets if you rotate keys.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON: ${{ secrets.SUPABASE_ANON }}
+          SITE_ORIGIN: https://studyria.qzz.io
+
+      # Site is served via Cloudflare's own git integration (auto-deploys
+      # on push to main) — NOT GitHub Pages. So instead of deploying here,
+      # we just commit the generated files back to main; Cloudflare picks
+      # them up automatically on the next push, same as any other file.
+      - name: Commit generated pages back to main
+        run: |
+          git config user.name "studyria-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add pdf/ job/ sitemap.xml
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: regenerate static PDF/job pages + sitemap [skip ci]"
+          git pull --rebase origin main
+          git push origin main
