@@ -20302,6 +20302,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
               showToast('⚠️ Payment received but library save failed. Contact support with payment ID: ' + paymentId, 'error');
             } else {
               console.log('✅ purchased_pdfs INSERT SUCCESS:', insertData);
+              cpCreditCreatorSale(pdfId, amount);
               // Bust cache so My Library loads fresh
               window._dashCache = null;
             }
@@ -20525,6 +20526,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
               showToast('⚠️ Payment received but library save failed. Contact support with ID: ' + paymentId, 'error');
             } else {
               console.log('✅ buyPDF purchased_pdfs INSERT SUCCESS:', insertData);
+              cpCreditCreatorSale(pdfId, amount);
               window._dashCache = null;
             }
           } else {
@@ -22111,6 +22113,7 @@ async function incrementDownloadCount(pdfId) {
     const current = (row?.download_count) || 0;
     await client.from('pdfs').update({ download_count: current + 1 }).eq('id', String(pdfId));
     console.log(`✅ download_count incremented for pdf ${pdfId}: ${current} → ${current + 1}`);
+    cpCreditCreatorDownload(pdfId);
   } catch(e) {
     console.warn('⚠️ incrementDownloadCount error:', e);
   }
@@ -40742,6 +40745,77 @@ const CP_LEVELS = {
   pro:     { label:'Pro',     share:70, icon:'💎', color:'#3d8ef8', minSales:25000 },
   elite:   { label:'Elite',   share:75, icon:'👑', color:'#8b5cf6', minSales:100000 }
 };
+
+// ── Creator revenue attribution: credits the creator when THEIR pdf sells,
+// logs to creator_ledger, and auto-promotes level based on cumulative sales.
+// Called from both purchase-completion handlers, right after a successful
+// (non-duplicate) purchased_pdfs insert. Wrapped defensively — a failure
+// here must never block the buyer's PDF from opening.
+async function cpCreditCreatorSale(pdfId, amount) {
+  try {
+    const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+    if (!sb || !pdfId) return;
+    const { data: pdf } = await sb.from('pdfs').select('creator_id').eq('id', String(pdfId)).maybeSingle();
+    if (!pdf || !pdf.creator_id) return; // not a creator-published PDF — nothing to credit
+
+    const { data: creator } = await sb.from('creators')
+      .select('level,revenue_share,total_sales,total_earnings,available_balance')
+      .eq('user_id', pdf.creator_id).maybeSingle();
+    if (!creator) return;
+
+    const saleAmount = Number(amount) || 0;
+    const share = (creator.revenue_share || CP_LEVELS[creator.level || 'starter']?.share || 60) / 100;
+    const creatorCut = Math.round(saleAmount * share * 100) / 100;
+    const newTotalSales = (creator.total_sales || 0) + saleAmount;
+    const newTotalEarnings = (creator.total_earnings || 0) + creatorCut;
+    const newBalance = (creator.available_balance || 0) + creatorCut;
+
+    // Auto level promotion based on cumulative sales (Starter → Rising → Pro → Elite)
+    let newLevel = creator.level || 'starter';
+    let newShare = creator.revenue_share || CP_LEVELS[newLevel].share;
+    for (const lvl of ['starter','rising','pro','elite']) {
+      if (newTotalSales >= CP_LEVELS[lvl].minSales) { newLevel = lvl; newShare = CP_LEVELS[lvl].share; }
+    }
+
+    await sb.from('creators').update({
+      total_sales: newTotalSales,
+      total_earnings: newTotalEarnings,
+      available_balance: newBalance,
+      level: newLevel,
+      revenue_share: newShare
+    }).eq('user_id', pdf.creator_id);
+
+    await sb.from('creator_ledger').insert({
+      user_id: pdf.creator_id,
+      type: 'credit',
+      amount: creatorCut,
+      description: `Sale revenue (${Math.round(share*100)}% share) — PDF sold for ₹${saleAmount}`,
+      created_at: new Date().toISOString()
+    });
+
+    if (newLevel !== (creator.level || 'starter')) {
+      console.log(`🎉 Creator ${pdf.creator_id} auto-promoted to ${newLevel} (${newShare}% share)`);
+    }
+  } catch(e) {
+    console.warn('⚠️ cpCreditCreatorSale error (non-blocking):', e);
+  }
+}
+
+// ── Creator download attribution: bumps total_downloads when a creator's
+// PDF is opened/downloaded (paid or free). Wrapped defensively.
+async function cpCreditCreatorDownload(pdfId) {
+  try {
+    const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+    if (!sb || !pdfId) return;
+    const { data: pdf } = await sb.from('pdfs').select('creator_id').eq('id', String(pdfId)).maybeSingle();
+    if (!pdf || !pdf.creator_id) return;
+    const { data: creator } = await sb.from('creators').select('total_downloads').eq('user_id', pdf.creator_id).maybeSingle();
+    if (!creator) return;
+    await sb.from('creators').update({ total_downloads: (creator.total_downloads || 0) + 1 }).eq('user_id', pdf.creator_id);
+  } catch(e) {
+    console.warn('⚠️ cpCreditCreatorDownload error (non-blocking):', e);
+  }
+}
 
 /* ─── Creator Registration State ───────────────────────────────── */
 let _crpStep = 1;
