@@ -18,8 +18,8 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://studyria.qzz.io/og-cover.png</image:loc>
-      <image:title>Studyria – India's #1 PDF Study Platform</image:title>
-      <image:caption>Free and premium PDF study materials for JEE, NEET, UPSC, ADRE, APSC and Assam exams.</image:caption>
+      <image:title>Studyria – Assam's #1 PDF Study Platform</image:title>
+      <image:caption>Free and premium PDF study materials for ADRE, APSC, Assam Police, Assam TET and all Assam board/state exams.</image:caption>
     </image:image>
   </url>
 
@@ -100,30 +100,6 @@
   <!-- ══════════════════════════════════════════════
        LIBRARY — EXAM CATEGORIES
   ══════════════════════════════════════════════ -->
-
-  <!-- JEE -->
-  <url>
-    <loc>https://studyria.qzz.io/?page=library&amp;cat=JEE</loc>
-    <lastmod>2026-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-
-  <!-- NEET -->
-  <url>
-    <loc>https://studyria.qzz.io/?page=library&amp;cat=NEET</loc>
-    <lastmod>2026-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-
-  <!-- UPSC -->
-  <url>
-    <loc>https://studyria.qzz.io/?page=library&amp;cat=UPSC</loc>
-    <lastmod>2026-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.78</priority>
-  </url>
 
   <!-- ADRE (Assam Direct Recruitment Exam) -->
   <url>
