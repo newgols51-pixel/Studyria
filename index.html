@@ -8409,6 +8409,7 @@ function studyriaApp() {
   }
   const _ottStarSvg = `<svg width="10" height="10" viewBox="0 0 24 24" style="vertical-align:-1px;margin-right:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#f59e0b"/></svg>`;
   window._ottStarSvgHTML = _ottStarSvg; // expose for _loadCardRatings (different script scope)
+  window._ottSeededRating = _ottSeededRating; // expose so Library card renderers show the same 4.7-5.0 default rating
 
   // ── OTT ROW CARD HTML ────────────────────────────────────────────
   function ottCardHTML(pdf, rank, showProgress, progressPct) {
@@ -10671,7 +10672,7 @@ function ottlibCardHTML(p, opts = {}) {
   const title = p.title || 'Untitled';
   const cat = p.category || '';
   const downloads = p.download_count || p.sales || 0;
-  const ratingVal = p.rating ? parseFloat(p.rating).toFixed(1) : '';
+  const ratingVal = p.rating ? parseFloat(p.rating).toFixed(1) : (window._ottSeededRating ? window._ottSeededRating(p.id).toFixed(1) : '4.8');
   const isFree = !p.price || p.price === 0;
   const price = isFree ? 'FREE' : `₹${p.price}`;
   const origPrice = Number(p.originalPrice ?? p.original_price ?? p.mrp ?? p.list_price ?? 0);
@@ -10707,7 +10708,7 @@ function ottlibCardHTML(p, opts = {}) {
     : `<span class="ottlib-card-price${isFree?' is-free':''}">${price}</span>`;
 
   return `
-    <div class="ottlib-card${isContinue?' is-continue':''}" onclick="ottlibOpenPDF('${p.id}')">
+    <div class="ottlib-card${isContinue?' is-continue':''}" onclick="ottlibOpenPDF('${p.id}')" data-pdf-id="${p.id}">
       <div class="ottlib-card-inner">
         <div class="ottlib-cover">
           ${coverContent}
@@ -17744,12 +17745,10 @@ function pdfCardHTML(pdf) {
 
       <!-- Rating + pages — single elegant row -->
       <div class="pdf-meta">
-        ${pdf.rating
-          ? `<span class="pdf-rating">
+        <span class="pdf-rating">
                <svg width="11" height="11" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#f59e0b"/></svg>
-               ${pdf.rating}
-             </span>`
-          : ''}
+               ${pdf.rating || (window._ottSeededRating ? window._ottSeededRating(pdf.id).toFixed(1) : '4.8')}
+             </span>
         ${(pdf.reviews != null && pdf.reviews !== '') ? `<span style="color:var(--text3);font-size:0.65rem;font-family:var(--font-ui)">(${Number(pdf.reviews || 0).toLocaleString()})</span>` : ''}
         ${pdf.pages ? `<span style="color:var(--text3)">·</span><span style="font-size:0.65rem;font-family:var(--font-ui)">${pdf.pages}p</span>` : ''}
       </div>
@@ -19225,6 +19224,11 @@ async function _loadCardRatings(pdfIds) {
           if (ottRatingEl) {
             const countHTML = stats.reviewCount > 0 ? `<span class="ott-card-rating-count">(${stats.reviewCount.toLocaleString()})</span>` : '';
             ottRatingEl.innerHTML = `${window._ottStarSvgHTML || ''}<span>${stats.avgRating.toFixed(1)}</span>${countHTML}`;
+          }
+          // ── Library "Browse Categories" cards (.ottlib-card-rating) ──
+          const ottlibRatingEl = card.querySelector('.ottlib-card-rating');
+          if (ottlibRatingEl) {
+            ottlibRatingEl.innerHTML = `<span class="ottlib-star">★</span>${stats.avgRating.toFixed(1)}`;
           }
           // ── Legacy list-style cards (.pdf-meta) ───────────────────────
           const metaEl = card.querySelector('.pdf-meta');
