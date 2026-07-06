@@ -8405,7 +8405,7 @@ function studyriaApp() {
     for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
     h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
     const seed = (h >>> 0) / 4294967296;
-    return Math.round((4.7 + seed * 0.3) * 10) / 10; // 4.7 → 5.0
+    return Math.round((4.5 + seed * 0.5) * 10) / 10; // 4.5 → 5.0 (wider spread so ratings don't all look identical)
   }
   const _ottStarSvg = `<svg width="10" height="10" viewBox="0 0 24 24" style="vertical-align:-1px;margin-right:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#f59e0b"/></svg>`;
   window._ottStarSvgHTML = _ottStarSvg; // expose for _loadCardRatings (different script scope)
