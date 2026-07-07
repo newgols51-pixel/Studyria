@@ -18329,6 +18329,7 @@ function _pdpRenderShell(pdf) {
   const coverSrc = (pdf.cover_image || pdf.coverImage || '').trim();
   const coverHTML = coverSrc
     ? `<img src="${coverSrc}" alt="${_esc(pdf.title)}" class="pdp-cover-img"
+          width="400" height="600"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" decoding="async">
        <div class="pdp-cover-fallback" style="background:linear-gradient(135deg,${coverFrom},${coverTo})">${icon('file',64)}</div>`
     : `<div class="pdp-cover-fallback" style="background:linear-gradient(135deg,${coverFrom},${coverTo})">${icon('file',64)}</div>`;
@@ -18728,8 +18729,14 @@ async function pdpInitPreview(pdf) {
   track.classList.add('active');
 
   const SLOT_RATIO = 0.9; // scroll distance per page, as a fraction of viewport height — tune for feel
+  // Use visualViewport height when available — it reflects the *stable*
+  // layout viewport rather than the raw window.innerHeight, which mobile
+  // browsers shrink/grow as their URL bar collapses/expands mid-scroll.
+  function stableViewportHeight() {
+    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  }
   function sizeTrack() {
-    track.style.height = (numPages * window.innerHeight * SLOT_RATIO) + 'px';
+    track.style.height = (numPages * stableViewportHeight() * SLOT_RATIO) + 'px';
   }
   sizeTrack();
 
@@ -18798,12 +18805,24 @@ async function pdpInitPreview(pdf) {
   }
 
   let resizeTicking = false;
+  let lastKnownWidth = window.innerWidth;
   function onResize() {
     if (resizeTicking) return;
     resizeTicking = true;
     requestAnimationFrame(() => {
-      sizeTrack();
-      showPage(computePageFromScroll());
+      // Mobile browsers fire 'resize' when their URL bar collapses/expands
+      // during scroll (in EITHER direction) — that only changes innerHeight,
+      // never innerWidth. Re-sizing the track on those phantom events is
+      // what caused the mobile "zoom/shift" bug: real layout changes
+      // (rotation, actual breakpoint change) always change the width, so
+      // gating on width-only change filters out the false positives while
+      // still catching every real resize.
+      const currentWidth = window.innerWidth;
+      if (currentWidth !== lastKnownWidth) {
+        lastKnownWidth = currentWidth;
+        sizeTrack();
+        showPage(computePageFromScroll());
+      }
       resizeTicking = false;
     });
   }
@@ -38507,22 +38526,24 @@ async function hlmSaveTheme() {
 .pdp-page { padding-bottom: 100px; }
 .pdp-container { padding-top: 0; }
 
+/* Breakpoints: <768px Mobile · 768-1023px Tablet · >=1024px Desktop */
 .pdp-layout {
   display: grid;
-  grid-template-columns: 280px 1fr 320px;
+  grid-template-columns: 1fr; /* mobile-first default: single column */
   gap: 28px;
   align-items: start;
   padding-top: 24px;
 }
-@media(max-width:1100px) {
+.pdp-right { display: none; } /* hidden by default (mobile/tablet); shown explicitly on desktop below */
+
+@media (min-width:768px) and (max-width:1023px) {
+  /* Tablet — 2 columns, no right rail */
   .pdp-layout { grid-template-columns: 240px 1fr; }
-  .pdp-right { display: none; }
 }
-@media(max-width:720px) {
-  .pdp-layout { grid-template-columns: 1fr; }
-  .pdp-left { display: block; }
-  .pdp-trust-grid { margin-top: 0; }
-  .pdp-right { display: none; }
+@media (min-width:1024px) {
+  /* Desktop — true 3-column layout, right rail restored */
+  .pdp-layout { grid-template-columns: 280px 1fr 320px; }
+  .pdp-right { display: block; }
 }
 @media(max-width:480px) {
   .pdp-mobile-price-block { display: block !important; }
