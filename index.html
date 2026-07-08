@@ -9192,7 +9192,7 @@ function studyriaApp() {
     </div>
   </section>
 
-  <section class="discover-section">
+  <section class="discover-section" id="discover-section">
     <div class="container">
 
       <div class="search-panel">
@@ -17372,27 +17372,40 @@ function _pdpResetPageZoom() {
   }
 }
 
-// ── About page canonical handling ──────────────────────────────────
-// sitemap.xml / robots.txt / the breadcrumb JSON-LD all advertise
-// https://studyria.qzz.io/?page=about as its own indexable URL, but the
-// static <link rel="canonical"> in <head> is hardcoded to the homepage
-// and the SPA never read `?page=` on load — so a direct hit on
-// /?page=about silently rendered the homepage with canonical="/",
-// which is exactly why GSC folded it into the homepage as a duplicate.
-// This keeps the homepage canonical everywhere else and self-references
-// the About URL only while the About page is actually showing.
-window._aboutDefaultCanonical = null;
-function _setAboutCanonical(isAbout) {
+// ── SPA page canonical handling ─────────────────────────────────────
+// sitemap.xml / robots.txt / the breadcrumb JSON-LD all advertise these
+// ?page=X URLs as their own indexable pages, but the static
+// <link rel="canonical"> in <head> is hardcoded to the homepage and the
+// SPA never read `?page=` on load — so a direct hit on any of them
+// silently rendered the homepage with canonical="/", which is exactly
+// why GSC folded /?page=about into the homepage as a duplicate. This
+// keeps the homepage canonical everywhere else and self-references the
+// matching ?page=X URL only while that page is actually showing.
+// 'discover' is a section of the home page (no separate DOM page), so
+// it's included in the canonical map but not in the navigate() 404 guard.
+const _PAGE_CANONICAL_MAP = {
+  'about':      'https://studyria.qzz.io/?page=about',
+  'career-hub': 'https://studyria.qzz.io/?page=career-hub',
+  'library':    'https://studyria.qzz.io/?page=library',
+  'discover':   'https://studyria.qzz.io/?page=discover',
+  'contact':    'https://studyria.qzz.io/?page=contact',
+  'privacy':    'https://studyria.qzz.io/?page=privacy',
+  'terms':      'https://studyria.qzz.io/?page=terms',
+  'refund':     'https://studyria.qzz.io/?page=refund',
+};
+window._pageDefaultCanonical = null;
+function _setPageCanonical(page) {
   const canonicalEl = document.querySelector('link[rel="canonical"]');
   if (!canonicalEl) return;
-  if (isAbout) {
-    if (window._aboutDefaultCanonical === null) {
-      window._aboutDefaultCanonical = canonicalEl.href;
+  const target = _PAGE_CANONICAL_MAP[page];
+  if (target) {
+    if (window._pageDefaultCanonical === null) {
+      window._pageDefaultCanonical = canonicalEl.href;
     }
-    canonicalEl.href = 'https://studyria.qzz.io/?page=about';
-  } else if (window._aboutDefaultCanonical !== null) {
-    canonicalEl.href = window._aboutDefaultCanonical;
-    window._aboutDefaultCanonical = null;
+    canonicalEl.href = target;
+  } else if (window._pageDefaultCanonical !== null) {
+    canonicalEl.href = window._pageDefaultCanonical;
+    window._pageDefaultCanonical = null;
   }
 }
 
@@ -17444,8 +17457,8 @@ async function navigate(page) {
   document.querySelectorAll('.nav-link[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
   document.querySelectorAll('.mobile-nav-item[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
 
-  // Keep the canonical tag in sync with the About page (see helper above)
-  _setAboutCanonical(page === 'about');
+  // Keep the canonical tag in sync with the current page (see helper above)
+  _setPageCanonical(page);
 
   // Page-specific render
   if (page === 'home') { renderHome(); setTimeout(() => { if (typeof ottRenderDiscovery === 'function' && window.PDFS && window.PDFS.length) ottRenderDiscovery(false); }, 100); }
@@ -34508,14 +34521,25 @@ document.addEventListener('DOMContentLoaded', async function _appInit() {
     // set by the SPA path → hash redirect in the <head> or by a direct
     // footer link click. If so, navigate there instead of home.
     const _initHash = location.hash.replace('#', '').trim();
-    // Direct hit on https://studyria.qzz.io/?page=about (Googlebot, shared
-    // links, etc.) — no hash present, so fall back to the query string.
-    // Scoped to 'about' only; every other page's behaviour is unchanged.
+    // Direct hit on an indexable https://studyria.qzz.io/?page=X URL
+    // (Googlebot, shared links, etc.) — no hash present, so fall back to
+    // the query string. Scoped to the URLs sitemap.xml/robots.txt already
+    // advertise as indexable; every other page's behaviour is unchanged.
     const _initQueryPage = new URLSearchParams(location.search).get('page');
+    const _QUERY_PAGE_ALLOWLIST = new Set([
+      'about', 'career-hub', 'library', 'contact', 'privacy', 'terms', 'refund'
+    ]);
     if (_initHash && _initHash !== '404' && _SPA_PUBLIC_PAGES.has(_initHash)) {
       navigate(_initHash);
-    } else if (_initQueryPage === 'about') {
-      navigate('about');
+    } else if (_initQueryPage === 'discover') {
+      // 'discover' is a section of the home page, not a separate page —
+      // render home, self-reference the canonical, then scroll to it.
+      navigate('home');
+      _setPageCanonical('discover');
+      const discoverEl = document.getElementById('discover-section');
+      if (discoverEl) setTimeout(() => discoverEl.scrollIntoView({ block: 'start' }), 50);
+    } else if (_initQueryPage && _QUERY_PAGE_ALLOWLIST.has(_initQueryPage)) {
+      navigate(_initQueryPage);
     } else {
       renderHome();
     }
