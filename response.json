@@ -1,0 +1,53 @@
+{
+  "content": {
+    "name": "index.html",
+    "path": "index.html",
+    "sha": "335e9109efbf0df20a7cc71ae3caab81db96f721",
+    "size": 2614677,
+    "url": "https://api.github.com/repos/newgols51-pixel/studyria/contents/index.html?ref=main",
+    "html_url": "https://github.com/newgols51-pixel/studyria/blob/main/index.html",
+    "git_url": "https://api.github.com/repos/newgols51-pixel/studyria/git/blobs/335e9109efbf0df20a7cc71ae3caab81db96f721",
+    "download_url": "https://raw.githubusercontent.com/newgols51-pixel/studyria/main/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/newgols51-pixel/studyria/contents/index.html?ref=main",
+      "git": "https://api.github.com/repos/newgols51-pixel/studyria/git/blobs/335e9109efbf0df20a7cc71ae3caab81db96f721",
+      "html": "https://github.com/newgols51-pixel/studyria/blob/main/index.html"
+    }
+  },
+  "commit": {
+    "sha": "16cf72b5a0638cfb2dade75e545a929ea60f79b3",
+    "node_id": "C_kwDOSyI2aNoAKDE2Y2Y3MmI1YTA2MzhjZmIyZGFkZTc1ZTU0NWE5MjllYTYwZjc5YjM",
+    "url": "https://api.github.com/repos/newgols51-pixel/studyria/git/commits/16cf72b5a0638cfb2dade75e545a929ea60f79b3",
+    "html_url": "https://github.com/newgols51-pixel/studyria/commit/16cf72b5a0638cfb2dade75e545a929ea60f79b3",
+    "author": {
+      "name": "newgols51-pixel",
+      "email": "newgols51@gmail.com",
+      "date": "2026-07-08T09:45:01Z"
+    },
+    "committer": {
+      "name": "newgols51-pixel",
+      "email": "newgols51@gmail.com",
+      "date": "2026-07-08T09:45:01Z"
+    },
+    "tree": {
+      "sha": "4d365b06fa1ee908d62881ebb2bdc5fc9f378509",
+      "url": "https://api.github.com/repos/newgols51-pixel/studyria/git/trees/4d365b06fa1ee908d62881ebb2bdc5fc9f378509"
+    },
+    "message": "SEO: fix About page canonical — self-reference /?page=about instead of folding into homepage",
+    "parents": [
+      {
+        "sha": "87dbcaffd0967a68ae59c9e86726bcd1dfefb9a7",
+        "url": "https://api.github.com/repos/newgols51-pixel/studyria/git/commits/87dbcaffd0967a68ae59c9e86726bcd1dfefb9a7",
+        "html_url": "https://github.com/newgols51-pixel/studyria/commit/87dbcaffd0967a68ae59c9e86726bcd1dfefb9a7"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  }
+}
