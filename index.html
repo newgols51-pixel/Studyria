@@ -406,7 +406,12 @@ body.light .ott-row-track .pdf-cover-scrim {
 /* ── RUNTIME THEME VARIABLES (selector-based dark/light) ────────
    These live in a plain :root / body.light cascade — NOT inside
    @theme — so the JS theme toggle (adds/removes `.light` on
-   <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }"> instantly re-resolves every var(--bg), var(--text),
+   <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PH9XCFFG"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+ instantly re-resolves every var(--bg), var(--text),
    var(--glass), etc. used across @layer components. @theme
    tokens are emitted once at the top and aren't intended to be
    re-overridden per-selector at runtime, which is why dark/light
@@ -5333,6 +5338,13 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 
 </style>
 
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PH9XCFFG');</script>
+<!-- End Google Tag Manager -->
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
