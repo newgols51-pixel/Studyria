@@ -69,17 +69,74 @@ Discover thousands of educational resources including:
 
 ---
 
-# 🛠 Tech Stack
+# 🛠️ Tech Stack
 
-- HTML5
-- CSS3
-- JavaScript
-- Supabase
-- Firebase
-- Cloudflare Pages
-- GitHub
-- Google Analytics
-- Google Tag Manager
+<div align="center">
+
+| Frontend | Backend | Database | Cloud | Analytics | SEO | Payments |
+|----------|----------|----------|-------|-----------|-----|----------|
+| HTML5 | Supabase | Firebase | Cloudflare | Google Analytics | Google Search Console | Razorpay |
+| CSS3 | JavaScript | Firestore | GitHub Pages | Google Tag Manager | Bing Webmaster Tools | |
+
+</div>
+
+---
+
+### ⚡ Core Technologies
+
+```text
+🎨 Frontend
+├── HTML5
+├── CSS3
+└── JavaScript (ES6+)
+
+☁ Backend & Database
+├── Supabase
+├── Firebase Auth
+├── Firestore
+└── Storage
+
+🚀 Deployment
+├── GitHub
+├── GitHub Pages
+└── Cloudflare
+
+📊 Analytics
+├── Google Analytics 4
+├── Google Tag Manager
+└── Search Console
+
+🔍 SEO
+├── Sitemap.xml
+├── Robots.txt
+├── Canonical URLs
+├── Open Graph
+├── Twitter Cards
+└── Schema.org
+
+💳 Payments
+└── Razorpay
+```
+
+---
+
+## 📦 Architecture
+
+```
+👨‍💻 User
+      │
+      ▼
+🌐 Studyria Website
+      │
+      ├── 📚 Library
+      ├── 💼 Career Hub
+      ├── 🔍 Discover
+      ├── 🤖 AI
+      └── 💳 Payments
+             │
+             ▼
+      ☁ Firebase + Supabase
+```
 
 ---
 
