@@ -17372,6 +17372,30 @@ function _pdpResetPageZoom() {
   }
 }
 
+// ── About page canonical handling ──────────────────────────────────
+// sitemap.xml / robots.txt / the breadcrumb JSON-LD all advertise
+// https://studyria.qzz.io/?page=about as its own indexable URL, but the
+// static <link rel="canonical"> in <head> is hardcoded to the homepage
+// and the SPA never read `?page=` on load — so a direct hit on
+// /?page=about silently rendered the homepage with canonical="/",
+// which is exactly why GSC folded it into the homepage as a duplicate.
+// This keeps the homepage canonical everywhere else and self-references
+// the About URL only while the About page is actually showing.
+window._aboutDefaultCanonical = null;
+function _setAboutCanonical(isAbout) {
+  const canonicalEl = document.querySelector('link[rel="canonical"]');
+  if (!canonicalEl) return;
+  if (isAbout) {
+    if (window._aboutDefaultCanonical === null) {
+      window._aboutDefaultCanonical = canonicalEl.href;
+    }
+    canonicalEl.href = 'https://studyria.qzz.io/?page=about';
+  } else if (window._aboutDefaultCanonical !== null) {
+    canonicalEl.href = window._aboutDefaultCanonical;
+    window._aboutDefaultCanonical = null;
+  }
+}
+
 async function navigate(page) {
   window._realNavigate = navigate; // expose for stub flush
 
@@ -17419,6 +17443,9 @@ async function navigate(page) {
   // Update nav link active states
   document.querySelectorAll('.nav-link[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
   document.querySelectorAll('.mobile-nav-item[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
+
+  // Keep the canonical tag in sync with the About page (see helper above)
+  _setAboutCanonical(page === 'about');
 
   // Page-specific render
   if (page === 'home') { renderHome(); setTimeout(() => { if (typeof ottRenderDiscovery === 'function' && window.PDFS && window.PDFS.length) ottRenderDiscovery(false); }, 100); }
@@ -34481,8 +34508,14 @@ document.addEventListener('DOMContentLoaded', async function _appInit() {
     // set by the SPA path → hash redirect in the <head> or by a direct
     // footer link click. If so, navigate there instead of home.
     const _initHash = location.hash.replace('#', '').trim();
+    // Direct hit on https://studyria.qzz.io/?page=about (Googlebot, shared
+    // links, etc.) — no hash present, so fall back to the query string.
+    // Scoped to 'about' only; every other page's behaviour is unchanged.
+    const _initQueryPage = new URLSearchParams(location.search).get('page');
     if (_initHash && _initHash !== '404' && _SPA_PUBLIC_PAGES.has(_initHash)) {
       navigate(_initHash);
+    } else if (_initQueryPage === 'about') {
+      navigate('about');
     } else {
       renderHome();
     }
