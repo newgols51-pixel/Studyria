@@ -20070,6 +20070,41 @@ function handleBuy(id) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// ── GA4 PDF Download Event Tracking (via GTM dataLayer) ─────────────
+// Fires the `pdf_download` GA4 event (through GTM's dataLayer) once per
+// successful PDF download/open action. Called only from the success
+// branches of downloadPDF / buyPDF / triggerPDFDownload — i.e. only
+// AFTER a signed URL was resolved and window.open()/anchor-click
+// actually fired. A short per-pdf debounce guards against the same
+// action accidentally pushing the event twice (e.g. a double click or
+// a function re-entry) without blocking a genuine later re-download.
+// ══════════════════════════════════════════════════════════════════
+window._pdfDownloadFireGuard = window._pdfDownloadFireGuard || new Map();
+function trackPdfDownloadEvent(pdf, userType) {
+  try {
+    if (!pdf || !pdf.id) return;
+    const pdfId = String(pdf.id);
+    const now = Date.now();
+    const last = window._pdfDownloadFireGuard.get(pdfId) || 0;
+    if (now - last < 2000) return; // debounce: collapse accidental double-fire within 2s
+    window._pdfDownloadFireGuard.set(pdfId, now);
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event:     'pdf_download',
+      pdf_title: pdf.title || '',
+      pdf_id:    pdfId,
+      category:  pdf.category || '',
+      price:     Number(pdf.price ?? 0),
+      author:    pdf.author || '',
+      user_type: userType || (pdf.free ? 'free_user' : 'premium_user'),
+      timestamp: new Date().toISOString(),
+      page_url:  window.location.href
+    });
+  } catch(e) { console.error('❌ pdf_download GA4 tracking error:', e); }
+}
+
 async function downloadPDF(pdfId, _legacyUrl) {
   // _legacyUrl is intentionally ignored — we ALWAYS fetch the fresh URL from
   // the database to avoid stale / broken URLs embedded in HTML onclick attrs.
@@ -20192,6 +20227,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
       // ── Open the PDF ─────────────────────────────────────────
       window.open(resolvedUrl, '_blank');
       trackReadingSession(pdfId);
+      trackPdfDownloadEvent(pdf, 'free_user');
       const toastMsg = alreadyOwned
         ? `Opening "${pdf.title}" \uD83D\uDCD6`
         : `"${pdf.title}" added to your library! \uD83D\uDCDA`;
@@ -20257,6 +20293,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
     if (resolvedPaidUrl) {
       window.open(resolvedPaidUrl, '_blank');
       trackReadingSession(pdfId);
+      trackPdfDownloadEvent(pdf, 'premium_user');
       showToast('Download started! 📥', 'success');
     } else {
       console.error('❌ [Paid PDF] Could not resolve URL:', paidResolveErr);
@@ -20377,6 +20414,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
       if (resolvedPostPayUrl) {
         window.open(resolvedPostPayUrl, '_blank');
         trackReadingSession(pdfId);
+        trackPdfDownloadEvent(pdf, 'premium_user');
       } else {
         console.error('❌ [Post-Payment PDF] Could not resolve URL:', postPayErr);
         showToast('PDF link not available yet. Contact support.', 'info');
@@ -20417,6 +20455,10 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
     navigate('login');
     return;
   }
+
+  // Look up full PDF record (for GA4 pdf_download event fields) — falls
+  // back to a minimal object with just id/price if not in the local cache.
+  const pdf = normalizePdf((window.PDFS || []).find(p => String(p.id) === String(pdfId))) || { id: pdfId, price: amount };
 
   // ── PRE-PURCHASE CHECK — never open Razorpay if already paid ─────
   console.log('Current User ID:', buyUser?.id);
@@ -20461,7 +20503,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
       if (ownedUrl.startsWith('http://') || ownedUrl.startsWith('https://')) {
         const _m = ownedUrl.match(/\/object\/(?:public|sign)\/[^/]+\/(.+?)(?:\?|$)/);
         if (_m) _filePath = decodeURIComponent(_m[1]);
-        else { window.open(ownedUrl, '_blank'); trackReadingSession(pdfId); return; }
+        else { window.open(ownedUrl, '_blank'); trackReadingSession(pdfId); trackPdfDownloadEvent(pdf, 'premium_user'); return; }
       }
       const { data: _sd, error: _se } = await _sc.storage.from('pdfs').createSignedUrl(_filePath, 3600);
       if (_se) {
@@ -20471,6 +20513,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
         console.log('✅ [buyPDF already-owned] Signed URL:', _sd.signedUrl);
         window.open(_sd.signedUrl, '_blank');
         trackReadingSession(pdfId);
+        trackPdfDownloadEvent(pdf, 'premium_user');
       }
     } else {
       showToast('📚 Already Purchased — visit My Library to open this PDF.', 'info');
@@ -20609,6 +20652,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
             console.log('💳 [buyPDF Post-Payment] pdfUrl from DB:', pdfUrl, '| path:', _fp2, '| signed URL:', _sd2.signedUrl);
             window.open(_sd2.signedUrl, '_blank');
             trackReadingSession(pdfId);
+            trackPdfDownloadEvent(pdf, 'premium_user');
           }
         } else {
           showToast('PDF link not available yet. Contact support.', 'info');
@@ -36137,6 +36181,9 @@ async function triggerPDFDownload(pdfId) {
   }
   // ── Increment real download_count in database ──────────────────────
   incrementDownloadCount(pdfId);
+  // ── GA4 pdf_download event (My Library re-download) ────────────────
+  const _libPdf = normalizePdf((window.PDFS || []).find(p => String(p.id) === String(pdfId))) || { id: pdfId };
+  trackPdfDownloadEvent(_libPdf);
 }
 
 // Close all modals on Escape
