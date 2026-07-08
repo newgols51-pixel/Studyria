@@ -1,7 +1,7 @@
 {
-  "name": "Studyria – Assam's #1 PDF Study Platform",
+  "name": "Studyria \u2013 Assam's #1 PDF Study Platform",
   "short_name": "Studyria",
-  "description": "Free & premium PDF study materials for ADRE, APSC, Assam Police, Assam TET & all Assam state exams. Career Hub, job alerts & scholarships — all in one app.",
+  "description": "Free & premium PDF study materials for ADRE, APSC, Assam Police, Assam TET & all Assam state exams. Career Hub, job alerts & scholarships \u2014 all in one app.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -84,29 +84,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshots/home.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Studyria Home – Browse free PDF study materials"
-    },
-    {
-      "src": "screenshots/library.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "PDF Library – ADRE, APSC, Assam Police & State Exam study PDFs"
-    },
-    {
-      "src": "screenshots/career.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Career Hub – Assam job alerts, scholarships & results"
     }
   ],
   "shortcuts": [

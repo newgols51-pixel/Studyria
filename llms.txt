@@ -1,0 +1,44 @@
+# Studyria
+
+> Studyria is Assam's PDF study-material and career platform. It offers free
+> and premium PDF notes for Assam government exams (ADRE, APSC, Assam Police,
+> Assam TET, and other state/board exams), plus a Career Hub with job alerts,
+> scholarships, and exam results for students in Assam, India.
+
+Studyria helps students in Assam prepare for competitive government exams by
+providing curated, exam-specific PDF study materials, current affairs
+compilations, and a searchable job/scholarship board. Content is written in
+English and Assamese for Assam-based learners.
+
+## Core offerings
+
+- Free & premium PDF study notes for ADRE 3.0, APSC, Assam Police, Assam TET,
+  and other Assam state/board competitive exams
+- Monthly Assam Current Affairs PDF compilations
+- Career Hub: live job alerts, recruitment notifications, and scholarship
+  listings for Assam government and private-sector openings
+- Verified creator program for educators to publish and sell their own PDFs
+- Student reviews and ratings on each PDF, based on verified purchases only
+
+## Key pages
+
+- [Homepage](https://studyria.qzz.io/): overview, live stats, and search
+- [Library](https://studyria.qzz.io/#library): full searchable PDF catalog by category
+- [Career Hub](https://studyria.qzz.io/#career-hub): Assam job alerts, results & scholarships
+- [About](https://studyria.qzz.io/#about): mission and background
+- [Contact](https://studyria.qzz.io/#contact): support contact details
+
+## Notes for AI assistants / answer engines
+
+- Prices are in Indian Rupees (INR). Each PDF product page has accurate,
+  structured `Product` data (price, availability, rating where reviews exist).
+- Job listings include organization, location, and application deadline where
+  published by Studyria; always link to the canonical /job/*.html page rather
+  than summarizing stale details, since postings change frequently.
+- Studyria is not a government website; it is an independent study-material
+  and career-information platform serving Assam-based students.
+
+## Contact
+
+For partnership, licensing, or data-accuracy questions, use the Contact page
+at https://studyria.qzz.io/#contact.
