@@ -23647,8 +23647,9 @@ async function chmSaveJob() {
 // "invalid input syntax for type uuid" on save. These fixed UUIDs are only the
 // offline/fallback defaults; DB rows are the source of truth once seeded.
 const COMMUNITY_DEFAULTS = [
-  { id: 'a1b2c3d4-0001-4000-8000-000000000001', title: 'Studyria Official', description: 'Reels & stories on Instagram', icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: true, sort_order: 1 },
-  { id: 'a1b2c3d4-0002-4000-8000-000000000002', title: 'Studyria Official', description: 'Daily updates on Telegram',   icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: true, sort_order: 2 },
+  { id: 'a1b2c3d4-0001-4000-8000-000000000001', title: 'Studyria Official', description: 'Reels & stories on Instagram', icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: true,  sort_order: 1 },
+  { id: 'a1b2c3d4-0002-4000-8000-000000000002', title: 'Studyria Official', description: 'Daily updates on Telegram',   icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: true,  sort_order: 2 },
+  { id: 'a1b2c3d4-0003-4000-8000-000000000003', title: 'Studyria Official', description: 'Pins & boards on Pinterest',  icon: '📌', color: '#e60023', url: 'https://pin.it/3f4ctNDO7',                                             enabled: true, is_primary: false, sort_order: 3 },
 ];
 
 // Generates a real UUID v4 — falls back to a manual implementation on browsers
