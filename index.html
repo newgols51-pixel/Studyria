@@ -4233,130 +4233,148 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
 .community-hub-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 18px;
+  align-items: stretch;
 }
 @media (min-width: 480px) {
   .community-hub-grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (min-width: 768px) {
-  .community-hub-grid { grid-template-columns: repeat(3, 1fr); }
-}
 @media (min-width: 1024px) {
-  .community-hub-grid { grid-template-columns: repeat(4, 1fr); }
+  .community-hub-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
 }
-.ch-btn {
+
+/* ── Premium glassmorphic community card ── */
+.chx-card {
+  --chx-glow: rgba(255,255,255,0.18);
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.04);
-  cursor: pointer;
+  flex-direction: column;
+  height: 100%;
+  padding: 26px 22px 22px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgba(22,24,30,0.55), rgba(22,24,30,0.55)) padding-box,
+    var(--chx-grad, linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05))) border-box;
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   text-decoration: none;
   color: var(--text);
-  font-size: .88rem;
-  font-weight: 600;
-  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
-  position: relative;
+  cursor: pointer;
   overflow: hidden;
-  animation: chBtnIn .4s ease both;
+  animation: chxCardIn .5s cubic-bezier(.2,.8,.2,1) both;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, background .3s ease;
+  -webkit-tap-highlight-color: transparent;
 }
-.ch-btn::before {
+.chx-card::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--ch-glow, rgba(255,255,255,0.03));
+  background: radial-gradient(120px 80px at 20% 0%, var(--chx-glow), transparent 70%);
   opacity: 0;
-  transition: opacity .2s;
+  transition: opacity .3s ease;
+  pointer-events: none;
 }
-.ch-btn:hover::before { opacity: 1; }
-.ch-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.28), 0 0 20px var(--ch-shadow, rgba(255,255,255,0.05));
-  border-color: var(--ch-border, rgba(255,255,255,0.15));
-  background: rgba(255,255,255,0.07);
+.chx-card:hover,
+.chx-card:focus-visible {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.34), 0 0 0 1px var(--chx-glow);
 }
-.ch-btn:active { transform: translateY(-1px); }
-.ch-btn.ch-primary {
-  grid-column: 1 / -1;
-  background: linear-gradient(135deg, rgba(37,211,102,0.15), rgba(37,211,102,0.08));
-  border-color: rgba(37,211,102,0.3);
-  padding: 16px 20px;
-  font-size: .95rem;
-  --ch-shadow: rgba(37,211,102,0.2);
-  --ch-border: rgba(37,211,102,0.5);
-  --ch-glow: rgba(37,211,102,0.06);
-}
-@media (min-width: 480px) {
-  .ch-btn.ch-primary { grid-column: 1 / -1; }
-}
-.ch-icon {
-  width: 40px; height: 40px;
-  border-radius: 12px;
+.chx-card:hover::after { opacity: 1; }
+.chx-card:active { transform: translateY(-3px) scale(1.005); }
+
+.chx-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
   flex-shrink: 0;
-  background: var(--ch-icon-bg, rgba(255,255,255,0.06));
-  border: 1px solid var(--ch-icon-border, rgba(255,255,255,0.08));
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  margin-bottom: 16px;
 }
-.ch-btn.ch-primary .ch-icon {
-  width: 46px; height: 46px;
-  font-size: 1.4rem;
-  border-radius: 14px;
+.chx-icon-wrap svg { width: 27px; height: 27px; display: block; }
+
+.chx-body { flex: 1; }
+.chx-title {
+  display: block;
+  font-weight: 800;
+  font-size: 1.02rem;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
 }
-.ch-btn-text { flex: 1; }
-.ch-btn-label { display: block; font-weight: 700; line-height: 1.2; }
-.ch-btn-desc { display: block; font-size: .72rem; color: var(--text2); font-weight: 400; margin-top: 2px; }
-.ch-btn-arrow {
-  font-size: .9rem;
+.chx-desc {
+  display: block;
+  font-size: .8rem;
+  line-height: 1.55;
   color: var(--text2);
-  transition: transform .2s;
-  flex-shrink: 0;
+  font-weight: 400;
 }
-.ch-btn:hover .ch-btn-arrow { transform: translateX(3px); }
-.ch-btn.ch-primary .ch-btn-arrow { color: rgba(37,211,102,0.7); }
-.ch-members-badge {
+
+.chx-join-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.chx-join-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(37,211,102,0.12);
-  border: 1px solid rgba(37,211,102,0.2);
+  gap: 6px;
+  padding: 8px 16px;
   border-radius: 100px;
-  padding: 2px 10px;
-  font-size: .65rem;
+  font-size: .76rem;
   font-weight: 700;
-  color: #25d366;
-  margin-left: auto;
+  color: #0b0d12;
+  background: var(--chx-grad, #fff);
+  box-shadow: 0 4px 14px var(--chx-glow);
+  transition: transform .25s ease, box-shadow .25s ease;
+  white-space: nowrap;
+}
+.chx-card:hover .chx-join-btn {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px var(--chx-glow);
+}
+.chx-arrow {
+  font-size: 1.05rem;
+  color: var(--text2);
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
   flex-shrink: 0;
 }
-@keyframes chBtnIn {
-  from { opacity:0; transform: translateY(16px); }
-  to   { opacity:1; transform: translateY(0); }
+.chx-card:hover .chx-arrow { transform: translateX(5px); color: var(--text); }
+
+@keyframes chxCardIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-/* Loader skeleton for community hub */
+
+/* Loader skeleton for community hub — matches the new card shape */
 .ch-skeleton-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 18px;
 }
 @media (min-width: 480px) { .ch-skeleton-grid { grid-template-columns: repeat(2,1fr); } }
-@media (min-width: 768px) { .ch-skeleton-grid { grid-template-columns: repeat(3,1fr); } }
+@media (min-width: 1024px) { .ch-skeleton-grid { grid-template-columns: repeat(4,1fr); } }
 .ch-skel {
-  height: 68px;
-  border-radius: 14px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%);
+  height: 172px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
   background-size: 200% 100%;
   animation: skelShimmer 1.4s infinite;
 }
-.ch-skel:first-child { grid-column: 1/-1; height: 78px; }
 @keyframes skelShimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}
+}}
 
 /* ═══ ADMIN — Community Manager ═══ */
 .community-manager-wrap { padding: 0; }
@@ -9741,8 +9759,6 @@ function studyriaApp() {
         <div id="communityHubGrid">
           <!-- Skeleton shown while loading -->
           <div class="ch-skeleton-grid" id="communityHubSkeleton">
-            <div class="ch-skel"></div>
-            <div class="ch-skel"></div>
             <div class="ch-skel"></div>
             <div class="ch-skel"></div>
             <div class="ch-skel"></div>
@@ -23646,10 +23662,18 @@ async function chmSaveJob() {
 // in Supabase. Hardcoded slugs like 'wa-community' or 'link_'+Date.now() throw
 // "invalid input syntax for type uuid" on save. These fixed UUIDs are only the
 // offline/fallback defaults; DB rows are the source of truth once seeded.
+// NOTE: ids MUST be valid UUIDs — community_links.id is a `uuid` primary key
+// in Supabase. Hardcoded slugs like 'wa-community' or 'link_'+Date.now() throw
+// "invalid input syntax for type uuid" on save. These fixed UUIDs are only the
+// offline/fallback defaults; DB rows are the source of truth once seeded.
+// `platform` selects the official brand SVG icon (see _CH_BRAND_ICONS) —
+// independent of the emoji `icon` field, which is only a fallback for any
+// custom link an admin adds later that isn't one of these four platforms.
 const COMMUNITY_DEFAULTS = [
-  { id: 'a1b2c3d4-0001-4000-8000-000000000001', title: 'Studyria Official', description: 'Reels & stories on Instagram', icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: true,  sort_order: 1 },
-  { id: 'a1b2c3d4-0002-4000-8000-000000000002', title: 'Studyria Official', description: 'Daily updates on Telegram',   icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: true,  sort_order: 2 },
-  { id: 'a1b2c3d4-0003-4000-8000-000000000003', title: 'Studyria Official', description: 'Pins & boards on Pinterest',  icon: '📌', color: '#e60023', url: 'https://pin.it/3f4ctNDO7',                                             enabled: true, is_primary: false, sort_order: 3 },
+  { id: 'a1b2c3d4-0000-4000-8000-000000000000', platform: 'whatsapp',  title: 'WhatsApp Community', description: 'Instant exam alerts, important notices & student discussions.',       icon: '💬', color: '#25d366', url: 'https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R', enabled: true, is_primary: false, sort_order: 1 },
+  { id: 'a1b2c3d4-0001-4000-8000-000000000001', platform: 'instagram', title: 'Instagram',          description: 'Daily study motivation, reels, success stories & learning tips.',     icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: false, sort_order: 2 },
+  { id: 'a1b2c3d4-0002-4000-8000-000000000002', platform: 'telegram',  title: 'Telegram',           description: 'Fast job alerts, premium PDF updates & exclusive announcements.',      icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: false, sort_order: 3 },
+  { id: 'a1b2c3d4-0003-4000-8000-000000000003', platform: 'pinterest', title: 'Pinterest',          description: 'Premium notes, study inspiration & exam preparation collections.',     icon: '📌', color: '#e60023', url: 'https://pin.it/3f4ctNDO7',                                             enabled: true, is_primary: false, sort_order: 4 },
 ];
 
 // Generates a real UUID v4 — falls back to a manual implementation on browsers
@@ -23678,6 +23702,46 @@ function _chIconBorder(color) {
   const hex = color || '#3d8ef8';
   const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},0.25)`;
+}
+
+// ── Official brand SVG icons (real logos, not emoji) ──────────────────────
+// Path data: Simple Icons project (CC0). Each renders as a crisp inline SVG
+// colored with the platform's real brand color/gradient.
+const _CH_BRAND_ICONS = {
+  whatsapp: {
+    viewBox: '0 0 24 24',
+    path: 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z',
+    fill: '#25D366',
+    grad: 'linear-gradient(135deg, #2FE072, #128C7E)'
+  },
+  telegram: {
+    viewBox: '0 0 24 24',
+    path: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z',
+    fill: '#29A9EA',
+    grad: 'linear-gradient(135deg, #4FC3F7, #0088CC)'
+  },
+  pinterest: {
+    viewBox: '0 0 24 24',
+    path: 'M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z',
+    fill: '#E60023',
+    grad: 'linear-gradient(135deg, #F0324A, #AD081B)'
+  },
+  instagram: {
+    viewBox: '0 0 24 24',
+    path: 'M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077',
+    fill: null, // rendered with a gradient fill instead of a flat color
+    grad: 'linear-gradient(135deg, #F09433, #E6683C, #DC2743, #CC2366, #BC1888)'
+  },
+};
+
+function _chBrandIconSvg(platform, gradId) {
+  const brand = _CH_BRAND_ICONS[platform];
+  if (!brand) return null;
+  const fillAttr = brand.fill ? brand.fill : `url(#${gradId})`;
+  const defs = brand.fill ? '' : `<defs><linearGradient id="${gradId}" x1="0%" y1="100%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#FED576"/><stop offset="26%" stop-color="#F47133"/><stop offset="61%" stop-color="#BC3081"/><stop offset="100%" stop-color="#4C63D2"/>
+  </linearGradient></defs>`;
+  return `<svg viewBox="${brand.viewBox}" width="27" height="27" aria-hidden="true">${defs}<path fill="${fillAttr}" d="${brand.path}"/></svg>`;
 }
 
 async function loadCommunityHub() {
@@ -23722,41 +23786,32 @@ async function loadCommunityHub() {
     return;
   }
 
-  // Render — supports MULTIPLE primary (full-width) links, not just the first one
-  const primaries = links.filter(l => l.is_primary);
-  const rest = links.filter(l => !l.is_primary);
-
+  // Premium glassmorphic cards — every enabled link renders as an equal-height
+  // card. Official brand SVG icon when `platform` matches a known brand,
+  // otherwise falls back to the admin-entered emoji (custom future links).
   let html = '<div class="community-hub-grid">';
 
-  primaries.forEach((primary, i) => {
-    html += `<a href="${primary.url}" target="_blank" rel="noopener noreferrer" class="ch-btn ch-primary"
-      style="animation-delay:${.05 + i*.04}s"
-      onclick="trackCommunityClick('${primary.id}')">
-      <div class="ch-icon" style="background:${_chIconBg(primary.color)};border-color:${_chIconBorder(primary.color)}">
-        ${primary.icon}
-      </div>
-      <div class="ch-btn-text">
-        <span class="ch-btn-label">${primary.title}</span>
-        <span class="ch-btn-desc">${primary.description || ''}</span>
-      </div>
-      <span class="ch-members-badge"><span style="width:5px;height:5px;border-radius:50%;background:#25d366;display:inline-block;box-shadow:0 0 4px #25d366"></span>Join Now</span>
-      <span class="ch-btn-arrow">→</span>
-    </a>`;
-  });
+  links.forEach((link, i) => {
+    const brand = _CH_BRAND_ICONS[link.platform];
+    const gradId = `chxGrad-${link.platform || 'x'}-${i}`;
+    const iconMarkup = brand
+      ? _chBrandIconSvg(link.platform, gradId)
+      : (link.icon || '🔗');
+    const cardGrad = brand ? brand.grad : `linear-gradient(135deg, ${link.color || '#3d8ef8'}, ${link.color || '#3d8ef8'}99)`;
+    const glow = brand && brand.fill ? `${brand.fill}55` : (brand ? 'rgba(255,255,255,0.35)' : `${link.color || '#3d8ef8'}55`);
 
-  // Secondary buttons
-  rest.forEach((link, i) => {
-    html += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="ch-btn"
-      style="animation-delay:${.08 + i*.06}s;--ch-shadow:${link.color}33;--ch-border:${link.color}44"
+    html += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="chx-card"
+      style="animation-delay:${.05 + i*.06}s;--chx-grad:${cardGrad};--chx-glow:${glow}"
       onclick="trackCommunityClick('${link.id}')">
-      <div class="ch-icon" style="background:${_chIconBg(link.color)};border-color:${_chIconBorder(link.color)}">
-        ${link.icon}
+      <div class="chx-icon-wrap">${iconMarkup}</div>
+      <div class="chx-body">
+        <span class="chx-title">${link.title}</span>
+        <span class="chx-desc">${link.description || ''}</span>
       </div>
-      <div class="ch-btn-text">
-        <span class="ch-btn-label">${link.title}</span>
-        <span class="ch-btn-desc">${link.description || ''}</span>
+      <div class="chx-join-row">
+        <span class="chx-join-btn">Join Now</span>
+        <span class="chx-arrow">→</span>
       </div>
-      <span class="ch-btn-arrow">→</span>
     </a>`;
   });
 
