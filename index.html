@@ -23642,15 +23642,30 @@ async function chmSaveJob() {
 // ══════════════════════════════════════════════════════════════════
 
 // Default fallback links (used if DB not set up yet)
+// NOTE: ids MUST be valid UUIDs — community_links.id is a `uuid` primary key
+// in Supabase. Hardcoded slugs like 'wa-community' or 'link_'+Date.now() throw
+// "invalid input syntax for type uuid" on save. These fixed UUIDs are only the
+// offline/fallback defaults; DB rows are the source of truth once seeded.
 const COMMUNITY_DEFAULTS = [
-  { id: 'wa-community', title: 'WhatsApp Community', description: 'Join our main group', icon: '💬', color: '#25d366', url: 'https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R', enabled: true, is_primary: true, sort_order: 1 },
-  { id: 'telegram',     title: 'Telegram',           description: 'Daily updates',        icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                      enabled: true, is_primary: false, sort_order: 2 },
-  { id: 'wa-channel',   title: 'WhatsApp Channel',   description: 'News & alerts',         icon: '📢', color: '#25d366', url: 'https://whatsapp.com/channel/studyria',                     enabled: true, is_primary: false, sort_order: 3 },
-  { id: 'facebook',     title: 'Facebook',           description: 'Follow our page',       icon: '📘', color: '#1877f2', url: 'https://facebook.com/studyria',                             enabled: true, is_primary: false, sort_order: 4 },
-  { id: 'instagram',    title: 'Instagram',          description: 'Reels & stories',       icon: '📸', color: '#e1306c', url: 'https://instagram.com/studyria',                            enabled: true, is_primary: false, sort_order: 5 },
-  { id: 'discord',      title: 'Discord',            description: 'Live chat & help',      icon: '🎮', color: '#5865f2', url: 'https://discord.gg/studyria',                               enabled: true, is_primary: false, sort_order: 6 },
-  { id: 'youtube',      title: 'YouTube',            description: 'Video lessons',         icon: '▶️', color: '#ff0000', url: 'https://youtube.com/@studyria',                             enabled: true, is_primary: false, sort_order: 7 },
+  { id: 'a1b2c3d4-0001-4000-8000-000000000001', title: 'Studyria Official', description: 'Reels & stories on Instagram', icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: true, sort_order: 1 },
+  { id: 'a1b2c3d4-0002-4000-8000-000000000002', title: 'Studyria Official', description: 'Daily updates on Telegram',   icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: true, sort_order: 2 },
 ];
+
+// Generates a real UUID v4 — falls back to a manual implementation on browsers
+// without crypto.randomUUID (e.g. Safari < 15.4).
+function _cmGenUUID() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+function _cmIsValidUUID(str) {
+  return typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+}
 
 // Color map for icon backgrounds
 function _chIconBg(color) {
@@ -23675,18 +23690,21 @@ async function loadCommunityHub() {
   try {
     const sb = window.supabaseClient;
     if (sb) {
-      // Load section settings
-      const { data: settings } = await sb.from('community_links')
+      const { data: settings, error: linksErr } = await sb.from('community_links')
         .select('*')
         .order('sort_order', { ascending: true });
-      if (settings && settings.length > 0) {
-        links = settings.filter(l => l.enabled);
-      } else {
-        links = COMMUNITY_DEFAULTS.filter(l => l.enabled);
-      }
-      // Check if section itself is hidden via a special sentinel row
-      const sentinel = (settings || []).find(l => l.id === '__section_hidden__');
-      if (sentinel) sectionEnabled = false;
+      if (linksErr) throw linksErr;
+      links = (settings && settings.length > 0)
+        ? settings.filter(l => l.enabled)
+        : COMMUNITY_DEFAULTS.filter(l => l.enabled);
+
+      // Section visibility lives on website_settings.community_hub_enabled —
+      // NOT a sentinel row inside community_links (that hack broke the uuid PK).
+      const { data: ws } = await sb.from('website_settings')
+        .select('community_hub_enabled')
+        .limit(1)
+        .single();
+      if (ws && ws.community_hub_enabled === false) sectionEnabled = false;
     } else {
       links = COMMUNITY_DEFAULTS.filter(l => l.enabled);
     }
@@ -23696,22 +23714,22 @@ async function loadCommunityHub() {
   }
 
   if (!sectionEnabled && section) { section.style.display = 'none'; return; }
+  if (section) section.style.display = '';
 
   if (links.length === 0) {
     grid.innerHTML = '';
     return;
   }
 
-  // Render
-  const primary = links.find(l => l.is_primary);
+  // Render — supports MULTIPLE primary (full-width) links, not just the first one
+  const primaries = links.filter(l => l.is_primary);
   const rest = links.filter(l => !l.is_primary);
 
   let html = '<div class="community-hub-grid">';
 
-  // Primary button (full-width)
-  if (primary) {
+  primaries.forEach((primary, i) => {
     html += `<a href="${primary.url}" target="_blank" rel="noopener noreferrer" class="ch-btn ch-primary"
-      style="animation-delay:.05s"
+      style="animation-delay:${.05 + i*.04}s"
       onclick="trackCommunityClick('${primary.id}')">
       <div class="ch-icon" style="background:${_chIconBg(primary.color)};border-color:${_chIconBorder(primary.color)}">
         ${primary.icon}
@@ -23723,7 +23741,7 @@ async function loadCommunityHub() {
       <span class="ch-members-badge"><span style="width:5px;height:5px;border-radius:50%;background:#25d366;display:inline-block;box-shadow:0 0 4px #25d366"></span>Join Now</span>
       <span class="ch-btn-arrow">→</span>
     </a>`;
-  }
+  });
 
   // Secondary buttons
   rest.forEach((link, i) => {
@@ -23915,6 +23933,8 @@ async function waLoadHistory() {
 let _cmLinks = [];        // working copy
 let _cmDragSrc = null;    // drag source index
 
+let _cmSectionEnabled = true; // module state, loaded from website_settings.community_hub_enabled
+
 async function renderAdminCommunityManager(main) {
   main.innerHTML = `<div class="admin-section" style="animation:dashFadeUp .35s ease both">
     <div class="admin-section-title" style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
@@ -23930,14 +23950,17 @@ async function renderAdminCommunityManager(main) {
     let dbLinks = [];
     if (sb) {
       const { data, error } = await sb.from('community_links').select('*').order('sort_order', { ascending: true });
-      if (!error && data && data.length > 0) {
-        dbLinks = data.filter(l => l.id !== '__section_hidden__');
-      }
+      if (error) throw error;
+      if (data && data.length > 0) dbLinks = data;
+
+      const { data: ws } = await sb.from('website_settings').select('community_hub_enabled').limit(1).single();
+      _cmSectionEnabled = !ws || ws.community_hub_enabled !== false;
     }
     _cmLinks = dbLinks.length > 0 ? dbLinks : JSON.parse(JSON.stringify(COMMUNITY_DEFAULTS));
   } catch(e) {
+    console.error('Community Manager load failed:', e);
     _cmLinks = JSON.parse(JSON.stringify(COMMUNITY_DEFAULTS));
-    showToast('Using default links (DB not connected)', 'info');
+    showToast('Using default links (DB not connected): ' + (e.message || ''), 'info');
   }
 
   _cmRender(main);
@@ -23967,7 +23990,7 @@ function _cmRender(main) {
         <div class="cm-section-toggle-label">🌐 Show Community Hub on Homepage</div>
         <div class="cm-section-toggle-sub">Toggle the entire Community Hub section visibility</div>
       </div>
-      <button class="cm-toggle on" id="cmSectionToggle" onclick="_cmToggleSection(this)"></button>
+      <button class="cm-toggle ${_cmSectionEnabled ? 'on' : 'off'}" id="cmSectionToggle" onclick="_cmToggleSection(this)"></button>
     </div>
 
     <!-- Live Preview -->
@@ -24081,17 +24104,18 @@ function _cmRenderPreview() {
   const active = _cmLinks.filter(l => l.enabled);
   if (active.length === 0) { grid.innerHTML = `<div style="color:var(--text2);font-size:.8rem;grid-column:1/-1;text-align:center;padding:16px">No enabled links to preview</div>`; return; }
 
-  const primary = active.find(l => l.is_primary);
+  // Supports multiple primary links (not just the first one)
+  const primaries = active.filter(l => l.is_primary);
   const rest = active.filter(l => !l.is_primary);
 
   let html = '';
-  if (primary) {
+  primaries.forEach(primary => {
     html += `<div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:${_chIconBg(primary.color)};border:1px solid ${_chIconBorder(primary.color)}">
       <div style="width:32px;height:32px;border-radius:8px;background:${_chIconBg(primary.color)};display:flex;align-items:center;justify-content:center;font-size:.95rem">${primary.icon}</div>
       <div style="flex:1"><div style="font-size:.8rem;font-weight:700;color:var(--text)">${primary.title}</div><div style="font-size:.68rem;color:var(--text2)">${primary.description||''}</div></div>
       <span style="font-size:.65rem;color:${primary.color};font-weight:700">PRIMARY →</span>
     </div>`;
-  }
+  });
   rest.slice(0,6).forEach(l => {
     html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
       <div style="width:28px;height:28px;border-radius:7px;background:${_chIconBg(l.color)};display:flex;align-items:center;justify-content:center;font-size:.85rem">${l.icon}</div>
@@ -24167,7 +24191,7 @@ function _cmSaveLink() {
   const url = document.getElementById('cmFUrl').value.trim();
   if (!title || !url) { showToast('Title and URL are required', 'error'); return; }
   const link = {
-    id: 'link_' + Date.now(),
+    id: _cmGenUUID(), // community_links.id is a uuid PK — never use slugs/timestamps here
     title,
     icon: icon || '🔗',
     url,
@@ -24179,7 +24203,8 @@ function _cmSaveLink() {
   };
   const editIdx = document.getElementById('cmEditId').value;
   if (editIdx !== '') {
-    link.id = _cmLinks[parseInt(editIdx)].id || link.id;
+    const existingId = _cmLinks[parseInt(editIdx)].id;
+    link.id = _cmIsValidUUID(existingId) ? existingId : link.id;
     _cmLinks[parseInt(editIdx)] = link;
   } else {
     _cmLinks.push(link);
@@ -24243,6 +24268,10 @@ async function _cmSaveToDB() {
     const sb = window.supabaseClient;
     if (!sb) throw new Error('Supabase not connected');
 
+    // Guard: every row MUST have a valid UUID id (community_links.id is a uuid PK).
+    // Catches any stale non-uuid ids left over from before this fix.
+    _cmLinks.forEach(l => { if (!_cmIsValidUUID(l.id)) l.id = _cmGenUUID(); });
+
     // Upsert all links with updated sort_order
     const rows = _cmLinks.map((l, idx) => ({
       id: l.id,
@@ -24257,25 +24286,37 @@ async function _cmSaveToDB() {
     }));
 
     // Delete removed links first by fetching existing IDs
-    const { data: existingRows } = await sb.from('community_links').select('id');
-    const existingIds = (existingRows || []).map(r => r.id).filter(id => id !== '__section_hidden__');
+    const { data: existingRows, error: fetchErr } = await sb.from('community_links').select('id');
+    if (fetchErr) throw fetchErr;
+    const existingIds = (existingRows || []).map(r => r.id);
     const newIds = rows.map(r => r.id);
     const toDelete = existingIds.filter(id => !newIds.includes(id));
     if (toDelete.length > 0) {
-      await sb.from('community_links').delete().in('id', toDelete);
+      const { error: delErr } = await sb.from('community_links').delete().in('id', toDelete);
+      if (delErr) throw delErr;
     }
 
-    // Handle section toggle sentinel
+    if (rows.length > 0) {
+      const { error } = await sb.from('community_links').upsert(rows, { onConflict: 'id' });
+      if (error) throw error;
+    }
+
+    // Section visibility is a real column on website_settings — NOT a sentinel
+    // row hack inside community_links (that hack broke the uuid primary key).
     const sectionToggle = document.getElementById('cmSectionToggle');
     const sectionVisible = sectionToggle ? sectionToggle.classList.contains('on') : true;
-    if (!sectionVisible) {
-      rows.push({ id: '__section_hidden__', title: 'Section Hidden', description: '', icon: '🚫', color: '#ff0000', url: '', is_primary: false, enabled: false, sort_order: 9999 });
+    _cmSectionEnabled = sectionVisible;
+    const { data: wsRow } = await sb.from('website_settings').select('id').limit(1).single();
+    if (wsRow && wsRow.id) {
+      const { error: wsErr } = await sb.from('website_settings')
+        .update({ community_hub_enabled: sectionVisible, updated_at: new Date().toISOString() })
+        .eq('id', wsRow.id);
+      if (wsErr) throw wsErr;
     } else {
-      await sb.from('community_links').delete().eq('id', '__section_hidden__');
+      const { error: wsErr } = await sb.from('website_settings')
+        .insert({ community_hub_enabled: sectionVisible, updated_at: new Date().toISOString() });
+      if (wsErr) throw wsErr;
     }
-
-    const { error } = await sb.from('community_links').upsert(rows, { onConflict: 'id' });
-    if (error) throw error;
 
     if (status) status.textContent = '✓ Saved to database';
     showToast('Community links saved! Homepage updated.', 'success');
