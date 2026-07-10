@@ -34,6 +34,25 @@
     return '₹' + Number(n).toLocaleString('en-IN');
   }
 
+
+  /* ── Auto-detect PDF language from title/description/category ─── */
+  function _v3DetectLanguage(pdf) {
+    const text = [pdf.title, pdf.description, pdf.category].filter(Boolean).join(' ');
+    // Assamese/Bengali Unicode block: U+0980–U+09FF
+    const hasAssamese = /[ঀ-৿]/.test(text);
+    // Devanagari block (Hindi): U+0900–U+097F
+    const hasHindi = /[ऀ-ॿ]/.test(text);
+    // Check title keywords for Assamese context
+    const assamKeywords = /assamese|assam|axomiya|axom/i.test(text);
+    const hindiKeywords = /hindi|devanagari|हिंदी/i.test(text);
+    if (hasAssamese && !hasHindi) return 'Assamese';
+    if (hasHindi && !hasAssamese) return 'Hindi';
+    if (hasAssamese && hasHindi) return 'Assamese + Hindi';
+    if (assamKeywords) return 'Assamese';
+    if (hindiKeywords) return 'Hindi';
+    return 'English';
+  }
+
   /* ── Cover image builder — STABLE, no zoom/jump ─────────── */
   function buildCoverHTML(pdf) {
     const src = (pdf.cover_url || pdf.cover_image || pdf.coverImage || '').trim();
@@ -134,7 +153,7 @@
     // Info chips
     const chips = [
       chip('Category',  pdf.category || pdf.subcategory || ''),
-      chip('Language',  pdf.language || pdf.languages || 'English'),
+      chip('Language',  pdf.language || pdf.languages || _v3DetectLanguage(pdf)),
       chip('Pages',     pdf.pages_count ? `${pdf.pages_count} pages` : ''),
       chip('File Size', pdf.file_size  ? `${pdf.file_size}` : ''),
       chip('Level',     pdf.level || pdf.academic_level || ''),
@@ -456,6 +475,22 @@
         </div>
       </div>
 
+      <!-- Frequently Bought Together -->
+      <div class="v3-fbt v3-section" id="v3FbtSection" aria-label="Frequently bought together" style="display:none">
+        <h2 class="v3-section-title">🛒 Frequently Bought Together</h2>
+        <div class="v3-fbt-items" id="v3FbtItems" aria-label="Bundle items" role="list"></div>
+        <div class="v3-fbt-cta">
+          <div class="v3-fbt-price-info">
+            <span class="v3-fbt-total-label">Bundle price:</span>
+            <span class="v3-fbt-total" id="v3FbtTotal"></span>
+            <span class="v3-fbt-save" id="v3FbtSave"></span>
+          </div>
+          <button class="v3-fbt-btn" onclick="v3BuyBundle()" type="button">
+            🛒 Buy Together &amp; Save
+          </button>
+        </div>
+      </div>
+
       <!-- FAQ -->
       <div class="v3-faq v3-section" aria-label="Frequently asked questions">
         <h2 class="v3-section-title">Frequently Asked Questions</h2>
@@ -641,6 +676,7 @@
     // Init features
     _v3InitPreview(pdf);
     _v3InitRelated(pdf);
+    _v3InitFBT(pdf);
     _v3InitWatermark();
     _v3InitKeyboard();
   };
@@ -1051,6 +1087,86 @@
     await _v3RenderPreviewPage(next);
     if (loading) loading.style.display = 'none';
     if (canvas)  canvas.style.display = '';
+  };
+
+
+  /* ── Frequently Bought Together ──────────────────────────── */
+  function _v3InitFBT(pdf) {
+    const section = document.getElementById('v3FbtSection');
+    const itemsEl = document.getElementById('v3FbtItems');
+    const totalEl = document.getElementById('v3FbtTotal');
+    const saveEl  = document.getElementById('v3FbtSave');
+    if (!section || !itemsEl) return;
+
+    // Pick 2 PDFs from same category (exclude current), seeded by pdf.id
+    const pool = (window.PDFS || []).filter(p =>
+      String(p.id) !== String(pdf.id) &&
+      p.status === 'published' &&
+      (p.category === pdf.category || (!p.category && !pdf.category))
+    );
+    if (pool.length < 1) return; // need at least 1 companion
+
+    // Seeded pick
+    function seed(n) {
+      let h = (Number(pdf.id) * 2654435769 + n * 1234567891) >>> 0;
+      h ^= h >>> 16; h = Math.imul(h, 0x45d9f3b) >>> 0; h ^= h >>> 16;
+      return (h >>> 0) / 4294967296;
+    }
+    const companions = [];
+    const used = new Set([String(pdf.id)]);
+    for (let i = 0; companions.length < Math.min(2, pool.length); i++) {
+      const idx = Math.floor(seed(i + 100) * pool.length);
+      const pick = pool[idx];
+      if (pick && !used.has(String(pick.id))) {
+        used.add(String(pick.id));
+        companions.push(pick);
+      }
+      if (i > 40) break;
+    }
+    if (!companions.length) return;
+
+    const all = [pdf, ...companions];
+
+    function coverThumb(p) {
+      const src = (p.cover_url || p.cover_image || p.coverImage || '').trim();
+      if (src) return `<img src="${esc(src)}" alt="${esc(p.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`;
+      return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+    }
+
+    itemsEl.innerHTML = all.map((p, i) => {
+      const label = i === 0 ? '<span style="font-size:.6rem;color:#3d8ef8;font-weight:700">This PDF</span>' : '';
+      return `
+        ${i > 0 ? '<span class="v3-fbt-plus" aria-hidden="true">+</span>' : ''}
+        <div class="v3-fbt-item" role="listitem" onclick="v3OpenRelated('${esc(String(p.id))}')" tabindex="0" aria-label="${esc(p.title || 'PDF')}">
+          <div class="v3-fbt-item-cover">${coverThumb(p)}</div>
+          ${label}
+          <div class="v3-fbt-item-title">${esc((p.title || '').slice(0, 30))}${(p.title||'').length > 30 ? '…' : ''}</div>
+        </div>`;
+    }).join('');
+
+    // Pricing
+    const prices = all.map(p => Number(p.price ?? 0));
+    const total = prices.reduce((s, v) => s + v, 0);
+    const discount = Math.min(30, 10 + Math.floor(seed(200) * 15)); // 10–25% off
+    const bundlePrice = Math.round(total * (1 - discount / 100));
+    const save = total - bundlePrice;
+
+    if (totalEl) totalEl.textContent = total > 0 ? '₹' + bundlePrice.toLocaleString('en-IN') : 'FREE';
+    if (saveEl && save > 0) saveEl.textContent = 'Save ₹' + save.toLocaleString('en-IN');
+
+    // Store for buy handler
+    window._v3FbtIds = companions.map(p => String(p.id));
+
+    section.style.display = '';
+  }
+
+  window.v3BuyBundle = function() {
+    // For now open the first companion's buy flow (simple approach)
+    if (window._v3FbtIds && window._v3FbtIds.length) {
+      const msg = 'Bundle checkout opens each PDF individually. Proceeding with current PDF first.';
+      if (typeof window.showToast === 'function') window.showToast(msg, 'info');
+      if (typeof window.pdpHandleBuy === 'function') window.pdpHandleBuy();
+    }
   };
 
   /* ── Related PDFs ────────────────────────────────────────── */

@@ -18955,30 +18955,80 @@ function _pdpMarketingData(pdfId) {
 
   // Assam student names + realistic review texts
   const NAMES = [
-    ['Ankita Bora',     'Guwahati'],
-    ['Rajib Das',       'Dibrugarh'],
-    ['Priyanka Gogoi',  'Jorhat'],
-    ['Bikash Kalita',   'Nagaon'],
-    ['Rupam Nath',      'Tezpur'],
-    ['Sanjukta Deka',   'Kamrup'],
-    ['Dhruba Hazarika', 'Sivasagar'],
-    ['Pallavi Bhuyan',  'Bongaigaon'],
-    ['Himangsu Baruah', 'Nalbari'],
-    ['Rima Sarma',      'Dhubri'],
-  ];
-  const TEXTS = [
-    'Excellent study material! Ekdom helpful hoise exam preparation t. Highly recommend all students ke.',
+    // Female names (20)
+    ['Ankita Bora',       'Guwahati'],
+    ['Priyanka Gogoi',    'Jorhat'],
+    ['Sanjukta Deka',     'Kamrup'],
+    ['Pallavi Bhuyan',    'Bongaigaon'],
+    ['Rima Sarma',        'Dhubri'],
+    ['Dipika Kalita',     'Nalbari'],
+    ['Barsha Das',        'Silchar'],
+    ['Manasvi Nath',      'Barpeta'],
+    ['Trishna Baruah',    'Tezpur'],
+    ['Nilufar Begum',     'Nagaon'],
+    ['Purnima Choudhury', 'Dibrugarh'],
+    ['Himangkhi Medhi',   'Lakhimpur'],
+    ['Jyoti Hazarika',    'Sivasagar'],
+    ['Mousumi Dutta',     'Karimganj'],
+    ['Ranjita Bordoloi',  'Goalpara'],
+    ['Smita Boruah',      'Golaghat'],
+    ['Prerna Saikia',     'Tinsukia'],
+    ['Anuradha Thakuria', 'Majuli'],
+    ['Kaberi Phukan',     'Morigaon'],
+    ['Namita Tamuli',     'Hailakandi'],
+    // Male names (20)
+    ['Rajib Das',         'Dibrugarh'],
+    ['Bikash Kalita',     'Nagaon'],
+    ['Rupam Nath',        'Tezpur'],
+    ['Dhruba Hazarika',   'Sivasagar'],
+    ['Himangsu Baruah',   'Nalbari'],
+    ['Amarjyoti Deka',    'Kamrup'],
+    ['Bhaskar Gogoi',     'Jorhat'],
+    ['Chinmoy Sharma',    'Guwahati'],
+    ['Debajit Bora',      'Dibrugarh'],
+    ['Gitartha Saikia',   'Tinsukia'],
+    ['Hemen Sarma',       'Barpeta'],
+    ['Jatin Bordoloi',    'Goalpara'],
+    ['Kaushik Nath',      'Silchar'],
+    ['Lakheswar Phukan',  'Sivasagar'],
+    ['Manash Baruah',     'Lakhimpur'],
+    ['Nayan Das',         'Morigaon'],
+    ['Pranab Medhi',      'Bongaigaon'],
+    ['Raju Hazarika',     'Golaghat'],
+    ['Santanu Kalita',    'Nagaon'],
+    ['Uday Choudhury',    'Karimganj'],
+  ];  const TEXTS = [
+    'Exam preparation r bab\u00e9 ekdom perfect material. Content gulo clear aru concise. Strongly recommend koriso.',
     'Crystal clear explanations. Coaching notes r thekio bhalo lagil. Worth every rupee!',
-    'PDF ti khub well structured. Last minute revision r babé perfect. Aro PDF kinibo etia.',
-    'Simple language t explain kora, okol padile bujha jai. Assam r students r babé ideal.',
-    'Previous year questions gulo cover kora ase. Exam r age must buy kora uchit.',
-    'Chapters wise breakdown ase, khub help korse. 3-4 ghonta t porhibo parisa.',
-    'Quality content, no filler. Exactly what I needed for my board preparation.',
-    'Teacher r notes r thekio comprehensive. Smart charts and quick tips included.',
-    'Downloaded it night before exam — covered everything. Scored well! Grateful.',
-    'Trusted source, verified content. Language simple, diagrams helpful.',
+    'PDF ti khub well structured. Last minute revision r bab\u00e9 perfect. Aro PDF kinibo etia Studyria r pota.',
+    'Simple language t explain kora, okol padile bujha jai. Assam r students r bab\u00e9 ideal resource.',
+    'Previous year questions gulo cover kora ase. Exam r age must buy \u2014 helped me score well.',
+    'Chapters wise breakdown ase, khub help korse. 3-4 ghonta t complete porha hoibo pari.',
+    'Quality content, no filler pages. Exactly what I needed for my board preparation.',
+    'Teacher r notes r thekio comprehensive. Smart revision charts included \u2014 super helpful.',
+    'Downloaded it night before exam \u2014 covered everything important. Scored well! Grateful to Studyria.',
+    'Trusted source, verified content. Language simple, diagrams helpful. 5 star deserved.',
+    'ADRE preparation r bab\u00e9 best material paise etia porjonto. Highly recommended to all students.',
+    'Instant download hoil, no waiting. Content quality top-notch. Mobile t o perfectly open hoixa.',
+    'Notes gulo khub organized aru easy to understand. Chapter summaries are excellent for quick revision.',
+    'Bought 3 PDFs from Studyria \u2014 all excellent quality. This one is particularly well-researched.',
+    'Affordable price r bhitor etu bhalo content pabo buli bhaba nai. Pleasantly surprised!',
+    'Competitive exam aspirants der bab\u00e9 must-have resource. Covers syllabus completely and clearly.',
+    'GK section ta particularly strong. All important topics with explanations included. 5 out of 5.',
+    'Payment aru download \u2014 everything smooth aru instant. Great experience overall with Studyria.',
+    'Moi mur friends keio recommend koriso. Everyone loved the quality and depth of content.',
+    'Topicwise breakdown makes it easy to study selectively. Perfect for targeted exam preparation.',
+    'Very systematic approach to the subject. Even beginners can easily follow along without coaching.',
+    'Compared to expensive coaching institute materials, this is far better value for money.',
+    'Language is accessible \u2014 neither too technical nor too simple. Pitched just right for aspirants.',
+    'Helped me understand difficult concepts quickly. Visual summaries are a big bonus.',
+    'All expected exam topics are covered thoroughly. No need to look elsewhere after this PDF.',
+    'Offline access after download is super helpful during daily commute to exam center.',
+    'Charts aru diagrams gulo excellent quality. Makes memorization of facts much easier.',
+    'Returned to buy again after first PDF was so good. Studyria is a truly reliable platform.',
+    'Perfect companion for self-study students who cannot afford expensive coaching classes.',
+    'Index page is clear \u2014 can jump to any topic instantly. Very well formatted throughout.',
   ];
-
   // Pick 3–5 unique reviews seeded by pdfId
   const reviews = [];
   const usedNames = new Set();
@@ -19153,10 +19203,16 @@ function _pdpApplyLiveStats({ dlCount, purchCount, revCount, avgRating, ratingDi
             <div class="pdp-rev-header">
               <div class="pdp-rev-avatar">${initials}</div>
               <div class="pdp-rev-meta">
-                <div class="pdp-rev-name">${_esc(r.name)}</div>
+                <div class="pdp-rev-name" style="display:flex;align-items:center;gap:6px;">
+                  ${_esc(r.name)}
+                  <span class="pdp-rev-demo-badge" title="Curated sample review — real reviews from verified buyers appear here after purchase">Sample Review</span>
+                </div>
                 <div class="pdp-rev-loc">📍 ${_esc(r.loc)}</div>
               </div>
-              <div class="pdp-rev-stars">${rStars}</div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <div class="pdp-rev-stars">${rStars}</div>
+                <div style="font-size:.68rem;color:var(--text2)">${dateStr}</div>
+              </div>
             </div>
             <div class="pdp-rev-text">${_esc(r.text)}</div>
           </div>`;
