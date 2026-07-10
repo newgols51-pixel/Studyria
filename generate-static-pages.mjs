@@ -240,7 +240,7 @@ async function generatePdfPages() {
       pdf.description || `Download ${title} — study material on Studyria.`,
       filler
     );
-    const cover = pdf.cover_image || pdf.coverImage || `${SITE_ORIGIN}/og-cover.png`;
+    const cover = pdf.cover_url || pdf.cover_image || pdf.coverImage || `${SITE_ORIGIN}/og-cover.png`;
     
     // Canonical url (without .html extension in canonical meta)
     const canonicalMetaUrl = `${SITE_ORIGIN}/pdf/${canonicalSlug}`;
