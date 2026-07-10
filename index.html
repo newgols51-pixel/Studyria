@@ -18373,6 +18373,7 @@ function renderDetail() {
   if (!pdf) return;
   normalizePdf(pdf);
   _pdpRenderShell(pdf);
+  if (typeof _injectPdfOGMeta === 'function') _injectPdfOGMeta(pdf);
   _pdpLoadLiveStats(pdf.id);
   _pdpSubscribeRealtime(pdf.id);
   // Ownership labels are baked into _pdpRenderShell via _isOwned().
@@ -19461,17 +19462,133 @@ function pdpToggleDesc() {
   btn.textContent = wrap.classList.contains('expanded') ? 'Read Less ↑' : 'Read More ↓';
 }
 
-function pdpSharePDF() {
-  const pdf = selectedPdf;
-  if (!pdf) return;
-  const url = window.location.href;
-  const text = `Check out "${pdf.title}" on Studyria! 📚`;
-  if (navigator.share) {
-    navigator.share({ title: pdf.title, text, url }).catch(() => {});
-  } else {
-    navigator.clipboard?.writeText(url).then(() => showToast('Link copied! 📋', 'success')).catch(() => {});
-  }
+// =============================================
+// SMART SHARE LINK SYSTEM v2 - Studyria
+// Canonical /pdf/[slug] URLs for every PDF
+// =============================================
+function _getCanonicalPdfSlug(pdf) {
+  if (!pdf) return '';
+  var slug = (pdf.slug || '');
+  var isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+  var hasRand = /-[a-z0-9]{7,8}$/i.test(slug);
+  var bad = !slug || slug.length < 10 || isUUID || hasRand || !/^[a-z0-9]/i.test(slug) || !/[a-z0-9]$/i.test(slug);
+  if (!bad) return slug.slice(0, 80);
+  var base = String(pdf.title || 'pdf').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 60).replace(/-+$/, '');
+  var id8 = String(pdf.id || '').slice(0, 8);
+  return id8 ? base + '-' + id8 : base;
 }
+function _getCanonicalShareUrl(pdf) {
+  if (!pdf) return window.location.origin + '/';
+  return window.location.origin + '/pdf/' + _getCanonicalPdfSlug(pdf);
+}
+function _injectPdfOGMeta(pdf) {
+  if (!pdf) return;
+  var url = _getCanonicalShareUrl(pdf);
+  var title = (pdf.title || 'Study Material') + ' \u2014 Studyria';
+  var desc = (pdf.description || 'Premium study material for Assam competitive exams. Download on Studyria.').slice(0, 160);
+  var img = pdf.cover_image || pdf.coverImage || pdf.thumbnail || pdf.image || window.location.origin + '/og-cover.png';
+  var price = Number(pdf.price != null ? pdf.price : 0);
+  function setM(prop, val, attr) {
+    attr = attr || 'property';
+    var el = document.querySelector('meta[' + attr + '="' + prop + '"]');
+    if (!el) { el = document.createElement('meta'); el.setAttribute(attr, prop); document.head.appendChild(el); }
+    el.setAttribute('content', val);
+  }
+  document.title = title;
+  setM('og:title', title); setM('og:description', desc); setM('og:image', img);
+  setM('og:url', url); setM('og:type', 'product'); setM('og:site_name', 'Studyria');
+  setM('twitter:card', 'summary_large_image', 'name');
+  setM('twitter:title', title, 'name'); setM('twitter:description', desc, 'name'); setM('twitter:image', img, 'name');
+  var can = document.querySelector('link[rel="canonical"]');
+  if (can) can.href = url;
+  if (history.replaceState) history.replaceState({ page: 'detail', pdfId: pdf.id }, title, url);
+  var sch = document.getElementById('_sss_schema');
+  if (!sch) { sch = document.createElement('script'); sch.id = '_sss_schema'; sch.type = 'application/ld+json'; document.head.appendChild(sch); }
+  sch.textContent = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Product', name: pdf.title, description: desc,
+    image: img, url: url, brand: { '@type': 'Brand', name: 'Studyria' },
+    offers: { '@type': 'Offer', price: price, priceCurrency: 'INR',
+      availability: 'https://schema.org/InStock', url: url,
+      seller: { '@type': 'Organization', name: 'Studyria' } },
+    author: { '@type': 'Person', name: pdf.author_name || pdf.author || 'Studyria Educa' }
+  });
+}
+function _openShareModal(pdf) {
+  if (!pdf) return;
+  var url = _getCanonicalShareUrl(pdf);
+  var title = pdf.title || 'Study Material';
+  var imgRaw = pdf.cover_image || pdf.coverImage || pdf.thumbnail || pdf.image || '';
+  var imgEnc = encodeURIComponent(imgRaw);
+  var st = encodeURIComponent('Check out "' + title + '" on Studyria! ');
+  var su = encodeURIComponent(url);
+  var safeUrl = url.replace(/'/g, '');
+  var safeTitle = title.replace(/[<>]/g, '').replace(/'/g, '');
+  var old = document.getElementById('_sssModal'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = '_sssModal';
+  m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Share PDF');
+  var WA = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
+  var TG = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#26A5E4"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>';
+  var FB = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#1877F2"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 011.141.195v3.325a8.623 8.623 0 00-.653-.036 26.805 26.805 0 00-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 00-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>';
+  var XX = '<svg width="22" height="22" viewBox="0 0 24 24" fill="#e7e9ea"><path d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg>';
+  var LI = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 23.998 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+  var PI = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>';
+  var CP = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+  var SH = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
+  var nativePart = '';
+  if (navigator.share) {
+    nativePart = '<button class="_sb" onclick="navigator.share({title:\'' + safeTitle + '\',text:\'Check out this PDF on Studyria!\',url:\'' + safeUrl + '\'}).catch(function(){})"><div class="_si2">' + SH + '</div><span class="_sl">More</span></button>';
+  }
+  m.innerHTML = (
+    '<style>' +
+    '#_sssModal{position:fixed;inset:0;z-index:999999;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}' +
+    '._ss{background:var(--card,#0f172a);border-radius:24px 24px 0 0;padding:20px 20px 44px;width:100%;max-width:520px;animation:_su .26s cubic-bezier(.22,1,.36,1);box-shadow:0 -16px 80px rgba(0,0,0,.5)}' +
+    '@keyframes _su{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}' +
+    '._sh{width:36px;height:4px;background:#334155;border-radius:2px;margin:0 auto 16px}' +
+    '._st{font-size:15px;font-weight:700;color:var(--text1,#f1f5f9);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+    '._scb{display:flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:10px 12px;margin:10px 0 16px;cursor:pointer;transition:border-color .15s}' +
+    '._scb:hover{border-color:#3d8ef8}' +
+    '._scbt{flex:1;font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}' +
+    '._scbb{flex-shrink:0;font-size:12px;color:#3d8ef8;font-weight:600;background:none;border:none;cursor:pointer;padding:0;font-family:inherit}' +
+    '._sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}' +
+    '._sb{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;background:none;border:none;cursor:pointer;padding:0}' +
+    '._si2{width:54px;height:54px;border-radius:15px;background:#1e293b;display:flex;align-items:center;justify-content:center;border:1.5px solid #2d3f55;transition:background .14s,border-color .14s;font-size:0}' +
+    '._sb:hover ._si2{background:#162033;border-color:#3d8ef8}' +
+    '._sl{font-size:11px;color:#94a3b8;font-family:system-ui,sans-serif;text-align:center}' +
+    '._sclose{width:100%;padding:13px;border-radius:12px;background:#1e293b;border:1.5px solid #334155;color:#94a3b8;font-size:14px;cursor:pointer;font-family:inherit;margin-top:4px;transition:background .14s,color .14s}' +
+    '._sclose:hover{background:#162033;border-color:#3d8ef8;color:#f1f5f9}' +
+    '</style>' +
+    '<div class="_ss" onclick="event.stopPropagation()">' +
+    '<div class="_sh"></div>' +
+    '<div class="_st">' + safeTitle + '</div>' +
+    '<div class="_scb" onclick="var b=this.querySelector(\'._scbb\');navigator.clipboard.writeText(\'' + safeUrl + '\').then(function(){if(b){b.textContent=\'Copied!\';setTimeout(function(){b.textContent=\'Copy\';},2200);}}).catch(function(){})">' +
+    '<div class="_scbt">' + url + '</div><button class="_scbb">Copy</button></div>' +
+    '<div class="_sg">' +
+    '<a class="_sb" href="https://wa.me/?text=' + st + '%20' + su + '" target="_blank" rel="noopener"><div class="_si2">' + WA + '</div><span class="_sl">WhatsApp</span></a>' +
+    '<a class="_sb" href="https://t.me/share/url?url=' + su + '&text=' + st + '" target="_blank" rel="noopener"><div class="_si2">' + TG + '</div><span class="_sl">Telegram</span></a>' +
+    '<a class="_sb" href="https://www.facebook.com/sharer/sharer.php?u=' + su + '" target="_blank" rel="noopener"><div class="_si2">' + FB + '</div><span class="_sl">Facebook</span></a>' +
+    '<a class="_sb" href="https://twitter.com/intent/tweet?text=' + st + '&url=' + su + '" target="_blank" rel="noopener"><div class="_si2">' + XX + '</div><span class="_sl">X</span></a>' +
+    '<a class="_sb" href="https://www.linkedin.com/sharing/share-offsite/?url=' + su + '" target="_blank" rel="noopener"><div class="_si2">' + LI + '</div><span class="_sl">LinkedIn</span></a>' +
+    '<a class="_sb" href="https://pinterest.com/pin/create/button/?url=' + su + '&media=' + imgEnc + '&description=' + st + '" target="_blank" rel="noopener"><div class="_si2">' + PI + '</div><span class="_sl">Pinterest</span></a>' +
+    nativePart +
+    '<button class="_sb" id="_sssCopy" onclick="var b=document.querySelector(\'#_sssCopy ._sl\');var i=document.querySelector(\'#_sssCopy ._si2\');navigator.clipboard.writeText(\'' + safeUrl + '\').then(function(){if(i)i.style.borderColor=\'#10b981\';if(b)b.textContent=\'Copied!\';setTimeout(function(){if(i)i.style.borderColor=\'\';if(b)b.textContent=\'Copy\';},2200);}).catch(function(){})"><div class="_si2">' + CP + '</div><span class="_sl">Copy</span></button>' +
+    '</div>' +
+    '<button class="_sclose" onclick="var el=document.getElementById(\'_sssModal\');if(el)el.remove();document.body.style.overflow=\'\';">Close</button>' +
+    '</div>'
+  );
+  m.addEventListener('click', function(e) { if (e.target === m) { m.remove(); document.body.style.overflow = ''; } });
+  document.body.appendChild(m);
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', function _ek(e) {
+    if (e.key === 'Escape') { m.remove(); document.body.style.overflow = ''; document.removeEventListener('keydown', _ek); }
+  }, { once: true });
+}
+function pdpSharePDF() {
+  var pdf = selectedPdf || window.selectedPdf;
+  if (!pdf) return;
+  _openShareModal(pdf);
+}
+
 
 // Force-clears the fullscreen cover preview and its scroll lock, no matter
 // how it was left open. Called defensively from pdpZoomCover() itself and
@@ -21949,13 +22066,14 @@ CREATE TRIGGER trg_progress_updated
     };
 
     window.bsfShare = function(id) {
-      const p = BSF.allPdfs.find(x => String(x.id) === String(id));
+      var p = BSF.allPdfs.find(function(x){return String(x.id)===String(id);});
       if (!p) return;
-      const url = window.location.origin + '?pdf=' + id;
+      if (typeof _openShareModal === 'function') { _openShareModal(p); return; }
+      var url = typeof _getCanonicalShareUrl==='function' ? _getCanonicalShareUrl(p) : window.location.origin+'/pdf/'+(p.slug||id);
       if (navigator.share) {
-        navigator.share({ title: p.title, text: `Check out "${p.title}" on Studyria!`, url });
+        navigator.share({ title: p.title, text: 'Check out "'+p.title+'" on Studyria!', url: url });
       } else {
-        navigator.clipboard.writeText(url).then(() => showToast('🔗 Link copied!', 'success'));
+        navigator.clipboard.writeText(url).then(function(){if(typeof showToast==='function')showToast('Link copied!','success');});
       }
     };
 
@@ -36362,7 +36480,59 @@ document.addEventListener('keydown', e => {
  *
  * HOW TO USE:
  *   Paste this entire <script> block at the very END of index.html,
- *   just before </body>. It overrides all relevant functions via
+ *   just before 
+// ── Smart Share: Deep Link Resolver ───────────────────────────────────
+(function() {
+  function _resolveSlugRoute() {
+    var path = window.location.pathname;
+    var match = path.match(/^\/pdf\/([^.]+?)(\.html)?$/);
+    if (!match) return false;
+    var slug = match[1];
+    function findAndOpen() {
+      var pdfs = window.PDFS || [];
+      if (!pdfs.length) return false;
+      var found = null;
+      for (var i=0;i<pdfs.length;i++) {
+        var p=pdfs[i];
+        var cs=typeof _getCanonicalPdfSlug==='function'?_getCanonicalPdfSlug(p):(p.slug||'');
+        if (cs===slug||(p.slug||'')===slug||String(p.id||'').slice(0,8)===slug.slice(-8)) { found=p; break; }
+      }
+      if (found) {
+        window.selectedPdf=found;
+        if (typeof normalizePdf==='function') normalizePdf(found);
+        if (typeof navigate==='function') navigate('detail');
+        return true;
+      }
+      return false;
+    }
+    if (!findAndOpen()) {
+      var attempts=0;
+      var timer=setInterval(function(){
+        attempts++;
+        if (findAndOpen()||attempts>40) clearInterval(timer);
+      },250);
+    }
+    return true;
+  }
+  window._resolveSlugRoute = _resolveSlugRoute;
+  if (document.readyState==='loading') {
+    document.addEventListener('DOMContentLoaded', function(){setTimeout(_resolveSlugRoute,100);});
+  } else {
+    setTimeout(_resolveSlugRoute, 100);
+  }
+  window.addEventListener('popstate', function(e) {
+    if (e.state&&e.state.page==='detail'&&e.state.pdfId) {
+      var pdfs=window.PDFS||[];
+      var found=null;
+      for(var i=0;i<pdfs.length;i++){if(String(pdfs[i].id)===String(e.state.pdfId)){found=pdfs[i];break;}}
+      if(found){window.selectedPdf=found;if(typeof normalizePdf==='function')normalizePdf(found);if(typeof navigate==='function')navigate('detail');}
+    } else if(e.state&&e.state.page&&e.state.page!=='detail') {
+      if(typeof navigate==='function') navigate(e.state.page);
+    }
+  });
+})();
+
+</body>. It overrides all relevant functions via
  *   re-declaration (functions hoisted last win) and patches the DOM.
  *
  * WHAT THIS FIXES:
