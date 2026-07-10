@@ -59,6 +59,7 @@ const PRECACHE_ASSETS = [
   '/icon-maskable-512.png',
   '/pdp-v3.css',
   '/pdp-v3.js',
+  '/mpa-pdp-bridge.js',
 ];
 
 // ── INSTALL ──────────────────────────────────────────────────────
