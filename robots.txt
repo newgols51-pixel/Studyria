@@ -114,6 +114,9 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
+# AI/LLM context
+Allow: /llms.txt
+
 # ── Sitemap locations ─────────────────────────────────────────
 Sitemap: https://studyria.qzz.io/sitemap.xml
 
