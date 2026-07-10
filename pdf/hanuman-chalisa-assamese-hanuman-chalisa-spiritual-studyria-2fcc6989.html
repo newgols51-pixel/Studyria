@@ -111,6 +111,115 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script src="/pdf-list.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 <script src="/app.js" defer></script>
+
+<script>
+  // Smart Share Link System Context
+  window.__CANONICAL_SHARE_URL__ = 'https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989';
+
+  // Override standard pdpSharePDF function to point to our custom smart panel
+  function pdpSharePDF() {
+    pdpOpenSharePanel();
+  }
+
+  // Override click listener on .pdp-cover-action-btn (title=Share / containing text 'Share')
+  function setupShareButtonOverride() {
+    const shareBtns = document.querySelectorAll('.pdp-cover-action-btn');
+    shareBtns.forEach(btn => {
+      if (btn.getAttribute('onclick') === 'pdpSharePDF()' || btn.innerText.includes('Share') || btn.title === 'Share') {
+        btn.removeAttribute('onclick');
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          pdpOpenSharePanel();
+        });
+      }
+    });
+  }
+
+  // Run immediately and also hook on hydration / load
+  setupShareButtonOverride();
+  document.addEventListener('DOMContentLoaded', setupShareButtonOverride);
+  // Also run periodically to capture dynamically hydrated buttons
+  const shareInterval = setInterval(setupShareButtonOverride, 500);
+  setTimeout(() => clearInterval(shareInterval), 10000);
+
+  function pdpOpenSharePanel() {
+    const panel = document.getElementById('pdpSharePanelModal');
+    if (panel) {
+      panel.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function pdpCloseSharePanel() {
+    const panel = document.getElementById('pdpSharePanelModal');
+    if (panel) {
+      panel.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Handle native share
+  async function pdpNativeShare() {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria',
+          text: 'Check out "Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria" on Studyria! 📚',
+          url: window.__CANONICAL_SHARE_URL__
+        });
+      } catch (err) {
+        console.warn('Native share failed or canceled', err);
+      }
+    }
+  }
+
+  // Handle Copy Link
+  function pdpCopyLink(btn) {
+    const url = window.__CANONICAL_SHARE_URL__;
+    navigator.clipboard.writeText(url).then(() => {
+      const label = btn.querySelector('.share-btn-label') || btn;
+      const originalText = label.textContent;
+      label.textContent = 'Copied!';
+      
+      const iconContainer = btn.querySelector('.share-btn-icon');
+      let originalSvg = '';
+      if (iconContainer) {
+        originalSvg = iconContainer.innerHTML;
+        // Checkmark SVG path
+        iconContainer.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      }
+
+      btn.classList.add('copied');
+      setTimeout(() => {
+        label.textContent = originalText;
+        if (iconContainer && originalSvg) {
+          iconContainer.innerHTML = originalSvg;
+        }
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      pdpCloseSharePanel();
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (navigator.share) {
+      const nativeContainer = document.getElementById('nativeShareOption');
+      if (nativeContainer) nativeContainer.style.display = 'block';
+    }
+  });
+</script>
+
 <script>
   // Hydrate this standalone page: wait for PDFS + supabaseClient, find the
   // record matching __STATIC_PDF_ID__, then reuse the EXISTING renderDetail()
@@ -134,5 +243,321 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 </script>
+
+<!-- Beautiful Glassmorphic Share Modal -->
+<div id="pdpSharePanelModal" class="share-modal-backdrop" onclick="if(event.target===this) pdpCloseSharePanel()">
+  <div class="share-modal-content">
+    <div class="share-modal-header">
+      <h3 class="share-modal-title">Share this PDF</h3>
+      <button class="share-modal-close" onclick="pdpCloseSharePanel()">&times;</button>
+    </div>
+    
+    <!-- Native Share Option if supported -->
+    <div id="nativeShareOption" class="native-share-container" style="display: none;">
+      <button class="native-share-btn" onclick="pdpNativeShare()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        Share via device...
+      </button>
+    </div>
+
+    <!-- 7 Social Share Buttons -->
+    <div class="share-grid">
+      <!-- WhatsApp -->
+      <a href="https://wa.me/?text=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A%20https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn wa-btn">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </span>
+        <span class="share-btn-label">WhatsApp</span>
+      </a>
+
+      <!-- Telegram -->
+      <a href="https://t.me/share/url?url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989&text=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A" target="_blank" class="share-btn tg-btn">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </span>
+        <span class="share-btn-label">Telegram</span>
+      </a>
+
+      <!-- Facebook -->
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn fb-btn">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>
+        </span>
+        <span class="share-btn-label">Facebook</span>
+      </a>
+
+      <!-- Twitter / X -->
+      <a href="https://twitter.com/intent/tweet?text=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A&url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn x-btn">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg>
+        </span>
+        <span class="share-btn-label">Twitter / X</span>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn in-btn">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </span>
+        <span class="share-btn-label">LinkedIn</span>
+      </a>
+
+      <!-- Pinterest -->
+      <a href="https://pinterest.com/pin/create/button/?url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989&media=https://studyria.qzz.io/og-cover.png&description=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A" target="_blank" class="share-btn pin-btn">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+        </span>
+        <span class="share-btn-label">Pinterest</span>
+      </a>
+
+      <!-- Copy Link -->
+      <button class="share-btn copy-btn" onclick="pdpCopyLink(this)">
+        <span class="share-btn-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </span>
+        <span class="share-btn-label">Copy Link</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Desktop-friendly Bottom Horizontal Share Section -->
+<div class="pdp-bottom-share-section">
+  <h3 class="pdp-bottom-share-title">Share this PDF with others</h3>
+  <div class="pdp-bottom-share-grid">
+    <!-- WhatsApp -->
+    <a href="https://wa.me/?text=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A%20https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn wa-btn">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      </span>
+      <span class="share-btn-label">WhatsApp</span>
+    </a>
+
+    <!-- Telegram -->
+    <a href="https://t.me/share/url?url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989&text=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A" target="_blank" class="share-btn tg-btn">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </span>
+      <span class="share-btn-label">Telegram</span>
+    </a>
+
+    <!-- Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn fb-btn">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>
+      </span>
+      <span class="share-btn-label">Facebook</span>
+    </a>
+
+    <!-- Twitter / X -->
+    <a href="https://twitter.com/intent/tweet?text=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A&url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn x-btn">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg>
+      </span>
+      <span class="share-btn-label">Twitter / X</span>
+    </a>
+
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989" target="_blank" class="share-btn in-btn">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </span>
+      <span class="share-btn-label">LinkedIn</span>
+    </a>
+
+    <!-- Pinterest -->
+    <a href="https://pinterest.com/pin/create/button/?url=https://studyria.qzz.io/pdf/hanuman-chalisa-assamese-hanuman-chalisa-spiritual-studyria-2fcc6989&media=https://studyria.qzz.io/og-cover.png&description=Check%20out%20%22Hanuman Chalisa (Assamese) | Hanuman Chalisa | Spiritual — Studyria%22%20on%20Studyria!%20%F0%9F%93%9A" target="_blank" class="share-btn pin-btn">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+      </span>
+      <span class="share-btn-label">Pinterest</span>
+    </a>
+
+    <!-- Copy Link -->
+    <button class="share-btn copy-btn" onclick="pdpCopyLink(this)">
+      <span class="share-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </span>
+      <span class="share-btn-label">Copy Link</span>
+    </button>
+  </div>
+</div>
+
+
+<style>
+  /* Glassmorphic Modal Styles */
+  .share-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(8, 12, 20, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .share-modal-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .share-modal-content {
+    background: #080c14;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 22px;
+    width: 90%;
+    max-width: 550px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .share-modal-backdrop.active .share-modal-content {
+    transform: scale(1);
+  }
+  .share-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    padding-bottom: 12px;
+  }
+  .share-modal-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin: 0;
+    color: var(--text);
+  }
+  .share-modal-close {
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .share-modal-close:hover {
+    color: var(--text);
+  }
+  
+  /* Native Share button style */
+  .native-share-container {
+    margin-bottom: 20px;
+  }
+  .native-share-btn {
+    width: 100%;
+    background: var(--grad-primary);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 14px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+  }
+  .native-share-btn:hover {
+    opacity: 0.9;
+  }
+
+  /* Grid share layout */
+  .share-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 600px) {
+    .share-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .share-grid .share-btn.copy-btn {
+      grid-column: span 2;
+    }
+  }
+
+  /* Share button pill styles */
+  .share-btn {
+    height: 48px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 16px;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .share-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .share-btn-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Individual platform brand colors / gradients on hover */
+  .wa-btn:hover { border-color: #25D366; background: rgba(37, 211, 102, 0.08); color: #25D366; }
+  .tg-btn:hover { border-color: #29A9EA; background: rgba(41, 169, 234, 0.08); color: #29A9EA; }
+  .fb-btn:hover { border-color: #1877F2; background: rgba(24, 119, 242, 0.08); color: #1877F2; }
+  .x-btn:hover { border-color: #eef2ff; background: rgba(255, 255, 255, 0.08); color: #eef2ff; }
+  .in-btn:hover { border-color: #0A66C2; background: rgba(10, 102, 194, 0.08); color: #0A66C2; }
+  .pin-btn:hover { border-color: #E60023; background: rgba(230, 0, 35, 0.08); color: #E60023; }
+  .copy-btn:hover { border-color: var(--color-accent); background: rgba(61, 142, 248, 0.08); color: var(--color-accent); }
+  .copy-btn.copied { border-color: #10B981 !important; background: rgba(16, 185, 129, 0.08) !important; color: #10B981 !important; }
+
+  /* Desktop reader horizontal share section */
+  .pdp-bottom-share-section {
+    max-width: 960px;
+    margin: 40px auto 20px auto;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+  }
+  .pdp-bottom-share-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .pdp-bottom-share-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 768px) {
+    .pdp-bottom-share-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
 </body>
 </html>
