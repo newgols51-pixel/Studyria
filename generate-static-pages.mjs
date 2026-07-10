@@ -121,6 +121,67 @@ function fillTemplate(tpl, tokens) {
   );
 }
 
+// ── Canonical Slug System Helpers ───────────────────────────────
+function getCanonicalSlug(pdf) {
+  const slug = pdf.slug;
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug || '');
+  const startsWithAlnum = /^[a-z0-9]/i.test(slug || '');
+  const endsWithAlnum = /[a-z0-9]$/i.test(slug || '');
+  const hasRandomSuffix = /-[a-z0-9]{7,8}$/.test(slug || '');
+  
+  const isGarbage = !slug || 
+                    slug.length < 10 || 
+                    !startsWithAlnum || 
+                    !endsWithAlnum || 
+                    isUUID || 
+                    hasRandomSuffix;
+
+  if (!isGarbage) {
+    const canonical = slug.slice(0, 80);
+    console.log(`[DB SLUG] ID: ${pdf.id} | Slug: ${pdf.slug} -> Canonical Slug: ${canonical}`);
+    return canonical;
+  } else {
+    const gen = slugify(pdf.title).slice(0, 60).replace(/-+$/, '') + '-' + pdf.id.slice(0, 8);
+    console.log(`[GENERATED] ID: ${pdf.id} | Slug: ${pdf.slug || 'null'} -> Canonical Slug: ${gen}`);
+    return gen;
+  }
+}
+
+// Redirect stub inline template to serve old indexed URLs safely
+const REDIRECT_STUB_TEMPLATE = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{TITLE}}</title>
+  <meta name="description" content="{{DESCRIPTION}}">
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{CANONICAL_URL}}">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{DESCRIPTION}}">
+  <meta property="og:image" content="{{OG_IMAGE}}">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="{{CANONICAL_URL}}">
+  <meta property="twitter:title" content="{{TITLE}}">
+  <meta property="twitter:description" content="{{DESCRIPTION}}">
+  <meta property="twitter:image" content="{{OG_IMAGE}}">
+
+  <script>
+    window.__STATIC_PDF_ID__ = {{PDF_ID_JSON}};
+    window.__CANONICAL_SHARE_URL__ = '{{SHARE_URL}}';
+    window.location.replace('{{CANONICAL_URL}}');
+  </script>
+</head>
+<body>
+  <p>Redirecting to <a href="{{CANONICAL_URL}}">{{TITLE}}</a>...</p>
+</body>
+</html>`;
+
+
 // Real (not fabricated) review aggregates from the public pdf_reviews
 // table — same source powering the on-site rating stars. Google
 // disallows AggregateRating with zero reviews, so callers must only
@@ -166,7 +227,11 @@ async function generatePdfPages() {
   for (const pdf of rows || []) {
     const title = clean(pdf.title);
     const category = clean(pdf.category || '');
-    const slug = `${slugify(title)}-${pdf.id}`;
+    
+    // Canonical Slug System Implementation
+    const canonicalSlug = getCanonicalSlug(pdf);
+    const oldSlug = `${slugify(title)}-${pdf.id}`;
+    
     const price = Number(pdf.price ?? 0);
     const filler = category
       ? `${category} study material — free & premium Assam govt exam PDF notes on Studyria.`
@@ -176,7 +241,12 @@ async function generatePdfPages() {
       filler
     );
     const cover = pdf.cover_image || pdf.coverImage || `${SITE_ORIGIN}/og-cover.png`;
-    const canonical = `${SITE_ORIGIN}/pdf/${slug}.html`;
+    
+    // Canonical url (without .html extension in canonical meta)
+    const canonicalMetaUrl = `${SITE_ORIGIN}/pdf/${canonicalSlug}`;
+    const canonicalFileUrl = `${SITE_ORIGIN}/pdf/${canonicalSlug}.html`;
+    const shareUrl = canonicalMetaUrl;
+    
     const agg = reviewAgg.get(pdf.id);
 
     const productSchema = {
@@ -193,7 +263,7 @@ async function generatePdfPages() {
         price: price.toFixed(2),
         priceCurrency: 'INR',
         availability: 'https://schema.org/InStock',
-        url: canonical,
+        url: canonicalMetaUrl,
       },
       // Only include real, non-zero aggregates — never fabricate ratings.
       ...(agg && agg.count > 0
@@ -210,14 +280,16 @@ async function generatePdfPages() {
         ...(category
           ? [{ '@type': 'ListItem', position: 3, name: category, item: `${SITE_ORIGIN}/#library?category=${encodeURIComponent(category)}` }]
           : []),
-        { '@type': 'ListItem', position: category ? 4 : 3, name: title, item: canonical },
+        { '@type': 'ListItem', position: category ? 4 : 3, name: title, item: canonicalMetaUrl },
       ],
     };
 
+    // 1. Generate Canonical PDF page (using pdf-detail.template.html)
     const html = fillTemplate(tpl, {
       TITLE: esc(title),
       DESCRIPTION: esc(desc),
-      CANONICAL_URL: canonical,
+      CANONICAL_URL: canonicalMetaUrl,
+      SHARE_URL: shareUrl,
       OG_IMAGE: esc(cover),
       PRICE: price.toFixed(2),
       CURRENCY: 'INR',
@@ -228,11 +300,30 @@ async function generatePdfPages() {
       JSON_LD: JSON.stringify([productSchema, breadcrumbSchema]),
     });
 
-    await fs.writeFile(path.join(outDir, `${slug}.html`), html, 'utf8');
-    urls.push(canonical);
+    // 2. Add window.__CANONICAL_SHARE_URL__ specifically to the generated HTML
+    const canonicalScript = `\n  <script>window.__CANONICAL_SHARE_URL__ = '${shareUrl}';</script>`;
+    const updatedHtml = html.replace('</head>', `${canonicalScript}\n</head>`);
+
+    await fs.writeFile(path.join(outDir, `${canonicalSlug}.html`), updatedHtml, 'utf8');
+    
+    // Only canonical URLs go into sitemap.xml
+    urls.push(canonicalMetaUrl);
+
+    // 3. Generate Old-Format Redirect Stub so old links don't 404
+    if (oldSlug !== canonicalSlug) {
+      const redirectHtml = fillTemplate(REDIRECT_STUB_TEMPLATE, {
+        TITLE: esc(title),
+        DESCRIPTION: esc(desc),
+        CANONICAL_URL: canonicalMetaUrl,
+        SHARE_URL: shareUrl,
+        OG_IMAGE: esc(cover),
+        PDF_ID_JSON: JSON.stringify(String(pdf.id)),
+      });
+      await fs.writeFile(path.join(outDir, `${oldSlug}.html`), redirectHtml, 'utf8');
+    }
   }
 
-  console.log(`✅ Generated ${urls.length} /pdf/*.html pages`);
+  console.log(`✅ Generated ${urls.length} /pdf/*.html pages (including canonical pages & redirect stubs)`);
   return urls;
 }
 
