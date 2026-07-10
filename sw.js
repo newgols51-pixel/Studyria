@@ -36,11 +36,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v14';           // ← bumped: navigation cache-first bugfix
-const SW_BUILD     = '2026.07.02-r4-nav-cache-fix';
+const CACHE_NAME   = 'studyria-v15';           // ← bumped: navigation cache-first bugfix
+const SW_BUILD     = '2026.07.11-r1-pdp-v3';
 const OFFLINE_PAGE = '/offline.html';
 
-const WHATS_NEW = '🐛 Fixed a bug where new deploys (like the WhatsApp support button) could stay invisible for returning visitors because navigation was served cache-first instead of network-first.';
+const WHATS_NEW = '✨ PDF Product Page V3: faster load, zero layout shift, PDF preview, share modal, coupon support, and review system.';
 
 // Static assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -57,6 +57,8 @@ const PRECACHE_ASSETS = [
   '/icon-512.png',
   '/icon-maskable-192.png',
   '/icon-maskable-512.png',
+  '/pdp-v3.css',
+  '/pdp-v3.js',
 ];
 
 // ── INSTALL ──────────────────────────────────────────────────────
