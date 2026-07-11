@@ -493,7 +493,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 /* Avoid permanent will-change — creates memory-expensive composite layers */
 
 /* content-visibility: auto for off-screen heavy sections */
-#page-admin { content-visibility: auto; contain-intrinsic-size: 0 600px; }
+#page-admin { content-visibility: visible; } /* FIX: was auto — blanked dynamic innerHTML on mobile */
 #page-creator-register { content-visibility: auto; contain-intrinsic-size: 0 400px; }
 
 /* Reduce animation complexity on mobile */
@@ -8296,7 +8296,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 /* Avoid permanent will-change — creates memory-expensive composite layers */
 
 /* content-visibility: auto for off-screen heavy sections */
-#page-admin { content-visibility: auto; contain-intrinsic-size: 0 600px; }
+#page-admin { content-visibility: visible; } /* FIX: was auto — blanked dynamic innerHTML on mobile */
 #page-creator-register { content-visibility: auto; contain-intrinsic-size: 0 400px; }
 
 /* Reduce animation complexity on mobile */
@@ -28999,6 +28999,15 @@ function renderAdmin() {
     if (loginPage) loginPage.classList.add('active');
     return;
   }
+  // FIX: Force #page-admin to paint before rendering content.
+  // content-visibility:auto on the page can cause Chrome/mobile to skip
+  // painting dynamically injected innerHTML, resulting in a blank screen.
+  const _adminPageEl = document.getElementById('page-admin');
+  if (_adminPageEl) {
+    _adminPageEl.style.contentVisibility = 'visible';
+    void _adminPageEl.offsetHeight; // force synchronous reflow → browser registers as in-viewport
+  }
+
   updateAdminTopbar();
   switchAdminTab(adminCurrentTab || 'dashboard');
 }
@@ -29027,6 +29036,34 @@ function switchAdminTab(tab) {
   const main = document.getElementById('adminMain');
   if (!main) return;
 
+  // FIX: Force content-visibility:visible on adminMain before injecting HTML.
+  // Without this, Chrome/mobile may skip painting dynamically added content.
+  main.style.contentVisibility = 'visible';
+  void main.offsetHeight; // synchronous reflow flush
+
+  // FIX: Error boundary — wraps each module so one crash can't blank the dashboard.
+  function _safeRender(fn, label) {
+    try {
+      if (typeof fn === 'function') {
+        fn(main);
+      } else {
+        main.innerHTML = `<div style="padding:40px;text-align:center;opacity:.7">
+          <p style="font-weight:600;margin:0 0 8px">${label} is loading…</p>
+          <p style="font-size:.82rem;margin:0 0 16px">This module may still be initializing.</p>
+          <button onclick="switchAdminTab('${tab}')" style="padding:8px 20px;border-radius:8px;background:var(--primary,#3d8ef8);color:#fff;border:none;cursor:pointer">↺ Retry</button>
+        </div>`;
+      }
+    } catch(err) {
+      console.error('[Admin] Tab render error:', tab, err);
+      main.innerHTML = `<div style="padding:40px;text-align:center">
+        <p style="font-weight:700;color:var(--danger,#e55);margin:0 0 8px">Error loading ${label}</p>
+        <p style="font-size:.82rem;color:var(--text2,#888);margin:0 0 16px">${err.message || 'Unknown error'}</p>
+        <button onclick="switchAdminTab('${tab}')" style="padding:8px 20px;border-radius:8px;background:var(--primary,#3d8ef8);color:#fff;border:none;cursor:pointer;margin-right:8px">↺ Retry</button>
+        <button onclick="switchAdminTab('dashboard')" style="padding:8px 20px;border-radius:8px;background:transparent;color:var(--primary,#3d8ef8);border:1px solid var(--primary,#3d8ef8);cursor:pointer">⬅ Dashboard</button>
+      </div>`;
+    }
+  }
+
   switch(tab) {
     case 'dashboard':  renderAdminDashboard(main); break;
     case 'analytics':  renderAdminAnalytics(main); break;
@@ -29038,34 +29075,34 @@ function switchAdminTab(tab) {
     case 'revenue':    renderAdminRevenue(main); break;
     case 'activity':   renderAdminActivity(main); break;
     case 'settings':   renderAdminSettings(main); break;
-    case 'hero-designer': renderHeroDesigner(main); break;
-    case 'pdf-manager-pro':       renderPCCPDFManager(main); break;
-    case 'category-manager-pro':  renderPCCCategoryManager(main); break;
-    case 'homepage-manager':      renderPCCHomepageManager(main); break;
-    case 'home-layout-manager':   renderOTTHomeLayoutManager(main); break;
-    case 'header-manager':        renderHeaderManager(main); break;
-    case 'nav-manager':           renderNavManager(main); break;
-    case 'customization':         renderPCCCustomization(main); break;
-    case 'users-pro':             renderPCCUsersProManager(main); break;
-    case 'finance':               renderPCCFinance(main); break;
-    case 'coupons':               renderPCCCoupons(main); break;
-    case 'blog':                  renderPCCBlog(main); break;
-    case 'announcements':         renderPCCAnnouncements(main); break;
-    case 'branding':              renderPCCBranding(main); break;
-    case 'library-manager':       renderAdminLibraryManager(main); break;
-    case 'career-hub-manager':    renderAdminCareerHubManager(main); break;
-    case 'community-manager':     renderAdminCommunityManager(main); break;
-    case 'whatsapp-community':    renderAdminWhatsAppCommunity(main); break;
-    case 'testimonials':          renderPCCTestimonials(main); break;
-    case 'reviews':             renderAdminReviews(main); break;
-    case 'achievements':          renderPCCAchievements(main); break;
-    case 'notifications-pro':     renderPCCNotifications(main); break;
-    case 'seo-manager':           renderPCCSEO(main); break;
-    case 'live-analytics':        renderPCCLiveAnalytics(main); break;
-    case 'ai-center':             renderPCCAICenter(main); break;
-    case 'security':              renderPCCSecurity(main); break;
-    case 'system-advanced':       renderPCCSystemAdvanced(main); break;
-    default: main.innerHTML = `<p class="text-muted">Section coming soon.</p>`;
+    case 'hero-designer':         _safeRender(window.renderHeroDesigner,         'Hero Designer'); break;
+    case 'pdf-manager-pro':       _safeRender(window.renderPCCPDFManager,         'PDF Manager Pro'); break;
+    case 'category-manager-pro':  _safeRender(window.renderPCCCategoryManager,    'Category Manager'); break;
+    case 'homepage-manager':      _safeRender(window.renderPCCHomepageManager,    'Homepage Manager'); break;
+    case 'home-layout-manager':   _safeRender(window.renderOTTHomeLayoutManager,  'Home Layout'); break;
+    case 'header-manager':        _safeRender(window.renderHeaderManager,         'Header Manager'); break;
+    case 'nav-manager':           _safeRender(window.renderNavManager,            'Nav Manager'); break;
+    case 'customization':         _safeRender(window.renderPCCCustomization,      'Customization'); break;
+    case 'users-pro':             _safeRender(window.renderPCCUsersProManager,    'User Management Pro'); break;
+    case 'finance':               _safeRender(window.renderPCCFinance,            'Finance Center'); break;
+    case 'coupons':               _safeRender(window.renderPCCCoupons,            'Coupons'); break;
+    case 'blog':                  _safeRender(window.renderPCCBlog,               'Blog Manager'); break;
+    case 'announcements':         _safeRender(window.renderPCCAnnouncements,      'Announcements'); break;
+    case 'branding':              _safeRender(window.renderPCCBranding,           'Branding'); break;
+    case 'library-manager':       _safeRender(renderAdminLibraryManager,          'Library Manager'); break;
+    case 'career-hub-manager':    _safeRender(renderAdminCareerHubManager,        'Career Hub Manager'); break;
+    case 'community-manager':     _safeRender(renderAdminCommunityManager,        'Community Manager'); break;
+    case 'whatsapp-community':    _safeRender(renderAdminWhatsAppCommunity,       'WhatsApp Community'); break;
+    case 'testimonials':          _safeRender(window.renderPCCTestimonials,       'Testimonials'); break;
+    case 'reviews':               _safeRender(window.renderAdminReviews,          'Reviews'); break;
+    case 'achievements':          _safeRender(window.renderPCCAchievements,       'Achievements'); break;
+    case 'notifications-pro':     _safeRender(window.renderPCCNotifications,      'Notifications'); break;
+    case 'seo-manager':           _safeRender(window.renderPCCSEO,                'SEO Manager'); break;
+    case 'live-analytics':        _safeRender(window.renderPCCLiveAnalytics,      'Live Analytics'); break;
+    case 'ai-center':             _safeRender(window.renderPCCAICenter,           'AI Center'); break;
+    case 'security':              _safeRender(window.renderPCCSecurity,           'Security'); break;
+    case 'system-advanced':       _safeRender(window.renderPCCSystemAdvanced,     'Advanced Settings'); break;
+    default: main.innerHTML = `<p class="text-muted" style="padding:32px">Section coming soon.</p>`;
   }
 }
 
@@ -47398,8 +47435,7 @@ body.light .sdl-insights-card { background: rgba(255,255,255,0.85); }
 /* ── ADMIN — heavy sub-panels rendered into #adminMain ────────── */
 /* Each admin section is dynamically rendered; wrap the container */
 .admin-main {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 800px;
+  content-visibility: visible; /* FIX: was auto — blocked paint of dynamic innerHTML on mobile */
 }
 
 /* Admin table rows — skip paint for rows outside viewport */
@@ -47430,6 +47466,18 @@ body.light .sdl-insights-card { background: rgba(255,255,255,0.85); }
 .page:not(.active) {
   content-visibility: auto;
   contain-intrinsic-size: 0 800px;
+}
+
+/* FIX: Active pages must ALWAYS paint — never skip rendering.
+   content-visibility:auto can cause dynamically-injected innerHTML to
+   be invisible on mobile if the browser thinks the element is off-screen.
+   Active pages are always on-screen, so force visible. */
+.page.active {
+  content-visibility: visible !important;
+}
+#page-admin.active,
+#page-admin.active #adminMain {
+  content-visibility: visible !important;
 }
 
 /* ── PDF CARD GRID — skip cards outside viewport ──────────────── */
