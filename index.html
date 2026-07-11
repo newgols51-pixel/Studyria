@@ -43411,6 +43411,12 @@ function _srvRender(list){
   if(countEl) countEl.textContent=list.length+' verified reviews';
   /* Re-init carousel after render */
   window._srvCarouselReady=false;
+  setTimeout(function(){
+    if(!window._srvCarouselReady) {
+      window._srvCarouselReady=true;
+      _srvInitCarousel();
+    }
+  }, 100);
 }
 
 async function _srvInit(){
