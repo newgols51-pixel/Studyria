@@ -36,11 +36,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v14';           // ← bumped: navigation cache-first bugfix
-const SW_BUILD     = '2026.07.02-r4-nav-cache-fix';
+const CACHE_NAME   = 'studyria-v15';           // ← bumped: fix _blockDoubleTap ReferenceError (renamed to _handleDoubleTap)
+const SW_BUILD     = '2026.07.11-r5-fix-blockdoubletap-ref';
 const OFFLINE_PAGE = '/offline.html';
 
-const WHATS_NEW = '🐛 Fixed a bug where new deploys (like the WhatsApp support button) could stay invisible for returning visitors because navigation was served cache-first instead of network-first.';
+const WHATS_NEW = '🐛 Fixed ReferenceError: _blockDoubleTap is not defined — function was renamed to _handleDoubleTap and cache was stale. All clients now receive the latest build.';
 
 // Static assets to pre-cache on install
 const PRECACHE_ASSETS = [
