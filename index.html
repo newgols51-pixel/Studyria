@@ -25166,6 +25166,280 @@ function sbpRetryFailed() {
   showToast('⚠️ Failed items reset. Fix the listed fields, then publish again.', 'warning');
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   📦 MULTI PUBLISH — Publish only SELECTED + READY PDFs
+   Does NOT replace sbpPublishReady (existing "Publish Ready PDFs" button).
+   Called by the new "Publish Selected PDFs" button in the header.
+   ══════════════════════════════════════════════════════════════════════════ */
+async function sbpPublishSelected() {
+  if (window._sbp.publishing) return;
+
+  // Guard: need supabase
+  if (!window.supabaseClient) {
+    showToast('Supabase not connected.', 'error');
+    return;
+  }
+
+  // Collect SELECTED items that are also READY
+  const selectedIds = [...window._sbp.selected];
+  if (!selectedIds.length) {
+    showToast('Select at least one PDF first (use the checkboxes).', 'warning');
+    return;
+  }
+
+  const toPublish = selectedIds
+    .map(id => window._sbp.queue.find(x => x.id === id))
+    .filter(item => item && !item.published && sbpStatus(item) === 'ready');
+
+  // Count how many are selected-but-not-ready (for skip summary)
+  const skippedCount = selectedIds.length - toPublish.length;
+
+  if (!toPublish.length) {
+    showToast('None of the selected PDFs are READY. Fill required fields first.', 'error');
+    return;
+  }
+
+  // ── Start publishing ──────────────────────────────────────────────────
+  window._sbp.publishing = true;
+  sbpUpdateStats();
+
+  let published = 0, failed = 0;
+  const startTime = Date.now();
+  const failedItems = [];
+  const total = toPublish.length;
+
+  // Show progress bar
+  const progEl   = document.getElementById('sbpProgressArea');
+  const progBar  = document.getElementById('sbpProgressBar');
+  const progText = document.getElementById('sbpProgressText');
+  if (progEl) progEl.style.display = '';
+  if (progBar) progBar.style.width = '0%';
+
+  for (let i = 0; i < toPublish.length; i++) {
+    const item = toPublish[i];
+    const pct  = Math.round(((i + 1) / total) * 100);
+
+    // Live progress label: Publishing 1/6 → 2/6 → … → 6/6
+    if (progText) progText.textContent = `Publishing ${i + 1}/${total}: "${(item.title || '').slice(0, 30)}…"`;
+    if (progBar)  progBar.style.width  = pct + '%';
+
+    // Re-validate (with duplicate check) — each PDF uses its OWN metadata
+    const errs = sbpValidate(item, true);
+    if (errs.length) {
+      item.errors = errs;
+      failed++;
+      failedItems.push({ item, reason: 'Missing: ' + errs.join(', ') });
+      sbpRenderCard(item.id);
+      continue;  // one failure NEVER blocks the rest
+    }
+
+    try {
+      const sb   = window.supabaseClient;
+      const slug = item.slug || sbpSlug(item.title);
+
+      // ── Upload cover ──────────────────────────────────────────────────
+      let coverUrl = item.coverUrl;
+      if (item.coverFile) {
+        const ext = item.coverFile.name.split('.').pop().toLowerCase();
+        const fp  = Date.now() + '_' + slug.slice(0, 30) + '.' + ext;
+        const { error: cErr } = await sb.storage.from('covers').upload(fp, item.coverFile, {
+          upsert: true, contentType: item.coverFile.type
+        });
+        if (cErr) throw new Error('Cover upload: ' + cErr.message);
+        const { data: cd } = sb.storage.from('covers').getPublicUrl(fp);
+        coverUrl = cd?.publicUrl;
+      }
+
+      // ── Upload PDF ────────────────────────────────────────────────────
+      let pdfUrl = item.pdfUrl;
+      if (item.pdfFile) {
+        const fp2 = Date.now() + '_' + slug.slice(0, 30) + '.pdf';
+        const { error: pErr } = await sb.storage.from('pdfs').upload(fp2, item.pdfFile, {
+          upsert: true, contentType: 'application/pdf'
+        });
+        if (pErr) throw new Error('PDF upload: ' + pErr.message);
+        pdfUrl = fp2;
+      }
+
+      // ── Resolve category IDs ──────────────────────────────────────────
+      const categoryId      = item.categoryId      || (window._dbCategories || []).find(c => c.name === item.category)?.id || null;
+      const subcategoryId   = item.subcategoryId   || null;
+      const academicLevelId = item.academicLevelId || null;
+      const streamId        = item.streamId        || null;
+      const semesterClassId = item.semesterClassId || null;
+      const subjectId       = item.subjectId       || null;
+
+      // ── ID sanity check (numeric only, never raw names) ──────────────
+      const _isNumericId = v => v === null || v === undefined || v === '' || /^\d+$/.test(String(v));
+      const _idFields = { categoryId, subcategoryId, academicLevelId, streamId, semesterClassId, subjectId };
+      const _bad = Object.entries(_idFields).find(([, v]) => !_isNumericId(v));
+      if (_bad) throw new Error('Invalid category ID for field: ' + _bad[0]);
+      if (!categoryId) throw new Error('Category is required — please select from the dropdown.');
+
+      // ── Each PDF uses ITS OWN metadata (no shared values) ────────────
+      const payload = {
+        title:           item.title,
+        author:          item.author          || null,
+        category:        item.category,
+        category_id:     categoryId,
+        description:     item.description     || null,
+        preview:         item.previewPages    || item.description || null,
+        selling_price:   item.free ? 0 : (parseFloat(item.sellingPrice) || 0),
+        original_price:  parseFloat(item.originalPrice) || null,
+        price:           item.free ? 0 : (parseFloat(item.sellingPrice) || 0),
+        free:            item.free || item.sellingPrice == 0,
+        badge:           item.badge           || null,
+        slug:            slug,
+        seo_title:       item.seoTitle        || null,
+        seo_description: item.seoDesc         || null,
+        seo_keywords:    item.keywords        || null,
+        cover_url:       coverUrl,
+        pdf_url:         pdfUrl,
+        status:          'published',
+        created_at:      item.publishDate     || new Date().toISOString(),
+        subcategory_id:    subcategoryId,
+        academic_level_id: academicLevelId,
+        stream_id:         streamId,
+        semester_class_id: semesterClassId,
+        subject_id:        subjectId,
+        // Intentionally omitting legacy bigint columns (lower(bigint) trigger bug)
+      };
+
+      const { error: insErr } = await sb.from('pdfs').insert(payload);
+      if (insErr) {
+        if (insErr.message.includes('lower(bigint)')) {
+          throw new Error('DB trigger bug — run fix-trigger-lower-bigint.sql in Supabase. (' + insErr.message + ')');
+        }
+        throw new Error('DB insert: ' + insErr.message);
+      }
+
+      // Mark published — keeps its status synced with the existing status system
+      item.published = true;
+      item.coverUrl  = coverUrl;
+      item.pdfUrl    = pdfUrl;
+      item.errors    = [];
+      published++;
+
+      // Deselect after publishing
+      window._sbp.selected.delete(item.id);
+
+      typeof logAdminActivity === 'function' &&
+        logAdminActivity('Published "' + item.title + '" via Multi Publish', 'green');
+
+    } catch (e) {
+      item.errors = [e.message];
+      failed++;
+      failedItems.push({ item, reason: e.message });
+    }
+
+    sbpRenderCard(item.id);
+  }
+
+  // ── Wrap up ───────────────────────────────────────────────────────────
+  window._sbp.publishing = false;
+  sbpUpdateStats();
+
+  // Refresh live PDFS array so the storefront reflects new items immediately
+  try {
+    const { data: refreshed } = await window.supabaseClient.from('pdfs')
+      .select('*')
+      .eq('status', 'published')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (refreshed?.length) {
+      window.PDFS.length = 0;
+      refreshed.forEach(r => window.PDFS.push(r));
+    }
+  } catch (e) { /* non-fatal */ }
+
+  if (progEl) progEl.style.display = 'none';
+
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+  // Reuse existing sbpShowReport — same format, zero duplication
+  sbpShowReport({
+    published,
+    failed,
+    skipped: skippedCount,   // PDFs that were selected but not READY
+    elapsed,
+    total: selectedIds.length,
+    failedItems
+  });
+}
+
+/* ── Multi Publish stats-bar update (extends sbpUpdateStats) ─────────────
+   Keeps the "Publish Selected PDFs" button label and disabled state in sync.
+   Called automatically from sbpUpdateStats which we patch below. ─────── */
+function sbpUpdateMultiPublishBtn() {
+  const btn      = document.getElementById('sbpMultiPublishBtn');
+  const barEl    = document.getElementById('sbpMultiBar');
+  const barBtn   = document.getElementById('sbpMultiBarBtn');
+  const barText  = document.getElementById('sbpMultiBarText');
+  const badge    = document.getElementById('sbpSelectedBadge');
+
+  const total = window._sbp.selected.size;
+
+  const readySelected = [...window._sbp.selected].filter(id => {
+    const item = window._sbp.queue.find(x => x.id === id);
+    return item && !item.published && sbpStatus(item) === 'ready';
+  });
+
+  const readyCount = readySelected.length;
+  const isPublishing = !!window._sbp.publishing;
+
+  // ── Header button ─────────────────────────────────────────────────────
+  if (btn) {
+    if (total === 0) {
+      btn.disabled = true;
+      btn.textContent = '📦 Publish Selected PDFs';
+    } else if (readyCount === 0) {
+      btn.disabled = true;
+      btn.textContent = '📦 Publish Selected (' + total + ' — none ready)';
+    } else {
+      btn.disabled = isPublishing;
+      btn.textContent = '📦 Publish Selected (' + readyCount + '/' + total + ' ready)';
+    }
+  }
+
+  // ── Inline bar (inside Queue card) ───────────────────────────────────
+  if (barEl) {
+    if (total > 0) {
+      barEl.style.display = 'flex';
+      if (barText) {
+        barText.textContent = total === 1 ? '1 selected' : total + ' selected';
+      }
+      if (barBtn) {
+        barBtn.disabled = readyCount === 0 || isPublishing;
+        barBtn.textContent = readyCount === 0
+          ? '📦 Publish Selected (none ready)'
+          : '📦 Publish Selected (' + readyCount + ' ready)';
+      }
+    } else {
+      barEl.style.display = 'none';
+    }
+  }
+
+  // ── Selection badge in Queue title ────────────────────────────────────
+  if (badge) {
+    if (total > 0) {
+      badge.style.display = '';
+      badge.textContent = total + ' selected';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+
+// ── Patch sbpUpdateStats to also refresh the Multi Publish button ─────────
+(function patchSbpUpdateStats() {
+  const _origUpdateStats = sbpUpdateStats;
+  sbpUpdateStats = function() {
+    _origUpdateStats.apply(this, arguments);
+    sbpUpdateMultiPublishBtn();
+  };
+})();
+
+
 /* ─── Main render function ───────────────────────────────────────── */
 function renderAdminAddPDF(main) {
   // Preserve single-edit compatibility
@@ -25264,6 +25538,23 @@ function renderAdminAddPDF(main) {
     display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;
   }
   @media(max-width:600px) { .sbp-field-row { grid-template-columns:1fr; } }
+
+  /* ── Multi Publish button — mobile ── */
+  @media(max-width:600px) {
+    #sbpMultiPublishBtn {
+      min-width:0 !important;
+      width:100%;
+      font-size:.75rem;
+    }
+    #sbpMultiBar {
+      flex-direction:column;
+      align-items:stretch !important;
+    }
+    #sbpMultiBarBtn {
+      width:100%;
+      text-align:center;
+    }
+  }
   </style>
 
   <!-- PAGE HEADER -->
@@ -25279,6 +25570,11 @@ function renderAdminAddPDF(main) {
       <button class="btn btn-secondary btn-sm" onclick="sbpSelectAll()">☑ Select All</button>
       <button class="btn btn-secondary btn-sm" id="sbpBulkEditBtn" onclick="sbpOpenBulkEdit()" disabled>⚙️ Bulk Edit</button>
       <button class="btn btn-secondary btn-sm" onclick="adminCancelEdit()">✕ Exit</button>
+      <button class="btn btn-secondary" id="sbpMultiPublishBtn" onclick="sbpPublishSelected()" disabled
+        style="min-width:200px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:transparent"
+        title="Publish only the READY PDFs you have checked — each with its own metadata">
+        📦 Publish Selected PDFs
+      </button>
       <button class="btn btn-primary" id="sbpPublishBtn" onclick="sbpPublishReady()" disabled style="min-width:200px">
         🚀 Publish Ready PDFs
       </button>
@@ -25355,11 +25651,29 @@ function renderAdminAddPDF(main) {
           <div class="ap-card-title">
             <div class="ap-card-icon ap-icon-purple">📋</div>
             Queue
+            <span id="sbpSelectedBadge" style="display:none;font-size:.65rem;background:rgba(124,58,237,0.18);color:#a78bfa;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:700"></span>
           </div>
-          <div style="display:flex;gap:6px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
             <button class="btn btn-secondary btn-sm" onclick="sbpSelectAll()" style="font-size:.7rem">☑ All</button>
             <button class="btn btn-secondary btn-sm" onclick="window._sbp.queue=[];window._sbp.selected.clear();sbpRenderQueue()" style="font-size:.7rem;color:#ff4d6d">🗑 Clear</button>
           </div>
+        </div>
+        <!-- Multi Publish inline bar — visible only when ≥1 READY item is selected -->
+        <div id="sbpMultiBar" style="display:none;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.2);border-radius:8px;padding:10px 14px;margin:0 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:140px">
+            <span id="sbpMultiBarText" style="font-size:.78rem;font-weight:700;color:#a78bfa">0 selected</span>
+            <span style="font-size:.72rem;color:var(--text2);margin-left:6px">· Publish only these with their own metadata</span>
+          </div>
+          <button onclick="sbpPublishSelected()"
+            id="sbpMultiBarBtn"
+            style="padding:7px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;font-weight:700;cursor:pointer;font-size:.78rem;font-family:var(--font-body);white-space:nowrap;flex-shrink:0"
+            disabled>
+            📦 Publish Selected
+          </button>
+          <button onclick="window._sbp.selected.clear();sbpRenderQueue();sbpUpdateStats()"
+            style="padding:7px 12px;border-radius:8px;border:1px solid rgba(124,58,237,0.3);background:transparent;color:#a78bfa;cursor:pointer;font-size:.72rem;font-family:var(--font-body)">
+            Clear selection
+          </button>
         </div>
 
         <!-- Empty state -->
