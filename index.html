@@ -120,6 +120,13 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 <link rel="dns-prefetch" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" />
+<!-- Supabase SDK — loaded early so OTT boot fetch works on DOMContentLoaded -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Capture SDK reference immediately before anything can overwrite window.supabase
+  window.supabaseLib = window.supabase;
+</script>
+<script src="supabase.js"></script>
 <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
 <link rel="preconnect" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" crossorigin />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -9189,10 +9196,10 @@ function studyriaApp() {
 
       // Try to get supabaseClient — retry up to 15s
       let client = null;
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 20; i++) {
         client = window.supabaseClient || window.supabase;
         if (client && typeof client.from === 'function') break;
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 200));
       }
 
       if (client && typeof client.from === 'function') {
@@ -9253,10 +9260,16 @@ function studyriaApp() {
     // Expose ottRenderDiscovery globally so pdf-list.js _rerenderAll can call it
     window.ottRenderDiscovery = ottRenderDiscovery;
 
+    // Listen for pdf-list.js to finish loading PDFs, then re-render
+    document.addEventListener('studyria:pdfs-ready', function() {
+      console.log('[OTT] studyria:pdfs-ready received — re-rendering discovery sections');
+      ottRenderDiscovery(true);
+    });
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => setTimeout(_fetchAndRenderOTT, 300));
+      document.addEventListener('DOMContentLoaded', () => setTimeout(_fetchAndRenderOTT, 50));
     } else {
-      setTimeout(_fetchAndRenderOTT, 300);
+      setTimeout(_fetchAndRenderOTT, 50);
     }
   })();
 
@@ -16844,14 +16857,7 @@ async function handleNewsletterSubscribe(btn) {
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// Capture the Supabase SDK before supabase.js runs (and before window.supabase
-// is later overwritten with the client instance in supabase.js's DOMContentLoaded).
-// supabase.js prefers window.supabaseLib for its createClient() check.
-window.supabaseLib = window.supabase;
-</script>
-<script src="supabase.js"></script>
+<!-- supabase scripts moved to <head> -->
 <script>
 // ── POST-LOAD GUARD ───────────────────────────────────────────────────────────
 // Verify supabase.js registered the real authLoginWithGoogle.
