@@ -16009,6 +16009,11 @@ async function navigate(page) {
   // button), force it closed so its scroll-lock can never bleed into
   // the page we're about to show.
   if (typeof _pdpClearZoomLock === 'function') _pdpClearZoomLock();
+  // Clean up PDP touch zoom listeners when leaving PDP
+  if (typeof window._pdpZoomCleanup === 'function') {
+    window._pdpZoomCleanup();
+    window._pdpZoomCleanup = null;
+  }
   _pdpResetPageZoom();
 
   // ── Already signed in? Don't show the login/register screen ─────
@@ -17069,10 +17074,7 @@ function _pdpRenderShell(pdf) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                 Share
               </button>
-              <button class="pdp-cover-action-btn pdp-zoom-btn" onclick="pdpZoomCover()" title="Zoom">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                Zoom
-              </button>
+
             </div>
           </div>
 
@@ -17268,6 +17270,15 @@ function _pdpRenderShell(pdf) {
   // Scroll-driven sticky PDF page preview
   pdpInitPreview(pdf);
 
+  // ── PDP Zoom Control ─────────────────────────────────────────────
+  // Called every time a PDP opens. Enforces:
+  //  • Always start at 100% scale
+  //  • No auto-zoom from scrolling
+  //  • No double-tap zoom on cover or page
+  //  • No browser pinch-zoom (accidental)
+  //  • Intentional 2-finger hold (≥2s) → temp zoom allowed, snaps back on release
+  _pdpInstallZoomControl();
+
   // Sticky bar
   const stickyBar   = document.getElementById('pdpStickyBar');
   const stickyTitle = document.getElementById('pdpStickyTitle');
@@ -17339,6 +17350,230 @@ function _pdpRenderShell(pdf) {
 //    page from the real preview PDF via pdf.js so it is always shown in
 //    full (object-fit: contain — never cropped). Works identically for
 //    scrolling up (shows earlier pages again) and down.
+/* ══════════════════════════════════════════════════════════════════════
+   PDP ZOOM CONTROL
+   • Resets browser zoom to 100% when a PDF checkout page opens
+   • Blocks double-tap auto-zoom on cover image and preview canvas
+   • Blocks accidental pinch-zoom (touch that starts without 2s hold)
+   • Allows intentional 2-finger pinch held for ≥ 2 seconds → browser
+     zoom temporarily unlocked; snaps back to 100% when fingers lift
+   ══════════════════════════════════════════════════════════════════════ */
+function _pdpInstallZoomControl() {
+  // ── 1. Snap to 100% immediately (handles carry-over from previous tab) ──
+  (function resetTo100() {
+    const vp = document.querySelector('meta[name="viewport"]');
+    if (!vp) return;
+    const base = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+    // Double-toggle forces Chrome/Safari to acknowledge the new value in SPA context
+    vp.setAttribute('content', base + ', shrink-to-fit=yes');
+    requestAnimationFrame(() => vp.setAttribute('content', base));
+  })();
+
+  // ── 2. Tear down any previous PDP zoom listeners ──────────────────────
+  if (window._pdpZoomCleanup) {
+    window._pdpZoomCleanup();
+    window._pdpZoomCleanup = null;
+  }
+
+  const vp = document.querySelector('meta[name="viewport"]');
+  const BASE_VP  = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+  const OPEN_VP  = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
+
+  // ── 3. Double-tap prevention ──────────────────────────────────────────
+  // We intercept touchend events on the cover & preview area.
+  // If two taps arrive within 300ms, we call preventDefault() to stop
+  // the browser's built-in double-tap zoom gesture.
+  let _lastTap = 0;
+  function _blockDoubleTap(e) {
+    const now = Date.now();
+    if (now - _lastTap < 320) {
+      e.preventDefault(); // kill double-tap zoom
+    }
+    _lastTap = now;
+  }
+
+  // Targets: cover wrap + preview stage
+  const coverWrap    = document.querySelector('.pdp-cover-wrap');
+  const previewStage = document.querySelector('.pdp-preview-stage');
+  const tapTargets   = [coverWrap, previewStage].filter(Boolean);
+
+  tapTargets.forEach(el => {
+    el.addEventListener('touchend', _blockDoubleTap, { passive: false });
+  });
+
+  // ── 4 & 5. Pinch-zoom gating: block unless held ≥ 2 seconds ──────────
+  // Strategy: detect when 2 fingers are on screen. Start a 2s timer.
+  // If the gesture ends before 2s → block (preventDefault).
+  // If held ≥ 2s → unlock viewport so browser can zoom naturally.
+  // When all fingers lift after an allowed zoom → snap back to 100%.
+
+  let _pinchStart      = 0;    // timestamp when 2nd finger landed
+  let _pinchAllowed    = false; // did the hold qualify?
+  let _pinchActive     = false; // are ≥2 fingers currently on screen?
+  let _pinchTimer      = null;
+  const HOLD_MS        = 2000; // 2 seconds to qualify
+
+  function _onTouchStart(e) {
+    if (e.touches.length === 2) {
+      _pinchActive  = true;
+      _pinchAllowed = false;
+      _pinchStart   = Date.now();
+      clearTimeout(_pinchTimer);
+
+      // After HOLD_MS: unlock viewport
+      _pinchTimer = setTimeout(() => {
+        if (_pinchActive) {
+          _pinchAllowed = true;
+          if (vp) vp.setAttribute('content', OPEN_VP);
+        }
+      }, HOLD_MS);
+    } else if (e.touches.length === 1) {
+      // Single finger: make sure viewport stays locked
+      if (!_pinchActive && vp) vp.setAttribute('content', BASE_VP);
+    }
+  }
+
+  function _onTouchMove(e) {
+    if (e.touches.length === 2 && !_pinchAllowed) {
+      // Hold not qualified yet — block the pinch-zoom
+      e.preventDefault();
+    }
+  }
+
+  function _onTouchEnd(e) {
+    if (_pinchActive && e.touches.length < 2) {
+      _pinchActive = false;
+      clearTimeout(_pinchTimer);
+
+      if (_pinchAllowed) {
+        // User intentionally zoomed — snap back to 100% smoothly
+        // We wait a tick so the browser has rendered their zoom first,
+        // then reset. The CSS transform trick gives a smooth return.
+        setTimeout(() => {
+          if (vp) {
+            vp.setAttribute('content', BASE_VP + ', shrink-to-fit=yes');
+            requestAnimationFrame(() => vp.setAttribute('content', BASE_VP));
+          }
+        }, 80);
+        _pinchAllowed = false;
+      }
+    }
+  }
+
+  // Attach to document — covers entire page during PDP view
+  document.addEventListener('touchstart', _onTouchStart, { passive: true });
+  document.addEventListener('touchmove',  _onTouchMove,  { passive: false });
+  document.addEventListener('touchend',   _onTouchEnd,   { passive: true });
+
+  // ── 6. Block gesturestart (Safari iOS legacy API) ─────────────────────
+  function _blockGesture(e) {
+    if (!_pinchAllowed) e.preventDefault();
+  }
+  document.addEventListener('gesturestart',  _blockGesture, { passive: false });
+  document.addEventListener('gesturechange', _blockGesture, { passive: false });
+
+  // ── 7. Cleanup: called when user navigates away from PDP ─────────────
+  window._pdpZoomCleanup = function() {
+    tapTargets.forEach(el => {
+      el.removeEventListener('touchend', _blockDoubleTap);
+    });
+    document.removeEventListener('touchstart', _onTouchStart);
+    document.removeEventListener('touchmove',  _onTouchMove);
+    document.removeEventListener('touchend',   _onTouchEnd);
+    document.removeEventListener('gesturestart',  _blockGesture);
+    document.removeEventListener('gesturechange', _blockGesture);
+    clearTimeout(_pinchTimer);
+    // Restore base viewport so other pages aren't affected
+    if (vp) vp.setAttribute('content', BASE_VP);
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PDF PREVIEW SYSTEM v2
+   ─ Thumbnail strip (clickable per page)
+   ─ Admin-restricted pages only (preview_pages field: "1-3", "1,2,3", "2")
+   ─ Renders PDF pages via canvas → dataURL (PDF URL never exposed to DOM)
+   ─ Content protection: watermark, no right-click, no text-select, no drag
+   ─ Blur when tab hidden
+   ─ Mobile responsive, smooth page switching
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Parse admin's preview_pages spec → array of page numbers (1-indexed).
+   Accepts: "1-3", "1,2,3", "2", "1-5", null/undefined → all pages  */
+function _pdpParsePreviewPages(spec, totalPages) {
+  if (!spec || !String(spec).trim()) {
+    // No restriction — all pages allowed
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  const s = String(spec).trim();
+  const allowed = new Set();
+  // Support: "1-3" range and/or "1,2,5" list, mixed: "1-3,5,7"
+  s.split(',').forEach(part => {
+    part = part.trim();
+    const range = part.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+    if (range) {
+      const from = parseInt(range[1], 10);
+      const to   = Math.min(parseInt(range[2], 10), totalPages);
+      for (let p = from; p <= to; p++) {
+        if (p >= 1 && p <= totalPages) allowed.add(p);
+      }
+    } else {
+      const n = parseInt(part, 10);
+      if (!isNaN(n) && n >= 1 && n <= totalPages) allowed.add(n);
+    }
+  });
+  return allowed.size ? [...allowed].sort((a, b) => a - b) : Array.from({ length: totalPages }, (_, i) => i + 1);
+}
+
+/* Get watermark string for this session */
+function _pdpWatermarkText() {
+  const user = window.currentUser;
+  if (user) {
+    const email = (user.email || '').split('@')[0].slice(0, 12);
+    return 'studyria.in · ' + email;
+  }
+  return 'studyria.in · Preview Only';
+}
+
+/* Render PDF page to canvas → dataURL (NEVER exposes the original PDF URL) */
+async function _pdpRenderPageToDataURL(pdfDoc, pageNum, scale) {
+  const page     = await pdfDoc.getPage(pageNum);
+  const viewport = page.getViewport({ scale: scale || 1.8 });
+  const canvas   = document.createElement('canvas');
+  canvas.width   = Math.ceil(viewport.width);
+  canvas.height  = Math.ceil(viewport.height);
+  const ctx      = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport }).promise;
+
+  // ── Burn watermark into the canvas (content protection) ──────────────
+  const wm = _pdpWatermarkText();
+  ctx.save();
+  ctx.globalAlpha = 0.13;
+  ctx.fillStyle   = '#1a1a2e';
+  ctx.font        = `bold ${Math.max(14, canvas.width * 0.04)}px Arial, sans-serif`;
+  ctx.textAlign   = 'center';
+  ctx.textBaseline = 'middle';
+  // Diagonal repeating pattern
+  const step = canvas.width * 0.45;
+  for (let x = -canvas.width; x < canvas.width * 2; x += step) {
+    for (let y = -canvas.height; y < canvas.height * 2; y += step * 0.6) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-Math.PI / 6);
+      ctx.fillText(wm, 0, 0);
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+
+  return canvas.toDataURL('image/jpeg', 0.88);
+}
+
+/* Render a small thumbnail for the strip */
+async function _pdpRenderThumb(pdfDoc, pageNum) {
+  return _pdpRenderPageToDataURL(pdfDoc, pageNum, 0.4);
+}
+
 async function pdpInitPreview(pdf) {
   const track     = document.getElementById('pdpPreviewTrack');
   const stickyEl  = document.getElementById('pdpPreviewSticky');
@@ -17347,8 +17582,7 @@ async function pdpInitPreview(pdf) {
   const indicator = document.getElementById('pdpPreviewPageIndicator');
   if (!track || !img) return;
 
-  // Always clear out any previous PDP's listener/state first (re-renders
-  // happen every time the user opens a new PDP).
+  // ── Tear down previous session listeners ───────────────────────────────
   if (window._pdpPreviewScrollHandler) {
     window.removeEventListener('scroll', window._pdpPreviewScrollHandler);
     window._pdpPreviewScrollHandler = null;
@@ -17357,100 +17591,241 @@ async function pdpInitPreview(pdf) {
     window.removeEventListener('resize', window._pdpPreviewResizeHandler);
     window._pdpPreviewResizeHandler = null;
   }
+  if (window._pdpPreviewVisibilityHandler) {
+    document.removeEventListener('visibilitychange', window._pdpPreviewVisibilityHandler);
+    window._pdpPreviewVisibilityHandler = null;
+  }
+
   track.classList.remove('active');
   img.classList.remove('loaded');
   img.removeAttribute('src');
   if (loading) loading.style.display = '';
   if (indicator) indicator.textContent = '';
 
+  // Remove previous thumbnail strip if any
+  const oldStrip = document.getElementById('pdpThumbStrip');
+  if (oldStrip) oldStrip.remove();
+
   const previewUrl = (pdf.previewPdfUrl || pdf.preview_pdf_url || '').trim();
-  if (!previewUrl) return; // no preview file for this PDF — leave the block hidden
+  if (!previewUrl) return;
 
   if (!window.pdfjsLib) {
-    console.warn('pdpInitPreview: pdf.js not available — skipping page preview');
+    console.warn('pdpInitPreview: pdf.js not available');
     return;
   }
 
+  // ── Load PDF document ────────────────────────────────────────────────
+  // Use withCredentials:false + no CORS header exposure (the URL is only
+  // used inside pdf.js worker — never injected into DOM as an <a> or src)
   let pdfDoc, numPages = 0;
   try {
-    pdfDoc = await window.pdfjsLib.getDocument(previewUrl).promise;
+    pdfDoc = await window.pdfjsLib.getDocument({
+      url: previewUrl,
+      withCredentials: false,
+      disableAutoFetch: false,
+      disableStream: false,
+    }).promise;
     numPages = pdfDoc.numPages || 0;
   } catch (e) {
-    console.warn('pdpInitPreview: failed to load preview PDF', e);
+    console.warn('pdpInitPreview: load failed', e);
     return;
   }
   if (!numPages) return;
+  if (!document.getElementById('pdpPreviewTrack')) return; // navigated away
 
-  // Make sure this is still the PDP the user is looking at (they may have
-  // navigated away while the PDF was loading).
-  if (!document.getElementById('pdpPreviewTrack')) return;
+  // ── Determine allowed pages (admin restriction) ──────────────────────
+  const previewPageSpec = pdf.preview_pages || pdf.previewPages || pdf.preview || null;
+  // If spec is a text description (not a page range), allow all pages
+  const looksLikeSpec  = previewPageSpec && /^\d/.test(String(previewPageSpec).trim());
+  const allowedPages   = looksLikeSpec
+    ? _pdpParsePreviewPages(previewPageSpec, numPages)
+    : Array.from({ length: Math.min(numPages, 3) }, (_, i) => i + 1);
+  // Clamp to actual page count
+  const safePages = allowedPages.filter(p => p >= 1 && p <= numPages);
+  if (!safePages.length) return;
 
   track.classList.add('active');
 
-  const SLOT_RATIO = 0.9; // scroll distance per page, as a fraction of viewport height — tune for feel
-  // Use visualViewport height when available — it reflects the *stable*
-  // layout viewport rather than the raw window.innerHeight, which mobile
-  // browsers shrink/grow as their URL bar collapses/expands mid-scroll.
-  function stableViewportHeight() {
-    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-  }
-  function sizeTrack() {
-    track.style.height = (numPages * stableViewportHeight() * SLOT_RATIO) + 'px';
-  }
-  sizeTrack();
+  // ── Page cache & render ───────────────────────────────────────────────
+  const pageCache  = {};
+  const thumbCache = {};
+  const renderQ    = {};
+  const thumbQ     = {};
+  let   activePageIdx = 0; // index into safePages[]
 
-  const pageCache = {};   // pageNum -> rendered data URL
-  const renderQueue = {}; // pageNum -> in-flight render promise
-  let currentPage = 0;
+  async function renderPage(pageNum) {
+    if (pageCache[pageNum]) return pageCache[pageNum];
+    if (renderQ[pageNum])   return renderQ[pageNum];
+    renderQ[pageNum] = _pdpRenderPageToDataURL(pdfDoc, pageNum, 1.8).then(url => {
+      pageCache[pageNum] = url;
+      delete renderQ[pageNum];
+      return url;
+    }).catch(e => { delete renderQ[pageNum]; throw e; });
+    return renderQ[pageNum];
+  }
 
-  function renderPage(n) {
-    if (pageCache[n]) return Promise.resolve(pageCache[n]);
-    if (renderQueue[n]) return renderQueue[n];
-    renderQueue[n] = pdfDoc.getPage(n).then(page => {
-      const viewport = page.getViewport({ scale: 1.6 });
-      const canvas = document.createElement('canvas');
-      canvas.width  = Math.ceil(viewport.width);
-      canvas.height = Math.ceil(viewport.height);
-      const ctx = canvas.getContext('2d');
-      return page.render({ canvasContext: ctx, viewport }).promise.then(() => {
-        const url = canvas.toDataURL('image/jpeg', 0.85);
-        pageCache[n] = url;
-        delete renderQueue[n];
-        return url;
+  async function renderThumb(pageNum) {
+    if (thumbCache[pageNum]) return thumbCache[pageNum];
+    if (thumbQ[pageNum])     return thumbQ[pageNum];
+    thumbQ[pageNum] = _pdpRenderPageToDataURL(pdfDoc, pageNum, 0.35).then(url => {
+      thumbCache[pageNum] = url;
+      delete thumbQ[pageNum];
+      return url;
+    }).catch(e => { delete thumbQ[pageNum]; throw e; });
+    return thumbQ[pageNum];
+  }
+
+  // ── Show a specific page (by index into safePages) ───────────────────
+  async function showPageAtIndex(idx) {
+    idx = Math.max(0, Math.min(safePages.length - 1, idx));
+    if (idx === activePageIdx && img.classList.contains('loaded')) return;
+    activePageIdx = idx;
+    const pageNum = safePages[idx];
+
+    // Update indicator
+    if (indicator) indicator.textContent = `Page ${pageNum} of ${safePages.length} preview pages`;
+
+    // Update thumb strip highlight
+    const stripEl = document.getElementById('pdpThumbStrip');
+    if (stripEl) {
+      stripEl.querySelectorAll('.pdp-thumb-item').forEach((el, i) => {
+        el.classList.toggle('pdp-thumb-active', i === idx);
       });
-    }).catch(e => {
-      delete renderQueue[n];
-      throw e;
-    });
-    return renderQueue[n];
-  }
+    }
 
-  async function showPage(n) {
-    n = Math.min(numPages, Math.max(1, n));
-    if (n === currentPage) return;
-    currentPage = n;
-    if (indicator) indicator.textContent = `Page ${n} of ${numPages}`;
+    // Show loading
+    if (loading) loading.style.display = '';
+    img.classList.remove('loaded');
+
     try {
-      const url = await renderPage(n);
-      if (currentPage !== n) return; // a newer page request won the race
+      const url = await renderPage(pageNum);
+      if (activePageIdx !== idx) return; // race: user switched before this resolved
       img.src = url;
       img.classList.add('loaded');
       if (loading) loading.style.display = 'none';
     } catch (e) {
-      console.warn('pdpInitPreview: page render failed', n, e);
+      console.warn('pdpInitPreview: render failed for page', pageNum, e);
     }
-    // Pre-warm neighbours so scrolling feels instant in both directions
-    if (n + 1 <= numPages) renderPage(n + 1).catch(() => {});
-    if (n - 1 >= 1) renderPage(n - 1).catch(() => {});
+
+    // Pre-warm adjacent pages
+    if (idx + 1 < safePages.length) renderPage(safePages[idx + 1]).catch(() => {});
+    if (idx - 1 >= 0)               renderPage(safePages[idx - 1]).catch(() => {});
   }
 
-  function computePageFromScroll() {
-    const rect = track.getBoundingClientRect();
+  // ── Build thumbnail strip ─────────────────────────────────────────────
+  function buildThumbStrip() {
+    const stage = document.getElementById('pdpPreviewStage');
+    if (!stage) return;
+
+    const strip = document.createElement('div');
+    strip.id        = 'pdpThumbStrip';
+    strip.className = 'pdp-thumb-strip';
+    strip.setAttribute('role', 'tablist');
+    strip.setAttribute('aria-label', 'Preview pages');
+
+    safePages.forEach((pageNum, idx) => {
+      const item = document.createElement('button');
+      item.className   = 'pdp-thumb-item' + (idx === 0 ? ' pdp-thumb-active' : '');
+      item.type        = 'button';
+      item.title       = 'Page ' + pageNum;
+      item.setAttribute('role', 'tab');
+      item.setAttribute('aria-label', 'Preview page ' + pageNum);
+      item.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+
+      // Placeholder while thumb renders
+      item.innerHTML = '<div class="pdp-thumb-placeholder"><span>' + pageNum + '</span></div>';
+
+      item.addEventListener('click', () => {
+        showPageAtIndex(idx);
+      });
+
+      strip.appendChild(item);
+
+      // Async load thumbnail into the button
+      renderThumb(pageNum).then(url => {
+        if (!document.getElementById('pdpThumbStrip')) return; // navigated away
+        const img2 = document.createElement('img');
+        img2.src             = url;
+        img2.alt             = 'Page ' + pageNum;
+        img2.draggable       = false;
+        img2.style.width     = '100%';
+        img2.style.height    = '100%';
+        img2.style.objectFit = 'cover';
+        img2.style.borderRadius = '4px';
+        // Content protection on thumb
+        img2.addEventListener('contextmenu', e => e.preventDefault());
+        img2.addEventListener('dragstart',   e => e.preventDefault());
+        item.innerHTML = '';
+        item.appendChild(img2);
+      }).catch(() => {});
+    });
+
+    // Insert strip BELOW the sticky viewer
+    const sticky = document.getElementById('pdpPreviewSticky');
+    if (sticky && sticky.parentNode) {
+      sticky.parentNode.insertBefore(strip, sticky.nextSibling);
+    } else {
+      track.appendChild(strip);
+    }
+  }
+
+  // ── Content protection on main viewer ────────────────────────────────
+  function applyContentProtection() {
+    const stage = document.getElementById('pdpPreviewStage');
+    if (!stage) return;
+
+    // Disable right-click
+    stage.addEventListener('contextmenu', e => e.preventDefault());
+    // Disable drag
+    stage.addEventListener('dragstart',   e => e.preventDefault());
+    // Disable text selection
+    stage.style.userSelect       = 'none';
+    stage.style.webkitUserSelect = 'none';
+    // Disable long-press save on iOS (prevents callout menu)
+    stage.style.webkitTouchCallout = 'none';
+    // Disable image dragging
+    img.setAttribute('draggable', 'false');
+    img.addEventListener('contextmenu', e => e.preventDefault());
+    img.addEventListener('dragstart',   e => e.preventDefault());
+    // Block common dev shortcuts on the preview area (best-effort)
+    stage.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && ['s','u','p','a'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+    }, true);
+  }
+
+  // ── Blur on tab switch ────────────────────────────────────────────────
+  function onVisibilityChange() {
+    const stage = document.getElementById('pdpPreviewStage');
+    if (!stage) return;
+    if (document.hidden) {
+      stage.style.filter = 'blur(12px)';
+      stage.style.transition = 'filter 0.1s';
+    } else {
+      stage.style.filter = '';
+    }
+  }
+  window._pdpPreviewVisibilityHandler = onVisibilityChange;
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
+  // ── Scroll-driven page switching (unchanged logic — drives by index) ──
+  function stableViewportHeight() {
+    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  }
+  function sizeTrack() {
+    // Height: each allowed page gets one scroll slot
+    track.style.height = (safePages.length * stableViewportHeight() * 0.9) + 'px';
+  }
+  sizeTrack();
+
+  function computeIdxFromScroll() {
+    const rect         = track.getBoundingClientRect();
     const stickyHeight = stickyEl ? stickyEl.offsetHeight : window.innerHeight;
-    const scrollable = rect.height - stickyHeight;
-    if (scrollable <= 0) return 1;
+    const scrollable   = rect.height - stickyHeight;
+    if (scrollable <= 0) return 0;
     const progress = Math.max(0, Math.min(1, -rect.top / scrollable));
-    return Math.floor(progress * numPages) + 1;
+    return Math.min(safePages.length - 1, Math.floor(progress * safePages.length));
   }
 
   let ticking = false;
@@ -17458,7 +17833,7 @@ async function pdpInitPreview(pdf) {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      showPage(computePageFromScroll());
+      showPageAtIndex(computeIdxFromScroll());
       ticking = false;
     });
   }
@@ -17469,18 +17844,11 @@ async function pdpInitPreview(pdf) {
     if (resizeTicking) return;
     resizeTicking = true;
     requestAnimationFrame(() => {
-      // Mobile browsers fire 'resize' when their URL bar collapses/expands
-      // during scroll (in EITHER direction) — that only changes innerHeight,
-      // never innerWidth. Re-sizing the track on those phantom events is
-      // what caused the mobile "zoom/shift" bug: real layout changes
-      // (rotation, actual breakpoint change) always change the width, so
-      // gating on width-only change filters out the false positives while
-      // still catching every real resize.
-      const currentWidth = window.innerWidth;
-      if (currentWidth !== lastKnownWidth) {
-        lastKnownWidth = currentWidth;
+      const cw = window.innerWidth;
+      if (cw !== lastKnownWidth) {
+        lastKnownWidth = cw;
         sizeTrack();
-        showPage(computePageFromScroll());
+        showPageAtIndex(computeIdxFromScroll());
       }
       resizeTicking = false;
     });
@@ -17491,8 +17859,11 @@ async function pdpInitPreview(pdf) {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onResize);
 
-  showPage(1); // first page as soon as it's ready
-  onScroll();  // correct immediately if the page was opened mid-scroll
+  // ── Initialise ────────────────────────────────────────────────────────
+  buildThumbStrip();
+  applyContentProtection();
+  showPageAtIndex(0);
+  onScroll();
 }
 
 // ── Fetch all live counters + reviews from Supabase in one parallel pass ──
@@ -18068,7 +18439,12 @@ function pdpSharePDF() {
 function _pdpClearZoomLock() {
   document.querySelectorAll('.pdp-zoom-overlay').forEach(el => el.remove());
   document.body.classList.remove('pdp-zoom-lock');
-  document.body.style.top = ''; // clears any leftover value from older cached builds
+  document.body.style.top = '';
+  // Clean up preview visibility blur handler
+  if (window._pdpPreviewVisibilityHandler) {
+    document.removeEventListener('visibilitychange', window._pdpPreviewVisibilityHandler);
+    window._pdpPreviewVisibilityHandler = null;
+  }
 }
 
 function pdpZoomCover() {
@@ -37993,6 +38369,72 @@ async function hlmSaveTheme() {
   text-align: center;
   font-size: .75rem; font-weight: 700; color: var(--text2);
   letter-spacing: .02em;
+}
+
+/* ── PDF Preview Thumbnail Strip ───────────────────────────────────── */
+.pdp-thumb-strip {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  background: var(--glass);
+  border-top: 1px solid var(--glass-border);
+  scrollbar-width: none; /* Firefox */
+}
+.pdp-thumb-strip::-webkit-scrollbar { display: none; }
+
+.pdp-thumb-item {
+  flex-shrink: 0;
+  width: 64px;
+  height: 88px;
+  border-radius: 6px;
+  border: 2px solid var(--glass-border);
+  background: var(--surface);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  scroll-snap-align: start;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pdp-thumb-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(61,142,248,0.25);
+}
+.pdp-thumb-item.pdp-thumb-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(61,142,248,0.35);
+}
+.pdp-thumb-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700; color: var(--text2);
+  background: var(--surface);
+}
+/* Page number label on thumbnail */
+.pdp-thumb-item::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: .58rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 2px 0;
+  pointer-events: none;
+}
+
+/* Mobile: smaller thumbs */
+@media (max-width: 480px) {
+  .pdp-thumb-item { width: 52px; height: 72px; }
+  .pdp-thumb-strip { gap: 6px; padding: 10px 12px 6px; }
 }
 
 /* ── Responsive: tablet & mobile ──────────────────────────────────── */
