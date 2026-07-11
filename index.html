@@ -7461,9 +7461,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 
 <!-- ── TESTIMONIALS ──────────────────────────────────────────── -->
 <section class="sh-testim-section" id="testimonialsSection">
-  <!-- Legacy track (kept for backward compat with loadHomepageTestimonials) -->
   <div id="testimTrack" style="display:none"></div>
-
   <div class="container">
     <div class="sh-section-head" style="padding-bottom:0">
       <div class="sh-section-label">
@@ -7473,7 +7471,6 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
       </div>
     </div>
   </div>
-
   <div class="srv-header">
     <div class="srv-header-left">
       <div class="srv-sub">Real verified reviews from Assam students</div>
@@ -7486,11 +7483,45 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
       </div>
     </div>
   </div>
-
-  <div class="srv-outer">
+  <div class="srv-outer" id="srvOuter" style="position:relative">
+    <button class="srv-arrow srv-arrow-left hidden" id="srvArrowLeft">&#8592;</button>
     <div class="srv-track" id="srvTrack"></div>
+    <button class="srv-arrow srv-arrow-right" id="srvArrowRight">&#8594;</button>
   </div>
-
+  <div class="srv-dots" id="srvDots"></div>
+  <div class="srv-add-wrap">
+    <button class="srv-add-btn" id="srvAddBtn" onclick="_srvToggleForm()">
+      <span class="srv-add-btn-icon">&#9998;</span>
+      <span class="srv-add-btn-txt">Add Your Review</span>
+    </button>
+    <div class="srv-form-panel" id="srvFormPanel">
+      <div class="srv-form-title">Share Your Experience</div>
+      <form id="srvReviewForm" onsubmit="_srvSubmitReview(event)">
+        <div class="srv-form-row">
+          <div>
+            <label class="srv-form-label">Your Name *</label>
+            <input class="srv-form-input" id="srvRevName" type="text" placeholder="e.g. Priyanka Bora" required>
+          </div>
+          <div>
+            <label class="srv-form-label">Location</label>
+            <input class="srv-form-input" id="srvRevLoc" type="text" placeholder="e.g. Guwahati">
+          </div>
+        </div>
+        <label class="srv-form-label">Rating *</label>
+        <div class="srv-star-row">
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(1)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(2)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(3)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(4)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(5)">&#9733;</button>
+        </div>
+        <label class="srv-form-label">Your Review *</label>
+        <textarea class="srv-form-textarea" id="srvRevText" placeholder="Share your experience with Studyria PDFs... (min. 20 characters)" rows="4"></textarea>
+        <button class="srv-form-submit" id="srvRevSubmit" type="submit">Submit Review</button>
+        <div class="srv-form-msg" id="srvFormMsg"></div>
+      </form>
+    </div>
+  </div>
 </section>
 
 <!-- ── FAQ ──────────────────────────────────────────────────── -->
@@ -11250,6 +11281,7 @@ body.light .me-stat-val { filter:none; }
         <button class="admin-nav-item" data-atab="testimonials" onclick="switchAdminTab('testimonials')">
           <svg width="16" height="16"><use href="#ic-star"/></svg>Testimonials
         </button>
+            <button class="admin-nav-item" data-atab="reviews" onclick="switchAdminTab('reviews')">Reviews<span class="arv-pending-count" id="arvPendingBadge" style="display:none">0</span></button>
         <button class="admin-nav-item" data-atab="achievements" onclick="switchAdminTab('achievements')">
           <svg width="16" height="16"><use href="#ic-award"/></svg>Achievement System
         </button>
@@ -21213,6 +21245,7 @@ function switchAdminTab(tab) {
     case 'community-manager':     renderAdminCommunityManager(main); break;
     case 'whatsapp-community':    renderAdminWhatsAppCommunity(main); break;
     case 'testimonials':          renderPCCTestimonials(main); break;
+    case 'reviews':             renderAdminReviews(main); break;
     case 'achievements':          renderPCCAchievements(main); break;
     case 'notifications-pro':     renderPCCNotifications(main); break;
     case 'seo-manager':           renderPCCSEO(main); break;
@@ -43406,6 +43439,267 @@ if(document.readyState==='loading'){
 } else {
   setTimeout(_srvInit,500);
 }
+})();
+</script>
+
+
+<style>
+/* ── MANUAL SWIPE CAROUSEL ───────────────────────────────────────── */
+.srv-outer { overflow: hidden; position: relative; cursor: grab; }
+.srv-outer.grabbing { cursor: grabbing; }
+.srv-track {
+  display: flex; gap: 14px; width: max-content;
+  padding: 8px 20px 20px;
+  transition: transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94);
+  will-change: transform;
+  animation: none !important;
+}
+.srv-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(10px); color: #e4e8f0; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .2s; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.srv-arrow:hover { background: rgba(61,142,248,0.4); border-color: rgba(61,142,248,0.6); }
+.srv-arrow-left  { left: 8px; }
+.srv-arrow-right { right: 8px; }
+.srv-arrow.hidden { opacity: 0; pointer-events: none; }
+.srv-dots { display: flex; justify-content: center; gap: 6px; padding: 8px 0 16px; }
+.srv-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: all .25s; }
+.srv-dot.active { width: 20px; border-radius: 3px; background: linear-gradient(90deg,#3d8ef8,#00c8e8); }
+
+/* ── ADD YOUR REVIEW ─────────────────────────────────────────────── */
+.srv-add-wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 24px; }
+.srv-add-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 999px;
+  background: linear-gradient(135deg,rgba(61,142,248,.15),rgba(0,200,232,.1));
+  border: 1px solid rgba(61,142,248,.35); color: #93c5fd;
+  font-size: .88rem; font-weight: 700; font-family: var(--font-ui,sans-serif);
+  cursor: pointer; transition: all .25s; -webkit-tap-highlight-color: transparent;
+}
+.srv-add-btn:hover { background: linear-gradient(135deg,rgba(61,142,248,.25),rgba(0,200,232,.18)); border-color: rgba(61,142,248,.6); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(61,142,248,.25); }
+.srv-form-panel {
+  display: none; margin-top: 16px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; padding: 24px 20px;
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}
+.srv-form-panel.open { display: block; animation: srvFormIn .3s ease both; }
+@keyframes srvFormIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+.srv-form-title { font-family: var(--font-display,sans-serif); font-weight: 800; font-size: 1.05rem; color: #e4e8f0; margin-bottom: 18px; }
+.srv-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+@media(max-width:480px){ .srv-form-row { grid-template-columns: 1fr; } }
+.srv-form-label { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: rgba(255,255,255,.45); font-family: var(--font-ui,sans-serif); margin-bottom: 6px; }
+.srv-form-input,.srv-form-textarea {
+  width: 100%; box-sizing: border-box; padding: 11px 14px; border-radius: 12px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+  color: #e4e8f0; font-size: .88rem; font-family: var(--font-body,sans-serif);
+  outline: none; transition: all .22s;
+}
+.srv-form-input:focus,.srv-form-textarea:focus { border-color: rgba(61,142,248,.5); background: rgba(61,142,248,.06); box-shadow: 0 0 0 3px rgba(61,142,248,.12); }
+.srv-form-input::placeholder,.srv-form-textarea::placeholder { color: rgba(255,255,255,.3); }
+.srv-form-textarea { resize: vertical; min-height: 90px; margin-bottom: 14px; }
+.srv-star-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.srv-star-btn { font-size: 1.6rem; background: none; border: none; cursor: pointer; color: rgba(255,255,255,.2); transition: color .15s; -webkit-tap-highlight-color: transparent; padding: 0; }
+.srv-star-btn.lit { color: #fbbf24; filter: drop-shadow(0 0 4px rgba(251,191,36,.6)); }
+.srv-form-submit {
+  width: 100%; padding: 13px; border-radius: 14px; border: none; cursor: pointer;
+  background: linear-gradient(135deg,#3d8ef8,#00c8e8); color: #fff;
+  font-size: .9rem; font-weight: 700; font-family: var(--font-ui,sans-serif);
+  box-shadow: 0 4px 16px rgba(61,142,248,.35); transition: all .2s;
+}
+.srv-form-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.srv-form-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.srv-form-msg { margin-top: 12px; padding: 12px 16px; border-radius: 12px; font-size: .85rem; font-weight: 600; text-align: center; font-family: var(--font-ui,sans-serif); display: none; }
+.srv-form-msg.success { background: rgba(16,217,142,.12); border: 1px solid rgba(16,217,142,.3); color: #34d399; }
+.srv-form-msg.error   { background: rgba(255,77,109,.12);  border: 1px solid rgba(255,77,109,.3);  color: #ff8fa8; }
+
+/* ── ADMIN REVIEWS TAB ───────────────────────────────────────────── */
+.arv-pending-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; border-radius: 9px; padding: 0 5px; background: rgba(255,77,109,.25); border: 1px solid rgba(255,77,109,.4); color: #ff8fa8; font-size: .62rem; font-weight: 700; font-family: var(--font-ui,sans-serif); margin-left: 5px; vertical-align: middle; }
+.arv-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 18px; margin-bottom: 12px; transition: border-color .2s; }
+.arv-card:hover { border-color: rgba(61,142,248,.3); }
+.arv-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.arv-card-name { font-weight: 700; font-size: .9rem; color: #e4e8f0; }
+.arv-card-meta { font-size: .72rem; color: rgba(255,255,255,.4); margin-top: 2px; }
+.arv-card-stars { color: #fbbf24; font-size: .85rem; letter-spacing: 1px; }
+.arv-card-text { font-size: .85rem; color: rgba(255,255,255,.7); line-height: 1.6; font-style: italic; margin-bottom: 14px; }
+.arv-card-actions { display: flex; gap: 10px; }
+.arv-btn-approve { flex: 1; padding: 9px; border-radius: 10px; border: none; cursor: pointer; background: rgba(16,217,142,.15); border: 1px solid rgba(16,217,142,.35); color: #34d399; font-size: .82rem; font-weight: 700; font-family: var(--font-ui,sans-serif); transition: all .2s; }
+.arv-btn-approve:hover { background: rgba(16,217,142,.28); }
+.arv-btn-reject  { flex: 1; padding: 9px; border-radius: 10px; border: none; cursor: pointer; background: rgba(255,77,109,.12); border: 1px solid rgba(255,77,109,.3);  color: #ff8fa8; font-size: .82rem; font-weight: 700; font-family: var(--font-ui,sans-serif); transition: all .2s; }
+.arv-btn-reject:hover  { background: rgba(255,77,109,.25); }
+.arv-empty   { text-align: center; padding: 40px 20px; color: rgba(255,255,255,.4); font-size: .9rem; }
+.arv-loading { text-align: center; padding: 40px; color: rgba(255,255,255,.4); }
+</style>
+
+<script>
+(function(){
+'use strict';
+
+/* kill old auto-scroll */
+(function(){ var s=document.createElement('style'); s.textContent='.srv-track{animation:none!important}'; document.head.appendChild(s); })();
+
+/* ── MANUAL SWIPE CAROUSEL ──────────────────────────────────────── */
+function _srvInitCarousel(){
+  var outer=document.getElementById('srvOuter');
+  var track=document.getElementById('srvTrack');
+  if(!outer||!track) return;
+  var cards=track.querySelectorAll('.srv-card');
+  if(!cards.length){ setTimeout(_srvInitCarousel,400); return; }
+
+  var cardCount=cards.length, currentIdx=0;
+
+  function visibleCount(){ var w=window.innerWidth; return w>=1024?3:w>=640?2:1; }
+  function cardW(){ return cards[0].offsetWidth+14; }
+  function clamp(i){ return Math.max(0,Math.min(i,cardCount-visibleCount())); }
+
+  function goTo(i,anim){
+    currentIdx=clamp(i);
+    track.style.transition=anim===false?'none':'transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
+    track.style.transform='translateX(-'+(currentIdx*cardW())+'px)';
+    updateDots(); updateArrows();
+  }
+
+  var dotsEl=document.getElementById('srvDots');
+  function updateDots(){
+    if(!dotsEl) return;
+    var max=cardCount-visibleCount()+1, html='';
+    for(var i=0;i<max;i++) html+='<div class="srv-dot'+(i===currentIdx?' active':'')+'" onclick="window._srvGoto('+i+')"></div>';
+    dotsEl.innerHTML=html;
+  }
+  window._srvGoto=function(i){ goTo(i,true); };
+
+  var arL=document.getElementById('srvArrowLeft');
+  var arR=document.getElementById('srvArrowRight');
+  function updateArrows(){
+    if(arL) arL.classList.toggle('hidden',currentIdx===0);
+    if(arR) arR.classList.toggle('hidden',currentIdx>=cardCount-visibleCount());
+  }
+  if(arL) arL.onclick=function(){ goTo(currentIdx-1,true); };
+  if(arR) arR.onclick=function(){ goTo(currentIdx+1,true); };
+
+  var startX=0,startTime=0,isDrag=false,hasMoved=false;
+  function onStart(x){ startX=x; startTime=Date.now(); isDrag=true; hasMoved=false; outer.classList.add('grabbing'); track.style.transition='none'; }
+  function onMove(x){
+    if(!isDrag) return;
+    var dx=x-startX;
+    if(Math.abs(dx)>5) hasMoved=true;
+    track.style.transform='translateX('+(-currentIdx*cardW()+dx)+'px)';
+  }
+  function onEnd(x){
+    if(!isDrag) return;
+    isDrag=false; outer.classList.remove('grabbing');
+    var dx=x-startX, dt=Date.now()-startTime;
+    if(Math.abs(dx)>50||(Math.abs(dx)>20&&dt<250)) goTo(dx<0?currentIdx+1:currentIdx-1,true);
+    else goTo(currentIdx,true);
+  }
+
+  outer.addEventListener('touchstart',function(e){ onStart(e.touches[0].clientX); },{passive:true});
+  outer.addEventListener('touchmove', function(e){ if(isDrag&&hasMoved) e.preventDefault(); onMove(e.touches[0].clientX); },{passive:false});
+  outer.addEventListener('touchend',  function(e){ onEnd(e.changedTouches[0].clientX); });
+  outer.addEventListener('mousedown', function(e){ onStart(e.clientX); e.preventDefault(); });
+  window.addEventListener('mousemove',function(e){ if(isDrag) onMove(e.clientX); });
+  window.addEventListener('mouseup',  function(e){ if(isDrag) onEnd(e.clientX); });
+  outer.setAttribute('tabindex','0');
+  outer.addEventListener('keydown',function(e){ if(e.key==='ArrowLeft'){goTo(currentIdx-1,true);e.preventDefault();} if(e.key==='ArrowRight'){goTo(currentIdx+1,true);e.preventDefault();} });
+  window.addEventListener('resize',function(){ goTo(0,false); });
+  goTo(0,false);
+}
+
+/* ── ADD YOUR REVIEW FORM ───────────────────────────────────────── */
+var _starRating=0;
+window._srvSetStar=function(n){
+  _starRating=n;
+  document.querySelectorAll('.srv-star-btn').forEach(function(b,i){ b.classList.toggle('lit',i<n); });
+};
+
+window._srvToggleForm=function(){
+  var panel=document.getElementById('srvFormPanel');
+  var btn=document.getElementById('srvAddBtn');
+  if(!panel) return;
+  var isOpen=panel.classList.contains('open');
+  panel.classList.toggle('open',!isOpen);
+  var txt=btn?btn.querySelector('.srv-add-btn-txt'):null;
+  if(txt) txt.textContent=isOpen?'Add Your Review':'Cancel';
+  if(!isOpen){
+    var f=document.getElementById('srvReviewForm'); if(f) f.reset();
+    window._srvSetStar(0);
+    var m=document.getElementById('srvFormMsg'); if(m){m.style.display='none';}
+  }
+};
+
+window._srvSubmitReview=async function(e){
+  e.preventDefault();
+  var name=(document.getElementById('srvRevName').value||'').trim();
+  var loc =(document.getElementById('srvRevLoc').value||'').trim();
+  var text=(document.getElementById('srvRevText').value||'').trim();
+  var rating=_starRating;
+  var msg=document.getElementById('srvFormMsg');
+  var btn=document.getElementById('srvRevSubmit');
+  function showMsg(type,txt){ if(!msg) return; msg.className='srv-form-msg '+type; msg.textContent=txt; msg.style.display='block'; }
+  if(!name){ showMsg('error','Please enter your name.'); return; }
+  if(!rating){ showMsg('error','Please select a star rating.'); return; }
+  if(text.length<20){ showMsg('error','Review must be at least 20 characters.'); return; }
+  if(btn){ btn.disabled=true; btn.textContent='Submitting...'; }
+  try{
+    var client=window.supabaseClient;
+    if(client){
+      var payload={user_name:name,comment:text,rating:rating,verified:false,created_at:new Date().toISOString()};
+      if(loc) payload.location=loc;
+      await client.from('pdf_reviews').insert(payload);
+    }
+  }catch(err){}
+  if(btn){ btn.disabled=false; btn.textContent='Submit Review'; }
+  showMsg('success','✅ Review submitted! It will appear after admin approval.');
+  setTimeout(function(){ window._srvToggleForm(); },2500);
+};
+
+/* ── ADMIN REVIEWS TAB ──────────────────────────────────────────── */
+window.renderAdminReviews=async function(container){
+  container.innerHTML='<div class="arv-loading">⏳ Loading pending reviews...</div>';
+  try{
+    var client=window.supabaseClient;
+    if(!client){ container.innerHTML='<div class="arv-empty">Supabase not connected.</div>'; return; }
+    var res=await client.from('pdf_reviews').select('*').eq('verified',false).order('created_at',{ascending:false});
+    var reviews=(res.data||[]).filter(function(r){ return r.comment; });
+    if(!reviews.length){ container.innerHTML='<div class="arv-empty">✅ No pending reviews! All caught up.</div>'; _arvBadge(0); return; }
+    _arvBadge(reviews.length);
+    var html='<h3 style="font-family:var(--font-display,sans-serif);font-weight:800;font-size:1.1rem;color:#e4e8f0;margin-bottom:20px">?? Pending Reviews ('+reviews.length+')</h3>';
+    reviews.forEach(function(r){
+      var stars='★'.repeat(Number(r.rating)||5);
+      var date=r.created_at?new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+      html+='<div class="arv-card" id="arv-'+r.id+'"><div class="arv-card-header"><div><div class="arv-card-name">'+(r.user_name||'Anonymous')+(r.location?' • '+r.location:'')+'</div><div class="arv-card-meta">'+date+'</div></div><div class="arv-card-stars">'+stars+'</div></div><div class="arv-card-text">“'+r.comment+'”</div><div class="arv-card-actions"><button class="arv-btn-approve" onclick="window._arvApprove(''+r.id+'')">✅ Approve</button><button class="arv-btn-reject" onclick="window._arvReject(''+r.id+'')">❌ Reject</button></div></div>';
+    });
+    container.innerHTML=html;
+  }catch(err){ container.innerHTML='<div class="arv-empty">Error: '+err.message+'</div>'; }
+};
+
+function _arvBadge(n){ var b=document.getElementById('arvPendingBadge'); if(b){b.textContent=n;b.style.display=n>0?'inline-flex':'none';} }
+
+window._arvApprove=async function(id){
+  var card=document.getElementById('arv-'+id);
+  if(card){card.style.opacity='.5';card.style.pointerEvents='none';}
+  try{ var c=window.supabaseClient; if(c) await c.from('pdf_reviews').update({verified:true}).eq('id',id); if(card) card.remove(); }
+  catch(e){ if(card){card.style.opacity='1';card.style.pointerEvents='';} }
+};
+window._arvReject=async function(id){
+  var card=document.getElementById('arv-'+id);
+  if(card){card.style.opacity='.5';card.style.pointerEvents='none';}
+  try{ var c=window.supabaseClient; if(c) await c.from('pdf_reviews').delete().eq('id',id); if(card) card.remove(); }
+  catch(e){ if(card){card.style.opacity='1';card.style.pointerEvents='';} }
+};
+
+/* ── BOOT ────────────────────────────────────────────────────────── */
+function boot(){
+  var tries=0;
+  function tryInit(){ var c=document.querySelectorAll('#srvTrack .srv-card'); if(c.length>0) _srvInitCarousel(); else if(tries++<25) setTimeout(tryInit,300); }
+  setTimeout(tryInit,700);
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
 
