@@ -141,6 +141,9 @@
   // ── 5. Re-render all sections that depend on PDFS ───────────────
   _rerenderAll();
 
+  // ── Fire event so OTT discovery sections know PDFs are ready ────
+  document.dispatchEvent(new CustomEvent('studyria:pdfs-ready', { detail: { count: dbPdfs.length } }));
+
   // ── 6. Init lazy image observer for newly-injected cards ────────
   setTimeout(function () {
     if (typeof window.initLazyImages === 'function') window.initLazyImages();
