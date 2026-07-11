@@ -439,31 +439,31 @@
 /* Related PDFs */
 .v3-related { margin-bottom: 32px; }
 .v3-related-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  display: flex;
   gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
 }
 .v3-related-card {
-  border-radius: var(--radius); overflow: hidden;
-  background: var(--glass); border: 1px solid var(--glass-border);
-  cursor: pointer; transition: transform .2s, box-shadow .2s;
+  flex: 0 0 160px;
+  scroll-snap-align: start;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
 }
-.v3-related-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0,0,0,.3);
-}
-.v3-related-cover {
-  aspect-ratio: 3/4; overflow: hidden; position: relative;
-  background: var(--bg2);
-}
-.v3-related-cover img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-}
+.v3-related-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+.v3-related-cover { height: 110px; overflow: hidden; background: var(--glass2); }
+.v3-related-cover img { width:100%; height:100%; object-fit:cover; display:block; }
+.v3-related-cover-placeholder { width:100%; height:100%; background: linear-gradient(135deg, var(--accent), var(--accent2,#6366f1)); }
 .v3-related-info { padding: 10px; }
-.v3-related-title {
-  font-size: .78rem; font-weight: 600; color: var(--text);
-  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  line-height: 1.4; margin-bottom: 4px;
-}
+.v3-related-title { font-size:.75rem; font-weight:600; color:var(--text1); line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:6px; }
 .v3-related-price { font-size: .75rem; font-weight: 700; color: var(--accent); }
 
 /* ── RIGHT column — Purchase Card ─────────────────────────── */
