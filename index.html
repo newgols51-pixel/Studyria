@@ -6661,6 +6661,11 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
    ══════════════════════════════════════════════════════════════ */
 .sh-testim-section {
   padding: 28px 0 24px;
+  /* extra space so Add Your Review btn clears fixed bottom nav on mobile */
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+@media(max-width:640px){
+  .sh-testim-section { padding-bottom: 90px; }
 }
 .sh-testim-track-wrap {
   overflow: hidden;
@@ -43481,6 +43486,7 @@ if(document.readyState==='loading'){
 
 /* ── ADD YOUR REVIEW ─────────────────────────────────────────────── */
 .srv-add-wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 24px; }
+@media(max-width:640px){ .srv-add-wrap { padding-bottom: 16px; } }
 .srv-add-btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 24px; border-radius: 999px;
