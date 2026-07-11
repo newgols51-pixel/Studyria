@@ -44,7 +44,7 @@
   }
 })();
 </script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
 <meta name="color-scheme" content="dark light" />
 
@@ -17360,161 +17360,81 @@ function _pdpRenderShell(pdf) {
      zoom temporarily unlocked; snaps back to 100% when fingers lift
    ══════════════════════════════════════════════════════════════════════ */
 function _pdpInstallZoomControl() {
-  // ── 1. Snap to 100% immediately (handles carry-over from previous tab) ──
-  (function resetTo100() {
-    const vp = document.querySelector('meta[name="viewport"]');
-    if (!vp) return;
-    const base = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-    // Double-toggle forces Chrome/Safari to acknowledge the new value in SPA context
-    vp.setAttribute('content', base + ', shrink-to-fit=yes');
-    requestAnimationFrame(() => vp.setAttribute('content', base));
-  })();
-
-  // ── 2. Tear down any previous PDP zoom listeners ──────────────────────
+  // ── Tear down any previous PDP zoom listeners ──────────────────────────
   if (window._pdpZoomCleanup) {
     window._pdpZoomCleanup();
     window._pdpZoomCleanup = null;
   }
 
-  const vp = document.querySelector('meta[name="viewport"]');
-  const BASE_VP  = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-  const OPEN_VP  = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
-
-  // ── 3. Double-Tap Zoom Controller (ISSUE 3 FIX) ─────────────────────
+  // ── Double-Tap Zoom Controller ─────────────────────────────────────────
+  // ONLY the cover wrap and preview stage respond to double-tap.
+  // No viewport manipulation. No document-level touchmove blocking.
+  // Normal page scroll is NEVER affected.
+  //
   // Default: scale(1) — 100%
-  // Double tap → scale(2) — 200% zoom in
-  // Double tap again → scale(1) — zoom out
-  // Smooth animation. Max zoom: 2x. Works on mobile.
-  // No auto zoom. No scroll zoom. No accidental zoom.
-  let _lastTap        = 0;
-  let _doubleTapZoomed = false; // track current zoom state
+  // Double tap → scale(2) zoom in
+  // Double tap again → scale(1) zoom out
+  // Smooth 0.3s animation. Max 2x zoom. Works on mobile.
+
+  let _lastTap         = 0;
+  let _doubleTapZoomed = false;
 
   function _handleDoubleTap(e) {
     const now = Date.now();
     const isDoubleTap = (now - _lastTap) < 320;
     _lastTap = now;
+    if (!isDoubleTap) return;
 
-    if (!isDoubleTap) return; // single tap — ignore
-
-    // Prevent any browser native double-tap zoom
+    // Prevent browser native double-tap zoom on this element only
     e.preventDefault();
+    e.stopPropagation();
 
     const target = e.currentTarget;
     if (!target) return;
 
     if (_doubleTapZoomed) {
-      // Zoom OUT → back to 100%
-      target.style.transition = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)';
-      target.style.transform  = 'scale(1)';
+      // Zoom OUT → 100%
+      target.style.transition    = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)';
+      target.style.transform     = 'scale(1)';
       target.style.transformOrigin = 'center center';
+      target.style.overflow      = '';
       _doubleTapZoomed = false;
     } else {
       // Zoom IN → 2x at tap point
-      const rect = target.getBoundingClientRect();
-      const touch = e.changedTouches[0];
-      const originX = touch ? ((touch.clientX - rect.left) / rect.width  * 100) + '%' : '50%';
-      const originY = touch ? ((touch.clientY - rect.top)  / rect.height * 100) + '%' : '50%';
-      target.style.transition   = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)';
-      target.style.transformOrigin = originX + ' ' + originY;
-      target.style.transform    = 'scale(2)';
+      const rect   = target.getBoundingClientRect();
+      const touch  = e.changedTouches && e.changedTouches[0];
+      const ox = touch ? (((touch.clientX - rect.left) / rect.width)  * 100) + '%' : '50%';
+      const oy = touch ? (((touch.clientY - rect.top)  / rect.height) * 100) + '%' : '50%';
+      target.style.transition      = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)';
+      target.style.transformOrigin = ox + ' ' + oy;
+      target.style.transform       = 'scale(2)';
+      target.style.overflow        = 'hidden';
       _doubleTapZoomed = true;
     }
   }
 
-  // Targets: cover wrap + preview stage
+  // Apply ONLY to cover wrap and preview stage — NOT the whole page
   const coverWrap    = document.querySelector('.pdp-cover-wrap');
   const previewStage = document.querySelector('.pdp-preview-stage');
   const tapTargets   = [coverWrap, previewStage].filter(Boolean);
 
   tapTargets.forEach(el => {
-    // Reset zoom state when switching targets
+    el.style.touchAction = 'manipulation'; // disables browser double-tap zoom natively
     el.addEventListener('touchend', _handleDoubleTap, { passive: false });
   });
 
-  // ── 4 & 5. Pinch-zoom gating: block unless held ≥ 2 seconds ──────────
-  // Strategy: detect when 2 fingers are on screen. Start a 2s timer.
-  // If the gesture ends before 2s → block (preventDefault).
-  // If held ≥ 2s → unlock viewport so browser can zoom naturally.
-  // When all fingers lift after an allowed zoom → snap back to 100%.
-
-  let _pinchStart      = 0;    // timestamp when 2nd finger landed
-  let _pinchAllowed    = false; // did the hold qualify?
-  let _pinchActive     = false; // are ≥2 fingers currently on screen?
-  let _pinchTimer      = null;
-  const HOLD_MS        = 2000; // 2 seconds to qualify
-
-  function _onTouchStart(e) {
-    if (e.touches.length === 2) {
-      _pinchActive  = true;
-      _pinchAllowed = false;
-      _pinchStart   = Date.now();
-      clearTimeout(_pinchTimer);
-
-      // After HOLD_MS: unlock viewport
-      _pinchTimer = setTimeout(() => {
-        if (_pinchActive) {
-          _pinchAllowed = true;
-          if (vp) vp.setAttribute('content', OPEN_VP);
-        }
-      }, HOLD_MS);
-    } else if (e.touches.length === 1) {
-      // Single finger: make sure viewport stays locked
-      if (!_pinchActive && vp) vp.setAttribute('content', BASE_VP);
-    }
-  }
-
-  function _onTouchMove(e) {
-    if (e.touches.length === 2 && !_pinchAllowed) {
-      // Hold not qualified yet — block the pinch-zoom
-      e.preventDefault();
-    }
-  }
-
-  function _onTouchEnd(e) {
-    if (_pinchActive && e.touches.length < 2) {
-      _pinchActive = false;
-      clearTimeout(_pinchTimer);
-
-      if (_pinchAllowed) {
-        // User intentionally zoomed — snap back to 100% smoothly
-        // We wait a tick so the browser has rendered their zoom first,
-        // then reset. The CSS transform trick gives a smooth return.
-        setTimeout(() => {
-          if (vp) {
-            vp.setAttribute('content', BASE_VP + ', shrink-to-fit=yes');
-            requestAnimationFrame(() => vp.setAttribute('content', BASE_VP));
-          }
-        }, 80);
-        _pinchAllowed = false;
-      }
-    }
-  }
-
-  // Attach to document — covers entire page during PDP view
-  document.addEventListener('touchstart', _onTouchStart, { passive: true });
-  document.addEventListener('touchmove',  _onTouchMove,  { passive: false });
-  document.addEventListener('touchend',   _onTouchEnd,   { passive: true });
-
-  // ── 6. Block gesturestart (Safari iOS legacy API) ─────────────────────
-  function _blockGesture(e) {
-    if (!_pinchAllowed) e.preventDefault();
-  }
-  document.addEventListener('gesturestart',  _blockGesture, { passive: false });
-  document.addEventListener('gesturechange', _blockGesture, { passive: false });
-
-  // ── 7. Cleanup: called when user navigates away from PDP ─────────────
+  // ── Cleanup: restore everything when leaving PDP ───────────────────────
   window._pdpZoomCleanup = function() {
     tapTargets.forEach(el => {
-      el.removeEventListener('touchend', _blockDoubleTap);
+      el.removeEventListener('touchend', _handleDoubleTap);
+      el.style.transition    = '';
+      el.style.transform     = '';
+      el.style.transformOrigin = '';
+      el.style.overflow      = '';
+      el.style.touchAction   = '';
     });
-    document.removeEventListener('touchstart', _onTouchStart);
-    document.removeEventListener('touchmove',  _onTouchMove);
-    document.removeEventListener('touchend',   _onTouchEnd);
-    document.removeEventListener('gesturestart',  _blockGesture);
-    document.removeEventListener('gesturechange', _blockGesture);
-    clearTimeout(_pinchTimer);
-    // Restore base viewport so other pages aren't affected
-    if (vp) vp.setAttribute('content', BASE_VP);
+    _doubleTapZoomed = false;
+    _lastTap = 0;
   };
 }
 
@@ -38930,6 +38850,23 @@ body.pdp-zoom-lock { overflow: hidden; }
 @media (max-width: 600px) {
   .pdp-zoom-content { padding: 12px; max-height: 90dvh; }
   .pdp-zoom-close { top: max(14px, env(safe-area-inset-top)); right: 14px; width: 36px; height: 36px; }
+}
+
+/* ══ ISSUE 1 PERMANENT FIX — cover image never zooms on scroll ══
+   These rules have the highest specificity + !important so no JS,
+   scroll event, animation, or inherited style can ever scale the cover. */
+.pdp-cover-wrap,
+.pdp-cover-wrap img,
+.pdp-cover-img {
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+/* Hover on the cover card (desktop) must not zoom the PDP cover */
+.pdp-cover-card:hover .pdp-cover-wrap img,
+.pdp-cover-card:hover .pdp-cover-img {
+  transform: none !important;
 }
 
 /* light mode overrides */
