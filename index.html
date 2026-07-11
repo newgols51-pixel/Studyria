@@ -10,7 +10,6 @@
     })(window, document, "clarity", "script", "xipfez9bow");
 </script>
 <link rel="stylesheet" href="premium-edit-pdf-styles.css">
-<link rel="stylesheet" href="pdp-v3.css">
 <meta charset="UTF-8" />
 <!-- ── SPA PATH → HASH REDIRECT ───────────────────────────────────────
      Runs synchronously before any paint so direct URL visits (/library,
@@ -1136,6 +1135,23 @@ body.light .wish-btn.active {
   box-shadow: 0 0 22px rgba(255,61,104,0.36), 0 4px 14px rgba(0,0,0,0.45);
 }
 .wish-btn:active { transform: scale(0.88); }
+
+/* ── Wish-button loading spinlock (all surfaces) ──────────────── */
+.wish-btn.wish-loading,
+.ott-card-wish-btn.wish-loading,
+.pdp-wish-secondary.wish-loading,
+.pdp-cover-action-btn.wish-loading,
+.ott-hero-float-btn.wish-loading,
+.ott-hero-save.wish-loading {
+  pointer-events: none !important;
+  opacity: 0.5 !important;
+}
+/* ott-hero-save active (wish-active) */
+.ott-hero-save.wish-active {
+  background: rgba(255,61,104,0.22);
+  border-color: rgba(255,61,104,0.55);
+  color: #ff8fa8;
+}
 
 /* ── PREMIUM FLOATING BADGES (top-left of cover) ─────────────── */
 .pdf-tag {
@@ -4234,148 +4250,130 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
 .community-hub-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 18px;
-  align-items: stretch;
+  gap: 12px;
 }
 @media (min-width: 480px) {
   .community-hub-grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (min-width: 1024px) {
-  .community-hub-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+@media (min-width: 768px) {
+  .community-hub-grid { grid-template-columns: repeat(3, 1fr); }
 }
-
-/* ── Premium glassmorphic community card ── */
-.chx-card {
-  --chx-glow: rgba(255,255,255,0.18);
-  position: relative;
+@media (min-width: 1024px) {
+  .community-hub-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.ch-btn {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 26px 22px 22px;
-  border-radius: 20px;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(rgba(22,24,30,0.55), rgba(22,24,30,0.55)) padding-box,
-    var(--chx-grad, linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05))) border-box;
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  backdrop-filter: blur(18px) saturate(140%);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
   text-decoration: none;
   color: var(--text);
-  cursor: pointer;
+  font-size: .88rem;
+  font-weight: 600;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  position: relative;
   overflow: hidden;
-  animation: chxCardIn .5s cubic-bezier(.2,.8,.2,1) both;
-  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, background .3s ease;
-  -webkit-tap-highlight-color: transparent;
+  animation: chBtnIn .4s ease both;
 }
-.chx-card::after {
+.ch-btn::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(120px 80px at 20% 0%, var(--chx-glow), transparent 70%);
+  background: var(--ch-glow, rgba(255,255,255,0.03));
   opacity: 0;
-  transition: opacity .3s ease;
-  pointer-events: none;
+  transition: opacity .2s;
 }
-.chx-card:hover,
-.chx-card:focus-visible {
-  transform: translateY(-8px) scale(1.015);
-  box-shadow: 0 20px 44px rgba(0,0,0,0.34), 0 0 0 1px var(--chx-glow);
+.ch-btn:hover::before { opacity: 1; }
+.ch-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.28), 0 0 20px var(--ch-shadow, rgba(255,255,255,0.05));
+  border-color: var(--ch-border, rgba(255,255,255,0.15));
+  background: rgba(255,255,255,0.07);
 }
-.chx-card:hover::after { opacity: 1; }
-.chx-card:active { transform: translateY(-3px) scale(1.005); }
-
-.chx-icon-wrap {
-  width: 52px;
-  height: 52px;
-  border-radius: 15px;
+.ch-btn:active { transform: translateY(-1px); }
+.ch-btn.ch-primary {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(37,211,102,0.15), rgba(37,211,102,0.08));
+  border-color: rgba(37,211,102,0.3);
+  padding: 16px 20px;
+  font-size: .95rem;
+  --ch-shadow: rgba(37,211,102,0.2);
+  --ch-border: rgba(37,211,102,0.5);
+  --ch-glow: rgba(37,211,102,0.06);
+}
+@media (min-width: 480px) {
+  .ch-btn.ch-primary { grid-column: 1 / -1; }
+}
+.ch-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.2rem;
   flex-shrink: 0;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-  margin-bottom: 16px;
+  background: var(--ch-icon-bg, rgba(255,255,255,0.06));
+  border: 1px solid var(--ch-icon-border, rgba(255,255,255,0.08));
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
-.chx-icon-wrap svg { width: 27px; height: 27px; display: block; }
-
-.chx-body { flex: 1; }
-.chx-title {
-  display: block;
-  font-weight: 800;
-  font-size: 1.02rem;
-  line-height: 1.25;
-  margin-bottom: 6px;
-  letter-spacing: -0.01em;
+.ch-btn.ch-primary .ch-icon {
+  width: 46px; height: 46px;
+  font-size: 1.4rem;
+  border-radius: 14px;
 }
-.chx-desc {
-  display: block;
-  font-size: .8rem;
-  line-height: 1.55;
+.ch-btn-text { flex: 1; }
+.ch-btn-label { display: block; font-weight: 700; line-height: 1.2; }
+.ch-btn-desc { display: block; font-size: .72rem; color: var(--text2); font-weight: 400; margin-top: 2px; }
+.ch-btn-arrow {
+  font-size: .9rem;
   color: var(--text2);
-  font-weight: 400;
+  transition: transform .2s;
+  flex-shrink: 0;
 }
-
-.chx-join-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-.chx-join-btn {
+.ch-btn:hover .ch-btn-arrow { transform: translateX(3px); }
+.ch-btn.ch-primary .ch-btn-arrow { color: rgba(37,211,102,0.7); }
+.ch-members-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 4px;
+  background: rgba(37,211,102,0.12);
+  border: 1px solid rgba(37,211,102,0.2);
   border-radius: 100px;
-  font-size: .76rem;
+  padding: 2px 10px;
+  font-size: .65rem;
   font-weight: 700;
-  color: #0b0d12;
-  background: var(--chx-grad, #fff);
-  box-shadow: 0 4px 14px var(--chx-glow);
-  transition: transform .25s ease, box-shadow .25s ease;
-  white-space: nowrap;
-}
-.chx-card:hover .chx-join-btn {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px var(--chx-glow);
-}
-.chx-arrow {
-  font-size: 1.05rem;
-  color: var(--text2);
-  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  color: #25d366;
+  margin-left: auto;
   flex-shrink: 0;
 }
-.chx-card:hover .chx-arrow { transform: translateX(5px); color: var(--text); }
-
-@keyframes chxCardIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes chBtnIn {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
 }
-
-/* Loader skeleton for community hub — matches the new card shape */
+/* Loader skeleton for community hub */
 .ch-skeleton-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 18px;
+  gap: 12px;
 }
 @media (min-width: 480px) { .ch-skeleton-grid { grid-template-columns: repeat(2,1fr); } }
-@media (min-width: 1024px) { .ch-skeleton-grid { grid-template-columns: repeat(4,1fr); } }
+@media (min-width: 768px) { .ch-skeleton-grid { grid-template-columns: repeat(3,1fr); } }
 .ch-skel {
-  height: 172px;
-  border-radius: 20px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  height: 68px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%);
   background-size: 200% 100%;
   animation: skelShimmer 1.4s infinite;
 }
+.ch-skel:first-child { grid-column: 1/-1; height: 78px; }
 @keyframes skelShimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}}
+}
 
 /* ═══ ADMIN — Community Manager ═══ */
 .community-manager-wrap { padding: 0; }
@@ -5364,9 +5362,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-PH9XCFFG');</script>
 <!-- End Google Tag Manager -->
-<meta name="p:domain_verify" content="cd5caf70596f667a2c87419f5615cd4e"/>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868252287561748"
-crossorigin="anonymous"></script>
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -8140,6 +8135,28 @@ function studyriaApp() {
                  2px 2px 0 rgba(0,0,0,0.4);
     line-height: 1;
   }
+  /* ── OTT small card wishlist btn ─────────────────────────────── */
+  .ott-card-wish-btn {
+    position: absolute; top: 8px; right: 8px; z-index: 5;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(6,10,24,0.62);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: rgba(255,255,255,0.78);
+    transition: background 0.2s, border-color 0.2s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), color 0.2s, box-shadow 0.2s;
+    padding: 0; flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+    opacity: 0;
+  }
+  .ott-card:hover .ott-card-wish-btn { opacity: 1; }
+  .ott-card-wish-btn.wish-active { opacity: 1; color: #ff3d68; border-color: rgba(255,61,104,0.6); background: rgba(14,3,8,0.72); box-shadow: 0 0 14px rgba(255,61,104,0.45), 0 3px 10px rgba(0,0,0,0.4); }
+  .ott-card-wish-btn:hover { transform: scale(1.2); color: #ff3d68; border-color: rgba(255,61,104,0.55); background: rgba(22,3,11,0.75); box-shadow: 0 0 14px rgba(255,61,104,0.35), 0 3px 10px rgba(0,0,0,0.4); }
+  .ott-card-wish-btn:active { transform: scale(0.88); }
+  .ott-card-wish-btn.loading { opacity: 0.5 !important; pointer-events: none; }
+  @media (max-width: 600px) { .ott-card-wish-btn { opacity: 1; } }
 
   /* Light mode overrides */
   body.light .ott-card {
@@ -8407,30 +8424,32 @@ function studyriaApp() {
       </div>
 
       <!-- Floating wishlist + share buttons — right side, circular -->
+      <!-- Floating wishlist + share buttons — right side, circular -->
+      ${(function(){const _hw=window.wishlist||[];const _inHw=_hw.includes(Number(pdf.id))||_hw.includes(String(pdf.id));return `
       <div class="ott-hero-float-actions">
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
-          <button class="ott-hero-float-btn" title="Save to Wishlist"
-            onclick="event.stopPropagation();typeof toggleWish==='function'&&toggleWish('${pdf.id}')">♡</button>
-          <span class="ott-hero-float-label">Save</span>
+          <button class="ott-hero-float-btn${_inHw?' wish-active':''}" id="wish-${pdf.id}" data-ott-wish-id="${pdf.id}" title="${_inHw?'Remove':'Save to Wishlist'}" onclick="event.stopPropagation();typeof toggleWish==='function'&&toggleWish('${pdf.id}',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="${_inHw?'currentColor':'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <span class="ott-hero-float-label">${_inHw?'Saved':'Save'}</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
-          <button class="ott-hero-float-btn" title="Share"
-            onclick="event.stopPropagation();if(navigator.share){navigator.share({title:'${(pdf.title||'').replace(/'/g,'\\\'').replace(/"/g,'&quot;')}',url:location.href})}">⤴</button>
+          <button class="ott-hero-float-btn" title="Share" onclick="event.stopPropagation();if(navigator.share){navigator.share({title:'${(pdf.title||'').replace(/'/g,'\\\'')}',url:location.href})}">⤴</button>
           <span class="ott-hero-float-label">Share</span>
         </div>
-      </div>
+      </div>`; })()}
 
       <!-- Bottom info overlay — clean hierarchy -->
+      ${(function(){const _hw2=window.wishlist||[];const _inHw2=_hw2.includes(Number(pdf.id))||_hw2.includes(String(pdf.id));return `
       <div class="ott-hero-info">
         <div class="ott-hero-card-title">${pdf.title||'Untitled'}</div>
         ${metaRow}
         ${priceHTML}
         <div class="ott-hero-cta-row">
           <button class="ott-hero-cta" onclick="event.stopPropagation();openPDFDetail('${pdf.id}')">${ctaLabel}</button>
-          <button class="ott-hero-save" onclick="event.stopPropagation();typeof toggleWish==='function'&&toggleWish('${pdf.id}')">♡ Save</button>
+          <button class="ott-hero-save${_inHw2?' wish-active':''}" id="wish-hero-save-${pdf.id}" data-ott-wish-id="${pdf.id}" onclick="event.stopPropagation();typeof toggleWish==='function'&&toggleWish('${pdf.id}',this)">${_inHw2?'❤️ Saved':'♡ Save'}</button>
         </div>
-      </div>
-    </div>`;
+      </div>`; })()}
   }
 
   // ── Seeded deterministic rating (same pdf → same number always) ───
@@ -8474,6 +8493,20 @@ function studyriaApp() {
         <div class="ott-card-cover-scrim"></div>
         ${tag ? `<div class="ott-card-tag ${tagClass}">${tag}</div>` : ''}
         ${rank ? `<div class="ott-card-rank">${rank}</div>` : ''}
+        ${(function(){
+          const _wl=window.wishlist||[];
+          const _inW=_wl.includes(Number(pdf.id))||_wl.includes(String(pdf.id));
+          return `<button class="ott-card-wish-btn${_inW?' wish-active':''}"
+            id="wish-${pdf.id}"
+            onclick="event.stopPropagation();toggleWish('${pdf.id}',this)"
+            aria-label="${_inW?'Remove from wishlist':'Save to wishlist'}">
+            <svg width="13" height="13" viewBox="0 0 24 24"
+              fill="${_inW?'currentColor':'none'}"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+          </button>`;
+        })()}
       </div>
       <div class="ott-card-body">
         <div class="ott-card-title">${pdf.title||'Untitled'}</div>
@@ -9764,6 +9797,8 @@ function studyriaApp() {
             <div class="ch-skel"></div>
             <div class="ch-skel"></div>
             <div class="ch-skel"></div>
+            <div class="ch-skel"></div>
+            <div class="ch-skel"></div>
           </div>
         </div>
       </div>
@@ -10758,7 +10793,7 @@ function ottlibCardHTML(p, opts = {}) {
           ${discountBadge}
           ${dlBadge}
           ${rankNum}
-          <button class="ottlib-wish${inWish?' active':''}" data-wish-id="${p.id}" onclick="event.stopPropagation();toggleWishlist('${p.id}')" title="Wishlist">
+          <button class="ottlib-wish${inWish?' active':''}" data-wish-id="${p.id}" onclick="event.stopPropagation();toggleWishlist('${p.id}',this)" title="Wishlist">
             ${inWish ? '❤️' : '🤍'}
           </button>
           ${progressBar}
@@ -17639,7 +17674,7 @@ async function renderPopularDownloads() {
           <div class="pdl-ott-badge ${badge.cls}">${badge.label}</div>
           ${dlStr ? `<div class="pdl-ott-dl-badge">⬇ ${dlStr}</div>` : ''}
           <div class="pdl-ott-rank-num ${rankCls(i)}">${i+1}</div>
-          <button class="pdl-ott-wish${inWish?' active':''}" data-wish-id="${pdf.id}" onclick="event.stopPropagation();toggleWishlist('${pdf.id}')" title="Wishlist">${inWish ? '❤️' : '♡'}</button>
+          <button class="pdl-ott-wish${inWish?' active':''}" data-wish-id="${pdf.id}" onclick="event.stopPropagation();toggleWishlist('${pdf.id}',this)" title="Wishlist">${inWish ? '❤️' : '♡'}</button>
         </div>
         <div class="pdl-ott-body">
           <div class="pdl-ott-card-title">${pdf.title || 'Untitled'}</div>
@@ -17799,7 +17834,7 @@ function pdfCardHTML(pdf) {
 
       <!-- Floating wishlist button (top-right) -->
       <button class="wish-btn ${inWish ? 'active' : ''}" id="wish-${pdf.id}"
-        onclick="event.stopPropagation();toggleWish('${pdf.id}')"
+        onclick="event.stopPropagation();toggleWish('${pdf.id}',this)"
         aria-label="${inWish ? 'Remove from wishlist' : 'Save to wishlist'}">
         <svg width="16" height="16" viewBox="0 0 24 24"
           fill="${inWish ? 'currentColor' : 'none'}"
@@ -18374,7 +18409,6 @@ function renderDetail() {
   if (!pdf) return;
   normalizePdf(pdf);
   _pdpRenderShell(pdf);
-  if (typeof _injectPdfOGMeta === 'function') _injectPdfOGMeta(pdf);
   _pdpLoadLiveStats(pdf.id);
   _pdpSubscribeRealtime(pdf.id);
   // Ownership labels are baked into _pdpRenderShell via _isOwned().
@@ -18955,80 +18989,30 @@ function _pdpMarketingData(pdfId) {
 
   // Assam student names + realistic review texts
   const NAMES = [
-    // Female names (20)
-    ['Ankita Bora',       'Guwahati'],
-    ['Priyanka Gogoi',    'Jorhat'],
-    ['Sanjukta Deka',     'Kamrup'],
-    ['Pallavi Bhuyan',    'Bongaigaon'],
-    ['Rima Sarma',        'Dhubri'],
-    ['Dipika Kalita',     'Nalbari'],
-    ['Barsha Das',        'Silchar'],
-    ['Manasvi Nath',      'Barpeta'],
-    ['Trishna Baruah',    'Tezpur'],
-    ['Nilufar Begum',     'Nagaon'],
-    ['Purnima Choudhury', 'Dibrugarh'],
-    ['Himangkhi Medhi',   'Lakhimpur'],
-    ['Jyoti Hazarika',    'Sivasagar'],
-    ['Mousumi Dutta',     'Karimganj'],
-    ['Ranjita Bordoloi',  'Goalpara'],
-    ['Smita Boruah',      'Golaghat'],
-    ['Prerna Saikia',     'Tinsukia'],
-    ['Anuradha Thakuria', 'Majuli'],
-    ['Kaberi Phukan',     'Morigaon'],
-    ['Namita Tamuli',     'Hailakandi'],
-    // Male names (20)
-    ['Rajib Das',         'Dibrugarh'],
-    ['Bikash Kalita',     'Nagaon'],
-    ['Rupam Nath',        'Tezpur'],
-    ['Dhruba Hazarika',   'Sivasagar'],
-    ['Himangsu Baruah',   'Nalbari'],
-    ['Amarjyoti Deka',    'Kamrup'],
-    ['Bhaskar Gogoi',     'Jorhat'],
-    ['Chinmoy Sharma',    'Guwahati'],
-    ['Debajit Bora',      'Dibrugarh'],
-    ['Gitartha Saikia',   'Tinsukia'],
-    ['Hemen Sarma',       'Barpeta'],
-    ['Jatin Bordoloi',    'Goalpara'],
-    ['Kaushik Nath',      'Silchar'],
-    ['Lakheswar Phukan',  'Sivasagar'],
-    ['Manash Baruah',     'Lakhimpur'],
-    ['Nayan Das',         'Morigaon'],
-    ['Pranab Medhi',      'Bongaigaon'],
-    ['Raju Hazarika',     'Golaghat'],
-    ['Santanu Kalita',    'Nagaon'],
-    ['Uday Choudhury',    'Karimganj'],
-  ];  const TEXTS = [
-    'Exam preparation r bab\u00e9 ekdom perfect material. Content gulo clear aru concise. Strongly recommend koriso.',
-    'Crystal clear explanations. Coaching notes r thekio bhalo lagil. Worth every rupee!',
-    'PDF ti khub well structured. Last minute revision r bab\u00e9 perfect. Aro PDF kinibo etia Studyria r pota.',
-    'Simple language t explain kora, okol padile bujha jai. Assam r students r bab\u00e9 ideal resource.',
-    'Previous year questions gulo cover kora ase. Exam r age must buy \u2014 helped me score well.',
-    'Chapters wise breakdown ase, khub help korse. 3-4 ghonta t complete porha hoibo pari.',
-    'Quality content, no filler pages. Exactly what I needed for my board preparation.',
-    'Teacher r notes r thekio comprehensive. Smart revision charts included \u2014 super helpful.',
-    'Downloaded it night before exam \u2014 covered everything important. Scored well! Grateful to Studyria.',
-    'Trusted source, verified content. Language simple, diagrams helpful. 5 star deserved.',
-    'ADRE preparation r bab\u00e9 best material paise etia porjonto. Highly recommended to all students.',
-    'Instant download hoil, no waiting. Content quality top-notch. Mobile t o perfectly open hoixa.',
-    'Notes gulo khub organized aru easy to understand. Chapter summaries are excellent for quick revision.',
-    'Bought 3 PDFs from Studyria \u2014 all excellent quality. This one is particularly well-researched.',
-    'Affordable price r bhitor etu bhalo content pabo buli bhaba nai. Pleasantly surprised!',
-    'Competitive exam aspirants der bab\u00e9 must-have resource. Covers syllabus completely and clearly.',
-    'GK section ta particularly strong. All important topics with explanations included. 5 out of 5.',
-    'Payment aru download \u2014 everything smooth aru instant. Great experience overall with Studyria.',
-    'Moi mur friends keio recommend koriso. Everyone loved the quality and depth of content.',
-    'Topicwise breakdown makes it easy to study selectively. Perfect for targeted exam preparation.',
-    'Very systematic approach to the subject. Even beginners can easily follow along without coaching.',
-    'Compared to expensive coaching institute materials, this is far better value for money.',
-    'Language is accessible \u2014 neither too technical nor too simple. Pitched just right for aspirants.',
-    'Helped me understand difficult concepts quickly. Visual summaries are a big bonus.',
-    'All expected exam topics are covered thoroughly. No need to look elsewhere after this PDF.',
-    'Offline access after download is super helpful during daily commute to exam center.',
-    'Charts aru diagrams gulo excellent quality. Makes memorization of facts much easier.',
-    'Returned to buy again after first PDF was so good. Studyria is a truly reliable platform.',
-    'Perfect companion for self-study students who cannot afford expensive coaching classes.',
-    'Index page is clear \u2014 can jump to any topic instantly. Very well formatted throughout.',
+    ['Ankita Bora',     'Guwahati'],
+    ['Rajib Das',       'Dibrugarh'],
+    ['Priyanka Gogoi',  'Jorhat'],
+    ['Bikash Kalita',   'Nagaon'],
+    ['Rupam Nath',      'Tezpur'],
+    ['Sanjukta Deka',   'Kamrup'],
+    ['Dhruba Hazarika', 'Sivasagar'],
+    ['Pallavi Bhuyan',  'Bongaigaon'],
+    ['Himangsu Baruah', 'Nalbari'],
+    ['Rima Sarma',      'Dhubri'],
   ];
+  const TEXTS = [
+    'Excellent study material! Ekdom helpful hoise exam preparation t. Highly recommend all students ke.',
+    'Crystal clear explanations. Coaching notes r thekio bhalo lagil. Worth every rupee!',
+    'PDF ti khub well structured. Last minute revision r babé perfect. Aro PDF kinibo etia.',
+    'Simple language t explain kora, okol padile bujha jai. Assam r students r babé ideal.',
+    'Previous year questions gulo cover kora ase. Exam r age must buy kora uchit.',
+    'Chapters wise breakdown ase, khub help korse. 3-4 ghonta t porhibo parisa.',
+    'Quality content, no filler. Exactly what I needed for my board preparation.',
+    'Teacher r notes r thekio comprehensive. Smart charts and quick tips included.',
+    'Downloaded it night before exam — covered everything. Scored well! Grateful.',
+    'Trusted source, verified content. Language simple, diagrams helpful.',
+  ];
+
   // Pick 3–5 unique reviews seeded by pdfId
   const reviews = [];
   const usedNames = new Set();
@@ -19203,16 +19187,10 @@ function _pdpApplyLiveStats({ dlCount, purchCount, revCount, avgRating, ratingDi
             <div class="pdp-rev-header">
               <div class="pdp-rev-avatar">${initials}</div>
               <div class="pdp-rev-meta">
-                <div class="pdp-rev-name" style="display:flex;align-items:center;gap:6px;">
-                  ${_esc(r.name)}
-                  <span class="pdp-rev-demo-badge" title="Curated sample review — real reviews from verified buyers appear here after purchase">Sample Review</span>
-                </div>
+                <div class="pdp-rev-name">${_esc(r.name)}</div>
                 <div class="pdp-rev-loc">📍 ${_esc(r.loc)}</div>
               </div>
-              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-                <div class="pdp-rev-stars">${rStars}</div>
-                <div style="font-size:.68rem;color:var(--text2)">${dateStr}</div>
-              </div>
+              <div class="pdp-rev-stars">${rStars}</div>
             </div>
             <div class="pdp-rev-text">${_esc(r.text)}</div>
           </div>`;
@@ -19494,20 +19472,27 @@ function pdpHandleBuy() {
 async function pdpToggleWish() {
   const pdf = selectedPdf;
   if (!pdf) return;
-  await toggleWish(pdf.id); // wait for the full toggle (incl. DB write/guest save) before reading state back
-  {
-    const inWish = wishlist.includes(pdf.id) || wishlist.includes(String(pdf.id));
-    // Update all wish buttons on page
-    ['pdpWishBtn','pdpCoverWishBtn','pdpStickyWish'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (!btn) return;
-      if (id === 'pdpStickyWish') { btn.textContent = inWish ? '💔' : '❤️'; return; }
-      if (id === 'pdpCoverWishBtn') {
-        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="${inWish?'var(--danger)':'none'}" stroke="${inWish?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${inWish?'Saved':'Wishlist'}`;
-        return;
-      }
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${inWish?'var(--danger)':'none'}" stroke="${inWish?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${inWish?'Saved to Wishlist':'❤️ Add to Wishlist'}`;
+
+  // ── Loading state: lock buttons while DB round-trip is in flight ──
+  const _pdpWishBtns = ['pdpWishBtn','pdpCoverWishBtn'];
+  _pdpWishBtns.forEach(bid => {
+    const b = document.getElementById(bid);
+    if (b) b.classList.add('wish-loading');
+  });
+
+  try {
+    await toggleWish(pdf.id); // waits for DB write + optimistic rollback if needed
+  } finally {
+    // Remove loading lock — _syncWishlistUI (fired inside toggleWish) already
+    // called _refreshAllWishButtons which will set final state.
+    // We just need to re-enable the buttons.
+    _pdpWishBtns.forEach(bid => {
+      const b = document.getElementById(bid);
+      if (b) b.classList.remove('wish-loading');
     });
+    // Belt-and-suspenders: force one final refresh in case the event fired
+    // before the loading class was removed.
+    if (typeof _refreshAllWishButtons === 'function') _refreshAllWishButtons();
   }
 }
 
@@ -19519,135 +19504,17 @@ function pdpToggleDesc() {
   btn.textContent = wrap.classList.contains('expanded') ? 'Read Less ↑' : 'Read More ↓';
 }
 
-// =============================================
-// SMART SHARE LINK SYSTEM v2 - Studyria
-// Canonical /pdf/[slug] URLs for every PDF
-// =============================================
-function _getCanonicalPdfSlug(pdf) {
-  if (!pdf) return '';
-  var slug = (pdf.slug || '');
-  var isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
-  var hasRand = /-[a-z0-9]{7,8}$/i.test(slug);
-  var bad = !slug || slug.length < 10 || isUUID || hasRand || !/^[a-z0-9]/i.test(slug) || !/[a-z0-9]$/i.test(slug);
-  if (!bad) return slug.slice(0, 80);
-  var base = String(pdf.title || 'pdf').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 60).replace(/-+$/, '');
-  var id8 = String(pdf.id || '').slice(0, 8);
-  return id8 ? base + '-' + id8 : base;
-}
-function _getCanonicalShareUrl(pdf) {
-  if (!pdf) return window.location.origin + '/';
-  return window.location.origin + '/pdf/' + _getCanonicalPdfSlug(pdf);
-}
-function _injectPdfOGMeta(pdf) {
-  if (!pdf) return;
-  var url = _getCanonicalShareUrl(pdf);
-  var title = (pdf.title || 'Study Material') + ' \u2014 Studyria';
-  var desc = (pdf.description || 'Premium study material for Assam competitive exams. Download on Studyria.').slice(0, 160);
-  var img = pdf.cover_image || pdf.coverImage || pdf.thumbnail || pdf.image || window.location.origin + '/og-cover.png';
-  var price = Number(pdf.price != null ? pdf.price : 0);
-  function setM(prop, val, attr) {
-    attr = attr || 'property';
-    var el = document.querySelector('meta[' + attr + '="' + prop + '"]');
-    if (!el) { el = document.createElement('meta'); el.setAttribute(attr, prop); document.head.appendChild(el); }
-    el.setAttribute('content', val);
-  }
-  document.title = title;
-  setM('og:title', title); setM('og:description', desc); setM('og:image', img);
-  setM('og:url', url); setM('og:type', 'product'); setM('og:site_name', 'Studyria');
-  setM('twitter:card', 'summary_large_image', 'name');
-  setM('twitter:title', title, 'name'); setM('twitter:description', desc, 'name'); setM('twitter:image', img, 'name');
-  var can = document.querySelector('link[rel="canonical"]');
-  if (can) can.href = url;
-  if (history.replaceState) history.replaceState({ page: 'detail', pdfId: pdf.id }, title, url);
-  var sch = document.getElementById('_sss_schema');
-  if (!sch) { sch = document.createElement('script'); sch.id = '_sss_schema'; sch.type = 'application/ld+json'; document.head.appendChild(sch); }
-  sch.textContent = JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Product', name: pdf.title, description: desc,
-    image: img, url: url, brand: { '@type': 'Brand', name: 'Studyria' },
-    offers: { '@type': 'Offer', price: price, priceCurrency: 'INR',
-      availability: 'https://schema.org/InStock', url: url,
-      seller: { '@type': 'Organization', name: 'Studyria' } },
-    author: { '@type': 'Person', name: pdf.author_name || pdf.author || 'Studyria Educa' }
-  });
-}
-function _openShareModal(pdf) {
-  if (!pdf) return;
-  var url = _getCanonicalShareUrl(pdf);
-  var title = pdf.title || 'Study Material';
-  var imgRaw = pdf.cover_image || pdf.coverImage || pdf.thumbnail || pdf.image || '';
-  var imgEnc = encodeURIComponent(imgRaw);
-  var st = encodeURIComponent('Check out "' + title + '" on Studyria! ');
-  var su = encodeURIComponent(url);
-  var safeUrl = url.replace(/'/g, '');
-  var safeTitle = title.replace(/[<>]/g, '').replace(/'/g, '');
-  var old = document.getElementById('_sssModal'); if (old) old.remove();
-  var m = document.createElement('div');
-  m.id = '_sssModal';
-  m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Share PDF');
-  var WA = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
-  var TG = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#26A5E4"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>';
-  var FB = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#1877F2"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 011.141.195v3.325a8.623 8.623 0 00-.653-.036 26.805 26.805 0 00-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 00-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>';
-  var XX = '<svg width="22" height="22" viewBox="0 0 24 24" fill="#e7e9ea"><path d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg>';
-  var LI = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 23.998 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
-  var PI = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>';
-  var IG = '<svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="igG1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="url(#igG1)"/><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="url(#igG1)" stroke-width="0"/><path fill="none" stroke="#fff" stroke-width="1.5" d="M12 8.5A3.5 3.5 0 1012 15.5 3.5 3.5 0 1012 8.5z"/><circle cx="17" cy="7" r="1" fill="#fff"/></svg>';
-  var CP = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
-  var SH = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
-  var nativePart = '';
-  if (navigator.share) {
-    nativePart = '<button class="_sb" onclick="navigator.share({title:\'' + safeTitle + '\',text:\'Check out this PDF on Studyria!\',url:\'' + safeUrl + '\'}).catch(function(){})"><div class="_si2">' + SH + '</div><span class="_sl">More</span></button>';
-  }
-  m.innerHTML = (
-    '<style>' +
-    '#_sssModal{position:fixed;inset:0;z-index:999999;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}' +
-    '._ss{background:var(--card,#0f172a);border-radius:24px 24px 0 0;padding:20px 20px 44px;width:100%;max-width:520px;animation:_su .26s cubic-bezier(.22,1,.36,1);box-shadow:0 -16px 80px rgba(0,0,0,.5)}' +
-    '@keyframes _su{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}' +
-    '._sh{width:36px;height:4px;background:#334155;border-radius:2px;margin:0 auto 16px}' +
-    '._st{font-size:15px;font-weight:700;color:var(--text1,#f1f5f9);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
-    '._scb{display:flex;align-items:center;gap:8px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:10px 12px;margin:10px 0 16px;cursor:pointer;transition:border-color .15s}' +
-    '._scb:hover{border-color:#3d8ef8}' +
-    '._scbt{flex:1;font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}' +
-    '._scbb{flex-shrink:0;font-size:12px;color:#3d8ef8;font-weight:600;background:none;border:none;cursor:pointer;padding:0;font-family:inherit}' +
-    '._sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}' +
-    '._sb{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;background:none;border:none;cursor:pointer;padding:0}' +
-    '._si2{width:54px;height:54px;border-radius:15px;background:#1e293b;display:flex;align-items:center;justify-content:center;border:1.5px solid #2d3f55;transition:background .14s,border-color .14s;font-size:0}' +
-    '._sb:hover ._si2{background:#162033;border-color:#3d8ef8}' +
-    '._sl{font-size:11px;color:#94a3b8;font-family:system-ui,sans-serif;text-align:center}' +
-    '._sclose{width:100%;padding:13px;border-radius:12px;background:#1e293b;border:1.5px solid #334155;color:#94a3b8;font-size:14px;cursor:pointer;font-family:inherit;margin-top:4px;transition:background .14s,color .14s}' +
-    '._sclose:hover{background:#162033;border-color:#3d8ef8;color:#f1f5f9}' +
-    '</style>' +
-    '<div class="_ss" onclick="event.stopPropagation()">' +
-    '<div class="_sh"></div>' +
-    '<div class="_st">' + safeTitle + '</div>' +
-    '<div class="_scb" onclick="var b=this.querySelector(\'._scbb\');navigator.clipboard.writeText(\'' + safeUrl + '\').then(function(){if(b){b.textContent=\'Copied!\';setTimeout(function(){b.textContent=\'Copy\';},2200);}}).catch(function(){})">' +
-    '<div class="_scbt">' + url + '</div><button class="_scbb">Copy</button></div>' +
-    '<div class="_sg">' +
-    '<a class="_sb" href="https://wa.me/?text=' + st + '%20' + su + '" target="_blank" rel="noopener"><div class="_si2">' + WA + '</div><span class="_sl">WhatsApp</span></a>' +
-    '<a class="_sb" href="https://t.me/share/url?url=' + su + '&text=' + st + '" target="_blank" rel="noopener"><div class="_si2">' + TG + '</div><span class="_sl">Telegram</span></a>' +
-    '<a class="_sb" href="https://www.facebook.com/sharer/sharer.php?u=' + su + '" target="_blank" rel="noopener"><div class="_si2">' + FB + '</div><span class="_sl">Facebook</span></a>' +
-    '<a class="_sb" href="https://twitter.com/intent/tweet?text=' + st + '&url=' + su + '" target="_blank" rel="noopener"><div class="_si2">' + XX + '</div><span class="_sl">X</span></a>' +
-    '<a class="_sb" href="https://www.linkedin.com/sharing/share-offsite/?url=' + su + '" target="_blank" rel="noopener"><div class="_si2">' + LI + '</div><span class="_sl">LinkedIn</span></a>' +
-    '<a class="_sb" href="https://www.instagram.com/?url=' + su + '" target="_blank" rel="noopener" onclick="navigator.clipboard.writeText(\'' + safeUrl + '\');alert(\'Link copied! Paste it in Instagram bio or story.\')" ><div class="_si2">' + IG + '</div><span class="_sl">Instagram</span></a>' +
-    '<a class="_sb" href="https://pinterest.com/pin/create/button/?url=' + su + '&media=' + imgEnc + '&description=' + st + '" target="_blank" rel="noopener"><div class="_si2">' + PI + '</div><span class="_sl">Pinterest</span></a>' +
-    nativePart +
-    '<button class="_sb" id="_sssCopy" onclick="var b=document.querySelector(\'#_sssCopy ._sl\');var i=document.querySelector(\'#_sssCopy ._si2\');navigator.clipboard.writeText(\'' + safeUrl + '\').then(function(){if(i)i.style.borderColor=\'#10b981\';if(b)b.textContent=\'Copied!\';setTimeout(function(){if(i)i.style.borderColor=\'\';if(b)b.textContent=\'Copy\';},2200);}).catch(function(){})"><div class="_si2">' + CP + '</div><span class="_sl">Copy</span></button>' +
-    '</div>' +
-    '<button class="_sclose" onclick="var el=document.getElementById(\'_sssModal\');if(el)el.remove();document.body.style.overflow=\'\';">Close</button>' +
-    '</div>'
-  );
-  m.addEventListener('click', function(e) { if (e.target === m) { m.remove(); document.body.style.overflow = ''; } });
-  document.body.appendChild(m);
-  document.body.style.overflow = 'hidden';
-  document.addEventListener('keydown', function _ek(e) {
-    if (e.key === 'Escape') { m.remove(); document.body.style.overflow = ''; document.removeEventListener('keydown', _ek); }
-  }, { once: true });
-}
 function pdpSharePDF() {
-  var pdf = selectedPdf || window.selectedPdf;
+  const pdf = selectedPdf;
   if (!pdf) return;
-  _openShareModal(pdf);
+  const url = window.location.href;
+  const text = `Check out "${pdf.title}" on Studyria! 📚`;
+  if (navigator.share) {
+    navigator.share({ title: pdf.title, text, url }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(url).then(() => showToast('Link copied! 📋', 'success')).catch(() => {});
+  }
 }
-
 
 // Force-clears the fullscreen cover preview and its scroll lock, no matter
 // how it was left open. Called defensively from pdpZoomCover() itself and
@@ -19820,70 +19687,118 @@ function pdpZoomCover() {
 
 // ── REFRESH HEART BUTTONS + COUNTS EVERYWHERE ───────────────────────
 // Called by supabase.js's _syncWishlistUI() after every load/toggle,
-// so Home, Library, PDF Details, Career Hub, Job Details, Wishlist
-// and Me all flip their hearts / counters instantly without a reload.
+// so Home, Library, Discover, PDF Details, Career Hub, Wishlist and Me
+// all flip their hearts / counters instantly without a reload.
+// ── COMPLETE WISHLIST SYNC ENGINE v2 ──────────────────────────────────
 function _refreshAllWishButtons() {
   const pdfIds = window.wishlist    || [];
   const jobIds = window.jobWishlist || [];
   const inPdf  = (id) => pdfIds.includes(Number(id)) || pdfIds.includes(String(id));
   const inJob  = (id) => jobIds.includes(Number(id)) || jobIds.includes(String(id));
-  const heartSvg = (on) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
 
-  // Standard heart buttons (Home / Search / PDP / Wishlist page) — PDFs.
-  // Job heart buttons use the "wish-job-<id>" id prefix so they never
-  // collide with a PDF of the same numeric id.
+  // Shared SVG builders
+  const heartSvg = (on, w, h) => {
+    w = w || 16; h = h || 16;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 24 24" fill="${on?'currentColor':'none'}" stroke="${on?'currentColor':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`;
+  };
+
+  // ── 1. Standard wish-* buttons (pdf-card, wishlist page, search grid)
   document.querySelectorAll('[id^="wish-"]').forEach(btn => {
-    const isJob = btn.id.startsWith('wish-job-');
-    const id    = isJob ? btn.id.replace('wish-job-', '') : btn.id.replace('wish-', '');
-    const nowIn = isJob ? inJob(id) : inPdf(id);
-    btn.classList.toggle('active', nowIn);
-    btn.title = nowIn ? 'Remove from wishlist' : 'Save to wishlist';
-    btn.innerHTML = heartSvg(nowIn);
+    if (btn.classList.contains('wish-loading')) return; // skip mid-toggle
+    const isJob      = btn.id.startsWith('wish-job-');
+    const isHeroSave = btn.id.startsWith('wish-hero-save-');
+    if (isHeroSave) return; // handled separately below
+    const rawId  = isJob ? btn.id.replace('wish-job-', '') : btn.id.replace('wish-', '');
+    const nowIn  = isJob ? inJob(rawId) : inPdf(rawId);
+    btn.classList.toggle('active',      nowIn);
+    btn.classList.toggle('wish-active', nowIn);
+    btn.title    = nowIn ? 'Remove from wishlist' : 'Save to wishlist';
+    btn.setAttribute('aria-label', nowIn ? 'Remove from wishlist' : 'Save to wishlist');
+
+    // ott-card-wish-btn uses SVG (not emoji)
+    if (btn.classList.contains('ott-card-wish-btn')) {
+      btn.innerHTML = heartSvg(nowIn, 13, 13);
+      return;
+    }
+    // ott-hero-float-btn uses SVG
+    if (btn.classList.contains('ott-hero-float-btn')) {
+      btn.innerHTML = heartSvg(nowIn, 15, 15);
+      return;
+    }
+    // Standard wish-btn (pdf-card)
+    btn.innerHTML = heartSvg(nowIn, 16, 16);
   });
 
-  // Library "OTT" cards — emoji heart, keyed by data-wish-id (PDFs)
+  // ── 2. OTT hero "Save" bottom-bar buttons (id="wish-hero-save-*")
+  document.querySelectorAll('[id^="wish-hero-save-"]').forEach(btn => {
+    if (btn.classList.contains('wish-loading')) return;
+    const rawId = btn.id.replace('wish-hero-save-', '');
+    const nowIn = inPdf(rawId);
+    btn.classList.toggle('wish-active', nowIn);
+    btn.innerHTML = nowIn ? '❤️ Saved' : '♡ Save';
+  });
+
+  // ── 3. Library OTT cards (data-wish-id, class ottlib-wish)
   document.querySelectorAll('.ottlib-wish[data-wish-id]').forEach(btn => {
+    if (btn.classList.contains('wish-loading')) return;
     const nowIn = inPdf(btn.dataset.wishId);
     btn.classList.toggle('active', nowIn);
     btn.textContent = nowIn ? '❤️' : '🤍';
   });
 
-  // "PDF of the Day" / trending carousel cards — emoji heart (PDFs)
+  // ── 4. PDF-of-the-Day / trending pdl-ott-wish buttons
   document.querySelectorAll('.pdl-ott-wish[data-wish-id]').forEach(btn => {
+    if (btn.classList.contains('wish-loading')) return;
     const nowIn = inPdf(btn.dataset.wishId);
     btn.classList.toggle('active', nowIn);
     btn.textContent = nowIn ? '❤️' : '♡';
   });
 
-  // Job save buttons on Career Hub / Job Details cards, if present —
-  // keyed by data-wish-job-id so career-hub.js can adopt this same
-  // convention without any risk of colliding with PDF ids.
+  // ── 5. Career Hub job-save buttons (data-wish-job-id)
   document.querySelectorAll('[data-wish-job-id]').forEach(btn => {
+    if (btn.classList.contains('wish-loading')) return;
     const nowIn = inJob(btn.dataset.wishJobId);
     btn.classList.toggle('active', nowIn);
-    btn.classList.toggle('saved', nowIn);
+    btn.classList.toggle('saved',  nowIn);
   });
 
-  // Product Details page buttons, if mounted right now
+  // ── 6. PDF Detail Page (PDP) buttons — 3 surfaces
   if (typeof selectedPdf !== 'undefined' && selectedPdf) {
     const nowIn = inPdf(selectedPdf.id);
-    ['pdpWishBtn', 'pdpCoverWishBtn', 'pdpStickyWish'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (!btn) return;
-      if (id === 'pdpStickyWish') { btn.textContent = nowIn ? '💔' : '❤️'; return; }
-      if (id === 'pdpCoverWishBtn') {
-        btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="${nowIn?'var(--danger)':'none'}" stroke="${nowIn?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${nowIn?'Saved':'Wishlist'}`;
-        return;
-      }
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${nowIn?'var(--danger)':'none'}" stroke="${nowIn?'var(--danger)':'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${nowIn?'Saved to Wishlist':'❤️ Add to Wishlist'}`;
-    });
+
+    // pdpWishBtn  — secondary "Add to Wishlist" button in buy card
+    const pdpWishBtn = document.getElementById('pdpWishBtn');
+    if (pdpWishBtn && !pdpWishBtn.classList.contains('wish-loading')) {
+      pdpWishBtn.classList.toggle('active', nowIn);
+      pdpWishBtn.innerHTML =
+        `${heartSvg(nowIn, 16, 16)}${nowIn ? 'Saved to Wishlist' : '❤️ Add to Wishlist'}`;
+    }
+
+    // pdpCoverWishBtn — action button below cover image
+    const pdpCoverWishBtn = document.getElementById('pdpCoverWishBtn');
+    if (pdpCoverWishBtn && !pdpCoverWishBtn.classList.contains('wish-loading')) {
+      pdpCoverWishBtn.classList.toggle('active', nowIn);
+      pdpCoverWishBtn.innerHTML =
+        `${heartSvg(nowIn, 18, 18)}${nowIn ? 'Saved' : 'Wishlist'}`;
+    }
+
+    // pdpStickyWish — emoji in the sticky top bar
+    const pdpStickyWish = document.getElementById('pdpStickyWish');
+    if (pdpStickyWish) {
+      pdpStickyWish.textContent = nowIn ? '💔' : '❤️';
+    }
   }
 
-  // Counters that live outside renderWishlist()/renderDashboard() cycles
+  // ── 7. Counters
   const libWishEl = document.getElementById('libStatWishlist');
   if (libWishEl) libWishEl.textContent = pdfIds.length;
   const chSavedEl = document.getElementById('chSavedCount');
   if (chSavedEl) chSavedEl.textContent = jobIds.length;
+  // Nav badge (if any)
+  document.querySelectorAll('.nav-wish-count').forEach(el => {
+    el.textContent = pdfIds.length;
+    el.style.display = pdfIds.length > 0 ? '' : 'none';
+  });
 }
 // Also expose globally so supabase.js's _syncWishlistUI() can always reach it
 window._refreshAllWishButtons = _refreshAllWishButtons;
@@ -19891,9 +19806,26 @@ window._refreshAllWishButtons = _refreshAllWishButtons;
 // toggleWish / toggleWishlist: PDF hearts — delegates to supabase.js's
 // toggleWishlistItem (the authoritative version with live getUser(),
 // upsert, rollback, guest-local fallback and cross-page broadcast).
-async function toggleWish(id) { return window.toggleWishlistItem(id, 'pdf'); }
-function toggleWishlist(id) { return toggleWish(id); }
+// Accepts optional srcBtn (the clicked button element) so supabase.js
+// can add the wish-loading class for the in-flight duration.
+async function toggleWish(id, srcBtn) { return window.toggleWishlistItem(id, 'pdf', srcBtn); }
+function toggleWishlist(id, srcBtn) { return toggleWish(id, srcBtn); }
 window.toggleWishlist = toggleWishlist;
+window.toggleWish = toggleWish;
+
+// ── Wishlist cross-page event bridge ───────────────────────────────
+// Any component can dispatch 'studyria:wishlistChanged' and all
+// rendered wish buttons will reflect the new state immediately.
+// supabase.js already fires this event after every toggle/load,
+// so this just ensures the listener is always in place.
+(function _installWishEventBridge() {
+  // Guard: only register once even if this script block re-executes
+  if (window._wishEventBridgeInstalled) return;
+  window._wishEventBridgeInstalled = true;
+  window.addEventListener('studyria:wishlistChanged', function() {
+    if (typeof _refreshAllWishButtons === 'function') _refreshAllWishButtons();
+  });
+})();
 
 // toggleJobWish: Job hearts — same engine, 'job' namespace. Wire this
 // up from Career Hub / Job Details save buttons, e.g.
@@ -22125,14 +22057,13 @@ CREATE TRIGGER trg_progress_updated
     };
 
     window.bsfShare = function(id) {
-      var p = BSF.allPdfs.find(function(x){return String(x.id)===String(id);});
+      const p = BSF.allPdfs.find(x => String(x.id) === String(id));
       if (!p) return;
-      if (typeof _openShareModal === 'function') { _openShareModal(p); return; }
-      var url = typeof _getCanonicalShareUrl==='function' ? _getCanonicalShareUrl(p) : window.location.origin+'/pdf/'+(p.slug||id);
+      const url = window.location.origin + '?pdf=' + id;
       if (navigator.share) {
-        navigator.share({ title: p.title, text: 'Check out "'+p.title+'" on Studyria!', url: url });
+        navigator.share({ title: p.title, text: `Check out "${p.title}" on Studyria!`, url });
       } else {
-        navigator.clipboard.writeText(url).then(function(){if(typeof showToast==='function')showToast('Link copied!','success');});
+        navigator.clipboard.writeText(url).then(() => showToast('🔗 Link copied!', 'success'));
       }
     };
 
@@ -23835,39 +23766,15 @@ async function chmSaveJob() {
 // ══════════════════════════════════════════════════════════════════
 
 // Default fallback links (used if DB not set up yet)
-// NOTE: ids MUST be valid UUIDs — community_links.id is a `uuid` primary key
-// in Supabase. Hardcoded slugs like 'wa-community' or 'link_'+Date.now() throw
-// "invalid input syntax for type uuid" on save. These fixed UUIDs are only the
-// offline/fallback defaults; DB rows are the source of truth once seeded.
-// NOTE: ids MUST be valid UUIDs — community_links.id is a `uuid` primary key
-// in Supabase. Hardcoded slugs like 'wa-community' or 'link_'+Date.now() throw
-// "invalid input syntax for type uuid" on save. These fixed UUIDs are only the
-// offline/fallback defaults; DB rows are the source of truth once seeded.
-// `platform` selects the official brand SVG icon (see _CH_BRAND_ICONS) —
-// independent of the emoji `icon` field, which is only a fallback for any
-// custom link an admin adds later that isn't one of these four platforms.
 const COMMUNITY_DEFAULTS = [
-  { id: 'a1b2c3d4-0000-4000-8000-000000000000', platform: 'whatsapp',  title: 'WhatsApp Community', description: 'Instant exam alerts, important notices & student discussions.',       icon: '💬', color: '#25d366', url: 'https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R', enabled: true, is_primary: false, sort_order: 1 },
-  { id: 'a1b2c3d4-0001-4000-8000-000000000001', platform: 'instagram', title: 'Instagram',          description: 'Daily study motivation, reels, success stories & learning tips.',     icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: false, sort_order: 2 },
-  { id: 'a1b2c3d4-0002-4000-8000-000000000002', platform: 'telegram',  title: 'Telegram',           description: 'Fast job alerts, premium PDF updates & exclusive announcements.',      icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: false, sort_order: 3 },
-  { id: 'a1b2c3d4-0003-4000-8000-000000000003', platform: 'pinterest', title: 'Pinterest',          description: 'Premium notes, study inspiration & exam preparation collections.',     icon: '📌', color: '#e60023', url: 'https://pin.it/3f4ctNDO7',                                             enabled: true, is_primary: false, sort_order: 4 },
+  { id: 'wa-community', title: 'WhatsApp Community', description: 'Join our main group', icon: '💬', color: '#25d366', url: 'https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R', enabled: true, is_primary: true, sort_order: 1 },
+  { id: 'telegram',     title: 'Telegram',           description: 'Daily updates',        icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                      enabled: true, is_primary: false, sort_order: 2 },
+  { id: 'wa-channel',   title: 'WhatsApp Channel',   description: 'News & alerts',         icon: '📢', color: '#25d366', url: 'https://whatsapp.com/channel/studyria',                     enabled: true, is_primary: false, sort_order: 3 },
+  { id: 'facebook',     title: 'Facebook',           description: 'Follow our page',       icon: '📘', color: '#1877f2', url: 'https://facebook.com/studyria',                             enabled: true, is_primary: false, sort_order: 4 },
+  { id: 'instagram',    title: 'Instagram',          description: 'Reels & stories',       icon: '📸', color: '#e1306c', url: 'https://instagram.com/studyria',                            enabled: true, is_primary: false, sort_order: 5 },
+  { id: 'discord',      title: 'Discord',            description: 'Live chat & help',      icon: '🎮', color: '#5865f2', url: 'https://discord.gg/studyria',                               enabled: true, is_primary: false, sort_order: 6 },
+  { id: 'youtube',      title: 'YouTube',            description: 'Video lessons',         icon: '▶️', color: '#ff0000', url: 'https://youtube.com/@studyria',                             enabled: true, is_primary: false, sort_order: 7 },
 ];
-
-// Generates a real UUID v4 — falls back to a manual implementation on browsers
-// without crypto.randomUUID (e.g. Safari < 15.4).
-function _cmGenUUID() {
-  if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-    return window.crypto.randomUUID();
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-function _cmIsValidUUID(str) {
-  return typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-}
 
 // Color map for icon backgrounds
 function _chIconBg(color) {
@@ -23881,46 +23788,6 @@ function _chIconBorder(color) {
   return `rgba(${r},${g},${b},0.25)`;
 }
 
-// ── Official brand SVG icons (real logos, not emoji) ──────────────────────
-// Path data: Simple Icons project (CC0). Each renders as a crisp inline SVG
-// colored with the platform's real brand color/gradient.
-const _CH_BRAND_ICONS = {
-  whatsapp: {
-    viewBox: '0 0 24 24',
-    path: 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z',
-    fill: '#25D366',
-    grad: 'linear-gradient(135deg, #2FE072, #128C7E)'
-  },
-  telegram: {
-    viewBox: '0 0 24 24',
-    path: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z',
-    fill: '#29A9EA',
-    grad: 'linear-gradient(135deg, #4FC3F7, #0088CC)'
-  },
-  pinterest: {
-    viewBox: '0 0 24 24',
-    path: 'M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z',
-    fill: '#E60023',
-    grad: 'linear-gradient(135deg, #F0324A, #AD081B)'
-  },
-  instagram: {
-    viewBox: '0 0 24 24',
-    path: 'M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077',
-    fill: null, // rendered with a gradient fill instead of a flat color
-    grad: 'linear-gradient(135deg, #F09433, #E6683C, #DC2743, #CC2366, #BC1888)'
-  },
-};
-
-function _chBrandIconSvg(platform, gradId) {
-  const brand = _CH_BRAND_ICONS[platform];
-  if (!brand) return null;
-  const fillAttr = brand.fill ? brand.fill : `url(#${gradId})`;
-  const defs = brand.fill ? '' : `<defs><linearGradient id="${gradId}" x1="0%" y1="100%" x2="100%" y2="0%">
-    <stop offset="0%" stop-color="#FED576"/><stop offset="26%" stop-color="#F47133"/><stop offset="61%" stop-color="#BC3081"/><stop offset="100%" stop-color="#4C63D2"/>
-  </linearGradient></defs>`;
-  return `<svg viewBox="${brand.viewBox}" width="27" height="27" aria-hidden="true">${defs}<path fill="${fillAttr}" d="${brand.path}"/></svg>`;
-}
-
 async function loadCommunityHub() {
   const section = document.getElementById('communityHubSection');
   const grid = document.getElementById('communityHubGrid');
@@ -23932,21 +23799,18 @@ async function loadCommunityHub() {
   try {
     const sb = window.supabaseClient;
     if (sb) {
-      const { data: settings, error: linksErr } = await sb.from('community_links')
+      // Load section settings
+      const { data: settings } = await sb.from('community_links')
         .select('*')
         .order('sort_order', { ascending: true });
-      if (linksErr) throw linksErr;
-      links = (settings && settings.length > 0)
-        ? settings.filter(l => l.enabled)
-        : COMMUNITY_DEFAULTS.filter(l => l.enabled);
-
-      // Section visibility lives on website_settings.community_hub_enabled —
-      // NOT a sentinel row inside community_links (that hack broke the uuid PK).
-      const { data: ws } = await sb.from('website_settings')
-        .select('community_hub_enabled')
-        .limit(1)
-        .single();
-      if (ws && ws.community_hub_enabled === false) sectionEnabled = false;
+      if (settings && settings.length > 0) {
+        links = settings.filter(l => l.enabled);
+      } else {
+        links = COMMUNITY_DEFAULTS.filter(l => l.enabled);
+      }
+      // Check if section itself is hidden via a special sentinel row
+      const sentinel = (settings || []).find(l => l.id === '__section_hidden__');
+      if (sentinel) sectionEnabled = false;
     } else {
       links = COMMUNITY_DEFAULTS.filter(l => l.enabled);
     }
@@ -23956,39 +23820,48 @@ async function loadCommunityHub() {
   }
 
   if (!sectionEnabled && section) { section.style.display = 'none'; return; }
-  if (section) section.style.display = '';
 
   if (links.length === 0) {
     grid.innerHTML = '';
     return;
   }
 
-  // Premium glassmorphic cards — every enabled link renders as an equal-height
-  // card. Official brand SVG icon when `platform` matches a known brand,
-  // otherwise falls back to the admin-entered emoji (custom future links).
+  // Render
+  const primary = links.find(l => l.is_primary);
+  const rest = links.filter(l => !l.is_primary);
+
   let html = '<div class="community-hub-grid">';
 
-  links.forEach((link, i) => {
-    const brand = _CH_BRAND_ICONS[link.platform];
-    const gradId = `chxGrad-${link.platform || 'x'}-${i}`;
-    const iconMarkup = brand
-      ? _chBrandIconSvg(link.platform, gradId)
-      : (link.icon || '🔗');
-    const cardGrad = brand ? brand.grad : `linear-gradient(135deg, ${link.color || '#3d8ef8'}, ${link.color || '#3d8ef8'}99)`;
-    const glow = brand && brand.fill ? `${brand.fill}55` : (brand ? 'rgba(255,255,255,0.35)' : `${link.color || '#3d8ef8'}55`);
+  // Primary button (full-width)
+  if (primary) {
+    html += `<a href="${primary.url}" target="_blank" rel="noopener noreferrer" class="ch-btn ch-primary"
+      style="animation-delay:.05s"
+      onclick="trackCommunityClick('${primary.id}')">
+      <div class="ch-icon" style="background:${_chIconBg(primary.color)};border-color:${_chIconBorder(primary.color)}">
+        ${primary.icon}
+      </div>
+      <div class="ch-btn-text">
+        <span class="ch-btn-label">${primary.title}</span>
+        <span class="ch-btn-desc">${primary.description || ''}</span>
+      </div>
+      <span class="ch-members-badge"><span style="width:5px;height:5px;border-radius:50%;background:#25d366;display:inline-block;box-shadow:0 0 4px #25d366"></span>Join Now</span>
+      <span class="ch-btn-arrow">→</span>
+    </a>`;
+  }
 
-    html += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="chx-card"
-      style="animation-delay:${.05 + i*.06}s;--chx-grad:${cardGrad};--chx-glow:${glow}"
+  // Secondary buttons
+  rest.forEach((link, i) => {
+    html += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="ch-btn"
+      style="animation-delay:${.08 + i*.06}s;--ch-shadow:${link.color}33;--ch-border:${link.color}44"
       onclick="trackCommunityClick('${link.id}')">
-      <div class="chx-icon-wrap">${iconMarkup}</div>
-      <div class="chx-body">
-        <span class="chx-title">${link.title}</span>
-        <span class="chx-desc">${link.description || ''}</span>
+      <div class="ch-icon" style="background:${_chIconBg(link.color)};border-color:${_chIconBorder(link.color)}">
+        ${link.icon}
       </div>
-      <div class="chx-join-row">
-        <span class="chx-join-btn">Join Now</span>
-        <span class="chx-arrow">→</span>
+      <div class="ch-btn-text">
+        <span class="ch-btn-label">${link.title}</span>
+        <span class="ch-btn-desc">${link.description || ''}</span>
       </div>
+      <span class="ch-btn-arrow">→</span>
     </a>`;
   });
 
@@ -24166,8 +24039,6 @@ async function waLoadHistory() {
 let _cmLinks = [];        // working copy
 let _cmDragSrc = null;    // drag source index
 
-let _cmSectionEnabled = true; // module state, loaded from website_settings.community_hub_enabled
-
 async function renderAdminCommunityManager(main) {
   main.innerHTML = `<div class="admin-section" style="animation:dashFadeUp .35s ease both">
     <div class="admin-section-title" style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
@@ -24183,17 +24054,14 @@ async function renderAdminCommunityManager(main) {
     let dbLinks = [];
     if (sb) {
       const { data, error } = await sb.from('community_links').select('*').order('sort_order', { ascending: true });
-      if (error) throw error;
-      if (data && data.length > 0) dbLinks = data;
-
-      const { data: ws } = await sb.from('website_settings').select('community_hub_enabled').limit(1).single();
-      _cmSectionEnabled = !ws || ws.community_hub_enabled !== false;
+      if (!error && data && data.length > 0) {
+        dbLinks = data.filter(l => l.id !== '__section_hidden__');
+      }
     }
     _cmLinks = dbLinks.length > 0 ? dbLinks : JSON.parse(JSON.stringify(COMMUNITY_DEFAULTS));
   } catch(e) {
-    console.error('Community Manager load failed:', e);
     _cmLinks = JSON.parse(JSON.stringify(COMMUNITY_DEFAULTS));
-    showToast('Using default links (DB not connected): ' + (e.message || ''), 'info');
+    showToast('Using default links (DB not connected)', 'info');
   }
 
   _cmRender(main);
@@ -24223,7 +24091,7 @@ function _cmRender(main) {
         <div class="cm-section-toggle-label">🌐 Show Community Hub on Homepage</div>
         <div class="cm-section-toggle-sub">Toggle the entire Community Hub section visibility</div>
       </div>
-      <button class="cm-toggle ${_cmSectionEnabled ? 'on' : 'off'}" id="cmSectionToggle" onclick="_cmToggleSection(this)"></button>
+      <button class="cm-toggle on" id="cmSectionToggle" onclick="_cmToggleSection(this)"></button>
     </div>
 
     <!-- Live Preview -->
@@ -24337,18 +24205,17 @@ function _cmRenderPreview() {
   const active = _cmLinks.filter(l => l.enabled);
   if (active.length === 0) { grid.innerHTML = `<div style="color:var(--text2);font-size:.8rem;grid-column:1/-1;text-align:center;padding:16px">No enabled links to preview</div>`; return; }
 
-  // Supports multiple primary links (not just the first one)
-  const primaries = active.filter(l => l.is_primary);
+  const primary = active.find(l => l.is_primary);
   const rest = active.filter(l => !l.is_primary);
 
   let html = '';
-  primaries.forEach(primary => {
+  if (primary) {
     html += `<div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:${_chIconBg(primary.color)};border:1px solid ${_chIconBorder(primary.color)}">
       <div style="width:32px;height:32px;border-radius:8px;background:${_chIconBg(primary.color)};display:flex;align-items:center;justify-content:center;font-size:.95rem">${primary.icon}</div>
       <div style="flex:1"><div style="font-size:.8rem;font-weight:700;color:var(--text)">${primary.title}</div><div style="font-size:.68rem;color:var(--text2)">${primary.description||''}</div></div>
       <span style="font-size:.65rem;color:${primary.color};font-weight:700">PRIMARY →</span>
     </div>`;
-  });
+  }
   rest.slice(0,6).forEach(l => {
     html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)">
       <div style="width:28px;height:28px;border-radius:7px;background:${_chIconBg(l.color)};display:flex;align-items:center;justify-content:center;font-size:.85rem">${l.icon}</div>
@@ -24424,7 +24291,7 @@ function _cmSaveLink() {
   const url = document.getElementById('cmFUrl').value.trim();
   if (!title || !url) { showToast('Title and URL are required', 'error'); return; }
   const link = {
-    id: _cmGenUUID(), // community_links.id is a uuid PK — never use slugs/timestamps here
+    id: 'link_' + Date.now(),
     title,
     icon: icon || '🔗',
     url,
@@ -24436,8 +24303,7 @@ function _cmSaveLink() {
   };
   const editIdx = document.getElementById('cmEditId').value;
   if (editIdx !== '') {
-    const existingId = _cmLinks[parseInt(editIdx)].id;
-    link.id = _cmIsValidUUID(existingId) ? existingId : link.id;
+    link.id = _cmLinks[parseInt(editIdx)].id || link.id;
     _cmLinks[parseInt(editIdx)] = link;
   } else {
     _cmLinks.push(link);
@@ -24501,10 +24367,6 @@ async function _cmSaveToDB() {
     const sb = window.supabaseClient;
     if (!sb) throw new Error('Supabase not connected');
 
-    // Guard: every row MUST have a valid UUID id (community_links.id is a uuid PK).
-    // Catches any stale non-uuid ids left over from before this fix.
-    _cmLinks.forEach(l => { if (!_cmIsValidUUID(l.id)) l.id = _cmGenUUID(); });
-
     // Upsert all links with updated sort_order
     const rows = _cmLinks.map((l, idx) => ({
       id: l.id,
@@ -24519,37 +24381,25 @@ async function _cmSaveToDB() {
     }));
 
     // Delete removed links first by fetching existing IDs
-    const { data: existingRows, error: fetchErr } = await sb.from('community_links').select('id');
-    if (fetchErr) throw fetchErr;
-    const existingIds = (existingRows || []).map(r => r.id);
+    const { data: existingRows } = await sb.from('community_links').select('id');
+    const existingIds = (existingRows || []).map(r => r.id).filter(id => id !== '__section_hidden__');
     const newIds = rows.map(r => r.id);
     const toDelete = existingIds.filter(id => !newIds.includes(id));
     if (toDelete.length > 0) {
-      const { error: delErr } = await sb.from('community_links').delete().in('id', toDelete);
-      if (delErr) throw delErr;
+      await sb.from('community_links').delete().in('id', toDelete);
     }
 
-    if (rows.length > 0) {
-      const { error } = await sb.from('community_links').upsert(rows, { onConflict: 'id' });
-      if (error) throw error;
-    }
-
-    // Section visibility is a real column on website_settings — NOT a sentinel
-    // row hack inside community_links (that hack broke the uuid primary key).
+    // Handle section toggle sentinel
     const sectionToggle = document.getElementById('cmSectionToggle');
     const sectionVisible = sectionToggle ? sectionToggle.classList.contains('on') : true;
-    _cmSectionEnabled = sectionVisible;
-    const { data: wsRow } = await sb.from('website_settings').select('id').limit(1).single();
-    if (wsRow && wsRow.id) {
-      const { error: wsErr } = await sb.from('website_settings')
-        .update({ community_hub_enabled: sectionVisible, updated_at: new Date().toISOString() })
-        .eq('id', wsRow.id);
-      if (wsErr) throw wsErr;
+    if (!sectionVisible) {
+      rows.push({ id: '__section_hidden__', title: 'Section Hidden', description: '', icon: '🚫', color: '#ff0000', url: '', is_primary: false, enabled: false, sort_order: 9999 });
     } else {
-      const { error: wsErr } = await sb.from('website_settings')
-        .insert({ community_hub_enabled: sectionVisible, updated_at: new Date().toISOString() });
-      if (wsErr) throw wsErr;
+      await sb.from('community_links').delete().eq('id', '__section_hidden__');
     }
+
+    const { error } = await sb.from('community_links').upsert(rows, { onConflict: 'id' });
+    if (error) throw error;
 
     if (status) status.textContent = '✓ Saved to database';
     showToast('Community links saved! Homepage updated.', 'success');
@@ -36539,61 +36389,7 @@ document.addEventListener('keydown', e => {
  *
  * HOW TO USE:
  *   Paste this entire <script> block at the very END of index.html,
-
- *   just before 
-// ── Smart Share: Deep Link Resolver ───────────────────────────────────
-(function() {
-  function _resolveSlugRoute() {
-    var path = window.location.pathname;
-    var match = path.match(/^\/pdf\/([^.]+?)(\.html)?$/);
-    if (!match) return false;
-    var slug = match[1];
-    function findAndOpen() {
-      var pdfs = window.PDFS || [];
-      if (!pdfs.length) return false;
-      var found = null;
-      for (var i=0;i<pdfs.length;i++) {
-        var p=pdfs[i];
-        var cs=typeof _getCanonicalPdfSlug==='function'?_getCanonicalPdfSlug(p):(p.slug||'');
-        if (cs===slug||(p.slug||'')===slug||String(p.id||'').slice(0,8)===slug.slice(-8)) { found=p; break; }
-      }
-      if (found) {
-        window.selectedPdf=found;
-        if (typeof normalizePdf==='function') normalizePdf(found);
-        if (typeof navigate==='function') navigate('detail');
-        return true;
-      }
-      return false;
-    }
-    if (!findAndOpen()) {
-      var attempts=0;
-      var timer=setInterval(function(){
-        attempts++;
-        if (findAndOpen()||attempts>40) clearInterval(timer);
-      },250);
-    }
-    return true;
-  }
-  window._resolveSlugRoute = _resolveSlugRoute;
-  if (document.readyState==='loading') {
-    document.addEventListener('DOMContentLoaded', function(){setTimeout(_resolveSlugRoute,100);});
-  } else {
-    setTimeout(_resolveSlugRoute, 100);
-  }
-  window.addEventListener('popstate', function(e) {
-    if (e.state&&e.state.page==='detail'&&e.state.pdfId) {
-      var pdfs=window.PDFS||[];
-      var found=null;
-      for(var i=0;i<pdfs.length;i++){if(String(pdfs[i].id)===String(e.state.pdfId)){found=pdfs[i];break;}}
-      if(found){window.selectedPdf=found;if(typeof normalizePdf==='function')normalizePdf(found);if(typeof navigate==='function')navigate('detail');}
-    } else if(e.state&&e.state.page&&e.state.page!=='detail') {
-      if(typeof navigate==='function') navigate(e.state.page);
-    }
-  });
-})();
-
-
-</body>. It overrides all relevant functions via
+ *   just before </body>. It overrides all relevant functions via
  *   re-declaration (functions hoisted last win) and patches the DOM.
  *
  * WHAT THIS FIXES:
@@ -39410,6 +39206,25 @@ body.light .pdp-desc-wrap:not(.expanded)::after { background: linear-gradient(tr
   transition: all .2s; margin-top: 10px;
 }
 .pdp-wish-secondary:hover { border-color: var(--danger); color: var(--danger); background: rgba(255,77,109,0.06); }
+.pdp-wish-secondary.active,
+.pdp-wish-secondary.wish-active {
+  border-color: rgba(255,61,104,0.7);
+  color: var(--danger);
+  background: rgba(255,61,104,0.08);
+}
+.pdp-wish-secondary.active:hover,
+.pdp-wish-secondary.wish-active:hover {
+  background: rgba(255,61,104,0.14);
+}
+.pdp-wish-secondary.wish-loading {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: wait;
+}
+.pdp-cover-action-btn.active,
+.pdp-cover-action-btn.wish-active {
+  color: var(--danger);
+}
 
 /* ── Right Buy Card ─────────────────────────────────────────────── */
 .pdp-right { position: sticky; top: 88px; }
@@ -44827,6 +44642,5 @@ async function crpAutoLevelUpgrade(userId) {
   }
 }
 </script>
-<script src="pdp-v3.js" defer></script>
 </body>
 </html>
