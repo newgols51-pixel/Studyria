@@ -43206,16 +43206,16 @@ async function crpAutoLevelUpgrade(userId) {
 }
 .srv-track {
   display: flex; gap: 14px; width: max-content;
-  animation: srvScroll 80s linear infinite;
+  animation: none;
   will-change: transform; padding: 8px 20px 20px;
 }
-.srv-track:hover { animation-play-state: paused; }
+.srv-track:hover { /* no pause needed — manual swipe */ }
 @keyframes srvScroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 .srv-card {
-  flex: 0 0 clamp(270px, 78vw, 305px);
+  flex: 0 0 clamp(260px, 82vw, 305px);
   border-radius: 20px; padding: 18px 18px 16px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.09);
@@ -43396,12 +43396,12 @@ function _srvAvg(list){
 function _srvRender(list){
   var track=document.getElementById('srvTrack');
   if(!track||!list||!list.length) return;
+  /* No duplication — manual swipe carousel, not auto-scroll */
   var html='';
-  var all=list.concat(list);
-  for(var i=0;i<all.length;i++) html+=_srvCard(all[i],i);
+  for(var i=0;i<list.length;i++) html+=_srvCard(list[i],i);
   track.innerHTML=html;
-  var dur=Math.max(50,list.length*1.8);
-  track.style.animationDuration=dur+'s';
+  track.style.animation='none';
+  track.style.transform='translateX(0)';
   var avgEl=document.getElementById('srvAvgNum');
   var starsEl=document.getElementById('srvStarsRow');
   var countEl=document.getElementById('srvCountTxt');
@@ -43409,6 +43409,8 @@ function _srvRender(list){
   if(avgEl) avgEl.textContent=avg.toFixed(1);
   if(starsEl) starsEl.textContent=_srvStars(avg);
   if(countEl) countEl.textContent=list.length+' verified reviews';
+  /* Re-init carousel after render */
+  window._srvCarouselReady=false;
 }
 
 async function _srvInit(){
@@ -43445,7 +43447,7 @@ if(document.readyState==='loading'){
 
 <style>
 /* ── MANUAL SWIPE CAROUSEL ───────────────────────────────────────── */
-.srv-outer { overflow: hidden; position: relative; cursor: grab; }
+.srv-outer { overflow: hidden; position: relative; cursor: grab; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%); }
 .srv-outer.grabbing { cursor: grabbing; }
 .srv-track {
   display: flex; gap: 14px; width: max-content;
@@ -43696,8 +43698,18 @@ window._arvReject=async function(id){
 /* ── BOOT ────────────────────────────────────────────────────────── */
 function boot(){
   var tries=0;
-  function tryInit(){ var c=document.querySelectorAll('#srvTrack .srv-card'); if(c.length>0) _srvInitCarousel(); else if(tries++<25) setTimeout(tryInit,300); }
-  setTimeout(tryInit,700);
+  function tryInit(){
+    var c=document.querySelectorAll('#srvTrack .srv-card');
+    if(c.length>0){
+      if(!window._srvCarouselReady){
+        window._srvCarouselReady=true;
+        _srvInitCarousel();
+      }
+    } else if(tries++<30){
+      setTimeout(tryInit,300);
+    }
+  }
+  setTimeout(tryInit,800);
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
