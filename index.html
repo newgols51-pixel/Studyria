@@ -44616,7 +44616,7 @@ window.renderAdminReviews=async function(container){
     reviews.forEach(function(r){
       var stars='★'.repeat(Number(r.rating)||5);
       var date=r.created_at?new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
-      html+='<div class="arv-card" id="arv-'+r.id+'"><div class="arv-card-header"><div><div class="arv-card-name">'+(r.user_name||'Anonymous')+(r.location?' • '+r.location:'')+'</div><div class="arv-card-meta">'+date+'</div></div><div class="arv-card-stars">'+stars+'</div></div><div class="arv-card-text">“'+r.comment+'”</div><div class="arv-card-actions"><button class="arv-btn-approve" onclick="window._arvApprove(''+r.id+'')">✅ Approve</button><button class="arv-btn-reject" onclick="window._arvReject(''+r.id+'')">❌ Reject</button></div></div>';
+      html+='<div class="arv-card" id="arv-'+r.id+'"><div class="arv-card-header"><div><div class="arv-card-name">'+(r.user_name||'Anonymous')+(r.location?' • '+r.location:'')+'</div><div class="arv-card-meta">'+date+'</div></div><div class="arv-card-stars">'+stars+'</div></div><div class="arv-card-text">“'+r.comment+'”</div><div class="arv-card-actions"><button class="arv-btn-approve" data-id="'+r.id+'" onclick="window._arvApprove(this.dataset.id)">✅ Approve</button><button class="arv-btn-reject" data-id="'+r.id+'" onclick="window._arvReject(this.dataset.id)">❌ Reject</button></div></div>';
     });
     container.innerHTML=html;
   }catch(err){ container.innerHTML='<div class="arv-empty">Error: '+err.message+'</div>'; }
