@@ -572,6 +572,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     margin: 0;
     padding: 0;
   }
+  /* Prevent native browser button style from overriding custom CSS */
+  button { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 
 /* ══════════════════════════════════════════════════════════════
    COMPONENT LAYER — all Studyria component classes
@@ -1540,53 +1542,59 @@ body.light .pdp-review-textarea {
   gap: 0;
 }
 
-/* ── BUY / GET FREE BUTTON — luxury gradient CTA ─────────────── */
+/* ── BUY / GET FREE BUTTON — Premium Glassmorphism CTA ──────── */
 .pdf-buy-btn {
   flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 12px 14px;
-  min-height: 44px;
-  border-radius: 14px;
+  gap: 6px;
+  padding: 11px 12px;
+  min-height: 42px;
+  border-radius: 13px;
   font-family: var(--font-ui);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  border: none;
+  border: 1px solid rgba(61,142,248,0.35);
+  -webkit-appearance: none;
+  appearance: none;
+  -moz-appearance: none;
   position: relative;
   overflow: hidden;
   color: #fff;
   background: linear-gradient(135deg,
-    #1e66e5 0%,
-    #2080f0 38%,
-    #00aee0 75%,
-    #00c8e8 100%);
+    rgba(30,102,229,0.92) 0%,
+    rgba(32,128,240,0.88) 40%,
+    rgba(0,174,224,0.90) 75%,
+    rgba(0,200,232,0.92) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow:
-    0 4px 20px rgba(61,142,248,0.48),
-    0 1px 0 rgba(255,255,255,0.24) inset,
-    0 -1px 0 rgba(0,0,0,0.18) inset;
+    0 4px 18px rgba(61,142,248,0.40),
+    0 1px 0 rgba(255,255,255,0.22) inset,
+    0 -1px 0 rgba(0,0,0,0.14) inset;
+  will-change: transform, opacity;
   transition:
-    transform 0.25s cubic-bezier(0.34,1.3,0.64,1),
-    box-shadow 0.25s ease,
-    filter 0.18s ease;
+    opacity 0.20s ease,
+    transform 0.20s cubic-bezier(0.34,1.3,0.64,1);
 }
-/* Shine sweep on hover */
+/* Shine sweep */
 .pdf-buy-btn::before {
   content: '';
   position: absolute;
-  top: 0; left: -130%;
-  width: 80%; height: 100%;
+  top: 0; left: -120%;
+  width: 70%; height: 100%;
   background: linear-gradient(105deg,
     transparent 0%,
-    rgba(255,255,255,0.28) 50%,
+    rgba(255,255,255,0.22) 50%,
     transparent 100%);
-  transition: left 0.55s ease;
+  transition: left 0.50s ease;
   pointer-events: none;
+  z-index: 1;
 }
-/* Top edge highlight */
+/* Top shimmer line */
 .pdf-buy-btn::after {
   content: '';
   position: absolute;
@@ -1594,37 +1602,34 @@ body.light .pdp-review-textarea {
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(255,255,255,0.42) 50%,
+    rgba(255,255,255,0.50) 50%,
     transparent 100%);
   pointer-events: none;
+  z-index: 1;
+}
+.pdf-buy-btn span, .pdf-buy-btn svg {
+  position: relative; z-index: 2;
 }
 .pdf-buy-btn:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow:
-    0 10px 36px rgba(61,142,248,0.68),
-    0 1px 0 rgba(255,255,255,0.26) inset;
-  filter: brightness(1.07) saturate(1.08);
+  opacity: 0.92;
+  transform: translateY(-2px) scale(1.01);
 }
-.pdf-buy-btn:hover::before { left: 140%; }
+.pdf-buy-btn:hover::before { left: 130%; }
 .pdf-buy-btn:active {
-  transform: translateY(0) scale(0.980);
-  transition-duration: 0.09s;
-  filter: brightness(0.95);
+  opacity: 0.80;
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.08s;
 }
-/* Free variant */
+/* Free / Download variant — emerald gradient */
 .pdf-buy-btn.free-btn {
   background: linear-gradient(135deg,
-    #05c67c 0%,
-    #08b87a 40%,
-    #00a0be 100%);
+    rgba(5,198,124,0.92) 0%,
+    rgba(8,184,122,0.88) 40%,
+    rgba(0,160,190,0.90) 100%);
+  border-color: rgba(16,217,142,0.35);
   box-shadow:
-    0 4px 20px rgba(16,217,142,0.46),
-    0 1px 0 rgba(255,255,255,0.22) inset;
-}
-.pdf-buy-btn.free-btn:hover {
-  box-shadow:
-    0 10px 36px rgba(16,217,142,0.62),
-    0 1px 0 rgba(255,255,255,0.24) inset;
+    0 4px 18px rgba(16,217,142,0.38),
+    0 1px 0 rgba(255,255,255,0.20) inset;
 }
 
 /* Report Broken PDF button — compact icon button beside buy */
@@ -2652,7 +2657,7 @@ body.light .mobile-nav-item.active .mni-label { -webkit-text-fill-color: transpa
   .pdf-title{font-size:0.90rem}
   .pdf-card-body{padding:11px 12px 4px}
   .pdf-card-actions{padding:7px 10px 12px}
-  .pdf-buy-btn{padding:10px 10px;min-height:42px;font-size:0.78rem;border-radius:12px}
+  .pdf-buy-btn{padding:9px 10px;min-height:40px;font-size:0.76rem;border-radius:12px;-webkit-appearance:none;appearance:none}
   .price-current,.price-free{font-size:1.12rem}
   .pdf-meta-chips{gap:3px;margin-top:6px}
   .pdf-meta-chip{font-size:0.54rem;padding:2px 6px;max-width:62px}
@@ -2677,7 +2682,7 @@ body.light .mobile-nav-item.active .mni-label { -webkit-text-fill-color: transpa
 @media(max-width:360px){
   .pdf-grid{grid-template-columns:repeat(2,1fr);gap:8px}
   .pdf-title{font-size:0.84rem}
-  .pdf-buy-btn{font-size:0.74rem;gap:4px;min-height:40px}
+  .pdf-buy-btn{font-size:0.72rem;gap:4px;min-height:38px;-webkit-appearance:none;appearance:none}
   .pdf-card-body{padding:10px 10px 3px}
   .price-current,.price-free{font-size:1.05rem}
 }
@@ -3757,8 +3762,8 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
   /* PDF cover img: no filter transition — cover must always render as-is */
   .pdf-cover img { transition: none; filter: none !important; }
   .pdf-card:hover .pdf-cover img { transform: none; filter: none !important; }
-  .pdf-buy-btn { transition: box-shadow 0.2s; }
-  .pdf-buy-btn:hover { transform: none; }
+  .pdf-buy-btn { transition: opacity 0.2s, transform 0.2s; -webkit-appearance:none; appearance:none; }
+  .pdf-buy-btn:hover { transform: none; opacity: 0.88; }
   .wish-btn { transition: background 0.2s, border-color 0.2s; }
   .wish-btn:hover { transform: none; }
 }
@@ -8448,6 +8453,12 @@ function studyriaApp() {
     const coverStyle = _pdfCover
       ? `background-image:url('${_pdfCover}');background-size:cover;background-position:center top`
       : `background:linear-gradient(160deg,${pdf._ott_grad||'#0a1e5e,#0d2e6a'})`;
+    
+    // Preload image eagerly so it's ready before the card is active
+    if (_pdfCover) {
+      const _preloader = new Image();
+      _preloader.src = _pdfCover;
+    }
 
     const rankNum  = rank != null ? rank : null;
     const catLabel = (pdf.category || pdf.badge || pdf.tag || '').slice(0, 16);
@@ -8481,7 +8492,33 @@ function studyriaApp() {
     return `
     <div class="ott-hero-card${isActive?' active-card':''}" onclick="openPDFDetail('${pdf.id}')" data-ott-id="${pdf.id}">
       <!-- Full-bleed poster image -->
-      <div class="ott-hero-card-bg" style="${coverStyle}"></div>
+      <div class="ott-hero-card-bg" style="${coverStyle}" data-cover="${_pdfCover}">
+        ${_pdfCover ? `<img
+          src="${_pdfCover}"
+          alt=""
+          aria-hidden="true"
+          loading="${isActive ? 'eager' : 'lazy'}"
+          fetchpriority="${isActive ? 'high' : 'auto'}"
+          decoding="${isActive ? 'sync' : 'async'}"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:0;pointer-events:none;"
+          onload="(function(img){
+            var bg=img.parentElement;
+            if(bg){bg.style.backgroundImage='url('+JSON.stringify(img.src)+')';}
+          })(this)"
+          onerror="(function(img){
+            var card=img.closest('.ott-hero-card');
+            if(!card)return;
+            var bg=img.parentElement;
+            if(bg){bg.style.backgroundImage='none';bg.style.background='linear-gradient(160deg,#0a1e5e,#0d2e6a)';}
+            card.dataset.imgError='1';
+            // Auto-advance if this card is active
+            if(card.classList.contains('active-card')){
+              setTimeout(function(){
+                if(typeof ottSlide==='function')ottSlide('forYouTrack',1);
+              },300);
+            }
+          })(this)">` : ''}
+      </div>
       ${fallbackInner}
 
       <!-- Dark gradient overlay for readability -->
@@ -9028,46 +9065,83 @@ function studyriaApp() {
       if (!forceRebuild && cardsExist && sameSet) {
         // ── RESTORE PATH: same cards, just re-snap and re-attach swipe ──
         ottRestoreCarouselState();
+        // Safety: if restored card has a broken image, advance to next valid card
+        const _restoredCards = track ? Array.from(track.querySelectorAll('.ott-hero-card')) : [];
+        if (_restoredCards.length > 0) {
+          const _ri = _ottCarousel.forYou;
+          if (_restoredCards[_ri] && _restoredCards[_ri].dataset.imgError === '1') {
+            for (let _di = 1; _di < _restoredCards.length; _di++) {
+              const _next = (_ri + _di) % _restoredCards.length;
+              if (!_restoredCards[_next].dataset.imgError) {
+                _ottCarousel.forYou = _next;
+                break;
+              }
+            }
+          }
+        }
         const track2 = document.getElementById('forYouTrack');
         if (track2) track2.dataset.ottInstant = '1';
         ottUpdateHeroCarousel();
-        ottInitSwipe('forYouTrack');   // re-attach (destroy is called inside)
+        ottInitSwipe('forYouTrack');
         ottStopAutoScroll();
         setTimeout(ottStartAutoScroll, 600);
-        return; // skip the rest (rows rendered on first load are still intact)
+        return;
       }
 
       // ── FULL BUILD PATH: first load or PDF set changed ─────────────
       if (track) {
         ottDestroyCarousel(); // clean up old timer + listeners before touching DOM
-        track.innerHTML = featured.map((p, i) => ottHeroCardHTML(p, i === 0, i + 1)).join('');
+        
+        // Filter out PDFs with definitely broken covers before rendering
+        // (keeps featured list valid; items with no cover_url use gradient fallback)
+        const _validFeatured = featured.filter(p => {
+          const c = p.cover_url || p.coverImage || p.cover_image || p.thumbnail || '';
+          return true; // always include — onerror handles actual broken URLs at runtime
+        });
+        const _renderList = _validFeatured.length >= 1 ? _validFeatured : featured;
+        
+        track.innerHTML = _renderList.map((p, i) => ottHeroCardHTML(p, i === 0, i + 1)).join('');
 
         const dotsEl = document.getElementById('forYouDots');
         if (dotsEl) {
-          dotsEl.innerHTML = featured.map((_, di) =>
+          dotsEl.innerHTML = _renderList.map((_, di) =>
             `<div class="ott-dot${di === 0 ? ' active' : ''}" onclick="ottGoTo(${di})"></div>`
           ).join('');
         }
 
         _ottCarousel.featuredIds = newFingerprint;
-        _ottCarousel.total       = featured.length;
+        _ottCarousel.total       = _renderList.length;
 
-        // Restore saved index if it's still valid for this set
-        ottRestoreCarouselState();
+        // Always start from index 0 on full rebuild (avoid blank slide from stale sessionStorage)
+        _ottCarousel.forYou = 0;
+        // Restore saved index only if it's valid AND not 0 (index 0 is always safe)
+        try {
+          const saved = sessionStorage.getItem('ott_fy_idx');
+          if (saved !== null) {
+            const idx = parseInt(saved, 10);
+            if (!isNaN(idx) && idx > 0 && idx < _ottCarousel.total) {
+              // Only restore if the card at that index has a cover (not blank)
+              const savedCard = track.querySelectorAll('.ott-hero-card')[idx];
+              if (savedCard && !savedCard.dataset.imgError) {
+                _ottCarousel.forYou = idx;
+              }
+            }
+          }
+        } catch(e) {}
 
-        // Use instant (no-animation) snap on first render so the card
-        // doesn't slide in from offset-0 visibly on page load
+        // Use instant (no-animation) snap on first render
         track.dataset.ottInstant = '1';
         ottUpdateHeroCarousel();
         ottInitSwipe('forYouTrack');
 
-        // Deferred re-snap: the browser may not have laid out card widths
-        // on the first call (offsetWidth = 0). Re-measure after first paint.
+        // Deferred re-snap after layout stabilises (fixes offsetWidth=0 on first render)
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             const t = document.getElementById('forYouTrack');
-            if (t) t.dataset.ottInstant = '1';
-            ottUpdateHeroCarousel();
+            if (t) {
+              t.dataset.ottInstant = '1';
+              ottUpdateHeroCarousel();
+            }
           });
         });
 
