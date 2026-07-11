@@ -36,8 +36,8 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v16';           // ← bumped: navigation cache-first bugfix
-const SW_BUILD     = '2026.07.11-r2-cta-fix';
+const CACHE_NAME   = 'studyria-v17';           // ← bumped: navigation cache-first bugfix
+const SW_BUILD     = '2026.07.11-r3-rootcause';
 const OFFLINE_PAGE = '/offline.html';
 
 const WHATS_NEW = '✨ PDF Product Page V3: faster load, zero layout shift, PDF preview, share modal, coupon support, and review system.';

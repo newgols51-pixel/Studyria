@@ -1564,13 +1564,9 @@ body.light .pdp-review-textarea {
   position: relative;
   overflow: hidden;
   color: #fff;
-  background: linear-gradient(135deg,
-    rgba(30,102,229,0.92) 0%,
-    rgba(32,128,240,0.88) 40%,
-    rgba(0,174,224,0.90) 75%,
-    rgba(0,200,232,0.92) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #1e66e5;
+  background: -webkit-linear-gradient(135deg, #1e66e5 0%, #2080f0 40%, #00aee0 75%, #00c8e8 100%);
+  background: linear-gradient(135deg, #1e66e5 0%, #2080f0 40%, #00aee0 75%, #00c8e8 100%);
   box-shadow:
     0 4px 18px rgba(61,142,248,0.40),
     0 1px 0 rgba(255,255,255,0.22) inset,
@@ -1620,12 +1616,24 @@ body.light .pdp-review-textarea {
   transform: translateY(0) scale(0.97);
   transition-duration: 0.08s;
 }
+/* Ripple effect on click */
+.pdf-buy-btn .btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: rgba(255,255,255,0.4);
+  animation: btnRippleAnim 0.5s linear;
+  pointer-events: none;
+  z-index: 3;
+}
+@keyframes btnRippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
 /* Free / Download variant — emerald gradient */
 .pdf-buy-btn.free-btn {
-  background: linear-gradient(135deg,
-    rgba(5,198,124,0.92) 0%,
-    rgba(8,184,122,0.88) 40%,
-    rgba(0,160,190,0.90) 100%);
+  background: #05c67c;
+  background: -webkit-linear-gradient(135deg, #05c67c 0%, #08b87a 40%, #00a0be 100%);
+  background: linear-gradient(135deg, #05c67c 0%, #08b87a 40%, #00a0be 100%);
   border-color: rgba(16,217,142,0.35);
   box-shadow:
     0 4px 18px rgba(16,217,142,0.38),
@@ -7603,6 +7611,24 @@ function studyriaApp() {
     transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
   }
+  /* Cover image: sits on top of gradient, fades in when loaded */
+  .ott-hero-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 1;
+    display: block;
+    will-change: opacity;
+  }
+  .ott-hero-cover-img.loaded {
+    opacity: 1;
+  }
   .ott-hero-card.active-card:hover .ott-hero-card-bg {
     transform: scale(1.04);
   }
@@ -8448,30 +8474,18 @@ function studyriaApp() {
   function ottHeroCardHTML(pdf, isActive, rank) {
     if (!pdf) return '';
 
-    // Full-bleed background
     const _pdfCover = pdf.cover_url || pdf.coverImage || pdf.cover_image || pdf.thumbnail || '';
-    const coverStyle = _pdfCover
-      ? `background-image:url('${_pdfCover}');background-size:cover;background-position:center top`
-      : `background:linear-gradient(160deg,${pdf._ott_grad||'#0a1e5e,#0d2e6a'})`;
-    
-    // Preload image eagerly so it's ready before the card is active
-    if (_pdfCover) {
-      const _preloader = new Image();
-      _preloader.src = _pdfCover;
-    }
-
+    const _grad = pdf._ott_grad || '#0a1e5e,#0d2e6a';
     const rankNum  = rank != null ? rank : null;
     const catLabel = (pdf.category || pdf.badge || pdf.tag || '').slice(0, 16);
     const ctaLabel = (pdf.free || !pdf.price || Number(pdf.price) === 0)
       ? '▶ Read Free' : '👁 View Details';
 
-    // Price
     const isFree = pdf.free || !pdf.price || Number(pdf.price) === 0;
     const priceHTML = isFree
       ? `<div class="ott-hero-price is-free">FREE</div>`
       : `<div class="ott-hero-price is-paid">₹${Number(pdf.price).toLocaleString()}</div>`;
 
-    // Compact metadata row: author • category • pages
     const metaParts = [];
     if (pdf.author) metaParts.push(`✍ ${pdf.author.slice(0,14)}`);
     if (catLabel) metaParts.push(catLabel);
@@ -8484,42 +8498,37 @@ function studyriaApp() {
         ).join('')}</div>`
       : '';
 
-    // Fallback cover emoji
-    const fallbackInner = !_pdfCover
-      ? `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:5rem;opacity:.2;z-index:0">📄</div>`
-      : '';
-
-    return `
-    <div class="ott-hero-card${isActive?' active-card':''}" onclick="openPDFDetail('${pdf.id}')" data-ott-id="${pdf.id}">
-      <!-- Full-bleed poster image -->
-      <div class="ott-hero-card-bg" style="${coverStyle}" data-cover="${_pdfCover}">
-        ${_pdfCover ? `<img
+    // Build the background div:
+    // - Always set gradient as CSS background (instant, no network needed)
+    // - If cover URL exists, use <img> as the visible layer (object-fit:cover)
+    //   The img starts opacity:0, fades in on load. Gradient shows as skeleton.
+    // - On error: img hides, gradient remains visible. Card marked data-img-error.
+    const imgTag = _pdfCover ? `<img
+          class="ott-hero-cover-img"
           src="${_pdfCover}"
           alt=""
           aria-hidden="true"
           loading="${isActive ? 'eager' : 'lazy'}"
           fetchpriority="${isActive ? 'high' : 'auto'}"
-          decoding="${isActive ? 'sync' : 'async'}"
-          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:0;pointer-events:none;"
-          onload="(function(img){
-            var bg=img.parentElement;
-            if(bg){bg.style.backgroundImage='url('+JSON.stringify(img.src)+')';}
-          })(this)"
-          onerror="(function(img){
-            var card=img.closest('.ott-hero-card');
-            if(!card)return;
-            var bg=img.parentElement;
-            if(bg){bg.style.backgroundImage='none';bg.style.background='linear-gradient(160deg,#0a1e5e,#0d2e6a)';}
-            card.dataset.imgError='1';
-            // Auto-advance if this card is active
-            if(card.classList.contains('active-card')){
-              setTimeout(function(){
-                if(typeof ottSlide==='function')ottSlide('forYouTrack',1);
-              },300);
+          decoding="async"
+          onload="this.classList.add('loaded')"
+          onerror="(function(el){
+            el.style.display='none';
+            var card=el.closest('.ott-hero-card');
+            if(card){
+              card.dataset.imgError='1';
+              if(card.classList.contains('active-card')&&typeof ottSlide==='function'){
+                ottSlide('forYouTrack',1);
+              }
             }
-          })(this)">` : ''}
+          })(this)">` : '';
+
+    return `
+    <div class="ott-hero-card${isActive?' active-card':''}" onclick="openPDFDetail('${pdf.id}')" data-ott-id="${pdf.id}" data-cover="${_pdfCover}">
+      <!-- Full-bleed bg: gradient always visible, img fades in on load -->
+      <div class="ott-hero-card-bg" style="background:linear-gradient(160deg,${_grad})">
+        ${imgTag}
       </div>
-      ${fallbackInner}
 
       <!-- Dark gradient overlay for readability -->
       <div class="ott-hero-card-overlay"></div>
@@ -8636,11 +8645,38 @@ function studyriaApp() {
   function ottSlide(trackId, dir) {
     const track = document.getElementById(trackId);
     if (!track) return;
-    const cards = track.querySelectorAll('.ott-hero-card');
+    const cards = Array.from(track.querySelectorAll('.ott-hero-card'));
     const total = cards.length;
     if (!total) return;
     if (trackId === 'forYouTrack') {
-      _ottCarousel.forYou = (_ottCarousel.forYou + dir + total) % total;
+      const nextIdx = (_ottCarousel.forYou + dir + total) % total;
+      // Preload the target slide's image synchronously before updating state
+      // so by the time the CSS transition completes, the image is ready
+      const targetCard = cards[nextIdx];
+      if (targetCard) {
+        const coverSrc = targetCard.dataset.cover;
+        const coverImg = targetCard.querySelector('.ott-hero-cover-img');
+        if (coverSrc && coverImg && !coverImg.classList.contains('loaded') && coverImg.style.display !== 'none') {
+          // Force eager load by removing lazy attribute
+          coverImg.loading = 'eager';
+          coverImg.fetchPriority = 'high';
+          // If src not yet set or deferred, set it now
+          if (!coverImg.src || coverImg.src === window.location.href) {
+            coverImg.src = coverSrc;
+          }
+        }
+        // Also preload the card after next
+        const afterNextIdx = (nextIdx + 1) % total;
+        if (afterNextIdx !== _ottCarousel.forYou) {
+          const afterCard = cards[afterNextIdx];
+          const afterSrc = afterCard && afterCard.dataset.cover;
+          if (afterSrc) {
+            const p = new Image();
+            p.src = afterSrc;
+          }
+        }
+      }
+      _ottCarousel.forYou = nextIdx;
       ottUpdateHeroCarousel();
       ottSaveCarouselState();
     }
@@ -8736,6 +8772,22 @@ function studyriaApp() {
     // Reset BG parallax on active card
     const bg = cards[i]?.querySelector('.ott-hero-card-bg');
     if (bg) bg.style.transform = 'scale(1.0) translateX(0px)';
+
+    // Proactively load images for active card + immediate neighbours
+    // so the next swipe never shows a blank frame
+    [-1, 0, 1, 2].forEach(delta => {
+      const ni = i + delta;
+      if (ni < 0 || ni >= total) return;
+      const nc = cards[ni];
+      if (!nc) return;
+      const nImg = nc.querySelector('.ott-hero-cover-img');
+      if (nImg && nImg.style.display !== 'none' && !nImg.classList.contains('loaded')) {
+        if (!nImg.src || nImg.src === window.location.href) {
+          nImg.src = nc.dataset.cover || '';
+        }
+        nImg.loading = 'eager';
+      }
+    });
   }
 
   // ── Reset carousel layout on resize / orientation change / page restore ──────
@@ -9114,25 +9166,32 @@ function studyriaApp() {
 
         // Always start from index 0 on full rebuild (avoid blank slide from stale sessionStorage)
         _ottCarousel.forYou = 0;
-        // Restore saved index only if it's valid AND not 0 (index 0 is always safe)
-        try {
-          const saved = sessionStorage.getItem('ott_fy_idx');
-          if (saved !== null) {
-            const idx = parseInt(saved, 10);
-            if (!isNaN(idx) && idx > 0 && idx < _ottCarousel.total) {
-              // Only restore if the card at that index has a cover (not blank)
-              const savedCard = track.querySelectorAll('.ott-hero-card')[idx];
-              if (savedCard && !savedCard.dataset.imgError) {
-                _ottCarousel.forYou = idx;
-              }
-            }
-          }
-        } catch(e) {}
 
         // Use instant (no-animation) snap on first render
         track.dataset.ottInstant = '1';
         ottUpdateHeroCarousel();
         ottInitSwipe('forYouTrack');
+
+        // Preload images for first 3 cards immediately after DOM is built
+        // so adjacent slides are ready before user swipes
+        (function _preloadHeroImages() {
+          const _cards = track.querySelectorAll('.ott-hero-card');
+          const _preloadCount = Math.min(3, _cards.length);
+          for (let _pi = 0; _pi < _preloadCount; _pi++) {
+            const _card = _cards[_pi];
+            const _src = _card && _card.dataset.cover;
+            if (_src) {
+              const _img = _card.querySelector('.ott-hero-cover-img');
+              if (_img) {
+                _img.loading = 'eager';
+                if (!_img.src || _img.src === window.location.href) _img.src = _src;
+              } else {
+                // Prefetch via Image() for cards without img element
+                const _p = new Image(); _p.src = _src;
+              }
+            }
+          }
+        })();
 
         // Deferred re-snap after layout stabilises (fixes offsetWidth=0 on first render)
         requestAnimationFrame(() => {
@@ -18178,6 +18237,23 @@ function pdfCardHTML(pdf) {
 
   </div>`;
 }
+
+// ── PDF Buy Button Ripple — delegated, works across all pages ──
+(function initBuyBtnRipple() {
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.pdf-buy-btn');
+    if (!btn) return;
+    var rect = btn.getBoundingClientRect();
+    var size = Math.max(rect.width, rect.height) * 1.5;
+    var x = e.clientX - rect.left - size / 2;
+    var y = e.clientY - rect.top  - size / 2;
+    var ripple = document.createElement('span');
+    ripple.className = 'btn-ripple';
+    ripple.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+x+'px;top:'+y+'px;';
+    btn.appendChild(ripple);
+    ripple.addEventListener('animationend', function() { ripple.remove(); });
+  }, { passive: true });
+})();
 
 // ── HOME ──────────────────────────────────────────────────────────
 // NOTE: This was originally `function renderHome()`. It has been
