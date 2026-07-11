@@ -43555,6 +43555,9 @@ if(document.readyState==='loading'){
 (function(){ var s=document.createElement('style'); s.textContent='.srv-track{animation:none!important}'; document.head.appendChild(s); })();
 
 /* ── MANUAL SWIPE CAROUSEL ──────────────────────────────────────── */
+/* ── carousel handler refs for clean teardown on re-init ── */
+var _srvHandlers=null;
+
 function _srvInitCarousel(){
   var outer=document.getElementById('srvOuter');
   var track=document.getElementById('srvTrack');
@@ -43562,10 +43565,28 @@ function _srvInitCarousel(){
   var cards=track.querySelectorAll('.srv-card');
   if(!cards.length){ setTimeout(_srvInitCarousel,400); return; }
 
+  /* ── Tear down previous listeners to prevent stacking ── */
+  if(_srvHandlers){
+    try{
+      outer.removeEventListener('touchstart', _srvHandlers.ts);
+      outer.removeEventListener('touchmove',  _srvHandlers.tm);
+      outer.removeEventListener('touchend',   _srvHandlers.te);
+      outer.removeEventListener('mousedown',  _srvHandlers.md);
+      outer.removeEventListener('keydown',    _srvHandlers.kd);
+      window.removeEventListener('mousemove', _srvHandlers.mm);
+      window.removeEventListener('mouseup',   _srvHandlers.mu);
+      window.removeEventListener('resize',    _srvHandlers.rz);
+    }catch(e){}
+    _srvHandlers=null;
+  }
+
   var cardCount=cards.length, currentIdx=0;
 
   function visibleCount(){ var w=window.innerWidth; return w>=1024?3:w>=640?2:1; }
-  function cardW(){ return cards[0].offsetWidth+14; }
+  function cardW(){
+    var w=cards[0]?cards[0].offsetWidth:0;
+    return (w>0?w:window.innerWidth*0.82)+14;
+  }
   function clamp(i){ return Math.max(0,Math.min(i,cardCount-visibleCount())); }
 
   function goTo(i,anim){
@@ -43578,7 +43599,7 @@ function _srvInitCarousel(){
   var dotsEl=document.getElementById('srvDots');
   function updateDots(){
     if(!dotsEl) return;
-    var max=cardCount-visibleCount()+1, html='';
+    var max=Math.max(1,cardCount-visibleCount()+1), html='';
     for(var i=0;i<max;i++) html+='<div class="srv-dot'+(i===currentIdx?' active':'')+'" onclick="window._srvGoto('+i+')"></div>';
     dotsEl.innerHTML=html;
   }
@@ -43599,7 +43620,8 @@ function _srvInitCarousel(){
     if(!isDrag) return;
     var dx=x-startX;
     if(Math.abs(dx)>5) hasMoved=true;
-    track.style.transform='translateX('+(-currentIdx*cardW()+dx)+'px)';
+    var cw=cardW(); if(cw<=14) return;
+    track.style.transform='translateX('+(-currentIdx*cw+dx)+'px)';
   }
   function onEnd(x){
     if(!isDrag) return;
@@ -43609,15 +43631,27 @@ function _srvInitCarousel(){
     else goTo(currentIdx,true);
   }
 
-  outer.addEventListener('touchstart',function(e){ onStart(e.touches[0].clientX); },{passive:true});
-  outer.addEventListener('touchmove', function(e){ if(isDrag&&hasMoved) e.preventDefault(); onMove(e.touches[0].clientX); },{passive:false});
-  outer.addEventListener('touchend',  function(e){ onEnd(e.changedTouches[0].clientX); });
-  outer.addEventListener('mousedown', function(e){ onStart(e.clientX); e.preventDefault(); });
-  window.addEventListener('mousemove',function(e){ if(isDrag) onMove(e.clientX); });
-  window.addEventListener('mouseup',  function(e){ if(isDrag) onEnd(e.clientX); });
+  /* Named handlers so we can remove them later */
+  _srvHandlers={
+    ts: function(e){ onStart(e.touches[0].clientX); },
+    tm: function(e){ if(isDrag&&hasMoved) e.preventDefault(); onMove(e.touches[0].clientX); },
+    te: function(e){ onEnd(e.changedTouches[0].clientX); },
+    md: function(e){ onStart(e.clientX); e.preventDefault(); },
+    mm: function(e){ if(isDrag) onMove(e.clientX); },
+    mu: function(e){ if(isDrag) onEnd(e.clientX); },
+    kd: function(e){ if(e.key==='ArrowLeft'){goTo(currentIdx-1,true);e.preventDefault();} if(e.key==='ArrowRight'){goTo(currentIdx+1,true);e.preventDefault();} },
+    rz: function(){ goTo(0,false); }
+  };
+
+  outer.addEventListener('touchstart', _srvHandlers.ts, {passive:true});
+  outer.addEventListener('touchmove',  _srvHandlers.tm, {passive:false});
+  outer.addEventListener('touchend',   _srvHandlers.te);
+  outer.addEventListener('mousedown',  _srvHandlers.md);
+  window.addEventListener('mousemove', _srvHandlers.mm);
+  window.addEventListener('mouseup',   _srvHandlers.mu);
   outer.setAttribute('tabindex','0');
-  outer.addEventListener('keydown',function(e){ if(e.key==='ArrowLeft'){goTo(currentIdx-1,true);e.preventDefault();} if(e.key==='ArrowRight'){goTo(currentIdx+1,true);e.preventDefault();} });
-  window.addEventListener('resize',function(){ goTo(0,false); });
+  outer.addEventListener('keydown',    _srvHandlers.kd);
+  window.addEventListener('resize',    _srvHandlers.rz);
   goTo(0,false);
 }
 
