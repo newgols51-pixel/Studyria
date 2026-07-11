@@ -659,6 +659,7 @@
   <!-- Zoom overlay -->
   <div class="v3-zoom-overlay" id="v3ZoomOverlay" role="dialog" aria-modal="true"
     aria-label="Zoomed cover" onclick="if(event.target===this)v3CloseZoom()">
+    <div class="v3-zoom-hint" id="v3ZoomHint">Scroll or pinch to zoom · Drag to pan · Double-tap to toggle</div>
     <img id="v3ZoomImg" alt="Zoomed PDF cover" src="" loading="lazy" decoding="async" draggable="false">
     <button class="v3-zoom-close" type="button" onclick="v3CloseZoom()" aria-label="Close zoom">✕</button>
   </div>
@@ -853,26 +854,148 @@
     if (typeof window.showToast === 'function') window.showToast('Link copied!', 'success');
   }
 
-  /* ── V3 Zoom ─────────────────────────────────────────────── */
+  /* ── V3 Zoom — full lightbox with pinch, wheel, pan, double-tap ── */
+  let _zScale = 1, _zOriginX = 0, _zOriginY = 0, _zDragging = false;
+  let _zLastX = 0, _zLastY = 0, _zTouchDist = 0, _zDblTapTime = 0;
+
   window.v3ZoomCover = function() {
     const pdf = window.selectedPdf;
     if (!pdf) return;
     const src = pdf.cover_url || pdf.cover_image || pdf.coverImage || '';
-    if (!src) { if (typeof window.showToast === 'function') window.showToast('No cover image.', 'info'); return; }
+    if (!src) { if (typeof window.showToast === 'function') window.showToast('No cover image available.', 'info'); return; }
     const overlay = document.getElementById('v3ZoomOverlay');
     const img     = document.getElementById('v3ZoomImg');
     if (!overlay || !img) return;
     img.src = src;
-    img.alt = `Zoomed: ${pdf.title}`;
+    img.alt = 'Zoomed: ' + (pdf.title || 'PDF Cover');
+    _zScale = 1; _zOriginX = 0; _zOriginY = 0;
+    img.style.transform = 'scale(1) translate(0,0)';
+    img.style.cursor = 'zoom-in';
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+    _zAttachEvents(overlay, img);
+
+    setTimeout(() => { const h = document.getElementById('v3ZoomHint'); if(h) h.style.opacity='0'; }, 2500);
   };
 
   window.v3CloseZoom = function() {
     const overlay = document.getElementById('v3ZoomOverlay');
-    if (overlay) overlay.classList.remove('open');
+    if (!overlay) return;
+    overlay.classList.remove('open');
     document.body.style.overflow = '';
+    _zDetachEvents();
   };
+
+  function _zApplyTransform(img) {
+    img.style.transform = `scale(${_zScale}) translate(${_zOriginX}px, ${_zOriginY}px)`;
+    img.style.cursor = _zScale > 1 ? 'grab' : 'zoom-in';
+  }
+
+  function _zClamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+  function _zTouchDist2(t) {
+    const dx = t[0].clientX - t[1].clientX;
+    const dy = t[0].clientY - t[1].clientY;
+    return Math.sqrt(dx*dx + dy*dy);
+  }
+
+  let _zEvtRefs = {};
+  function _zAttachEvents(overlay, img) {
+    _zDetachEvents();
+
+    // Mouse wheel zoom
+    const onWheel = (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? 0.9 : 1.1;
+      _zScale = _zClamp(_zScale * delta, 1, 5);
+      if (_zScale === 1) { _zOriginX = 0; _zOriginY = 0; }
+      _zApplyTransform(img);
+    };
+    overlay.addEventListener('wheel', onWheel, { passive: false });
+
+    // Mouse drag (pan)
+    const onMouseDown = (e) => {
+      if (e.target === overlay) { window.v3CloseZoom(); return; }
+      if (_zScale <= 1) return;
+      _zDragging = true;
+      _zLastX = e.clientX; _zLastY = e.clientY;
+      img.style.cursor = 'grabbing';
+      e.preventDefault();
+    };
+    const onMouseMove = (e) => {
+      if (!_zDragging) return;
+      const maxPan = (_zScale - 1) * img.naturalWidth / 2;
+      _zOriginX = _zClamp(_zOriginX + (e.clientX - _zLastX) / _zScale, -maxPan, maxPan);
+      _zOriginY = _zClamp(_zOriginY + (e.clientY - _zLastY) / _zScale, -maxPan, maxPan);
+      _zLastX = e.clientX; _zLastY = e.clientY;
+      _zApplyTransform(img);
+    };
+    const onMouseUp = () => { _zDragging = false; img.style.cursor = _zScale > 1 ? 'grab' : 'zoom-in'; };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    img.addEventListener('mousedown', onMouseDown);
+
+    // Touch: pinch-to-zoom + pan + double-tap
+    const onTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        _zTouchDist = _zTouchDist2(e.touches);
+      } else if (e.touches.length === 1) {
+        const now = Date.now();
+        if (now - _zDblTapTime < 300) {
+          // Double tap — toggle 2.5x
+          _zScale = _zScale > 1 ? 1 : 2.5;
+          _zOriginX = 0; _zOriginY = 0;
+          _zApplyTransform(img);
+        }
+        _zDblTapTime = now;
+        _zLastX = e.touches[0].clientX;
+        _zLastY = e.touches[0].clientY;
+      }
+    };
+    const onTouchMove = (e) => {
+      e.preventDefault();
+      if (e.touches.length === 2) {
+        const dist = _zTouchDist2(e.touches);
+        _zScale = _zClamp(_zScale * (dist / _zTouchDist), 1, 5);
+        _zTouchDist = dist;
+        if (_zScale === 1) { _zOriginX = 0; _zOriginY = 0; }
+        _zApplyTransform(img);
+      } else if (e.touches.length === 1 && _zScale > 1) {
+        const maxPan = (_zScale - 1) * img.naturalWidth / 2;
+        _zOriginX = _zClamp(_zOriginX + (e.touches[0].clientX - _zLastX) / _zScale, -maxPan, maxPan);
+        _zOriginY = _zClamp(_zOriginY + (e.touches[0].clientY - _zLastY) / _zScale, -maxPan, maxPan);
+        _zLastX = e.touches[0].clientX;
+        _zLastY = e.touches[0].clientY;
+        _zApplyTransform(img);
+      }
+    };
+    const onTouchEnd = () => { if (_zScale < 1.05) { _zScale = 1; _zOriginX = 0; _zOriginY = 0; _zApplyTransform(img); } };
+
+    overlay.addEventListener('touchstart', onTouchStart, { passive: true });
+    overlay.addEventListener('touchmove', onTouchMove, { passive: false });
+    overlay.addEventListener('touchend', onTouchEnd, { passive: true });
+
+    // ESC key close
+    const onKeyDown = (e) => { if (e.key === 'Escape') window.v3CloseZoom(); };
+    document.addEventListener('keydown', onKeyDown);
+
+    _zEvtRefs = { overlay, img, onWheel, onMouseDown, onMouseMove, onMouseUp, onTouchStart, onTouchMove, onTouchEnd, onKeyDown };
+  }
+
+  function _zDetachEvents() {
+    const r = _zEvtRefs;
+    if (!r.overlay) return;
+    r.overlay.removeEventListener('wheel', r.onWheel);
+    r.overlay.removeEventListener('touchstart', r.onTouchStart);
+    r.overlay.removeEventListener('touchmove', r.onTouchMove);
+    r.overlay.removeEventListener('touchend', r.onTouchEnd);
+    if (r.img) r.img.removeEventListener('mousedown', r.onMouseDown);
+    document.removeEventListener('mousemove', r.onMouseMove);
+    document.removeEventListener('mouseup', r.onMouseUp);
+    document.removeEventListener('keydown', r.onKeyDown);
+    _zEvtRefs = {};
+  }
 
   /* ── V3 Description toggle ───────────────────────────────── */
   window.v3ToggleDesc = function(btn) {

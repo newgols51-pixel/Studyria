@@ -727,10 +727,8 @@ body.light .v3-mobile-bar {
 }
 .v3-zoom-overlay.open { opacity: 1; pointer-events: all; }
 .v3-zoom-overlay img {
-  max-width: 90vw; max-height: 90vh;
-  object-fit: contain; border-radius: var(--radius);
-  transform: scale(.9);
-  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  object-fit: contain;
+  transition: transform 0.08s ease; will-change: transform; max-width: 95vw; max-height: 90vh; border-radius: 8px; touch-action: none; user-select: none;
 }
 .v3-zoom-overlay.open img { transform: scale(1); }
 .v3-zoom-close {
@@ -848,3 +846,5 @@ body.light .v3-mobile-bar {
   cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
 }
 .v3-fbt-btn:hover { opacity: 0.88; }
+
+.v3-zoom-hint { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.6); color:#fff; font-size:.75rem; padding:6px 14px; border-radius:20px; transition:opacity 1s; pointer-events:none; white-space:nowrap; }
