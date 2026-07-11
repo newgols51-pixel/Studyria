@@ -8549,11 +8549,11 @@ function studyriaApp() {
     if (!pdf) return '';
     const tag = pdf.badge || pdf.tag || (pdf.free ? 'Free' : '');
     const tagClass = pdf.free ? 'tag-free' : pdf.badge === 'NEW' ? 'tag-new' : pdf.badge === 'BESTSELLER' ? 'tag-bestseller' : 'tag-trending';
-    const priceText = (pdf.free || !pdf.price || Number(pdf.price)===0) ? 'FREE' : '₹'+Number(pdf.price).toLocaleString();
+    const isFree = pdf.free || !pdf.price || Number(pdf.price)===0;
+    const priceText = isFree ? 'FREE' : '₹'+Number(pdf.price).toLocaleString();
     const origPrice = pdf.originalPrice || pdf.original_price || pdf.mrp || 0;
     const hasDiscount = !isFree && origPrice && Number(origPrice) > Number(pdf.price || 0);
     const discountPct = hasDiscount ? Math.round((1 - Number(pdf.price)/Number(origPrice))*100) : 0;
-    const isFree = pdf.free || Number(pdf.price)===0;
     // Real rating if already fetched this session, else an attractive
     // deterministic placeholder (auto-upgrades to real once reviews exist).
     const cached = window._cardRatingCache && window._cardRatingCache[String(pdf.id)];
@@ -15485,7 +15485,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       </section>
       <section>
         <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin:0 0 10px;">5. Your Rights</h2>
-        <p>You have the right to access, correct, or delete your personal data at any time. You can manage most data directly from your Dashboard. To request full account deletion or data export, contact us at <strong style="color:var(--text)">studyria24@gmail.com</strong>.</p>
+        <p>You have the right to access, correct, or delete your personal data at any time. You can manage most data directly from your Dashboard. To request full account deletion or data export, contact us at <strong style="color:var(--text)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e2d2a2b3a272c373f6c6a1e39333f3732703d3133">[email&#160;protected]</a></strong>.</p>
       </section>
       <section>
         <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin:0 0 10px;">6. Changes to This Policy</h2>
@@ -15493,7 +15493,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       </section>
       <section>
         <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin:0 0 10px;">7. Contact</h2>
-        <p>For any privacy-related questions, please email <strong style="color:var(--text)">studyria24@gmail.com</strong> or use our <a onclick="navigate('contact')" style="color:var(--accent);cursor:pointer;text-decoration:underline;">Contact page</a>.</p>
+        <p>For any privacy-related questions, please email <strong style="color:var(--text)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a393e3f2e3338232b787e0a2d272b232664292527">[email&#160;protected]</a></strong> or use our <a onclick="navigate('contact')" style="color:var(--accent);cursor:pointer;text-decoration:underline;">Contact page</a>.</p>
       </section>
     </div>
   </div>
@@ -15564,7 +15564,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       </section>
       <section>
         <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin:0 0 10px;">How to Request a Refund</h2>
-        <p>Email us at <strong style="color:var(--text)">studyria24@gmail.com</strong> with your order ID (found in your Dashboard → Purchases) and a brief reason. We process all valid refund requests within <strong style="color:var(--text)">3–5 business days</strong>.</p>
+        <p>Email us at <strong style="color:var(--text)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="087b7c7d6c717a61693a3c486f65696164266b6765">[email&#160;protected]</a></strong> with your order ID (found in your Dashboard → Purchases) and a brief reason. We process all valid refund requests within <strong style="color:var(--text)">3–5 business days</strong>.</p>
       </section>
       <section>
         <h2 style="color:var(--text);font-size:1.1rem;font-weight:700;margin:0 0 10px;">Refund Method</h2>
@@ -15717,33 +15717,33 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:8px;">
 
       <!-- General Support -->
-      <a href="mailto:studyria24@gmail.com?subject=Support%20Request" class="contact-channel-card">
+      <a href="/cdn-cgi/l/email-protection#e99a9d9c8d909b8088dbdda98e84888085c78a8684d69a9c8b838c8a9dd4ba9c9999869b9dccdbd9bb8c989c8c9a9d" class="contact-channel-card">
         <span class="contact-channel-icon" style="background:rgba(61,142,248,0.12);">🎧</span>
         <span style="min-width:0;">
           <span class="contact-channel-label">General Support</span>
-          <span class="contact-channel-email">studyria24@gmail.com</span>
+          <span class="contact-channel-email"><span class="__cf_email__" data-cfemail="4f3c3b3a2b363d262e7d7b0f28222e2623612c2022">[email&#160;protected]</span></span>
           <span class="contact-channel-desc">Account issues, login help, PDF access problems</span>
         </span>
         <span class="contact-badge" style="background:rgba(16,217,142,0.12);color:#10d98e;border:1px solid rgba(16,217,142,0.25);">24 h</span>
       </a>
 
       <!-- Billing -->
-      <a href="mailto:studyria24@gmail.com?subject=Billing%20%26%20Refund%20Query" class="contact-channel-card">
+      <a href="/cdn-cgi/l/email-protection#b5c6c1c0d1ccc7dcd48781f5d2d8d4dcd99bd6dad88ac6c0d7dfd0d6c188f7dcd9d9dcdbd2908785908783908785e7d0d3c0dbd1908785e4c0d0c7cc" class="contact-channel-card">
         <span class="contact-channel-icon" style="background:rgba(251,191,36,0.12);">💳</span>
         <span style="min-width:0;">
           <span class="contact-channel-label">Billing &amp; Refunds</span>
-          <span class="contact-channel-email">studyria24@gmail.com</span>
+          <span class="contact-channel-email"><span class="__cf_email__" data-cfemail="17646362736e657e76252357707a767e7b3974787a">[email&#160;protected]</span></span>
           <span class="contact-channel-desc">Payment failures, refund requests, subscription queries</span>
         </span>
         <span class="contact-badge" style="background:rgba(251,191,36,0.12);color:#f59e0b;border:1px solid rgba(251,191,36,0.25);">48 h</span>
       </a>
 
       <!-- Creator Program -->
-      <a href="mailto:studyria24@gmail.com?subject=Creator%20Program%20Enquiry" class="contact-channel-card">
+      <a href="/cdn-cgi/l/email-protection#116265647568637870232551767c70787d3f727e7c2e6264737b7472652c52637470657e6334232141637e7663707c342321547f6064786368" class="contact-channel-card">
         <span class="contact-channel-icon" style="background:rgba(139,92,246,0.12);">✍️</span>
         <span style="min-width:0;">
           <span class="contact-channel-label">Creator Program</span>
-          <span class="contact-channel-email">studyria24@gmail.com</span>
+          <span class="contact-channel-email"><span class="__cf_email__" data-cfemail="3b484f4e5f4249525a090f7b5c565a525715585456">[email&#160;protected]</span></span>
           <span class="contact-channel-desc">Joining as a creator, revenue share, PDF upload help</span>
         </span>
         <span class="contact-badge" style="background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.25);">48 h</span>
@@ -15828,7 +15828,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 
   </div>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   function contactPickTopic(btn) {
     document.querySelectorAll('.contact-topic-pill').forEach(function(p){ p.classList.remove('active'); });
     btn.classList.add('active');
