@@ -16994,6 +16994,7 @@ function _pdpRenderShell(pdf) {
   const coverHTML = coverSrc
     ? `<img src="${coverSrc}" alt="${_esc(pdf.title)}" class="pdp-cover-img"
           width="400" height="600"
+          style="transform:none!important;transition:none!important;will-change:auto!important"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" decoding="async">
        <div class="pdp-cover-fallback" style="background:linear-gradient(135deg,${coverFrom},${coverTo})">${icon('file',64)}</div>`
     : `<div class="pdp-cover-fallback" style="background:linear-gradient(135deg,${coverFrom},${coverTo})">${icon('file',64)}</div>`;
@@ -17379,17 +17380,45 @@ function _pdpInstallZoomControl() {
   const BASE_VP  = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
   const OPEN_VP  = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
 
-  // ── 3. Double-tap prevention ──────────────────────────────────────────
-  // We intercept touchend events on the cover & preview area.
-  // If two taps arrive within 300ms, we call preventDefault() to stop
-  // the browser's built-in double-tap zoom gesture.
-  let _lastTap = 0;
-  function _blockDoubleTap(e) {
+  // ── 3. Double-Tap Zoom Controller (ISSUE 3 FIX) ─────────────────────
+  // Default: scale(1) — 100%
+  // Double tap → scale(2) — 200% zoom in
+  // Double tap again → scale(1) — zoom out
+  // Smooth animation. Max zoom: 2x. Works on mobile.
+  // No auto zoom. No scroll zoom. No accidental zoom.
+  let _lastTap        = 0;
+  let _doubleTapZoomed = false; // track current zoom state
+
+  function _handleDoubleTap(e) {
     const now = Date.now();
-    if (now - _lastTap < 320) {
-      e.preventDefault(); // kill double-tap zoom
-    }
+    const isDoubleTap = (now - _lastTap) < 320;
     _lastTap = now;
+
+    if (!isDoubleTap) return; // single tap — ignore
+
+    // Prevent any browser native double-tap zoom
+    e.preventDefault();
+
+    const target = e.currentTarget;
+    if (!target) return;
+
+    if (_doubleTapZoomed) {
+      // Zoom OUT → back to 100%
+      target.style.transition = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)';
+      target.style.transform  = 'scale(1)';
+      target.style.transformOrigin = 'center center';
+      _doubleTapZoomed = false;
+    } else {
+      // Zoom IN → 2x at tap point
+      const rect = target.getBoundingClientRect();
+      const touch = e.changedTouches[0];
+      const originX = touch ? ((touch.clientX - rect.left) / rect.width  * 100) + '%' : '50%';
+      const originY = touch ? ((touch.clientY - rect.top)  / rect.height * 100) + '%' : '50%';
+      target.style.transition   = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94)';
+      target.style.transformOrigin = originX + ' ' + originY;
+      target.style.transform    = 'scale(2)';
+      _doubleTapZoomed = true;
+    }
   }
 
   // Targets: cover wrap + preview stage
@@ -17398,7 +17427,8 @@ function _pdpInstallZoomControl() {
   const tapTargets   = [coverWrap, previewStage].filter(Boolean);
 
   tapTargets.forEach(el => {
-    el.addEventListener('touchend', _blockDoubleTap, { passive: false });
+    // Reset zoom state when switching targets
+    el.addEventListener('touchend', _handleDoubleTap, { passive: false });
   });
 
   // ── 4 & 5. Pinch-zoom gating: block unless held ≥ 2 seconds ──────────
@@ -38252,11 +38282,21 @@ async function hlmSaveTheme() {
      (sticky parent, scroll position, etc.) can ever cause a resize,
      reflow, or repaint of the preview after the initial render. */
   contain: layout paint;
+  /* ISSUE 1 FIX: block any inherited scroll-driven transforms */
+  transform: none !important;
 }
 .pdp-cover-img {
   width: 100%; height: 100%;
   object-fit: contain; object-position: center;
   display: block; max-width: 100%;
+  transform: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+/* ISSUE 1 FIX: PDP cover wrap must never zoom on scroll */
+.pdp-cover-wrap img {
+  transform: none !important;
+  transition: none !important;
 }
 .pdp-cover-fallback {
   width:100%; height:100%; display:flex; align-items:center; justify-content:center;
