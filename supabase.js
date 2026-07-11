@@ -807,12 +807,36 @@
   // The ONLY place that mutates wishlist state. `type` is 'pdf' (default
   // — every existing 1-argument call site across the UI keeps working
   // unchanged) or 'job'. Always touches exactly the one item requested.
-  window.toggleWishlistItem = async function toggleWishlistItem(id, type) {
+  // ── Per-item in-flight guard: prevents rapid double-clicks from
+  // creating duplicate DB rows even if the user clicks twice before
+  // the first round-trip resolves.
+  const _wlInFlight = new Set();
+
+  window.toggleWishlistItem = async function toggleWishlistItem(id, type, _srcBtn) {
     type = (type === 'job') ? 'job' : 'pdf';
     const client = window.supabaseClient;
     if (!client) { console.error('❌ toggleWishlistItem: no supabaseClient'); return; }
 
     const itemKey = _wlKey(type, String(id));
+
+    // Duplicate-call guard
+    if (_wlInFlight.has(itemKey)) {
+      console.log('⏳ toggleWishlistItem: already in-flight for', itemKey, '— ignoring');
+      return;
+    }
+    _wlInFlight.add(itemKey);
+
+    // Add loading class to ALL matching buttons so every surface locks
+    const _affectedBtns = [];
+    // Caller may pass the exact element that was clicked
+    if (_srcBtn && !_affectedBtns.includes(_srcBtn)) _affectedBtns.push(_srcBtn);
+    // id-based (wish-<id>, wish-job-<id>)
+    const _stdBtn = document.getElementById(type === 'job' ? `wish-job-${id}` : `wish-${id}`);
+    if (_stdBtn && !_affectedBtns.includes(_stdBtn)) _affectedBtns.push(_stdBtn);
+    // ott-card-wish-btn and ott-hero-float-btn also use id="wish-<id>"
+    // already covered above.  ottlib-wish / pdl-ott-wish use data-wish-id.
+    document.querySelectorAll(`.ottlib-wish[data-wish-id="${id}"],.pdl-ott-wish[data-wish-id="${id}"]`).forEach(b => _affectedBtns.push(b));
+    _affectedBtns.forEach(b => b.classList.add('wish-loading'));
 
     let userId = null;
     try {
@@ -835,6 +859,9 @@
         showToast(inWish ? 'Removed from wishlist' : 'Saved! Sign in to keep it forever ❤️', inWish ? 'info' : 'success');
       }
       window._syncWishlistUI();
+      // Unlock buttons (finally won't fire after return, so unlock here)
+      _wlInFlight.delete(itemKey);
+      _affectedBtns.forEach(b => b.classList.remove('wish-loading'));
       return;
     }
 
@@ -892,6 +919,10 @@
     } catch (e) {
       console.error('❌ toggleWishlistItem exception:', e);
       window._wishlistRaw = prevRaw; _wlDerive(); window._syncWishlistUI();
+    } finally {
+      // Always unlock: remove in-flight guard + loading classes
+      _wlInFlight.delete(itemKey);
+      _affectedBtns.forEach(b => b.classList.remove('wish-loading'));
     }
   };
 
