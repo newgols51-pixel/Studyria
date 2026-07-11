@@ -152,7 +152,14 @@
 
   // ── HELPER — trigger every render function that uses PDFS ───────
   function _rerenderAll() {
-    // Home page sections
+    // ── OTT Discovery sections (For You, AI, Trending, Popular, New, Recent) ──
+    if (typeof window.ottRenderDiscovery === 'function') {
+      window.ottRenderDiscovery(true);
+    } else if (typeof window._ottBootRefresh === 'function') {
+      window._ottBootRefresh();
+    }
+
+    // Home page sections (legacy fallback)
     if (typeof window.renderHome === 'function') {
       window.renderHome();
     } else {
@@ -178,3 +185,4 @@
   }
 
 })();
+
