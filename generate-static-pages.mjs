@@ -166,10 +166,9 @@ async function generatePdfPages() {
   for (const pdf of rows || []) {
     const title = clean(pdf.title);
     const category = clean(pdf.category || '');
-    // ── Use DB 'slug' column directly (clean, permanent, no UUID suffix).
-    //    Fallback to slugify(title) if slug is blank or suspiciously short (e.g. 'a').
-    const rawDbSlug = String(pdf.slug || '').trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
-    const slug = (rawDbSlug.length > 3 ? rawDbSlug : slugify(title)).slice(0, 80);
+    // ── Always derive slug from title (clean, SEO-friendly, no UUID/junk suffix).
+    //    DB slug column is ignored — titles are the canonical source of truth.
+    const slug = slugify(title);
     const price = Number(pdf.price ?? 0);
     const filler = category
       ? `${category} study material — free & premium Assam govt exam PDF notes on Studyria.`
@@ -260,8 +259,7 @@ async function generateJobPages() {
     const title = clean(job.title);
     const org = clean(job.org || '');
     const location = clean(job.location || '');
-    const rawJobSlug = String(job.slug || '').trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
-    const slug = (rawJobSlug.length > 3 ? rawJobSlug : slugify(title)).slice(0, 80);
+    const slug = slugify(title);
     // Prefer a clean job.description, but reject it if it's leftover ad/CSS
     // junk from scraping — fall back to a clean excerpt from the full
     // article body, then to a generic (but accurate) template line.
