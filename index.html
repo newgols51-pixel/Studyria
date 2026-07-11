@@ -6162,9 +6162,9 @@ body.light .sh-hero-search input {
 
 /* ── HERO CARD (poster style) ──────────────────────────────── */
 .sh-hero-card {
-  flex: 0 0 clamp(260px, 74vw, 540px);
+  flex: 0 0 clamp(280px, 78vw, 560px);
   max-width: 540px;
-  height: clamp(300px, 44vw, 420px);
+  height: clamp(420px, 70vw, 560px);
   border-radius: 20px;
   margin: 0 8px;
   position: relative; overflow: hidden;
@@ -6186,7 +6186,7 @@ body.light .sh-hero-search input {
 .sh-hero-card:not(.sh-active):hover { opacity: 0.72; transform: scale(0.90); }
 
 @media (min-width: 768px) {
-  .sh-hero-card { flex: 0 0 clamp(300px, 70vw, 580px); }
+  .sh-hero-card { flex: 0 0 clamp(320px, 72vw, 600px); height: clamp(460px, 68vw, 580px); }
 }
 @media (min-width: 1024px) {
   .sh-hero-card { flex: 0 0 clamp(340px, 65vw, 620px); }
@@ -6797,11 +6797,29 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 
 @media (max-width: 480px) {
   .sh-hero-card {
-    flex: 0 0 min(88vw, 320px);
-    height: clamp(260px, 65vw, 340px);
+    flex: 0 0 min(92vw, 360px);
+    height: 500px;
   }
-  .sh-hero-info { padding: 12px 14px; }
-  .sh-hero-card-title { font-size: .95rem; }
+  .sh-hero-card-bg {
+    height: 70%;
+    background-size: cover;
+    background-position: center top;
+  }
+  .sh-hero-info { padding: 16px 16px 20px; }
+  .sh-hero-card-title { font-size: 1rem; -webkit-line-clamp: 2; }
+  .sh-hero-card-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(8,12,20,0.05) 0%,
+      rgba(8,12,20,0.15) 45%,
+      rgba(8,12,20,0.85) 68%,
+      rgba(8,12,20,0.98) 100%
+    );
+  }
+  .sh-hero-cta-primary {
+    padding: 14px 20px;
+    font-size: .95rem;
+  }
 }
 
 </style>
