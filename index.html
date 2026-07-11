@@ -2605,6 +2605,7 @@ body.light .mobile-nav-item.active .mni-label { -webkit-text-fill-color: transpa
 @media(max-width:640px){
   .nav-links{display:none}
   .mobile-nav-bar{display:block}
+  main { padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
   .footer-grid{grid-template-columns:1fr}
   .hero{padding:28px 0 44px;min-height:clamp(380px,58vh,580px)} /* max-height REMOVED */
   .hero-content{padding:0 20px}
@@ -6661,11 +6662,6 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
    ══════════════════════════════════════════════════════════════ */
 .sh-testim-section {
   padding: 28px 0 24px;
-  /* extra space so Add Your Review btn clears fixed bottom nav on mobile */
-  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-}
-@media(max-width:640px){
-  .sh-testim-section { padding-bottom: 90px; }
 }
 .sh-testim-track-wrap {
   overflow: hidden;
@@ -43502,6 +43498,7 @@ if(document.readyState==='loading'){
   border-radius: 20px; padding: 24px 20px;
   backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
 }
+@media(max-width:640px){ .srv-form-panel { padding-bottom: 32px; } }
 .srv-form-panel.open { display: block; animation: srvFormIn .3s ease both; }
 @keyframes srvFormIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
 .srv-form-title { font-family: var(--font-display,sans-serif); font-weight: 800; font-size: 1.05rem; color: #e4e8f0; margin-bottom: 18px; }
