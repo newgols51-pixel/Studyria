@@ -24225,15 +24225,20 @@ function sbpFormatSize(bytes) {
   return (bytes/1048576).toFixed(1) + ' MB';
 }
 function sbpStatus(item) {
-  const errs = sbpValidate(item, false);
   if (item.published) return 'published';
-  if (errs.length === 0) return 'ready';
-  const required = ['cover','pdf','title','category'];
-  const hasCritical = errs.some(e => required.some(r => e.toLowerCase().includes(r)));
-  return hasCritical ? 'missing' : 'draft';
+  const errs = sbpValidate(item, false);
+  return errs.length === 0 ? 'ready' : 'missing';
 }
-function sbpStatusLabel(s) {
-  return {ready:'✅ Ready', draft:'📝 Draft', missing:'⚠️ Missing', published:'🟢 Published', error:'❌ Error'}[s] || s;
+function sbpStatusLabel(s, item) {
+  if (s === 'ready')     return '✅ Ready';
+  if (s === 'published') return '🟢 Published';
+  if (s === 'error')     return '❌ Error';
+  if (s === 'missing' && item) {
+    const errs = sbpValidate(item, false);
+    if (errs.length === 1) return '⚠️ Missing: ' + errs[0];
+    if (errs.length > 1)  return '⚠️ Missing ' + errs.length + ' fields';
+  }
+  return '⚠️ Missing';
 }
 function sbpStatusColor(s) {
   return {ready:'#10d98e', draft:'#f59e0b', missing:'#ff4d6d', published:'#3d8ef8', error:'#ff4d6d'}[s] || '#aaa';
@@ -24241,24 +24246,27 @@ function sbpStatusColor(s) {
 
 /* ─── Validation ─────────────────────────────────────────────────── */
 function sbpValidate(item, checkDupes) {
+  // ── Only TRULY required fields block publishing.
+  // Optional: badge, seoTitle, seoDesc, keywords — nice to have but never block.
   const errors = [];
-  if (!item.coverFile && !item.coverUrl) errors.push('Cover image is required');
-  if (!item.pdfFile && !item.pdfUrl) errors.push('PDF file is required');
-  if (!item.title?.trim()) errors.push('Title is required');
-  if (!item.description?.trim()) errors.push('Description is required');
-  if (!item.category?.trim()) errors.push('Category is required');
-  if (!item.badge?.trim()) errors.push('Badge is required');
-  if (!item.seoTitle?.trim()) errors.push('SEO Title is required');
-  if (!item.seoDesc?.trim()) errors.push('Meta Description is required');
-  if (!item.keywords?.trim()) errors.push('Keywords are required');
-  if (item.sellingPrice === undefined || item.sellingPrice === '' || item.sellingPrice === null)
-    errors.push('Selling price is required');
+  const hasCover = !!(item.coverFile || item.coverUrl || item.coverThumb);
+  const hasPdf   = !!(item.pdfFile  || item.pdfUrl);
+  if (!hasCover)                          errors.push('Cover Image');
+  if (!hasPdf)                            errors.push('PDF File');
+  if (!item.title?.trim())                errors.push('Title');
+  if (!item.description?.trim())          errors.push('Description');
+  if (!item.category?.trim())             errors.push('Category');
+  const price = item.free
+    ? 0
+    : (item.sellingPrice === undefined || item.sellingPrice === '' || item.sellingPrice === null
+        ? null : parseFloat(item.sellingPrice));
+  if (!item.free && (price === null || isNaN(price))) errors.push('Selling Price');
   if (checkDupes) {
     const q = window._sbp.queue;
     const dupTitle = q.filter(x => x.id !== item.id && x.title?.trim().toLowerCase() === item.title?.trim().toLowerCase());
-    if (dupTitle.length) errors.push('Duplicate title detected in queue');
+    if (dupTitle.length) errors.push('Duplicate Title (same title already in queue)');
     const dupPdf = q.filter(x => x.id !== item.id && x.pdfFile && item.pdfFile && x.pdfFile.name === item.pdfFile.name && x.pdfFile.size === item.pdfFile.size);
-    if (dupPdf.length) errors.push('Duplicate PDF file detected in queue');
+    if (dupPdf.length) errors.push('Duplicate PDF File (same file already in queue)');
   }
   return errors;
 }
@@ -24345,6 +24353,7 @@ async function sbpAddFiles(files) {
   }
   sbpRenderQueue();
   sbpUpdateStats();
+  showToast(`✅ Added ${toAdd.length} PDF(s). Open each card to fill missing fields.`, 'success');
 }
 
 /* ─── Remove / Duplicate / Move ──────────────────────────────────── */
@@ -24400,8 +24409,10 @@ async function sbpRunAI(id) {
     showToast('AI suggestion failed. Try again.', 'error');
   }
   item.aiLoading = false;
-  sbpRenderQueue(); sbpUpdateStats();
-  // If this item is open in editor, refresh editor
+  sbpRenderCard(id);
+  sbpUpdateStats(); // AI may have resolved "Missing: Category" etc
+  // If this item is open in the editor, re-render the editor panel
+  // so the freshly-filled fields appear and the banner updates
   if (window._sbp.editingId === id) sbpOpenEditor(id);
 }
 
@@ -24409,12 +24420,14 @@ async function sbpRunAI(id) {
 function sbpSetCover(id, file) {
   const item = window._sbp.queue.find(x => x.id === id);
   if (!item || !file) return;
-  item.coverFile = file;
+  item.coverFile  = file;
+  item.coverThumb = null; // clear stale thumb; will be set by FileReader
   const reader = new FileReader();
   reader.onload = e => {
     item.coverThumb = e.target.result;
-    item.coverUrl = null;
+    item.coverUrl   = null;
     sbpRenderCard(id);
+    sbpUpdateStats(); // ← keep READY/MISSING counters current after cover upload
   };
   reader.readAsDataURL(file);
 }
@@ -24422,9 +24435,9 @@ function sbpSetCover(id, file) {
 /* ─── Stats bar update ───────────────────────────────────────────── */
 function sbpUpdateStats() {
   const q = window._sbp.queue;
-  const total = q.length;
-  const ready = q.filter(x => sbpStatus(x) === 'ready').length;
-  const draft = q.filter(x => sbpStatus(x) === 'draft').length;
+  const total   = q.length;
+  const ready   = q.filter(x => sbpStatus(x) === 'ready').length;
+  const draft   = 0; // legacy — no longer used
   const missing = q.filter(x => sbpStatus(x) === 'missing').length;
   const published = q.filter(x => x.published).length;
   const errs = q.filter(x => sbpStatus(x) === 'error').length;
@@ -24474,10 +24487,11 @@ function sbpRenderCard(id) {
   const item = window._sbp.queue.find(x => x.id === id);
   const el = document.getElementById('sbpCard_' + id);
   if (!item || !el) return;
-  const st = sbpStatus(item);
+  const st  = sbpStatus(item);
   const col = sbpStatusColor(st);
   const thumb = item.coverThumb || item.coverUrl || '';
   const sel = window._sbp.selected.has(id);
+  el.style.borderLeftColor = col; // update border colour immediately
   el.innerHTML = sbpCardInner(item, st, col, thumb, sel);
 }
 
@@ -24499,11 +24513,11 @@ function sbpCardInner(item, st, col, thumb, sel) {
         <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0" title="Change cover">🖼️</div>
         <input type="file" accept="image/*" style="display:none" id="sbpCoverPick_${item.id}" onchange="sbpSetCover('${item.id}',this.files[0])"/>
       </div>
-      <!-- Info -->
-      <div style="flex:1;min-width:0">
+      <!-- Info (click to open editor) -->
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="sbpOpenEditor('${item.id}')" title="${st==='missing' ? 'Click to fix: ' + sbpValidate(item,false).join(', ') : 'Click to edit'}">
         <div style="font-weight:700;font-size:.875rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px" title="${(item.title||'').replace(/"/g,'&quot;')}">${item.title || '<em style="color:var(--text3)">Untitled</em>'}</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
-          <span style="font-size:.7rem;padding:2px 7px;border-radius:10px;background:${col}22;color:${col};border:1px solid ${col}44;font-weight:700">${sbpStatusLabel(st)}</span>
+          <span style="font-size:.7rem;padding:2px 7px;border-radius:10px;background:${col}22;color:${col};border:1px solid ${col}44;font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block" title="${sbpStatusLabel(st,item)}">${sbpStatusLabel(st,item)}</span>
           ${item.category ? `<span style="font-size:.68rem;color:var(--text2);background:var(--surface);padding:1px 7px;border-radius:8px">${item.category}</span>` : ''}
           ${item.sellingPrice !== '' && item.sellingPrice !== undefined && item.sellingPrice !== null ? `<span style="font-size:.68rem;color:var(--success);font-weight:700">₹${item.sellingPrice}</span>` : ''}
         </div>
@@ -24512,7 +24526,7 @@ function sbpCardInner(item, st, col, thumb, sel) {
       <!-- Actions -->
       <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
         <div style="display:flex;gap:4px">
-          <button onclick="sbpOpenEditor('${item.id}')" title="Edit" style="padding:5px 8px;border-radius:6px;border:1px solid var(--accent);background:rgba(61,142,248,0.1);color:var(--accent);cursor:pointer;font-size:.75rem;font-family:var(--font-body)">✏️</button>
+          <button onclick="sbpOpenEditor('${item.id}')" title="${st==='missing' ? 'Fix: ' + sbpValidate(item,false).join(', ') : 'Edit'}" style="padding:5px 8px;border-radius:6px;border:1px solid var(--accent);background:rgba(61,142,248,0.1);color:var(--accent);cursor:pointer;font-size:.75rem;font-family:var(--font-body)">✏️${st==='missing'?'⚠️':''}</button>
           ${!item.published ? `<button onclick="sbpRunAI('${item.id}')" title="AI Suggest" style="padding:5px 8px;border-radius:6px;border:1px solid rgba(139,92,246,0.4);background:rgba(139,92,246,0.1);color:#8b5cf6;cursor:pointer;font-size:.75rem;font-family:var(--font-body)">${item.aiLoading?'⏳':'✨'}</button>` : ''}
           <button onclick="sbpDuplicate('${item.id}')" title="Duplicate" style="padding:5px 8px;border-radius:6px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text2);cursor:pointer;font-size:.75rem;font-family:var(--font-body)">⧉</button>
         </div>
@@ -24574,10 +24588,12 @@ function sbpOpenEditor(id) {
       <button onclick="sbpCloseEditor()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.1rem;padding:0 4px">✕</button>
     </div>
 
-    ${errors.length ? `<div style="background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);border-radius:8px;padding:10px 13px;margin-bottom:16px">
-      <div style="font-size:.75rem;font-weight:700;color:#ff4d6d;margin-bottom:6px">⚠️ ${errors.length} issue(s) to fix:</div>
-      ${errors.map(e=>`<div style="font-size:.72rem;color:#ff8fa8;margin-bottom:2px">• ${e}</div>`).join('')}
-    </div>` : `<div style="background:rgba(16,217,142,0.08);border:1px solid rgba(16,217,142,0.2);border-radius:8px;padding:8px 12px;margin-bottom:16px;font-size:.75rem;color:#10d98e;font-weight:700">✅ All fields complete — Ready to publish!</div>`}
+    <div id="sbeValidBanner" style="border-radius:8px;padding:10px 13px;margin-bottom:16px;border:1px solid;${errors.length ? 'background:rgba(255,77,109,0.08);border-color:rgba(255,77,109,0.2)' : 'background:rgba(16,217,142,0.08);border-color:rgba(16,217,142,0.2)'}">
+      ${errors.length
+        ? `<div style="font-size:.75rem;font-weight:700;color:#ff4d6d;margin-bottom:6px">⚠️ ${errors.length} field(s) still needed:</div>${errors.map(e=>`<div style="font-size:.72rem;color:#ff8fa8;margin-bottom:2px">• ${e}</div>`).join('')}`
+        : `<div style="font-size:.75rem;color:#10d98e;font-weight:700">✅ All fields complete — Ready to publish!</div>`
+      }
+    </div>
 
     <!-- Cover Upload -->
     <div style="margin-bottom:16px">
@@ -24712,22 +24728,42 @@ function sbpEditorLive() {
   if (!id) return;
   const item = window._sbp.queue.find(x => x.id === id);
   if (!item) return;
-  const g = eid => document.getElementById(eid)?.value ?? '';
-  item.title        = g('sbeTitle');
-  item.description  = g('sbeDesc');
-  item.author       = g('sbeAuthor');
-  item.category     = g('sbeCat');
-  item.badge        = g('sbeBadge');
-  item.seoTitle     = g('sbeSeoTitle');
-  item.seoDesc      = g('sbeSeoDesc');
-  item.keywords     = g('sbeKeywords');
+  const g = eid => {
+    const el = document.getElementById(eid);
+    return el ? el.value : '';
+  };
+  item.title         = g('sbeTitle');
+  item.description   = g('sbeDesc');
+  item.author        = g('sbeAuthor');
+  item.category      = g('sbeCat');
+  item.badge         = g('sbeBadge');
+  item.seoTitle      = g('sbeSeoTitle');
+  item.seoDesc       = g('sbeSeoDesc');
+  item.keywords      = g('sbeKeywords');
   item.originalPrice = g('sbeOrigPrice');
   item.sellingPrice  = g('sbeSellPrice');
   item.previewPages  = g('sbePreview');
   item.free          = document.getElementById('sbeFree')?.checked || false;
   item.slug          = sbpSlug(item.title);
   item.lastUpdated   = new Date().toISOString();
+  // ── Re-render the card in the queue list (updates badge + border colour)
   sbpRenderCard(id);
+  // ── Update the validation banner inside the editor without losing focus
+  const errors = sbpValidate(item, true);
+  const banner = document.getElementById('sbeValidBanner');
+  if (banner) {
+    if (errors.length) {
+      banner.style.background = 'rgba(255,77,109,0.08)';
+      banner.style.borderColor = 'rgba(255,77,109,0.2)';
+      banner.innerHTML = '<div style="font-size:.75rem;font-weight:700;color:#ff4d6d;margin-bottom:6px">⚠️ ' + errors.length + ' field(s) still needed:</div>' +
+        errors.map(e => '<div style="font-size:.72rem;color:#ff8fa8;margin-bottom:2px">• ' + e + '</div>').join('');
+    } else {
+      banner.style.background = 'rgba(16,217,142,0.08)';
+      banner.style.borderColor = 'rgba(16,217,142,0.2)';
+      banner.innerHTML = '<div style="font-size:.75rem;color:#10d98e;font-weight:700">✅ All fields complete — Ready to publish!</div>';
+    }
+  }
+  sbpUpdateStats();
 }
 
 function sbpEditorSetCover(input) {
@@ -24736,8 +24772,19 @@ function sbpEditorSetCover(input) {
   const id = window._sbp.editingId;
   if (!id) return;
   sbpSetCover(id, file);
-  // Re-render editor to show new cover
-  setTimeout(() => sbpOpenEditor(id), 50);
+  // Update the cover preview inside the editor without full re-render
+  const item = window._sbp.queue.find(x => x.id === id);
+  if (!item) return;
+  setTimeout(() => {
+    // Update cover preview area
+    const coverBox = document.querySelector('#sbpEditCover')?.closest('div[style*="dashed"]');
+    if (coverBox && (item.coverThumb || item.coverUrl)) {
+      const src = item.coverThumb || item.coverUrl;
+      coverBox.innerHTML = `<input type="file" id="sbpEditCover" accept="image/*" style="display:none" onchange="sbpEditorSetCover(this)"/><img src="${src}" alt="Cover" style="max-height:80px;border-radius:6px;max-width:100%"/><div style="font-size:.7rem;color:var(--success);margin-top:4px">✅ Cover ready · Click to change</div>`;
+      coverBox.style.borderColor = 'var(--success)';
+    }
+    sbpEditorLive(); // triggers validation banner + card re-render
+  }, 80);
 }
 
 function sbpEditorAutoSEO() {
@@ -24751,9 +24798,12 @@ function sbpEditorAutoSEO() {
 }
 
 function sbpEditorSave() {
-  sbpEditorLive();
+  sbpEditorLive(); // flush all field values to item object
+  const id = window._sbp.editingId;
   sbpCloseEditor();
-  sbpRenderQueue(); sbpUpdateStats();
+  sbpRenderQueue();   // full re-render with new status
+  sbpUpdateStats();   // READY/MISSING counters
+  if (id) sbpRenderCard(id); // ensure this card specifically is fresh
   showToast('✅ Draft saved!', 'success');
 }
 
@@ -24811,8 +24861,9 @@ function sbpApplyBulk() {
     item.lastUpdated = new Date().toISOString();
   });
   sbpCloseBulkModal();
-  sbpRenderQueue(); sbpUpdateStats();
-  showToast(`✅ Applied to ${sel.length} PDF(s).`, 'success');
+  sbpRenderQueue();
+  sbpUpdateStats();
+  showToast(`✅ Applied to ${sel.length} PDF(s). Check READY count.`, 'success');
 }
 
 /* ─── Publish ────────────────────────────────────────────────────── */
@@ -24843,7 +24894,12 @@ async function sbpPublishReady() {
 
     // Re-validate with dupe check
     const errs = sbpValidate(item, true);
-    if (errs.length) { item.errors = errs; failed++; failedItems.push({item, reason: errs[0]}); continue; }
+    if (errs.length) {
+      item.errors = errs;
+      failed++;
+      failedItems.push({ item, reason: 'Missing required: ' + errs.join(', ') });
+      continue;
+    }
 
     try {
       const sb = window.supabaseClient;
@@ -25013,10 +25069,11 @@ function sbpCloseReport() {
 
 function sbpRetryFailed() {
   sbpCloseReport();
-  // Reset failed items back to draft
+  // Clear cached errors so validation re-runs fresh on next attempt
   window._sbp.queue.filter(x => x.errors?.length).forEach(x => { x.errors = []; });
-  sbpRenderQueue(); sbpUpdateStats();
-  showToast('Failed items reset to Draft. Fix errors and retry.', 'warning');
+  sbpRenderQueue();
+  sbpUpdateStats();
+  showToast('⚠️ Failed items reset. Fix the listed fields, then publish again.', 'warning');
 }
 
 /* ─── Main render function ───────────────────────────────────────── */
@@ -25096,6 +25153,14 @@ function renderAdminAddPDF(main) {
   }
   .sbp-progress-track { background:var(--surface); border-radius:4px; height:6px; overflow:hidden; margin:8px 0; }
   .sbp-progress-fill  { height:100%; background:var(--grad-primary); width:0%; transition:width .3s; border-radius:4px; }
+  /* ── Mobile responsiveness ── */
+  @media (max-width:600px) {
+    .sbp-stat-bar { gap:5px; }
+    .sbp-stat { min-width:58px; padding:7px 8px; }
+    .sbp-stat-num { font-size:1.1rem; }
+    .sbp-stat-lbl { font-size:.56rem; }
+    .sbp-field-row { grid-template-columns:1fr !important; }
+  }
   /* On desktop: side panel. On mobile: hide side panel, use modal instead */
   @media(max-width:900px) {
     .sbp-layout { grid-template-columns:1fr !important; }
@@ -25136,17 +25201,17 @@ function renderAdminAddPDF(main) {
       <div class="sbp-stat-num" id="sbpStatTotal">0</div>
       <div class="sbp-stat-lbl">Total</div>
     </div>
-    <div class="sbp-stat">
+    <div class="sbp-stat" title="PDFs with all required fields filled">
       <div class="sbp-stat-num" style="color:#10d98e" id="sbpStatReady">0</div>
-      <div class="sbp-stat-lbl">Ready</div>
+      <div class="sbp-stat-lbl">✅ Ready</div>
     </div>
-    <div class="sbp-stat">
+    <div class="sbp-stat" title="PDFs missing required fields — open ✏️ to fix" style="cursor:pointer">
+      <div class="sbp-stat-num" style="color:#ff4d6d" id="sbpStatMissing">0</div>
+      <div class="sbp-stat-lbl">⚠️ Needs Info</div>
+    </div>
+    <div class="sbp-stat" style="display:none">
       <div class="sbp-stat-num" style="color:#f59e0b" id="sbpStatDraft">0</div>
       <div class="sbp-stat-lbl">Draft</div>
-    </div>
-    <div class="sbp-stat">
-      <div class="sbp-stat-num" style="color:#ff4d6d" id="sbpStatMissing">0</div>
-      <div class="sbp-stat-lbl">Missing</div>
     </div>
     <div class="sbp-stat">
       <div class="sbp-stat-num" style="color:#ff4d6d" id="sbpStatErrors">0</div>
