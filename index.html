@@ -32037,6 +32037,8 @@ function sbpFormatSize(bytes) {
 }
 function sbpStatus(item) {
   if (item.published) return 'published';
+  // Always re-validate against current item state — never use cached results
+  delete item._validCache; // clear any stale cache
   const errs = sbpValidate(item, false);
   return errs.length === 0 ? 'ready' : 'missing';
 }
@@ -32044,10 +32046,14 @@ function sbpStatusLabel(s, item) {
   if (s === 'ready')     return '✅ Ready';
   if (s === 'published') return '🟢 Published';
   if (s === 'error')     return '❌ Error';
-  if (s === 'missing' && item) {
-    const errs = sbpValidate(item, false);
+  if (s === 'missing') {
+    // ALWAYS show the exact missing field — never show a generic "Missing" label
+    const errs = item ? sbpValidate(item, false) : [];
     if (errs.length === 1) return '⚠️ Missing: ' + errs[0];
-    if (errs.length > 1)  return '⚠️ Missing ' + errs.length + ' fields';
+    if (errs.length > 1)  return '⚠️ Missing: ' + errs[0] + ' +' + (errs.length - 1) + ' more';
+    // If validation says 0 errors but status is still missing,
+    // status is stale — it will correct on next render cycle
+    return '⚠️ Checking…';
   }
   return '⚠️ Missing';
 }
@@ -32232,13 +32238,31 @@ function sbpSetCover(id, file) {
   const item = window._sbp.queue.find(x => x.id === id);
   if (!item || !file) return;
   item.coverFile  = file;
-  item.coverThumb = null; // clear stale thumb; will be set by FileReader
+  // ── Do NOT null coverThumb/coverUrl yet — the FileReader is async.
+  //    Nulling them now would cause sbpEditorLive() (called synchronously
+  //    after this) to see hasCover=false and show false "Missing" status.
+  //    We only replace them once the new thumb is actually ready. ────────
   const reader = new FileReader();
   reader.onload = e => {
-    item.coverThumb = e.target.result;
-    item.coverUrl   = null;
+    item.coverThumb = e.target.result; // new local preview data-URI
+    item.coverUrl   = null;            // will be replaced by upload at publish time
     sbpRenderCard(id);
-    sbpUpdateStats(); // ← keep READY/MISSING counters current after cover upload
+    sbpUpdateStats(); // keep READY/MISSING counters current after cover upload
+    // Re-validate the editor banner now that cover is confirmed loaded
+    const errors = sbpValidate(item, false);
+    const banner = document.getElementById('sbeValidBanner');
+    if (banner) {
+      if (errors.length) {
+        banner.style.background = 'rgba(255,77,109,0.08)';
+        banner.style.borderColor = 'rgba(255,77,109,0.2)';
+        banner.innerHTML = '<div style="font-size:.75rem;font-weight:700;color:#ff4d6d;margin-bottom:6px">⚠️ ' + errors.length + ' field(s) still needed:</div>' +
+          errors.map(e => '<div style="font-size:.72rem;color:#ff8fa8;margin-bottom:2px">• ' + e + '</div>').join('');
+      } else {
+        banner.style.background = 'rgba(16,217,142,0.08)';
+        banner.style.borderColor = 'rgba(16,217,142,0.2)';
+        banner.innerHTML = '<div style="font-size:.75rem;color:#10d98e;font-weight:700">✅ All fields complete — Ready to publish!</div>';
+      }
+    }
   };
   reader.readAsDataURL(file);
 }
@@ -32557,6 +32581,8 @@ function sbpEditorLive() {
   item.free          = document.getElementById('sbeFree')?.checked || false;
   item.slug          = sbpSlug(item.title);
   item.lastUpdated   = new Date().toISOString();
+  // ── Clear any stale validation cache so re-validation uses live data ──
+  delete item._validCache;
   // ── Re-render the card in the queue list (updates badge + border colour)
   sbpRenderCard(id);
   // ── Update the validation banner inside the editor without losing focus
@@ -32582,20 +32608,32 @@ function sbpEditorSetCover(input) {
   if (!file) return;
   const id = window._sbp.editingId;
   if (!id) return;
-  sbpSetCover(id, file);
-  // Update the cover preview inside the editor without full re-render
+  sbpSetCover(id, file); // starts async FileReader internally
+
+  // ── Wait for FileReader to complete before re-rendering ─────────────
+  // sbpSetCover's reader.onload fires asynchronously. We poll the item's
+  // coverThumb to know when it's ready (max 3s for any reasonable image).
   const item = window._sbp.queue.find(x => x.id === id);
   if (!item) return;
-  setTimeout(() => {
-    // Update cover preview area
-    const coverBox = document.querySelector('#sbpEditCover')?.closest('div[style*="dashed"]');
-    if (coverBox && (item.coverThumb || item.coverUrl)) {
-      const src = item.coverThumb || item.coverUrl;
-      coverBox.innerHTML = `<input type="file" id="sbpEditCover" accept="image/*" style="display:none" onchange="sbpEditorSetCover(this)"/><img src="${src}" alt="Cover" style="max-height:80px;border-radius:6px;max-width:100%"/><div style="font-size:.7rem;color:var(--success);margin-top:4px">✅ Cover ready · Click to change</div>`;
-      coverBox.style.borderColor = 'var(--success)';
+
+  let waited = 0;
+  const poll = setInterval(() => {
+    waited += 50;
+    const hasCover = !!(item.coverThumb || item.coverUrl);
+    if (hasCover || waited >= 3000) {
+      clearInterval(poll);
+      // Update cover preview area in the editor
+      const coverBox = document.querySelector('#sbpEditCover')?.closest('div[style*="dashed"]');
+      if (coverBox && hasCover) {
+        const src = item.coverThumb || item.coverUrl;
+        coverBox.innerHTML = '<input type="file" id="sbpEditCover" accept="image/*" style="display:none" onchange="sbpEditorSetCover(this)"/>' +
+          '<img src="' + src + '" alt="Cover" style="max-height:80px;border-radius:6px;max-width:100%"/>' +
+          '<div style="font-size:.7rem;color:var(--success);margin-top:4px">✅ Cover ready · Click to change</div>';
+        coverBox.style.borderColor = 'var(--success)';
+      }
+      sbpEditorLive(); // safe to call now — coverThumb is set
     }
-    sbpEditorLive(); // triggers validation banner + card re-render
-  }, 80);
+  }, 50);
 }
 
 function sbpEditorAutoSEO() {
@@ -32788,20 +32826,27 @@ async function sbpPublishReady() {
         stream_id:         streamId,
         semester_class_id: semesterClassId,
         subject_id:        subjectId,
-        // ── Legacy denormalised columns are ACTUALLY bigint in the
-        //    live schema (verified against Supabase directly) — they
-        //    must mirror the numeric *_id columns, NEVER store the
-        //    display name (e.g. "Personal Finance"), or Postgres throws
-        //    "invalid input syntax for type bigint". ──────────────────
-        subcategory:       subcategoryId,
-        academic_level:    academicLevelId,
-        stream:            streamId,
-        semester_class:    semesterClassId,
-        subject:           subjectId,
+        // ── REMOVED: legacy bigint columns (subcategory, academic_level, stream,
+        //    semester_class, subject) are NOT sent because a DB trigger calls
+        //    LOWER() on them — LOWER(bigint) is invalid in PostgreSQL.
+        //    The correct FK columns (*_id) above are sufficient. ──────────
       };
 
       const { error: insErr } = await sb.from('pdfs').insert(payload);
-      if (insErr) throw new Error('DB insert: ' + insErr.message);
+      if (insErr) {
+        // ── Specific DB trigger bug: LOWER(bigint) ───────────────────
+        // A PostgreSQL trigger on the pdfs table calls LOWER() on a bigint
+        // column. This requires a one-time SQL fix in Supabase Dashboard.
+        // The fix SQL is in fix-trigger-lower-bigint.sql in the repo.
+        if (insErr.message.includes('lower(bigint)')) {
+          throw new Error(
+            'DB trigger bug: A Supabase trigger calls LOWER() on a numeric column. ' +
+            'Please run fix-trigger-lower-bigint.sql in Supabase SQL Editor to fix permanently. ' +
+            '(Error: ' + insErr.message + ')'
+          );
+        }
+        throw new Error('DB insert: ' + insErr.message);
+      }
 
       item.published = true;
       item.coverUrl  = coverUrl;
