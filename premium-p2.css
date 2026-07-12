@@ -1,0 +1,662 @@
+/* ═══════════════════════════════════════════════════════════════════
+   STUDYRIA — PREMIUM MEMBERSHIP PHASE 2
+   File: premium-p2.css
+   Namespace: pp2-* (isolated — never touches global CSS)
+   Phase 1 file: premium-p1.css (DO NOT MODIFY)
+   Author: Vesper / Studyria SEO Agent
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── KEYFRAME ANIMATIONS ─────────────────────────────────────────── */
+
+@keyframes pp2-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes pp2-float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(3deg); }
+  66%       { transform: translateY(-6px) rotate(-2deg); }
+}
+
+@keyframes pp2-glow {
+  0%   { box-shadow: 0 0 20px rgba(251,191,36,0.2), 0 0 40px rgba(139,92,246,0.1); }
+  100% { box-shadow: 0 0 40px rgba(251,191,36,0.45), 0 0 80px rgba(139,92,246,0.25); }
+}
+
+@keyframes pp2-glow-text {
+  0%   { text-shadow: 0 0 10px rgba(251,191,36,0.3); }
+  100% { text-shadow: 0 0 24px rgba(251,191,36,0.7), 0 0 40px rgba(251,191,36,0.3); }
+}
+
+@keyframes pp2-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pp2-border-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pp2-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pp2-particle-drift {
+  0%   { transform: translateY(0) translateX(0) scale(1);   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-80px) translateX(20px) scale(0.4); opacity: 0; }
+}
+
+@keyframes pp2-chip-pop {
+  0%   { transform: scale(0.8); opacity: 0; }
+  70%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pp2-crown-pulse {
+  0%, 100% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 8px rgba(251,191,36,0.5)); }
+  50%       { transform: scale(1.12) rotate(5deg); filter: drop-shadow(0 0 20px rgba(251,191,36,0.9)); }
+}
+
+/* ── REDUCED MOTION — safety for accessibility ───────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pp2-home-banner *,
+  .pp2-me-tab * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TASK 1 — HOME PAGE BANNER
+   .pp2-home-banner  (replaces old .prm-home-banner section)
+══════════════════════════════════════════════════════════════════ */
+
+.pp2-home-banner-section {
+  padding: 12px 0 20px;
+}
+
+.pp2-home-banner {
+  position: relative;
+  border-radius: 24px;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg,
+    rgba(15,10,30,0.97) 0%,
+    rgba(20,14,45,0.97) 40%,
+    rgba(10,20,50,0.97) 100%);
+  border: 1px solid rgba(251,191,36,0.25);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.3s ease;
+  animation: pp2-glow 2.5s ease-in-out infinite alternate;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Animated gradient overlay */
+.pp2-home-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.08) 0%,
+    rgba(139,92,246,0.12) 50%,
+    rgba(59,130,246,0.08) 100%);
+  background-size: 200% 200%;
+  animation: pp2-gradient-shift 6s ease infinite;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Gradient border glow rim */
+.pp2-home-banner::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 25px;
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.6),
+    rgba(139,92,246,0.4),
+    rgba(59,130,246,0.4),
+    rgba(251,191,36,0.6));
+  background-size: 300% 300%;
+  animation: pp2-gradient-shift 4s ease infinite;
+  z-index: -1;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.pp2-home-banner:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 60px rgba(251,191,36,0.2),
+    0 8px 32px rgba(139,92,246,0.15);
+}
+.pp2-home-banner:hover::after { opacity: 0.9; }
+
+.pp2-home-banner:active { transform: scale(0.99) translateY(-2px); }
+
+/* Inner content wrapper */
+.pp2-hb-inner {
+  position: relative;
+  z-index: 1;
+  padding: 28px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Particles container */
+.pp2-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.pp2-particle {
+  position: absolute;
+  border-radius: 50%;
+  width: 4px;
+  height: 4px;
+  background: rgba(251,191,36,0.7);
+  animation: pp2-particle-drift linear infinite;
+}
+
+/* Top row: badge + crown */
+.pp2-hb-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pp2-hb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(139,92,246,0.15));
+  border: 1px solid rgba(251,191,36,0.4);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pp2-hb-crown {
+  font-size: 2.2rem;
+  animation: pp2-crown-pulse 3s ease-in-out infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Headline */
+.pp2-hb-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 40%, #a78bfa 80%, #60a5fa 100%);
+  background-size: 200% 200%;
+  animation: pp2-gradient-shift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtitle */
+.pp2-hb-sub {
+  font-size: 0.82rem;
+  color: rgba(200,210,230,0.8);
+  line-height: 1.65;
+}
+
+/* Benefit chips row */
+.pp2-hb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pp2-hb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 20px;
+  padding: 4px 11px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: rgba(220,230,255,0.9);
+  animation: pp2-chip-pop 0.4s ease both;
+}
+
+.pp2-hb-chip-check {
+  color: #4ade80;
+  font-size: 0.72rem;
+}
+
+/* CTA Buttons */
+.pp2-hb-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pp2-hb-btn-primary {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #f59e0b, #d97706, #7c3aed);
+  background-size: 200% 200%;
+  animation: pp2-gradient-shift 3s ease infinite;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.pp2-hb-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245,158,11,0.4);
+}
+.pp2-hb-btn-primary:active { transform: scale(0.97); }
+
+.pp2-hb-btn-secondary {
+  flex: 0 1 auto;
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(251,191,36,0.35);
+  background: rgba(251,191,36,0.06);
+  color: rgba(220,230,255,0.9);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  text-align: center;
+}
+
+.pp2-hb-btn-secondary:hover {
+  background: rgba(251,191,36,0.12);
+  border-color: rgba(251,191,36,0.6);
+  transform: translateY(-2px);
+}
+.pp2-hb-btn-secondary:active { transform: scale(0.97); }
+
+/* Light mode overrides */
+body.light .pp2-home-banner {
+  background: linear-gradient(135deg, #fffbf0 0%, #fef3c7 40%, #ede9fe 100%);
+  border-color: rgba(217,119,6,0.3);
+}
+body.light .pp2-home-banner::before {
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.05) 0%,
+    rgba(139,92,246,0.06) 50%,
+    rgba(59,130,246,0.04) 100%);
+}
+body.light .pp2-hb-sub { color: rgba(60,70,100,0.85); }
+body.light .pp2-hb-chip { color: rgba(40,50,90,0.9); background: rgba(217,119,6,0.08); }
+body.light .pp2-hb-btn-secondary { color: rgba(40,50,90,0.85); }
+body.light .pp2-particle { background: rgba(217,119,6,0.6); }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .pp2-hb-inner { padding: 36px 32px 28px; }
+  .pp2-hb-title { font-size: 1.85rem; }
+  .pp2-hb-btns { flex-wrap: nowrap; }
+  .pp2-hb-btn-primary { flex: 0 1 auto; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   TASK 2 — ME PAGE PREMIUM MEMBERSHIP TAB
+   .pp2-me-tab  (content inside dashMain, same as other me-tab panels)
+══════════════════════════════════════════════════════════════════ */
+
+/* Tab button overrides — gold accent for premium tab */
+#page-dashboard .me-htab[data-tab="premium-membership"] {
+  color: #fbbf24;
+  border-color: rgba(251,191,36,0.2);
+}
+#page-dashboard .me-htab[data-tab="premium-membership"]:hover {
+  background: rgba(251,191,36,0.05);
+}
+#page-dashboard .me-htab[data-tab="premium-membership"].active {
+  color: #fbbf24;
+  background: rgba(251,191,36,0.1);
+  border-color: rgba(251,191,36,0.45);
+  box-shadow: 0 0 12px rgba(251,191,36,0.15);
+}
+
+/* Tab content wrapper */
+.pp2-me-tab {
+  animation: pp2-fade-up 0.38s ease both;
+  padding: 0 0 40px;
+}
+
+/* ── Mini hero banner inside Me tab ──────────────────────────────── */
+.pp2-me-banner {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 28px 20px 24px;
+  background: linear-gradient(135deg,
+    rgba(15,10,30,0.97) 0%,
+    rgba(20,14,45,0.97) 50%,
+    rgba(10,20,50,0.97) 100%);
+  border: 1px solid rgba(251,191,36,0.22);
+  text-align: center;
+  animation: pp2-glow 2.5s ease-in-out infinite alternate;
+}
+
+.pp2-me-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.07) 0%,
+    rgba(139,92,246,0.1) 50%,
+    rgba(59,130,246,0.07) 100%);
+  background-size: 200% 200%;
+  animation: pp2-gradient-shift 6s ease infinite;
+  pointer-events: none;
+}
+
+.pp2-me-banner-crown {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: pp2-crown-pulse 3s ease-in-out infinite;
+}
+
+.pp2-me-banner-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #fbbf24, #a78bfa, #60a5fa);
+  background-size: 200% 200%;
+  animation: pp2-gradient-shift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.pp2-me-banner-sub {
+  font-size: 0.78rem;
+  color: rgba(200,210,230,0.8);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+body.light .pp2-me-banner {
+  background: linear-gradient(135deg, #fffbf0, #fef3c7 50%, #ede9fe);
+  border-color: rgba(217,119,6,0.25);
+}
+body.light .pp2-me-banner-sub { color: rgba(60,70,100,0.8); }
+
+/* ── Plan Card (Task 3 — FREE PLAN placeholder) ──────────────────── */
+.pp2-plan-card {
+  border-radius: 18px;
+  padding: 20px;
+  background: rgba(251,191,36,0.05);
+  border: 1px solid rgba(251,191,36,0.18);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pp2-plan-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(251,191,36,0.1);
+}
+
+.pp2-plan-card-left { display: flex; flex-direction: column; gap: 4px; }
+
+.pp2-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(100,116,139,0.15);
+  border: 1px solid rgba(100,116,139,0.3);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(180,190,210,0.85);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  width: fit-content;
+  margin-bottom: 4px;
+}
+
+.pp2-plan-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text, #e2e8f0);
+}
+
+.pp2-plan-desc {
+  font-size: 0.74rem;
+  color: var(--text2, #94a3b8);
+}
+
+.pp2-plan-upgrade-btn {
+  flex-shrink: 0;
+  padding: 9px 16px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+.pp2-plan-upgrade-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245,158,11,0.35);
+}
+.pp2-plan-upgrade-btn:active { transform: scale(0.97); }
+
+body.light .pp2-plan-card { background: rgba(245,158,11,0.04); }
+body.light .pp2-plan-name { color: #1e293b; }
+body.light .pp2-plan-desc { color: #64748b; }
+body.light .pp2-plan-badge { color: #64748b; }
+
+/* ── Benefits list ────────────────────────────────────────────────── */
+.pp2-benefits-section { margin-bottom: 20px; }
+
+.pp2-benefits-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text2, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.pp2-benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pp2-benefit-card {
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(251,191,36,0.04);
+  border: 1px solid rgba(251,191,36,0.12);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: pp2-fade-up 0.4s ease both;
+}
+.pp2-benefit-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(251,191,36,0.3);
+  box-shadow: 0 6px 20px rgba(251,191,36,0.08);
+}
+
+.pp2-benefit-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  line-height: 1;
+  animation: pp2-float 3s ease-in-out infinite;
+}
+.pp2-benefit-card:nth-child(2) .pp2-benefit-icon { animation-delay: 0.5s; }
+.pp2-benefit-card:nth-child(3) .pp2-benefit-icon { animation-delay: 1s; }
+.pp2-benefit-card:nth-child(4) .pp2-benefit-icon { animation-delay: 1.5s; }
+
+.pp2-benefit-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text, #e2e8f0);
+  margin-bottom: 2px;
+}
+.pp2-benefit-desc {
+  font-size: 0.7rem;
+  color: var(--text2, #94a3b8);
+  line-height: 1.4;
+}
+
+body.light .pp2-benefit-card { background: rgba(245,158,11,0.03); }
+body.light .pp2-benefit-name { color: #1e293b; }
+body.light .pp2-benefit-desc { color: #64748b; }
+
+/* ── Feature chips row ───────────────────────────────────────────── */
+.pp2-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.pp2-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(251,191,36,0.08);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: rgba(220,230,255,0.9);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  animation: pp2-chip-pop 0.3s ease both;
+}
+.pp2-chip:nth-child(1) { animation-delay: 0.05s; }
+.pp2-chip:nth-child(2) { animation-delay: 0.1s; }
+.pp2-chip:nth-child(3) { animation-delay: 0.15s; }
+.pp2-chip:nth-child(4) { animation-delay: 0.2s; }
+.pp2-chip:nth-child(5) { animation-delay: 0.25s; }
+
+.pp2-chip:hover {
+  background: rgba(251,191,36,0.15);
+  border-color: rgba(251,191,36,0.45);
+  transform: translateY(-1px);
+}
+body.light .pp2-chip { color: rgba(40,50,90,0.85); }
+
+/* ── Reusable CTA block (Task 4) ─────────────────────────────────── */
+.pp2-cta-block {
+  border-radius: 18px;
+  padding: 24px 20px;
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.08) 0%,
+    rgba(139,92,246,0.08) 100%);
+  border: 1px solid rgba(251,191,36,0.2);
+  text-align: center;
+  margin-bottom: 4px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pp2-cta-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(251,191,36,0.1);
+}
+
+.pp2-cta-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text, #e2e8f0);
+  margin-bottom: 6px;
+}
+
+.pp2-cta-sub {
+  font-size: 0.78rem;
+  color: var(--text2, #94a3b8);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.pp2-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #f59e0b, #d97706, #7c3aed);
+  background-size: 200% 200%;
+  animation: pp2-gradient-shift 3s ease infinite;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+}
+.pp2-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245,158,11,0.4);
+}
+.pp2-cta-btn:active { transform: scale(0.97); }
+
+body.light .pp2-cta-block {
+  background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(109,40,217,0.05));
+}
+body.light .pp2-cta-title { color: #1e293b; }
+body.light .pp2-cta-sub   { color: #64748b; }
+
+/* ── Me tab responsive ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .pp2-benefits-grid { grid-template-columns: 1fr; }
+  .pp2-me-banner { padding: 22px 16px 18px; }
+  .pp2-plan-card { flex-direction: column; align-items: flex-start; }
+  .pp2-plan-upgrade-btn { width: 100%; text-align: center; }
+}
+
+@media (min-width: 640px) {
+  .pp2-benefits-grid { grid-template-columns: repeat(2, 1fr); }
+  .pp2-me-banner-title { font-size: 1.5rem; }
+  .pp2-cta-block { padding: 28px 28px; }
+}
