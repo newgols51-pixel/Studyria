@@ -36,8 +36,8 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v15';           // ← bumped: fix _blockDoubleTap ReferenceError (renamed to _handleDoubleTap)
-const SW_BUILD     = '2026.07.11-r5-fix-blockdoubletap-ref';
+const CACHE_NAME   = 'studyria-v19';  // ← bumped: rollback to 248365e, cache flush
+const SW_BUILD     = '2026.07.12-r2-stable-rollback';
 const OFFLINE_PAGE = '/offline.html';
 
 const WHATS_NEW = '🐛 Fixed ReferenceError: _blockDoubleTap is not defined — function was renamed to _handleDoubleTap and cache was stale. All clients now receive the latest build.';
