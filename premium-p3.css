@@ -1,0 +1,929 @@
+/*
+ * premium-p3.css — Studyria Premium Experience Phase 3
+ * Branch: feat/premium-membership-phase-3
+ *
+ * SCOPE RULES:
+ *   ALL selectors MUST use .prm-p3-* namespace
+ *   NO global overrides — no :root, no body, no .container resets
+ *   NO modifications to any existing component selectors
+ *   Phase 1 → premium-p1.css | Phase 2 → premium-p2.css (DO NOT MODIFY)
+ *
+ * Components:
+ *   PremiumBadge       .prm-p3-badge
+ *   PremiumRibbon      .prm-p3-ribbon
+ *   PremiumChip        .prm-p3-chip
+ *   PremiumCTA         .prm-p3-cta
+ *   PremiumOverlay     .prm-p3-overlay
+ *   PremiumPreviewCard .prm-p3-preview-card
+ *   PremiumSection     .prm-p3-section
+ *   PremiumGlow        .prm-p3-glow
+ *   PremiumBorder      .prm-p3-border
+ *   Premium Showcase   .prm-p3-showcase-*
+ */
+
+/* ══════════════════════════════════════════════════════════════════
+   DESIGN TOKENS (scoped — never override :root)
+══════════════════════════════════════════════════════════════════ */
+.prm-p3-badge,
+.prm-p3-ribbon,
+.prm-p3-chip,
+.prm-p3-cta,
+.prm-p3-overlay,
+.prm-p3-preview-card,
+.prm-p3-showcase-section,
+.prm-p3-glow,
+.prm-p3-border {
+  --p3-gold:       #fbbf24;
+  --p3-gold-light: #fde68a;
+  --p3-gold-dark:  #d97706;
+  --p3-violet:     #a78bfa;
+  --p3-violet-d:   #7c3aed;
+  --p3-blue:       #3d8ef8;
+  --p3-green:      #10d98e;
+  --p3-bg-dark:    rgba(15, 10, 30, 0.96);
+  --p3-bg-card:    rgba(20, 15, 40, 0.92);
+  --p3-text-main:  #f0e6ff;
+  --p3-text-sub:   rgba(220, 210, 255, 0.68);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+══════════════════════════════════════════════════════════════════ */
+
+@keyframes prm-p3-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes prm-p3-pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(251,191,36,0.25), 0 0 24px rgba(251,191,36,0.10); }
+  50%       { box-shadow: 0 0 24px rgba(251,191,36,0.50), 0 0 48px rgba(251,191,36,0.22); }
+}
+
+@keyframes prm-p3-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes prm-p3-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes prm-p3-card-lift {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes prm-p3-ribbon-shine {
+  0%   { left: -60%; }
+  100% { left: 160%;  }
+}
+
+@keyframes prm-p3-border-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes prm-p3-glass-sheen {
+  0%   { opacity: 0; left: -100%; }
+  50%  { opacity: 0.5; }
+  100% { opacity: 0; left: 200%; }
+}
+
+@keyframes prm-p3-soft-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+@keyframes prm-p3-crown-bob {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%       { transform: translateY(-4px) rotate(3deg); }
+}
+
+@keyframes prm-p3-particle-up {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.4; }
+  100% { transform: translateY(-70px) scale(0.3); opacity: 0; }
+}
+
+@keyframes prm-p3-section-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  [class*="prm-p3-"] {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumBadge
+   Usage: <span class="prm-p3-badge [prm-p3-badge--sm]">...</span>
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 40px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 50%, #d97706 100%);
+  background-size: 200% 100%;
+  color: #1a0f00;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  animation: prm-p3-shimmer 3s linear infinite;
+}
+
+.prm-p3-badge--sm {
+  padding: 2px 7px;
+  font-size: 0.58rem;
+}
+
+.prm-p3-badge--violet {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa, #7c3aed);
+  background-size: 200% 100%;
+  color: #fff;
+  animation: prm-p3-shimmer 3s linear infinite;
+}
+
+.prm-p3-badge--blue {
+  background: linear-gradient(135deg, #2563eb, #3d8ef8, #2563eb);
+  background-size: 200% 100%;
+  color: #fff;
+  animation: prm-p3-shimmer 3s linear infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumRibbon
+   Usage: wrapper must be position:relative + overflow:hidden
+   <div class="prm-p3-ribbon-wrap">card content
+     <div class="prm-p3-ribbon">PREMIUM</div>
+   </div>
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-ribbon-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.prm-p3-ribbon {
+  position: absolute;
+  top: 14px;
+  right: -28px;
+  width: 130px;
+  padding: 5px 0;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #1a0f00;
+  background: linear-gradient(135deg, #d97706, #fbbf24 50%, #d97706);
+  background-size: 200% 100%;
+  transform: rotate(35deg);
+  transform-origin: center;
+  box-shadow: 0 2px 10px rgba(251,191,36,0.4);
+  overflow: hidden;
+  z-index: 10;
+  pointer-events: none;
+  animation: prm-p3-shimmer 3s linear infinite;
+}
+
+/* Shine streak */
+.prm-p3-ribbon::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: -60%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: prm-p3-ribbon-shine 3s ease-in-out 1s infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumChip
+   Usage: <span class="prm-p3-chip">✨ Premium</span>
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fbbf24;
+  background: rgba(251,191,36,0.10);
+  border: 1px solid rgba(251,191,36,0.28);
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  cursor: default;
+  user-select: none;
+}
+
+.prm-p3-chip:hover {
+  background: rgba(251,191,36,0.18);
+  border-color: rgba(251,191,36,0.50);
+  transform: translateY(-1px);
+}
+
+.prm-p3-chip--violet {
+  color: #a78bfa;
+  background: rgba(167,139,250,0.10);
+  border-color: rgba(167,139,250,0.28);
+}
+
+.prm-p3-chip--violet:hover {
+  background: rgba(167,139,250,0.18);
+  border-color: rgba(167,139,250,0.50);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumGlow
+   Usage: add class to any element for ambient gold glow
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-glow {
+  box-shadow: 0 0 20px rgba(251,191,36,0.18), 0 0 40px rgba(251,191,36,0.08);
+  animation: prm-p3-pulse-glow 3s ease-in-out infinite;
+}
+
+.prm-p3-glow--violet {
+  box-shadow: 0 0 20px rgba(139,92,246,0.22), 0 0 40px rgba(139,92,246,0.10);
+  animation: prm-p3-pulse-glow 3s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumBorder
+   Usage: add to any card container
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-border {
+  border: 1px solid rgba(251,191,36,0.30);
+  position: relative;
+}
+
+.prm-p3-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(251,191,36,0.6), transparent 40%, rgba(139,92,246,0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumOverlay
+   Usage: inside a position:relative card
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(10, 6, 20, 0.72);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: inherit;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.prm-p3-overlay-lock {
+  font-size: 1.5rem;
+  display: block;
+  animation: prm-p3-soft-pulse 2s ease-in-out infinite;
+}
+
+.prm-p3-overlay-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fbbf24;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Show on parent hover */
+.prm-p3-ribbon-wrap:hover .prm-p3-overlay,
+.prm-p3-card-wrap:hover .prm-p3-overlay {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumPreviewCard
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-preview-card {
+  position: relative;
+  border-radius: 18px;
+  padding: 22px 18px 18px;
+  background: linear-gradient(145deg,
+    rgba(20,14,42,0.97) 0%,
+    rgba(14,10,32,0.97) 50%,
+    rgba(10,18,48,0.97) 100%);
+  border: 1px solid rgba(251,191,36,0.22);
+  overflow: hidden;
+  animation: prm-p3-card-lift 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+.prm-p3-preview-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% -20%,
+    rgba(251,191,36,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.prm-p3-preview-card::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: -100%;
+  width: 60%;
+  background: linear-gradient(90deg,
+    transparent, rgba(255,255,255,0.04), transparent);
+  animation: prm-p3-glass-sheen 6s ease-in-out 0.5s infinite;
+  pointer-events: none;
+}
+
+.prm-p3-pc-crown {
+  font-size: 2.2rem;
+  display: block;
+  text-align: center;
+  margin-bottom: 8px;
+  animation: prm-p3-crown-bob 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(251,191,36,0.7));
+}
+
+.prm-p3-pc-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fbbf24;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.01em;
+}
+
+.prm-p3-pc-sub {
+  font-size: 0.72rem;
+  color: rgba(220,210,255,0.68);
+  text-align: center;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.prm-p3-pc-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: grid;
+  gap: 7px;
+}
+
+.prm-p3-pc-benefit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #f0e6ff;
+}
+
+.prm-p3-pc-benefit-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(251,191,36,0.12);
+  border: 1px solid rgba(251,191,36,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.prm-p3-pc-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.prm-p3-pc-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1a0f00;
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 50%, #d97706 100%);
+  background-size: 200% 100%;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  animation: prm-p3-shimmer 3s linear infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prm-p3-pc-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(251,191,36,0.38);
+}
+
+.prm-p3-pc-btn-primary:active {
+  transform: translateY(0);
+}
+
+.prm-p3-pc-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #f0e6ff;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prm-p3-pc-btn-secondary:hover {
+  background: rgba(255,255,255,0.10);
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumCTA (inline CTA strip)
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.10) 0%,
+    rgba(139,92,246,0.08) 100%);
+  border: 1px solid rgba(251,191,36,0.22);
+  flex-wrap: wrap;
+}
+
+.prm-p3-cta-text {
+  font-size: 0.8rem;
+  color: #f0e6ff;
+  font-weight: 600;
+}
+
+.prm-p3-cta-text small {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: rgba(220,210,255,0.68);
+  margin-top: 2px;
+}
+
+.prm-p3-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1a0f00;
+  background: linear-gradient(135deg, #d97706, #fbbf24);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prm-p3-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(251,191,36,0.35);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT: PremiumSection header
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-section {
+  padding: 10px 0 0;
+}
+
+.prm-p3-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.prm-p3-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prm-p3-section-icon {
+  font-size: 1.1rem;
+}
+
+.prm-p3-section-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f0e6ff;
+  letter-spacing: 0.01em;
+}
+
+.prm-p3-section-subtitle {
+  font-size: 0.7rem;
+  color: #fbbf24;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.prm-p3-section-see-all {
+  font-size: 0.72rem;
+  color: #fbbf24;
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: opacity 0.2s;
+}
+
+.prm-p3-section-see-all:hover {
+  opacity: 0.75;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   HOME PAGE: Premium Showcase Section
+   ID: prm-p3-showcase-section
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-showcase-section {
+  padding: 24px 0 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient top glow */
+.prm-p3-showcase-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent, rgba(251,191,36,0.50), #fbbf24, rgba(251,191,36,0.50), transparent);
+  pointer-events: none;
+}
+
+/* ── Sub-section row tabs ───────────────────────────────────────── */
+
+.prm-p3-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.prm-p3-tabs::-webkit-scrollbar { display: none; }
+
+.prm-p3-tab {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(220,210,255,0.7);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prm-p3-tab.active,
+.prm-p3-tab:focus-visible {
+  color: #1a0f00;
+  background: linear-gradient(135deg, #d97706, #fbbf24);
+  border-color: transparent;
+}
+
+.prm-p3-tab:hover:not(.active) {
+  color: #fbbf24;
+  border-color: rgba(251,191,36,0.35);
+  background: rgba(251,191,36,0.08);
+}
+
+/* ── Horizontal scroll row ─────────────────────────────────────── */
+
+.prm-p3-scroll-track {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 4px 0 12px;
+}
+
+.prm-p3-scroll-track::-webkit-scrollbar { display: none; }
+
+/* ── Premium Showcase Card ─────────────────────────────────────── */
+
+.prm-p3-showcase-card {
+  flex-shrink: 0;
+  width: 160px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(160deg,
+    rgba(22,16,44,0.97) 0%,
+    rgba(14,10,32,0.97) 100%);
+  border: 1px solid rgba(251,191,36,0.20);
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.22s ease;
+  animation: prm-p3-card-lift 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prm-p3-showcase-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.45), 0 0 24px rgba(251,191,36,0.18);
+}
+
+.prm-p3-showcase-card:active {
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* Staggered entrance animations */
+.prm-p3-showcase-card:nth-child(1) { animation-delay: 0.05s; }
+.prm-p3-showcase-card:nth-child(2) { animation-delay: 0.10s; }
+.prm-p3-showcase-card:nth-child(3) { animation-delay: 0.15s; }
+.prm-p3-showcase-card:nth-child(4) { animation-delay: 0.20s; }
+.prm-p3-showcase-card:nth-child(5) { animation-delay: 0.25s; }
+.prm-p3-showcase-card:nth-child(6) { animation-delay: 0.30s; }
+
+.prm-p3-sc-cover {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  display: block;
+  background: linear-gradient(135deg, rgba(30,20,60,1) 0%, rgba(20,14,42,1) 100%);
+}
+
+.prm-p3-sc-cover-placeholder {
+  width: 100%;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  background: linear-gradient(135deg,
+    rgba(251,191,36,0.08) 0%,
+    rgba(139,92,246,0.08) 100%);
+}
+
+.prm-p3-sc-body {
+  padding: 10px 10px 12px;
+}
+
+.prm-p3-sc-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.prm-p3-sc-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #e4d8ff;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.prm-p3-sc-meta {
+  font-size: 0.62rem;
+  color: rgba(200,185,255,0.55);
+}
+
+/* Gold shimmer border on hover */
+.prm-p3-showcase-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(251,191,36,0);
+  transition: box-shadow 0.3s ease;
+  pointer-events: none;
+}
+
+.prm-p3-showcase-card:hover::after {
+  box-shadow: inset 0 0 0 1.5px rgba(251,191,36,0.50);
+}
+
+/* ── Floating particles inside showcase section ─────────────────── */
+
+.prm-p3-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.prm-p3-particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: prm-p3-particle-up linear infinite;
+}
+
+/* ── Section header divider line ──────────────────────────────── */
+
+.prm-p3-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent, rgba(251,191,36,0.25) 30%, rgba(139,92,246,0.20) 70%, transparent);
+  margin: 6px 0 18px;
+  border: none;
+}
+
+/* ── "See All" row footer link ─────────────────────────────────── */
+
+.prm-p3-see-all-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   FREE MEMBER badge (Profile page)
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-member-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.prm-p3-member-badge--free {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(220,210,255,0.8);
+}
+
+.prm-p3-member-badge--premium {
+  background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(139,92,246,0.12));
+  border: 1px solid rgba(251,191,36,0.35);
+  color: #fbbf24;
+  animation: prm-p3-pulse-glow 3s ease-in-out infinite;
+}
+
+.prm-p3-member-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.prm-p3-member-badge--free .prm-p3-member-badge-dot {
+  background: rgba(220,210,255,0.5);
+}
+
+.prm-p3-member-badge--premium .prm-p3-member-badge-dot {
+  background: #fbbf24;
+  box-shadow: 0 0 6px rgba(251,191,36,0.7);
+  animation: prm-p3-soft-pulse 1.5s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  gap: 8px;
+  color: rgba(200,185,255,0.45);
+  font-size: 0.78rem;
+}
+
+.prm-p3-empty-icon {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .prm-p3-showcase-card {
+    width: 145px;
+  }
+
+  .prm-p3-sc-cover,
+  .prm-p3-sc-cover-placeholder {
+    height: 96px;
+  }
+
+  .prm-p3-preview-card {
+    padding: 18px 14px 14px;
+  }
+
+  .prm-p3-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prm-p3-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .prm-p3-showcase-section {
+    padding: 18px 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prm-p3-showcase-card {
+    width: 132px;
+  }
+
+  .prm-p3-pc-title {
+    font-size: 0.95rem;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   GPU ACCELERATION
+══════════════════════════════════════════════════════════════════ */
+
+.prm-p3-badge,
+.prm-p3-ribbon,
+.prm-p3-showcase-card,
+.prm-p3-preview-card,
+.prm-p3-pc-btn-primary,
+.prm-p3-glow {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
