@@ -14647,7 +14647,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   </script>
 </div>
 
-<div class="page" id="page-premium" style="display:none">
+<div class="page" id="page-premium">
 
   <!-- HERO ─────────────────────────────────────────────────────── -->
   <div class="prm-hero">
@@ -16466,7 +16466,7 @@ async function navigate(page) {
   }
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  pageEl.classList.add('active');
+  pageEl.classList.add('active'); pageEl.style.removeProperty('display');
   currentPage = page;
   window.currentPage = page; // FIX: expose to supabase.js and all external scripts
   window.scrollTo(0, 0);

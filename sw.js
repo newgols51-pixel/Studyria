@@ -36,7 +36,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v20';  // ← bumped: rollback to 248365e, cache flush
+const CACHE_NAME   = 'studyria-v21';  // premium page visibility fix
 const SW_BUILD     = '2026.07.12-phase1-premium-landing';
 const OFFLINE_PAGE = '/offline.html';
 
