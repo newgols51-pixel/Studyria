@@ -5525,8 +5525,27 @@ function studyriaApp() {
         </button>
         <button class="icon-btn" id="themeToggle" @click="toggleTheme()" aria-label="Toggle theme"><svg width="17" height="17"><use :href="isDarkMode ? '#ic-moon' : '#ic-sun'" id="themeIcon"/></svg></button>
 
+        <!-- ── 🌐 Language Switcher ──────────────────────────── -->
+        <div class="lang-switcher-wrap" id="langSwitcherWrap" style="position:relative;display:inline-flex;align-items:center">
+          <button class="icon-btn" id="langBtn" onclick="toggleLangMenu(event)" aria-label="Change Language" title="Change Language" style="font-size:.82rem;letter-spacing:-.01em;gap:3px;display:flex;align-items:center;padding:6px 9px">
+            🌐 <span id="langBtnLabel" style="font-weight:700;font-size:.78rem">অ</span>
+          </button>
+          <div id="langMenu" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--glass-bg,rgba(20,20,35,0.97));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.11);border-radius:14px;padding:8px 0;min-width:196px;z-index:99999;box-shadow:0 20px 60px rgba(0,0,0,0.45);animation:langFadeIn .17s ease">
+            <div style="padding:7px 15px 9px;font-size:.67rem;font-weight:700;color:rgba(128,145,180,0.8);letter-spacing:.09em;text-transform:uppercase">🌐 Language</div>
+            <button class="lang-opt" data-lang="as" onclick="setLanguage('as')" style="width:100%;text-align:left;background:none;border:none;color:inherit;padding:9px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.87rem;transition:background .13s;font-family:inherit">
+              <span class="lang-tick" style="color:#3d8ef8;width:14px;display:inline-block">✓</span> 🇮🇳 অসমীয়া <span style="font-size:.65rem;color:rgba(128,145,180,0.6);margin-left:auto">Default</span>
+            </button>
+            <button class="lang-opt" data-lang="en" onclick="setLanguage('en')" style="width:100%;text-align:left;background:none;border:none;color:inherit;padding:9px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.87rem;transition:background .13s;font-family:inherit">
+              <span class="lang-tick" style="color:#3d8ef8;width:14px;display:inline-block;visibility:hidden">✓</span> 🇬🇧 English
+            </button>
+            <button class="lang-opt" data-lang="hi" onclick="setLanguage('hi')" style="width:100%;text-align:left;background:none;border:none;color:inherit;padding:9px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.87rem;transition:background .13s;font-family:inherit">
+              <span class="lang-tick" style="color:#3d8ef8;width:14px;display:inline-block;visibility:hidden">✓</span> 🇮🇳 हिन्दी
+            </button>
+          </div>
+        </div>
+
         <div id="navUserArea">
-          <button class="btn btn-primary btn-sm" id="navLoginBtn" onclick="navigate('login')">Sign In</button>
+          <button class="btn btn-primary btn-sm" id="navLoginBtn" onclick="navigate('login')" data-i18n="login">Sign In</button>
         </div>
 
         <div style="position:relative" id="hamburgerWrap">
@@ -7486,11 +7505,24 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
       </select>
     </div>
     <div>
-      <input type="search" class="sh-filter-select" id="discoverSearch"
-        style="width:100%;margin-bottom:12px"
-        placeholder="Search by title, topic, author…"
-        oninput="onDiscoverInput()" autocomplete="off"
-        aria-label="Search PDFs" />
+      <!-- ── Omni Search wrapper ───────────────────────── -->
+      <div id="omniSearchWrap" style="position:relative;margin-bottom:4px">
+        <input type="search" class="sh-filter-select" id="discoverSearch"
+          style="width:100%"
+          placeholder="Search by title, topic, author…"
+          data-i18n-placeholder="search_placeholder"
+          oninput="omniOnInput()" onfocus="omniOnFocus()" onblur="omniOnBlur()"
+          onkeydown="omniOnKeydown(event)" autocomplete="off"
+          aria-label="Search PDFs" aria-autocomplete="list" aria-haspopup="listbox" />
+        <!-- Autocomplete dropdown -->
+        <div id="omniDropdown" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--glass-bg,rgba(18,18,30,0.98));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;z-index:9990;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:langFadeIn .15s ease;max-height:320px;overflow-y:auto"></div>
+      </div>
+      <!-- ── Free / Paid filter pills (shown on search focus) ─ -->
+      <div id="omniFreePaidWrap" style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:10px;margin-top:4px">
+        <button class="omni-pill" data-filter="all"   onclick="omniSetFreePaid('all')"  >All</button>
+        <button class="omni-pill" data-filter="free"  onclick="omniSetFreePaid('free')" >Free</button>
+        <button class="omni-pill" data-filter="paid"  onclick="omniSetFreePaid('paid')" >Paid</button>
+      </div>
     </div>
     <div id="discoverResultsWrap" style="display:none;margin-top:24px">
       <div id="discoverLoading" class="discover-loading" style="display:none">
@@ -9057,7 +9089,7 @@ window.addEventListener('resize', function() {
       <div class="ottlib-hero-search">
         <div class="ottlib-search-wrap">
           <span class="ottlib-search-icon"><svg width="16" height="16"><use href="#ic-search"/></svg></span>
-          <input class="ottlib-search-input" id="libSearch" placeholder="Search PDFs, Notes, Papers, Authors…" oninput="if(window._libSearchDebounce)clearTimeout(window._libSearchDebounce);window._libSearchDebounce=setTimeout(renderLibGrid,280)" />
+          <input class="ottlib-search-input" id="libSearch" placeholder="Search PDFs, Notes, Papers, Authors…" data-i18n-placeholder="search_placeholder" oninput="if(window._libSearchDebounce)clearTimeout(window._libSearchDebounce);window._libSearchDebounce=setTimeout(renderLibGrid,280)" />
         </div>
         <select class="ottlib-sort-select" id="libSort" onchange="renderLibGrid()">
           <option value="popular">🔥 Most Popular</option>
@@ -35811,7 +35843,431 @@ document.addEventListener('keydown', e => {
  *
  * HOW TO USE:
  *   Paste this entire <script> block at the very END of index.html,
- *   just before </body>. It overrides all relevant functions via
+ *   just before 
+<!-- ══════════════════════════════════════════════════════════════════════
+     STUDYRIA PHASE 1 — OMNI SEARCH + MULTI-LANGUAGE
+     Injected just before </body> — fully backward compatible
+  ══════════════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Lang dropdown animation ─────────────────────────────────────── */
+@keyframes langFadeIn {
+  from { opacity:0; transform:translateY(-5px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.lang-opt:hover { background:rgba(61,142,248,0.1) !important; }
+
+/* ── Omni pill buttons ───────────────────────────────────────────── */
+.omni-pill {
+  padding:4px 13px;border-radius:20px;border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.05);color:var(--text2,rgba(200,210,230,0.8));
+  cursor:pointer;font-size:.74rem;font-family:inherit;transition:all .15s;
+}
+.omni-pill:hover,.omni-pill.active {
+  background:rgba(61,142,248,0.18);border-color:rgba(61,142,248,0.5);
+  color:var(--accent,#3d8ef8);font-weight:700;
+}
+body.light .omni-pill { color:rgba(30,40,70,0.7); }
+body.light .omni-pill:hover,body.light .omni-pill.active {
+  background:rgba(61,142,248,0.12);color:#1e63d0;
+}
+
+/* ── Autocomplete rows ───────────────────────────────────────────── */
+.omni-row {
+  display:flex;align-items:center;gap:10px;padding:9px 14px;
+  cursor:pointer;font-size:.84rem;transition:background .12s;
+  color:var(--text1,#e8eaf2);
+}
+.omni-row:hover,.omni-row.focused { background:rgba(61,142,248,0.1); }
+.omni-row-icon { font-size:1rem;flex-shrink:0;width:22px;text-align:center; }
+.omni-section-hd {
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(128,145,180,0.6);padding:8px 14px 4px;
+}
+body.light .omni-row { color:rgba(30,40,70,0.85); }
+</style>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   I18N — Centralized translations
+   ══════════════════════════════════════════════════════════════════ */
+(function(){
+window.I18N = {
+  as: {
+    search_placeholder: 'PDF খোজক…',
+    home: 'মূখ্য পৃষ্ঠা', browse: 'PDF ব্ৰাউজ কৰক', free: 'বিনামূলীয়া',
+    paid: 'পেইড', download: 'ডাউনলোড কৰক', buy_now: 'এতিয়া কিনক',
+    login: 'লগইন', logout: 'লগআউট', profile: 'প্ৰফাইল',
+    wishlist: 'উইশলিষ্ট', my_pdfs: 'মোৰ PDF', categories: 'বিভাগসমূহ',
+    trending: 'ট্ৰেণ্ডিং', new_arrivals: 'নতুন আগমন', bestsellers: 'বেষ্টচেলাৰ',
+    all_pdfs: 'সকলো PDF', no_results: 'কোনো ফলাফল পোৱা নগ'ল',
+    filter: 'ফিল্টাৰ', sort_by: 'ক্ৰমানুসাৰে', newest: 'নতুনতম',
+    popular: 'জনপ্ৰিয়', az: 'A-Z', free_filter: 'বিনামূলীয়া',
+    paid_filter: 'পেইড', loading: 'লোড হৈ আছে…', share: 'শ্বেয়াৰ কৰক',
+    preview: 'প্ৰিভিউ', pages: 'পৃষ্ঠাসমূহ', language: 'ভাষা',
+    footer_tagline: 'অসমৰ শ্ৰেষ্ঠ পৰীক্ষা প্ৰস্তুতি সামগ্ৰী',
+    recent_searches: 'শেহতীয়া সন্ধান', trending_searches: 'ট্ৰেণ্ডিং'
+  },
+  en: {
+    search_placeholder: 'Search PDFs…',
+    home: 'Home', browse: 'Browse PDFs', free: 'Free',
+    paid: 'Paid', download: 'Download', buy_now: 'Buy Now',
+    login: 'Login', logout: 'Logout', profile: 'Profile',
+    wishlist: 'Wishlist', my_pdfs: 'My PDFs', categories: 'Categories',
+    trending: 'Trending', new_arrivals: 'New Arrivals', bestsellers: 'Bestsellers',
+    all_pdfs: 'All PDFs', no_results: 'No results found',
+    filter: 'Filter', sort_by: 'Sort By', newest: 'Newest',
+    popular: 'Popular', az: 'A-Z', free_filter: 'Free',
+    paid_filter: 'Paid', loading: 'Loading…', share: 'Share',
+    preview: 'Preview', pages: 'Pages', language: 'Language',
+    footer_tagline: 'Best Exam Preparation Materials for Assam',
+    recent_searches: 'Recent Searches', trending_searches: 'Trending'
+  },
+  hi: {
+    search_placeholder: 'PDF खोजें…',
+    home: 'होम', browse: 'PDF ब्राउज़ करें', free: 'मुफ़्त',
+    paid: 'भुगतान', download: 'डाउनलोड', buy_now: 'अभी खरीदें',
+    login: 'लॉगिन', logout: 'लॉगआउट', profile: 'प्रोफ़ाइल',
+    wishlist: 'विशलिस्ट', my_pdfs: 'मेरे PDF', categories: 'श्रेणियाँ',
+    trending: 'ट्रेंडिंग', new_arrivals: 'नए आगमन', bestsellers: 'बेस्टसेलर',
+    all_pdfs: 'सभी PDF', no_results: 'कोई परिणाम नहीं मिला',
+    filter: 'फ़िल्टर', sort_by: 'क्रमबद्ध करें', newest: 'नवीनतम',
+    popular: 'लोकप्रिय', az: 'A-Z', free_filter: 'मुफ़्त',
+    paid_filter: 'भुगतान', loading: 'लोड हो रहा है…', share: 'शेयर',
+    preview: 'पूर्वावलोकन', pages: 'पृष्ठ', language: 'भाषा',
+    footer_tagline: 'असम की सर्वश्रेष्ठ परीक्षा सामग्री',
+    recent_searches: 'हाल की खोजें', trending_searches: 'ट्रेंडिंग'
+  }
+};
+
+/* ── Helpers ───────────────────────────────────────────────────── */
+function i18nT(key) {
+  var lang = window._studyLang || 'as';
+  return (window.I18N[lang] && window.I18N[lang][key]) || (window.I18N['as'][key]) || key;
+}
+
+function applyLanguage(lang) {
+  var t = window.I18N[lang] || window.I18N['as'];
+  // data-i18n (textContent)
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k = el.getAttribute('data-i18n');
+    if (t[k] !== undefined) el.textContent = t[k];
+  });
+  // data-i18n-placeholder
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var k = el.getAttribute('data-i18n-placeholder');
+    if (t[k] !== undefined) el.placeholder = t[k];
+  });
+  // update lang button label
+  var labels = { as: 'অ', en: 'A', hi: 'ह' };
+  var lbl = document.getElementById('langBtnLabel');
+  if (lbl) lbl.textContent = labels[lang] || 'অ';
+  // update checkmarks
+  document.querySelectorAll('.lang-opt').forEach(function(btn){
+    var tick = btn.querySelector('.lang-tick');
+    if (tick) tick.style.visibility = btn.dataset.lang === lang ? 'visible' : 'hidden';
+  });
+}
+
+function setLanguage(lang) {
+  if (!window.I18N[lang]) lang = 'as';
+  window._studyLang = lang;
+  try { localStorage.setItem('studyria_lang', lang); } catch(e){}
+  applyLanguage(lang);
+  toggleLangMenu(null, true); // close menu
+}
+
+function toggleLangMenu(e, forceClose) {
+  if (e) e.stopPropagation();
+  var menu = document.getElementById('langMenu');
+  if (!menu) return;
+  var isOpen = menu.style.display !== 'none';
+  if (forceClose || isOpen) {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+    // close on outside click
+    setTimeout(function(){
+      document.addEventListener('click', function _cl(ev){
+        if (!document.getElementById('langSwitcherWrap')?.contains(ev.target)) {
+          menu.style.display = 'none';
+          document.removeEventListener('click', _cl);
+        }
+      });
+    }, 0);
+  }
+}
+
+// Init language on load
+(function(){
+  var saved = 'as';
+  try { saved = localStorage.getItem('studyria_lang') || 'as'; } catch(e){}
+  if (!window.I18N[saved]) saved = 'as';
+  window._studyLang = saved;
+  // apply after DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ applyLanguage(saved); });
+  } else {
+    applyLanguage(saved);
+  }
+})();
+
+})(); // end I18N IIFE
+
+/* ══════════════════════════════════════════════════════════════════════
+   OMNI SEARCH — Instant, Fuzzy, Autocomplete, Recent, Trending, Filters
+   ══════════════════════════════════════════════════════════════════ */
+(function(){
+
+/* ── Constants ─────────────────────────────────────────────────── */
+var RECENT_KEY   = 'studyria_recent_searches';
+var MAX_RECENT   = 8;
+var DEBOUNCE_MS  = 200;
+var TRENDING     = ['ADRE','APSC CCE','Assam Police','GK Assam','DHS Assam','Finance & Accounts','Forest Guard','Assam TET'];
+
+/* ── State ─────────────────────────────────────────────────────── */
+var _timer       = null;
+var _focusTimer  = null;
+var _freePaid    = 'all'; // 'all' | 'free' | 'paid'
+var _cursor      = -1;   // keyboard nav index in dropdown rows
+
+/* ── Recent searches ────────────────────────────────────────────── */
+function getRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch(e){ return []; }
+}
+function addRecent(q) {
+  if (!q || q.length < 2) return;
+  var list = getRecent().filter(function(s){ return s.toLowerCase() !== q.toLowerCase(); });
+  list.unshift(q);
+  if (list.length > MAX_RECENT) list = list.slice(0, MAX_RECENT);
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(list)); } catch(e){}
+}
+function clearRecent() {
+  try { localStorage.removeItem(RECENT_KEY); } catch(e){}
+  renderDropdown('');
+}
+
+/* ── Fuzzy match ────────────────────────────────────────────────── */
+function fuzzyScore(haystack, needle) {
+  if (!needle) return 0;
+  haystack = (haystack || '').toLowerCase();
+  needle   = needle.toLowerCase();
+  if (haystack.includes(needle)) return 100;
+  // simple character-sequence fuzzy
+  var hi = 0, ni = 0, score = 0;
+  while (hi < haystack.length && ni < needle.length) {
+    if (haystack[hi] === needle[ni]) { score++; ni++; }
+    hi++;
+  }
+  if (ni < needle.length) return 0; // not all chars found
+  return Math.round((score / needle.length) * 80);
+}
+
+/* ── Search PDFs ─────────────────────────────────────────────────── */
+function searchPdfs(q) {
+  var pdfs = window.PDFS || [];
+  if (!q && _freePaid === 'all') return [];
+  var results = pdfs.filter(function(p){
+    if (!p || !p.title) return false;
+    // free/paid filter
+    if (_freePaid === 'free' && !p.free && parseFloat(p.selling_price || p.price || 0) > 0) return false;
+    if (_freePaid === 'paid' && (p.free || parseFloat(p.selling_price || p.price || 0) === 0)) return false;
+    if (!q) return true;
+    var score = Math.max(
+      fuzzyScore(p.title, q),
+      fuzzyScore(p.author || '', q),
+      fuzzyScore(p.category || '', q),
+      fuzzyScore(p.description || '', q)
+    );
+    p._omniScore = score;
+    return score >= 30;
+  });
+  results.sort(function(a,b){ return (b._omniScore||0)-(a._omniScore||0); });
+  return results.slice(0, 8);
+}
+
+/* ── Render dropdown ────────────────────────────────────────────── */
+function renderDropdown(q) {
+  var dd = document.getElementById('omniDropdown');
+  if (!dd) return;
+  _cursor = -1;
+  var html = '';
+
+  if (!q || q.length < 2) {
+    // Show recent + trending
+    var recent = getRecent();
+    if (recent.length) {
+      html += '<div class="omni-section-hd">' + i18nT('recent_searches') +
+              ' <span onclick="window._omniClearRecent()" style="cursor:pointer;color:rgba(61,142,248,0.8);font-size:.65rem;font-weight:400;float:right;margin-right:2px">Clear</span></div>';
+      recent.forEach(function(s){
+        html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect('' + esc(s) + '')">' +
+                  '<span class="omni-row-icon">🕐</span>' + esc(s) + '</div>';
+      });
+    }
+    html += '<div class="omni-section-hd">' + i18nT('trending_searches') + '</div>';
+    TRENDING.forEach(function(s){
+      html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect('' + esc(s) + '')">' +
+                '<span class="omni-row-icon">🔥</span>' + esc(s) + '</div>';
+    });
+  } else {
+    // Show live results
+    var results = searchPdfs(q);
+    if (results.length) {
+      html += '<div class="omni-section-hd">Results</div>';
+      results.forEach(function(p){
+        var title = esc(p.title || '');
+        var cat   = p.category ? (' · <span style="opacity:.55;font-size:.75rem">' + esc(p.category) + '</span>') : '';
+        var price = p.free || parseFloat(p.selling_price||p.price||0) === 0
+          ? '<span style="color:#10d98e;font-size:.72rem;margin-left:auto">Free</span>'
+          : '<span style="color:var(--accent);font-size:.72rem;margin-left:auto">₹' + (p.selling_price||p.price) + '</span>';
+        html += '<div class="omni-row" role="option" data-query="' + title + '" onclick="omniSelect('' + title + '')">' +
+                  '<span class="omni-row-icon">📄</span>' +
+                  '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + title + cat + '</span>' +
+                  price + '</div>';
+      });
+    } else {
+      html += '<div style="padding:14px 14px;font-size:.82rem;color:rgba(128,145,180,0.7)">' + i18nT('no_results') + '</div>';
+    }
+  }
+
+  if (!html) { dd.style.display = 'none'; return; }
+  dd.innerHTML = html;
+  dd.style.display = 'block';
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ── Public: clear recent ────────────────────────────────────────── */
+window._omniClearRecent = clearRecent;
+
+/* ── Select a suggestion ─────────────────────────────────────────── */
+function omniSelect(q) {
+  var inp = document.getElementById('discoverSearch');
+  if (inp) inp.value = q;
+  addRecent(q);
+  hideDropdown();
+  // trigger the existing search
+  if (typeof onDiscoverInput === 'function') onDiscoverInput();
+}
+window.omniSelect = omniSelect;
+
+/* ── Show/hide free-paid pills ───────────────────────────────────── */
+function showPills() {
+  var wrap = document.getElementById('omniFreePaidWrap');
+  if (wrap) wrap.style.display = 'flex';
+}
+function hidePills() {
+  var wrap = document.getElementById('omniFreePaidWrap');
+  if (wrap) wrap.style.display = 'none';
+}
+function hideDropdown() {
+  var dd = document.getElementById('omniDropdown');
+  if (dd) dd.style.display = 'none';
+}
+
+/* ── Set free/paid filter ─────────────────────────────────────────── */
+window.omniSetFreePaid = function(val) {
+  _freePaid = val;
+  document.querySelectorAll('.omni-pill').forEach(function(b){
+    b.classList.toggle('active', b.dataset.filter === val);
+  });
+  // rerun discover filter
+  if (typeof onDiscoverInput === 'function') onDiscoverInput();
+};
+
+/* ── Input events ────────────────────────────────────────────────── */
+window.omniOnInput = function() {
+  clearTimeout(_timer);
+  var q = (document.getElementById('discoverSearch')?.value || '').trim();
+  // trigger existing search (debounced at 200ms)
+  _timer = setTimeout(function(){
+    if (typeof onDiscoverInput === 'function') onDiscoverInput();
+    renderDropdown(q);
+    if (q.length >= 2) addRecentPending(q);
+  }, DEBOUNCE_MS);
+  // also update dropdown immediately for fast feel
+  renderDropdown(q);
+};
+
+var _pendingRecent = null;
+function addRecentPending(q) {
+  clearTimeout(_pendingRecent);
+  _pendingRecent = setTimeout(function(){ addRecent(q); }, 1500);
+}
+
+window.omniOnFocus = function() {
+  showPills();
+  var q = (document.getElementById('discoverSearch')?.value || '').trim();
+  renderDropdown(q);
+};
+
+window.omniOnBlur = function() {
+  // Delay hide so clicks on dropdown rows register
+  _focusTimer = setTimeout(function(){
+    hideDropdown();
+    // only hide pills if search is empty
+    var q = (document.getElementById('discoverSearch')?.value || '').trim();
+    if (!q && _freePaid === 'all') hidePills();
+  }, 200);
+};
+
+/* ── Keyboard navigation ──────────────────────────────────────────── */
+window.omniOnKeydown = function(e) {
+  var dd = document.getElementById('omniDropdown');
+  if (!dd || dd.style.display === 'none') {
+    if (e.key === 'Enter') {
+      var q = (document.getElementById('discoverSearch')?.value || '').trim();
+      if (q) addRecent(q);
+      if (typeof onDiscoverInput === 'function') onDiscoverInput();
+    }
+    return;
+  }
+  var rows = dd.querySelectorAll('.omni-row');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    _cursor = Math.min(_cursor + 1, rows.length - 1);
+    rows.forEach(function(r,i){ r.classList.toggle('focused', i === _cursor); });
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    _cursor = Math.max(_cursor - 1, -1);
+    rows.forEach(function(r,i){ r.classList.toggle('focused', i === _cursor); });
+  } else if (e.key === 'Enter') {
+    if (_cursor >= 0 && rows[_cursor]) {
+      rows[_cursor].click();
+    } else {
+      var q = (document.getElementById('discoverSearch')?.value || '').trim();
+      if (q) addRecent(q);
+      if (typeof onDiscoverInput === 'function') onDiscoverInput();
+      hideDropdown();
+    }
+  } else if (e.key === 'Escape') {
+    hideDropdown();
+    hidePills();
+  }
+};
+
+/* ── Also intercept the hero search on homepage ──────────────────── */
+// Hero search syncs to discoverSearch — keep existing logic intact.
+// On Enter from hero search, also add to recent
+var _heroOrig = null;
+document.addEventListener('DOMContentLoaded', function(){
+  var heroInp = document.querySelector('input[oninput*="discoverSearch"]');
+  if (heroInp) {
+    var origKeydown = heroInp.onkeydown;
+    heroInp.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        var v = heroInp.value.trim();
+        if (v) addRecent(v);
+      }
+    });
+  }
+});
+
+})(); // end Omni Search IIFE
+</script>
+
+</body>. It overrides all relevant functions via
  *   re-declaration (functions hoisted last win) and patches the DOM.
  *
  * WHAT THIS FIXES:
