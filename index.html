@@ -10,6 +10,7 @@
     })(window, document, "clarity", "script", "xipfez9bow");
 </script>
 <link rel="stylesheet" href="premium-edit-pdf-styles.css">
+<link rel="stylesheet" href="premium.css">
 <meta charset="UTF-8" />
 <!-- ── SPA PATH → HASH REDIRECT ───────────────────────────────────────
      Runs synchronously before any paint so direct URL visits (/library,
@@ -5516,6 +5517,7 @@ function studyriaApp() {
         <button class="nav-link" data-page="library" onclick="navigate('library')"><svg width="15" height="15"><use href="#ic-library"/></svg>Library</button>
         <button class="nav-link" data-page="blog" onclick="navigate('blog')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</button>
         <button class="nav-link" data-page="dashboard" onclick="navigate('dashboard')"><svg width="15" height="15"><use href="#ic-dashboard"/></svg>My Dashboard</button>
+        <button class="nav-link prm-nav-pill" data-page="premium" onclick="navigate('premium')" style="background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(139,92,246,0.15));border:1.5px solid rgba(251,191,36,0.45);border-radius:20px;color:#fbbf24;font-weight:800">👑 Premium</button>
 
       </div>
       <div class="nav-actions">
@@ -7448,6 +7450,20 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 </section>
 
 <!-- ── WHY STUDYRIA ──────────────────────────────────────────── -->
+  <!-- Premium Membership Banner -->
+  <section style="padding:4px 0 8px">
+    <div class="container">
+      <div class="prm-home-banner">
+        <div class="prm-home-banner-left">
+          <div class="prm-home-banner-crown">👑</div>
+          <div class="prm-home-banner-title">Unlock Premium Membership</div>
+          <div class="prm-home-banner-sub">Unlimited Premium Handwritten Notes · Ad-Free · Premium Badge</div>
+        </div>
+        <button class="prm-home-banner-btn" onclick="navigate('premium')">Become Premium →</button>
+      </div>
+    </div>
+  </section>
+
 <section class="sh-why-section">
   <div class="container">
     <div class="sh-section-head">
@@ -14629,6 +14645,361 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   </script>
 </div>
 
+
+<div class="page" id="page-premium">
+
+  <!-- HERO -->
+  <div class="prm-hero">
+    <div class="prm-hero-bg">
+      <div class="prm-hero-orb prm-hero-orb-1"></div>
+      <div class="prm-hero-orb prm-hero-orb-2"></div>
+      <div class="prm-hero-orb prm-hero-orb-3"></div>
+    </div>
+    <div class="prm-hero-inner">
+      <div class="prm-crown-ring">👑</div>
+      <h1 class="prm-hero-title">Studyria Premium<br>Membership</h1>
+      <p class="prm-hero-sub">Unlock unlimited Premium Handwritten Notes and enjoy the best learning experience — designed for serious learners.</p>
+      <div class="prm-hero-trust-row">
+        <span class="prm-trust-chip">✅ Cancel Anytime</span>
+        <span class="prm-trust-chip">⚡ Instant Access</span>
+        <span class="prm-trust-chip">🔒 Secure Payment</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING PLANS -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-section-title">Choose Your Plan</div>
+      <div class="prm-section-sub">All plans include full access to all Premium Handwritten Notes</div>
+      <div class="prm-plans-grid">
+
+        <div class="prm-plan-card" tabindex="0">
+          <div class="prm-plan-emoji">🟢</div>
+          <div class="prm-plan-name">Starter</div>
+          <div class="prm-plan-price">₹49</div>
+          <div class="prm-plan-only">Only</div>
+          <div class="prm-plan-duration">📅 15 Days</div>
+          <ul class="prm-plan-features">
+            <li>All Premium Handwritten Notes</li>
+            <li>Premium Reading Room</li>
+            <li>Reading Progress</li>
+            <li>Unlimited Wishlist</li>
+            <li>Ad-Free Experience</li>
+          </ul>
+          <button class="prm-plan-btn" onclick="PRM.scrollToPlans()">Get Started →</button>
+        </div>
+
+        <div class="prm-plan-card" tabindex="0">
+          <div class="prm-plan-emoji">🔵</div>
+          <div class="prm-plan-name">Monthly</div>
+          <div class="prm-plan-price">₹99</div>
+          <div class="prm-plan-only">Only</div>
+          <div class="prm-plan-duration">📅 30 Days</div>
+          <ul class="prm-plan-features">
+            <li>All Premium Handwritten Notes</li>
+            <li>Premium Reading Room</li>
+            <li>Continue Reading</li>
+            <li>Reading Progress</li>
+            <li>Unlimited Wishlist</li>
+            <li>Ad-Free Experience</li>
+            <li>Premium Badge</li>
+          </ul>
+          <button class="prm-plan-btn" onclick="PRM.scrollToPlans()">Subscribe →</button>
+        </div>
+
+        <div class="prm-plan-card prm-popular" tabindex="0">
+          <div class="prm-plan-badge">⭐ MOST POPULAR</div>
+          <div class="prm-plan-emoji">🟣</div>
+          <div class="prm-plan-name">Quarterly</div>
+          <div class="prm-plan-price">₹249</div>
+          <div class="prm-plan-only">Only — Save More!</div>
+          <div class="prm-plan-duration">📅 3 Months</div>
+          <ul class="prm-plan-features">
+            <li>All Premium Handwritten Notes</li>
+            <li>Premium Reading Room</li>
+            <li>Continue Reading</li>
+            <li>Reading Progress</li>
+            <li>Unlimited Wishlist</li>
+            <li>Ad-Free Experience</li>
+            <li>Premium Badge</li>
+            <li>Early Access to New Notes</li>
+            <li>Member Discounts</li>
+          </ul>
+          <button class="prm-plan-btn" onclick="PRM.scrollToPlans()">⭐ Best Choice →</button>
+        </div>
+
+        <div class="prm-plan-card prm-best" tabindex="0">
+          <div class="prm-plan-badge">👑 BEST VALUE</div>
+          <div class="prm-plan-emoji">👑</div>
+          <div class="prm-plan-name">Half Year</div>
+          <div class="prm-plan-price">₹449</div>
+          <div class="prm-plan-only">Only — Maximum Savings!</div>
+          <div class="prm-plan-duration">📅 6 Months</div>
+          <ul class="prm-plan-features">
+            <li>All Premium Handwritten Notes</li>
+            <li>Premium Reading Room</li>
+            <li>Continue Reading</li>
+            <li>Reading Progress</li>
+            <li>Unlimited Wishlist</li>
+            <li>Ad-Free Experience</li>
+            <li>Premium Badge</li>
+            <li>Early Access to New Notes</li>
+            <li>Member Discounts</li>
+            <li>Printed Books Discount</li>
+            <li>Priority Support</li>
+          </ul>
+          <button class="prm-plan-btn" onclick="PRM.scrollToPlans()">👑 Get Best Value →</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-section-title">Everything Premium Includes</div>
+      <div class="prm-section-sub">Your membership unlocks a complete learning ecosystem</div>
+      <div class="prm-benefits-grid">
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(61,142,248,0.15)">📚</div><div class="prm-benefit-name">Unlimited Premium Notes</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(16,217,142,0.15)">📖</div><div class="prm-benefit-name">Premium Reading Room</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(251,191,36,0.15)">🔖</div><div class="prm-benefit-name">Continue Reading</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(139,92,246,0.15)">📈</div><div class="prm-benefit-name">Reading Progress</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(244,63,94,0.15)">❤️</div><div class="prm-benefit-name">Unlimited Wishlist</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(16,217,142,0.15)">🚫</div><div class="prm-benefit-name">Ad-Free Experience</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(251,191,36,0.15)">👑</div><div class="prm-benefit-name">Premium Badge</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(249,115,22,0.15)">⚡</div><div class="prm-benefit-name">Early Access</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(16,217,142,0.15)">💰</div><div class="prm-benefit-name">Member Discounts</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(61,142,248,0.15)">📦</div><div class="prm-benefit-name">Printed Books Discount</div></div>
+        <div class="prm-benefit-card"><div class="prm-benefit-icon" style="background:rgba(139,92,246,0.15)">🎧</div><div class="prm-benefit-name">Priority Support</div></div>
+        <div class="prm-benefit-card prm-coming-soon"><div class="prm-benefit-icon" style="background:rgba(251,191,36,0.10)">🤖</div><div class="prm-benefit-name">AI Study Assistant</div></div>
+        <div class="prm-benefit-card prm-coming-soon"><div class="prm-benefit-icon" style="background:rgba(61,142,248,0.10)">📝</div><div class="prm-benefit-name">Premium Mock Tests</div></div>
+        <div class="prm-benefit-card prm-coming-soon"><div class="prm-benefit-icon" style="background:rgba(16,217,142,0.10)">📚</div><div class="prm-benefit-name">Premium MCQs</div></div>
+        <div class="prm-benefit-card prm-coming-soon"><div class="prm-benefit-icon" style="background:rgba(139,92,246,0.10)">📄</div><div class="prm-benefit-name">Premium PYQs</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREE VS PREMIUM TABLE -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-section-title">Free vs Premium</div>
+      <div class="prm-section-sub">See what you unlock with Premium</div>
+      <div class="prm-compare-wrap">
+        <table class="prm-compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Free</th>
+              <th>👑 Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Free PDFs</td>                <td><span class="prm-check-yes">✓</span></td><td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Premium Handwritten Notes</td><td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Continue Reading</td>         <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Reading Progress</td>         <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Premium Reading Room</td>     <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Unlimited Wishlist</td>       <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Ad-Free Experience</td>       <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Premium Badge</td>            <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Early Access</td>             <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Member Discounts</td>         <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Printed Book Discount</td>    <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Priority Support</td>         <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Future AI Features</td>       <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+            <tr><td>Premium Mock Tests</td>       <td><span class="prm-check-no">✗</span></td> <td><span class="prm-check-gold">✓</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBERSHIP PROMISE -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-promise-card">
+        <div class="prm-promise-title">👑 Your Premium Membership Includes</div>
+        <ul class="prm-promise-list">
+          <li><div class="prm-promise-check">✓</div>Unlimited access to all Premium Handwritten Notes</li>
+          <li><div class="prm-promise-check">✓</div>New Premium Notes automatically included — no extra cost</li>
+          <li><div class="prm-promise-check">✓</div>Premium Reading Experience with dark reader</li>
+          <li><div class="prm-promise-check">✓</div>Member-only discounts on all purchases</li>
+          <li><div class="prm-promise-check">✓</div>Exclusive Premium Badge on your profile</li>
+          <li><div class="prm-promise-check">✓</div>All future premium features — included automatically</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPORTANT NOTICE -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-section-title" style="margin-bottom:18px">⚠️ Important to Know</div>
+      <div class="prm-notice-grid">
+        <div class="prm-notice-card prm-notice-owned">
+          <div class="prm-notice-icon">💳</div>
+          <div class="prm-notice-title">Individually Purchased PDFs</div>
+          <p>Remain yours <strong>forever</strong>.</p>
+          <p>Lifetime access — they <strong>never expire</strong>.</p>
+          <div class="prm-notice-divider">✓ Permanent Ownership</div>
+          <p style="margin:0;font-size:0.74rem;color:var(--text3)">Buy once, keep forever. No membership required.</p>
+        </div>
+        <div class="prm-notice-card prm-notice-member">
+          <div class="prm-notice-icon">👑</div>
+          <div class="prm-notice-title">Membership Premium PDFs</div>
+          <p>Available only while your <strong>membership is active</strong>.</p>
+          <p>Renew anytime to <strong>restore access</strong>.</p>
+          <div class="prm-notice-divider">⟳ Subscription-Based Access</div>
+          <p style="margin:0;font-size:0.74rem;color:var(--text3)">Purchased PDFs and Membership are completely independent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-section-title">Frequently Asked Questions</div>
+      <div class="prm-section-sub">Got questions? We have answers.</div>
+      <div class="prm-faq-list">
+
+        <div class="prm-faq-item">
+          <button class="prm-faq-q" onclick="PRM.toggleFaq(this)">
+            How does Premium Membership work?
+            <i class="prm-faq-chevron">▾</i>
+          </button>
+          <div class="prm-faq-a"><div class="prm-faq-a-inner">
+            Premium Membership gives you unlimited access to all Premium Handwritten Notes on Studyria for the duration of your plan. Choose a plan, complete payment, and get instant access — no waiting, no approval needed.
+          </div></div>
+        </div>
+
+        <div class="prm-faq-item">
+          <button class="prm-faq-q" onclick="PRM.toggleFaq(this)">
+            Do individually purchased PDFs expire?
+            <i class="prm-faq-chevron">▾</i>
+          </button>
+          <div class="prm-faq-a"><div class="prm-faq-a-inner">
+            No. PDFs you purchase individually are yours forever — lifetime access that never expires, regardless of your membership status. Purchased PDFs and Membership access are completely independent.
+          </div></div>
+        </div>
+
+        <div class="prm-faq-item">
+          <button class="prm-faq-q" onclick="PRM.toggleFaq(this)">
+            Can I renew my membership anytime?
+            <i class="prm-faq-chevron">▾</i>
+          </button>
+          <div class="prm-faq-a"><div class="prm-faq-a-inner">
+            Yes! You can renew anytime — even after your membership expires. Your access restores immediately upon renewal and all Premium Notes become accessible again instantly.
+          </div></div>
+        </div>
+
+        <div class="prm-faq-item">
+          <button class="prm-faq-q" onclick="PRM.toggleFaq(this)">
+            Can I cancel my membership?
+            <i class="prm-faq-chevron">▾</i>
+          </button>
+          <div class="prm-faq-a"><div class="prm-faq-a-inner">
+            Membership plans are one-time payments for a fixed duration — there is no auto-renewal or recurring charge. Your membership simply expires at the end of the period. You can choose to renew or not.
+          </div></div>
+        </div>
+
+        <div class="prm-faq-item">
+          <button class="prm-faq-q" onclick="PRM.toggleFaq(this)">
+            Does Membership include future Premium PDFs?
+            <i class="prm-faq-chevron">▾</i>
+          </button>
+          <div class="prm-faq-a"><div class="prm-faq-a-inner">
+            Yes! All new Premium Handwritten Notes added to Studyria are automatically included in your membership — at no extra cost. Your plan always covers the complete premium catalog.
+          </div></div>
+        </div>
+
+        <div class="prm-faq-item">
+          <button class="prm-faq-q" onclick="PRM.toggleFaq(this)">
+            Which plan is best for me?
+            <i class="prm-faq-chevron">▾</i>
+          </button>
+          <div class="prm-faq-a"><div class="prm-faq-a-inner">
+            If you are preparing for an upcoming exam, the Quarterly (3-Month) plan offers the best balance of savings and access. For maximum value and serious preparation, the 6-Month plan gives you everything at the lowest per-day cost.
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="prm-section">
+    <div class="container">
+      <div class="prm-section-title">What Premium Members Say</div>
+      <div class="prm-section-sub">Real students, real results</div>
+    </div>
+    <div class="prm-testi-outer" id="prmTestiOuter">
+      <div class="prm-testi-track" id="prmTestiTrack">
+        <div class="prm-testi-card">
+          <div class="prm-testi-header">
+            <div class="prm-testi-avatar">R</div>
+            <div><div class="prm-testi-name">Raktim B.</div><div class="prm-testi-role">ADRE 2026 · Guwahati</div></div>
+          </div>
+          <div class="prm-testi-stars">★★★★★</div>
+          <div class="prm-testi-text">Premium membership is a game-changer! The handwritten notes are so detailed and well-organized. I covered more syllabus in 2 weeks than in 2 months before.</div>
+          <div class="prm-testi-plan">👑 Quarterly Plan</div>
+        </div>
+        <div class="prm-testi-card">
+          <div class="prm-testi-header">
+            <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#10d98e,#00c8e8)">P</div>
+            <div><div class="prm-testi-name">Priyanka D.</div><div class="prm-testi-role">Current Affairs · Jorhat</div></div>
+          </div>
+          <div class="prm-testi-stars">★★★★★</div>
+          <div class="prm-testi-text">The reading room experience is incredible. I can track progress and bookmark notes. For ₹249 for 3 months, this is the best investment for exam prep.</div>
+          <div class="prm-testi-plan">⭐ Most Popular</div>
+        </div>
+        <div class="prm-testi-card">
+          <div class="prm-testi-header">
+            <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">A</div>
+            <div><div class="prm-testi-name">Abhijit K.</div><div class="prm-testi-role">Assam Police · Tezpur</div></div>
+          </div>
+          <div class="prm-testi-stars">★★★★★</div>
+          <div class="prm-testi-text">Studyria Premium is worth every rupee. New notes are added automatically — I never need to buy separately. The ad-free reading is fantastic.</div>
+          <div class="prm-testi-plan">👑 Best Value</div>
+        </div>
+        <div class="prm-testi-card">
+          <div class="prm-testi-header">
+            <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">M</div>
+            <div><div class="prm-testi-name">Mousumi N.</div><div class="prm-testi-role">GK &amp; Current Affairs · Dibrugarh</div></div>
+          </div>
+          <div class="prm-testi-stars">★★★★★</div>
+          <div class="prm-testi-text">I love the continue reading feature. I can pick up exactly where I left off on any device. Premium Badge on profile is a great touch!</div>
+          <div class="prm-testi-plan">🔵 Monthly Plan</div>
+        </div>
+        <div class="prm-testi-card">
+          <div class="prm-testi-header">
+            <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#3d8ef8,#10d98e)">S</div>
+            <div><div class="prm-testi-name">Saurav G.</div><div class="prm-testi-role">APSC Aspirant · Nagaon</div></div>
+          </div>
+          <div class="prm-testi-stars">★★★★★</div>
+          <div class="prm-testi-text">Started with Starter plan to try it out and immediately upgraded to the 6-month plan. The handwritten notes quality is unmatched anywhere online.</div>
+          <div class="prm-testi-plan">🟢 Starter → 👑 Best Value</div>
+        </div>
+      </div>
+    </div>
+    <div class="prm-testi-dots" id="prmTestiDots"></div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section class="prm-section prm-bottom-cta">
+    <div class="container">
+      <div class="prm-bottom-cta-title">Ready to Go Premium?</div>
+      <div class="prm-bottom-cta-sub">Join thousands of students already learning smarter with Premium</div>
+      <button class="prm-bottom-cta-btn" onclick="PRM.scrollToPlans()">
+        👑 Choose Your Plan
+      </button>
+    </div>
+  </section>
+
+</div><!-- /page-premium -->
+
 <div class="page" id="page-404" style="display:none">
   <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:20px;">
     <div style="font-size:5rem;line-height:1;">🔍</div>
@@ -16017,8 +16388,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload',
-  'privacy','terms','refund','about','contact','blog'
-]);
+  'privacy','terms','refund','about','contact','blog','premium']);
 
 // Force-resets any leftover native browser pinch-zoom. Needed because a
 // changed viewport <meta> only takes effect on a genuine page reload — SPA
@@ -16153,6 +16523,9 @@ async function navigate(page) {
   if (page === 'career-hub') {
     // Initialize Career Hub when navigating to it
     if (typeof chInit === 'function') chInit();
+  }
+  if (page === 'premium') {
+    if (window.PRM && typeof PRM.initPage === 'function') PRM.initPage();
   }
   if (page === 'about') {
     // Populate About page stats from the shared Supabase source
@@ -20056,6 +20429,35 @@ async function switchMeTab(tab) {
           Explore Now
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
+      </div>
+
+      <!-- Premium Membership Widget -->
+      <div class="prm-dash-widget">
+        <div class="prm-dash-widget-header">
+          <div class="prm-dash-widget-icon">👑</div>
+          <div>
+            <div class="prm-dash-widget-title">Premium Membership</div>
+            <div class="prm-dash-widget-sub">Unlock unlimited learning</div>
+          </div>
+        </div>
+        <div class="prm-dash-status-row">
+          <div>
+            <div style="font-size:0.72rem;color:var(--text3);margin-bottom:4px">Current Plan</div>
+            <div class="prm-dash-status-badge free">⚪ Free Plan</div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;color:var(--text3);margin-bottom:4px">Status</div>
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text2)">Not Active</div>
+          </div>
+        </div>
+        <div class="prm-dash-benefits-row">
+          <span class="prm-dash-benefit-chip">📚 Premium Notes</span>
+          <span class="prm-dash-benefit-chip">📖 Reading Room</span>
+          <span class="prm-dash-benefit-chip">🚫 Ad-Free</span>
+          <span class="prm-dash-benefit-chip">👑 Badge</span>
+          <span class="prm-dash-benefit-chip">⚡ Early Access</span>
+        </div>
+        <button class="prm-dash-upgrade-btn" onclick="navigate('premium')">👑 Upgrade to Premium →</button>
       </div>
 
       <!-- Stat Cards -->
@@ -36267,6 +36669,7 @@ document.addEventListener('DOMContentLoaded', function(){
 })(); // end Omni Search IIFE
 </script>
 
+<script src="premium.js" defer></script>
 </body>. It overrides all relevant functions via
  *   re-declaration (functions hoisted last win) and patches the DOM.
  *
