@@ -71,10 +71,44 @@
   // ── Safe probe wrapper ────────────────────────────────────────────────────
   async function _probe(fn, timeoutMs) {
     const ms = timeoutMs || PROBE_TIMEOUT_MS;
-    return Promise.race([
-      fn(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('probe_timeout')), ms)),
-    ]);
+    
+    // Create AbortController if available in environment (null safety / backward compatibility)
+    let controller = null;
+    let signal = null;
+    if (typeof AbortController !== 'undefined') {
+      try {
+        controller = new AbortController();
+        signal = controller.signal;
+      } catch (e) {
+        _log('_probe', 'Failed to initialize AbortController', e);
+      }
+    }
+
+    let timeoutId = null;
+    const timeoutPromise = new Promise((_, reject) => {
+      timeoutId = setTimeout(() => {
+        if (controller) {
+          try {
+            controller.abort();
+          } catch (e) {
+            _log('_probe', 'Failed to call abort() on controller', e);
+          }
+        }
+        reject(new Error('probe_timeout'));
+      }, ms);
+    });
+
+    try {
+      const result = await Promise.race([
+        fn(signal),
+        timeoutPromise
+      ]);
+      return result;
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -102,9 +136,13 @@
     const client = _sb();
     if (!client) return _check('plans_table', STATUS.SKIP, 'Skipped — no Supabase client');
     try {
-      const { data, error } = await _probe(async () =>
-        client.from('membership_plans').select('id, slug, active').limit(1)
-      );
+      const { data, error } = await _probe(async (signal) => {
+        let query = client.from('membership_plans').select('id, slug, active').limit(1);
+        if (signal && typeof query.abortSignal === 'function') {
+          query = query.abortSignal(signal);
+        }
+        return query;
+      });
       if (error) {
         return _check('plans_table', STATUS.FAIL,
           'membership_plans query error: ' + error.message, { code: error.code });
@@ -127,9 +165,13 @@
       return _check('memberships_table', STATUS.SKIP, 'Skipped — user not logged in (RLS would block anyway)');
     }
     try {
-      const { error } = await _probe(async () =>
-        client.from('user_memberships').select('id').limit(1)
-      );
+      const { error } = await _probe(async (signal) => {
+        let query = client.from('user_memberships').select('id').limit(1);
+        if (signal && typeof query.abortSignal === 'function') {
+          query = query.abortSignal(signal);
+        }
+        return query;
+      });
       if (error) {
         return _check('memberships_table', STATUS.FAIL,
           'user_memberships query error: ' + error.message, { code: error.code });
@@ -147,9 +189,13 @@
     const client = _sb();
     if (!client) return _check('features_table', STATUS.SKIP, 'Skipped — no Supabase client');
     try {
-      const { data, error } = await _probe(async () =>
-        client.from('membership_features').select('feature_key, enabled').limit(5)
-      );
+      const { data, error } = await _probe(async (signal) => {
+        let query = client.from('membership_features').select('feature_key, enabled').limit(5);
+        if (signal && typeof query.abortSignal === 'function') {
+          query = query.abortSignal(signal);
+        }
+        return query;
+      });
       if (error) {
         // Non-fatal — feature kill-switch table may not exist yet in this environment
         return _check('features_table', STATUS.WARN,
@@ -173,7 +219,12 @@
       return _check('auth_session', STATUS.SKIP, 'Skipped — guest user (no session expected)');
     }
     try {
-      const { data, error } = await _probe(async () => client.auth.getSession());
+      const { data, error } = await _probe(async (signal) => {
+        // Note: Supabase auth.getSession() reads synchronously from storage / memory in most cases
+        // and its asynchronous interface does not support/need abortSignal as there is no network
+        // query builder chain to abort.
+        return client.auth.getSession();
+      });
       if (error) {
         return _check('auth_session', STATUS.FAIL, 'getSession error: ' + error.message);
       }
