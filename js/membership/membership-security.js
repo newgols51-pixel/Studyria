@@ -157,15 +157,90 @@
       return { ok: false, reason: 'invalid_uid', age: null, stale: false };
     }
 
-    // Check Supabase session expiry via client if available
+    // Synchronous best-effort check — definitive async check is in health.js checkSessionValidity()
+    let session = null;
     const client = root.supabaseClient;
-    if (client) {
-      // We rely on supabase-js auto-refresh; we can't synchronously get expiry.
-      // Just confirm the client exists and auth is not in an error state.
-      // Full async check is done in health.js (checkSessionValidity).
+
+    // 1. Try to read from client.auth synchronously if cached by supabase-js
+    if (client && client.auth) {
+      try {
+        if (typeof client.auth.getSession === 'function') {
+          // In some versions of supabase-js, synchronous or internal access might be available,
+          // or we can probe the current active session object if stored under an internal key.
+          const currentSession = client.auth.session ? client.auth.session() : null;
+          if (currentSession) {
+            session = currentSession;
+          }
+        }
+      } catch (e) {
+        _warn('assertSessionFresh', 'Error probing synchronous client auth session', e);
+      }
     }
 
-    _log('assertSessionFresh', 'Session OK', { uid: user.uid.slice(0, 8) + '...' });
+    // 2. Try to read from localStorage synchronous cache if supabaseClient or project ref is known
+    if (!session && typeof window !== 'undefined' && window.localStorage) {
+      try {
+        // Find keys matching sb-<project-ref>-auth-token
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const key = window.localStorage.key(i);
+          if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+            const raw = window.localStorage.getItem(key);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              // supabase-js v2 stores the token payload with an inner/outer object containing expires_at
+              if (parsed && typeof parsed === 'object') {
+                session = parsed.currentSession || parsed;
+                break;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        _warn('assertSessionFresh', 'Error reading session from localStorage', e);
+      }
+    }
+
+    // 3. If session information is retrieved, perform expiration and age assertions
+    if (session) {
+      const nowMs = Date.now();
+      
+      // Calculate age comparing against created_at or issued_at if available
+      // session.created_at is typically stored, or we check issued_at (iat) in JWT if available
+      let createdAtMs = null;
+      if (session.created_at) {
+        createdAtMs = new Date(session.created_at).getTime();
+      } else if (session.user && session.user.last_sign_in_at) {
+        createdAtMs = new Date(session.user.last_sign_in_at).getTime();
+      }
+
+      if (createdAtMs && !isNaN(createdAtMs)) {
+        const ageMs = nowMs - createdAtMs;
+        if (ageMs > MAX_SESSION_AGE_MS) {
+          _warn('assertSessionFresh', 'Session exceeded MAX_SESSION_AGE_MS', { ageMs, max: MAX_SESSION_AGE_MS });
+          return { ok: false, reason: 'session_too_old', age: ageMs, stale: true };
+        }
+      }
+
+      // Check expires_at (typically Unix timestamp in seconds)
+      const expiresAt = session.expires_at;
+      if (expiresAt) {
+        const expiresAtMs = expiresAt * 1000;
+        const diffMs = expiresAtMs - nowMs;
+
+        // If expires_at is in the past by > 5 minutes
+        if (diffMs < -5 * 60 * 1000) {
+          _warn('assertSessionFresh', 'Session expired by > 5 minutes', { diffMs });
+          return { ok: false, reason: 'session_expired', stale: true, age: null };
+        }
+        // If within 5 minutes of expiry (or expired by <= 5 minutes)
+        if (diffMs <= 5 * 60 * 1000) {
+          _log('assertSessionFresh', 'Session expiring soon or in grace window', { diffMs });
+          return { ok: true, reason: 'expiring_soon', stale: true, age: null };
+        }
+      }
+    }
+
+    _log('assertSessionFresh', 'Session OK (or fell back to existing behavior)', { uid: user.uid.slice(0, 8) + '...' });
     return { ok: true, reason: 'ok', age: null, stale: false };
   }
 
