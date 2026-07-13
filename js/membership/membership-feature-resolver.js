@@ -1,13 +1,13 @@
 /**
  * =============================================================================
  * FILE: js/membership/membership-feature-resolver.js
- * PROJECT: Studyria Premium Membership — Phase 4C
+ * PROJECT: Studyria Premium Membership — Phase 4D
  * PURPOSE: Resolve which features a user has access to based on their
  *          resolved membership status + plan features JSONB +
  *          global feature kill-switch registry.
  *          Zero network calls (uses data already fetched by service).
  *          Zero side effects. Zero writes.
- * BRANCH:  feat/premium-membership-phase-4c
+ * BRANCH:  feat/premium-membership-phase-4d
  * SAFE:    Pure functions only.
  * =============================================================================
  *
@@ -36,7 +36,7 @@
     // None currently — all premium features require active membership
   ]));
 
-  // Features that remain accessible during the GRACE period
+  // Features accessible during the 3-day grace period after expiry — only base plan features, not gated extras
   const GRACE_FEATURES = Object.freeze(new Set([
     'ad_free',            // stays on during grace (good UX)
     'premium_badge',      // stays on during grace
@@ -45,9 +45,7 @@
     'analytics',          // stays on during grace
     'early_access',       // stays on during grace
     'priority_support',   // stays on during grace
-    'reading_room',       // stays on during grace
     'ai_summary',         // stays on during grace
-    'creator_access',     // stays on during grace
   ]));
 
   // ── Core: check single feature ─────────────────────────────────────────────
@@ -194,6 +192,6 @@
     GRACE_FEATURES: Array.from(GRACE_FEATURES),
   });
 
-  console.debug('[MembershipFeatureResolver] Registered — Phase 4C');
+  console.debug('[MembershipFeatureResolver] Registered — Phase 4D');
 
 }(typeof self !== 'undefined' ? self : this));
