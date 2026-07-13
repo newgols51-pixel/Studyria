@@ -37,7 +37,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 const CACHE_NAME   = 'studyria-v22';  // premium page visibility fix
-const SW_BUILD     = '2026.07.12-phase1-premium-landing';
+const SW_BUILD     = '2026.07.13-phase5c-final';
 const OFFLINE_PAGE = '/offline.html';
 
 const WHATS_NEW = '🐛 Fixed ReferenceError: _blockDoubleTap is not defined — function was renamed to _handleDoubleTap and cache was stale. All clients now receive the latest build.';

@@ -123,8 +123,6 @@
 <script>
 /* Phase 5C — runtime config; never includes secrets */
 window.STUDYRIA_CONFIG = window.STUDYRIA_CONFIG || {};
-window.STUDYRIA_CONFIG.edgeFunctionBaseUrl =
-  'https://qsdfmgcekdpjdcyqhuhi.supabase.co/functions/v1';
 window.SUPABASE_URL = 'https://qsdfmgcekdpjdcyqhuhi.supabase.co';
 </script>
 <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
@@ -14699,7 +14697,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
             <li>Unlimited Wishlist</li>
             <li>Ad-Free Experience</li>
           </ul>
-          <button class="prm-plan-btn" onclick="PRM1.scrollToPlans()">Get Started →</button>
+          <button class="prm-plan-btn" data-plan="starter" onclick="PPAY.checkout('starter', this)">Get Started →</button>
           <div class="prm-plan-coming">Payment coming soon</div>
         </div>
 
@@ -14719,7 +14717,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
             <li>Ad-Free Experience</li>
             <li>Premium Badge</li>
           </ul>
-          <button class="prm-plan-btn" onclick="PRM1.scrollToPlans()">Subscribe →</button>
+          <button class="prm-plan-btn" data-plan="monthly" onclick="PPAY.checkout('monthly', this)">Subscribe →</button>
           <div class="prm-plan-coming">Payment coming soon</div>
         </div>
 
@@ -14742,7 +14740,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
             <li>Early Access</li>
             <li>Member Discounts</li>
           </ul>
-          <button class="prm-plan-btn" onclick="PRM1.scrollToPlans()">⭐ Best Choice →</button>
+          <button class="prm-plan-btn" data-plan="quarterly" onclick="PPAY.checkout('quarterly', this)">⭐ Best Choice →</button>
           <div class="prm-plan-coming">Payment coming soon</div>
         </div>
 
@@ -14767,7 +14765,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
             <li>Printed Books Discount</li>
             <li>Priority Support</li>
           </ul>
-          <button class="prm-plan-btn" onclick="PRM1.scrollToPlans()">👑 Best Value →</button>
+          <button class="prm-plan-btn" data-plan="biannual" onclick="PPAY.checkout('biannual', this)">👑 Best Value →</button>
           <div class="prm-plan-coming">Payment coming soon</div>
         </div>
 
@@ -36630,6 +36628,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <script src="premium-p1.js" defer></script>
+<script src="premium-payment.js" defer></script>
 </body>. It overrides all relevant functions via
  *   re-declaration (functions hoisted last win) and patches the DOM.
  *
@@ -45551,9 +45550,9 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 <script src="/premium-p2.js" defer></script>
 <script src="/premium-p3.js" defer></script>
-<script src="/js/membership/payment-audit-logger.js" defer></script>
-<script src="/js/membership/payment-order-service.js" defer></script>
-<script src="/js/membership/payment-checkout-service.js" defer></script>
-<script src="/premium-p5c.js" defer></script>
+
+
+
+
 </body>
 </html>
