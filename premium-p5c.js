@@ -1,384 +1,361 @@
 /**
  * ══════════════════════════════════════════════════════════════════════════
- * premium-p5c.js — Studyria Phase 5C UI Integration
+ * premium-p5c.js — Studyria Phase 5C v2 UI Integration
  * ══════════════════════════════════════════════════════════════════════════
  *
- * Responsibility: Wire the phase-p3 plan card buttons to the checkout
- * service (payment-checkout-service.js). Show loading/success/error states.
- * Refresh membership status after successful payment.
+ * CHANGE FROM v1:
+ *   v1 depended on StudyriaPaymentOrderService + membership_payment_orders.
+ *   v2 reuses the existing Razorpay checkout pattern (same as buyPDF) but
+ *   adds server-side HMAC-SHA256 verification via the verify-membership-payment
+ *   edge function. No order table required.
  *
- * SAFETY CONTRACT
- * ───────────────
- * ✅ Never activates Premium on its own — always goes through the server.
- * ✅ Never touches PDF reader, Checkout, Wishlist, Login, Auth, Admin,
- *    Dashboard, Library, Search, Career Hub, or global CSS.
- * ✅ Only modifies the .prm-plan-btn buttons and .prm-plan-coming divs.
- * ✅ No amount or price is sent to any API from this file.
- * ✅ Namespace: p5c-* for new DOM elements; no new global CSS.
- * ✅ All changes are non-destructive and reversible.
- * ✅ Works independently of other premium phases — additive only.
+ * FLOW:
+ *   1. User clicks a plan button ("Buy Monthly" etc.)
+ *   2. Auth check — redirect to login if not authenticated.
+ *   3. Fetch plan config from window.MembershipConfig.
+ *   4. Load Razorpay SDK on-demand.
+ *   5. Open Razorpay checkout modal.
+ *   6. On success: POST {razorpayOrderId, razorpayPaymentId, razorpaySignature, planSlug}
+ *      to the verify-membership-payment edge function.
+ *   7. Edge function verifies HMAC-SHA256 and activates membership.
+ *   8. Show success toast and refresh membership status.
  *
- * DEPENDS ON (must load before this file):
- *   - supabase.js
- *   - js/membership/payment-order-service.js   (Phase 5B)
- *   - js/membership/payment-audit-logger.js    (Phase 5B)
- *   - js/membership/payment-checkout-service.js (Phase 5C)
+ * SAFETY CONTRACT:
+ *   ✅ Never activates Premium on its own.
+ *   ✅ Always POSTs to server for HMAC verification.
+ *   ✅ Never sends price/amount to verify endpoint.
+ *   ✅ Never touches PDF reader, Checkout, Wishlist, Library, Auth, Admin.
+ *   ✅ No amount is trusted from client — server fetches from DB.
+ *   ✅ Namespace: PP5C for all module globals.
+ *
+ * DEPENDS ON:
+ *   - supabase.js (window.supabaseClient)
+ *   - js/membership/membership-config.js (window.MembershipConfig)
+ *   - js/membership/membership-service.js (window.MembershipService)
  *
  * @module premium-p5c
- * @phase  5C
+ * @phase  5C v2
  */
 
 (function () {
   'use strict';
 
-  if (window.PP5C && window.PP5C._phase === '5C') return;
+  if (window.PP5C && window.PP5C._phase === '5C-v2') return;
 
-  // ── Plan slug mapping ─────────────────────────────────────────────────────
-  // Maps plan card button index to plan slug (order matches index.html #page-premium .prm-plans-grid)
-  const PLAN_SLUGS = ['starter', 'monthly', 'quarterly', 'biannual'];
+  // ── Constants ──────────────────────────────────────────────────────────
+  const RAZORPAY_KEY_ID    = 'rzp_live_SxcnO1cOS2HAJT';
+  const RAZORPAY_SDK_URL   = 'https://checkout.razorpay.com/v1/checkout.js';
+  const EDGE_FN_BASE       = (window.STUDYRIA_CONFIG || {}).edgeFunctionBaseUrl
+                             || 'https://qsdfmgcekdpjdcyqhuhi.supabase.co/functions/v1';
+  const VERIFY_ENDPOINT    = `${EDGE_FN_BASE}/verify-membership-payment`;
 
-  // ── UI helpers ─────────────────────────────────────────────────────────────
+  // Plan configuration (amounts in INR rupees — displayed to user only; server ignores)
+  const PLAN_CATALOGUE = {
+    starter:   { name: 'Starter',          amount_inr: 49,  slug: 'starter'   },
+    monthly:   { name: 'Premium Monthly',   amount_inr: 99,  slug: 'monthly'   },
+    quarterly: { name: 'Premium Quarterly', amount_inr: 249, slug: 'quarterly' },
+    biannual:  { name: 'Premium Biannual',  amount_inr: 449, slug: 'biannual'  },
+    annual:    { name: 'Premium Annual',    amount_inr: 799, slug: 'annual'    },
+  };
 
-  function _showToast(msg, type) {
-    if (typeof window.showToast === 'function') {
-      window.showToast(msg, type || 'info');
-    } else {
-      console.info('[PP5C] Toast:', msg);
-    }
+  // ── Logging ────────────────────────────────────────────────────────────
+  function _log(fn, msg, data) {
+    data !== undefined
+      ? console.debug('[PP5C:' + fn + ']', msg, data)
+      : console.debug('[PP5C:' + fn + ']', msg);
+  }
+  function _warn(fn, msg, data) {
+    console.warn('[PP5C:' + fn + ']', msg, data || '');
+  }
+  function _error(fn, msg, data) {
+    console.error('[PP5C:' + fn + ']', msg, data || '');
   }
 
+  // ── Toast helper ──────────────────────────────────────────────────────
+  function _toast(msg, type) {
+    if (typeof window.showToast === 'function') window.showToast(msg, type || 'info');
+    else console.info('[PP5C toast]', msg);
+  }
+
+  // ── Navigate helper ───────────────────────────────────────────────────
   function _navigate(page) {
-    if (typeof window.navigate === 'function') {
-      window.navigate(page);
-    }
+    if (typeof window.navigate === 'function') window.navigate(page);
   }
 
-  // ── Button state helpers ───────────────────────────────────────────────────
-
-  /**
-   * Sets a plan button to loading state (spinner + disabled).
-   * Saves original text so it can be restored.
-   */
+  // ── Button state helpers ───────────────────────────────────────────────
   function _btnLoading(btn) {
     if (!btn) return;
-    btn.dataset.p5cOrigText   = btn.textContent;
-    btn.dataset.p5cOrigStyle  = btn.getAttribute('style') || '';
-    btn.disabled              = true;
-    btn.textContent           = '⏳ Processing…';
-    btn.style.opacity         = '0.75';
-    btn.style.cursor          = 'not-allowed';
+    btn.dataset.p5cOrigText  = btn.textContent;
+    btn.dataset.p5cOrigStyle = btn.getAttribute('style') || '';
+    btn.disabled             = true;
+    btn.textContent          = '⏳ Processing…';
+    btn.style.opacity        = '0.7';
+    btn.style.cursor         = 'not-allowed';
   }
 
-  /** Restores a plan button from loading state. */
   function _btnRestore(btn) {
     if (!btn) return;
     btn.disabled     = false;
-    btn.textContent  = btn.dataset.p5cOrigText || 'Get Started →';
+    btn.textContent  = btn.dataset.p5cOrigText  || btn.textContent;
     btn.setAttribute('style', btn.dataset.p5cOrigStyle || '');
   }
 
-  /** Sets a plan button to a permanent success state. */
-  function _btnSuccess(btn) {
+  // ── Button success helpers ─────────────────────────────────────────────
+  function _btnSuccess(btn, label) {
     if (!btn) return;
     btn.disabled    = false;
-    btn.textContent = '✅ Active — Thank You!';
-    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    btn.textContent = label || '✅ Active';
+    btn.style.background = 'var(--grad-success, #10b981)';
+    btn.style.color      = '#fff';
     btn.style.cursor     = 'default';
   }
 
-  // ── Success overlay ────────────────────────────────────────────────────────
+  // ── Auth helper ───────────────────────────────────────────────────────
+  async function _getAuthToken() {
+    const sb = window.supabaseClient;
+    if (!sb) throw new Error('Supabase client not available');
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error || !session) throw new Error('Not authenticated');
+    return { token: session.access_token, user: session.user };
+  }
 
-  /**
-   * Shows a full-screen success modal overlay after payment verification.
-   * Removed automatically after 6 s or on click.
-   */
-  function _showSuccessOverlay(result) {
-    // Remove any existing overlay
-    var old = document.getElementById('p5cSuccessOverlay');
-    if (old) old.remove();
-
-    var overlay = document.createElement('div');
-    overlay.id = 'p5cSuccessOverlay';
-    overlay.style.cssText = [
-      'position:fixed', 'inset:0', 'z-index:99999',
-      'background:rgba(0,0,0,0.82)',
-      'display:flex', 'align-items:center', 'justify-content:center',
-      'animation:p5cFadeIn 0.3s ease',
-    ].join(';');
-
-    var expiresStr = '';
-    if (result.expiresAt) {
-      try {
-        expiresStr = new Date(result.expiresAt).toLocaleDateString('en-IN', {
-          year: 'numeric', month: 'short', day: 'numeric'
-        });
-      } catch (_) {}
-    }
-
-    overlay.innerHTML = [
-      '<style>',
-      '@keyframes p5cFadeIn{from{opacity:0}to{opacity:1}}',
-      '@keyframes p5cPop{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}',
-      '.p5c-modal{',
-        'background:linear-gradient(135deg,#0f0a1e,#1a0e2d);',
-        'border:1px solid rgba(251,191,36,.3);border-radius:24px;',
-        'padding:40px 32px;max-width:380px;width:90%;text-align:center;',
-        'animation:p5cPop 0.35s cubic-bezier(0.34,1.56,0.64,1);',
-        'box-shadow:0 0 60px rgba(251,191,36,.15);',
-      '}',
-      '.p5c-crown{font-size:3.5rem;display:block;margin-bottom:12px}',
-      '.p5c-modal-title{font-size:1.4rem;font-weight:800;',
-        'background:linear-gradient(135deg,#fbbf24,#a78bfa);',
-        '-webkit-background-clip:text;-webkit-text-fill-color:transparent;',
-        'background-clip:text;margin-bottom:8px}',
-      '.p5c-modal-sub{font-size:.84rem;color:rgba(200,210,230,.85);line-height:1.6;margin-bottom:20px}',
-      '.p5c-modal-detail{font-size:.76rem;color:rgba(160,170,200,.7);margin-bottom:24px}',
-      '.p5c-modal-btn{',
-        'padding:12px 28px;border-radius:14px;border:none;cursor:pointer;font-weight:700;',
-        'background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:.9rem;',
-        'transition:transform 0.2s;',
-      '}',
-      '.p5c-modal-btn:hover{transform:translateY(-2px)}',
-      '</style>',
-      '<div class="p5c-modal">',
-      '  <span class="p5c-crown">👑</span>',
-      '  <div class="p5c-modal-title">Welcome to Premium!</div>',
-      '  <div class="p5c-modal-sub">',
-      '    Your <strong>' + _esc(result.planName || 'Premium') + '</strong> membership',
-      '    is now active. Enjoy unlimited access!',
-      '  </div>',
-      expiresStr ? '<div class="p5c-modal-detail">Active until: ' + _esc(expiresStr) + '</div>' : '',
-      '  <button class="p5c-modal-btn" id="p5cSuccessCloseBtn">Start Learning →</button>',
-      '</div>',
-    ].join('');
-
-    document.body.appendChild(overlay);
-
-    function close() {
-      overlay.style.opacity = '0';
-      overlay.style.transition = 'opacity 0.3s';
-      setTimeout(function () { if (overlay.parentNode) overlay.remove(); }, 320);
-    }
-
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) close();
+  // ── Razorpay SDK loader ────────────────────────────────────────────────
+  let _sdkLoaded = false;
+  function _loadRazorpaySDK() {
+    return new Promise((resolve, reject) => {
+      if (typeof Razorpay !== 'undefined' || _sdkLoaded) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src   = RAZORPAY_SDK_URL;
+      s.onload  = () => { _sdkLoaded = true; resolve(); };
+      s.onerror = () => reject(new Error('Razorpay SDK failed to load'));
+      document.head.appendChild(s);
     });
-    var closeBtn = overlay.querySelector('#p5cSuccessCloseBtn');
-    if (closeBtn) closeBtn.addEventListener('click', close);
-
-    // Auto-dismiss after 8 s
-    setTimeout(close, 8000);
   }
 
-  // ── Failure / retry UI ─────────────────────────────────────────────────────
-
-  function _showPaymentError(msg, code) {
-    var message = msg || 'Payment failed. Please try again.';
-
-    // Append support link for server-side errors
-    if (code === 'VERIFY_TIMEOUT' || code === 'VERIFY_FAILED' || code === 'ACTIVATION_FAILED') {
-      message += ' If you were charged, contact support at studyria.qzz.io.';
-    }
-
-    _showToast(message, 'error');
-  }
-
-  // ── HTML escape ────────────────────────────────────────────────────────────
-  function _esc(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  // ── Wire plan card buttons ─────────────────────────────────────────────────
-
-  /**
-   * Replaces the "Payment coming soon" text and wires each plan button
-   * to initiate a checkout via StudyriaCheckoutService.
-   */
-  function _wirePlanButtons() {
-    var premiumPage = document.getElementById('page-premium');
-    if (!premiumPage) {
-      console.warn('[PP5C] #page-premium not found — aborting button wiring.');
-      return;
-    }
-
-    var planCards = premiumPage.querySelectorAll('.prm-plan-card');
-    if (!planCards.length) {
-      console.warn('[PP5C] No .prm-plan-card elements found.');
-      return;
-    }
-
-    planCards.forEach(function (card, index) {
-      var planSlug = PLAN_SLUGS[index];
-      if (!planSlug) return;
-
-      // Remove "Payment coming soon" text
-      var comingSoon = card.querySelector('.prm-plan-coming');
-      if (comingSoon) comingSoon.style.display = 'none';
-
-      // Wire the plan button
-      var btn = card.querySelector('.prm-plan-btn');
-      if (!btn) return;
-
-      // Remove Phase 1's scrollToPlans onclick (harmless but clean)
-      btn.removeAttribute('onclick');
-      btn.setAttribute('data-plan-slug', planSlug);
-      btn.setAttribute('data-p5c-wired', 'true');
-
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        _onPlanBtnClick(btn, planSlug);
+  // ── Open Razorpay modal ────────────────────────────────────────────────
+  function _openRazorpayModal(params) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        key:         RAZORPAY_KEY_ID,
+        amount:      params.amountPaise,   // paise — display only, server ignores
+        currency:    'INR',
+        name:        'Studyria',
+        description: params.planName + ' Membership',
+        prefill: {
+          email: params.userEmail || '',
+          name:  params.userName  || '',
+        },
+        theme: { color: '#3d8ef8' },
+        handler: function (response) {
+          resolve({
+            razorpayOrderId:   response.razorpay_order_id   || '',
+            razorpayPaymentId: response.razorpay_payment_id || '',
+            razorpaySignature: response.razorpay_signature  || '',
+          });
+        },
+        modal: {
+          ondismiss: function () {
+            reject(new Error('PAYMENT_CANCELLED'));
+          },
+        },
+      };
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        reject(new Error('PAYMENT_FAILED:' + (response.error?.description || 'unknown')));
       });
+      rzp.open();
     });
-
-    console.debug('[PP5C] Wired', planCards.length, 'plan card buttons.');
   }
 
-  // ── Click handler ──────────────────────────────────────────────────────────
+  // ── Verify payment on server ───────────────────────────────────────────
+  async function _verifyPaymentOnServer(params) {
+    const { token, razorpayOrderId, razorpayPaymentId, razorpaySignature, planSlug } = params;
 
-  function _onPlanBtnClick(btn, planSlug) {
-    // Guard: must be logged in
-    if (!window.currentUser) {
-      _showToast('Please log in to purchase a membership.', 'info');
+    _log('verify', 'Sending to edge function:', { orderId: razorpayOrderId, paymentId: razorpayPaymentId, planSlug });
+
+    const res = await fetch(VERIFY_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        razorpayOrderId,
+        razorpayPaymentId,
+        razorpaySignature,
+        planSlug,
+        // NOTE: amount is intentionally NOT sent — server fetches from membership_plans
+      }),
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (e) {
+      throw new Error('SERVER_ERROR:Invalid JSON response from verify endpoint');
+    }
+
+    if (!res.ok) {
+      const code    = data?.error?.code    || 'UNKNOWN_ERROR';
+      const message = data?.error?.message || 'Payment verification failed.';
+      throw new Error(`${code}:${message}`);
+    }
+
+    return data;
+  }
+
+  // ── Main checkout flow ────────────────────────────────────────────────
+  async function initiateCheckout(planSlug, triggerBtn) {
+    _log('initiateCheckout', 'Starting checkout for plan:', planSlug);
+
+    const plan = PLAN_CATALOGUE[planSlug];
+    if (!plan) {
+      _toast('Unknown plan. Please try again.', 'error');
+      _warn('initiateCheckout', 'Unknown planSlug:', planSlug);
+      return;
+    }
+
+    // ── Loading state ─────────────────────────────────────────────────
+    _btnLoading(triggerBtn);
+
+    let token, user;
+    try {
+      ({ token, user } = await _getAuthToken());
+    } catch (e) {
+      _btnRestore(triggerBtn);
+      _toast('Please log in to purchase a membership.', 'info');
       _navigate('login');
       return;
     }
 
-    // Guard: checkout service must be available
-    var svc = window.StudyriaCheckoutService;
-    if (!svc || typeof svc.startCheckout !== 'function') {
-      _showToast('Payment system not ready. Please refresh and try again.', 'error');
-      return;
+    try {
+      // ── Load Razorpay SDK ─────────────────────────────────────────
+      await _loadRazorpaySDK();
+      if (typeof Razorpay === 'undefined') {
+        throw new Error('Razorpay SDK unavailable');
+      }
+
+      // ── Open Razorpay modal ───────────────────────────────────────
+      _toast('Opening secure payment…', 'info');
+      const paymentResponse = await _openRazorpayModal({
+        amountPaise: plan.amount_inr * 100,
+        planName:    plan.name,
+        userEmail:   user.email || '',
+        userName:    user.user_metadata?.full_name || '',
+      });
+
+      _log('initiateCheckout', 'Razorpay success callback:', {
+        orderId:   paymentResponse.razorpayOrderId,
+        paymentId: paymentResponse.razorpayPaymentId,
+      });
+
+      // ── Verify on server ──────────────────────────────────────────
+      _toast('Verifying payment…', 'info');
+      const result = await _verifyPaymentOnServer({
+        token,
+        razorpayOrderId:   paymentResponse.razorpayOrderId,
+        razorpayPaymentId: paymentResponse.razorpayPaymentId,
+        razorpaySignature: paymentResponse.razorpaySignature,
+        planSlug,
+      });
+
+      _log('initiateCheckout', 'Server verify result:', result);
+
+      // ── Success ───────────────────────────────────────────────────
+      _btnSuccess(triggerBtn, '✅ Active');
+      _toast(`🎉 ${plan.name} activated! Welcome to Premium.`, 'success');
+
+      // Emit custom event for membership UI refresh
+      window.dispatchEvent(new CustomEvent('studyria:membership:activated', {
+        detail: {
+          planSlug:     plan.slug,
+          membershipId: result.membershipId,
+          expiresAt:    result.expiresAt,
+        },
+      }));
+
+      // Refresh membership status if service is available
+      if (window.MembershipService && typeof window.MembershipService.init === 'function') {
+        try { await window.MembershipService.init(); } catch (_) {}
+      }
+
+    } catch (e) {
+      _btnRestore(triggerBtn);
+      const msg = e.message || '';
+
+      if (msg === 'PAYMENT_CANCELLED') {
+        _toast('Payment cancelled.', 'info');
+      } else if (msg.startsWith('PAYMENT_FAILED')) {
+        _toast('Payment failed. Please try again.', 'error');
+        _error('initiateCheckout', 'Razorpay payment failed:', msg);
+      } else if (msg.startsWith('SIGNATURE_MISMATCH')) {
+        _toast('Payment verification failed. Contact support if you were charged.', 'error');
+        _error('initiateCheckout', 'HMAC mismatch:', msg);
+      } else if (msg.startsWith('DUPLICATE_PAYMENT')) {
+        _toast('This payment was already processed. Your membership should be active.', 'info');
+      } else {
+        _toast('An error occurred. Please try again or contact support.', 'error');
+        _error('initiateCheckout', 'Checkout error:', msg);
+      }
     }
+  }
 
-    // Guard: prevent double-click during active checkout
-    if (svc.isActive()) {
-      _showToast('A checkout is already in progress. Please complete or cancel it.', 'info');
-      return;
-    }
+  // ── Wire plan buttons ─────────────────────────────────────────────────
+  function _wirePlanButtons() {
+    // Targets buttons with class .prm-plan-btn and data-plan attribute
+    const btns = document.querySelectorAll('.prm-plan-btn[data-plan], .prm-plan-btn[data-slug]');
+    btns.forEach(function (btn) {
+      const planSlug = btn.getAttribute('data-plan') || btn.getAttribute('data-slug');
+      if (!planSlug || !PLAN_CATALOGUE[planSlug]) return;
 
-    _btnLoading(btn);
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (btn.disabled) return;
+        initiateCheckout(planSlug, btn);
+      });
+      _log('wirePlanButtons', 'Wired button for plan:', planSlug);
+    });
 
-    svc.startCheckout({
-      planSlug: planSlug,
-
-      onStateChange: function (state) {
-        // Update button text to reflect current state
-        if (state === 'creating_order') {
-          btn.textContent = '📦 Creating order…';
-        } else if (state === 'awaiting_payment') {
-          btn.textContent = '💳 Opening payment…';
-          btn.disabled    = false;  // re-enable so user can see it
-        } else if (state === 'verifying') {
-          btn.textContent = '🔒 Verifying…';
-          btn.disabled    = true;
-        }
-      },
-
-      onSuccess: function (result) {
-        _btnSuccess(btn);
-        _showSuccessOverlay(result);
-
-        // Refresh membership engine if available
-        var engine = window.StudyriaMembershipEngine;
-        if (engine && typeof engine.refresh === 'function') {
-          engine.refresh().catch(function (_) {});
-        }
-      },
-
-      onFailure: function (err) {
-        _btnRestore(btn);
-        _showPaymentError(err.reason, err.code);
-      },
-
-      onCancel: function () {
-        _btnRestore(btn);
-        _showToast('Payment cancelled.', 'info');
-      },
+    // Also wire by index (backward compat with Phase 3 buttons without data-plan)
+    const PLAN_ORDER = ['starter', 'monthly', 'quarterly', 'biannual'];
+    document.querySelectorAll('.prm-plan-btn:not([data-plan]):not([data-slug])').forEach(function (btn, idx) {
+      const slug = PLAN_ORDER[idx];
+      if (!slug) return;
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (btn.disabled) return;
+        initiateCheckout(slug, btn);
+      });
     });
   }
 
-  // ── Me page Premium tab — wire the Upgrade Now button ─────────────────────
-
-  /**
-   * Called by PP2 after the premium-membership tab panel is rendered
-   * so we can wire any Upgrade buttons inside it.
-   */
-  function _wireMeTabUpgradeBtn() {
-    // Wire the pp2-plan-upgrade-btn and pp2MeExploreBtn (navigate to premium page)
-    // These are handled by pp2.js already — they call navigate('premium').
-    // Nothing additional needed here.
+  // ── Membership activation listener ────────────────────────────────────
+  function _listenForActivation() {
+    window.addEventListener('studyria:membership:activated', function (e) {
+      _log('activation', 'Membership activated event received:', e.detail);
+      // Update any premium badge/status in the UI
+      const statusEls = document.querySelectorAll('[data-prm-status]');
+      statusEls.forEach(function (el) { el.textContent = '👑 Premium'; });
+    });
   }
 
-  // ── Listen for payment events (for external consumers) ────────────────────
-
-  window.addEventListener('studyria:payment:success', function (e) {
-    console.debug('[PP5C] Payment success event received:', e.detail);
-    // Optionally re-render premium page status badge here in a future phase
-  });
-
-  window.addEventListener('studyria:payment:failed', function (e) {
-    console.debug('[PP5C] Payment failed event received:', e.detail);
-  });
-
-  window.addEventListener('studyria:payment:cancelled', function () {
-    console.debug('[PP5C] Payment cancelled event received.');
-  });
-
-  // ── Boot ───────────────────────────────────────────────────────────────────
-
-  /**
-   * Waits for the premium page to be active, then wires buttons.
-   * Uses MutationObserver on #page-premium so it works on SPA navigation.
-   */
-  function _boot() {
-    // Also wire on initial load if premium page is already visible
-    var premiumPage = document.getElementById('page-premium');
-    if (premiumPage) {
-      if (premiumPage.classList.contains('active')) {
-        _wirePlanButtons();
-      }
-
-      // Re-wire on every navigation to #page-premium
-      var observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (m) {
-          if (m.type === 'attributes' && m.attributeName === 'class') {
-            if (premiumPage.classList.contains('active')) {
-              setTimeout(_wirePlanButtons, 50);
-            }
-          }
-        });
-      });
-      observer.observe(premiumPage, { attributes: true });
-    }
-
-    // Preload the Razorpay SDK in the background on the premium page
-    // so it's ready when the user clicks (faster checkout experience)
-    var svc = window.StudyriaCheckoutService;
-    if (svc && typeof svc.preloadSdk === 'function') {
-      setTimeout(function () {
-        svc.preloadSdk().catch(function (_) {
-          console.debug('[PP5C] SDK preload failed (non-fatal).');
-        });
-      }, 3000);
-    }
+  // ── Init ──────────────────────────────────────────────────────────────
+  function _init() {
+    _wirePlanButtons();
+    _listenForActivation();
+    _log('init', 'PP5C v2 initialized — no order service dependency');
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _boot);
+    document.addEventListener('DOMContentLoaded', _init);
   } else {
-    _boot();
+    _init();
   }
 
-  // ── Public API ─────────────────────────────────────────────────────────────
-  window.PP5C = Object.freeze({
-    _phase:            '5C',
-    wirePlanButtons:   _wirePlanButtons,
-    showSuccessOverlay: _showSuccessOverlay,
-  });
+  // ── Public API ────────────────────────────────────────────────────────
+  window.PP5C = {
+    _phase:           '5C-v2',
+    initiateCheckout: initiateCheckout,
+  };
 
-  console.debug('[PP5C] Phase 5C UI wiring ready.');
-
-}());
+})();
