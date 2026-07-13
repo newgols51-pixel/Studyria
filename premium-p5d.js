@@ -47,6 +47,19 @@
     /* isoA - isoB in whole days, positive = isoA is later */
     return Math.ceil((new Date(isoA) - new Date(isoB)) / 86400000);
   }
+    /* Plan slug → display label map (Phase 5D.1 — 5 plans) */
+  var PLAN_LABELS = {
+    trial_1day:  '1 Day Trial',
+    trial_15day: '15 Day Trial',
+    monthly:     'Monthly Premium',
+    quarterly:   'Quarterly Premium',
+    half_year:   'Half Year Premium',
+    // Legacy
+    starter:     'Starter',
+    biannual:    'Half Year',
+    yearly:      'Yearly',
+  };
+
   function _capitalise(s) {
     if (!s) return '';
     return s.charAt(0).toUpperCase() + s.slice(1);
@@ -300,7 +313,7 @@
     if (tx.notes) {
       try {
         var n = JSON.parse(tx.notes);
-        if (n.plan_slug) planName = _capitalise(n.plan_slug);
+        if (n.plan_slug) planName = PLAN_LABELS[n.plan_slug] || _capitalise(n.plan_slug);
       } catch(_) {}
     }
     if (planName === '—' && tx.plan_id) planName = _getPlanName(tx.plan_id);
@@ -545,7 +558,7 @@
       _nav('premium');
       return;
     }
-    window.PPAY.checkout(planSlug || 'monthly', btn);
+    window.PPAY.checkout(planSlug || 'monthly', btn);  /* fallback: monthly */
   }
 
   /* Extend active membership — same as renew */

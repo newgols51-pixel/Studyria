@@ -32,12 +32,11 @@
   // Must match `slug` column in membership_plans table.
   // ===========================================================================
   const PLANS = Object.freeze({
-    MONTHLY:    'monthly',
-    QUARTERLY:  'quarterly',
-    YEARLY:     'yearly',
-    // Reserved for future:
-    LIFETIME:   'lifetime',
-    TRIAL:      'trial',
+    TRIAL_1DAY:  'trial_1day',
+    TRIAL_15DAY: 'trial_15day',
+    MONTHLY:     'monthly',
+    QUARTERLY:   'quarterly',
+    HALF_YEAR:   'half_year',
   });
 
   // ===========================================================================
@@ -128,6 +127,20 @@
   // PLAN DISPLAY CONFIG (UI layer constants — no business logic)
   // ===========================================================================
   const PLAN_UI = Object.freeze({
+    trial_1day: {
+      label:      '1 Day Trial',
+      priceLabel: '₹9',
+      savings:    null,
+      color:      '#10d98e',
+      icon:       '⚡',
+    },
+    trial_15day: {
+      label:      '15 Day Trial',
+      priceLabel: '₹49',
+      savings:    null,
+      color:      '#f59e0b',
+      icon:       '🟢',
+    },
     monthly: {
       label:      'Monthly',
       priceLabel: '₹99/mo',
@@ -142,12 +155,12 @@
       color:      '#8b5cf6',
       icon:       '📆',
     },
-    yearly: {
-      label:      'Yearly',
-      priceLabel: '₹799/yr',
-      savings:    'Save 32%',
-      color:      '#10d98e',
-      icon:       '🏆',
+    half_year: {
+      label:      'Half Year',
+      priceLabel: '₹449/6mo',
+      savings:    'Best Value',
+      color:      '#8b5cf6',
+      icon:       '👑',
     },
   });
 
