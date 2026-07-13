@@ -120,6 +120,13 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 <link rel="dns-prefetch" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" />
+<script>
+/* Phase 5C — runtime config; never includes secrets */
+window.STUDYRIA_CONFIG = window.STUDYRIA_CONFIG || {};
+window.STUDYRIA_CONFIG.edgeFunctionBaseUrl =
+  'https://qsdfmgcekdpjdcyqhuhi.supabase.co/functions/v1';
+window.SUPABASE_URL = 'https://qsdfmgcekdpjdcyqhuhi.supabase.co';
+</script>
 <link rel="dns-prefetch" href="https://checkout.razorpay.com" />
 <link rel="preconnect" href="https://qsdfmgcekdpjdcyqhuhi.supabase.co" crossorigin />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -45544,5 +45551,9 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 <script src="/premium-p2.js" defer></script>
 <script src="/premium-p3.js" defer></script>
+<script src="/js/membership/payment-audit-logger.js" defer></script>
+<script src="/js/membership/payment-order-service.js" defer></script>
+<script src="/js/membership/payment-checkout-service.js" defer></script>
+<script src="/premium-p5c.js" defer></script>
 </body>
 </html>
