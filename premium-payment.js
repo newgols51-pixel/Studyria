@@ -51,23 +51,31 @@
 
   /* billing_cycle → days (requirement: monthly=30, yearly=365) */
   var CYCLE_DAYS = {
-    monthly:   30,
-    quarterly: 90,
-    yearly:    365,
-    annual:    365,
-    lifetime:  36500,
-    starter:   15,
-    biannual:  180,
+    trial_1day:  1,
+    trial_15day: 15,
+    monthly:     30,
+    quarterly:   90,
+    half_year:   180,
+    // Legacy aliases (kept for safety — never break existing tx rows)
+    starter:     15,
+    biannual:    180,
+    yearly:      365,
+    annual:      365,
+    lifetime:    36500,
   };
 
   /* Plan catalogue — fallback display prices if DB fetch fails.
      Server never trusts these amounts; they are for modal display only. */
   var PLAN_DISPLAY = {
-    monthly:   { name: 'Monthly',    display_inr: 149 },
-    yearly:    { name: 'Yearly',     display_inr: 999 },
-    quarterly: { name: 'Quarterly',  display_inr: 249 },
-    starter:   { name: 'Starter',    display_inr: 49  },
-    biannual:  { name: '6 Month',    display_inr: 449 },
+    trial_1day:  { name: '1 Day Trial',       display_inr: 9   },
+    trial_15day: { name: '15 Day Trial',      display_inr: 49  },
+    monthly:     { name: 'Monthly Premium',   display_inr: 99  },
+    quarterly:   { name: 'Quarterly Premium', display_inr: 249 },
+    half_year:   { name: 'Half Year Premium', display_inr: 449 },
+    // Legacy aliases
+    starter:     { name: 'Starter',           display_inr: 49  },
+    biannual:    { name: '6 Month',           display_inr: 449 },
+    yearly:      { name: 'Yearly',            display_inr: 999 },
   };
 
   /* ── Logging ─────────────────────────────────────────────────── */
@@ -105,7 +113,20 @@
     });
   }
 
-  function _cycleDays(billingCycle) {
+  function _cycleDays(billingCycle, planSlugOrTrialDays) {
+    /* For trial billing_cycle: use trial_days from DB plan or slug-based lookup */
+    if (billingCycle === 'trial') {
+      /* If a numeric trial_days was passed directly */
+      if (typeof planSlugOrTrialDays === 'number' && planSlugOrTrialDays > 0) {
+        return planSlugOrTrialDays;
+      }
+      /* Slug-based fallback: trial_1day → 1, trial_15day → 15 */
+      if (planSlugOrTrialDays === 'trial_1day')  return 1;
+      if (planSlugOrTrialDays === 'trial_15day') return 15;
+      /* Last resort: check CYCLE_DAYS by slug */
+      if (CYCLE_DAYS[planSlugOrTrialDays] > 0) return CYCLE_DAYS[planSlugOrTrialDays];
+      return 1;  /* safest trial default */
+    }
     return CYCLE_DAYS[billingCycle] || CYCLE_DAYS[(billingCycle || '').toLowerCase()] || 30;
   }
 
@@ -218,7 +239,7 @@
         _warn('checkout', 'Using fallback plan (DB unavailable):', plan);
       }
 
-      var durationDays = _cycleDays(plan.billing_cycle);
+      var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
       _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays });
 
       /* ── 3. Check existing active membership ──────────────────── */
