@@ -1,11 +1,11 @@
 /**
  * =============================================================================
  * FILE: js/membership/membership-cache.js
- * PROJECT: Studyria Premium Membership — Phase 4C
+ * PROJECT: Studyria Premium Membership — Phase 4D
  * PURPOSE: Shared multi-key cache helper for the membership engine.
  *          Replaces the single-slot cache in membership-service.js with a
  *          named-key store that all engine modules can share.
- * BRANCH:  feat/premium-membership-phase-4c
+ * BRANCH:  feat/premium-membership-phase-4d
  * SAFE:    Pure in-memory. Zero side effects. Zero writes. Zero network calls.
  * =============================================================================
  *
@@ -28,12 +28,12 @@
   const _store = new Map();
 
   // ── Default TTLs (ms) ────────────────────────────────────────────────────
+  // Keep only those actively referenced in this file. Removing SHORT constant since it was orphaned.
   const TTL = Object.freeze({
     MEMBERSHIP:     5 * 60 * 1000,   // 5 min — active membership row
     PLAN:          10 * 60 * 1000,   // 10 min — plan definitions (rarely change)
     FEATURE_LIST:  10 * 60 * 1000,   // 10 min — membership_features table
     STATUS:         5 * 60 * 1000,   // 5 min  — derived status object
-    SHORT:          1 * 60 * 1000,   // 1 min  — short-lived (post-payment check)
   });
 
   // ── Cache key builders ────────────────────────────────────────────────────
@@ -57,6 +57,18 @@
     return entry && Date.now() < entry.expiresAt;
   }
 
+  // ── Cache Key Sanitizer / Validator ───────────────────────────────────────
+  // Cache keys must be alphanumeric + ':_-' only to prevent cache poisoning or pollution.
+  function _validateKey(key) {
+    if (typeof key !== 'string') {
+      throw new Error('[MembershipCache] Invalid key type: key must be a string');
+    }
+    const safeRegex = /^[a-zA-Z0-9:_-]+$/;
+    if (!safeRegex.test(key)) {
+      throw new Error('[MembershipCache] Malicious or invalid key format: ' + key);
+    }
+  }
+
   // ── Public API ────────────────────────────────────────────────────────────
   const Cache = {
 
@@ -67,6 +79,11 @@
      * @param {number} [ttlMs] — defaults to TTL.MEMBERSHIP
      */
     set(key, value, ttlMs) {
+      if (key === null || key === undefined) {
+        throw new Error('[MembershipCache] Key cannot be null or undefined');
+      }
+      _validateKey(key);
+
       const ttl = (typeof ttlMs === 'number' && ttlMs > 0) ? ttlMs : TTL.MEMBERSHIP;
       const expiresAt = (typeof ttlMs === 'number' && ttlMs <= 0) ? 0 : Date.now() + ttl;
       _store.set(key, { value, expiresAt });
@@ -79,6 +96,9 @@
      * @returns {*|null}
      */
     get(key) {
+      // Throws on null/undefined/invalid format — signals a bug in calling code
+      _validateKey(key);
+
       const entry = _store.get(key);
       if (!_isAlive(entry)) {
         if (entry) _store.delete(key); // evict stale
@@ -95,6 +115,12 @@
      * @returns {boolean}
      */
     has(key) {
+      if (key === null || key === undefined) return false;
+      try {
+        _validateKey(key);
+      } catch (err) {
+        return false;
+      }
       const entry = _store.get(key);
       if (!_isAlive(entry)) { if (entry) _store.delete(key); return false; }
       return true;
@@ -105,8 +131,22 @@
      * @param {string} key
      */
     del(key) {
+      if (key === null || key === undefined) return;
+      try {
+        _validateKey(key);
+      } catch (err) {
+        return;
+      }
       _store.delete(key);
       _log('DEL', key);
+    },
+
+    /**
+     * Alias for del(key) to satisfy invalidation standards.
+     * @param {string} key
+     */
+    invalidate(key) {
+      this.del(key);
     },
 
     /**
@@ -115,6 +155,7 @@
      * @param {string} prefix
      */
     delByPrefix(prefix) {
+      if (typeof prefix !== 'string') return;
       let count = 0;
       for (const key of _store.keys()) {
         if (key.startsWith(prefix)) { _store.delete(key); count++; }
@@ -169,6 +210,6 @@
   };
 
   root.StudyriaMembershipCache = Object.freeze(Cache);
-  console.debug('[MembershipCache] Registered — Phase 4C');
+  console.debug('[MembershipCache] Registered — Phase 4D');
 
 }(typeof self !== 'undefined' ? self : this));
