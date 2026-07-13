@@ -407,7 +407,7 @@
           .from('membership_plans')
           .select('*')
           .eq('slug', planSlug)
-          .eq('active', true)
+          .eq('is_active', true)
           .maybeSingle();
 
         if (error) {
@@ -470,7 +470,7 @@
         const { data, error } = await client
           .from('membership_plans')
           .select('*')
-          .eq('active', true)
+          .eq('is_active', true)
           .order('sort_order', { ascending: true });
 
         if (error) {
