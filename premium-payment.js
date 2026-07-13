@@ -114,20 +114,27 @@
   }
 
   function _cycleDays(billingCycle, planSlugOrTrialDays) {
-    /* For trial billing_cycle: use trial_days from DB plan or slug-based lookup */
-    if (billingCycle === 'trial') {
-      /* If a numeric trial_days was passed directly */
-      if (typeof planSlugOrTrialDays === 'number' && planSlugOrTrialDays > 0) {
-        return planSlugOrTrialDays;
-      }
-      /* Slug-based fallback: trial_1day → 1, trial_15day → 15 */
-      if (planSlugOrTrialDays === 'trial_1day')  return 1;
-      if (planSlugOrTrialDays === 'trial_15day') return 15;
-      /* Last resort: check CYCLE_DAYS by slug */
-      if (CYCLE_DAYS[planSlugOrTrialDays] > 0) return CYCLE_DAYS[planSlugOrTrialDays];
-      return 1;  /* safest trial default */
+    /* PRIORITY 1: slug-based lookup (most specific, always correct) */
+    if (typeof planSlugOrTrialDays === 'string' && CYCLE_DAYS[planSlugOrTrialDays] > 0) {
+      return CYCLE_DAYS[planSlugOrTrialDays];
     }
-    return CYCLE_DAYS[billingCycle] || CYCLE_DAYS[(billingCycle || '').toLowerCase()] || 30;
+    /* PRIORITY 2: numeric trial_days from DB */
+    if (typeof planSlugOrTrialDays === 'number' && planSlugOrTrialDays > 0) {
+      return planSlugOrTrialDays;
+    }
+    /* PRIORITY 3: billing_cycle lookup */
+    if (billingCycle && CYCLE_DAYS[billingCycle]) {
+      return CYCLE_DAYS[billingCycle];
+    }
+    /* PRIORITY 4: lowercase billing_cycle */
+    var lcCycle = (billingCycle || '').toLowerCase();
+    if (CYCLE_DAYS[lcCycle]) {
+      return CYCLE_DAYS[lcCycle];
+    }
+    /* SAFETY: if we reach here, log it — never silently give wrong duration */
+    console.error('[PPAY:_cycleDays] UNKNOWN billing_cycle/slug:', billingCycle, planSlugOrTrialDays,
+      '— defaulting to 1 day to prevent wrong expiry. Fix CYCLE_DAYS map.');
+    return 1;  /* Safest default: 1 day, not 30 */
   }
 
   /* ── Razorpay SDK loader ─────────────────────────────────────── */
@@ -207,7 +214,7 @@
       try {
         var planRes = await client
           .from('membership_plans')
-          .select('id, slug, name, price_inr, billing_cycle, is_active')
+          .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
           .eq('slug', planSlug)
           .eq('is_active', true)
           .maybeSingle();
@@ -240,6 +247,22 @@
       }
 
       var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
+      _log('checkout', 'Expiry calculation:', {
+        slug: planSlug, billing_cycle: plan.billing_cycle,
+        trial_days: plan.trial_days, durationDays: durationDays,
+      });
+
+      /* GUARD: plan.id must be a valid UUID — null causes NOT NULL violation in DB */
+      if (!plan.id) {
+        _err('checkout', 'Plan ID is null — plan "' + planSlug + '" not found in membership_plans DB table.');
+        _toast(
+          '⚠️ Plan "' + planSlug + '" is not yet activated in the database. ' +
+          'Please contact support or try again shortly.',
+          'error'
+        );
+        _btnRestore(triggerBtn);
+        return;
+      }
       _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays });
 
       /* ── 3. Check existing active membership ──────────────────── */
@@ -388,7 +411,13 @@
             .single();
 
           if (insRes.error) {
-            _warn('checkout', 'user_memberships INSERT error:', insRes.error.message);
+            _err('checkout', 'user_memberships INSERT FAILED:', {
+              message: insRes.error.message,
+              code:    insRes.error.code,
+              hint:    insRes.error.hint,
+              details: insRes.error.details,
+              insert:  { user_id: user.id, plan_id: plan.id, status:'active', started_at: startsAt, expires_at: expiresAt },
+            });
           } else {
             membershipId = insRes.data && insRes.data.id;
             _log('checkout', 'user_memberships created:', membershipId);
@@ -429,7 +458,13 @@
           if (txRes.error.code === '23505') {
             _log('checkout', 'membership_transactions: duplicate (23505) — already recorded, safe to ignore.');
           } else {
-            _warn('checkout', 'membership_transactions INSERT error:', txRes.error.message, txRes.error);
+            _err('checkout', 'membership_transactions INSERT FAILED:', {
+              message: txRes.error.message,
+              code:    txRes.error.code,
+              hint:    txRes.error.hint,
+              details: txRes.error.details,
+              insert:  txInsert,
+            });
             _toast(
               '⚠️ Payment received but record write failed. ' +
               'Contact support with payment ID: ' + paymentResponse.payment_id,
