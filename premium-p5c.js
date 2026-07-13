@@ -50,12 +50,18 @@
   const VERIFY_ENDPOINT    = `${EDGE_FN_BASE}/verify-membership-payment`;
 
   // Plan configuration (amounts in INR rupees — displayed to user only; server ignores)
+  // Plan configuration (amounts in INR rupees — for display in Razorpay modal only;
+  // server ALWAYS fetches authoritative price from membership_plans DB — client amount is ignored).
+  // MUST match slug values in membership_plans table.
+  // Production DB plans (2026-07-13): monthly (₹149), yearly (₹999)
   const PLAN_CATALOGUE = {
-    starter:   { name: 'Starter',          amount_inr: 49,  slug: 'starter'   },
-    monthly:   { name: 'Premium Monthly',   amount_inr: 99,  slug: 'monthly'   },
-    quarterly: { name: 'Premium Quarterly', amount_inr: 249, slug: 'quarterly' },
-    biannual:  { name: 'Premium Biannual',  amount_inr: 449, slug: 'biannual'  },
-    annual:    { name: 'Premium Annual',    amount_inr: 799, slug: 'annual'    },
+    monthly:   { name: 'Premium Monthly',   amount_inr: 149, slug: 'monthly'  },
+    yearly:    { name: 'Premium Yearly',    amount_inr: 999, slug: 'yearly'   },
+    // Legacy slugs kept for backward-compat with older buttons (server will reject if not in DB)
+    starter:   { name: 'Starter',          amount_inr: 49,  slug: 'starter'  },
+    quarterly: { name: 'Premium Quarterly', amount_inr: 249, slug: 'quarterly'},
+    biannual:  { name: 'Premium Biannual',  amount_inr: 449, slug: 'biannual' },
+    annual:    { name: 'Premium Annual',    amount_inr: 799, slug: 'annual'   },
   };
 
   // ── Logging ────────────────────────────────────────────────────────────
