@@ -137,7 +137,7 @@
     if (!client) return _check('plans_table', STATUS.SKIP, 'Skipped — no Supabase client');
     try {
       const { data, error } = await _probe(async (signal) => {
-        let query = client.from('membership_plans').select('id, slug, active').limit(1);
+        let query = client.from('membership_plans').select('id, slug, is_active').limit(1);
         if (signal && typeof query.abortSignal === 'function') {
           query = query.abortSignal(signal);
         }
