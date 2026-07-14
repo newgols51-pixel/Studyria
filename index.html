@@ -45747,8 +45747,18 @@ window.renderAdminMemberships = async function(container){
       h += '</tbody></table></div>';
     }
 
+    /* ── Premium Categories sub-section ── */
+    h += '<div class="amem-section-title" style="margin-top:28px">⭐ Premium Category Management</div>';
+    h += '<div id="smci-admin-prem-cats-wrap" style="margin-top:0"></div>';
     h += '</div></div>';
     container.innerHTML = h;
+    /* Render premium categories panel into the reserved wrapper */
+    setTimeout(function(){
+      var wrap = document.getElementById('smci-admin-prem-cats-wrap');
+      if (wrap && typeof window.renderAdminPremiumCategories === 'function') {
+        window.renderAdminPremiumCategories(wrap);
+      }
+    }, 100);
 
   } catch(err){
     console.error('[AdminMem] Unexpected error:', err);
