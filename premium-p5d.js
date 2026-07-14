@@ -734,7 +734,19 @@
     /* MutationObserver on the dashboard page */
     var dashPage = document.getElementById('page-dashboard');
     if (dashPage) {
-      var obs = new MutationObserver(function() { _tryInjectTab(); });
+      /* BUG-4 FIX: When dashboard profile hero becomes visible, refresh badge */
+      var obs = new MutationObserver(function() {
+        _tryInjectTab();
+        var hero = document.getElementById('dashProfileHero');
+        if (hero && hero.style.display !== 'none' && _uid() && !_cache._badgeRefreshing) {
+          _cache._badgeRefreshing = true;
+          _loadAll(false).then(function() {
+            var status = _getMembershipStatus(_cache.membership);
+            _updatePremiumBadges(status === 'active');
+            setTimeout(function() { _cache._badgeRefreshing = false; }, 3000);
+          });
+        }
+      });
       obs.observe(dashPage, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
     }
 
@@ -742,15 +754,35 @@
     _tryInjectTab();
 
     /* Re-inject on navigate events (if app dispatches them) */
+    /* BUG-4 FIX: Also proactively refresh premium badges on dashboard navigation */
     window.addEventListener('studyria:navigate', function(e) {
-      if (e && e.detail && e.detail.page === 'dashboard') {
-        setTimeout(_tryInjectTab, 200);
+      var page = (e && e.detail && (e.detail.page || e.detail)) || '';
+      if (page === 'dashboard') {
+        setTimeout(function() {
+          _tryInjectTab();
+          /* Refresh badge immediately — do not wait for tab click */
+          var uid = _uid();
+          if (uid) {
+            _loadAll(false).then(function() {
+              var status = _getMembershipStatus(_cache.membership);
+              _updatePremiumBadges(status === 'active');
+            });
+          }
+        }, 400);
       }
     });
 
     /* Auto-inject 2s after init as final fallback */
+    /* BUG-4 FIX: Also auto-refresh badge 2s after init if user is logged in */
     setTimeout(function() {
       _tryInjectTab();
+      var uid = _uid();
+      if (uid) {
+        _loadAll(false).then(function() {
+          var status = _getMembershipStatus(_cache.membership);
+          _updatePremiumBadges(status === 'active');
+        });
+      }
     }, 2000);
 
     console.debug('[P5D v5d-1.0] initialized — Premium Experience & Membership Management');
