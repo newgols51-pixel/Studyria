@@ -514,6 +514,19 @@
     if (pip) pip.style.display = isPremium ? 'block' : 'none';
     var banner = document.querySelector('#dashMain .me-premium-banner');
     if (banner) banner.style.display = isPremium ? 'none' : '';
+    /* BADGE-FIX: Sync dashPlan badge with real status — exact required format */
+    var planEl = document.getElementById('dashPlan');
+    if (planEl) {
+      if (isPremium) {
+        planEl.innerHTML = '&#x1F451; PREMIUM MEMBER';
+        planEl.className = (planEl.className || '').replace(/\bmb-level\b/g, '').trim() + ' mb-gold';
+      } else {
+        planEl.textContent = 'FREE MEMBER';
+        planEl.className = (planEl.className || '').replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
+      }
+      var br = document.getElementById('dashBadgeRow');
+      if (br) br.style.display = '';
+    }
   }
 
   async function syncAll(force) {
