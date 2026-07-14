@@ -1,5 +1,5 @@
 /**
- * premium-content.js — Studyria Premium Content Integration v2.2
+ * premium-content.js — Studyria Premium Content Integration v2.3
  *
  * PHASE 1: Premium Handwritten Notes unlocked for active Premium Members.
  *

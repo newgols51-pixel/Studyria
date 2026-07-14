@@ -441,6 +441,16 @@
     _log('Premium Dashboard sections rendered ✅');
   };
 
+  /* ── _preArmRenderGuard: called immediately when navigate('premium') fires,
+     BEFORE the async Supabase query begins. This ensures the 600ms
+     renderWithRetry timeout (in the navigate hook) always sees a recent
+     _lastStatusRender and skips — _prmPageInit + renderWithStatus is
+     the single source of truth. ── */
+  PRMDASH._preArmRenderGuard = function() {
+    _lastStatusRender = Date.now();
+    _log('_preArmRenderGuard: render guard pre-armed — renderWithRetry will be skipped');
+  };
+
   /* ── renderWithStatus: render with pre-resolved isPremium (no SMCI call needed) ── */
   PRMDASH.renderWithStatus = async function(isPremium) {
     _lastStatusRender = Date.now();
@@ -652,5 +662,5 @@
     }
   }
 
-  _log('premium-dashboard.js v1.1 loaded ✅');
+  _log('premium-dashboard.js v1.3 loaded ✅');
 })();
