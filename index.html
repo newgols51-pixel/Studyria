@@ -11309,6 +11309,10 @@ body.light .me-stat-val { filter:none; }
           <svg width="16" height="16"><use href="#ic-cart"/></svg>Orders
           <span class="admin-nav-badge admin-nav-badge-orange" id="adminOrdersBadge">0</span>
         </button>
+        <button class="admin-nav-item" data-atab="memberships" onclick="switchAdminTab('memberships')" style="background:linear-gradient(90deg,rgba(245,158,11,0.12),rgba(251,191,36,0.07));border-left:2px solid #f59e0b">
+          👑 Memberships
+          <span class="admin-nav-badge" id="adminMemBadge" style="background:rgba(245,158,11,0.15);color:#fbbf24;border-color:rgba(245,158,11,0.35);display:none">0</span>
+        </button>
         <button class="admin-nav-item" data-atab="users" onclick="switchAdminTab('users')">
           <svg width="16" height="16"><use href="#ic-users"/></svg>Users
         </button>
@@ -22048,7 +22052,8 @@ function switchAdminTab(tab) {
     case 'pdfs':       renderAdminPDFs(main); break;
     case 'add-pdf':    renderAdminAddPDF(main); break;
     case 'categories': renderAdminCategories(main); break;
-    case 'orders':     renderAdminOrders(main); break;
+    case 'orders':       renderAdminOrders(main); break;
+    case 'memberships':  _safeRender(window.renderAdminMemberships, 'Memberships'); break;
     case 'users':      renderAdminUsers(main); break;
     case 'revenue':    renderAdminRevenue(main); break;
     case 'activity':   renderAdminActivity(main); break;
@@ -45504,7 +45509,12 @@ window._srvSubmitReview=async function(e){
       if(loc) payload.location=loc;
       await client.from('pdf_reviews').insert(payload);
     }
-  }catch(err){}
+  }catch(err){
+    console.error('[SRV] Review submit error:', err);
+    showMsg('error','Network error. Please try again.');
+    if(btn){ btn.disabled=false; btn.textContent='Submit Review'; }
+    return;
+  }
   if(btn){ btn.disabled=false; btn.textContent='Submit Review'; }
   showMsg('success','✅ Review submitted! It will appear after admin approval.');
   setTimeout(function(){ window._srvToggleForm(); },2500);
@@ -45544,6 +45554,234 @@ window._arvReject=async function(id){
   try{ var c=window.supabaseClient; if(c) await c.from('pdf_reviews').delete().eq('id',id); if(card) card.remove(); }
   catch(e){ if(card){card.style.opacity='1';card.style.pointerEvents='';} }
 };
+
+
+/* ── ADMIN MEMBERSHIPS TAB ─────────────────────────────────── */
+(function(){
+'use strict';
+
+/* CSS for admin memberships */
+(function(){
+  var s=document.createElement('style');
+  s.textContent=\`
+.amem-wrap { padding: 0 0 24px; }
+.amem-stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 12px; margin-bottom: 24px; }
+.amem-stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px 18px; }
+.amem-stat-val { font-size: 1.6rem; font-weight: 900; color: #fbbf24; font-family: var(--font-display,sans-serif); }
+.amem-stat-label { font-size: .7rem; color: rgba(255,255,255,0.45); margin-top: 4px; font-family: var(--font-ui,sans-serif); }
+.amem-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.amem-filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-size: .75rem; cursor: pointer; font-family: var(--font-ui,sans-serif); transition: all .2s; }
+.amem-filter-btn.active { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.4); color: #fbbf24; }
+.amem-table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); }
+.amem-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.amem-table th { padding: 11px 14px; text-align: left; font-size: .68rem; font-weight: 700; letter-spacing: .05em; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06); font-family: var(--font-ui,sans-serif); }
+.amem-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); vertical-align: middle; }
+.amem-table tr:last-child td { border-bottom: none; }
+.amem-table tr:hover td { background: rgba(61,142,248,0.03); }
+.amem-badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: .65rem; font-weight: 700; letter-spacing: .04em; }
+.amem-badge-active { background: rgba(16,217,142,0.12); color: #10d98e; border: 1px solid rgba(16,217,142,0.25); }
+.amem-badge-expired { background: rgba(255,77,109,0.12); color: #ff4d6d; border: 1px solid rgba(255,77,109,0.25); }
+.amem-badge-trial { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+.amem-badge-none { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+.amem-action-btn { padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); font-size: .7rem; cursor: pointer; font-family: var(--font-ui,sans-serif); transition: all .2s; }
+.amem-action-btn:hover { background: rgba(255,255,255,0.1); }
+.amem-action-btn.approve { border-color: rgba(16,217,142,0.3); color: #10d98e; background: rgba(16,217,142,0.08); }
+.amem-action-btn.deactivate { border-color: rgba(255,77,109,0.3); color: #ff4d6d; background: rgba(255,77,109,0.08); }
+.amem-empty { text-align: center; padding: 48px 20px; color: rgba(255,255,255,0.35); font-size: .85rem; }
+.amem-pagination { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+.amem-page-btn { padding: 7px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6); font-size: .75rem; cursor: pointer; font-family: var(--font-ui,sans-serif); }
+.amem-page-btn:disabled { opacity: .35; cursor: not-allowed; }
+.amem-section-title { font-size: 1.05rem; font-weight: 800; color: #e4e8f0; font-family: var(--font-display,sans-serif); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.amem-tx-wrap { margin-top: 28px; }
+\`;
+  document.head.appendChild(s);
+})();
+
+var PLAN_NAMES = {
+  trial_1day:'1 Day Trial', trial_15day:'15 Day Trial',
+  monthly:'Monthly', quarterly:'Quarterly', half_year:'Half Year',
+  starter:'Starter', yearly:'Yearly', annual:'Annual', lifetime:'Lifetime'
+};
+
+function _fmtDate(iso){
+  if(!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+function _daysLeft(exp){
+  if(!exp) return 0;
+  var d = Math.ceil((new Date(exp) - new Date()) / 86400000);
+  return d > 0 ? d : 0;
+}
+function _statusBadge(status, exp){
+  var now = new Date();
+  if(status==='active' && exp && new Date(exp) > now) return '<span class="amem-badge amem-badge-active">Active</span>';
+  if(status==='active' && exp && new Date(exp) <= now) return '<span class="amem-badge amem-badge-expired">Expired</span>';
+  if(status==='trial') return '<span class="amem-badge amem-badge-trial">Trial</span>';
+  return '<span class="amem-badge amem-badge-none">'+(status||'None')+'</span>';
+}
+
+window.renderAdminMemberships = async function(container){
+  if(!container) return;
+  container.innerHTML = '<div style="padding:40px;text-align:center;color:rgba(255,255,255,0.4)">⏳ Loading memberships...</div>';
+
+  var client = window.supabaseClient;
+  if(!client){ container.innerHTML='<div class="amem-empty">Supabase not connected.</div>'; return; }
+
+  try {
+    /* Fetch user_memberships joined with membership_plans and auth.users email */
+    var [memRes, txRes, planRes] = await Promise.all([
+      client.from('user_memberships')
+        .select('id, user_id, plan_id, status, started_at, expires_at, created_at')
+        .order('created_at', { ascending: false })
+        .limit(200),
+      client.from('membership_transactions')
+        .select('id, user_id, plan_id, provider_tx_id, amount_inr, status, created_at, notes')
+        .order('created_at', { ascending: false })
+        .limit(100),
+      client.from('membership_plans')
+        .select('id, slug, name, price_inr')
+        .eq('is_active', true)
+    ]);
+
+    var memberships = memRes.data || [];
+    var transactions = txRes.data || [];
+    var plans = planRes.data || [];
+
+    /* Build plan lookup */
+    var planMap = {};
+    plans.forEach(function(p){ planMap[p.id] = p; });
+
+    /* Stats */
+    var now = new Date();
+    var activeCount = memberships.filter(function(m){ return m.status==='active' && m.expires_at && new Date(m.expires_at)>now; }).length;
+    var expiredCount = memberships.filter(function(m){ return m.status==='active' && m.expires_at && new Date(m.expires_at)<=now; }).length;
+    var totalRev = transactions.filter(function(t){ return t.status==='completed'; }).reduce(function(s,t){ return s+(t.amount_inr||0); }, 0);
+
+    /* Update badge */
+    var badge = document.getElementById('adminMemBadge');
+    if(badge){ badge.textContent=activeCount; badge.style.display=activeCount>0?'inline-flex':'none'; }
+
+    var html = '<div class="amem-wrap">';
+
+    /* Stats row */
+    html += '<div class="amem-stats">'
+      + '<div class="amem-stat"><div class="amem-stat-val">'+activeCount+'</div><div class="amem-stat-label">Active Members</div></div>'
+      + '<div class="amem-stat"><div class="amem-stat-val" style="color:#ff4d6d">'+expiredCount+'</div><div class="amem-stat-label">Expired</div></div>'
+      + '<div class="amem-stat"><div class="amem-stat-val" style="color:#10d98e">'+memberships.length+'</div><div class="amem-stat-label">Total Records</div></div>'
+      + '<div class="amem-stat"><div class="amem-stat-val" style="color:#60a5fa">₹'+totalRev+'</div><div class="amem-stat-label">Total Revenue</div></div>'
+      + '</div>';
+
+    /* Memberships table */
+    html += '<div class="amem-section-title">👑 Membership Records</div>';
+
+    if(!memberships.length){
+      html += '<div class="amem-empty">No membership records found.</div>';
+    } else {
+      html += '<div class="amem-table-wrap"><table class="amem-table">'
+        + '<thead><tr><th>User ID</th><th>Plan</th><th>Status</th><th>Started</th><th>Expires</th><th>Days Left</th><th>Actions</th></tr></thead><tbody>';
+
+      memberships.forEach(function(m){
+        var plan = planMap[m.plan_id] || {};
+        var planName = plan.name || PLAN_NAMES[plan.slug] || '—';
+        var daysLeft = _daysLeft(m.expires_at);
+        var shortUid = (m.user_id||'').substring(0,8)+'...';
+        var isExpired = m.status==='active' && m.expires_at && new Date(m.expires_at)<=now;
+
+        html += '<tr id="amem-row-'+m.id+'">'
+          + '<td><span title="'+m.user_id+'" style="cursor:help;font-family:monospace;font-size:.72rem">'+shortUid+'</span></td>'
+          + '<td>'+planName+'</td>'
+          + '<td>'+_statusBadge(m.status, m.expires_at)+'</td>'
+          + '<td>'+_fmtDate(m.started_at)+'</td>'
+          + '<td>'+_fmtDate(m.expires_at)+'</td>'
+          + '<td>'+(daysLeft>0?'<span style="color:#10d98e;font-weight:700">'+daysLeft+'d</span>':'<span style="color:#ff4d6d">0</span>')+'</td>'
+          + '<td style="white-space:nowrap">'
+          + (isExpired
+            ? '<button class="amem-action-btn approve" onclick="window._amemActivate(''+m.id+'')">✅ Reactivate</button> '
+            : (m.status==='active' ? '<button class="amem-action-btn deactivate" onclick="window._amemDeactivate(''+m.id+'')">🚫 Deactivate</button>' : '<button class="amem-action-btn approve" onclick="window._amemActivate(''+m.id+'')">✅ Activate</button>'))
+          + '</td>'
+          + '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+    }
+
+    /* Transactions table */
+    html += '<div class="amem-tx-wrap"><div class="amem-section-title">💳 Recent Transactions</div>';
+
+    if(!transactions.length){
+      html += '<div class="amem-empty">No transactions found.</div>';
+    } else {
+      html += '<div class="amem-table-wrap"><table class="amem-table">'
+        + '<thead><tr><th>Date</th><th>User ID</th><th>Amount</th><th>Status</th><th>Provider Tx ID</th></tr></thead><tbody>';
+
+      transactions.forEach(function(t){
+        var shortUid = (t.user_id||'').substring(0,8)+'...';
+        var txId = (t.provider_tx_id||'').substring(0,16)+(t.provider_tx_id&&t.provider_tx_id.length>16?'...':'');
+        html += '<tr>'
+          + '<td>'+_fmtDate(t.created_at)+'</td>'
+          + '<td><span title="'+t.user_id+'" style="cursor:help;font-family:monospace;font-size:.72rem">'+shortUid+'</span></td>'
+          + '<td style="color:#10d98e;font-weight:700">₹'+(t.amount_inr||'—')+'</td>'
+          + '<td>'+(t.status==='completed'
+            ? '<span class="amem-badge amem-badge-active">Completed</span>'
+            : '<span class="amem-badge amem-badge-none">'+(t.status||'—')+'</span>')+'</td>'
+          + '<td><span style="font-family:monospace;font-size:.7rem;color:rgba(255,255,255,0.5)" title="'+t.provider_tx_id+'">'+txId+'</span></td>'
+          + '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+    }
+
+    html += '</div></div>';
+    container.innerHTML = html;
+
+  } catch(err){
+    console.error('[AdminMem] Error:', err);
+    container.innerHTML = '<div class="amem-empty">Error loading memberships: ' + err.message + '</div>';
+  }
+};
+
+/* Activate membership */
+window._amemActivate = async function(id){
+  var client = window.supabaseClient;
+  if(!client) return;
+  try {
+    /* Extend by 30 days from now */
+    var newExpiry = new Date();
+    newExpiry.setDate(newExpiry.getDate() + 30);
+    var res = await client.from('user_memberships')
+      .update({ status: 'active', expires_at: newExpiry.toISOString() })
+      .eq('id', id);
+    if(res.error) throw new Error(res.error.message);
+    if(typeof window.showToast === 'function') window.showToast('✅ Membership activated for 30 days.', 'success');
+    /* Refresh */
+    var main = document.getElementById('adminMain');
+    if(main && typeof window.renderAdminMemberships === 'function') window.renderAdminMemberships(main);
+  } catch(e){
+    console.error('[AdminMem] Activate error:', e);
+    if(typeof window.showToast === 'function') window.showToast('Error: ' + e.message, 'error');
+  }
+};
+
+/* Deactivate membership */
+window._amemDeactivate = async function(id){
+  if(!confirm('Deactivate this membership? The user will lose Premium access immediately.')) return;
+  var client = window.supabaseClient;
+  if(!client) return;
+  try {
+    var res = await client.from('user_memberships')
+      .update({ status: 'cancelled', expires_at: new Date().toISOString() })
+      .eq('id', id);
+    if(res.error) throw new Error(res.error.message);
+    if(typeof window.showToast === 'function') window.showToast('🚫 Membership deactivated.', 'info');
+    var main = document.getElementById('adminMain');
+    if(main && typeof window.renderAdminMemberships === 'function') window.renderAdminMemberships(main);
+  } catch(e){
+    console.error('[AdminMem] Deactivate error:', e);
+    if(typeof window.showToast === 'function') window.showToast('Error: ' + e.message, 'error');
+  }
+};
+
+})();
 
 /* ── BOOT ────────────────────────────────────────────────────────── */
 function boot(){
