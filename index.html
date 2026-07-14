@@ -16792,6 +16792,10 @@ async function navigate(page) {
         }
       }).catch(function(){});
     }
+    // Render Premium Dashboard sections (Library Universe, Continue Reading, Recently Added, My Cards)
+    if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
+      setTimeout(function() { window.PRMDASH.render(); }, 300);
+    }
   }
   // BUG-2+3 FIX: Premium Library page — render horizontal shelves
   if (page === 'premium-library') {
