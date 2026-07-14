@@ -61,6 +61,7 @@
       return;
     }
     // FIX: window.currentUser may not be set yet on first load — fall back to auth.getUser()
+    // then auth.getSession() — covers all auth timing edge cases
     var uid = _uid();
     if (!uid) {
       try {
@@ -69,10 +70,27 @@
       } catch (_) {}
     }
     if (!uid) {
+      try {
+        var sessRes = await client.auth.getSession();
+        uid = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.user
+          ? sessRes.data.session.user.id : null;
+      } catch (_) {}
+    }
+    if (!uid) {
+      // FIX: Auth not ready yet — RETRY up to 3 times with 500ms delay
+      _state._retries = (_state._retries || 0) + 1;
+      if (_state._retries <= 3) {
+        _log('_fetchStatus: uid null, retry ' + _state._retries + '/3 in 500ms');
+        setTimeout(function() { _fetchStatus(); }, 500);
+        return;
+      }
+      _warn('_fetchStatus: auth never resolved after 3 retries');
+      _state._retries = 0;
       Object.assign(_state, { isPremium: false, status: 'none', planName: 'Free',
         planSlug: null, expiresAt: null, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
       return;
     }
+    _state._retries = 0; // reset retry counter on success
     _state.fetching = true;
     try {
       var memRes = await client.from('user_memberships')

@@ -379,15 +379,22 @@
 
     _injectCSS();
 
-    // Get premium status
+    // Get premium status — with retry if auth not ready yet
     var isPremium = false;
-    if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
-      try {
-        var status = await window.SMCI.getStatus(true);
-        isPremium = !!(status && status.isPremium);
-      } catch (e) { _log('SMCI getStatus failed:', e.message); }
+    var status = null;
+    for (var attempt = 0; attempt < 4; attempt++) {
+      if (myToken !== _renderToken) return;
+      if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
+        try {
+          status = await window.SMCI.getStatus(true);
+          isPremium = !!(status && status.isPremium);
+        } catch (e) { _log('SMCI getStatus failed:', e.message); }
+      }
+      _log('Premium status attempt ' + (attempt + 1) + ':', isPremium);
+      if (isPremium) break;
+      // If not premium, wait 600ms and retry (auth may still be resolving)
+      if (attempt < 3) await new Promise(function(r) { setTimeout(r, 600); });
     }
-    _log('Premium status:', isPremium);
 
     if (myToken !== _renderToken) return; // newer render in progress
 
