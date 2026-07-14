@@ -283,20 +283,23 @@
   /* ─────────────────────────────────────────────────────────────────
      § MY LIBRARY — PREMIUM MEMBERSHIP SECTION
   ──────────────────────────────────────────────────────────────────*/
+  /* BUG-5 HARDENED: Premium card uses openDetail() — not buyPDF().
+     openDetail() → navigate('detail') → _hookRenderDetail intercepts
+     → grants premium access. Zero Razorpay exposure. */
   function _buildPremiumCard(pdf) {
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
-    var price = Number(pdf.price || 0);
     var cat   = _esc(pdf.category || '');
     var id    = String(pdf.id);
     var coverHtml = cover
-      ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'" loading="lazy" decoding="async">'
+      ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'" loading="lazy" decoding="async">'
       : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">📌</div>';
-    return '<div onclick="buyPDF(\'' + id + '\',' + price + ')" style="cursor:pointer;border-radius:10px;'
+    return '<div onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')" '
+      + 'style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));border:1px solid var(--glass-border,rgba(255,255,255,0.08));'
       + 'overflow:hidden;transition:transform .15s,box-shadow .15s" '
-      + 'onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 6px 20px rgba(0,0,0,.3)\'" '
-      + 'onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
+      + 'onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.3)'" '
+      + 'onmouseout="this.style.transform='';this.style.boxShadow=''">'
       + '<div style="position:relative;height:110px;overflow:hidden">'
       + coverHtml
       + '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
@@ -306,12 +309,13 @@
       + '<div style="font-size:.74rem;font-weight:600;color:var(--text1);line-height:1.3;margin-bottom:3px;'
       + 'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + title + '</div>'
       + (cat ? '<div style="font-size:.62rem;color:var(--text2);margin-bottom:5px">' + cat + '</div>' : '')
-      + '<button onclick="event.stopPropagation();buyPDF(\'' + id + '\',' + price + ')" '
+      + '<button onclick="event.stopPropagation();if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')" '
       + 'style="width:100%;padding:5px;border-radius:6px;border:none;cursor:pointer;font-size:.7rem;font-weight:700;'
       + 'background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));'
       + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.25)">👑 Open Free</button>'
       + '</div></div>';
   }
+
 
   /* BUG-3 FIX: Horizontal carousel shelves per category (one shelf per category).
      BUG-5 FIX: Cards use "👑 Open Free" — premium members never see Buy button. */
@@ -517,15 +521,15 @@
   ──────────────────────────────────────────────────────────────────*/
 
   /* Build a card for the home shelf (matches scardHTML style) */
+  /* BUG-5 HARDENED (home shelf): uses openDetail() — no buyPDF(), no Razorpay. */
   function _buildHomePremiumCard(pdf) {
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.cover_url || pdf.coverImage || pdf.cover_image || pdf.thumbnail || '';
-    var price = Number(pdf.price || 0);
     var id    = String(pdf.id);
     var imgHtml = cover
       ? '<img src="' + _esc(cover) + '" loading="lazy" decoding="async"'
         + ' style="width:100%;height:100%;object-fit:cover;border-radius:10px 10px 0 0"'
-        + ' onerror="this.style.display=\'none\'">'
+        + ' onerror="this.style.display='none'">'
       : '';
     var iconHtml = cover ? '' :
       '<div style="width:100%;height:100%;display:flex;align-items:center;'
@@ -535,7 +539,8 @@
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));'
       + 'border:1px solid rgba(251,191,36,0.2);overflow:hidden;'
       + 'transition:transform .15s,box-shadow .15s;flex-shrink:0';
-    var html = '<div style="' + cardStyle + '" onclick="buyPDF(\'' + id + '\',' + price + ')">';
+    var html = '<div style="' + cardStyle + '" '
+      + 'onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')">';
     html += '<div style="position:relative;height:100px;overflow:hidden">';
     html += imgHtml + iconHtml;
     html += '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
