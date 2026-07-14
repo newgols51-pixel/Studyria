@@ -1,5 +1,5 @@
 /**
- * premium-content.js — Studyria Premium Content Integration v2.1
+ * premium-content.js — Studyria Premium Content Integration v2.2
  *
  * PHASE 1: Premium Handwritten Notes unlocked for active Premium Members.
  *
@@ -20,7 +20,7 @@
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.1') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.2') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
@@ -163,15 +163,40 @@
   async function _getPremiumCategoryPdfs(force) {
     var enabledLower = await _getEnabledCategoryNames(force);
     if (enabledLower.length === 0) return [];
-    /* BUG-1 FIX: exact category match only — never partial/includes */
-    return (window.PDFS || []).filter(function(p) {
+
+    /* BUG-1 FIX: exact category match — never partial/includes.
+       PRIMARY: filter window.PDFS (already loaded client-side array).
+       FALLBACK: if window.PDFS is empty or yields 0 matches, query Supabase
+       directly with .in('category', enabledOriginalCase) for exact server-side match. */
+    var localPdfs = (window.PDFS || []).filter(function(p) {
       if (!p || !p.title) return false;
       var pdfCat = (p.category || '').toLowerCase().trim();
       if (!pdfCat) return false;
-      return enabledLower.some(function(ec) {
-        return pdfCat === ec;
-      });
+      return enabledLower.some(function(ec) { return pdfCat === ec; });
     });
+
+    if (localPdfs.length > 0) return localPdfs;
+
+    /* Supabase fallback — only runs when window.PDFS is not yet populated */
+    var sb = _sb();
+    if (!sb) return [];
+    /* Use original-case category names for the .in() query */
+    var enabledOrig = await _fetchCategoryConfig(force);
+    try {
+      var res = await sb.from('pdfs')
+        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,is_published')
+        .in('category', enabledOrig)
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (res.error) { _warn('Supabase PDF fetch error', res.error.message); return []; }
+      var rows = res.data || [];
+      /* Double-check exact match (server .in() is case-sensitive in Postgres) */
+      return rows.filter(function(p) {
+        var pdfCat = (p.category || '').toLowerCase().trim();
+        return enabledLower.some(function(ec) { return pdfCat === ec; });
+      });
+    } catch (e) { _warn('Supabase PDF fallback error', e); return []; }
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -580,6 +605,34 @@
   }
 
   /* Hook renderHome() to also render premium shelf */
+  /* BUG-4 FIX: Wrap renderDashboard to guarantee P5D.refreshBadges() fires
+     AFTER the profile hero is populated. The existing P5D MutationObserver
+     approach races against renderDashboard()'s synchronous badge write. */
+  function _hookRenderDashboard() {
+    var orig = window.renderDashboard;
+    if (!orig || orig._smciHooked) return;
+    window.renderDashboard = async function renderDashboard_smci() {
+      var res = orig.apply(this, arguments);
+      /* Wait for renderDashboard to fully resolve (it's async) then refresh badge */
+      Promise.resolve(res).then(function() {
+        setTimeout(function() {
+          /* Trigger P5D badge refresh — uses its own _loadAll cache */
+          if (window.P5D && typeof window.P5D.refreshBadges === 'function') {
+            window.P5D.refreshBadges();
+          }
+          /* Also dispatch the event P5D's navigate listener expects, in case
+             other code depends on it */
+          try {
+            window.dispatchEvent(new CustomEvent('studyria:navigate', { detail: { page: 'dashboard' } }));
+          } catch (_) {}
+        }, 200);
+      });
+      return res;
+    };
+    window.renderDashboard._smciHooked = true;
+    _log('renderDashboard hooked for premium badge refresh (BUG-4)');
+  }
+
   function _hookRenderHome() {
     var orig = window.renderHome;
     if (!orig || orig._smciHooked) return;
@@ -856,6 +909,17 @@
     }
     _tryHookRenderHome();
 
+    /* BUG-4 FIX: Hook renderDashboard to refresh premium badge after profile renders.
+       navigate('dashboard') does NOT dispatch studyria:navigate, so P5D's event
+       listener never fires. We wrap renderDashboard() ourselves to guarantee
+       P5D.refreshBadges() runs AFTER the profile hero is populated. */
+    var _rd = 0;
+    function _tryHookRenderDashboard() {
+      if (window.renderDashboard) { _hookRenderDashboard(); }
+      else if (_rd++ < 30) { setTimeout(_tryHookRenderDashboard, 300); }
+    }
+    _tryHookRenderDashboard();
+
     window.addEventListener('studyria:membership:activated', _onActivated);
     window.addEventListener('smci:refresh', function() {
       syncAll(true);
@@ -870,7 +934,7 @@
       }
       setTimeout(_waitAuth, 1200);
     }
-    _log('Init complete — SMCI pci-2.1 (site_config storage)');
+    _log('Init complete — SMCI pci-2.2 (site_config storage, Supabase fallback, dash badge hook)');
   }
 
 
@@ -996,7 +1060,7 @@
 
 
   window.SMCI = {
-    _version:               'pci-2.1',
+    _version:               'pci-2.2',
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
     getStatus:              function(f) { return _getStatus(f || false); },
     syncAll:                function(f) { return syncAll(f || false); },
