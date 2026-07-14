@@ -14763,6 +14763,90 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     </div>
   </div>
 
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 3: 📚 PREMIUM LIBRARY UNIVERSE
+       Preview shelf of Premium Handwritten Notes.
+       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
+       View All → navigate('premium-library')
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section" id="prmDashLibraryUniverse">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">📚</span>
+        <span>Premium Library Universe</span>
+        <span class="prmdash-sub" id="prmDashLibCount"></span>
+      </div>
+      <button class="prmdash-viewall" onclick="navigate('premium-library')">View All →</button>
+    </div>
+    <div class="prmdash-shelf-outer">
+      <div class="prmdash-shelf-track">
+        <div style="text-align:center;padding:40px;color:var(--text2)">
+          <div style="font-size:1.5rem;margin-bottom:8px">👑</div>
+          <div style="font-size:.85rem">Loading Premium Library…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 4: CONTINUE READING
+       Shows recently read Premium PDFs with progress bars.
+       Populated by premium-dashboard.js (PRMDASH) from localStorage reading history.
+       Premium users only.
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section prmdash-hidden" id="prmDashContinueReading">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">📖</span>
+        <span>Continue Reading</span>
+        <span class="prmdash-sub">Pick up where you left off</span>
+      </div>
+    </div>
+    <div class="prmdash-shelf-outer">
+      <div class="prmdash-shelf-track"></div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 5: RECENTLY ADDED PREMIUM NOTES
+       Latest Premium Handwritten Notes, sorted by created_at desc.
+       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
+       Premium users only.
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section prmdash-hidden" id="prmDashRecentlyAdded">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">🆕</span>
+        <span>Recently Added Premium Notes</span>
+        <span class="prmdash-sub">Fresh from the library</span>
+      </div>
+    </div>
+    <div class="prmdash-shelf-outer">
+      <div class="prmdash-shelf-track"></div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 6: MY PREMIUM CARDS
+       Grid view of all Premium Handwritten Notes.
+       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
+       Premium users only.
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section prmdash-hidden" id="prmDashMyCards">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">👑</span>
+        <span>My Premium Cards</span>
+        <span class="prmdash-sub" id="prmDashMyCardsCount"></span>
+      </div>
+      <button class="prmdash-viewall" onclick="navigate('premium-library')">View All →</button>
+    </div>
+    <div class="prmdash-grid"></div>
+  </section>
+
+
+
   <!-- PRICING ──────────────────────────────────────────────────── -->
   <section class="prm-section" id="prmPlans">
     <div class="container">
@@ -46034,6 +46118,7 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 
 <script src="premium-content.js" defer></script>
+<script src="premium-dashboard.js" defer></script>
 <script>
 /* PATCH: Extend SMCI._updateBadges to sync Premium tab status pill — realtime */
 (function() {
