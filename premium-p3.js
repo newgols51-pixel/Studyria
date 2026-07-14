@@ -24,12 +24,21 @@
   /** Safe navigation — uses the app's own navigate() or hash fallback */
   function _nav(page, param) {
     try {
+      // If the target page element doesn't exist in this build (e.g. premium-library
+      // was added in a later phase), fall back to the premium landing page.
+      var safePage = page;
+      if (page !== 'home' && page !== 'library' && page !== 'premium'
+          && page !== 'dashboard' && page !== 'login' && page !== 'register') {
+        if (!document.getElementById('page-' + page)) {
+          safePage = 'premium';
+        }
+      }
       if (param && typeof window.navigate === 'function') {
-        window.navigate(page, param);
+        window.navigate(safePage, param);
       } else if (typeof window.navigate === 'function') {
-        window.navigate(page);
+        window.navigate(safePage);
       } else {
-        window.location.hash = '#' + page;
+        window.location.hash = '#' + safePage;
       }
     } catch (_) {}
   }
@@ -268,7 +277,7 @@
       '',
       '    <!-- See All row -->',
       '    <div class="prm-p3-see-all-row">',
-      '      <button class="prm-p3-section-see-all" data-p3-nav="library" type="button">',
+      '      <button class="prm-p3-section-see-all" data-p3-nav="premium-library" type="button">',
       '        View Full Library \u2192',
       '      </button>',
       '    </div>',
