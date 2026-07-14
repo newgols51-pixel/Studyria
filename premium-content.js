@@ -527,6 +527,13 @@
       var br = document.getElementById('dashBadgeRow');
       if (br) br.style.display = '';
     }
+    /* PREMIUM-TAB-FIX: Sync the new Premium tab status pill — single source of truth */
+    var prmStatusEl = document.getElementById('prmNavMemberStatus');
+    if (prmStatusEl) {
+      prmStatusEl.innerHTML = isPremium
+        ? '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(245,158,11,0.12));border:1px solid rgba(251,191,36,0.35);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:700;color:#fbbf24">&#x1F451; PREMIUM MEMBER</span>'
+        : '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--text2)">FREE MEMBER</span>';
+    }
   }
 
   async function syncAll(force) {
