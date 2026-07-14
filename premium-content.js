@@ -362,39 +362,60 @@
   }
 
   async function injectLibrarySection(force) {
-    var panel = document.getElementById('bsfTabPanel');
+    /* Remove any existing premium section first */
     var old = document.getElementById(SECTION_ID);
     if (old) old.remove();
-    if (!panel) return;
+
+    /* Find the BSF panel — it's created dynamically by switchMeTab */
+    var panel = document.getElementById('bsfTabPanel');
+    if (!panel) {
+      _log('bsfTabPanel not found — SMCI injection skipped');
+      return;
+    }
 
     var status = await _getStatus(force || false);
     if (!status.isPremium) { _log('Not premium — skip library section'); return; }
 
     var pdfs = await _getPremiumCategoryPdfs(force);
-    _log('Injecting premium section', pdfs.length + ' PDFs');
+    _log('Injecting premium library section', pdfs.length + ' PDFs');
+
+    /* Insert premium section BEFORE the sdl-root div (main BSF content)
+       so it appears at the top of the library, above the bookshelf */
+    var insertTarget = panel.querySelector('.sdl-root') || panel.firstChild || null;
 
     if (pdfs.length === 0) {
-      var noContentHtml = '<div id="' + SECTION_ID + '" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--glass-border,rgba(255,255,255,0.08))">'
-        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">'
+      /* Show placeholder — retry after 3s once PDFs finish loading */
+      var noContentHtml = '<div id="' + SECTION_ID + '" style="margin:0 0 24px;padding:20px 24px;'
+        + 'border-radius:16px;background:linear-gradient(135deg,rgba(251,191,36,0.05),rgba(245,158,11,0.03));'
+        + 'border:1px solid rgba(251,191,36,0.15)">'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
         + '<span>👑</span><span style="font-weight:700;font-size:.95rem;color:var(--text1)">⭐ Premium Membership</span>'
-        + '<span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">ACTIVE</span>'
+        + '<span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;'
+        + 'background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));'
+        + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">ACTIVE</span>'
         + '</div>'
-        + '<div style="text-align:center;padding:24px;color:var(--text2);font-size:.85rem">'
-        + '⏳ Loading Premium Notes…'
-        + '</div></div>';
+        + '<div style="color:var(--text2);font-size:.82rem">⏳ Loading Premium Notes…</div>'
+        + '</div>';
       var frag = document.createElement('div');
       frag.innerHTML = noContentHtml;
-      panel.insertBefore(frag.firstChild, panel.firstChild);
-      /* Auto-retry after PDFs finish loading (pdf-list.js takes ~1-2s) */
+      if (insertTarget) { panel.insertBefore(frag.firstChild, insertTarget); }
+      else { panel.appendChild(frag.firstChild); }
+
+      /* Auto-retry after PDFs finish loading */
       setTimeout(async function() {
+        var old2 = document.getElementById(SECTION_ID);
+        if (!old2) return; /* Already replaced */
         var retryPdfs = await _getPremiumCategoryPdfs(false);
         if (retryPdfs.length > 0) {
-          var old2 = document.getElementById(SECTION_ID);
-          if (old2) old2.remove();
+          old2.remove();
           var frag2 = document.createElement('div');
           frag2.innerHTML = _buildPremiumSection(retryPdfs, status);
           var panel2 = document.getElementById('bsfTabPanel');
-          if (panel2) panel2.insertBefore(frag2.firstChild, panel2.firstChild);
+          if (panel2) {
+            var insertTarget2 = panel2.querySelector('.sdl-root') || panel2.firstChild || null;
+            if (insertTarget2) { panel2.insertBefore(frag2.firstChild, insertTarget2); }
+            else { panel2.appendChild(frag2.firstChild); }
+          }
         }
       }, 3000);
       return;
@@ -402,7 +423,8 @@
 
     var frag = document.createElement('div');
     frag.innerHTML = _buildPremiumSection(pdfs, status);
-    panel.insertBefore(frag.firstChild, panel.firstChild);
+    if (insertTarget) { panel.insertBefore(frag.firstChild, insertTarget); }
+    else { panel.appendChild(frag.firstChild); }
   }
 
   function _removePremiumSection() {
@@ -423,13 +445,96 @@
   async function syncAll(force) {
     var status = await _getStatus(force || false);
     _updateBadges(status.isPremium);
+    /* Library section injection — only if bsfTabPanel exists (user is on My Library tab) */
     var panel = document.getElementById('bsfTabPanel');
     if (panel) {
       if (status.isPremium) await injectLibrarySection(false);
       else _removePremiumSection();
     }
+    /* Home premium shelf — always check (section shows/hides based on status) */
+    var homeSection = document.getElementById('smci-home-premium');
+    if (homeSection) { renderHomePremiumShelf(false); }
     try { window.dispatchEvent(new CustomEvent('smci:statusUpdated', { detail: status })); } catch (_) {}
     return status;
+  }
+
+
+  /* ─────────────────────────────────────────────────────────────────
+     § HOME PAGE — PREMIUM CONTENT SHELF
+     Renders PDFs from premium categories into #smci-home-premium
+     Uses SAME _getPremiumCategoryPdfs() as library section — single source of truth.
+  ──────────────────────────────────────────────────────────────────*/
+
+  /* Build a card for the home shelf (matches scardHTML style) */
+  function _buildHomePremiumCard(pdf) {
+    var title = _esc(pdf.title || 'Untitled');
+    var cover = pdf.cover_url || pdf.coverImage || pdf.cover_image || pdf.thumbnail || '';
+    var price = Number(pdf.price || 0);
+    var id    = String(pdf.id);
+    var imgHtml = cover
+      ? '<img src="' + _esc(cover) + '" loading="lazy" decoding="async"'
+        + ' style="width:100%;height:100%;object-fit:cover;border-radius:10px 10px 0 0"'
+        + ' onerror="this.style.display=\'none\'">'
+      : '';
+    var iconHtml = cover ? '' :
+      '<div style="width:100%;height:100%;display:flex;align-items:center;'
+      + 'justify-content:center;font-size:2rem;border-radius:10px 10px 0 0;'
+      + 'background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(245,158,11,0.05))">&#x1F4CC;</div>';
+    var cardStyle = 'cursor:pointer;flex:0 0 140px;width:140px;border-radius:10px;'
+      + 'background:var(--glass-bg,rgba(255,255,255,0.03));'
+      + 'border:1px solid rgba(251,191,36,0.2);overflow:hidden;'
+      + 'transition:transform .15s,box-shadow .15s;flex-shrink:0';
+    var html = '<div style="' + cardStyle + '" onclick="buyPDF(\'' + id + '\',' + price + ')">';
+    html += '<div style="position:relative;height:100px;overflow:hidden">';
+    html += imgHtml + iconHtml;
+    html += '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
+          + 'color:#000;font-size:.52rem;font-weight:800;padding:2px 6px;border-radius:8px">&#x1F451;</div>';
+    html += '</div>';
+    html += '<div style="padding:8px 8px 10px">';
+    html += '<div style="font-size:.72rem;font-weight:600;color:var(--text1);line-height:1.3;'
+          + 'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'
+          + title + '</div>';
+    html += '<div style="font-size:.63rem;color:#fbbf24;font-weight:700;margin-top:4px">&#x1F451; Free with Premium</div>';
+    html += '</div></div>';
+    return html;
+  }
+
+  async function renderHomePremiumShelf(force) {
+    var section = document.getElementById('smci-home-premium');
+    var track   = document.getElementById('smci-home-premium-track');
+    if (!section || !track) return; /* Section not in DOM yet */
+
+    var status = await _getStatus(force || false);
+    if (!status.isPremium) {
+      /* Not premium — hide the section */
+      section.style.display = 'none';
+      return;
+    }
+
+    var pdfs = await _getPremiumCategoryPdfs(force || false);
+    if (pdfs.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+
+    /* Render cards */
+    track.innerHTML = pdfs.slice(0, 15).map(_buildHomePremiumCard).join('');
+    section.style.display = '';
+    _log('Home premium shelf rendered', pdfs.length + ' PDFs');
+  }
+
+  /* Hook renderHome() to also render premium shelf */
+  function _hookRenderHome() {
+    var orig = window.renderHome;
+    if (!orig || orig._smciHooked) return;
+    window.renderHome = async function renderHome_smci() {
+      var res = orig.apply(this, arguments);
+      /* Render premium shelf async — does not block home page render */
+      setTimeout(function() { renderHomePremiumShelf(false); }, 300);
+      return res;
+    };
+    window.renderHome._smciHooked = true;
+    _log('renderHome hooked for premium shelf');
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -517,6 +622,8 @@
       if (s.isPremium) {
         _toast('👑 Premium active! All Premium Notes unlocked.', 'success');
         injectLibrarySection(true);
+        /* Also refresh home premium shelf if user is on home page */
+        setTimeout(function() { renderHomePremiumShelf(true); }, 400);
       }
     });
   }
@@ -685,8 +792,19 @@
     }
     _tryHookAuth();
 
+    /* Hook renderHome for premium shelf — with retry until renderHome is available */
+    var _rh = 0;
+    function _tryHookRenderHome() {
+      if (window.renderHome) { _hookRenderHome(); }
+      else if (_rh++ < 30) { setTimeout(_tryHookRenderHome, 300); }
+    }
+    _tryHookRenderHome();
+
     window.addEventListener('studyria:membership:activated', _onActivated);
-    window.addEventListener('smci:refresh', function() { syncAll(true); });
+    window.addEventListener('smci:refresh', function() {
+      syncAll(true);
+      renderHomePremiumShelf(true);
+    });
 
     if (_uid()) { setTimeout(function() { syncAll(false); }, 900); }
     else {
@@ -700,13 +818,14 @@
   }
 
   window.SMCI = {
-    _version:             'pci-2.1',
-    isPremium:            function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
-    getStatus:            function(f) { return _getStatus(f || false); },
-    syncAll:              function(f) { return syncAll(f || false); },
-    refresh:              function() { _state.fetchedAt = 0; _catCache.fetchedAt = 0; return syncAll(true); },
-    injectLibrarySection: function() { return injectLibrarySection(true); },
-    getEnabledCategories: function() { return _fetchCategoryConfig(false); },
+    _version:               'pci-2.1',
+    isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
+    getStatus:              function(f) { return _getStatus(f || false); },
+    syncAll:                function(f) { return syncAll(f || false); },
+    refresh:                function() { _state.fetchedAt = 0; _catCache.fetchedAt = 0; return syncAll(true); },
+    injectLibrarySection:   function() { return injectLibrarySection(true); },
+    renderHomePremiumShelf: function(f) { return renderHomePremiumShelf(f || false); },
+    getEnabledCategories:   function() { return _fetchCategoryConfig(false); },
   };
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', _init); }

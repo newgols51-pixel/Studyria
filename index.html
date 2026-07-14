@@ -7165,6 +7165,27 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 <!-- Dynamic category rows -->
 <div id="shCategoryRowsContainer"></div>
 
+<!-- ── PREMIUM CONTENT SHELF (SMCI Phase 1) ──────────────────────────────
+     Only visible for active Premium Members.
+     Populated by premium-content.js using site_config.premium_categories_config
+     Single source of truth — same config as My Library premium section.
+──────────────────────────────────────────────────────────────────────── -->
+<section class="sh-row-section" id="smci-home-premium" style="display:none">
+  <div class="container">
+    <div class="sh-section-head">
+      <div class="sh-section-label">
+        <span class="sh-section-dot" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)"></span>
+        <span class="sh-section-title" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">&#x1F451; Premium Content</span>
+        <span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.25);margin-left:4px">MEMBERS ONLY</span>
+      </div>
+      <button class="sh-see-all" onclick="navigate('premium')">View All &#8594;</button>
+    </div>
+  </div>
+  <div class="sh-row-outer">
+    <div class="sh-row-track" id="smci-home-premium-track"></div>
+  </div>
+</section>
+
 </div><!-- #shDiscovery -->
 
 <!-- ── POPULAR DOWNLOADS (ranked) ───────────────────────────── -->
@@ -21437,6 +21458,14 @@ CREATE TRIGGER trg_progress_updated
         showToast('⚠️ Supabase not connected', 'error');
       }
     };
+
+    // ── Trigger SMCI premium section injection AFTER BSF renders ──
+    // This fires AFTER panel.innerHTML is fully set, so SMCI can inject correctly
+    setTimeout(function() {
+      if (window.SMCI && typeof window.SMCI.injectLibrarySection === 'function') {
+        window.SMCI.injectLibrarySection();
+      }
+    }, 150);
   }
 
   // ── WISHLIST ───────────────────────────────────────────────────────
