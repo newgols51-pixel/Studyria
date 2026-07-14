@@ -416,6 +416,23 @@
     _log('Premium Dashboard sections rendered ✅');
   };
 
+  /* ── renderWithStatus: render with pre-resolved isPremium (no SMCI call needed) ── */
+  PRMDASH.renderWithStatus = async function(isPremium) {
+    var myToken = ++_renderToken;
+    _log('renderWithStatus called, isPremium=' + isPremium + ' (token ' + myToken + ')');
+    _injectCSS();
+    if (myToken !== _renderToken) return;
+    _applyConditionalUI(isPremium);
+    var pdfs = await _getPremiumPDFs();
+    if (myToken !== _renderToken) return;
+    await _renderLibraryUniverse(isPremium, pdfs);
+    if (myToken !== _renderToken) return;
+    _renderContinueReading(isPremium, pdfs);
+    _renderRecentlyAdded(isPremium, pdfs);
+    _renderMyCards(isPremium, pdfs);
+    _log('renderWithStatus done ✅');
+  };
+
   /* ── Retry-aware render (waits for SMCI/PDFS) ──────────────────── */
   PRMDASH.renderWithRetry = async function() {
     var attempt = 0;

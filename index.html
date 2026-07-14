@@ -16764,49 +16764,94 @@ async function navigate(page) {
   // Premium page init
   if (page === 'premium') {
     if (window.PRM1 && typeof PRM1.init === 'function') PRM1.init();
-    // Sync real membership status into the Premium tab (single source of truth)
-    // FIX: PRMDASH.render() must run AFTER syncAll resolves so isPremium is correct
-    if (window.SMCI && typeof window.SMCI.syncAll === 'function') {
-      window.SMCI.syncAll(false).then(function(st) {
-        // Update Premium tab member status pill
-        var prmStatusEl = document.getElementById('prmNavMemberStatus');
-        if (prmStatusEl) {
-          if (st && st.isPremium) {
-            prmStatusEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(245,158,11,0.12));border:1px solid rgba(251,191,36,0.35);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:700;color:#fbbf24">&#x1F451; PREMIUM MEMBER</span>';
-          } else {
-            prmStatusEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--text2)">FREE MEMBER</span>';
+
+    // DIRECT Supabase membership check — bypasses window.currentUser timing issues
+    // Same approach as premium-p5d.js (which works correctly in Me section)
+    (async function _prmPageInit() {
+      var sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+      var isPremium = false, planName = '—', expiresAt = null;
+
+      if (sb) {
+        try {
+          // Get user ID directly from Supabase session (no window.currentUser dependency)
+          var sessionRes = await sb.auth.getSession();
+          var uid = sessionRes && sessionRes.data && sessionRes.data.session
+            ? sessionRes.data.session.user.id : null;
+
+          // If no session yet, wait up to 2s for auth to resolve
+          if (!uid) {
+            for (var w = 0; w < 4 && !uid; w++) {
+              await new Promise(function(r) { setTimeout(r, 500); });
+              var sr2 = await sb.auth.getSession();
+              uid = sr2 && sr2.data && sr2.data.session ? sr2.data.session.user.id : null;
+            }
           }
-        }
-        // Update expiry/plan info
-        var prmPlanEl = document.getElementById('prmNavPlanName');
-        var prmExpiryEl = document.getElementById('prmNavExpiry');
-        var prmDaysEl = document.getElementById('prmNavDaysLeft');
-        if (prmPlanEl) prmPlanEl.textContent = (st && st.planName) ? st.planName : '—';
-        if (prmExpiryEl && st && st.expiresAt) {
-          var expDate = new Date(st.expiresAt);
+
+          if (uid) {
+            var memRes = await sb.from('user_memberships')
+              .select('id,plan_id,status,started_at,expires_at')
+              .eq('user_id', uid)
+              .order('expires_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            var mem = (!memRes.error && memRes.data) ? memRes.data : null;
+            if (mem && mem.status === 'active') {
+              var exp = mem.expires_at ? new Date(mem.expires_at) : null;
+              if (exp && exp > new Date()) {
+                isPremium = true;
+                expiresAt = mem.expires_at;
+                // Fetch plan name
+                if (mem.plan_id) {
+                  try {
+                    var pr = await sb.from('membership_plans').select('name').eq('id', mem.plan_id).maybeSingle();
+                    if (!pr.error && pr.data) planName = pr.data.name || '1 Day Trial';
+                  } catch(_) { planName = '1 Day Trial'; }
+                }
+              }
+            }
+            // Inject result into SMCI cache so PRMDASH picks it up correctly
+            if (window.SMCI && typeof window.SMCI._injectStatus === 'function') {
+              window.SMCI._injectStatus({ isPremium: isPremium, planName: planName, expiresAt: expiresAt });
+            }
+          }
+        } catch(e) { console.warn('[PRM-INIT]', e); }
+      }
+
+      // Update status pill
+      var prmStatusEl = document.getElementById('prmNavMemberStatus');
+      if (prmStatusEl) {
+        prmStatusEl.innerHTML = isPremium
+          ? '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(245,158,11,0.12));border:1px solid rgba(251,191,36,0.35);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:700;color:#fbbf24">&#x1F451; PREMIUM MEMBER</span>'
+          : '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--text2)">FREE MEMBER</span>';
+      }
+      var prmPlanEl   = document.getElementById('prmNavPlanName');
+      var prmExpiryEl = document.getElementById('prmNavExpiry');
+      var prmDaysEl   = document.getElementById('prmNavDaysLeft');
+      if (prmPlanEl)   prmPlanEl.textContent   = isPremium ? planName : '—';
+      if (prmExpiryEl) {
+        if (isPremium && expiresAt) {
+          var expDate = new Date(expiresAt);
           prmExpiryEl.textContent = expDate.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-          var daysLeft = Math.ceil((expDate - Date.now()) / 86400000);
-          if (prmDaysEl) prmDaysEl.textContent = daysLeft > 0 ? daysLeft + ' days left' : 'Expired';
+          var dl = Math.ceil((expDate - Date.now()) / 86400000);
+          if (prmDaysEl) prmDaysEl.textContent = dl > 0 ? dl + ' days left' : 'Expires today';
         } else {
-          if (prmExpiryEl) prmExpiryEl.textContent = '—';
+          prmExpiryEl.textContent = '—';
           if (prmDaysEl) prmDaysEl.textContent = '—';
         }
-        // FIX: render AFTER syncAll so SMCI cache is warm and isPremium is correct
-        if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
-          window.PRMDASH.render();
-        }
-      }).catch(function() {
-        // syncAll failed — still try to render (will fall back to free view)
-        if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
-          window.PRMDASH.render();
-        }
-      });
-    } else {
-      // SMCI not available — render anyway
-      if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
-        setTimeout(function() { window.PRMDASH.render(); }, 300);
       }
-    }
+
+      // Render premium dashboard with correct isPremium status
+      if (window.PRMDASH && typeof window.PRMDASH.renderWithStatus === 'function') {
+        window.PRMDASH.renderWithStatus(isPremium);
+      } else if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
+        window.PRMDASH.render();
+      }
+
+      // Also update SMCI state so downstream code is consistent
+      if (window.SMCI && typeof window.SMCI.syncAll === 'function' && isPremium) {
+        window.SMCI.syncAll(true).catch(function(){});
+      }
+    })();
   }
   // BUG-2+3 FIX: Premium Library page — render horizontal shelves
   if (page === 'premium-library') {
