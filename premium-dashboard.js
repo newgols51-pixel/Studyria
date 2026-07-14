@@ -177,9 +177,9 @@
       try {
         _log('Querying Supabase directly for category:', PREMIUM_CATEGORY);
         var res = await sb.from('pdfs')
-          .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,is_published,created_at')
+          .select('*')
           .eq('category', PREMIUM_CATEGORY)
-          .eq('is_published', true)
+          .eq('status', 'published')
           .order('created_at', { ascending: false })
           .limit(100);
         if (res.error) { _log('Supabase error:', res.error.message); }
