@@ -380,11 +380,23 @@
         + '<span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">ACTIVE</span>'
         + '</div>'
         + '<div style="text-align:center;padding:24px;color:var(--text2);font-size:.85rem">'
-        + 'Premium Notes loading… <a onclick="SMCI.syncAll(true)" style="color:#fbbf24;cursor:pointer">Refresh</a>'
+        + '⏳ Loading Premium Notes…'
         + '</div></div>';
       var frag = document.createElement('div');
       frag.innerHTML = noContentHtml;
       panel.insertBefore(frag.firstChild, panel.firstChild);
+      /* Auto-retry after PDFs finish loading (pdf-list.js takes ~1-2s) */
+      setTimeout(async function() {
+        var retryPdfs = await _getPremiumCategoryPdfs(false);
+        if (retryPdfs.length > 0) {
+          var old2 = document.getElementById(SECTION_ID);
+          if (old2) old2.remove();
+          var frag2 = document.createElement('div');
+          frag2.innerHTML = _buildPremiumSection(retryPdfs, status);
+          var panel2 = document.getElementById('bsfTabPanel');
+          if (panel2) panel2.insertBefore(frag2.firstChild, panel2.firstChild);
+        }
+      }, 3000);
       return;
     }
 
