@@ -2560,6 +2560,38 @@ body.light .mobile-nav-item:hover .mni-icon { background: rgba(0,0,0,0.05); }
 .mobile-nav-item:active { transform: scale(0.92) translateY(0); transition-duration: .08s; }
 .mobile-nav-item:active .mni-icon { transform: scale(0.90); }
 
+/* 6-tab layout — slightly tighter items */
+.mobile-nav-items:has(.mobile-nav-item:nth-child(6)) .mobile-nav-item {
+  padding: 6px 2px 5px;
+  font-size: .55rem;
+}
+.mobile-nav-items:has(.mobile-nav-item:nth-child(6)) .mobile-nav-item .mni-icon {
+  width: 34px; height: 34px;
+}
+.mobile-nav-items:has(.mobile-nav-item:nth-child(6)) .mobile-nav-item .mni-label {
+  font-size: .55rem;
+}
+
+/* Premium tab — gold active state */
+.mobile-nav-item[data-page="premium"].active {
+  color: #fbbf24;
+}
+.mobile-nav-item[data-page="premium"].active .mni-icon {
+  background: linear-gradient(135deg, rgba(251,191,36,0.22) 0%, rgba(245,158,11,0.14) 100%);
+  box-shadow: 0 4px 20px rgba(251,191,36,0.35), 0 0 0 1px rgba(251,191,36,0.20);
+}
+.mobile-nav-item[data-page="premium"].active .mni-label {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.mobile-nav-item[data-page="premium"].active::before {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  box-shadow: 0 0 10px rgba(251,191,36,0.7);
+}
+body.light .mobile-nav-item[data-page="premium"].active {
+  color: #d97706;
+}
+
 /* SVG inside icon — inherit color */
 .mobile-nav-item svg { transition: color 0.22s ease; }
 .mobile-nav-item.active svg { color: var(--accent); }
@@ -14711,6 +14743,26 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     </div>
   </div>
 
+  <!-- MEMBER STATUS CARD ─────────────────────────────────────── -->
+  <div id="prmNavStatusCard" style="padding:0 16px 8px;max-width:520px;margin:0 auto">
+    <div style="display:flex;justify-content:center;margin-bottom:10px" id="prmNavMemberStatus">
+      <!-- populated by navigate('premium') → SMCI.syncAll -->
+    </div>
+    <div id="prmNavPlanRow" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:10px 14px">
+        <div style="font-size:.65rem;color:var(--text3);font-weight:600;letter-spacing:.04em;margin-bottom:3px">PLAN</div>
+        <div style="font-size:.88rem;font-weight:700;color:var(--text1)" id="prmNavPlanName">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:10px 14px">
+        <div style="font-size:.65rem;color:var(--text3);font-weight:600;letter-spacing:.04em;margin-bottom:3px">EXPIRES</div>
+        <div style="font-size:.88rem;font-weight:700;color:var(--text1)" id="prmNavExpiry">—</div>
+      </div>
+    </div>
+    <div id="prmNavDaysRow" style="background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(245,158,11,0.05));border:1px solid rgba(251,191,36,0.18);border-radius:12px;padding:8px 14px;text-align:center;margin-bottom:4px">
+      <span style="font-size:.78rem;color:rgba(251,191,36,0.8);font-weight:600" id="prmNavDaysLeft">—</span>
+    </div>
+  </div>
+
   <!-- PRICING ──────────────────────────────────────────────────── -->
   <section class="prm-section" id="prmPlans">
     <div class="container">
@@ -15687,7 +15739,7 @@ async function handleNewsletterSubscribe(btn) {
 
     <button class="mobile-nav-item active" data-page="home" onclick="navigate('home')">
       <span class="mni-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
           <polyline points="9 22 9 12 15 12 15 22"/>
         </svg>
@@ -15697,7 +15749,7 @@ async function handleNewsletterSubscribe(btn) {
 
     <button class="mobile-nav-item" data-page="library" onclick="navigate('library')">
       <span class="mni-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
           <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
         </svg>
@@ -15705,9 +15757,14 @@ async function handleNewsletterSubscribe(btn) {
       <span class="mni-label">Library</span>
     </button>
 
+    <button class="mobile-nav-item" data-page="premium" onclick="navigate('premium')">
+      <span class="mni-icon" style="font-size:1.2rem">👑</span>
+      <span class="mni-label">Premium</span>
+    </button>
+
     <button class="mobile-nav-item" data-page="wishlist" onclick="navigate('wishlist')">
       <span class="mni-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
         </svg>
       </span>
@@ -15716,7 +15773,7 @@ async function handleNewsletterSubscribe(btn) {
 
     <button class="mobile-nav-item" data-page="career-hub" onclick="navigate('career-hub')">
       <span class="mni-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
           <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
         </svg>
@@ -15726,7 +15783,7 @@ async function handleNewsletterSubscribe(btn) {
 
     <button class="mobile-nav-item" data-page="dashboard" onclick="navigate('dashboard')">
       <span class="mni-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
@@ -16470,7 +16527,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload',
-  'privacy','terms','refund','about','contact','blog','premium'
+  'privacy','terms','refund','about','contact','blog','premium','premium-library'
 ]);
 
 // Force-resets any leftover native browser pinch-zoom. Needed because a
@@ -16623,6 +16680,34 @@ async function navigate(page) {
   // Premium page init
   if (page === 'premium') {
     if (window.PRM1 && typeof PRM1.init === 'function') PRM1.init();
+    // Sync real membership status into the Premium tab (single source of truth)
+    if (window.SMCI && typeof window.SMCI.syncAll === 'function') {
+      window.SMCI.syncAll(false).then(function(st) {
+        // Update Premium tab member status pill
+        var prmStatusEl = document.getElementById('prmNavMemberStatus');
+        if (prmStatusEl) {
+          if (st && st.isPremium) {
+            prmStatusEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(245,158,11,0.12));border:1px solid rgba(251,191,36,0.35);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:700;color:#fbbf24">&#x1F451; PREMIUM MEMBER</span>';
+          } else {
+            prmStatusEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--text2)">FREE MEMBER</span>';
+          }
+        }
+        // Update expiry/plan info
+        var prmPlanEl = document.getElementById('prmNavPlanName');
+        var prmExpiryEl = document.getElementById('prmNavExpiry');
+        var prmDaysEl = document.getElementById('prmNavDaysLeft');
+        if (prmPlanEl) prmPlanEl.textContent = (st && st.planName) ? st.planName : '—';
+        if (prmExpiryEl && st && st.expiresAt) {
+          var expDate = new Date(st.expiresAt);
+          prmExpiryEl.textContent = expDate.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+          var daysLeft = Math.ceil((expDate - Date.now()) / 86400000);
+          if (prmDaysEl) prmDaysEl.textContent = daysLeft > 0 ? daysLeft + ' days left' : 'Expired';
+        } else {
+          if (prmExpiryEl) prmExpiryEl.textContent = '—';
+          if (prmDaysEl) prmDaysEl.textContent = '—';
+        }
+      }).catch(function(){});
+    }
   }
   // BUG-2+3 FIX: Premium Library page — render horizontal shelves
   if (page === 'premium-library') {
@@ -20536,7 +20621,7 @@ async function switchMeTab(tab) {
         <div class="me-pb-rocket">🚀</div>
         <div class="me-pb-title">Unlock Better Learning</div>
         <div class="me-pb-sub">Access premium PDFs, exam resources and exclusive content curated for Indian students.</div>
-        <button class="me-pb-btn" onclick="navigate('library')">
+        <button class="me-pb-btn" onclick="navigate('premium')">
           Explore Now
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -45949,5 +46034,49 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 
 <script src="premium-content.js" defer></script>
+<script>
+/* PATCH: Extend SMCI._updateBadges to sync Premium tab status pill — realtime */
+(function() {
+  function _patchSMCI() {
+    if (!window.SMCI) return;
+    var _origSync = window.SMCI.syncAll;
+    if (_origSync && _origSync._prmTabPatched) return;
+    window.SMCI.syncAll = async function(force) {
+      var st = await _origSync.call(this, force);
+      /* Update Premium tab member status */
+      _syncPrmTabStatus(st);
+      return st;
+    };
+    window.SMCI.syncAll._prmTabPatched = true;
+  }
+  function _syncPrmTabStatus(st) {
+    var isPremium = st && st.isPremium;
+    var prmStatusEl = document.getElementById('prmNavMemberStatus');
+    if (prmStatusEl) {
+      prmStatusEl.innerHTML = isPremium
+        ? '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(245,158,11,0.12));border:1px solid rgba(251,191,36,0.35);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:700;color:#fbbf24">&#x1F451; PREMIUM MEMBER</span>'
+        : '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--text2)">FREE MEMBER</span>';
+    }
+    var prmPlanEl   = document.getElementById('prmNavPlanName');
+    var prmExpiryEl = document.getElementById('prmNavExpiry');
+    var prmDaysEl   = document.getElementById('prmNavDaysLeft');
+    if (prmPlanEl) prmPlanEl.textContent = (st && st.planName) ? st.planName : '—';
+    if (st && st.expiresAt) {
+      var expDate = new Date(st.expiresAt);
+      if (prmExpiryEl) prmExpiryEl.textContent = expDate.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+      var daysLeft = Math.ceil((expDate - Date.now()) / 86400000);
+      if (prmDaysEl) prmDaysEl.textContent = daysLeft > 0 ? daysLeft + ' day' + (daysLeft !== 1 ? 's' : '') + ' left' : 'Expired';
+    } else {
+      if (prmExpiryEl) prmExpiryEl.textContent = '—';
+      if (prmDaysEl) prmDaysEl.textContent = '—';
+    }
+  }
+  /* Listen for smci:statusUpdated event (fired by syncAll) */
+  window.addEventListener('smci:statusUpdated', function(e) { _syncPrmTabStatus(e && e.detail); });
+  /* Patch SMCI as soon as it's ready */
+  if (window.SMCI) { _patchSMCI(); }
+  else { document.addEventListener('DOMContentLoaded', function() { setTimeout(_patchSMCI, 500); }); }
+})();
+</script>
 </body>
 </html>
