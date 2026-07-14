@@ -23,16 +23,28 @@
 (function () {
   'use strict';
 
-  if (window.PRMDASH && window.PRMDASH._version === '1.1') return;
+  if (window.PRMDASH && window.PRMDASH._version === '1.2') return;
 
   var PRMDASH = {};
   window.PRMDASH = PRMDASH;
-  PRMDASH._version = '1.1';
+  PRMDASH._version = '1.2';
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var PREMIUM_CATEGORY = 'Premium Handwritten Notes';
   var RETRY_MS = 800;
   var MAX_RETRIES = 5;
+
+  /* RACE CONDITION FIX: Track when renderWithStatus was last called.
+     The navigate('premium') handler in index.html calls renderWithStatus(isPremium)
+     with the CORRECT status from a direct Supabase query. But our own navigate
+     hook fires renderWithRetry() at 600ms which can override it. This guard
+     prevents the hook from firing if renderWithStatus was called recently. */
+  var _lastStatusRender = 0;
+  var STATUS_RENDER_GUARD_MS = 3000;
+
+  /* PREMIUM UNLOCK EXPERIENCE: Track whether the unlock animation has been
+     shown for the current Premium tab visit. Reset when leaving the tab. */
+  var _unlockExperienceShown = false;
 
   /* ── Utilities ─────────────────────────────────────────────────── */
   function _esc(s) {
@@ -98,6 +110,19 @@
       '@keyframes prmdashFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }',
       '.prmdash-section { animation: prmdashFadeIn .4s ease-out; }',
       '@media (max-width: 540px) { .prmdash-card { flex: 0 0 130px; width: 130px; } .prmdash-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }',
+      /* ── PREMIUM UNLOCK EXPERIENCE ── */
+      '#prmUnlockOverlay { position:fixed; inset:0; z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; opacity:0; animation: prmUnlockFadeIn .4s ease-out forwards; }',
+      '#prmUnlockOverlay.prm-unlock-out { animation: prmUnlockFadeOut .5s ease-in forwards; }',
+      '.prm-unlock-glow { position:absolute; width:200px; height:200px; border-radius:50%; background: radial-gradient(circle, rgba(251,191,36,0.35) 0%, rgba(245,158,11,0.15) 40%, transparent 70%); animation: prmGlowPulse 1.2s ease-out; }',
+      '.prm-unlock-crown { font-size:3.5rem; position:relative; z-index:2; animation: prmCrownPop .8s cubic-bezier(0.34,1.56,0.64,1) forwards; filter: drop-shadow(0 0 20px rgba(251,191,36,0.6)); }',
+      '.prm-unlock-text { position:relative; z-index:2; margin-top:12px; font-size:1.1rem; font-weight:800; color:#fbbf24; text-shadow: 0 0 15px rgba(251,191,36,0.5); animation: prmTextFadeIn .6s ease-out .3s forwards; opacity:0; }',
+      '.prm-unlock-sparkle { position:absolute; width:6px; height:6px; border-radius:50%; background:#fbbf24; pointer-events:none; }',
+      '@keyframes prmUnlockFadeIn { from { opacity:0; } to { opacity:1; } }',
+      '@keyframes prmUnlockFadeOut { from { opacity:1; } to { opacity:0; } }',
+      '@keyframes prmCrownPop { 0% { transform:scale(0) rotate(-30deg); opacity:0; } 50% { transform:scale(1.3) rotate(10deg); opacity:1; } 70% { transform:scale(1.0) rotate(-5deg); } 100% { transform:scale(1.0) rotate(0); opacity:1; } }',
+      '@keyframes prmGlowPulse { 0% { transform:scale(0.3); opacity:0; } 50% { transform:scale(1.5); opacity:1; } 100% { transform:scale(1.2); opacity:0.3; } }',
+      '@keyframes prmTextFadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }',
+      '@keyframes prmSparkleFly { 0% { transform:translate(0,0) scale(1); opacity:1; } 100% { transform:translate(var(--sx),var(--sy)) scale(0); opacity:0; } }',
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -418,6 +443,7 @@
 
   /* ── renderWithStatus: render with pre-resolved isPremium (no SMCI call needed) ── */
   PRMDASH.renderWithStatus = async function(isPremium) {
+    _lastStatusRender = Date.now();
     var myToken = ++_renderToken;
     _log('renderWithStatus called, isPremium=' + isPremium + ' (token ' + myToken + ')');
     _injectCSS();
@@ -461,13 +487,142 @@
     }
   };
 
+  /* ─────────────────────────────────────────────────────────────────
+     § PREMIUM UNLOCK EXPERIENCE
+     Triggered when a Premium Member opens the Premium tab.
+     Shows: golden glow + crown animation + sparkle particles + text.
+     Plays: soft premium unlock sound (Web Audio API, ~0.7s, low volume).
+     Rules: Only once per tab visit. Never on scroll. Never blocks UI.
+  ──────────────────────────────────────────────────────────────────*/
+
+  function _playPremiumUnlockSound() {
+    try {
+      var AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      var ctx = new AudioCtx();
+
+      /* Soft premium chime — two ascending notes with gentle decay */
+      var notes = [
+        { freq: 659.25, start: 0,     dur: 0.35 },  /* E5 */
+        { freq: 987.77, start: 0.12,  dur: 0.55 },  /* B5 */
+      ];
+
+      var masterGain = ctx.createGain();
+      masterGain.gain.value = 0.12;  /* Low volume */
+      masterGain.connect(ctx.destination);
+
+      notes.forEach(function(n) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = n.freq;
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        var t = ctx.currentTime + n.start;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.8, t + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + n.dur);
+
+        osc.start(t);
+        osc.stop(t + n.dur);
+      });
+
+      /* Cleanup after 1s */
+      setTimeout(function() { try { ctx.close(); } catch(_) {} }, 1000);
+    } catch(e) { _log('Sound playback failed', e); }
+  }
+
+  function _showUnlockExperience() {
+    if (_unlockExperienceShown) return;
+    _unlockExperienceShown = true;
+
+    /* Remove any existing overlay */
+    var existing = document.getElementById('prmUnlockOverlay');
+    if (existing) existing.remove();
+
+    var overlay = document.createElement('div');
+    overlay.id = 'prmUnlockOverlay';
+
+    /* Glow background */
+    var glow = document.createElement('div');
+    glow.className = 'prm-unlock-glow';
+    overlay.appendChild(glow);
+
+    /* Crown */
+    var crown = document.createElement('div');
+    crown.className = 'prm-unlock-crown';
+    crown.textContent = '👑';
+    overlay.appendChild(crown);
+
+    /* Text */
+    var text = document.createElement('div');
+    text.className = 'prm-unlock-text';
+    text.textContent = 'Premium Unlocked';
+    overlay.appendChild(text);
+
+    /* Sparkle particles */
+    for (var i = 0; i < 12; i++) {
+      var sparkle = document.createElement('div');
+      sparkle.className = 'prm-unlock-sparkle';
+      var angle = (Math.PI * 2 * i) / 12;
+      var dist = 60 + Math.random() * 40;
+      sparkle.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+      sparkle.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+      sparkle.style.left = '50%';
+      sparkle.style.top = '50%';
+      sparkle.style.animation = 'prmSparkleFly ' + (0.6 + Math.random() * 0.4) + 's ease-out ' + (0.2 + Math.random() * 0.2) + 's forwards';
+      sparkle.style.opacity = '0';
+      overlay.appendChild(sparkle);
+    }
+
+    document.body.appendChild(overlay);
+
+    /* Play sound */
+    _playPremiumUnlockSound();
+
+    /* Auto-remove after 2.5s */
+    setTimeout(function() {
+      if (overlay.parentNode) {
+        overlay.classList.add('prm-unlock-out');
+        setTimeout(function() { if (overlay.parentNode) overlay.remove(); }, 600);
+      }
+    }, 2200);
+
+    _log('Premium unlock experience shown');
+  }
+
   /* ── Hook into navigate('premium') ─────────────────────────────── */
   var _origNavigate = window.navigate;
   if (_origNavigate && !_origNavigate._prmdashHooked) {
     window.navigate = async function(page) {
+      /* Reset unlock experience flag when leaving Premium tab */
+      if (page !== 'premium') _unlockExperienceShown = false;
       var result = _origNavigate.apply(this, arguments);
       if (page === 'premium') {
+        /* PREMIUM UNLOCK EXPERIENCE: Check if user is premium and show animation.
+           Uses SMCI.getStatus (which was just injected by the navigate handler). */
+        (async function() {
+          try {
+            if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
+              var st = await window.SMCI.getStatus(false);
+              if (st && st.isPremium) {
+                _showUnlockExperience();
+              }
+            }
+          } catch(_) {}
+        })();
+
         setTimeout(function() {
+          /* RACE CONDITION FIX: If renderWithStatus was called recently
+             (by the navigate handler's direct Supabase query), don't
+             override it with renderWithRetry which may get a stale
+             SMCI status. The direct query + _injectStatus is the
+             single source of truth. */
+          if (Date.now() - _lastStatusRender < STATUS_RENDER_GUARD_MS) {
+            _log('Skipping renderWithRetry — renderWithStatus called recently');
+            return;
+          }
           if (window.PRMDASH && typeof window.PRMDASH.renderWithRetry === 'function') {
             window.PRMDASH.renderWithRetry();
           }

@@ -20,7 +20,7 @@
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.2') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.3') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
@@ -128,10 +128,40 @@
     }
   }
 
+  /* INJECTION GUARD: After _injectStatus sets the correct status, don't
+     let force=true override it for 3 seconds. This prevents the race
+     where PRMDASH.render() force-refetches and gets a stale result
+     while the navigate handler already determined the correct status. */
+  var INJECTION_GUARD_MS = 3000;
+
   async function _getStatus(force) {
     var stale = (Date.now() - _state.fetchedAt) > CACHE_TTL_MS;
-    if (force || stale || !_state.fetchedAt) await _fetchStatus();
+    var recentlyInjected = _state._injectedAt && (Date.now() - _state._injectedAt) < INJECTION_GUARD_MS;
+    if ((force && !recentlyInjected) || stale || !_state.fetchedAt) await _fetchStatus();
     return Object.assign({}, _state);
+  }
+
+  /* _injectStatus: Allows external code (e.g. navigate('premium') handler)
+     to inject the correct membership status directly into SMCI's cache.
+     This ensures a SINGLE SOURCE OF TRUTH — the direct Supabase query
+     result is propagated to all downstream consumers (PRMDASH, badges, etc.) */
+  function _injectStatus(status) {
+    if (!status) return;
+    _state.isPremium  = !!status.isPremium;
+    _state.status     = status.isPremium ? 'active' : 'none';
+    _state.planName   = status.planName || (status.isPremium ? 'Premium' : 'Free');
+    _state.planSlug   = status.planSlug || null;
+    _state.expiresAt  = status.expiresAt || null;
+    _state.daysLeft   = status.expiresAt
+      ? Math.max(0, Math.ceil((new Date(status.expiresAt) - new Date()) / 86400000))
+      : 0;
+    _state.fetchedAt  = Date.now();
+    _state._injectedAt = Date.now();
+    _state.fetching   = false;
+    _state._retries   = 0;
+    _log('Status injected', { isPremium: _state.isPremium, planName: _state.planName, daysLeft: _state.daysLeft });
+    /* Notify listeners that status was updated */
+    try { window.dispatchEvent(new CustomEvent('smci:statusUpdated', { detail: Object.assign({}, _state) })); } catch (_) {}
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -1111,7 +1141,8 @@
 
 
   window.SMCI = {
-    _version:               'pci-2.2',
+    _version:               'pci-2.3',
+    _injectStatus:          function(status) { _injectStatus(status); },
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
     getStatus:              function(f) { return _getStatus(f || false); },
     syncAll:                function(f) { return syncAll(f || false); },
