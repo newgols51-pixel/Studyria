@@ -154,20 +154,22 @@
     if (!enabledCatsLower || enabledCatsLower.length === 0) return false;
     var pdfCat = (pdf.category || '').toLowerCase().trim();
     if (!pdfCat) return false;
+    /* BUG-1 FIX: exact match ONLY — never partial/includes */
     return enabledCatsLower.some(function(ec) {
-      return pdfCat === ec || pdfCat.includes(ec) || ec.includes(pdfCat);
+      return pdfCat === ec;
     });
   }
 
   async function _getPremiumCategoryPdfs(force) {
     var enabledLower = await _getEnabledCategoryNames(force);
     if (enabledLower.length === 0) return [];
+    /* BUG-1 FIX: exact category match only — never partial/includes */
     return (window.PDFS || []).filter(function(p) {
       if (!p || !p.title) return false;
       var pdfCat = (p.category || '').toLowerCase().trim();
       if (!pdfCat) return false;
       return enabledLower.some(function(ec) {
-        return pdfCat === ec || pdfCat.includes(ec) || ec.includes(pdfCat);
+        return pdfCat === ec;
       });
     });
   }
@@ -311,12 +313,14 @@
       + '</div></div>';
   }
 
+  /* BUG-3 FIX: Horizontal carousel shelves per category (one shelf per category).
+     BUG-5 FIX: Cards use "👑 Open Free" — premium members never see Buy button. */
   function _buildPremiumSection(pdfs, status) {
     var expFmt = '';
     if (status.expiresAt) {
       try { expFmt = new Date(status.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (_) {}
     }
-    /* Group by category */
+    /* Group PDFs by exact category name (order of first appearance) */
     var groups = {}, order = [];
     pdfs.forEach(function(pdf) {
       var cat = pdf.category || 'Premium Notes';
@@ -324,25 +328,65 @@
       groups[cat].push(pdf);
     });
 
-    var sectionsHtml = order.map(function(catName) {
-      var catPdfs = groups[catName];
-      return '<div style="margin-bottom:20px">'
-        + '<div style="font-size:.78rem;font-weight:700;color:rgba(251,191,36,0.8);margin-bottom:10px;'
-        + 'display:flex;align-items:center;gap:6px">'
-        + '<span>📚</span><span>' + _esc(catName) + '</span>'
-        + '<span style="font-size:.62rem;color:rgba(255,255,255,0.35);font-weight:400">(' + catPdfs.length + ' notes)</span>'
-        + '</div>'
-        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">'
-        + catPdfs.map(_buildPremiumCard).join('')
-        + '</div></div>';
-    }).join('');
-
-    if (!sectionsHtml) {
-      sectionsHtml = '<div style="text-align:center;padding:24px;color:var(--text2);font-size:.88rem">No Premium Notes in catalogue yet.</div>';
+    /* Inject shelf CSS once */
+    if (!document.getElementById('smci-shelf-css')) {
+      var s = document.createElement('style');
+      s.id = 'smci-shelf-css';
+      s.textContent = [
+        '.smci-shelf-row{margin-bottom:20px}',
+        '.smci-shelf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px}',
+        '.smci-shelf-title{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:rgba(251,191,36,0.85)}',
+        '.smci-shelf-count{font-size:.62rem;color:rgba(255,255,255,0.35);font-weight:400}',
+        '.smci-shelf-outer{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;user-select:none}',
+        '.smci-shelf-outer::-webkit-scrollbar{display:none}',
+        '.smci-shelf-track{display:flex;gap:10px;padding-bottom:6px;width:max-content}',
+      ].join('');
+      document.head.appendChild(s);
     }
 
+    var sectionsHtml = (order.length === 0)
+      ? '<div style="text-align:center;padding:24px;color:var(--text2);font-size:.88rem">No Premium Notes in catalogue yet.</div>'
+      : order.map(function(catName, ri) {
+          var catPdfs = groups[catName];
+          return '<div class="smci-shelf-row">'
+            + '<div class="smci-shelf-head">'
+            + '<div class="smci-shelf-title">'
+            + '<span>📚</span>'
+            + '<span>' + _esc(catName) + '</span>'
+            + '<span class="smci-shelf-count">(' + catPdfs.length + ')</span>'
+            + '</div>'
+            + '</div>'
+            + '<div class="smci-shelf-outer" id="smci-shelf-' + ri + '">'
+            + '<div class="smci-shelf-track">'
+            + catPdfs.map(_buildPremiumCard).join('')
+            + '</div>'
+            + '</div>'
+            + '</div>';
+        }).join('');
+
+    /* Wire drag-to-scroll after insertion */
+    setTimeout(function() {
+      document.querySelectorAll('.smci-shelf-outer').forEach(function(el) {
+        if (el._smciDrag) return;
+        el._smciDrag = true;
+        var dragging = false, startX = 0, scrollLeft = 0;
+        el.addEventListener('mousedown', function(e) {
+          dragging = true; startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft;
+          el.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mouseup', function() {
+          dragging = false; el.style.cursor = 'grab';
+        });
+        el.addEventListener('mousemove', function(e) {
+          if (!dragging) return;
+          e.preventDefault();
+          el.scrollLeft = scrollLeft - (e.pageX - el.offsetLeft - startX);
+        });
+      });
+    }, 120);
+
     return '<div id="' + SECTION_ID + '" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--glass-border,rgba(255,255,255,0.08))">'
-      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">'
       + '<div>'
       + '<div style="display:flex;align-items:center;gap:8px">'
       + '<span style="font-size:1.05rem">👑</span>'
@@ -353,13 +397,14 @@
       + '</div>'
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
-      + '<button onclick="navigate(\'library\')" style="font-size:.75rem;color:var(--accent);'
+      + '<button onclick="navigate('premium-library')" style="font-size:.75rem;color:var(--accent);'
       + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
       + sectionsHtml
       + '</div>';
   }
+
 
   async function injectLibrarySection(force) {
     /* Remove any existing premium section first */
@@ -445,6 +490,12 @@
   async function syncAll(force) {
     var status = await _getStatus(force || false);
     _updateBadges(status.isPremium);
+    /* BUG-4 FIX: Sync P5D premium badge — ensures dashPlan shows PREMIUM MEMBER not FREE */
+    try {
+      if (window.P5D && typeof window.P5D.refreshBadges === 'function') {
+        window.P5D.refreshBadges();
+      }
+    } catch (_) {}
     /* Library section injection — only if bsfTabPanel exists (user is on My Library tab) */
     var panel = document.getElementById('bsfTabPanel');
     if (panel) {
@@ -817,6 +868,128 @@
     _log('Init complete — SMCI pci-2.1 (site_config storage)');
   }
 
+
+  /* ─────────────────────────────────────────────────────────────────
+     § PREMIUM LIBRARY PAGE (BUG-2+3 FIX)
+     Dedicated full-page premium library with horizontal category shelves.
+     Called by navigate('premium-library') handler in index.html.
+     Uses SAME _getPremiumCategoryPdfs() — single source of truth.
+  ──────────────────────────────────────────────────────────────────*/
+  async function renderPremiumLibraryPage(force) {
+    var container = document.getElementById('prmLibContent');
+    var subtitle  = document.getElementById('prmLibSubtitle');
+    if (!container) return;
+
+    /* Loading state */
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
+      + '<div style="font-size:2rem;margin-bottom:12px">👑</div>'
+      + '<div style="font-size:.9rem">Loading Premium Library…</div>'
+      + '</div>';
+
+    var status = await _getStatus(force || false);
+
+    if (!status.isPremium) {
+      /* Not a premium member — show upgrade prompt */
+      container.innerHTML = '<div style="text-align:center;padding:48px 24px">'
+        + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
+        + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
+        + '<div style="font-size:.85rem;color:var(--text2);margin-bottom:24px">Unlock all Premium Handwritten Notes and more with a Premium Membership.</div>'
+        + '<button onclick="navigate('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
+        + 'font-weight:700;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem">'
+        + '👑 View Plans →</button>'
+        + '</div>';
+      return;
+    }
+
+    /* Get enabled categories & PDFs */
+    var enabledCats  = await _fetchCategoryConfig(force || false); /* original case names */
+    var pdfs         = await _getPremiumCategoryPdfs(force || false);
+
+    /* Update subtitle */
+    if (subtitle) {
+      var total = pdfs.length;
+      subtitle.textContent = total + ' premium note' + (total !== 1 ? 's' : '') + ' across ' + enabledCats.length + ' categor' + (enabledCats.length !== 1 ? 'ies' : 'y');
+    }
+
+    if (pdfs.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
+        + '<div style="font-size:2rem;margin-bottom:12px">📭</div>'
+        + '<div>No Premium Notes in catalogue yet — check back soon!</div>'
+        + '</div>';
+      return;
+    }
+
+    /* Group by exact category (exact-match — same as _getPremiumCategoryPdfs) */
+    var groups = {}, order = [];
+    pdfs.forEach(function(pdf) {
+      var cat = pdf.category || 'Premium Notes';
+      if (!groups[cat]) { groups[cat] = []; order.push(cat); }
+      groups[cat].push(pdf);
+    });
+
+    /* Inject shelf CSS if not already injected */
+    if (!document.getElementById('smci-shelf-css')) {
+      var s = document.createElement('style');
+      s.id = 'smci-shelf-css';
+      s.textContent = [
+        '.smci-shelf-row{margin-bottom:28px}',
+        '.smci-shelf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}',
+        '.smci-shelf-title{display:flex;align-items:center;gap:7px;font-size:.85rem;font-weight:700;color:rgba(251,191,36,0.9)}',
+        '.smci-shelf-count{font-size:.65rem;color:rgba(255,255,255,0.35);font-weight:400}',
+        '.smci-shelf-outer{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;user-select:none}',
+        '.smci-shelf-outer::-webkit-scrollbar{display:none}',
+        '.smci-shelf-track{display:flex;gap:12px;padding-bottom:8px;width:max-content}',
+      ].join('');
+      document.head.appendChild(s);
+    }
+
+    /* Build horizontal shelf HTML for each category */
+    var html = order.map(function(catName, ri) {
+      var catPdfs = groups[catName];
+      return '<div class="smci-shelf-row">'
+        + '<div class="smci-shelf-head">'
+        + '<div class="smci-shelf-title">'
+        + '<span style="font-size:1.1rem">📚</span>'
+        + '<span>' + _esc(catName) + '</span>'
+        + '<span class="smci-shelf-count">(' + catPdfs.length + ' notes)</span>'
+        + '</div>'
+        + '</div>'
+        + '<div class="smci-shelf-outer" id="prmlib-shelf-' + ri + '">'
+        + '<div class="smci-shelf-track">'
+        + catPdfs.map(function(pdf) {
+            /* BUG-5 FIX: Always use _buildPremiumCard which shows "👑 Open Free" */
+            return _buildPremiumCard(pdf);
+          }).join('')
+        + '</div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+
+    container.innerHTML = html;
+
+    /* Wire drag-to-scroll on all shelves */
+    setTimeout(function() {
+      container.querySelectorAll('.smci-shelf-outer').forEach(function(el) {
+        if (el._smciDrag) return;
+        el._smciDrag = true;
+        var dragging = false, startX = 0, scrollL = 0;
+        el.addEventListener('mousedown', function(e) {
+          dragging = true; startX = e.pageX - el.offsetLeft; scrollL = el.scrollLeft;
+          el.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mouseup', function() { dragging = false; el.style.cursor = 'grab'; });
+        el.addEventListener('mousemove', function(e) {
+          if (!dragging) return;
+          e.preventDefault();
+          el.scrollLeft = scrollL - (e.pageX - el.offsetLeft - startX);
+        });
+      });
+    }, 120);
+
+    _log('Premium Library page rendered', pdfs.length + ' PDFs, ' + order.length + ' shelves');
+  }
+
+
   window.SMCI = {
     _version:               'pci-2.1',
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
@@ -825,6 +998,7 @@
     refresh:                function() { _state.fetchedAt = 0; _catCache.fetchedAt = 0; return syncAll(true); },
     injectLibrarySection:   function() { return injectLibrarySection(true); },
     renderHomePremiumShelf: function(f) { return renderHomePremiumShelf(f || false); },
+    renderPremiumLibraryPage: function(f) { return renderPremiumLibraryPage(f || false); },
     getEnabledCategories:   function() { return _fetchCategoryConfig(false); },
   };
 
