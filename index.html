@@ -16765,6 +16765,7 @@ async function navigate(page) {
   if (page === 'premium') {
     if (window.PRM1 && typeof PRM1.init === 'function') PRM1.init();
     // Sync real membership status into the Premium tab (single source of truth)
+    // FIX: PRMDASH.render() must run AFTER syncAll resolves so isPremium is correct
     if (window.SMCI && typeof window.SMCI.syncAll === 'function') {
       window.SMCI.syncAll(false).then(function(st) {
         // Update Premium tab member status pill
@@ -16790,11 +16791,21 @@ async function navigate(page) {
           if (prmExpiryEl) prmExpiryEl.textContent = '—';
           if (prmDaysEl) prmDaysEl.textContent = '—';
         }
-      }).catch(function(){});
-    }
-    // Render Premium Dashboard sections (Library Universe, Continue Reading, Recently Added, My Cards)
-    if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
-      setTimeout(function() { window.PRMDASH.render(); }, 300);
+        // FIX: render AFTER syncAll so SMCI cache is warm and isPremium is correct
+        if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
+          window.PRMDASH.render();
+        }
+      }).catch(function() {
+        // syncAll failed — still try to render (will fall back to free view)
+        if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
+          window.PRMDASH.render();
+        }
+      });
+    } else {
+      // SMCI not available — render anyway
+      if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
+        setTimeout(function() { window.PRMDASH.render(); }, 300);
+      }
     }
   }
   // BUG-2+3 FIX: Premium Library page — render horizontal shelves
