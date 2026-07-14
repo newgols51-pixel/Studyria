@@ -114,6 +114,22 @@
     requestAnimationFrame(function () {
       PRM1.initCarousel();
     });
+    /* MEMBER-BANNER-FIX: Show/hide member banner and CTA based on real premium status */
+    (async function() {
+      try {
+        var banner   = document.getElementById('prmMemberBanner');
+        var ctaNon   = document.getElementById('prmCtaNonMember');
+        var ctaMem   = document.getElementById('prmCtaMember');
+        var isPrem   = false;
+        if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
+          var st = await window.SMCI.getStatus(false);
+          isPrem = !!(st && st.isPremium);
+        }
+        if (banner)  banner.style.display  = isPrem ? '' : 'none';
+        if (ctaNon)  ctaNon.style.display  = isPrem ? 'none' : '';
+        if (ctaMem)  ctaMem.style.display  = isPrem ? '' : 'none';
+      } catch(_) {}
+    })();
   };
 
 })();
