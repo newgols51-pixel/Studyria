@@ -439,10 +439,13 @@
     var planEl = document.getElementById('dashPlan');
     if (planEl) {
       if (isActive) {
-        var mem = _cache.membership;
-        planEl.innerHTML = '👑 ' + _esc(_getPlanName(mem ? mem.plan_id : null)) + ' <span class="p5d-premium-badge">PREMIUM</span>';
+        /* BADGE-FIX: exact required format "👑 PREMIUM MEMBER" */
+        planEl.innerHTML = '&#x1F451; PREMIUM MEMBER';
+        planEl.className = planEl.className.replace(/\bmb-level\b/g, '').trim() + ' mb-gold';
       } else {
-        planEl.textContent = '🎓 Free Plan';
+        /* BADGE-FIX: exact required format "FREE MEMBER" */
+        planEl.textContent = 'FREE MEMBER';
+        planEl.className = planEl.className.replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
       }
       var badgeRow = document.getElementById('dashBadgeRow');
       if (badgeRow) badgeRow.style.display = '';
