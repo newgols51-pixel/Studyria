@@ -1,33 +1,45 @@
 /**
- * premium-content.js — Studyria Premium Content Integration v2.0
+ * premium-content.js — Studyria Premium Content Integration v2.1
  *
  * PHASE 1: Premium Handwritten Notes unlocked for active Premium Members.
  *
+ * STORAGE: Uses existing `site_config` table (key/value store).
+ *   key:   'premium_categories_config'
+ *   value: JSON array of enabled category names
+ *          e.g. '["Premium Handwritten Notes"]'
+ *
+ * ZERO new tables. ZERO schema changes. ZERO SQL migrations.
+ *
  * SAFETY CONTRACT:
- *   ✅ READS ONLY: user_memberships, membership_plans, premium_categories
+ *   ✅ Reads: user_memberships, membership_plans, site_config, categories, pdfs
+ *   ✅ Writes: site_config ONLY (existing table, existing columns, key/value)
  *   ✅ Zero new payment logic — uses existing buyPDF() / PPAY
  *   ✅ Zero changes to payment-service.js, Razorpay, buyPDF, purchased_pdfs
- *   ✅ Zero new DB writes (payment-related)
- *   ✅ All selectors namespaced under SMCI / smci-*
- *   ✅ Premium access = category controlled by admin toggle
  *   ✅ Individual purchases always work regardless of membership
+ *   ✅ Lifetime purchased PDFs NEVER affected
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.0') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.1') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
-  var CACHE_TTL_MS      = 60000;           /* 1-min membership cache   */
-  var CAT_CACHE_TTL_MS  = 300000;          /* 5-min category cache     */
+  var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
+  var CAT_CACHE_TTL_MS  = 120000;   /* 2-min category config cache   */
+  var SITE_CONFIG_KEY   = 'premium_categories_config';
   var SECTION_ID        = 'smci-premium-notes-section';
-  var ADMIN_SECTION_ID  = 'smci-admin-prem-cats';
+
+  /* Phase 1 hardcoded default — used when site_config has no entry yet.
+   * This is a safe client-side fallback only; the real source of truth
+   * is site_config in Supabase (or this default if not yet configured). */
+  var DEFAULT_ENABLED_CATS = ['Premium Handwritten Notes'];
 
   /* ── State ─────────────────────────────────────────────────────── */
   var _state = {
     isPremium: false, status: 'none', planName: 'Free', planSlug: null,
     expiresAt: null, daysLeft: 0, fetchedAt: 0, fetching: false
   };
-  var _catCache = { cats: null, fetchedAt: 0 }; /* premium_categories rows */
+  /* Category config cache */
+  var _catCache = { cats: null, fetchedAt: 0 };
 
   /* ── Utilities ─────────────────────────────────────────────────── */
   function _sb()    { return window.supabaseClient || null; }
@@ -35,11 +47,11 @@
   function _uid()   { var u = _user(); return u ? (u.uid || u.id || null) : null; }
   function _toast(m, t) { if (typeof window.showToast === 'function') window.showToast(m, t || 'info'); }
   function _esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function _log(m, d) { if (d !== undefined) console.debug('[SMCI]', m, d); else console.debug('[SMCI]', m); }
+  function _log(m, d)  { if (d !== undefined) console.debug('[SMCI]', m, d); else console.debug('[SMCI]', m); }
   function _warn(m, e) { console.warn('[SMCI]', m, e || ''); }
 
   /* ─────────────────────────────────────────────────────────────────
-     § MEMBERSHIP STATUS FETCH (unchanged from v1)
+     § MEMBERSHIP STATUS
   ──────────────────────────────────────────────────────────────────*/
   async function _fetchStatus() {
     var client = _sb(), uid = _uid();
@@ -92,55 +104,69 @@
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     § PREMIUM CATEGORIES (fetched from Supabase admin toggle table)
+     § PREMIUM CATEGORY CONFIG
+     Reads from site_config table (existing key/value store).
+     Falls back to DEFAULT_ENABLED_CATS if not yet configured.
   ──────────────────────────────────────────────────────────────────*/
-  async function _fetchPremiumCategories(force) {
+  async function _fetchCategoryConfig(force) {
     var sb = _sb();
-    if (!sb) return [];
+    /* If no supabase, use hardcoded default */
+    if (!sb) return DEFAULT_ENABLED_CATS.slice();
+
     var stale = (Date.now() - _catCache.fetchedAt) > CAT_CACHE_TTL_MS;
-    if (!force && !stale && _catCache.cats !== null) return _catCache.cats;
+    if (!force && !stale && _catCache.cats !== null) return _catCache.cats.slice();
 
     try {
-      var res = await sb.from('premium_categories')
-        .select('id,category_name,is_enabled,sort_order')
-        .eq('is_enabled', true)
-        .order('sort_order', { ascending: true });
+      var res = await sb.from('site_config')
+        .select('value')
+        .eq('key', SITE_CONFIG_KEY)
+        .maybeSingle();
 
-      var cats = (!res.error && res.data) ? res.data : [];
-      _catCache.cats = cats;
+      if (res.error || !res.data) {
+        /* No config saved yet — use Phase 1 default */
+        _catCache.cats = DEFAULT_ENABLED_CATS.slice();
+        _catCache.fetchedAt = Date.now();
+        _log('Category config: using Phase 1 default', DEFAULT_ENABLED_CATS);
+        return _catCache.cats.slice();
+      }
+
+      var parsed = [];
+      try { parsed = JSON.parse(res.data.value); } catch (_) { parsed = DEFAULT_ENABLED_CATS.slice(); }
+      if (!Array.isArray(parsed)) parsed = DEFAULT_ENABLED_CATS.slice();
+
+      _catCache.cats = parsed;
       _catCache.fetchedAt = Date.now();
-      _log('Premium categories loaded', cats.map(function(c){ return c.category_name; }));
-      return cats;
+      _log('Category config loaded', parsed);
+      return parsed.slice();
     } catch (e) {
-      _warn('_fetchPremiumCategories error', e);
-      return _catCache.cats || [];
+      _warn('_fetchCategoryConfig error', e);
+      /* On error use default — never block premium users */
+      return _catCache.cats || DEFAULT_ENABLED_CATS.slice();
     }
   }
 
-  /* Get the set of enabled category names (lower-cased for match) */
   async function _getEnabledCategoryNames(force) {
-    var cats = await _fetchPremiumCategories(force);
-    return cats.map(function(c) { return (c.category_name || '').toLowerCase().trim(); });
+    var cats = await _fetchCategoryConfig(force);
+    return cats.map(function(n) { return (n || '').toLowerCase().trim(); });
   }
 
-  /* Check if a single PDF belongs to any enabled premium category */
-  async function _isPdfInPremiumCategory(pdf, enabledCats) {
-    if (!enabledCats || enabledCats.length === 0) return false;
+  async function _isPdfInPremiumCategory(pdf, enabledCatsLower) {
+    if (!enabledCatsLower || enabledCatsLower.length === 0) return false;
     var pdfCat = (pdf.category || '').toLowerCase().trim();
     if (!pdfCat) return false;
-    return enabledCats.some(function(ec) { return pdfCat === ec || pdfCat.includes(ec) || ec.includes(pdfCat); });
+    return enabledCatsLower.some(function(ec) {
+      return pdfCat === ec || pdfCat.includes(ec) || ec.includes(pdfCat);
+    });
   }
 
-  /* Get all PDFs that belong to enabled premium categories */
   async function _getPremiumCategoryPdfs(force) {
-    var enabledCats = await _getEnabledCategoryNames(force);
-    if (enabledCats.length === 0) return [];
-    var allPdfs = window.PDFS || [];
-    return allPdfs.filter(function(p) {
+    var enabledLower = await _getEnabledCategoryNames(force);
+    if (enabledLower.length === 0) return [];
+    return (window.PDFS || []).filter(function(p) {
       if (!p || !p.title) return false;
       var pdfCat = (p.category || '').toLowerCase().trim();
       if (!pdfCat) return false;
-      return enabledCats.some(function(ec) {
+      return enabledLower.some(function(ec) {
         return pdfCat === ec || pdfCat.includes(ec) || ec.includes(pdfCat);
       });
     });
@@ -164,40 +190,37 @@
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     § BUY PDF PATCH — premium bypass for category-enabled PDFs
-     Individual purchases ALWAYS work. Bypass ONLY when:
-       1. User has active membership
-       2. PDF's category is enabled in premium_categories
+     § buyPDF PATCH — premium bypass for category-enabled PDFs only
   ──────────────────────────────────────────────────────────────────*/
   function _patchBuyPDF() {
     var orig = window.buyPDF;
     if (!orig || orig._smciPatched) return;
     window.buyPDF = async function buyPDF_smci(pdfId, amount, legacyUrl) {
-      /* Free PDFs → original flow */
+      /* Free PDFs → always original flow */
       var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
       if (pdf && typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
       var isFree = pdf ? (pdf.free || Number(pdf.price || 0) === 0) : (Number(amount || 0) === 0);
       if (isFree) return orig.call(this, pdfId, amount, legacyUrl);
 
-      /* Already individually owned → original flow (permanent lifetime access) */
+      /* Already individually purchased → permanent lifetime access, always works */
       if (typeof window._isOwned === 'function' && window._isOwned(String(pdfId))) {
-        _log('Individual owner passthrough', pdfId);
+        _log('Individual owner — lifetime access passthrough', pdfId);
         return orig.call(this, pdfId, amount, legacyUrl);
       }
 
-      /* Check membership */
+      /* Not premium → normal purchase flow */
       var status = await _getStatus(false);
       if (!status.isPremium) return orig.call(this, pdfId, amount, legacyUrl);
 
-      /* Check category — must be in an enabled premium category */
-      var enabledCats = await _getEnabledCategoryNames(false);
-      var inPremCat = pdf ? await _isPdfInPremiumCategory(pdf, enabledCats) : false;
+      /* Premium but PDF not in an enabled category → normal purchase */
+      var enabledCatsLower = await _getEnabledCategoryNames(false);
+      var inPremCat = pdf ? await _isPdfInPremiumCategory(pdf, enabledCatsLower) : false;
       if (!inPremCat) {
-        _log('PDF not in premium category — normal purchase', pdfId);
+        _log('PDF not in premium category — normal purchase flow', pdfId);
         return orig.call(this, pdfId, amount, legacyUrl);
       }
 
-      /* Premium bypass — open PDF directly */
+      /* Premium bypass — open PDF directly via signed URL */
       _log('Premium bypass buyPDF', pdfId);
       var client = _sb(), user = _user();
       if (!client || !user) { _warn('No client/user — fallback'); return orig.call(this, pdfId, amount, legacyUrl); }
@@ -219,7 +242,7 @@
       _toast('Opening with Premium access! 👑', 'success');
     };
     window.buyPDF._smciPatched = true;
-    _log('buyPDF patched (v2 — category-based)');
+    _log('buyPDF patched — category-based (site_config)');
   }
 
   function _patchTriggerPDFDownload() {
@@ -230,21 +253,16 @@
       var status = await _getStatus(false);
       if (!status.isPremium) return orig.call(this, pdfId);
       var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
-      var enabledCats = await _getEnabledCategoryNames(false);
-      var inPremCat = pdf ? await _isPdfInPremiumCategory(pdf, enabledCats) : false;
-      if (!inPremCat) return orig.call(this, pdfId);
+      var enabledCatsLower = await _getEnabledCategoryNames(false);
+      if (!(pdf && await _isPdfInPremiumCategory(pdf, enabledCatsLower))) return orig.call(this, pdfId);
 
       _log('Premium bypass download', pdfId);
       var client = _sb(), user = _user();
       if (!client || !user) return orig.call(this, pdfId);
 
       var pdfUrl = '';
-      try {
-        var row = await client.from('pdfs').select('pdf_url').eq('id', pdfId).single();
-        if (row.data) pdfUrl = row.data.pdf_url || '';
-      } catch (e) {}
+      try { var row = await client.from('pdfs').select('pdf_url').eq('id', pdfId).single(); if (row.data) pdfUrl = row.data.pdf_url || ''; } catch (_) {}
       if (!pdfUrl) return orig.call(this, pdfId);
-
       var url = await _resolveSignedUrl(pdfUrl, client);
       if (!url) return orig.call(this, pdfId);
 
@@ -257,18 +275,18 @@
       if (typeof window.trackReadingSession === 'function') window.trackReadingSession(pdfId);
     };
     window.triggerPDFDownload._smciPatched = true;
-    _log('triggerPDFDownload patched (v2)');
+    _log('triggerPDFDownload patched');
   }
 
   /* ─────────────────────────────────────────────────────────────────
      § MY LIBRARY — PREMIUM MEMBERSHIP SECTION
   ──────────────────────────────────────────────────────────────────*/
   function _buildPremiumCard(pdf) {
-    var title   = _esc(pdf.title || 'Untitled');
-    var cover   = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
-    var price   = Number(pdf.price || 0);
-    var cat     = _esc(pdf.category || '');
-    var id      = String(pdf.id);
+    var title = _esc(pdf.title || 'Untitled');
+    var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
+    var price = Number(pdf.price || 0);
+    var cat   = _esc(pdf.category || '');
+    var id    = String(pdf.id);
     var coverHtml = cover
       ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'" loading="lazy" decoding="async">'
       : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">📌</div>';
@@ -293,23 +311,22 @@
       + '</div></div>';
   }
 
-  function _buildPremiumSection(pdfs, status, enabledCatNames) {
+  function _buildPremiumSection(pdfs, status) {
     var expFmt = '';
     if (status.expiresAt) {
       try { expFmt = new Date(status.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (_) {}
     }
-    /* Group cards by category */
-    var grouped = {};
+    /* Group by category */
+    var groups = {}, order = [];
     pdfs.forEach(function(pdf) {
       var cat = pdf.category || 'Premium Notes';
-      if (!grouped[cat]) grouped[cat] = [];
-      grouped[cat].push(pdf);
+      if (!groups[cat]) { groups[cat] = []; order.push(cat); }
+      groups[cat].push(pdf);
     });
 
-    var sectionsHtml = '';
-    Object.keys(grouped).forEach(function(catName) {
-      var catPdfs = grouped[catName];
-      sectionsHtml += '<div style="margin-bottom:20px">'
+    var sectionsHtml = order.map(function(catName) {
+      var catPdfs = groups[catName];
+      return '<div style="margin-bottom:20px">'
         + '<div style="font-size:.78rem;font-weight:700;color:rgba(251,191,36,0.8);margin-bottom:10px;'
         + 'display:flex;align-items:center;gap:6px">'
         + '<span>📚</span><span>' + _esc(catName) + '</span>'
@@ -318,7 +335,7 @@
         + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">'
         + catPdfs.map(_buildPremiumCard).join('')
         + '</div></div>';
-    });
+    }).join('');
 
     if (!sectionsHtml) {
       sectionsHtml = '<div style="text-align:center;padding:24px;color:var(--text2);font-size:.88rem">No Premium Notes in catalogue yet.</div>';
@@ -354,18 +371,16 @@
     if (!status.isPremium) { _log('Not premium — skip library section'); return; }
 
     var pdfs = await _getPremiumCategoryPdfs(force);
-    var enabledCats = await _getEnabledCategoryNames(false);
-    _log('Injecting premium section', pdfs.length + ' PDFs in ' + enabledCats.length + ' categories');
+    _log('Injecting premium section', pdfs.length + ' PDFs');
 
     if (pdfs.length === 0) {
-      /* Still show the section header even if no PDFs match yet */
       var noContentHtml = '<div id="' + SECTION_ID + '" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--glass-border,rgba(255,255,255,0.08))">'
         + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">'
         + '<span>👑</span><span style="font-weight:700;font-size:.95rem;color:var(--text1)">⭐ Premium Membership</span>'
         + '<span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">ACTIVE</span>'
         + '</div>'
         + '<div style="text-align:center;padding:24px;color:var(--text2);font-size:.85rem">'
-        + 'Premium Notes are loading… <a onclick="SMCI.syncAll(true)" style="color:#fbbf24;cursor:pointer">Refresh</a>'
+        + 'Premium Notes loading… <a onclick="SMCI.syncAll(true)" style="color:#fbbf24;cursor:pointer">Refresh</a>'
         + '</div></div>';
       var frag = document.createElement('div');
       frag.innerHTML = noContentHtml;
@@ -374,7 +389,7 @@
     }
 
     var frag = document.createElement('div');
-    frag.innerHTML = _buildPremiumSection(pdfs, status, enabledCats);
+    frag.innerHTML = _buildPremiumSection(pdfs, status);
     panel.insertBefore(frag.firstChild, panel.firstChild);
   }
 
@@ -383,9 +398,6 @@
     if (el) el.remove();
   }
 
-  /* ─────────────────────────────────────────────────────────────────
-     § BADGES & GLOBAL STATE
-  ──────────────────────────────────────────────────────────────────*/
   function _updateBadges(isPremium) {
     document.querySelectorAll('[data-prm-status]').forEach(function(el) {
       el.textContent = isPremium ? '👑 Premium' : '🔒 Free';
@@ -409,7 +421,7 @@
   }
 
   /* ─────────────────────────────────────────────────────────────────
-     § HOOKS (identical to v1 — do not break existing wiring)
+     § HOOKS
   ──────────────────────────────────────────────────────────────────*/
   function _hookSwitchMeTab() {
     var orig = window.switchMeTab;
@@ -438,14 +450,11 @@
     window.renderDetail = async function renderDetail_smci() {
       var res = orig.apply(this, arguments);
       var pdf = window.selectedPdf;
-      if (!pdf) return res;
-      if (Number(pdf.price || 0) === 0) return res;
+      if (!pdf || Number(pdf.price || 0) === 0) return res;
       var status = await _getStatus(false);
       if (!status.isPremium) return res;
-      /* Check if this PDF's category is premium-enabled */
-      var enabledCats = await _getEnabledCategoryNames(false);
-      var inPremCat = await _isPdfInPremiumCategory(pdf, enabledCats);
-      if (!inPremCat) return res;
+      var enabledCatsLower = await _getEnabledCategoryNames(false);
+      if (!(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) return res;
       setTimeout(function() {
         document.querySelectorAll('.pdp-cta-btn,.pdp-buy-primary,#pdpStickyBuy,.pdp-sticky-buy').forEach(function(btn) {
           if (/buy|purchase|⚡/i.test(btn.textContent)) {
@@ -491,7 +500,7 @@
   function _onActivated(e) {
     _log('membership:activated', e && e.detail);
     _state.fetchedAt = 0;
-    _catCache.fetchedAt = 0; /* also bust category cache */
+    _catCache.fetchedAt = 0;
     syncAll(true).then(function(s) {
       if (s.isPremium) {
         _toast('👑 Premium active! All Premium Notes unlocked.', 'success');
@@ -502,8 +511,9 @@
 
   /* ─────────────────────────────────────────────────────────────────
      § ADMIN — PREMIUM CATEGORIES PANEL
-     Called by window.renderAdminPremiumCategories(container)
-     Injected into the existing Memberships admin tab
+     Uses site_config table (existing). Key: 'premium_categories_config'
+     Value: JSON array of category names that are premium-unlocked.
+     Zero new tables. Zero schema changes.
   ──────────────────────────────────────────────────────────────────*/
   window.renderAdminPremiumCategories = async function(container) {
     if (!container) return;
@@ -516,64 +526,50 @@
     container.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(255,255,255,0.4)">⏳ Loading categories…</div>';
 
     try {
-      /* Load all categories from the categories table */
+      /* Load all categories from existing categories table */
       var catRes = await sb.from('categories').select('id,name,slug,sort_order').order('sort_order', { ascending: true });
       var allCats = (!catRes.error && catRes.data) ? catRes.data : [];
 
-      /* Load current premium_categories state */
-      var premRes = await sb.from('premium_categories').select('*');
-      var premRows = (!premRes.error && premRes.data) ? premRes.data : [];
-      var premMap = {};
-      premRows.forEach(function(r) { premMap[r.category_name.toLowerCase()] = r; });
+      /* Load current config from site_config */
+      var enabledNames = await _fetchCategoryConfig(true);
+      var enabledLower = enabledNames.map(function(n) { return n.toLowerCase().trim(); });
 
-      /* For Phase 1 — seed any categories not yet in premium_categories as disabled */
-      /* (This happens silently — no writes needed, UI just shows them as OFF) */
-
-      var h = '<div id="' + ADMIN_SECTION_ID + '" style="margin-top:0">';
+      var h = '<div>';
       h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">'
         + '<span style="font-size:1.1rem">⭐</span>'
-        + '<div>'
-        + '<div style="font-size:.95rem;font-weight:700;color:var(--text1,#f0f4f8)">Premium Categories</div>'
-        + '<div style="font-size:.72rem;color:rgba(255,255,255,0.4);margin-top:2px">Toggle which categories unlock for Premium Members. Phase 1: Only "Premium Handwritten Notes".</div>'
+        + '<div style="flex:1">'
+        + '<div style="font-size:.95rem;font-weight:700;color:var(--text1,#f0f4f8)">Premium Category Management</div>'
+        + '<div style="font-size:.72rem;color:rgba(255,255,255,0.4);margin-top:2px">'
+        + 'Toggle which categories unlock for Premium Members. Config stored in <code>site_config</code>. Phase 1: Premium Handwritten Notes.'
         + '</div>'
-        + '<button onclick="window.renderAdminPremiumCategories(this.closest(\'#' + ADMIN_SECTION_ID + '\').parentElement)" '
-        + 'style="margin-left:auto;font-size:.72rem;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);'
-        + 'background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer">↻ Refresh</button>'
+        + '</div>'
+        + '<button onclick="window.renderAdminPremiumCategories(this.closest(\'[id^=smci-admin]\').parentElement||this.parentElement.parentElement)" '
+        + 'style="font-size:.72rem;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);'
+        + 'background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer;flex-shrink:0">↻ Refresh</button>'
         + '</div>';
 
       if (allCats.length === 0) {
-        h += '<div style="padding:20px;color:rgba(255,255,255,0.4);font-size:.85rem">No categories found. Add categories first.</div>';
+        h += '<div style="padding:20px;color:rgba(255,255,255,0.4);font-size:.85rem">No categories found in database.</div>';
       } else {
-        h += '<div style="display:flex;flex-direction:column;gap:8px">';
+        h += '<div style="display:flex;flex-direction:column;gap:8px" id="smci-cat-list">';
         allCats.forEach(function(cat) {
-          var catKey = cat.name.toLowerCase();
-          var premRow = premMap[catKey] || null;
-          var isEnabled = premRow ? premRow.is_enabled : false;
-          var rowId = 'smci-cat-row-' + String(cat.id).replace(/[^a-zA-Z0-9]/g, '');
+          var isEnabled = enabledLower.indexOf(cat.name.toLowerCase().trim()) > -1;
+          var rowId = 'smci-cr-' + String(cat.id).replace(/[^a-zA-Z0-9]/g, '');
+          var isPhase1 = cat.name === 'Premium Handwritten Notes';
 
           h += '<div id="' + rowId + '" style="display:flex;align-items:center;gap:12px;'
             + 'background:rgba(255,255,255,' + (isEnabled ? '.06' : '.025') + ');'
             + 'border:1px solid rgba(255,255,255,' + (isEnabled ? '.12' : '.06') + ');'
             + 'border-radius:10px;padding:12px 16px;transition:all .2s">'
-
-            /* Icon */
             + '<span style="font-size:1.1rem;flex-shrink:0">' + (isEnabled ? '🟢' : '⚫') + '</span>'
-
-            /* Name */
             + '<div style="flex:1;min-width:0">'
             + '<div style="font-size:.85rem;font-weight:600;color:var(--text1,#f0f4f8)">' + _esc(cat.name) + '</div>'
             + '<div style="font-size:.68rem;color:rgba(255,255,255,.35);margin-top:2px">'
-            + (isEnabled ? '✅ Unlocked for all Premium Members' : '🔒 Not included in membership')
+            + (isEnabled ? '✅ Unlocked for all active Premium Members' : '🔒 Not included in membership')
             + '</div>'
             + '</div>'
-
-            /* Phase 1 note */
-            + (cat.name === 'Premium Handwritten Notes'
-              ? '<span style="font-size:.6rem;padding:2px 8px;border-radius:10px;background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.25);font-weight:700">Phase 1</span>'
-              : '')
-
-            /* Toggle button */
-            + '<button onclick="window._smciToggleCategory(\'' + _esc(cat.name) + '\',' + (isEnabled ? 'false' : 'true') + ',\'' + rowId + '\')" '
+            + (isPhase1 ? '<span style="font-size:.6rem;padding:2px 8px;border-radius:10px;background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.25);font-weight:700;flex-shrink:0">Phase 1</span>' : '')
+            + '<button onclick="window._smciToggleCategory(\'' + _esc(cat.name) + '\',' + (isEnabled ? 'false' : 'true') + ')" '
             + 'style="flex-shrink:0;padding:7px 16px;border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;border:none;'
             + 'background:' + (isEnabled ? 'rgba(255,77,109,0.15)' : 'linear-gradient(135deg,rgba(16,217,142,0.2),rgba(6,182,212,0.15))') + ';'
             + 'color:' + (isEnabled ? '#ff4d6d' : '#10d98e') + ';'
@@ -586,9 +582,10 @@
       }
 
       h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(61,142,248,.08);'
-        + 'border:1px solid rgba(61,142,248,.2);font-size:.72rem;color:rgba(255,255,255,.5)">'
-        + 'ℹ️ Individual purchases always work regardless of category toggle. '
-        + 'Toggling OFF only affects membership access — it never removes purchased content.'
+        + 'border:1px solid rgba(61,142,248,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
+        + 'ℹ Config stored in <strong>site_config</strong> (key: <code>premium_categories_config</code>). '
+        + 'Individual PDF purchases always work regardless of toggle. '
+        + 'Toggling OFF only removes membership access — purchased content is never affected.'
         + '</div>';
 
       h += '</div>';
@@ -599,44 +596,64 @@
     }
   };
 
-  /* ── Toggle a single category ON/OFF ─────────────────────────── */
-  window._smciToggleCategory = async function(categoryName, enable, rowId) {
+  /* Toggle a category ON/OFF — writes to site_config (existing table) */
+  window._smciToggleCategory = async function(categoryName, enable) {
     var sb = _sb();
     if (!sb) { _toast('Supabase not connected', 'error'); return; }
 
-    var btn = rowId ? document.querySelector('#' + rowId + ' button') : null;
-    if (btn) { btn.disabled = true; btn.textContent = '⏳…'; }
+    /* Disable the button immediately to prevent double-click */
+    var allBtns = document.querySelectorAll('#smci-cat-list button');
+    allBtns.forEach(function(b) { b.disabled = true; });
 
     try {
-      /* Upsert into premium_categories */
-      var res = await sb.from('premium_categories').upsert({
-        category_name: categoryName,
-        is_enabled: enable,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'category_name' });
+      /* Read current config */
+      var current = await _fetchCategoryConfig(true);
+      var updated;
+
+      if (enable) {
+        /* Add category if not already in list */
+        if (current.indexOf(categoryName) === -1) {
+          updated = current.concat([categoryName]);
+        } else {
+          updated = current.slice();
+        }
+      } else {
+        /* Remove category */
+        updated = current.filter(function(n) { return n !== categoryName; });
+      }
+
+      /* Upsert to site_config — existing table, existing columns */
+      var res = await sb.from('site_config').upsert({
+        key:   SITE_CONFIG_KEY,
+        value: JSON.stringify(updated)
+      }, { onConflict: 'key' });
 
       if (res.error) throw new Error(res.error.message);
 
-      /* Bust category cache */
-      _catCache.fetchedAt = 0;
+      /* Bust cache */
+      _catCache.cats = updated;
+      _catCache.fetchedAt = Date.now();
 
-      _toast((enable ? '✅ ' : '⏸ ') + categoryName + (enable ? ' enabled for Premium!' : ' disabled.'), enable ? 'success' : 'info');
-      _log('Category toggled', { categoryName: categoryName, enable: enable });
+      _toast(
+        (enable ? '✅ ' : '⏸ ') + categoryName + (enable ? ' unlocked for Premium members!' : ' removed from Premium.'),
+        enable ? 'success' : 'info'
+      );
+      _log('Category toggled via site_config', { categoryName: categoryName, enable: enable, updated: updated });
 
-      /* Re-render the admin section */
-      var container = rowId ? document.getElementById(rowId) : null;
-      if (container) {
-        var wrap = container.parentElement ? container.parentElement.parentElement : null;
-        if (wrap) window.renderAdminPremiumCategories(wrap);
+      /* Re-render the admin panel */
+      var wrap = document.getElementById('smci-admin-prem-cats-wrap');
+      if (wrap && typeof window.renderAdminPremiumCategories === 'function') {
+        window.renderAdminPremiumCategories(wrap);
       }
 
-      /* Also bust membership cache + sync if user is premium */
+      /* Sync premium state if user is active member */
       if (window.SMCI) window.SMCI.refresh();
 
     } catch (e) {
       _warn('Toggle category error', e);
       _toast('Error: ' + e.message, 'error');
-      if (btn) { btn.disabled = false; btn.textContent = enable ? '▶ Enable' : '⏸ Disable'; }
+      /* Re-enable buttons on failure */
+      allBtns.forEach(function(b) { b.disabled = false; });
     }
   };
 
@@ -663,23 +680,21 @@
     else {
       var _aw = 0;
       function _waitAuth() {
-        if (_uid()) { syncAll(false); }
-        else if (_aw++ < 20) { setTimeout(_waitAuth, 500); }
+        if (_uid()) { syncAll(false); } else if (_aw++ < 20) { setTimeout(_waitAuth, 500); }
       }
       setTimeout(_waitAuth, 1200);
     }
-    _log('Init complete — SMCI pci-2.0');
+    _log('Init complete — SMCI pci-2.1 (site_config storage)');
   }
 
-  /* ── Public API ────────────────────────────────────────────────── */
   window.SMCI = {
-    _version:            'pci-2.0',
-    isPremium:           function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
-    getStatus:           function(f) { return _getStatus(f || false); },
-    syncAll:             function(f) { return syncAll(f || false); },
-    refresh:             function() { _state.fetchedAt = 0; _catCache.fetchedAt = 0; return syncAll(true); },
+    _version:             'pci-2.1',
+    isPremium:            function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
+    getStatus:            function(f) { return _getStatus(f || false); },
+    syncAll:              function(f) { return syncAll(f || false); },
+    refresh:              function() { _state.fetchedAt = 0; _catCache.fetchedAt = 0; return syncAll(true); },
     injectLibrarySection: function() { return injectLibrarySection(true); },
-    getEnabledCategories: function() { return _getEnabledCategoryNames(false); },
+    getEnabledCategories: function() { return _fetchCategoryConfig(false); },
   };
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', _init); }
