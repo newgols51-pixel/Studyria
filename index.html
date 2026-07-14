@@ -14701,6 +14701,16 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     </div>
   </div>
 
+  <!-- MEMBER BANNER — shown only for active Premium Members -->
+  <div id="prmMemberBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border-top:1px solid rgba(251,191,36,0.2);border-bottom:1px solid rgba(251,191,36,0.2);padding:16px 20px;text-align:center">
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+      <span style="font-size:.9rem;font-weight:700;color:#fbbf24">&#x1F451; You're an Active Premium Member!</span>
+      <button onclick="navigate('premium-library')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
+        Explore All Premium Notes &#x2192;
+      </button>
+    </div>
+  </div>
+
   <!-- PRICING ──────────────────────────────────────────────────── -->
   <section class="prm-section" id="prmPlans">
     <div class="container">
@@ -15015,11 +15025,22 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   <!-- BOTTOM CTA ───────────────────────────────────────────────── -->
   <section class="prm-section prm-bottom-cta">
     <div class="container">
-      <div class="prm-bottom-cta-title">Ready to Go Premium?</div>
-      <div class="prm-bottom-cta-sub">Join thousands of students learning smarter with Premium</div>
-      <button class="prm-bottom-cta-btn" onclick="PRM1.scrollToPlans()">
-        👑 View Plans
-      </button>
+      <!-- Non-member CTA -->
+      <div id="prmCtaNonMember">
+        <div class="prm-bottom-cta-title">Ready to Go Premium?</div>
+        <div class="prm-bottom-cta-sub">Join thousands of students learning smarter with Premium</div>
+        <button class="prm-bottom-cta-btn" onclick="PRM1.scrollToPlans()">
+          👑 View Plans
+        </button>
+      </div>
+      <!-- Member CTA — shown only for active members -->
+      <div id="prmCtaMember" style="display:none">
+        <div class="prm-bottom-cta-title">&#x1F451; You Have Premium Access!</div>
+        <div class="prm-bottom-cta-sub">Browse all your exclusive Premium Handwritten Notes</div>
+        <button class="prm-bottom-cta-btn" onclick="navigate('premium-library')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000">
+          &#x1F451; View All Premium Notes &#x2192;
+        </button>
+      </div>
     </div>
   </section>
 
@@ -20447,8 +20468,29 @@ async function renderDashboard() {
   if (nameEl)   nameEl.textContent   = user.name || 'Studyria User';
   if (emailEl)  emailEl.textContent  = user.email || '';
   if (planEl) {
-    planEl.textContent = '🎓 ' + (user.plan || 'Free') + ' Plan';
+    /* BADGE-FIX: Show placeholder immediately, then fetch real membership status */
+    planEl.textContent = 'FREE MEMBER';
+    planEl.className = planEl.className.replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
     if (badgeRowEl) badgeRowEl.style.display = '';
+    /* Async real-time badge update — SMCI is the source of truth */
+    (async function() {
+      try {
+        if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
+          var st = await window.SMCI.getStatus(true);
+          if (planEl) {
+            if (st.isPremium) {
+              planEl.innerHTML = '&#x1F451; PREMIUM MEMBER';
+              planEl.className = planEl.className.replace(/\bmb-level\b/g, '').trim() + ' mb-gold';
+            } else {
+              planEl.textContent = 'FREE MEMBER';
+              planEl.className = planEl.className.replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
+            }
+          }
+        } else if (window.P5D && typeof window.P5D.refreshBadges === 'function') {
+          window.P5D.refreshBadges();
+        }
+      } catch(_) {}
+    })();
   }
   if (joinEl) {
     const created = user.created_at || user.createdAt;
