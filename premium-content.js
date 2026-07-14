@@ -54,8 +54,21 @@
      § MEMBERSHIP STATUS
   ──────────────────────────────────────────────────────────────────*/
   async function _fetchStatus() {
-    var client = _sb(), uid = _uid();
-    if (!client || !uid) {
+    var client = _sb();
+    if (!client) {
+      Object.assign(_state, { isPremium: false, status: 'none', planName: 'Free',
+        planSlug: null, expiresAt: null, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
+      return;
+    }
+    // FIX: window.currentUser may not be set yet on first load — fall back to auth.getUser()
+    var uid = _uid();
+    if (!uid) {
+      try {
+        var authRes = await client.auth.getUser();
+        uid = authRes && authRes.data && authRes.data.user ? authRes.data.user.id : null;
+      } catch (_) {}
+    }
+    if (!uid) {
       Object.assign(_state, { isPremium: false, status: 'none', planName: 'Free',
         planSlug: null, expiresAt: null, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
       return;
