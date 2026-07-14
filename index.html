@@ -16765,14 +16765,6 @@ async function navigate(page) {
   if (page === 'premium') {
     if (window.PRM1 && typeof PRM1.init === 'function') PRM1.init();
 
-    // PRE-ARM the PRMDASH render guard immediately — before the async Supabase
-    // query begins. This ensures renderWithRetry (fired at 600ms by the navigate
-    // hook) is always skipped. _prmPageInit is the single source of truth and
-    // calls renderWithStatus(isPremium) with the verified result.
-    if (window.PRMDASH && typeof window.PRMDASH._preArmRenderGuard === 'function') {
-      window.PRMDASH._preArmRenderGuard();
-    }
-
     // DIRECT Supabase membership check — bypasses window.currentUser timing issues
     // Same approach as premium-p5d.js (which works correctly in Me section)
     (async function _prmPageInit() {
@@ -16848,11 +16840,9 @@ async function navigate(page) {
         }
       }
 
-      // Render premium dashboard with correct isPremium status
+      // Render premium dashboard with correct isPremium status — SINGLE RENDER PATH
       if (window.PRMDASH && typeof window.PRMDASH.renderWithStatus === 'function') {
         window.PRMDASH.renderWithStatus(isPremium);
-      } else if (window.PRMDASH && typeof window.PRMDASH.render === 'function') {
-        window.PRMDASH.render();
       }
 
       // Also update SMCI state so downstream code is consistent

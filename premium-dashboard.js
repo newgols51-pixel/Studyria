@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════
- * premium-dashboard.js — Studyria Premium Dashboard Sections v1.1
+ * premium-dashboard.js — Studyria Premium Dashboard Sections v2.0
  * Namespace: window.PRMDASH
  *
  * Renders the 4 dynamic sections on the Premium Dashboard page:
@@ -37,10 +37,8 @@
   /* RACE CONDITION FIX: Track when renderWithStatus was last called.
      The navigate('premium') handler in index.html calls renderWithStatus(isPremium)
      with the CORRECT status from a direct Supabase query. But our own navigate
-     hook fires renderWithRetry() at 600ms which can override it. This guard
+     (not used in v2.0 — kept for reference)
      prevents the hook from firing if renderWithStatus was called recently. */
-  var _lastStatusRender = 0;
-  var STATUS_RENDER_GUARD_MS = 3000;
 
   /* PREMIUM UNLOCK EXPERIENCE: Track whether the unlock animation has been
      shown for the current Premium tab visit. Reset when leaving the tab. */
@@ -398,62 +396,23 @@
   /* ── Main render ───────────────────────────────────────────────── */
   var _renderToken = 0;
 
+  /* render() is now a thin wrapper around renderWithStatus.
+     It gets the status from SMCI (non-force, uses cached/injected value)
+     and passes it to renderWithStatus. This ensures a SINGLE RENDER PATH.
+     Never force-fetches from Supabase (that caused the race condition). */
   PRMDASH.render = async function() {
-    var myToken = ++_renderToken;
-    _log('Rendering Premium Dashboard sections (token ' + myToken + ')...');
-
-    _injectCSS();
-
-    // Get premium status — with retry if auth not ready yet
     var isPremium = false;
-    var status = null;
-    for (var attempt = 0; attempt < 4; attempt++) {
-      if (myToken !== _renderToken) return;
-      if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
-        try {
-          status = await window.SMCI.getStatus(true);
-          isPremium = !!(status && status.isPremium);
-        } catch (e) { _log('SMCI getStatus failed:', e.message); }
-      }
-      _log('Premium status attempt ' + (attempt + 1) + ':', isPremium);
-      if (isPremium) break;
-      // If not premium, wait 600ms and retry (auth may still be resolving)
-      if (attempt < 3) await new Promise(function(r) { setTimeout(r, 600); });
+    if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
+      try {
+        var status = await window.SMCI.getStatus(false);
+        isPremium = !!(status && status.isPremium);
+      } catch(e) { _log('render() SMCI.getStatus failed:', e.message); }
     }
-
-    if (myToken !== _renderToken) return; // newer render in progress
-
-    _applyConditionalUI(isPremium);
-
-    // Get premium PDFs (shared loader)
-    var pdfs = await _getPremiumPDFs();
-    _log('PDFs loaded:', pdfs.length);
-
-    if (myToken !== _renderToken) return;
-
-    // Render all sections
-    await _renderLibraryUniverse(isPremium, pdfs);
-    if (myToken !== _renderToken) return;
-    _renderContinueReading(isPremium, pdfs);
-    _renderRecentlyAdded(isPremium, pdfs);
-    _renderMyCards(isPremium, pdfs);
-
-    _log('Premium Dashboard sections rendered ✅');
-  };
-
-  /* ── _preArmRenderGuard: called immediately when navigate('premium') fires,
-     BEFORE the async Supabase query begins. This ensures the 600ms
-     renderWithRetry timeout (in the navigate hook) always sees a recent
-     _lastStatusRender and skips — _prmPageInit + renderWithStatus is
-     the single source of truth. ── */
-  PRMDASH._preArmRenderGuard = function() {
-    _lastStatusRender = Date.now();
-    _log('_preArmRenderGuard: render guard pre-armed — renderWithRetry will be skipped');
+    return PRMDASH.renderWithStatus(isPremium);
   };
 
   /* ── renderWithStatus: render with pre-resolved isPremium (no SMCI call needed) ── */
   PRMDASH.renderWithStatus = async function(isPremium) {
-    _lastStatusRender = Date.now();
     var myToken = ++_renderToken;
     _log('renderWithStatus called, isPremium=' + isPremium + ' (token ' + myToken + ')');
     _injectCSS();
@@ -469,33 +428,9 @@
     _log('renderWithStatus done ✅');
   };
 
-  /* ── Retry-aware render (waits for SMCI/PDFS) ──────────────────── */
-  PRMDASH.renderWithRetry = async function() {
-    var attempt = 0;
-    while (attempt < MAX_RETRIES) {
-      attempt++;
-      _log('Render attempt ' + attempt + '/' + MAX_RETRIES);
-
-      // Wait for SMCI to be available
-      if (!window.SMCI && attempt < MAX_RETRIES) {
-        _log('SMCI not ready, retrying in ' + RETRY_MS + 'ms...');
-        await new Promise(function(r) { setTimeout(r, RETRY_MS); });
-        continue;
-      }
-
-      await PRMDASH.render();
-
-      // Check if we got PDFs — if not, retry
-      var universe = document.getElementById('prmDashLibraryUniverse');
-      if (universe && universe.classList.contains('prmdash-hidden') && attempt < MAX_RETRIES) {
-        _log('No PDFs loaded, retrying...');
-        await new Promise(function(r) { setTimeout(r, RETRY_MS); });
-        continue;
-      }
-
-      break;
-    }
-  };
+  /* renderWithRetry() deleted — was the source of the race condition.
+     It called render() which force-fetched stale isPremium from SMCI.
+     Now there is only ONE render path: renderWithStatus(isPremium). */
 
   /* ─────────────────────────────────────────────────────────────────
      § PREMIUM UNLOCK EXPERIENCE
@@ -602,65 +537,47 @@
     _log('Premium unlock experience shown');
   }
 
-  /* ── Hook into navigate('premium') ─────────────────────────────── */
+  /* ── Hook into navigate('premium') — UNLOCK EXPERIENCE ONLY ───── */
+  /* Does NOT render. Rendering is handled by _prmPageInit in index.html
+     which calls PRMDASH.renderWithStatus(isPremium) — the single render path. */
   var _origNavigate = window.navigate;
   if (_origNavigate && !_origNavigate._prmdashHooked) {
     window.navigate = async function(page) {
-      /* Reset unlock experience flag when leaving Premium tab */
       if (page !== 'premium') _unlockExperienceShown = false;
       var result = _origNavigate.apply(this, arguments);
       if (page === 'premium') {
-        /* PREMIUM UNLOCK EXPERIENCE: Check if user is premium and show animation.
-           Uses SMCI.getStatus (which was just injected by the navigate handler). */
-        (async function() {
+        /* Show unlock animation for premium members (after SMCI is injected) */
+        setTimeout(async function() {
           try {
             if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
               var st = await window.SMCI.getStatus(false);
-              if (st && st.isPremium) {
-                _showUnlockExperience();
-              }
+              if (st && st.isPremium) _showUnlockExperience();
             }
           } catch(_) {}
-        })();
-
-        setTimeout(function() {
-          /* RACE CONDITION FIX: If renderWithStatus was called recently
-             (by the navigate handler's direct Supabase query), don't
-             override it with renderWithRetry which may get a stale
-             SMCI status. The direct query + _injectStatus is the
-             single source of truth. */
-          if (Date.now() - _lastStatusRender < STATUS_RENDER_GUARD_MS) {
-            _log('Skipping renderWithRetry — renderWithStatus called recently');
-            return;
-          }
-          if (window.PRMDASH && typeof window.PRMDASH.renderWithRetry === 'function') {
-            window.PRMDASH.renderWithRetry();
-          }
-        }, 600);
+        }, 2500);
       }
       return result;
     };
     window.navigate._prmdashHooked = true;
-    // Copy any existing hooks
     window.navigate._smciHooked = _origNavigate._smciHooked;
     window.navigate._p5dHooked = _origNavigate._p5dHooked;
-    _log('navigate() hooked for Premium Dashboard');
+    _log('navigate() hooked for unlock experience only (no render)');
   }
 
-  // Also render on initial load if already on premium page
+  /* Initial load: if already on premium page, trigger render via SMCI. */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       var activePage = document.querySelector('.page.active');
       if (activePage && activePage.id === 'page-premium') {
-        setTimeout(function() { PRMDASH.renderWithRetry(); }, 1200);
+        setTimeout(function() { PRMDASH.render(); }, 1200);
       }
     });
   } else {
     var activePage = document.querySelector('.page.active');
     if (activePage && activePage.id === 'page-premium') {
-      setTimeout(function() { PRMDASH.renderWithRetry(); }, 1200);
+      setTimeout(function() { PRMDASH.render(); }, 1200);
     }
   }
 
-  _log('premium-dashboard.js v1.3 loaded ✅');
+  _log('premium-dashboard.js v2.0 loaded ✅ — single render path');
 })();
