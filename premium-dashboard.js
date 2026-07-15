@@ -191,6 +191,11 @@
 
         if (localPdfs.length > 0) {
           _log('Found ' + localPdfs.length + ' PDFs via SMCI + window.PDFS');
+          /* FIX: Also store in SMCI pdfStore so openReadingRoom lookup works */
+          localPdfs.forEach(function(p) {
+            if (window.SMCI && typeof window.SMCI.storePdf === 'function') window.SMCI.storePdf(p);
+            else if (window._smciPdfStore && p && p.id !== undefined) window._smciPdfStore[String(p.id)] = p;
+          });
           return localPdfs;
         }
       } catch (e) { _log('SMCI strategy failed:', e.message); }
@@ -204,6 +209,11 @@
     });
     if (directPdfs.length > 0) {
       _log('Found ' + directPdfs.length + ' PDFs via direct window.PDFS filter');
+      /* FIX: Also store in SMCI pdfStore */
+      directPdfs.forEach(function(p) {
+        if (window.SMCI && typeof window.SMCI.storePdf === 'function') window.SMCI.storePdf(p);
+        else if (window._smciPdfStore && p && p.id !== undefined) window._smciPdfStore[String(p.id)] = p;
+      });
       return directPdfs;
     }
 
@@ -228,6 +238,9 @@
             if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
               window.PDFS.push(p);
             }
+            /* FIX: Also store in SMCI pdfStore for reliable id-based lookup */
+            if (window.SMCI && typeof window.SMCI.storePdf === 'function') window.SMCI.storePdf(p);
+            else if (window._smciPdfStore && p && p.id !== undefined) window._smciPdfStore[String(p.id)] = p;
           });
           return fetched;
         }
