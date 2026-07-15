@@ -281,47 +281,6 @@
   }
 
   /* ── SECTION 3: Premium Library Universe ──────────────────────── */
-  async function _renderLibraryUniverse(isPremium, pdfs) {
-    var section = document.getElementById('prmDashLibraryUniverse');
-    if (!section) return;
-    if (!pdfs || pdfs.length === 0) { section.classList.add('prmdash-hidden'); return; }
-
-    section.classList.remove('prmdash-hidden');
-    var track = section.querySelector('.prmdash-shelf-track');
-    if (!track) return;
-
-    if (isPremium) {
-      // Full access — no blur, no lock
-      track.innerHTML = pdfs.slice(0, 15).map(function(p) {
-        return _cardHTML(p, { btnText: '👑 Open Free' });
-      }).join('');
-      track.classList.remove('prmdash-blur');
-      var lock = section.querySelector('.prmdash-lock-overlay');
-      if (lock) lock.remove();
-    } else {
-      // Free user — blurred preview with lock overlay
-      track.innerHTML = pdfs.slice(0, 10).map(function(p) {
-        return _cardHTML(p, { btnText: '🔒 Locked' });
-      }).join('');
-      track.classList.add('prmdash-blur');
-
-      // Remove old lock if exists
-      var oldLock = section.querySelector('.prmdash-lock-overlay');
-      if (oldLock) oldLock.remove();
-
-      // Add lock overlay
-      var shelfOuter = section.querySelector('.prmdash-shelf-outer');
-      if (shelfOuter) {
-        var lockEl = document.createElement('div');
-        lockEl.className = 'prmdash-lock-overlay';
-        lockEl.innerHTML = '<div class="prmdash-lock-icon">🔒</div>'
-          + '<div class="prmdash-lock-text">Unlock to access all Premium Notes</div>'
-          + '<button class="prmdash-lock-btn" onclick="var p=document.getElementById(\'prmPlans\');if(p)p.scrollIntoView({behavior:\'smooth\'})">👑 View Plans →</button>';
-        shelfOuter.appendChild(lockEl);
-      }
-    }
-    _wireDragScroll(section);
-  }
 
   /* ── SECTION 4: Continue Reading ──────────────────────────────── */
   function _renderContinueReading(isPremium, pdfs) {
@@ -457,9 +416,6 @@
     _injectCSS();
     if (myToken !== _renderToken) return;
     _applyConditionalUI(isPremium);
-    var pdfs = await _getPremiumPDFs();
-    if (myToken !== _renderToken) return;
-    await _renderLibraryUniverse(isPremium, pdfs);
     if (myToken !== _renderToken) return;
     _renderContinueReading(isPremium, pdfs);
     _renderRecentlyAdded(isPremium, pdfs);
