@@ -183,19 +183,29 @@
     /* Use original-case category names for the .in() query */
     var enabledOrig = await _fetchCategoryConfig(force);
     try {
+      /* FIX: Use status='published' — NOT is_published (wrong column). Also select pdf_url. */
       var res = await sb.from('pdfs')
-        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,is_published')
+        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,download_count,discount,status')
         .in('category', enabledOrig)
-        .eq('is_published', true)
+        .eq('status', 'published')
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(200);
       if (res.error) { _warn('Supabase PDF fetch error', res.error.message); return []; }
       var rows = res.data || [];
-      /* Double-check exact match (server .in() is case-sensitive in Postgres) */
-      return rows.filter(function(p) {
+      /* Double-check exact match */
+      var matched = rows.filter(function(p) {
         var pdfCat = (p.category || '').toLowerCase().trim();
         return enabledLower.some(function(ec) { return pdfCat === ec; });
       });
+      /* FIX: Merge into window.PDFS so downloadPDF() can find them by id */
+      if (!window.PDFS) window.PDFS = [];
+      matched.forEach(function(p) {
+        if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
+          window.PDFS.push(p);
+        }
+      });
+      _log('Supabase fallback: loaded ' + matched.length + ' premium PDFs into window.PDFS');
+      return matched;
     } catch (e) { _warn('Supabase PDF fallback error', e); return []; }
   }
 
@@ -313,19 +323,27 @@
      downloadPDF() checks: purchased OR active premium membership → signed URL → window.open.
      → grants premium access. Zero Razorpay exposure. */
   function _buildPremiumCard(pdf) {
+    /* Ensure this PDF is in window.PDFS so downloadPDF() can find it by id */
+    if (!window.PDFS) window.PDFS = [];
+    if (pdf && pdf.id && !window.PDFS.some(function(x) { return String(x.id) === String(pdf.id); })) {
+      window.PDFS.push(pdf);
+    }
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
     var cat   = _esc(pdf.category || '');
     var id    = String(pdf.id);
     var coverHtml = cover
-      ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'" loading="lazy" decoding="async">'
+      ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'" loading="lazy" decoding="async">'
       : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">📌</div>';
-    return '<div onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')" '
+    /* REFACTOR: card click and button BOTH call downloadPDF() — same pipeline as My Library.
+       downloadPDF is patched by SMCI to bypass purchase for premium members. */
+    var openFn = "if(typeof downloadPDF==='function')downloadPDF('" + id + "');else if(typeof openDetail==='function')openDetail('" + id + "')";
+    return '<div onclick="' + openFn + '" '
       + 'style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));border:1px solid var(--glass-border,rgba(255,255,255,0.08));'
       + 'overflow:hidden;transition:transform .15s,box-shadow .15s" '
-      + 'onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.3)'" '
-      + 'onmouseout="this.style.transform='';this.style.boxShadow=''">'
+      + 'onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 6px 20px rgba(0,0,0,.3)\'" '
+      + 'onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">'
       + '<div style="position:relative;height:110px;overflow:hidden">'
       + coverHtml
       + '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
@@ -335,7 +353,7 @@
       + '<div style="font-size:.74rem;font-weight:600;color:var(--text1);line-height:1.3;margin-bottom:3px;'
       + 'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + title + '</div>'
       + (cat ? '<div style="font-size:.62rem;color:var(--text2);margin-bottom:5px">' + cat + '</div>' : '')
-      + '<button onclick="event.stopPropagation();if(typeof downloadPDF===\'function\')downloadPDF(\'' + id + '\');else showToast(\'Opening…\',\'info\')" '
+      + '<button onclick="event.stopPropagation();' + openFn + '" '
       + 'style="width:100%;padding:5px;border-radius:6px;border:none;cursor:pointer;font-size:.7rem;font-weight:700;'
       + 'background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));'
       + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.25)">👑 Open Free</button>'
@@ -562,6 +580,11 @@
   /* Build a card for the home shelf (matches scardHTML style) */
   /* BUG-5 HARDENED (home shelf): uses openDetail() — no buyPDF(), no Razorpay. */
   function _buildHomePremiumCard(pdf) {
+    /* Ensure this PDF is in window.PDFS so downloadPDF() can find it */
+    if (!window.PDFS) window.PDFS = [];
+    if (pdf && pdf.id && !window.PDFS.some(function(x) { return String(x.id) === String(pdf.id); })) {
+      window.PDFS.push(pdf);
+    }
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.cover_url || pdf.coverImage || pdf.cover_image || pdf.thumbnail || '';
     var id    = String(pdf.id);
@@ -578,8 +601,9 @@
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));'
       + 'border:1px solid rgba(251,191,36,0.2);overflow:hidden;'
       + 'transition:transform .15s,box-shadow .15s;flex-shrink:0';
-    var html = '<div style="' + cardStyle + '" '
-      + 'onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')">';
+    /* REFACTOR: downloadPDF() is the unified pipeline — same as My Library */
+    var openFn = "if(typeof downloadPDF==='function')downloadPDF('" + id + "');else if(typeof openDetail==='function')openDetail('" + id + "')";
+    var html = '<div style="' + cardStyle + '" onclick="' + openFn + '">';
     html += '<div style="position:relative;height:100px;overflow:hidden">';
     html += imgHtml + iconHtml;
     html += '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
@@ -963,113 +987,131 @@
     var subtitle  = document.getElementById('prmLibSubtitle');
     if (!container) return;
 
-    /* Loading state */
+    /* LOADING STATE — always shown first */
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
       + '<div style="font-size:2rem;margin-bottom:12px">👑</div>'
       + '<div style="font-size:.9rem">Loading Premium Library…</div>'
       + '</div>';
 
-    var status = await _getStatus(force || false);
+    /* LOADING FIX: Wrap ALL logic in try/catch — loading state ALWAYS terminates */
+    try {
+      var status = await _getStatus(force || false);
 
-    if (!status.isPremium) {
-      /* Not a premium member — show upgrade prompt */
-      container.innerHTML = '<div style="text-align:center;padding:48px 24px">'
-        + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
-        + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
-        + '<div style="font-size:.85rem;color:var(--text2);margin-bottom:24px">Unlock all Premium Handwritten Notes and more with a Premium Membership.</div>'
-        + '<button onclick="navigate('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
-        + 'font-weight:700;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem">'
-        + '👑 View Plans →</button>'
-        + '</div>';
-      return;
-    }
+      if (!status.isPremium) {
+        container.innerHTML = '<div style="text-align:center;padding:48px 24px">'
+          + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
+          + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
+          + '<div style="font-size:.85rem;color:var(--text2);margin-bottom:24px">Unlock all Premium Handwritten Notes with a Premium Membership.</div>'
+          + '<button onclick="navigate('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
+          + 'font-weight:700;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem">'
+          + '👑 View Plans →</button>'
+          + '</div>';
+        return;
+      }
 
-    /* Get enabled categories & PDFs */
-    var enabledCats  = await _fetchCategoryConfig(force || false); /* original case names */
-    var pdfs         = await _getPremiumCategoryPdfs(force || false);
+      /* Fetch PDFs — multi-strategy (window.PDFS → Supabase) */
+      var enabledCats = await _fetchCategoryConfig(force || false);
+      var pdfs        = await _getPremiumCategoryPdfs(force || false);
 
-    /* Update subtitle */
-    if (subtitle) {
-      var total = pdfs.length;
-      subtitle.textContent = total + ' premium note' + (total !== 1 ? 's' : '') + ' across ' + enabledCats.length + ' categor' + (enabledCats.length !== 1 ? 'ies' : 'y');
-    }
+      /* Update subtitle */
+      if (subtitle) {
+        var total = pdfs.length;
+        subtitle.textContent = total + ' premium note' + (total !== 1 ? 's' : '') + ' across ' + enabledCats.length + ' categor' + (enabledCats.length !== 1 ? 'ies' : 'y');
+      }
 
-    if (pdfs.length === 0) {
-      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
-        + '<div style="font-size:2rem;margin-bottom:12px">📭</div>'
-        + '<div>No Premium Notes in catalogue yet — check back soon!</div>'
-        + '</div>';
-      return;
-    }
+      if (pdfs.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
+          + '<div style="font-size:2rem;margin-bottom:12px">📭</div>'
+          + '<div>No Premium Notes in catalogue yet — check back soon!</div>'
+          + '</div>';
+        return;
+      }
 
-    /* Group by exact category (exact-match — same as _getPremiumCategoryPdfs) */
-    var groups = {}, order = [];
-    pdfs.forEach(function(pdf) {
-      var cat = pdf.category || 'Premium Notes';
-      if (!groups[cat]) { groups[cat] = []; order.push(cat); }
-      groups[cat].push(pdf);
-    });
-
-    /* Inject shelf CSS if not already injected */
-    if (!document.getElementById('smci-shelf-css')) {
-      var s = document.createElement('style');
-      s.id = 'smci-shelf-css';
-      s.textContent = [
-        '.smci-shelf-row{margin-bottom:28px}',
-        '.smci-shelf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}',
-        '.smci-shelf-title{display:flex;align-items:center;gap:7px;font-size:.85rem;font-weight:700;color:rgba(251,191,36,0.9)}',
-        '.smci-shelf-count{font-size:.65rem;color:rgba(255,255,255,0.35);font-weight:400}',
-        '.smci-shelf-outer{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;user-select:none}',
-        '.smci-shelf-outer::-webkit-scrollbar{display:none}',
-        '.smci-shelf-track{display:flex;gap:12px;padding-bottom:8px;width:max-content}',
-      ].join('');
-      document.head.appendChild(s);
-    }
-
-    /* Build horizontal shelf HTML for each category */
-    var html = order.map(function(catName, ri) {
-      var catPdfs = groups[catName];
-      return '<div class="smci-shelf-row">'
-        + '<div class="smci-shelf-head">'
-        + '<div class="smci-shelf-title">'
-        + '<span style="font-size:1.1rem">📚</span>'
-        + '<span>' + _esc(catName) + '</span>'
-        + '<span class="smci-shelf-count">(' + catPdfs.length + ' notes)</span>'
-        + '</div>'
-        + '</div>'
-        + '<div class="smci-shelf-outer" id="prmlib-shelf-' + ri + '">'
-        + '<div class="smci-shelf-track">'
-        + catPdfs.map(function(pdf) {
-            /* BUG-5 FIX: Always use _buildPremiumCard which shows "👑 Open Free" */
-            return _buildPremiumCard(pdf);
-          }).join('')
-        + '</div>'
-        + '</div>'
-        + '</div>';
-    }).join('');
-
-    container.innerHTML = html;
-
-    /* Wire drag-to-scroll on all shelves */
-    setTimeout(function() {
-      container.querySelectorAll('.smci-shelf-outer').forEach(function(el) {
-        if (el._smciDrag) return;
-        el._smciDrag = true;
-        var dragging = false, startX = 0, scrollL = 0;
-        el.addEventListener('mousedown', function(e) {
-          dragging = true; startX = e.pageX - el.offsetLeft; scrollL = el.scrollLeft;
-          el.style.cursor = 'grabbing';
-        });
-        window.addEventListener('mouseup', function() { dragging = false; el.style.cursor = 'grab'; });
-        el.addEventListener('mousemove', function(e) {
-          if (!dragging) return;
-          e.preventDefault();
-          el.scrollLeft = scrollL - (e.pageX - el.offsetLeft - startX);
-        });
+      /* FIX: Ensure ALL pdfs are in window.PDFS so downloadPDF() can find them */
+      if (!window.PDFS) window.PDFS = [];
+      pdfs.forEach(function(p) {
+        if (p && p.id && !window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
+          window.PDFS.push(p);
+        }
       });
-    }, 120);
 
-    _log('Premium Library page rendered', pdfs.length + ' PDFs, ' + order.length + ' shelves');
+      /* Group by exact category */
+      var groups = {}, order = [];
+      pdfs.forEach(function(pdf) {
+        var cat = pdf.category || 'Premium Notes';
+        if (!groups[cat]) { groups[cat] = []; order.push(cat); }
+        groups[cat].push(pdf);
+      });
+
+      /* Inject shelf CSS once */
+      if (!document.getElementById('smci-shelf-css')) {
+        var s = document.createElement('style');
+        s.id = 'smci-shelf-css';
+        s.textContent = [
+          '.smci-shelf-row{margin-bottom:28px}',
+          '.smci-shelf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}',
+          '.smci-shelf-title{display:flex;align-items:center;gap:7px;font-size:.85rem;font-weight:700;color:rgba(251,191,36,0.9)}',
+          '.smci-shelf-count{font-size:.65rem;color:rgba(255,255,255,0.35);font-weight:400}',
+          '.smci-shelf-outer{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;user-select:none}',
+          '.smci-shelf-outer::-webkit-scrollbar{display:none}',
+          '.smci-shelf-track{display:flex;gap:12px;padding-bottom:8px;width:max-content}',
+        ].join('');
+        document.head.appendChild(s);
+      }
+
+      /* Build horizontal shelves */
+      var html = order.map(function(catName, ri) {
+        var catPdfs = groups[catName];
+        return '<div class="smci-shelf-row">'
+          + '<div class="smci-shelf-head">'
+          + '<div class="smci-shelf-title">'
+          + '<span style="font-size:1.1rem">📚</span>'
+          + '<span>' + _esc(catName) + '</span>'
+          + '<span class="smci-shelf-count">(' + catPdfs.length + ' notes)</span>'
+          + '</div>'
+          + '</div>'
+          + '<div class="smci-shelf-outer" id="prmlib-shelf-' + ri + '">'
+          + '<div class="smci-shelf-track">'
+          + catPdfs.map(function(pdf) { return _buildPremiumCard(pdf); }).join('')
+          + '</div>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+
+      container.innerHTML = html;
+
+      /* Wire drag-to-scroll */
+      setTimeout(function() {
+        container.querySelectorAll('.smci-shelf-outer').forEach(function(el) {
+          if (el._smciDrag) return;
+          el._smciDrag = true;
+          var dragging = false, startX = 0, scrollL = 0;
+          el.addEventListener('mousedown', function(e) {
+            dragging = true; startX = e.pageX - el.offsetLeft; scrollL = el.scrollLeft;
+            el.style.cursor = 'grabbing';
+          });
+          window.addEventListener('mouseup', function() { dragging = false; el.style.cursor = 'grab'; });
+          el.addEventListener('mousemove', function(e) {
+            if (!dragging) return;
+            e.preventDefault();
+            el.scrollLeft = scrollL - (e.pageX - el.offsetLeft - startX);
+          });
+        });
+      }, 120);
+
+      _log('Premium Library page rendered: ' + pdfs.length + ' PDFs, ' + order.length + ' shelves');
+
+    } catch (err) {
+      /* LOADING FIX: ANY exception clears loading state — never infinite spinner */
+      _warn('renderPremiumLibraryPage error:', err);
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
+        + '<div style="font-size:2rem;margin-bottom:12px">⚠️</div>'
+        + '<div style="margin-bottom:12px">Failed to load Premium Library.</div>'
+        + '<button onclick="window.SMCI&&window.SMCI.renderPremiumLibraryPage(true)" '
+        + 'style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:700;'
+        + 'padding:10px 24px;border-radius:20px;border:none;cursor:pointer">↻ Retry</button>'
+        + '</div>';
+    }
   }
 
 

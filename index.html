@@ -16851,13 +16851,29 @@ async function navigate(page) {
       }
     })();
   }
-  // BUG-2+3 FIX: Premium Library page — render horizontal shelves
+  // Premium Library page — render with SMCI retry loop (handles deferred script load race)
   if (page === 'premium-library') {
-    if (window.SMCI && typeof window.SMCI.renderPremiumLibraryPage === 'function') {
-      // FIX: Pass force=true to guarantee fresh membership check — avoids race
-      // where SMCI cache hasn't been populated yet when navigating directly here.
-      setTimeout(function() { window.SMCI.renderPremiumLibraryPage(true); }, 100);
-    }
+    (function() {
+      var _tries = 0;
+      function _tryRender() {
+        if (window.SMCI && typeof window.SMCI.renderPremiumLibraryPage === 'function') {
+          window.SMCI.renderPremiumLibraryPage(true);
+        } else if (_tries++ < 30) {
+          setTimeout(_tryRender, 200); /* Poll up to 6s — handles deferred script load */
+        } else {
+          /* SMCI never loaded — show error in container */
+          var c = document.getElementById('prmLibContent');
+          if (c && c.innerHTML.indexOf('Loading') !== -1) {
+            c.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.5)">'
+              + '<div style="font-size:2rem;margin-bottom:10px">⚠️</div>'
+              + '<div>Premium system not ready. Please refresh the page.</div>'
+              + '<button onclick="window.location.reload()" style="margin-top:16px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer">↻ Reload</button>'
+              + '</div>';
+          }
+        }
+      }
+      setTimeout(_tryRender, 100);
+    })();
   }
 }
 
@@ -19854,20 +19870,23 @@ async function downloadPDF(pdfId, _legacyUrl) {
   // _legacyUrl is intentionally ignored — we ALWAYS fetch the fresh URL from
   // the database to avoid stale / broken URLs embedded in HTML onclick attrs.
 
-  const pdf = normalizePdf((window.PDFS || []).find(p => String(p.id) === String(pdfId)));
+  let _pdfRaw = (window.PDFS || []).find(p => String(p.id) === String(pdfId));
+  if (!_pdfRaw && window.supabaseClient) {
+    // PDF not in local cache — fetch from DB (premium PDFs may not be in window.PDFS on first load)
+    try {
+      const { data: _fetchedPdf, error: _fetchErr } = await window.supabaseClient
+        .from('pdfs').select('*').eq('id', pdfId).maybeSingle();
+      if (_fetchErr) console.warn('[downloadPDF] DB fetch error:', _fetchErr.message);
+      if (_fetchedPdf) {
+        if (!window.PDFS) window.PDFS = [];
+        if (!window.PDFS.some(x => String(x.id) === String(pdfId))) window.PDFS.push(_fetchedPdf);
+        _pdfRaw = _fetchedPdf;
+      }
+    } catch(e) { console.warn('[downloadPDF] DB fetch exception:', e); }
+  }
+  const pdf = _pdfRaw ? normalizePdf(_pdfRaw) : null;
   if (!pdf) {
-    // PDF not in local cache — try fetching from DB
-    if (window.supabaseClient) {
-      try {
-        const { data } = await window.supabaseClient.from('pdfs').select('*').eq('id', pdfId).single();
-        if (data) {
-          normalizePdf(data);
-          window.PDFS.push(data);
-          return downloadPDF(pdfId);
-        }
-      } catch(e) {}
-    }
-    showToast('PDF not found in library.', 'error');
+    showToast('PDF not found. Please try again.', 'error');
     return;
   }
 
