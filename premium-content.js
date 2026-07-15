@@ -245,9 +245,9 @@
     var enabledOrig = await _fetchCategoryConfig(force);
     try {
       var res = await sb.from('pdfs')
-        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,is_published')
+        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,status')
         .in('category', enabledOrig)
-        .eq('is_published', true)
+        .eq('status', 'published')
         .order('created_at', { ascending: false })
         .limit(100);
       if (res.error) { _warn('Supabase PDF fetch error', res.error.message); return []; }
@@ -630,31 +630,31 @@
     var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
     var cat   = _esc(pdf.category || '');
     var id    = String(pdf.id);
+    /* BUG-FIX: Use quoted string concatenation that avoids inner single-quote breaks */
     var coverHtml = cover
-      ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'" loading="lazy" decoding="async">'
-      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">📌</div>';
-    return '<div onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')" '
-      + 'style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
+      ? "<img src=\"" + cover + "\" alt=\"" + title + "\" style=\"width:100%;height:100%;object-fit:cover\" loading=\"lazy\" decoding=\"async\">"
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
+    /* BUG-FIX (BUG-2): Open Free calls openReadingRoom directly — never goes to checkout */
+    var onclickCard = "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(" + id + ");else if(typeof openDetail===\'function\')openDetail(" + id + ")";
+    var onclickBtn  = "event.stopPropagation();" + onclickCard;
+    return '<div style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));border:1px solid var(--glass-border,rgba(255,255,255,0.08));'
-      + 'overflow:hidden;transition:transform .15s,box-shadow .15s" '
-      + 'onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.3)'" '
-      + 'onmouseout="this.style.transform='';this.style.boxShadow=''">'
+      + 'overflow:hidden;transition:transform .15s,box-shadow .15s" onclick="' + onclickCard + '">'
       + '<div style="position:relative;height:110px;overflow:hidden">'
       + coverHtml
       + '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
-      + 'color:#000;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:10px">👑 PREMIUM</div>'
+      + 'color:#000;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:10px">&#x1F451; PREMIUM</div>'
       + '</div>'
       + '<div style="padding:8px">'
       + '<div style="font-size:.74rem;font-weight:600;color:var(--text1);line-height:1.3;margin-bottom:3px;'
       + 'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + title + '</div>'
       + (cat ? '<div style="font-size:.62rem;color:var(--text2);margin-bottom:5px">' + cat + '</div>' : '')
-      + '<button onclick="event.stopPropagation();if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')" '
+      + '<button onclick="' + onclickBtn + '" '
       + 'style="width:100%;padding:5px;border-radius:6px;border:none;cursor:pointer;font-size:.7rem;font-weight:700;'
       + 'background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));'
-      + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.25)">👑 Open Free</button>'
+      + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.25)">&#x1F451; Open Free</button>'
       + '</div></div>';
   }
-
 
   /* BUG-3 FIX: Horizontal carousel shelves per category (one shelf per category).
      BUG-5 FIX: Cards use "👑 Open Free" — premium members never see Buy button. */
@@ -740,7 +740,7 @@
       + '</div>'
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
-      + '<button onclick="navigate('premium-library')" style="font-size:.75rem;color:var(--accent);'
+      + '<button onclick="navigate(\'premium-library\')" style="font-size:.75rem;color:var(--accent);'
       + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
@@ -888,7 +888,7 @@
     var imgHtml = cover
       ? '<img src="' + _esc(cover) + '" loading="lazy" decoding="async"'
         + ' style="width:100%;height:100%;object-fit:cover;border-radius:10px 10px 0 0"'
-        + ' onerror="this.style.display='none'">'
+        + ' onerror="this.style.display=\'none\'">'
       : '';
     var iconHtml = cover ? '' :
       '<div style="width:100%;height:100%;display:flex;align-items:center;'
@@ -899,7 +899,7 @@
       + 'border:1px solid rgba(251,191,36,0.2);overflow:hidden;'
       + 'transition:transform .15s,box-shadow .15s;flex-shrink:0';
     var html = '<div style="' + cardStyle + '" '
-      + 'onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')">';
+      + 'onclick="if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(" + id + ");else if(typeof openDetail===\'function\')openDetail(" + id + ")">';
     html += '<div style="position:relative;height:100px;overflow:hidden">';
     html += imgHtml + iconHtml;
     html += '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
@@ -1302,7 +1302,7 @@
         + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
         + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
         + '<div style="font-size:.85rem;color:var(--text2);margin-bottom:24px">Unlock all Premium Handwritten Notes and more with a Premium Membership.</div>'
-        + '<button onclick="navigate('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
+        + '<button onclick="navigate(\'premium\')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
         + 'font-weight:700;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem">'
         + '👑 View Plans →</button>'
         + '</div>';
