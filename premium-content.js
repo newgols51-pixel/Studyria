@@ -965,6 +965,8 @@
   /* Build a card for the home shelf (matches scardHTML style) */
   /* BUG-5 HARDENED (home shelf): uses openDetail() — no buyPDF(), no Razorpay. */
   function _buildHomePremiumCard(pdf) {
+    /* FIX: Store pdf so openReadingRoom can find it by id */
+    _storePdf(pdf);
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.cover_url || pdf.coverImage || pdf.cover_image || pdf.thumbnail || '';
     var id    = String(pdf.id);
