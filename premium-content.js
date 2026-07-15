@@ -1,5 +1,5 @@
 /**
- * premium-content.js — Studyria Premium Content Integration v2.3
+ * premium-content.js — Studyria Premium Content Integration v2.2
  *
  * PHASE 1: Premium Handwritten Notes unlocked for active Premium Members.
  *
@@ -20,22 +20,12 @@
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.4') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.2') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
   var CAT_CACHE_TTL_MS  = 120000;   /* 2-min category config cache   */
   var SITE_CONFIG_KEY   = 'premium_categories_config';
-
-  /* ─── PDF Object Store — populated when Premium Library cards are built ───
-   * Keyed by String(pdf.id). Survives window.PDFS resets by pdf-list.js.
-   * _openReadingRoomById checks here FIRST before falling back to window.PDFS. */
-  var _pdfStore = window._smciPdfStore = window._smciPdfStore || {};
-  function _storePdf(pdf) {
-    if (pdf && pdf.id !== undefined && pdf.id !== null) {
-      _pdfStore[String(pdf.id)] = pdf;
-    }
-  }
   var SECTION_ID        = 'smci-premium-notes-section';
 
   /* Phase 1 hardcoded default — used when site_config has no entry yet.
@@ -49,8 +39,7 @@
     expiresAt: null, daysLeft: 0, fetchedAt: 0, fetching: false
   };
   /* Category config cache */
-  var _catCache    = { cats: null, fetchedAt: 0 };
-  var _premPdfCache = { pdfs: null, fetchedAt: 0, ttlMs: 90000 }; /* 90s TTL */
+  var _catCache = { cats: null, fetchedAt: 0 };
 
   /* ── Utilities ─────────────────────────────────────────────────── */
   function _sb()    { return window.supabaseClient || null; }
@@ -65,44 +54,12 @@
      § MEMBERSHIP STATUS
   ──────────────────────────────────────────────────────────────────*/
   async function _fetchStatus() {
-    var client = _sb();
-    if (!client) {
+    var client = _sb(), uid = _uid();
+    if (!client || !uid) {
       Object.assign(_state, { isPremium: false, status: 'none', planName: 'Free',
         planSlug: null, expiresAt: null, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
       return;
     }
-    // FIX: window.currentUser may not be set yet on first load — fall back to auth.getUser()
-    // then auth.getSession() — covers all auth timing edge cases
-    var uid = _uid();
-    if (!uid) {
-      try {
-        var authRes = await client.auth.getUser();
-        uid = authRes && authRes.data && authRes.data.user ? authRes.data.user.id : null;
-      } catch (_) {}
-    }
-    if (!uid) {
-      try {
-        var sessRes = await client.auth.getSession();
-        uid = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.user
-          ? sessRes.data.session.user.id : null;
-      } catch (_) {}
-    }
-    if (!uid) {
-      // FIX: Auth not ready yet — RETRY up to 3 times with 500ms delay
-      _state._retries = (_state._retries || 0) + 1;
-      if (_state._retries <= 3) {
-        _log('_fetchStatus: uid null, retry ' + _state._retries + '/3 in 500ms');
-        // FIX: await the delay so the caller's "await _getStatus()" waits for retry
-        await new Promise(function(r) { setTimeout(r, 600); });
-        return _fetchStatus();
-      }
-      _warn('_fetchStatus: auth never resolved after 3 retries');
-      _state._retries = 0;
-      Object.assign(_state, { isPremium: false, status: 'none', planName: 'Free',
-        planSlug: null, expiresAt: null, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
-      return;
-    }
-    _state._retries = 0; // reset retry counter on success
     _state.fetching = true;
     try {
       var memRes = await client.from('user_memberships')
@@ -140,40 +97,10 @@
     }
   }
 
-  /* INJECTION GUARD: After _injectStatus sets the correct status, don't
-     let force=true override it for 3 seconds. This prevents the race
-     where PRMDASH.render() force-refetches and gets a stale result
-     while the navigate handler already determined the correct status. */
-  var INJECTION_GUARD_MS = 3000;
-
   async function _getStatus(force) {
     var stale = (Date.now() - _state.fetchedAt) > CACHE_TTL_MS;
-    var recentlyInjected = _state._injectedAt && (Date.now() - _state._injectedAt) < INJECTION_GUARD_MS;
-    if ((force && !recentlyInjected) || stale || !_state.fetchedAt) await _fetchStatus();
+    if (force || stale || !_state.fetchedAt) await _fetchStatus();
     return Object.assign({}, _state);
-  }
-
-  /* _injectStatus: Allows external code (e.g. navigate('premium') handler)
-     to inject the correct membership status directly into SMCI's cache.
-     This ensures a SINGLE SOURCE OF TRUTH — the direct Supabase query
-     result is propagated to all downstream consumers (PRMDASH, badges, etc.) */
-  function _injectStatus(status) {
-    if (!status) return;
-    _state.isPremium  = !!status.isPremium;
-    _state.status     = status.isPremium ? 'active' : 'none';
-    _state.planName   = status.planName || (status.isPremium ? 'Premium' : 'Free');
-    _state.planSlug   = status.planSlug || null;
-    _state.expiresAt  = status.expiresAt || null;
-    _state.daysLeft   = status.expiresAt
-      ? Math.max(0, Math.ceil((new Date(status.expiresAt) - new Date()) / 86400000))
-      : 0;
-    _state.fetchedAt  = Date.now();
-    _state._injectedAt = Date.now();
-    _state.fetching   = false;
-    _state._retries   = 0;
-    _log('Status injected', { isPremium: _state.isPremium, planName: _state.planName, daysLeft: _state.daysLeft });
-    /* Notify listeners that status was updated */
-    try { window.dispatchEvent(new CustomEvent('smci:statusUpdated', { detail: Object.assign({}, _state) })); } catch (_) {}
   }
 
   /* ─────────────────────────────────────────────────────────────────
@@ -237,16 +164,10 @@
     var enabledLower = await _getEnabledCategoryNames(force);
     if (enabledLower.length === 0) return [];
 
-    /* FIX (BUG-1): Check module-level cache first — avoids repeated Supabase round-trips */
-    if (!force && _premPdfCache.pdfs && _premPdfCache.pdfs.length > 0) {
-      var cacheAge = Date.now() - _premPdfCache.fetchedAt;
-      if (cacheAge < _premPdfCache.ttlMs) {
-        _log('_getPremiumCategoryPdfs: using module cache (' + _premPdfCache.pdfs.length + ' PDFs)');
-        return _premPdfCache.pdfs.slice();
-      }
-    }
-
-    /* PRIMARY: filter window.PDFS (already loaded client-side array). */
+    /* BUG-1 FIX: exact category match — never partial/includes.
+       PRIMARY: filter window.PDFS (already loaded client-side array).
+       FALLBACK: if window.PDFS is empty or yields 0 matches, query Supabase
+       directly with .in('category', enabledOriginalCase) for exact server-side match. */
     var localPdfs = (window.PDFS || []).filter(function(p) {
       if (!p || !p.title) return false;
       var pdfCat = (p.category || '').toLowerCase().trim();
@@ -254,12 +175,7 @@
       return enabledLower.some(function(ec) { return pdfCat === ec; });
     });
 
-    if (localPdfs.length > 0) {
-      _premPdfCache.pdfs = localPdfs; _premPdfCache.fetchedAt = Date.now();
-      /* Also register in _pdfStore for fast id-based lookup */
-      localPdfs.forEach(function(p) { _storePdf(p); });
-      return localPdfs;
-    }
+    if (localPdfs.length > 0) return localPdfs;
 
     /* Supabase fallback — only runs when window.PDFS is not yet populated */
     var sb = _sb();
@@ -267,35 +183,19 @@
     /* Use original-case category names for the .in() query */
     var enabledOrig = await _fetchCategoryConfig(force);
     try {
-      _log('_getPremiumCategoryPdfs: Supabase fallback query', { categories: enabledOrig });
       var res = await sb.from('pdfs')
-        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,status')
+        .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,is_published')
         .in('category', enabledOrig)
-        .eq('status', 'published')
+        .eq('is_published', true)
         .order('created_at', { ascending: false })
         .limit(100);
       if (res.error) { _warn('Supabase PDF fetch error', res.error.message); return []; }
-      _log('_getPremiumCategoryPdfs: Supabase returned', { count: (res.data||[]).length });
       var rows = res.data || [];
       /* Double-check exact match (server .in() is case-sensitive in Postgres) */
-      var matched = rows.filter(function(p) {
+      return rows.filter(function(p) {
         var pdfCat = (p.category || '').toLowerCase().trim();
         return enabledLower.some(function(ec) { return pdfCat === ec; });
       });
-      /* FIX (BUG-1): Store in module cache AND merge into window.PDFS */
-      if (matched.length > 0) {
-        _premPdfCache.pdfs = matched; _premPdfCache.fetchedAt = Date.now();
-        matched.forEach(function(p) {
-          /* Register in _pdfStore for fast id-based lookup */
-          _storePdf(p);
-          /* Also merge into window.PDFS (best-effort) */
-          if (!window.PDFS) window.PDFS = [];
-          if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
-            window.PDFS.push(p);
-          }
-        });
-      }
-      return matched;
     } catch (e) { _warn('Supabase PDF fallback error', e); return []; }
   }
 
@@ -319,303 +219,6 @@
   /* ─────────────────────────────────────────────────────────────────
      § buyPDF PATCH — premium bypass for category-enabled PDFs only
   ──────────────────────────────────────────────────────────────────*/
-  /* ════════════════════════════════════════════════════════════════
-     § READING ROOM — Secure in-page PDF.js reader for premium members
-     Features: PDF.js rendering, watermark, page navigation,
-     reading progress (localStorage), resume last page, reader toolbar
-     ════════════════════════════════════════════════════════════════ */
-  var _rrOverlay = null;
-  var _rrPdfDoc = null;
-  var _rrCurrentPage = 1;
-  var _rrTotalPages = 0;
-  var _rrScale = 1.3;
-  var _rrPdfId = null;
-  var _rrRenderTask = null;
-
-  function _rrWatermarkText() {
-    var u = _user();
-    if (u) {
-      var email = (u.email || '').split('@')[0].slice(0, 12);
-      return 'studyria.in \u00b7 ' + email;
-    }
-    return 'studyria.in \u00b7 Premium';
-  }
-
-  function _rrGetProgressKey(pdfId) {
-    return 'studyria_rr_progress_' + pdfId;
-  }
-
-  function _rrSaveProgress(pdfId, page, total) {
-    try {
-      localStorage.setItem(_rrGetProgressKey(pdfId), JSON.stringify({ page: page, total: total, ts: Date.now() }));
-    } catch(e) {}
-  }
-
-  function _rrLoadProgress(pdfId) {
-    try {
-      var raw = localStorage.getItem(_rrGetProgressKey(pdfId));
-      if (raw) {
-        var p = JSON.parse(raw);
-        return p.page || 1;
-      }
-    } catch(e) {}
-    return 1;
-  }
-
-  function _rrClose() {
-    if (_rrRenderTask) { try { _rrRenderTask.cancel(); } catch(e) {} _rrRenderTask = null; }
-    if (_rrOverlay) {
-      _rrOverlay.style.opacity = '0';
-      setTimeout(function() {
-        if (_rrOverlay) { _rrOverlay.remove(); _rrOverlay = null; }
-      }, 200);
-    }
-    if (_rrPdfDoc) { try { _rrPdfDoc.cleanup(); } catch(e) {} _rrPdfDoc = null; }
-    document.body.style.overflow = '';
-  }
-
-  async function _rrRenderPage(pageNum) {
-    if (!_rrPdfDoc || !_rrOverlay) return;
-    var canvas = _rrOverlay.querySelector('#rrCanvas');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-
-    // Cancel any pending render
-    if (_rrRenderTask) { try { _rrRenderTask.cancel(); } catch(e) {} }
-
-    var page;
-    try {
-      page = await _rrPdfDoc.getPage(pageNum);
-    } catch(e) { _warn('RR: getPage failed', e); return; }
-
-    var viewport = page.getViewport({ scale: _rrScale });
-    canvas.width = Math.ceil(viewport.width);
-    canvas.height = Math.ceil(viewport.height);
-
-    _rrRenderTask = page.render({ canvasContext: ctx, viewport: viewport });
-    try {
-      await _rrRenderTask.promise;
-      _rrRenderTask = null;
-    } catch(e) {
-      if (e && e.name !== 'RenderingCancelledException') _warn('RR: render failed', e);
-      return;
-    }
-
-    // Burn watermark into canvas
-    var wm = _rrWatermarkText();
-    ctx.save();
-    ctx.globalAlpha = 0.10;
-    ctx.fillStyle = '#1a1a2e';
-    ctx.font = 'bold ' + Math.max(14, canvas.width * 0.035) + 'px Arial, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    var step = canvas.width * 0.4;
-    for (var x = -canvas.width; x < canvas.width * 2; x += step) {
-      for (var y = -canvas.height; y < canvas.height * 2; y += step * 0.6) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(-Math.PI / 6);
-        ctx.fillText(wm, 0, 0);
-        ctx.restore();
-      }
-    }
-    ctx.restore();
-
-    // Update UI
-    _rrCurrentPage = pageNum;
-    var indicator = _rrOverlay.querySelector('#rrPageIndicator');
-    if (indicator) indicator.textContent = pageNum + ' / ' + _rrTotalPages;
-    var progress = _rrOverlay.querySelector('#rrProgressFill');
-    if (progress) progress.style.width = Math.round((pageNum / _rrTotalPages) * 100) + '%';
-    var progressTxt = _rrOverlay.querySelector('#rrProgressText');
-    if (progressTxt) progressTxt.textContent = Math.round((pageNum / _rrTotalPages) * 100) + '%';
-
-    // Save progress
-    _rrSaveProgress(_rrPdfId, pageNum, _rrTotalPages);
-
-    // Enable/disable nav buttons
-    var prevBtn = _rrOverlay.querySelector('#rrPrevBtn');
-    var nextBtn = _rrOverlay.querySelector('#rrNextBtn');
-    if (prevBtn) prevBtn.style.opacity = pageNum <= 1 ? '0.3' : '1';
-    if (nextBtn) nextBtn.style.opacity = pageNum >= _rrTotalPages ? '0.3' : '1';
-  }
-
-  async function _openReadingRoom(pdf, signedUrl) {
-    if (!signedUrl) { _toast('PDF URL not available.', 'error'); return; }
-
-    /* ── Lazy-load pdf.js if not already available ── */
-    if (!window.pdfjsLib) {
-      _log('pdf.js not loaded — lazy loading...');
-      try {
-        await new Promise(function(resolve, reject) {
-          var existing = document.querySelector('script[src*="pdf.min.js"]');
-          if (existing) {
-            /* Script tag exists but pdfjsLib not set yet — wait up to 8s */
-            var waited = 0;
-            var poll = setInterval(function() {
-              if (window.pdfjsLib) { clearInterval(poll); resolve(); return; }
-              waited += 200;
-              if (waited >= 8000) { clearInterval(poll); reject(new Error('pdf.js load timeout')); }
-            }, 200);
-          } else {
-            /* Script not in DOM — inject it */
-            var s = document.createElement('script');
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js';
-            s.onload = function() {
-              if (window.pdfjsLib) {
-                window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-                  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-              }
-              resolve();
-            };
-            s.onerror = function() { reject(new Error('pdf.js failed to load from CDN')); };
-            document.head.appendChild(s);
-          }
-        });
-      } catch(e) {
-        _warn('pdf.js lazy load failed', e);
-        _toast('PDF reader failed to load. Check your connection and refresh.', 'error');
-        return;
-      }
-    }
-    if (!window.pdfjsLib) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
-
-    /* Ensure worker is configured */
-    if (window.pdfjsLib && !window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-    }
-
-    _rrPdfId = String(pdf.id);
-
-    // Close any existing overlay
-    if (_rrOverlay) _rrClose();
-
-    // Create overlay
-    _rrOverlay = document.createElement('div');
-    _rrOverlay.id = 'smciReadingRoom';
-    _rrOverlay.style.cssText = [
-      'position:fixed', 'top:0', 'left:0', 'width:100%', 'height:100%',
-      'z-index:999999', 'background:#0b0e14',
-      'display:flex', 'flex-direction:column',
-      'opacity:0', 'transition:opacity .2s ease'
-    ].join(';') + ';';
-    _rrOverlay.innerHTML = [
-      '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#11151c;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0">',
-        '<div style="display:flex;align-items:center;gap:10px;min-width:0">',
-          '<button id="rrCloseBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.8rem;color:#fff;cursor:pointer;flex-shrink:0">\u2190 Close</button>',
-          '<div style="min-width:0;overflow:hidden">',
-            '<div style="font-size:.82rem;font-weight:700;color:#fbbf24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + _esc(pdf.title || 'Premium PDF') + '</div>',
-            '<div style="font-size:.65rem;color:rgba(255,255,255,0.35)">\uD83D\uDC51 Premium Reading Room</div>',
-          '</div>',
-        '</div>',
-        '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">',
-          '<button id="rrZoomOut" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;width:32px;height:32px;color:#fff;cursor:pointer;font-size:1rem">\u2212</button>',
-          '<span id="rrZoomLabel" style="font-size:.72rem;color:rgba(255,255,255,0.5);min-width:36px;text-align:center">130%</span>',
-          '<button id="rrZoomIn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;width:32px;height:32px;color:#fff;cursor:pointer;font-size:1rem">+</button>',
-        '</div>',
-      '</div>',
-      '<div style="flex:1;overflow:auto;display:flex;justify-content:center;padding:16px;-webkit-overflow-scrolling:touch">',
-        '<canvas id="rrCanvas" style="max-width:100%;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.5)"></canvas>',
-      '</div>',
-      '<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px;background:#11151c;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0">',
-        '<button id="rrPrevBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:.8rem;color:#fff;cursor:pointer">\u2190 Prev</button>',
-        '<div style="display:flex;align-items:center;gap:8px">',
-          '<input id="rrPageInput" type="number" min="1" value="1" style="width:48px;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 6px;color:#fff;font-size:.78rem">',
-          '<span style="font-size:.72rem;color:rgba(255,255,255,0.4)">/</span>',
-          '<span id="rrPageIndicator" style="font-size:.72rem;color:rgba(255,255,255,0.5)">1 / 1</span>',
-        '</div>',
-        '<button id="rrNextBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:.8rem;color:#fff;cursor:pointer">Next \u2192</button>',
-      '</div>',
-      '<div style="height:3px;background:rgba(255,255,255,0.04);flex-shrink:0;position:relative">',
-        '<div id="rrProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .3s ease;border-radius:0 2px 2px 0"></div>',
-        '<span id="rrProgressText" style="position:absolute;right:8px;top:-18px;font-size:.65rem;color:rgba(255,255,255,0.35)">0%</span>',
-      '</div>',
-    ].join('');
-
-    document.body.appendChild(_rrOverlay);
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(function() { _rrOverlay.style.opacity = '1'; });
-
-    // Wire events
-    _rrOverlay.querySelector('#rrCloseBtn').addEventListener('click', _rrClose);
-    _rrOverlay.querySelector('#rrPrevBtn').addEventListener('click', function() {
-      if (_rrCurrentPage > 1) _rrRenderPage(_rrCurrentPage - 1);
-    });
-    _rrOverlay.querySelector('#rrNextBtn').addEventListener('click', function() {
-      if (_rrCurrentPage < _rrTotalPages) _rrRenderPage(_rrCurrentPage + 1);
-    });
-    _rrOverlay.querySelector('#rrPageInput').addEventListener('change', function(e) {
-      var p = parseInt(e.target.value, 10);
-      if (p >= 1 && p <= _rrTotalPages) _rrRenderPage(p);
-      else e.target.value = _rrCurrentPage;
-    });
-    _rrOverlay.querySelector('#rrZoomIn').addEventListener('click', function() {
-      _rrScale = Math.min(3, _rrScale + 0.2);
-      _rrOverlay.querySelector('#rrZoomLabel').textContent = Math.round(_rrScale * 100) + '%';
-      _rrRenderPage(_rrCurrentPage);
-    });
-    _rrOverlay.querySelector('#rrZoomOut').addEventListener('click', function() {
-      _rrScale = Math.max(0.5, _rrScale - 0.2);
-      _rrOverlay.querySelector('#rrZoomLabel').textContent = Math.round(_rrScale * 100) + '%';
-      _rrRenderPage(_rrCurrentPage);
-    });
-
-    // Keyboard navigation
-    function _rrKeyHandler(e) {
-      if (!_rrOverlay) { document.removeEventListener('keydown', _rrKeyHandler); return; }
-      if (e.key === 'ArrowLeft') { if (_rrCurrentPage > 1) _rrRenderPage(_rrCurrentPage - 1); }
-      else if (e.key === 'ArrowRight') { if (_rrCurrentPage < _rrTotalPages) _rrRenderPage(_rrCurrentPage + 1); }
-      else if (e.key === 'Escape') { _rrClose(); document.removeEventListener('keydown', _rrKeyHandler); }
-    }
-    document.addEventListener('keydown', _rrKeyHandler);
-
-    // Loading indicator
-    var canvasContainer = _rrOverlay.querySelector('#rrCanvas').parentElement;
-    var loadingEl = document.createElement('div');
-    loadingEl.id = 'rrLoading';
-    loadingEl.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,0.4);font-size:.9rem;text-align:center';
-    loadingEl.innerHTML = '<div style="font-size:2rem;margin-bottom:8px">\uD83D\uDCD6</div>Loading PDF\u2026';
-    canvasContainer.style.position = 'relative';
-    canvasContainer.appendChild(loadingEl);
-
-    // Load PDF
-    try {
-      _rrPdfDoc = await window.pdfjsLib.getDocument({
-        url: signedUrl,
-        withCredentials: false
-      }).promise;
-      _rrTotalPages = _rrPdfDoc.numPages || 1;
-
-      // Resume from last page
-      var resumePage = _rrLoadProgress(_rrPdfId);
-      if (resumePage > _rrTotalPages) resumePage = 1;
-      if (resumePage > 1) {
-        _toast('Resuming from page ' + resumePage, 'info');
-      }
-
-      // Remove loading indicator
-      var le = _rrOverlay.querySelector('#rrLoading');
-      if (le) le.remove();
-
-      // Update page input max
-      var pageInput = _rrOverlay.querySelector('#rrPageInput');
-      if (pageInput) pageInput.max = _rrTotalPages;
-
-      // Render first/resume page
-      await _rrRenderPage(resumePage);
-
-      // Track reading session
-      if (typeof window.trackReadingSession === 'function') window.trackReadingSession(_rrPdfId);
-      if (typeof window.trackPdfDownloadEvent === 'function') window.trackPdfDownloadEvent(pdf, 'premium_member');
-    } catch(e) {
-      _warn('RR: load failed', e);
-      var le2 = _rrOverlay.querySelector('#rrLoading');
-      if (le2) le2.innerHTML = '<div style="font-size:2rem;margin-bottom:8px">\u26A0\uFE0F</div>Failed to load PDF.<br><span style="font-size:.72rem;color:rgba(255,255,255,0.3)">The file may be corrupted or inaccessible.</span>';
-      _toast('Failed to load PDF in Reading Room.', 'error');
-    }
-  }
-
   function _patchBuyPDF() {
     var orig = window.buyPDF;
     if (!orig || orig._smciPatched) return;
@@ -651,7 +254,7 @@
 
       var pdfUrl = '';
       try {
-        var row = await client.from('pdfs').select('pdf_url,title').eq('id', idStr).single();
+        var row = await client.from('pdfs').select('pdf_url,title').eq('id', pdfId).single();
         if (row.data) pdfUrl = row.data.pdf_url || '';
       } catch (e) { _warn('pdf_url fetch', e); }
       if (!pdfUrl) pdfUrl = pdf ? (pdf.pdf_url || pdf.pdfUrl || '') : '';
@@ -660,8 +263,10 @@
       var url = await _resolveSignedUrl(pdfUrl, client);
       if (!url) { _warn('No signed URL — fallback'); return orig.call(this, pdfId, amount, legacyUrl); }
 
-      _openReadingRoom(pdf, url);
-      _toast('Opening Reading Room\u2026 \uD83D\uDC51', 'success');
+      window.open(url, '_blank');
+      if (typeof window.trackReadingSession === 'function') window.trackReadingSession(pdfId);
+      if (typeof window.trackPdfDownloadEvent === 'function') window.trackPdfDownloadEvent(pdf || { id: pdfId }, 'premium_member');
+      _toast('Opening with Premium access! 👑', 'success');
     };
     window.buyPDF._smciPatched = true;
     _log('buyPDF patched — category-based (site_config)');
@@ -703,41 +308,40 @@
   /* ─────────────────────────────────────────────────────────────────
      § MY LIBRARY — PREMIUM MEMBERSHIP SECTION
   ──────────────────────────────────────────────────────────────────*/
-  /* BUG-5 HARDENED: Premium card uses openDetail() — not buyPDF().
-     openDetail() → navigate('detail') → _hookRenderDetail intercepts
+  /* UNIFIED READER FIX: Card body tap → openDetail() (info page).
+     "Open Free" button → downloadPDF() → SAME Reading Room pipeline as My Library.
+     downloadPDF() checks: purchased OR active premium membership → signed URL → window.open.
      → grants premium access. Zero Razorpay exposure. */
   function _buildPremiumCard(pdf) {
-    /* Store the full pdf object so _openReadingRoomById can find it reliably */
-    _storePdf(pdf);
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
     var cat   = _esc(pdf.category || '');
     var id    = String(pdf.id);
-    /* BUG-FIX: Use quoted string concatenation that avoids inner single-quote breaks */
     var coverHtml = cover
-      ? "<img src=\"" + cover + "\" alt=\"" + title + "\" style=\"width:100%;height:100%;object-fit:cover\" loading=\"lazy\" decoding=\"async\">"
-      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
-    /* UNIFIED FIX: Same downloadPDF path as My Library. No separate reader. */
-    var onclickCard = "if(typeof downloadPDF===\'function\')downloadPDF('" + id + "');else if(typeof openDetail===\'function\')openDetail('" + id + "')";
-    var onclickBtn  = "event.stopPropagation();" + onclickCard;
-    return '<div style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
+      ? '<img src="' + cover + '" alt="' + title + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'" loading="lazy" decoding="async">'
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">📌</div>';
+    return '<div onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')" '
+      + 'style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));border:1px solid var(--glass-border,rgba(255,255,255,0.08));'
-      + 'overflow:hidden;transition:transform .15s,box-shadow .15s" onclick="' + onclickCard + '">'
+      + 'overflow:hidden;transition:transform .15s,box-shadow .15s" '
+      + 'onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.3)'" '
+      + 'onmouseout="this.style.transform='';this.style.boxShadow=''">'
       + '<div style="position:relative;height:110px;overflow:hidden">'
       + coverHtml
       + '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
-      + 'color:#000;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:10px">&#x1F451; PREMIUM</div>'
+      + 'color:#000;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:10px">👑 PREMIUM</div>'
       + '</div>'
       + '<div style="padding:8px">'
       + '<div style="font-size:.74rem;font-weight:600;color:var(--text1);line-height:1.3;margin-bottom:3px;'
       + 'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + title + '</div>'
       + (cat ? '<div style="font-size:.62rem;color:var(--text2);margin-bottom:5px">' + cat + '</div>' : '')
-      + '<button onclick="' + onclickBtn + '" '
+      + '<button onclick="event.stopPropagation();if(typeof downloadPDF===\'function\')downloadPDF(\'' + id + '\');else showToast(\'Opening…\',\'info\')" '
       + 'style="width:100%;padding:5px;border-radius:6px;border:none;cursor:pointer;font-size:.7rem;font-weight:700;'
       + 'background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));'
-      + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.25)">&#x1F451; Open Free</button>'
+      + 'color:#fbbf24;border:1px solid rgba(251,191,36,0.25)">👑 Open Free</button>'
       + '</div></div>';
   }
+
 
   /* BUG-3 FIX: Horizontal carousel shelves per category (one shelf per category).
      BUG-5 FIX: Cards use "👑 Open Free" — premium members never see Buy button. */
@@ -823,7 +427,7 @@
       + '</div>'
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
-      + '<button onclick="navigate(\'premium-library\')" style="font-size:.75rem;color:var(--accent);'
+      + '<button onclick="navigate('premium-library')" style="font-size:.75rem;color:var(--accent);'
       + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
@@ -924,13 +528,6 @@
       var br = document.getElementById('dashBadgeRow');
       if (br) br.style.display = '';
     }
-    /* PREMIUM-TAB-FIX: Sync the new Premium tab status pill — single source of truth */
-    var prmStatusEl = document.getElementById('prmNavMemberStatus');
-    if (prmStatusEl) {
-      prmStatusEl.innerHTML = isPremium
-        ? '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(245,158,11,0.12));border:1px solid rgba(251,191,36,0.35);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:700;color:#fbbf24">&#x1F451; PREMIUM MEMBER</span>'
-        : '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 16px;font-size:.82rem;font-weight:600;color:var(--text2)">FREE MEMBER</span>';
-    }
   }
 
   async function syncAll(force) {
@@ -965,15 +562,13 @@
   /* Build a card for the home shelf (matches scardHTML style) */
   /* BUG-5 HARDENED (home shelf): uses openDetail() — no buyPDF(), no Razorpay. */
   function _buildHomePremiumCard(pdf) {
-    /* FIX: Store pdf so openReadingRoom can find it by id */
-    _storePdf(pdf);
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.cover_url || pdf.coverImage || pdf.cover_image || pdf.thumbnail || '';
     var id    = String(pdf.id);
     var imgHtml = cover
       ? '<img src="' + _esc(cover) + '" loading="lazy" decoding="async"'
         + ' style="width:100%;height:100%;object-fit:cover;border-radius:10px 10px 0 0"'
-        + ' onerror="this.style.display=\'none\'">'
+        + ' onerror="this.style.display='none'">'
       : '';
     var iconHtml = cover ? '' :
       '<div style="width:100%;height:100%;display:flex;align-items:center;'
@@ -984,7 +579,7 @@
       + 'border:1px solid rgba(251,191,36,0.2);overflow:hidden;'
       + 'transition:transform .15s,box-shadow .15s;flex-shrink:0';
     var html = '<div style="' + cardStyle + '" '
-      + 'onclick="if(typeof downloadPDF===\'function\')downloadPDF(\'' + id + '\');else if(typeof openDetail===\'function\')openDetail(\'' + id + '\')">';
+      + 'onclick="if(typeof openDetail==='function')openDetail('' + id + '');else navigate('detail')">';
     html += '<div style="position:relative;height:100px;overflow:hidden">';
     html += imgHtml + iconHtml;
     html += '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
@@ -1101,14 +696,11 @@
       var enabledCatsLower = await _getEnabledCategoryNames(false);
       if (!(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) return res;
       setTimeout(function() {
-        var _rrPdfId = String(pdf.id);
         document.querySelectorAll('.pdp-cta-btn,.pdp-buy-primary,#pdpStickyBuy,.pdp-sticky-buy').forEach(function(btn) {
           if (/buy|purchase|⚡/i.test(btn.textContent)) {
             btn.textContent = '👑 Open with Premium';
             btn.style.background = 'linear-gradient(135deg,#fbbf24,#f59e0b)';
             btn.style.color = '#000';
-            /* Open Reading Room directly — never checkout for premium users */
-            btn.onclick = function(e) { e.preventDefault(); SMCI.openReadingRoom(_rrPdfId); return false; };
           }
         });
         document.querySelectorAll('.pdp-price-row,.pdp-price-wrap,.pdp-buy-section').forEach(function(el) {
@@ -1356,7 +948,7 @@
       }
       setTimeout(_waitAuth, 1200);
     }
-    _log('Init complete — SMCI pci-2.4 (reading room, try-catch library page)');
+    _log('Init complete — SMCI pci-2.2 (site_config storage, Supabase fallback, dash badge hook)');
   }
 
 
@@ -1367,10 +959,9 @@
      Uses SAME _getPremiumCategoryPdfs() — single source of truth.
   ──────────────────────────────────────────────────────────────────*/
   async function renderPremiumLibraryPage(force) {
-    console.trace('[SMCI] renderPremiumLibraryPage called', { force: force });
     var container = document.getElementById('prmLibContent');
     var subtitle  = document.getElementById('prmLibSubtitle');
-    if (!container) { console.warn('[SMCI] prmLibContent not found'); return; }
+    if (!container) return;
 
     /* Loading state */
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
@@ -1378,33 +969,15 @@
       + '<div style="font-size:.9rem">Loading Premium Library…</div>'
       + '</div>';
 
-    /* BUG-FIX: Safety timeout — if any await hangs >12s, replace loading with retry */
-    var _safetyTo = setTimeout(function() {
-      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
-        + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
-        + '<div style="font-size:.9rem;margin-bottom:16px">Loading timed out. Please retry.</div>'
-        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
-        + '</div>';
-    }, 5000);
-
-    try {
-
     var status = await _getStatus(force || false);
-    // FIX: If state says not-premium but this wasn't a forced call, do one forced re-fetch.
-    // Handles the race where SMCI state is stale when navigating straight to premium-library.
-    if (!status.isPremium && !force) {
-      _log('renderPremiumLibraryPage: cached isPremium=false, forcing re-fetch...');
-      status = await _getStatus(true);
-    }
 
     if (!status.isPremium) {
       /* Not a premium member — show upgrade prompt */
-      clearTimeout(_safetyTo);
       container.innerHTML = '<div style="text-align:center;padding:48px 24px">'
         + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
         + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
         + '<div style="font-size:.85rem;color:var(--text2);margin-bottom:24px">Unlock all Premium Handwritten Notes and more with a Premium Membership.</div>'
-        + '<button onclick="navigate(\'premium\')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
+        + '<button onclick="navigate('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
         + 'font-weight:700;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem">'
         + '👑 View Plans →</button>'
         + '</div>';
@@ -1414,8 +987,6 @@
     /* Get enabled categories & PDFs */
     var enabledCats  = await _fetchCategoryConfig(force || false); /* original case names */
     var pdfs         = await _getPremiumCategoryPdfs(force || false);
-    /* Store ALL fetched PDFs in _pdfStore for reliable card click resolution */
-    pdfs.forEach(function(p) { _storePdf(p); });
 
     /* Update subtitle */
     if (subtitle) {
@@ -1424,7 +995,6 @@
     }
 
     if (pdfs.length === 0) {
-      clearTimeout(_safetyTo);
       container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
         + '<div style="font-size:2rem;margin-bottom:12px">📭</div>'
         + '<div>No Premium Notes in catalogue yet — check back soon!</div>'
@@ -1500,110 +1070,11 @@
     }, 120);
 
     _log('Premium Library page rendered', pdfs.length + ' PDFs, ' + order.length + ' shelves');
-
-    } catch (_rrErr) {
-      _warn('renderPremiumLibraryPage error', _rrErr);
-      if (container) {
-        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
-          + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
-          + '<div style="font-size:.9rem;margin-bottom:16px">Could not load Premium Library.</div>'
-          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
-          + '</div>';
-      }
-    }
-    clearTimeout(_safetyTo);
   }
 
-
-  async function _openReadingRoomById(pdfId) {
-    var idStr = String(pdfId);
-
-    /* ── 1. Check _smciPdfStore first — populated when Premium Library cards are built.
-     *       This survives pdf-list.js resets of window.PDFS.  ── */
-    var pdf = _pdfStore[idStr] || null;
-    _log('openReadingRoom: _pdfStore lookup', idStr, pdf ? 'HIT' : 'MISS');
-
-    /* ── 2. Fallback: search window.PDFS ── */
-    if (!pdf) {
-      pdf = (window.PDFS || []).find(function(p) { return String(p.id) === idStr; }) || null;
-      if (pdf) _log('openReadingRoom: found in window.PDFS');
-    }
-
-    /* ── 3. Apply normalizePdf if available ── */
-    if (pdf && typeof window.normalizePdf === 'function') {
-      pdf = window.normalizePdf(pdf);
-    }
-
-    /* ── 4. Final fallback: fetch from Supabase by ID ── */
-    if (!pdf) {
-      _log('openReadingRoom: pdf ' + idStr + ' not in store/PDFS, fetching from DB...');
-      var sbClient = _sb();
-      if (sbClient) {
-        try {
-          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', idStr).single();
-          if (!fetchRes.error && fetchRes.data) {
-            pdf = fetchRes.data;
-            if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-            _storePdf(pdf);
-          } else {
-            _warn('openReadingRoom: DB fetch returned no data', fetchRes.error);
-          }
-        } catch(e) { _warn('openReadingRoom: DB fetch failed', e); }
-      }
-    }
-
-    if (!pdf) { _toast('PDF not found.', 'error'); return; }
-
-    var status = await _getStatus(false);
-    // FIX: If cached state says not-premium, force a fresh Supabase fetch before giving up.
-    // This handles the race where SMCI state hasn't been populated from cache yet.
-    if (!status.isPremium) {
-      _log('openReadingRoom: cached isPremium=false, forcing re-fetch...');
-      status = await _getStatus(true);
-    }
-    if (!status.isPremium) { _toast('Premium membership required.', 'info'); return; }
-
-    var enabledCatsLower = await _getEnabledCategoryNames(false);
-    /* Check category on both the (possibly normalized) pdf AND the original stored version */
-    var categoryPdf = pdf;
-    var storedPdf = _pdfStore[idStr];
-    if (storedPdf && !(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) {
-      /* Try original pdf object from store — normalizePdf may have cleared category */
-      categoryPdf = storedPdf;
-    }
-    if (!(await _isPdfInPremiumCategory(categoryPdf, enabledCatsLower))) {
-      _warn('openReadingRoom: category check failed', {
-        pdfId: idStr,
-        pdfCat: pdf.category,
-        storedCat: storedPdf && storedPdf.category,
-        enabledCats: enabledCatsLower
-      });
-      _toast('This PDF is not included in Premium.', 'info');
-      return;
-    }
-
-    var client = _sb();
-    if (!client) { _toast('Connection error.', 'error'); return; }
-
-    var pdfUrl = '';
-    try {
-      var row = await client.from('pdfs').select('pdf_url,title').eq('id', pdfId).single();
-      if (row.data) pdfUrl = row.data.pdf_url || '';
-    } catch(e) { _warn('RR: pdf_url fetch', e); }
-    if (!pdfUrl) pdfUrl = pdf.pdf_url || pdf.pdfUrl || '';
-    if (!pdfUrl) { _toast('PDF URL not found.', 'error'); return; }
-
-    var url = await _resolveSignedUrl(pdfUrl, client);
-    if (!url) { _toast('Could not generate secure URL.', 'error'); return; }
-
-    _openReadingRoom(pdf, url);
-  }
 
   window.SMCI = {
-    _version:               'pci-2.4',
-    openReadingRoom:        function(pdfId) { return _openReadingRoomById(pdfId); },
-    storePdf:               function(pdf)   { _storePdf(pdf); },
-    _injectStatus:          function(status) { _injectStatus(status); },
+    _version:               'pci-2.2',
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
     getStatus:              function(f) { return _getStatus(f || false); },
     syncAll:                function(f) { return syncAll(f || false); },
