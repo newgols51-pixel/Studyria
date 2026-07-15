@@ -152,11 +152,11 @@
       progressHTML = '<div class="prmdash-progress"><div class="prmdash-progress-fill" style="width:' + pct + '%"></div></div>';
     }
 
-    /* BUG-FIX (BUG-2a): Use openReadingRoom for premium-access cards,
-       fall back to openDetail. Locked cards still use openDetail. */
+    /* UNIFIED FIX: Premium cards use downloadPDF — same path as My Library purchased PDFs.
+       downloadPDF checks premium membership (Step 4.5) then opens via signed URL. */
     var clickAction = (btnText === '🔒 Locked')
       ? "if(typeof openDetail===\'function\')openDetail(\'' + id + '\')"
-      : "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(\'' + id + '\');else if(typeof openDetail===\'function\')openDetail(\'' + id + '\')";
+      : "if(typeof downloadPDF===\'function\')downloadPDF(\'' + id + '\');else if(typeof openDetail===\'function\')openDetail(\'' + id + '\')";
 
     return '<div class="prmdash-card" onclick="' + clickAction + '" '
       + 'onmouseover="this.style.transform=\'translateY(-3px)\'" '
