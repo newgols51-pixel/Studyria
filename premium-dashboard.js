@@ -146,7 +146,13 @@
       progressHTML = '<div class="prmdash-progress"><div class="prmdash-progress-fill" style="width:' + pct + '%"></div></div>';
     }
 
-    return '<div class="prmdash-card" onclick="if(typeof openDetail===\'function\')openDetail(\'' + id + '\')" '
+    /* BUG-FIX (BUG-2a): Use openReadingRoom for premium-access cards,
+       fall back to openDetail. Locked cards still use openDetail. */
+    var clickAction = (btnText === '🔒 Locked')
+      ? "if(typeof openDetail===\'function\')openDetail(\'' + id + '\')"
+      : "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(\'' + id + '\');else if(typeof openDetail===\'function\')openDetail(\'' + id + '\')";
+
+    return '<div class="prmdash-card" onclick="' + clickAction + '" '
       + 'onmouseover="this.style.transform=\'translateY(-3px)\'" '
       + 'onmouseout="this.style.transform=\'\'">'
       + '<div class="prmdash-card-cover">' + coverHTML + badgeHTML + '</div>'
@@ -154,9 +160,10 @@
       + '<div class="prmdash-card-title">' + title + '</div>'
       + (cat ? '<div class="prmdash-card-meta">' + cat + '</div>' : '')
       + progressHTML
-      + '<button class="prmdash-card-btn" onclick="event.stopPropagation();if(typeof openDetail===\'function\')openDetail(\'' + id + '\')">' + btnText + '</button>'
+      + '<button class="prmdash-card-btn" onclick="event.stopPropagation();' + clickAction + '">' + btnText + '</button>'
       + '</div></div>';
   }
+
 
   /* ── Get premium PDFs — multi-strategy loader ──────────────────── */
   async function _getPremiumPDFs() {

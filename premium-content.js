@@ -635,7 +635,7 @@
       ? "<img src=\"" + cover + "\" alt=\"" + title + "\" style=\"width:100%;height:100%;object-fit:cover\" loading=\"lazy\" decoding=\"async\">"
       : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
     /* BUG-FIX (BUG-2): Open Free calls openReadingRoom directly — never goes to checkout */
-    var onclickCard = "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(" + id + ");else if(typeof openDetail===\'function\')openDetail(" + id + ")";
+    var onclickCard = "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom('" + id + "');else if(typeof openDetail===\'function\')openDetail('" + id + "')";
     var onclickBtn  = "event.stopPropagation();" + onclickCard;
     return '<div style="cursor:pointer;border-radius:10px;flex:0 0 140px;width:140px;'
       + 'background:var(--glass-bg,rgba(255,255,255,0.03));border:1px solid var(--glass-border,rgba(255,255,255,0.08));'
@@ -899,7 +899,7 @@
       + 'border:1px solid rgba(251,191,36,0.2);overflow:hidden;'
       + 'transition:transform .15s,box-shadow .15s;flex-shrink:0';
     var html = '<div style="' + cardStyle + '" '
-      + 'onclick="if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(" + id + ");else if(typeof openDetail===\'function\')openDetail(" + id + ")">';
+      + 'onclick="if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom(\'' + id + '\');else if(typeof openDetail===\'function\')openDetail(\'' + id + '\')">';
     html += '<div style="position:relative;height:100px;overflow:hidden">';
     html += imgHtml + iconHtml;
     html += '<div style="position:absolute;top:5px;right:5px;background:linear-gradient(135deg,#fbbf24,#f59e0b);'
@@ -1292,6 +1292,15 @@
       + '<div style="font-size:.9rem">Loading Premium Library…</div>'
       + '</div>';
 
+    /* BUG-FIX: Safety timeout — if any await hangs >12s, replace loading with retry */
+    var _safetyTo = setTimeout(function() {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
+        + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
+        + '<div style="font-size:.9rem;margin-bottom:16px">Loading timed out. Please retry.</div>'
+        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+        + '</div>';
+    }, 12000);
+
     try {
 
     var status = await _getStatus(force || false);
@@ -1406,6 +1415,7 @@
           + '</div>';
       }
     }
+    clearTimeout(_safetyTo);
   }
 
 
