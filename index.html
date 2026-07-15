@@ -16854,7 +16854,9 @@ async function navigate(page) {
   // BUG-2+3 FIX: Premium Library page — render horizontal shelves
   if (page === 'premium-library') {
     if (window.SMCI && typeof window.SMCI.renderPremiumLibraryPage === 'function') {
-      setTimeout(function() { window.SMCI.renderPremiumLibraryPage(false); }, 150);
+      // FIX: Pass force=true to guarantee fresh membership check — avoids race
+      // where SMCI cache hasn't been populated yet when navigating directly here.
+      setTimeout(function() { window.SMCI.renderPremiumLibraryPage(true); }, 100);
     }
   }
 }
