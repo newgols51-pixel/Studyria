@@ -215,7 +215,15 @@
         if (res.error) { _log('Supabase error:', res.error.message); }
         if (res.data && res.data.length > 0) {
           _log('Found ' + res.data.length + ' PDFs via Supabase');
-          return res.data;
+          /* FIX (BUG-2): Merge into window.PDFS so SMCI.openReadingRoom can find them */
+          var fetched = res.data;
+          if (!window.PDFS) window.PDFS = [];
+          fetched.forEach(function(p) {
+            if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
+              window.PDFS.push(p);
+            }
+          });
+          return fetched;
         }
       } catch (e) { _log('Supabase strategy failed:', e.message); }
     }
