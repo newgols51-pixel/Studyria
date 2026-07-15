@@ -128,6 +128,12 @@
   /* ── Card builder ─────────────────────────────────────────────── */
   function _cardHTML(pdf, opts) {
     opts = opts || {};
+    /* Store pdf in SMCI's store so openReadingRoom can find it without PDFS lookup */
+    if (window.SMCI && typeof window.SMCI.storePdf === 'function') {
+      window.SMCI.storePdf(pdf);
+    } else if (window._smciPdfStore && pdf && pdf.id !== undefined) {
+      window._smciPdfStore[String(pdf.id)] = pdf;
+    }
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
     var cat = _esc(pdf.category || '');

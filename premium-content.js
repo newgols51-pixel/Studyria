@@ -26,6 +26,16 @@
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
   var CAT_CACHE_TTL_MS  = 120000;   /* 2-min category config cache   */
   var SITE_CONFIG_KEY   = 'premium_categories_config';
+
+  /* ─── PDF Object Store — populated when Premium Library cards are built ───
+   * Keyed by String(pdf.id). Survives window.PDFS resets by pdf-list.js.
+   * _openReadingRoomById checks here FIRST before falling back to window.PDFS. */
+  var _pdfStore = window._smciPdfStore = window._smciPdfStore || {};
+  function _storePdf(pdf) {
+    if (pdf && pdf.id !== undefined && pdf.id !== null) {
+      _pdfStore[String(pdf.id)] = pdf;
+    }
+  }
   var SECTION_ID        = 'smci-premium-notes-section';
 
   /* Phase 1 hardcoded default — used when site_config has no entry yet.
@@ -246,6 +256,8 @@
 
     if (localPdfs.length > 0) {
       _premPdfCache.pdfs = localPdfs; _premPdfCache.fetchedAt = Date.now();
+      /* Also register in _pdfStore for fast id-based lookup */
+      localPdfs.forEach(function(p) { _storePdf(p); });
       return localPdfs;
     }
 
@@ -274,6 +286,9 @@
       if (matched.length > 0) {
         _premPdfCache.pdfs = matched; _premPdfCache.fetchedAt = Date.now();
         matched.forEach(function(p) {
+          /* Register in _pdfStore for fast id-based lookup */
+          _storePdf(p);
+          /* Also merge into window.PDFS (best-effort) */
           if (!window.PDFS) window.PDFS = [];
           if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
             window.PDFS.push(p);
@@ -427,7 +442,49 @@
 
   async function _openReadingRoom(pdf, signedUrl) {
     if (!signedUrl) { _toast('PDF URL not available.', 'error'); return; }
+
+    /* ── Lazy-load pdf.js if not already available ── */
+    if (!window.pdfjsLib) {
+      _log('pdf.js not loaded — lazy loading...');
+      try {
+        await new Promise(function(resolve, reject) {
+          var existing = document.querySelector('script[src*="pdf.min.js"]');
+          if (existing) {
+            /* Script tag exists but pdfjsLib not set yet — wait up to 8s */
+            var waited = 0;
+            var poll = setInterval(function() {
+              if (window.pdfjsLib) { clearInterval(poll); resolve(); return; }
+              waited += 200;
+              if (waited >= 8000) { clearInterval(poll); reject(new Error('pdf.js load timeout')); }
+            }, 200);
+          } else {
+            /* Script not in DOM — inject it */
+            var s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js';
+            s.onload = function() {
+              if (window.pdfjsLib) {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+                  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+              }
+              resolve();
+            };
+            s.onerror = function() { reject(new Error('pdf.js failed to load from CDN')); };
+            document.head.appendChild(s);
+          }
+        });
+      } catch(e) {
+        _warn('pdf.js lazy load failed', e);
+        _toast('PDF reader failed to load. Check your connection and refresh.', 'error');
+        return;
+      }
+    }
     if (!window.pdfjsLib) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
+
+    /* Ensure worker is configured */
+    if (window.pdfjsLib && !window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+    }
 
     _rrPdfId = String(pdf.id);
 
@@ -594,7 +651,7 @@
 
       var pdfUrl = '';
       try {
-        var row = await client.from('pdfs').select('pdf_url,title').eq('id', pdfId).single();
+        var row = await client.from('pdfs').select('pdf_url,title').eq('id', idStr).single();
         if (row.data) pdfUrl = row.data.pdf_url || '';
       } catch (e) { _warn('pdf_url fetch', e); }
       if (!pdfUrl) pdfUrl = pdf ? (pdf.pdf_url || pdf.pdfUrl || '') : '';
@@ -650,6 +707,8 @@
      openDetail() → navigate('detail') → _hookRenderDetail intercepts
      → grants premium access. Zero Razorpay exposure. */
   function _buildPremiumCard(pdf) {
+    /* Store the full pdf object so _openReadingRoomById can find it reliably */
+    _storePdf(pdf);
     var title = _esc(pdf.title || 'Untitled');
     var cover = pdf.coverImage || pdf.cover_image || pdf.cover_url || '';
     var cat   = _esc(pdf.category || '');
@@ -1353,6 +1412,8 @@
     /* Get enabled categories & PDFs */
     var enabledCats  = await _fetchCategoryConfig(force || false); /* original case names */
     var pdfs         = await _getPremiumCategoryPdfs(force || false);
+    /* Store ALL fetched PDFs in _pdfStore for reliable card click resolution */
+    pdfs.forEach(function(p) { _storePdf(p); });
 
     /* Update subtitle */
     if (subtitle) {
@@ -1453,25 +1514,42 @@
 
 
   async function _openReadingRoomById(pdfId) {
-    var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
-    if (pdf && typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-    // FIX (BUG-2): If pdf not in local cache, fetch it directly from Supabase by ID
+    var idStr = String(pdfId);
+
+    /* ── 1. Check _smciPdfStore first — populated when Premium Library cards are built.
+     *       This survives pdf-list.js resets of window.PDFS.  ── */
+    var pdf = _pdfStore[idStr] || null;
+    _log('openReadingRoom: _pdfStore lookup', idStr, pdf ? 'HIT' : 'MISS');
+
+    /* ── 2. Fallback: search window.PDFS ── */
     if (!pdf) {
-      _log('openReadingRoom: pdf ' + pdfId + ' not in window.PDFS, fetching from DB...');
+      pdf = (window.PDFS || []).find(function(p) { return String(p.id) === idStr; }) || null;
+      if (pdf) _log('openReadingRoom: found in window.PDFS');
+    }
+
+    /* ── 3. Apply normalizePdf if available ── */
+    if (pdf && typeof window.normalizePdf === 'function') {
+      pdf = window.normalizePdf(pdf);
+    }
+
+    /* ── 4. Final fallback: fetch from Supabase by ID ── */
+    if (!pdf) {
+      _log('openReadingRoom: pdf ' + idStr + ' not in store/PDFS, fetching from DB...');
       var sbClient = _sb();
       if (sbClient) {
         try {
-          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', pdfId).single();
+          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', idStr).single();
           if (!fetchRes.error && fetchRes.data) {
             pdf = fetchRes.data;
             if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-            // Also push into window.PDFS cache for future use
-            if (pdf && !window.PDFS) window.PDFS = [];
-            if (pdf && window.PDFS) window.PDFS.push(pdf);
+            _storePdf(pdf);
+          } else {
+            _warn('openReadingRoom: DB fetch returned no data', fetchRes.error);
           }
         } catch(e) { _warn('openReadingRoom: DB fetch failed', e); }
       }
     }
+
     if (!pdf) { _toast('PDF not found.', 'error'); return; }
 
     var status = await _getStatus(false);
@@ -1484,7 +1562,20 @@
     if (!status.isPremium) { _toast('Premium membership required.', 'info'); return; }
 
     var enabledCatsLower = await _getEnabledCategoryNames(false);
-    if (!(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) {
+    /* Check category on both the (possibly normalized) pdf AND the original stored version */
+    var categoryPdf = pdf;
+    var storedPdf = _pdfStore[idStr];
+    if (storedPdf && !(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) {
+      /* Try original pdf object from store — normalizePdf may have cleared category */
+      categoryPdf = storedPdf;
+    }
+    if (!(await _isPdfInPremiumCategory(categoryPdf, enabledCatsLower))) {
+      _warn('openReadingRoom: category check failed', {
+        pdfId: idStr,
+        pdfCat: pdf.category,
+        storedCat: storedPdf && storedPdf.category,
+        enabledCats: enabledCatsLower
+      });
       _toast('This PDF is not included in Premium.', 'info');
       return;
     }
@@ -1509,6 +1600,7 @@
   window.SMCI = {
     _version:               'pci-2.4',
     openReadingRoom:        function(pdfId) { return _openReadingRoomById(pdfId); },
+    storePdf:               function(pdf)   { _storePdf(pdf); },
     _injectStatus:          function(status) { _injectStatus(status); },
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
     getStatus:              function(f) { return _getStatus(f || false); },
