@@ -81,8 +81,9 @@
       _state._retries = (_state._retries || 0) + 1;
       if (_state._retries <= 3) {
         _log('_fetchStatus: uid null, retry ' + _state._retries + '/3 in 500ms');
-        setTimeout(function() { _fetchStatus(); }, 500);
-        return;
+        // FIX: await the delay so the caller's "await _getStatus()" waits for retry
+        await new Promise(function(r) { setTimeout(r, 600); });
+        return _fetchStatus();
       }
       _warn('_fetchStatus: auth never resolved after 3 retries');
       _state._retries = 0;
@@ -244,6 +245,7 @@
     /* Use original-case category names for the .in() query */
     var enabledOrig = await _fetchCategoryConfig(force);
     try {
+      _log('_getPremiumCategoryPdfs: Supabase fallback query', { categories: enabledOrig });
       var res = await sb.from('pdfs')
         .select('id,title,category,price,cover_url,cover_image,pdf_url,free,slug,rating,downloads,discount,status')
         .in('category', enabledOrig)
@@ -251,6 +253,7 @@
         .order('created_at', { ascending: false })
         .limit(100);
       if (res.error) { _warn('Supabase PDF fetch error', res.error.message); return []; }
+      _log('_getPremiumCategoryPdfs: Supabase returned', { count: (res.data||[]).length });
       var rows = res.data || [];
       /* Double-check exact match (server .in() is case-sensitive in Postgres) */
       return rows.filter(function(p) {
@@ -1282,9 +1285,10 @@
      Uses SAME _getPremiumCategoryPdfs() — single source of truth.
   ──────────────────────────────────────────────────────────────────*/
   async function renderPremiumLibraryPage(force) {
+    console.trace('[SMCI] renderPremiumLibraryPage called', { force: force });
     var container = document.getElementById('prmLibContent');
     var subtitle  = document.getElementById('prmLibSubtitle');
-    if (!container) return;
+    if (!container) { console.warn('[SMCI] prmLibContent not found'); return; }
 
     /* Loading state */
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
@@ -1304,9 +1308,16 @@
     try {
 
     var status = await _getStatus(force || false);
+    // FIX: If state says not-premium but this wasn't a forced call, do one forced re-fetch.
+    // Handles the race where SMCI state is stale when navigating straight to premium-library.
+    if (!status.isPremium && !force) {
+      _log('renderPremiumLibraryPage: cached isPremium=false, forcing re-fetch...');
+      status = await _getStatus(true);
+    }
 
     if (!status.isPremium) {
       /* Not a premium member — show upgrade prompt */
+      clearTimeout(_safetyTo);
       container.innerHTML = '<div style="text-align:center;padding:48px 24px">'
         + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
         + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
@@ -1329,6 +1340,7 @@
     }
 
     if (pdfs.length === 0) {
+      clearTimeout(_safetyTo);
       container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
         + '<div style="font-size:2rem;margin-bottom:12px">📭</div>'
         + '<div>No Premium Notes in catalogue yet — check back soon!</div>'
@@ -1425,6 +1437,12 @@
     if (!pdf) { _toast('PDF not found.', 'error'); return; }
 
     var status = await _getStatus(false);
+    // FIX: If cached state says not-premium, force a fresh Supabase fetch before giving up.
+    // This handles the race where SMCI state hasn't been populated from cache yet.
+    if (!status.isPremium) {
+      _log('openReadingRoom: cached isPremium=false, forcing re-fetch...');
+      status = await _getStatus(true);
+    }
     if (!status.isPremium) { _toast('Premium membership required.', 'info'); return; }
 
     var enabledCatsLower = await _getEnabledCategoryNames(false);
