@@ -815,6 +815,25 @@
     getPremiumCategoryPdfs: function(f) { return _getPremiumCategoryPdfs(f || false); },
     renderHomePremiumShelf: function(f) { return renderHomePremiumShelf(f || false); },
     getEnabledCategories:   function() { return _fetchCategoryConfig(false); },
+    /* _injectStatus: allows external code to populate SMCI state from an already-resolved
+       membership check (e.g. _prmPageInit). This sets the cache so getStatus() returns
+       the injected value without re-fetching. */
+    _injectStatus: function(data) {
+      if (!data) return;
+      Object.assign(_state, {
+        isPremium:  !!(data.isPremium),
+        status:     data.isPremium ? 'active' : (data.status || 'none'),
+        planName:   data.planName  || (data.isPremium ? 'Premium' : 'Free'),
+        planSlug:   data.planSlug  || null,
+        expiresAt:  data.expiresAt || null,
+        daysLeft:   data.daysLeft  || 0,
+        fetchedAt:  Date.now(),
+        fetching:   false
+      });
+      _log('_injectStatus: isPremium=' + _state.isPremium + ' plan=' + _state.planName);
+    },
+    /* _getState: returns a copy of current _state without triggering a fetch */
+    _getState: function() { return Object.assign({}, _state); },
   };
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', _init); }

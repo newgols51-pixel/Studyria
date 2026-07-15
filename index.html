@@ -14749,8 +14749,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   <div id="prmMemberBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border-top:1px solid rgba(251,191,36,0.2);border-bottom:1px solid rgba(251,191,36,0.2);padding:16px 20px;text-align:center">
     <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
       <span style="font-size:.9rem;font-weight:700;color:#fbbf24">&#x1F451; You're an Active Premium Member!</span>
-      <button onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
-        Explore All Premium Notes &#x2192;
+      <button onclick="navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});})" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
+        👑 Go to Premium Library →
       </button>
     </div>
   </div>
@@ -21640,6 +21640,17 @@ CREATE TRIGGER trg_progress_updated
     //
     // No hard SMCI dependency — polls with timeout + Supabase fallback
     // so it works even before premium-content.js finishes loading.
+    // ── LIBRARY SUB-TAB SWITCHER ────────────────────────────────
+    // Both tabs use the EXACT SAME renderer (bsfRender).
+    // Only difference: data source for BSF.allPdfs.
+    //
+    // Purchased → purchase ownership check in downloadPDF() STEP 4
+    // Premium   → membership check in downloadPDF() STEP 4.5
+    //
+    // Membership check uses sb.auth.getSession() directly — NOT
+    // window.currentUser which may not be set when user opens My Library
+    // directly without visiting the Premium page first.
+    // This is the root cause of "Premium Membership Required" on active accounts.
     window.switchLibrarySubTab = async function(subTab) {
       librarySubTab = subTab;
 
@@ -21669,7 +21680,6 @@ CREATE TRIGGER trg_progress_updated
         const stats = await _fetchDashStats();
         BSF.allPdfs = stats ? stats.purchasedPdfs : [];
 
-        // Fetch per-user analytics
         const pdfIds = BSF.allPdfs.map(p => String(p.id));
         const _uid2 = (window.currentUser?.id || window.currentUser?.uid);
         if (window.supabaseClient && _uid2 && pdfIds.length) {
@@ -21692,46 +21702,88 @@ CREATE TRIGGER trg_progress_updated
 
       } else if (subTab === 'premium') {
         // ── DATA SOURCE: Premium membership PDFs ─────────────────
-        // 1. Poll for SMCI (loads with defer — may not be ready immediately)
-        // 2. Check membership via SMCI or Supabase direct fallback
-        // 3. Fetch PDFs via SMCI.getPremiumCategoryPdfs() or Supabase direct
-        // 4. CRITICAL: Merge into window.PDFS so downloadPDF() finds them
-        // 5. Set BSF.allPdfs → bsfRender() uses same renderer as purchased
+        // MEMBERSHIP CHECK STRATEGY (single source of truth):
+        //
+        // Priority 1: SMCI._state already has fresh data (fetchedAt < 60s ago)
+        //   — use it directly, no re-fetch, no Supabase call
+        //   — this is the state set by _prmPageInit or _injectStatus
+        //
+        // Priority 2: SMCI is loaded but state is stale — call getStatus()
+        //   — SMCI._uid() uses window.currentUser, may fail if not set
+        //   — fall through to Priority 3 on failure
+        //
+        // Priority 3: Direct Supabase query using sb.auth.getSession()
+        //   — works even if window.currentUser is not set
+        //   — same query as _prmPageInit (the single source of truth)
+        //   — injects result back into SMCI state for consistency
 
-        const _waitForSMCI = () => new Promise(resolve => {
-          if (window.SMCI && typeof window.SMCI.getStatus === 'function') { resolve(true); return; }
-          let tries = 0;
-          const t = setInterval(() => {
-            if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
-              clearInterval(t); resolve(true);
-            } else if (++tries > 40) { clearInterval(t); resolve(false); } // 8s timeout
-          }, 200);
-        });
-
-        const smciReady = await _waitForSMCI();
-
-        // Check premium membership
+        const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
         let isPremium = false;
-        if (smciReady) {
-          try { const st = await window.SMCI.getStatus(true); isPremium = !!(st && st.isPremium); } catch(e) {}
-        } else if (window.supabaseClient) {
-          // Direct Supabase fallback when SMCI not loaded
+
+        // Priority 1: Use SMCI cached state if fresh (< 60 seconds old)
+        if (window.SMCI && typeof window.SMCI._getState === 'function') {
+          const cached = window.SMCI._getState();
+          const age = Date.now() - (cached.fetchedAt || 0);
+          if (cached.fetchedAt > 0 && age < 60000) {
+            isPremium = !!(cached.isPremium);
+            console.debug('[LibTab] Using cached SMCI state, isPremium=', isPremium, 'age=', age + 'ms');
+          }
+        }
+
+        // Priority 2: SMCI loaded, state stale — try getStatus()
+        if (!isPremium && window.SMCI && typeof window.SMCI.getStatus === 'function') {
           try {
-            const uid3 = window.currentUser?.id || window.currentUser?.uid;
-            if (uid3) {
-              const { data: mRows } = await window.supabaseClient
-                .from('premium_memberships')
-                .select('expires_at,status')
-                .eq('user_id', uid3)
-                .in('status', ['active','trial'])
+            const st = await window.SMCI.getStatus(false); // false = use cache if available
+            if (st && st.isPremium) {
+              isPremium = true;
+              console.debug('[LibTab] SMCI.getStatus says isPremium=true');
+            }
+          } catch(e) {
+            console.debug('[LibTab] SMCI.getStatus failed, trying direct Supabase', e);
+          }
+        }
+
+        // Priority 3: Direct Supabase using session auth (works without window.currentUser)
+        if (!isPremium && sb) {
+          try {
+            let uid = null;
+            // Try getSession first (most reliable)
+            const sessionRes = await sb.auth.getSession();
+            uid = sessionRes?.data?.session?.user?.id || null;
+            // Fallback to window.currentUser
+            if (!uid) uid = window.currentUser?.id || window.currentUser?.uid || null;
+
+            if (uid) {
+              const { data: mRows, error: mErr } = await sb
+                .from('user_memberships')
+                .select('id,plan_id,status,started_at,expires_at')
+                .eq('user_id', uid)
+                .eq('status', 'active')
                 .order('expires_at', { ascending: false })
-                .limit(1);
-              if (mRows && mRows.length > 0) {
-                const exp = mRows[0].expires_at ? new Date(mRows[0].expires_at) : null;
+                .limit(1)
+                .maybeSingle();
+
+              if (!mErr && mRows) {
+                const exp = mRows.expires_at ? new Date(mRows.expires_at) : null;
                 isPremium = !exp || exp > new Date();
+                console.debug('[LibTab] Direct Supabase check: isPremium=', isPremium);
+
+                // Inject result into SMCI so future calls use cached state
+                if (isPremium && window.SMCI && typeof window.SMCI._injectStatus === 'function') {
+                  let planName = 'Premium';
+                  if (mRows.plan_id) {
+                    try {
+                      const pr = await sb.from('membership_plans').select('name').eq('id', mRows.plan_id).maybeSingle();
+                      if (!pr.error && pr.data) planName = pr.data.name || 'Premium';
+                    } catch(_) {}
+                  }
+                  window.SMCI._injectStatus({ isPremium: true, planName: planName, expiresAt: mRows.expires_at });
+                }
               }
             }
-          } catch(e) {}
+          } catch(e) {
+            console.warn('[LibTab] Direct Supabase membership check failed', e);
+          }
         }
 
         if (!isPremium) {
@@ -21743,13 +21795,16 @@ CREATE TRIGGER trg_progress_updated
 
         // Fetch premium PDFs
         let premiumPdfs = [];
-        if (smciReady && typeof window.SMCI.getPremiumCategoryPdfs === 'function') {
+
+        // Try SMCI first (uses category config from Supabase)
+        if (window.SMCI && typeof window.SMCI.getPremiumCategoryPdfs === 'function') {
           try { premiumPdfs = await window.SMCI.getPremiumCategoryPdfs(true); } catch(e) {}
         }
-        // Direct Supabase fallback
-        if (premiumPdfs.length === 0 && window.supabaseClient) {
+
+        // Direct Supabase fallback — category name must match exactly
+        if (premiumPdfs.length === 0 && sb) {
           try {
-            const { data: pRows } = await window.supabaseClient
+            const { data: pRows } = await sb
               .from('pdfs')
               .select('id,title,category,price,cover_url,cover_image,coverImage,thumbnail,image,pdf_url,free,slug,rating,download_count,discount,status,created_at')
               .eq('status', 'published')
@@ -21760,15 +21815,15 @@ CREATE TRIGGER trg_progress_updated
           } catch(e) {}
         }
 
-        // ── CRITICAL FIX: Merge into window.PDFS ────────────────
+        // ── CRITICAL: Merge into window.PDFS ─────────────────────
         // downloadPDF() looks up pdf by id in window.PDFS.
-        // Missing entry = "PDF not found" error. This is the root cause.
+        // If a premium PDF is not in window.PDFS → "PDF not found" error.
         if (!window.PDFS) window.PDFS = [];
         premiumPdfs.forEach(p => {
           if (!window.PDFS.some(x => String(x.id) === String(p.id))) window.PDFS.push(p);
         });
 
-        // Seed analytics map (display only, not for access control)
+        // Seed analytics map (display only)
         premiumPdfs.forEach(p => {
           if (!analyticsMap[String(p.id)]) {
             analyticsMap[String(p.id)] = { download_count: p.download_count || 0, opened_count: 0, last_opened_at: null };
@@ -21782,7 +21837,7 @@ CREATE TRIGGER trg_progress_updated
         const subEl2 = document.querySelector('.sdl-header-sub');
         if (subEl2) subEl2.textContent = premiumPdfs.length + ' premium title' + (premiumPdfs.length !== 1 ? 's' : '') + ' — included in your membership';
 
-        // ── RENDER: EXACT SAME bsfRender() as purchased tab ─────
+        // ── RENDER: identical to purchased tab — same bsfRender() ──
         bsfRender();
       }
     };
