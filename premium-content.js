@@ -20,7 +20,7 @@
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.3') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.4') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
@@ -280,6 +280,261 @@
   /* ─────────────────────────────────────────────────────────────────
      § buyPDF PATCH — premium bypass for category-enabled PDFs only
   ──────────────────────────────────────────────────────────────────*/
+  /* ════════════════════════════════════════════════════════════════
+     § READING ROOM — Secure in-page PDF.js reader for premium members
+     Features: PDF.js rendering, watermark, page navigation,
+     reading progress (localStorage), resume last page, reader toolbar
+     ════════════════════════════════════════════════════════════════ */
+  var _rrOverlay = null;
+  var _rrPdfDoc = null;
+  var _rrCurrentPage = 1;
+  var _rrTotalPages = 0;
+  var _rrScale = 1.3;
+  var _rrPdfId = null;
+  var _rrRenderTask = null;
+
+  function _rrWatermarkText() {
+    var u = _user();
+    if (u) {
+      var email = (u.email || '').split('@')[0].slice(0, 12);
+      return 'studyria.in \u00b7 ' + email;
+    }
+    return 'studyria.in \u00b7 Premium';
+  }
+
+  function _rrGetProgressKey(pdfId) {
+    return 'studyria_rr_progress_' + pdfId;
+  }
+
+  function _rrSaveProgress(pdfId, page, total) {
+    try {
+      localStorage.setItem(_rrGetProgressKey(pdfId), JSON.stringify({ page: page, total: total, ts: Date.now() }));
+    } catch(e) {}
+  }
+
+  function _rrLoadProgress(pdfId) {
+    try {
+      var raw = localStorage.getItem(_rrGetProgressKey(pdfId));
+      if (raw) {
+        var p = JSON.parse(raw);
+        return p.page || 1;
+      }
+    } catch(e) {}
+    return 1;
+  }
+
+  function _rrClose() {
+    if (_rrRenderTask) { try { _rrRenderTask.cancel(); } catch(e) {} _rrRenderTask = null; }
+    if (_rrOverlay) {
+      _rrOverlay.style.opacity = '0';
+      setTimeout(function() {
+        if (_rrOverlay) { _rrOverlay.remove(); _rrOverlay = null; }
+      }, 200);
+    }
+    if (_rrPdfDoc) { try { _rrPdfDoc.cleanup(); } catch(e) {} _rrPdfDoc = null; }
+    document.body.style.overflow = '';
+  }
+
+  async function _rrRenderPage(pageNum) {
+    if (!_rrPdfDoc || !_rrOverlay) return;
+    var canvas = _rrOverlay.querySelector('#rrCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    // Cancel any pending render
+    if (_rrRenderTask) { try { _rrRenderTask.cancel(); } catch(e) {} }
+
+    var page;
+    try {
+      page = await _rrPdfDoc.getPage(pageNum);
+    } catch(e) { _warn('RR: getPage failed', e); return; }
+
+    var viewport = page.getViewport({ scale: _rrScale });
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+
+    _rrRenderTask = page.render({ canvasContext: ctx, viewport: viewport });
+    try {
+      await _rrRenderTask.promise;
+      _rrRenderTask = null;
+    } catch(e) {
+      if (e && e.name !== 'RenderingCancelledException') _warn('RR: render failed', e);
+      return;
+    }
+
+    // Burn watermark into canvas
+    var wm = _rrWatermarkText();
+    ctx.save();
+    ctx.globalAlpha = 0.10;
+    ctx.fillStyle = '#1a1a2e';
+    ctx.font = 'bold ' + Math.max(14, canvas.width * 0.035) + 'px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var step = canvas.width * 0.4;
+    for (var x = -canvas.width; x < canvas.width * 2; x += step) {
+      for (var y = -canvas.height; y < canvas.height * 2; y += step * 0.6) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(-Math.PI / 6);
+        ctx.fillText(wm, 0, 0);
+        ctx.restore();
+      }
+    }
+    ctx.restore();
+
+    // Update UI
+    _rrCurrentPage = pageNum;
+    var indicator = _rrOverlay.querySelector('#rrPageIndicator');
+    if (indicator) indicator.textContent = pageNum + ' / ' + _rrTotalPages;
+    var progress = _rrOverlay.querySelector('#rrProgressFill');
+    if (progress) progress.style.width = Math.round((pageNum / _rrTotalPages) * 100) + '%';
+    var progressTxt = _rrOverlay.querySelector('#rrProgressText');
+    if (progressTxt) progressTxt.textContent = Math.round((pageNum / _rrTotalPages) * 100) + '%';
+
+    // Save progress
+    _rrSaveProgress(_rrPdfId, pageNum, _rrTotalPages);
+
+    // Enable/disable nav buttons
+    var prevBtn = _rrOverlay.querySelector('#rrPrevBtn');
+    var nextBtn = _rrOverlay.querySelector('#rrNextBtn');
+    if (prevBtn) prevBtn.style.opacity = pageNum <= 1 ? '0.3' : '1';
+    if (nextBtn) nextBtn.style.opacity = pageNum >= _rrTotalPages ? '0.3' : '1';
+  }
+
+  async function _openReadingRoom(pdf, signedUrl) {
+    if (!signedUrl) { _toast('PDF URL not available.', 'error'); return; }
+    if (!window.pdfjsLib) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
+
+    _rrPdfId = String(pdf.id);
+
+    // Close any existing overlay
+    if (_rrOverlay) _rrClose();
+
+    // Create overlay
+    _rrOverlay = document.createElement('div');
+    _rrOverlay.id = 'smciReadingRoom';
+    _rrOverlay.style.cssText = [
+      'position:fixed', 'top:0', 'left:0', 'width:100%', 'height:100%',
+      'z-index:999999', 'background:#0b0e14',
+      'display:flex', 'flex-direction:column',
+      'opacity:0', 'transition:opacity .2s ease'
+    ].join(';') + ';';
+    _rrOverlay.innerHTML = [
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#11151c;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0">',
+        '<div style="display:flex;align-items:center;gap:10px;min-width:0">',
+          '<button id="rrCloseBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.8rem;color:#fff;cursor:pointer;flex-shrink:0">\u2190 Close</button>',
+          '<div style="min-width:0;overflow:hidden">',
+            '<div style="font-size:.82rem;font-weight:700;color:#fbbf24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + _esc(pdf.title || 'Premium PDF') + '</div>',
+            '<div style="font-size:.65rem;color:rgba(255,255,255,0.35)">\uD83D\uDC51 Premium Reading Room</div>',
+          '</div>',
+        '</div>',
+        '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">',
+          '<button id="rrZoomOut" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;width:32px;height:32px;color:#fff;cursor:pointer;font-size:1rem">\u2212</button>',
+          '<span id="rrZoomLabel" style="font-size:.72rem;color:rgba(255,255,255,0.5);min-width:36px;text-align:center">130%</span>',
+          '<button id="rrZoomIn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;width:32px;height:32px;color:#fff;cursor:pointer;font-size:1rem">+</button>',
+        '</div>',
+      '</div>',
+      '<div style="flex:1;overflow:auto;display:flex;justify-content:center;padding:16px;-webkit-overflow-scrolling:touch">',
+        '<canvas id="rrCanvas" style="max-width:100%;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.5)"></canvas>',
+      '</div>',
+      '<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px;background:#11151c;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0">',
+        '<button id="rrPrevBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:.8rem;color:#fff;cursor:pointer">\u2190 Prev</button>',
+        '<div style="display:flex;align-items:center;gap:8px">',
+          '<input id="rrPageInput" type="number" min="1" value="1" style="width:48px;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 6px;color:#fff;font-size:.78rem">',
+          '<span style="font-size:.72rem;color:rgba(255,255,255,0.4)">/</span>',
+          '<span id="rrPageIndicator" style="font-size:.72rem;color:rgba(255,255,255,0.5)">1 / 1</span>',
+        '</div>',
+        '<button id="rrNextBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:.8rem;color:#fff;cursor:pointer">Next \u2192</button>',
+      '</div>',
+      '<div style="height:3px;background:rgba(255,255,255,0.04);flex-shrink:0;position:relative">',
+        '<div id="rrProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .3s ease;border-radius:0 2px 2px 0"></div>',
+        '<span id="rrProgressText" style="position:absolute;right:8px;top:-18px;font-size:.65rem;color:rgba(255,255,255,0.35)">0%</span>',
+      '</div>',
+    ].join('');
+
+    document.body.appendChild(_rrOverlay);
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function() { _rrOverlay.style.opacity = '1'; });
+
+    // Wire events
+    _rrOverlay.querySelector('#rrCloseBtn').addEventListener('click', _rrClose);
+    _rrOverlay.querySelector('#rrPrevBtn').addEventListener('click', function() {
+      if (_rrCurrentPage > 1) _rrRenderPage(_rrCurrentPage - 1);
+    });
+    _rrOverlay.querySelector('#rrNextBtn').addEventListener('click', function() {
+      if (_rrCurrentPage < _rrTotalPages) _rrRenderPage(_rrCurrentPage + 1);
+    });
+    _rrOverlay.querySelector('#rrPageInput').addEventListener('change', function(e) {
+      var p = parseInt(e.target.value, 10);
+      if (p >= 1 && p <= _rrTotalPages) _rrRenderPage(p);
+      else e.target.value = _rrCurrentPage;
+    });
+    _rrOverlay.querySelector('#rrZoomIn').addEventListener('click', function() {
+      _rrScale = Math.min(3, _rrScale + 0.2);
+      _rrOverlay.querySelector('#rrZoomLabel').textContent = Math.round(_rrScale * 100) + '%';
+      _rrRenderPage(_rrCurrentPage);
+    });
+    _rrOverlay.querySelector('#rrZoomOut').addEventListener('click', function() {
+      _rrScale = Math.max(0.5, _rrScale - 0.2);
+      _rrOverlay.querySelector('#rrZoomLabel').textContent = Math.round(_rrScale * 100) + '%';
+      _rrRenderPage(_rrCurrentPage);
+    });
+
+    // Keyboard navigation
+    function _rrKeyHandler(e) {
+      if (!_rrOverlay) { document.removeEventListener('keydown', _rrKeyHandler); return; }
+      if (e.key === 'ArrowLeft') { if (_rrCurrentPage > 1) _rrRenderPage(_rrCurrentPage - 1); }
+      else if (e.key === 'ArrowRight') { if (_rrCurrentPage < _rrTotalPages) _rrRenderPage(_rrCurrentPage + 1); }
+      else if (e.key === 'Escape') { _rrClose(); document.removeEventListener('keydown', _rrKeyHandler); }
+    }
+    document.addEventListener('keydown', _rrKeyHandler);
+
+    // Loading indicator
+    var canvasContainer = _rrOverlay.querySelector('#rrCanvas').parentElement;
+    var loadingEl = document.createElement('div');
+    loadingEl.id = 'rrLoading';
+    loadingEl.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,0.4);font-size:.9rem;text-align:center';
+    loadingEl.innerHTML = '<div style="font-size:2rem;margin-bottom:8px">\uD83D\uDCD6</div>Loading PDF\u2026';
+    canvasContainer.style.position = 'relative';
+    canvasContainer.appendChild(loadingEl);
+
+    // Load PDF
+    try {
+      _rrPdfDoc = await window.pdfjsLib.getDocument({
+        url: signedUrl,
+        withCredentials: false
+      }).promise;
+      _rrTotalPages = _rrPdfDoc.numPages || 1;
+
+      // Resume from last page
+      var resumePage = _rrLoadProgress(_rrPdfId);
+      if (resumePage > _rrTotalPages) resumePage = 1;
+      if (resumePage > 1) {
+        _toast('Resuming from page ' + resumePage, 'info');
+      }
+
+      // Remove loading indicator
+      var le = _rrOverlay.querySelector('#rrLoading');
+      if (le) le.remove();
+
+      // Update page input max
+      var pageInput = _rrOverlay.querySelector('#rrPageInput');
+      if (pageInput) pageInput.max = _rrTotalPages;
+
+      // Render first/resume page
+      await _rrRenderPage(resumePage);
+
+      // Track reading session
+      if (typeof window.trackReadingSession === 'function') window.trackReadingSession(_rrPdfId);
+      if (typeof window.trackPdfDownloadEvent === 'function') window.trackPdfDownloadEvent(pdf, 'premium_member');
+    } catch(e) {
+      _warn('RR: load failed', e);
+      var le2 = _rrOverlay.querySelector('#rrLoading');
+      if (le2) le2.innerHTML = '<div style="font-size:2rem;margin-bottom:8px">\u26A0\uFE0F</div>Failed to load PDF.<br><span style="font-size:.72rem;color:rgba(255,255,255,0.3)">The file may be corrupted or inaccessible.</span>';
+      _toast('Failed to load PDF in Reading Room.', 'error');
+    }
+  }
+
   function _patchBuyPDF() {
     var orig = window.buyPDF;
     if (!orig || orig._smciPatched) return;
@@ -324,10 +579,8 @@
       var url = await _resolveSignedUrl(pdfUrl, client);
       if (!url) { _warn('No signed URL — fallback'); return orig.call(this, pdfId, amount, legacyUrl); }
 
-      window.open(url, '_blank');
-      if (typeof window.trackReadingSession === 'function') window.trackReadingSession(pdfId);
-      if (typeof window.trackPdfDownloadEvent === 'function') window.trackPdfDownloadEvent(pdf || { id: pdfId }, 'premium_member');
-      _toast('Opening with Premium access! 👑', 'success');
+      _openReadingRoom(pdf, url);
+      _toast('Opening Reading Room\u2026 \uD83D\uDC51', 'success');
     };
     window.buyPDF._smciPatched = true;
     _log('buyPDF patched — category-based (site_config)');
@@ -763,11 +1016,14 @@
       var enabledCatsLower = await _getEnabledCategoryNames(false);
       if (!(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) return res;
       setTimeout(function() {
+        var _rrPdfId = String(pdf.id);
         document.querySelectorAll('.pdp-cta-btn,.pdp-buy-primary,#pdpStickyBuy,.pdp-sticky-buy').forEach(function(btn) {
           if (/buy|purchase|⚡/i.test(btn.textContent)) {
             btn.textContent = '👑 Open with Premium';
             btn.style.background = 'linear-gradient(135deg,#fbbf24,#f59e0b)';
             btn.style.color = '#000';
+            /* Open Reading Room directly — never checkout for premium users */
+            btn.onclick = function(e) { e.preventDefault(); SMCI.openReadingRoom(_rrPdfId); return false; };
           }
         });
         document.querySelectorAll('.pdp-price-row,.pdp-price-wrap,.pdp-buy-section').forEach(function(el) {
@@ -1015,7 +1271,7 @@
       }
       setTimeout(_waitAuth, 1200);
     }
-    _log('Init complete — SMCI pci-2.2 (site_config storage, Supabase fallback, dash badge hook)');
+    _log('Init complete — SMCI pci-2.4 (reading room, try-catch library page)');
   }
 
 
@@ -1035,6 +1291,8 @@
       + '<div style="font-size:2rem;margin-bottom:12px">👑</div>'
       + '<div style="font-size:.9rem">Loading Premium Library…</div>'
       + '</div>';
+
+    try {
 
     var status = await _getStatus(force || false);
 
@@ -1137,11 +1395,54 @@
     }, 120);
 
     _log('Premium Library page rendered', pdfs.length + ' PDFs, ' + order.length + ' shelves');
+
+    } catch (_rrErr) {
+      _warn('renderPremiumLibraryPage error', _rrErr);
+      if (container) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
+          + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
+          + '<div style="font-size:.9rem;margin-bottom:16px">Could not load Premium Library.</div>'
+          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+          + '</div>';
+      }
+    }
   }
 
 
+  async function _openReadingRoomById(pdfId) {
+    var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
+    if (pdf && typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
+    if (!pdf) { _toast('PDF not found.', 'error'); return; }
+
+    var status = await _getStatus(false);
+    if (!status.isPremium) { _toast('Premium membership required.', 'info'); return; }
+
+    var enabledCatsLower = await _getEnabledCategoryNames(false);
+    if (!(await _isPdfInPremiumCategory(pdf, enabledCatsLower))) {
+      _toast('This PDF is not included in Premium.', 'info');
+      return;
+    }
+
+    var client = _sb();
+    if (!client) { _toast('Connection error.', 'error'); return; }
+
+    var pdfUrl = '';
+    try {
+      var row = await client.from('pdfs').select('pdf_url,title').eq('id', pdfId).single();
+      if (row.data) pdfUrl = row.data.pdf_url || '';
+    } catch(e) { _warn('RR: pdf_url fetch', e); }
+    if (!pdfUrl) pdfUrl = pdf.pdf_url || pdf.pdfUrl || '';
+    if (!pdfUrl) { _toast('PDF URL not found.', 'error'); return; }
+
+    var url = await _resolveSignedUrl(pdfUrl, client);
+    if (!url) { _toast('Could not generate secure URL.', 'error'); return; }
+
+    _openReadingRoom(pdf, url);
+  }
+
   window.SMCI = {
-    _version:               'pci-2.3',
+    _version:               'pci-2.4',
+    openReadingRoom:        function(pdfId) { return _openReadingRoomById(pdfId); },
     _injectStatus:          function(status) { _injectStatus(status); },
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
     getStatus:              function(f) { return _getStatus(f || false); },
