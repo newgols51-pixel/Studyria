@@ -445,7 +445,7 @@
       + '</div>'
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
-      + '<button onclick="navigate('premium-library')" style="font-size:.75rem;color:var(--accent);'
+      + '<button onclick="navigate(\'premium-library\')" style="font-size:.75rem;color:var(--accent);'
       + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
@@ -591,7 +591,7 @@
     var imgHtml = cover
       ? '<img src="' + _esc(cover) + '" loading="lazy" decoding="async"'
         + ' style="width:100%;height:100%;object-fit:cover;border-radius:10px 10px 0 0"'
-        + ' onerror="this.style.display='none'">'
+        + ' onerror="this.style.display=\'none\'">'
       : '';
     var iconHtml = cover ? '' :
       '<div style="width:100%;height:100%;display:flex;align-items:center;'
@@ -1002,7 +1002,7 @@
           + '<div style="font-size:3rem;margin-bottom:16px">🔒</div>'
           + '<div style="font-size:1.1rem;font-weight:700;color:var(--text1);margin-bottom:8px">Premium Members Only</div>'
           + '<div style="font-size:.85rem;color:var(--text2);margin-bottom:24px">Unlock all Premium Handwritten Notes with a Premium Membership.</div>'
-          + '<button onclick="navigate('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
+          + '<button onclick="navigate(\'premium\')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;'
           + 'font-weight:700;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem">'
           + '👑 View Plans →</button>'
           + '</div>';

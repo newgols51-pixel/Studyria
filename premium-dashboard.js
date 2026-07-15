@@ -154,9 +154,14 @@
 
     /* UNIFIED FIX: Premium cards use downloadPDF — same path as My Library purchased PDFs.
        downloadPDF checks premium membership (Step 4.5) then opens via signed URL. */
+    /* FIX: previous version built clickAction as ONE unbroken string where
+       " + id + " was literal dead text (never concatenated) — onclick ran
+       downloadPDF('' + id + '') with `id` resolving via inline-handler
+       `with(this)` scoping to the element's empty .id property, calling
+       downloadPDF('') → "PDF not found". Real concatenation fixed below. */
     var clickAction = (btnText === '🔒 Locked')
-      ? "if(typeof openDetail===\'function\')openDetail(\'' + id + '\')"
-      : "if(typeof downloadPDF===\'function\')downloadPDF(\'' + id + '\');else if(typeof openDetail===\'function\')openDetail(\'' + id + '\')";
+      ? "if(typeof openDetail==='function')openDetail('" + id + "')"
+      : "if(typeof downloadPDF==='function')downloadPDF('" + id + "');else if(typeof openDetail==='function')openDetail('" + id + "')";
 
     return '<div class="prmdash-card" onclick="' + clickAction + '" '
       + 'onmouseover="this.style.transform=\'translateY(-3px)\'" '
