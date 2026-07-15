@@ -20047,6 +20047,50 @@ async function downloadPDF(pdfId, _legacyUrl) {
     return;
   }
 
+  // ── STEP 4.5: Premium membership check → same open path as purchased ─
+  // If user has an active premium membership, they can access premium-category
+  // PDFs through the EXACT SAME signed-URL → window.open flow as purchased PDFs.
+  // This is the unified Reading Room pipeline — zero separate code paths.
+  const _premiumCategory = 'Premium Handwritten Notes';
+  const _isPremiumCategory = (pdf.category || '').toLowerCase().trim()
+    === _premiumCategory.toLowerCase().trim();
+  if (!alreadyPaid && _isPremiumCategory) {
+    let hasPremium = false;
+    try {
+      const _memClient = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+      if (_memClient) {
+        const _memRes = await _memClient
+          .from('user_memberships')
+          .select('id, status, expires_at')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .order('expires_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!_memRes.error && _memRes.data) {
+          const _exp = _memRes.data.expires_at ? new Date(_memRes.data.expires_at) : null;
+          hasPremium = !_exp || _exp > new Date();
+        }
+        console.log('👑 [Premium Check] hasPremium:', hasPremium, '| pdf:', pdf.title);
+      }
+    } catch(e) { console.warn('⚠️ Premium membership check failed:', e); }
+
+    if (hasPremium) {
+      const { signedUrl: premUrl, error: premErr } = await resolvePdfUrlAsync(pdfUrl);
+      console.log('👑 [Premium PDF] pdfId:', pdfId, '| pdf_url:', pdfUrl, '| signed URL:', premUrl);
+      if (premUrl) {
+        window.open(premUrl, '_blank');
+        trackReadingSession(pdfId);
+        trackPdfDownloadEvent(pdf, 'premium_member');
+        showToast('Opening "' + (pdf.title || 'PDF') + '" 👑', 'success');
+      } else {
+        console.error('❌ [Premium PDF] Could not resolve URL:', premErr);
+        showToast('PDF link not available. Contact support.', 'error');
+      }
+      return;
+    }
+  }
+
   // ── STEP 5: Not paid → open Razorpay ─────────────────────────
   if (typeof Razorpay === 'undefined') {
     showToast('Payment gateway loading… please try again.', 'info');
