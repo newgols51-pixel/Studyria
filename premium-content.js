@@ -39,7 +39,8 @@
     expiresAt: null, daysLeft: 0, fetchedAt: 0, fetching: false
   };
   /* Category config cache */
-  var _catCache = { cats: null, fetchedAt: 0 };
+  var _catCache    = { cats: null, fetchedAt: 0 };
+  var _premPdfCache = { pdfs: null, fetchedAt: 0, ttlMs: 90000 }; /* 90s TTL */
 
   /* ── Utilities ─────────────────────────────────────────────────── */
   function _sb()    { return window.supabaseClient || null; }
@@ -226,10 +227,16 @@
     var enabledLower = await _getEnabledCategoryNames(force);
     if (enabledLower.length === 0) return [];
 
-    /* BUG-1 FIX: exact category match — never partial/includes.
-       PRIMARY: filter window.PDFS (already loaded client-side array).
-       FALLBACK: if window.PDFS is empty or yields 0 matches, query Supabase
-       directly with .in('category', enabledOriginalCase) for exact server-side match. */
+    /* FIX (BUG-1): Check module-level cache first — avoids repeated Supabase round-trips */
+    if (!force && _premPdfCache.pdfs && _premPdfCache.pdfs.length > 0) {
+      var cacheAge = Date.now() - _premPdfCache.fetchedAt;
+      if (cacheAge < _premPdfCache.ttlMs) {
+        _log('_getPremiumCategoryPdfs: using module cache (' + _premPdfCache.pdfs.length + ' PDFs)');
+        return _premPdfCache.pdfs.slice();
+      }
+    }
+
+    /* PRIMARY: filter window.PDFS (already loaded client-side array). */
     var localPdfs = (window.PDFS || []).filter(function(p) {
       if (!p || !p.title) return false;
       var pdfCat = (p.category || '').toLowerCase().trim();
@@ -237,7 +244,10 @@
       return enabledLower.some(function(ec) { return pdfCat === ec; });
     });
 
-    if (localPdfs.length > 0) return localPdfs;
+    if (localPdfs.length > 0) {
+      _premPdfCache.pdfs = localPdfs; _premPdfCache.fetchedAt = Date.now();
+      return localPdfs;
+    }
 
     /* Supabase fallback — only runs when window.PDFS is not yet populated */
     var sb = _sb();
@@ -256,10 +266,21 @@
       _log('_getPremiumCategoryPdfs: Supabase returned', { count: (res.data||[]).length });
       var rows = res.data || [];
       /* Double-check exact match (server .in() is case-sensitive in Postgres) */
-      return rows.filter(function(p) {
+      var matched = rows.filter(function(p) {
         var pdfCat = (p.category || '').toLowerCase().trim();
         return enabledLower.some(function(ec) { return pdfCat === ec; });
       });
+      /* FIX (BUG-1): Store in module cache AND merge into window.PDFS */
+      if (matched.length > 0) {
+        _premPdfCache.pdfs = matched; _premPdfCache.fetchedAt = Date.now();
+        matched.forEach(function(p) {
+          if (!window.PDFS) window.PDFS = [];
+          if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
+            window.PDFS.push(p);
+          }
+        });
+      }
+      return matched;
     } catch (e) { _warn('Supabase PDF fallback error', e); return []; }
   }
 
@@ -1303,7 +1324,7 @@
         + '<div style="font-size:.9rem;margin-bottom:16px">Loading timed out. Please retry.</div>'
         + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
         + '</div>';
-    }, 12000);
+    }, 5000);
 
     try {
 
@@ -1434,6 +1455,23 @@
   async function _openReadingRoomById(pdfId) {
     var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
     if (pdf && typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
+    // FIX (BUG-2): If pdf not in local cache, fetch it directly from Supabase by ID
+    if (!pdf) {
+      _log('openReadingRoom: pdf ' + pdfId + ' not in window.PDFS, fetching from DB...');
+      var sbClient = _sb();
+      if (sbClient) {
+        try {
+          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', pdfId).single();
+          if (!fetchRes.error && fetchRes.data) {
+            pdf = fetchRes.data;
+            if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
+            // Also push into window.PDFS cache for future use
+            if (pdf && !window.PDFS) window.PDFS = [];
+            if (pdf && window.PDFS) window.PDFS.push(pdf);
+          }
+        } catch(e) { _warn('openReadingRoom: DB fetch failed', e); }
+      }
+    }
     if (!pdf) { _toast('PDF not found.', 'error'); return; }
 
     var status = await _getStatus(false);
