@@ -139,15 +139,18 @@
   function _applyConditionalUI(isPremium) {
     var plansSection = document.getElementById('prmPlans');
     var memberBanner = document.getElementById('prmMemberBanner');
+    /* New: toggle full member dashboard vs free marketing page */
+    var memberDash   = document.getElementById('prmMemberDashboard');
+    var freeMkt      = document.getElementById('prmFreeMarketing');
 
     if (isPremium) {
-      // Premium: Library Universe visible right after Membership Status
-      // Plans stay lower
-      if (memberBanner) memberBanner.style.display = '';
+      if (memberBanner)  memberBanner.style.display  = '';
+      if (memberDash)    memberDash.style.display     = '';
+      if (freeMkt)       freeMkt.style.display        = 'none';
     } else {
-      // Free: Plans shown right after Hero/Membership Status
-      // Library Universe visible as blurred preview
-      if (memberBanner) memberBanner.style.display = 'none';
+      if (memberBanner)  memberBanner.style.display  = 'none';
+      if (memberDash)    memberDash.style.display     = 'none';
+      if (freeMkt)       freeMkt.style.display        = '';
     }
   }
 
