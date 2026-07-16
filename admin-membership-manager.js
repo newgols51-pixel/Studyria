@@ -15,7 +15,7 @@
   'use strict';
 
   /* ── Guard: only run once, but allow v1.0 → v1.1 upgrade ── */
-  if (window.AdminMembershipManager && window.AdminMembershipManager._version === '1.1') return;
+  if (window.AdminMembershipManager && window.AdminMembershipManager._version === '1.2') return;
 
   /* ── Plan Definitions ────────────────────────────────────────── */
   var AMM_PLANS = {
@@ -956,7 +956,7 @@
 
   /* ── Public API ──────────────────────────────────────────────── */
   window.AdminMembershipManager = {
-    _version: '1.1',
+    _version: '1.2',
 
     _showGrantModal:      _showGrantModal,
     _showActionModal:     _showActionModal,
