@@ -518,3 +518,127 @@
   transition: transform .20s cubic-bezier(.34,1.3,.64,1);
 }
 .prm-home-banner-btn:hover { transform: translateY(-2px) scale(1.02); }
+
+/* ════════════════════════════════════════════════════════════════════
+   PLANS CAROUSEL — Member Dashboard (§ 8)
+   Only activates when .prm-plans-carousel class is added by _clonePlans()
+   Does NOT affect the original #prmPlans grid in prmFreeMarketing
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Hide the section title from the cloned section (member dashboard has its own header) */
+#prmPlansSection .prm-section-title,
+#prmPlansSection .prm-section-sub {
+  display: none;
+}
+
+/* Carousel track — horizontal scroll with snap */
+#prmPlansSection .prm-plans-carousel {
+  display: flex !important;
+  flex-direction: row !important;
+  grid-template-columns: unset !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE/Edge */
+  gap: 12px !important;
+  padding: 8px 16px 20px;
+  /* Fade edges for depth */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+#prmPlansSection .prm-plans-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each card in the carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card {
+  flex: 0 0 200px;                /* fixed card width */
+  min-width: 0;
+  scroll-snap-align: start;
+  border-radius: 22px !important;
+  /* Enhanced glass for carousel */
+  background: rgba(255,255,255,.05) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1.5px solid rgba(255,255,255,.12) !important;
+  box-shadow: 0 4px 28px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.09) !important;
+  transition: transform .25s cubic-bezier(.34,1.3,.64,1), box-shadow .25s ease !important;
+  padding: 26px 14px 18px !important;
+}
+#prmPlansSection .prm-plans-carousel .prm-plan-card:hover,
+#prmPlansSection .prm-plans-carousel .prm-plan-card:focus-within {
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.45) !important;
+}
+
+/* Popular card in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card.prm-popular {
+  border-color: rgba(139,92,246,.60) !important;
+  background: linear-gradient(160deg, rgba(139,92,246,.12) 0%, rgba(255,255,255,.04) 60%) !important;
+  box-shadow: 0 4px 28px rgba(139,92,246,.18), inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+
+/* Best value card in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card.prm-best {
+  border-color: rgba(251,191,36,.55) !important;
+  background: linear-gradient(160deg, rgba(251,191,36,.10) 0%, rgba(255,255,255,.04) 60%) !important;
+  box-shadow: 0 4px 28px rgba(251,191,36,.16), 0 0 0 1px rgba(251,191,36,.18), inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+
+/* Trial card in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card.prm-trial {
+  border-color: rgba(61,142,248,.40) !important;
+  background: linear-gradient(160deg, rgba(61,142,248,.10) 0%, rgba(255,255,255,.04) 60%) !important;
+}
+
+/* Price typography in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-price {
+  font-size: 2.2rem !important;
+}
+
+/* Full-width button inside each carousel card */
+#prmPlansSection .prm-plans-carousel .prm-plan-btn {
+  padding: 11px 8px !important;
+  font-size: .78rem !important;
+}
+
+/* Swipe hint dot indicators */
+#prmPlansSection .prm-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 0 8px;
+}
+#prmPlansSection .prm-carousel-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  transition: background .2s, width .2s;
+}
+#prmPlansSection .prm-carousel-dot.active {
+  width: 18px; border-radius: 3px;
+  background: #fbbf24;
+}
+
+/* Responsive: narrower cards on very small screens */
+@media (max-width: 359px) {
+  #prmPlansSection .prm-plans-carousel .prm-plan-card {
+    flex: 0 0 170px !important;
+  }
+}
+/* Wider cards on tablet+ */
+@media (min-width: 540px) {
+  #prmPlansSection .prm-plans-carousel .prm-plan-card {
+    flex: 0 0 220px !important;
+  }
+}
+
+/* Container wrapper for carousel + dots */
+#prmPlansSection .prm-section {
+  padding: 0 !important;
+}
+#prmPlansSection .container {
+  max-width: none !important;
+  padding: 0 !important;
+}

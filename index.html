@@ -14836,9 +14836,9 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 
     <!-- § 8 · PLANS FOR MEMBERS (upgrade / extend) -->
     <div id="prmPlansSection" style="padding:0 0 8px">
-      <div style="text-align:center;padding:20px 16px 4px">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:4px">&#x1F4CB; All Plans</div>
-        <div style="font-size:.78rem;color:var(--text2)">Extend or upgrade your membership</div>
+      <div style="padding:16px 16px 4px">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:3px">&#x1F4CB; Choose Your Plan</div>
+        <div style="font-size:.76rem;color:var(--text2)">Swipe to explore &mdash; tap a plan to unlock</div>
       </div>
     </div>
 
@@ -17026,8 +17026,31 @@ async function navigate(page) {
           var src  = document.getElementById('prmPlans');
           var dest = document.getElementById('prmPlansSection');
           if (!src || !dest) return;
+          if (dest.hasChildNodes()) return; // idempotency guard — only clone once per session
           var clone = src.cloneNode(true);
           clone.id = '';
+          // Convert grid to horizontal swipe carousel for member dashboard
+          var grid = clone.querySelector('.prm-plans-grid');
+          if (grid) {
+            grid.classList.add('prm-plans-carousel');
+            // Build dot indicators
+            var cards = grid.querySelectorAll('.prm-plan-card');
+            var dotsWrap = document.createElement('div');
+            dotsWrap.className = 'prm-carousel-dots';
+            cards.forEach(function(_, i) {
+              var dot = document.createElement('div');
+              dot.className = 'prm-carousel-dot' + (i === 0 ? ' active' : '');
+              dotsWrap.appendChild(dot);
+            });
+            grid.addEventListener('scroll', function() {
+              var cardW = (cards[0] ? cards[0].offsetWidth : 200) + 12;
+              var idx = Math.round(grid.scrollLeft / cardW);
+              dotsWrap.querySelectorAll('.prm-carousel-dot').forEach(function(d, i) {
+                d.classList.toggle('active', i === idx);
+              });
+            }, { passive: true });
+            clone.appendChild(dotsWrap);
+          }
           dest.appendChild(clone);
         })();
 
