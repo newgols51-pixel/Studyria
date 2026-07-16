@@ -21753,7 +21753,7 @@ CREATE TRIGGER trg_progress_updated
         }
 
         if (!isPremium2) {
-          if (wrap) wrap.innerHTML = '<div class="sdl-empty"><div class="sdl-empty-icon">🔒</div><div class="sdl-empty-title">Premium Membership Required</div><div class="sdl-empty-sub">Unlock the Premium Library with an active membership.</div><button class="btn btn-primary" onclick="navigate('premium')" style="margin-top:16px">👑 Explore Premium</button></div>';
+          if (wrap) wrap.innerHTML = '<div class="sdl-empty"><div class="sdl-empty-icon">🔒</div><div class="sdl-empty-title">Premium Membership Required</div><div class="sdl-empty-sub">Unlock the Premium Library with an active membership.</div><button class="btn btn-primary" onclick="navigate(\'premium\')" style="margin-top:16px">👑 Explore Premium</button></div>';
           var badge2 = document.getElementById('libSubPremiumBadge');
           if (badge2) badge2.textContent = '🔒';
           return;
