@@ -7210,7 +7210,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
         <span class="sh-section-title" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">&#x1F451; Premium Content</span>
         <span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.25);margin-left:4px">MEMBERS ONLY</span>
       </div>
-      <button class="sh-see-all" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All &#8594;</button>
+      <button class="sh-see-all" onclick="navigate('premium-library')">View All &#8594;</button>
     </div>
   </div>
   <div class="sh-row-outer">
@@ -10486,18 +10486,6 @@ body.light .me-hero-tabs { border-top-color:rgba(0,0,0,0.08); }
   max-width:1280px; margin:0 auto; padding:28px 20px 0;
 }
 .me-tab-panel { animation: dashFadeUp .38s ease both; }
-
-/* ── LIBRARY SUB-TABS (My Library / Premium Library Universe) ── */
-.lib-sub-tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-.lib-sub-tabs::-webkit-scrollbar { display:none; }
-.lib-sub-tab { display:flex; align-items:center; gap:7px; padding:12px 20px; border:none; background:none; font-family:var(--font-body); font-size:.82rem; font-weight:600; color:var(--text2); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; white-space:nowrap; }
-.lib-sub-tab:hover { color:var(--text); background:rgba(255,255,255,0.03); }
-.lib-sub-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-.lib-sub-tab.active.premium { color:#fbbf24; border-bottom-color:#fbbf24; }
-.lib-sub-tab .lib-sub-badge { min-width:18px; height:18px; border-radius:9px; padding:0 5px; background:var(--accent); color:#fff; font-size:.65rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
-.lib-sub-tab.premium .lib-sub-badge { background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#000; }
-body.light .lib-sub-tabs { border-bottom-color:rgba(0,0,0,0.08); }
-body.light .lib-sub-tab:hover { background:rgba(0,0,0,0.03); }
 
 /* ── PREMIUM STAT CARDS ── */
 .me-stats-grid {
@@ -14749,8 +14737,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   <div id="prmMemberBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border-top:1px solid rgba(251,191,36,0.2);border-bottom:1px solid rgba(251,191,36,0.2);padding:16px 20px;text-align:center">
     <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
       <span style="font-size:.9rem;font-weight:700;color:#fbbf24">&#x1F451; You're an Active Premium Member!</span>
-      <button onclick="navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});})" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
-        👑 Go to Premium Library →
+      <button onclick="navigate('premium-library')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
+        Explore All Premium Notes &#x2192;
       </button>
     </div>
   </div>
@@ -14780,15 +14768,82 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
        SECTION 3: 📚 PREMIUM LIBRARY UNIVERSE
        Preview shelf of Premium Handwritten Notes.
        Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-       View All → (function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()
+       View All → navigate('premium-library')
   ══════════════════════════════════════════════════════════════ -->
-  <!-- Premium Library Universe section REMOVED — migrated to Me → My Library → Premium sub-tab -->
+  <section class="prmdash-section" id="prmDashLibraryUniverse">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">📚</span>
+        <span>Premium Library Universe</span>
+        <span class="prmdash-sub" id="prmDashLibCount"></span>
+      </div>
+      <button class="prmdash-viewall" onclick="navigate('premium-library')">View All →</button>
+    </div>
+    <div class="prmdash-shelf-outer">
+      <div class="prmdash-shelf-track">
+        <div style="text-align:center;padding:40px;color:var(--text2)">
+          <div style="font-size:1.5rem;margin-bottom:8px">👑</div>
+          <div style="font-size:.85rem">Loading Premium Library…</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!-- prmDashContinueReading removed — PDFs now in Me → My Library → Premium -->
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 4: CONTINUE READING
+       Shows recently read Premium PDFs with progress bars.
+       Populated by premium-dashboard.js (PRMDASH) from localStorage reading history.
+       Premium users only.
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section prmdash-hidden" id="prmDashContinueReading">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">📖</span>
+        <span>Continue Reading</span>
+        <span class="prmdash-sub">Pick up where you left off</span>
+      </div>
+    </div>
+    <div class="prmdash-shelf-outer">
+      <div class="prmdash-shelf-track"></div>
+    </div>
+  </section>
 
-  <!-- prmDashRecentlyAdded removed — PDFs now in Me → My Library → Premium -->
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 5: RECENTLY ADDED PREMIUM NOTES
+       Latest Premium Handwritten Notes, sorted by created_at desc.
+       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
+       Premium users only.
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section prmdash-hidden" id="prmDashRecentlyAdded">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">🆕</span>
+        <span>Recently Added Premium Notes</span>
+        <span class="prmdash-sub">Fresh from the library</span>
+      </div>
+    </div>
+    <div class="prmdash-shelf-outer">
+      <div class="prmdash-shelf-track"></div>
+    </div>
+  </section>
 
-  <!-- prmDashMyCards removed — PDFs now in Me → My Library → Premium -->
+  <!-- ═════════════════════════════════════════════════════════════
+       SECTION 6: MY PREMIUM CARDS
+       Grid view of all Premium Handwritten Notes.
+       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
+       Premium users only.
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="prmdash-section prmdash-hidden" id="prmDashMyCards">
+    <div class="prmdash-head">
+      <div class="prmdash-title">
+        <span class="prmdash-title-icon">👑</span>
+        <span>My Premium Cards</span>
+        <span class="prmdash-sub" id="prmDashMyCardsCount"></span>
+      </div>
+      <button class="prmdash-viewall" onclick="navigate('premium-library')">View All →</button>
+    </div>
+    <div class="prmdash-grid"></div>
+  </section>
 
 
 
@@ -15118,7 +15173,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       <div id="prmCtaMember" style="display:none">
         <div class="prm-bottom-cta-title">&#x1F451; You Have Premium Access!</div>
         <div class="prm-bottom-cta-sub">Browse all your exclusive Premium Handwritten Notes</div>
-        <button class="prm-bottom-cta-btn" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000">
+        <button class="prm-bottom-cta-btn" onclick="navigate('premium-library')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000">
           &#x1F451; View All Premium Notes &#x2192;
         </button>
       </div>
@@ -15133,7 +15188,35 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
      Populated by SMCI (premium-content.js) via renderPremiumLibraryPage().
      Source of truth: site_config.premium_categories_config
 ══════════════════════════════════════════════════════════════ -->
-<!-- page-premium-library removed — migrated to My Library → Premium sub-tab -->
+<div class="page" id="page-premium-library" style="display:none">
+  <!-- HERO -->
+  <div class="prm-hero" style="min-height:auto;padding:28px 0 24px">
+    <div class="prm-hero-bg">
+      <div class="prm-orb prm-orb-1"></div>
+      <div class="prm-orb prm-orb-2"></div>
+    </div>
+    <div class="prm-hero-inner" style="padding:0 20px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <button onclick="history.back()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;font-size:.78rem;color:var(--text2);cursor:pointer">← Back</button>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:1.4rem">👑</span>
+            <span style="font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Premium Membership Library</span>
+          </div>
+          <div style="font-size:.78rem;color:var(--text2)" id="prmLibSubtitle">Your exclusive Premium content — all categories, all notes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT — populated by renderPremiumLibraryPage() in premium-content.js -->
+  <div id="prmLibContent" style="padding:20px 16px 80px;max-width:1100px;margin:0 auto">
+    <div style="text-align:center;padding:40px;color:var(--text2)">
+      <div style="font-size:2rem;margin-bottom:12px">👑</div>
+      <div style="font-size:.9rem">Loading Premium Library…</div>
+    </div>
+  </div>
+</div>
 
 <div class="page" id="page-404" style="display:none">
   <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:20px;">
@@ -15734,7 +15817,6 @@ async function handleNewsletterSubscribe(btn) {
   setTimeout(updateFooter, 100);
 })();
 </script>
-<script src="admin-memberships.js"></script>
 
 <div class="mobile-nav-bar">
   <div class="mobile-nav-items">
@@ -16304,7 +16386,6 @@ let dark = localStorage.getItem('studyria_theme') !== 'light'; // synced with Al
 let libCat = 'All';
 let freeOnly = false;
 let dashTab = 'overview';
-let librarySubTab = 'purchased';
 
 // ── OWNERSHIP CACHE: hook into syncNavToAuth so login triggers cache load ──
 // supabase.js calls window.syncNavToAuth(user) whenever auth state changes.
@@ -16770,17 +16851,13 @@ async function navigate(page) {
       }
     })();
   }
-  // Premium Library page — render with SMCI retry loop (handles deferred script load race)
-  // premium-library page removed — migrated to My Library sub-tab
-  // (function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})() now redirects to My Library → Premium tab
+  // BUG-2+3 FIX: Premium Library page — render horizontal shelves
   if (page === 'premium-library') {
-    navigate('dashboard').then(() => {
-      switchMeTab('purchased').then(() => {
-        if (typeof switchLibrarySubTab === 'function') {
-          switchLibrarySubTab('premium');
-        }
-      });
-    });
+    if (window.SMCI && typeof window.SMCI.renderPremiumLibraryPage === 'function') {
+      // FIX: Pass force=true to guarantee fresh membership check — avoids race
+      // where SMCI cache hasn't been populated yet when navigating directly here.
+      setTimeout(function() { window.SMCI.renderPremiumLibraryPage(true); }, 100);
+    }
   }
 }
 
@@ -19777,23 +19854,20 @@ async function downloadPDF(pdfId, _legacyUrl) {
   // _legacyUrl is intentionally ignored — we ALWAYS fetch the fresh URL from
   // the database to avoid stale / broken URLs embedded in HTML onclick attrs.
 
-  let _pdfRaw = (window.PDFS || []).find(p => String(p.id) === String(pdfId));
-  if (!_pdfRaw && window.supabaseClient) {
-    // PDF not in local cache — fetch from DB (premium PDFs may not be in window.PDFS on first load)
-    try {
-      const { data: _fetchedPdf, error: _fetchErr } = await window.supabaseClient
-        .from('pdfs').select('*').eq('id', pdfId).maybeSingle();
-      if (_fetchErr) console.warn('[downloadPDF] DB fetch error:', _fetchErr.message);
-      if (_fetchedPdf) {
-        if (!window.PDFS) window.PDFS = [];
-        if (!window.PDFS.some(x => String(x.id) === String(pdfId))) window.PDFS.push(_fetchedPdf);
-        _pdfRaw = _fetchedPdf;
-      }
-    } catch(e) { console.warn('[downloadPDF] DB fetch exception:', e); }
-  }
-  const pdf = _pdfRaw ? normalizePdf(_pdfRaw) : null;
+  const pdf = normalizePdf((window.PDFS || []).find(p => String(p.id) === String(pdfId)));
   if (!pdf) {
-    showToast('PDF not found. Please try again.', 'error');
+    // PDF not in local cache — try fetching from DB
+    if (window.supabaseClient) {
+      try {
+        const { data } = await window.supabaseClient.from('pdfs').select('*').eq('id', pdfId).single();
+        if (data) {
+          normalizePdf(data);
+          window.PDFS.push(data);
+          return downloadPDF(pdfId);
+        }
+      } catch(e) {}
+    }
+    showToast('PDF not found in library.', 'error');
     return;
   }
 
@@ -19971,50 +20045,6 @@ async function downloadPDF(pdfId, _legacyUrl) {
       showToast('PDF link not available. Contact support.', 'error');
     }
     return;
-  }
-
-  // ── STEP 4.5: Premium membership check → same open path as purchased ─
-  // If user has an active premium membership, they can access premium-category
-  // PDFs through the EXACT SAME signed-URL → window.open flow as purchased PDFs.
-  // This is the unified Reading Room pipeline — zero separate code paths.
-  const _premiumCategory = 'Premium Handwritten Notes';
-  const _isPremiumCategory = (pdf.category || '').toLowerCase().trim()
-    === _premiumCategory.toLowerCase().trim();
-  if (!alreadyPaid && _isPremiumCategory) {
-    let hasPremium = false;
-    try {
-      const _memClient = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
-      if (_memClient) {
-        const _memRes = await _memClient
-          .from('user_memberships')
-          .select('id, status, expires_at')
-          .eq('user_id', user.id)
-          .eq('status', 'active')
-          .order('expires_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (!_memRes.error && _memRes.data) {
-          const _exp = _memRes.data.expires_at ? new Date(_memRes.data.expires_at) : null;
-          hasPremium = !_exp || _exp > new Date();
-        }
-        console.log('👑 [Premium Check] hasPremium:', hasPremium, '| pdf:', pdf.title);
-      }
-    } catch(e) { console.warn('⚠️ Premium membership check failed:', e); }
-
-    if (hasPremium) {
-      const { signedUrl: premUrl, error: premErr } = await resolvePdfUrlAsync(pdfUrl);
-      console.log('👑 [Premium PDF] pdfId:', pdfId, '| pdf_url:', pdfUrl, '| signed URL:', premUrl);
-      if (premUrl) {
-        window.open(premUrl, '_blank');
-        trackReadingSession(pdfId);
-        trackPdfDownloadEvent(pdf, 'premium_member');
-        showToast('Opening "' + (pdf.title || 'PDF') + '" 👑', 'success');
-      } else {
-        console.error('❌ [Premium PDF] Could not resolve URL:', premErr);
-        showToast('PDF link not available. Contact support.', 'error');
-      }
-      return;
-    }
   }
 
   // ── STEP 5: Not paid → open Razorpay ─────────────────────────
@@ -21023,7 +21053,6 @@ async function switchMeTab(tab) {
       query: '',
       isAdmin: !!(window.currentUser?.isAdmin || window.currentUser?.is_admin),
     };
-    window.BSF = BSF; // Make BSF accessible to switchLibrarySubTab
 
     // Sort helpers
     const sortByLastOpened = (arr) => [...arr].sort((a,b) => {
@@ -21488,18 +21517,6 @@ CREATE TRIGGER trg_progress_updated
 
     // ── Main panel HTML — Smart Modern Digital Library ───────────────
     panel.innerHTML = `
-      <!-- Library Sub-Tabs -->
-      <div class="lib-sub-tabs">
-        <button class="lib-sub-tab active" data-subtab="purchased" onclick="switchLibrarySubTab('purchased')">
-          <span>📚</span> My Library
-          <span class="lib-sub-badge" id="libSubPurchasedBadge">${stats.purchasedPdfs.length}</span>
-        </button>
-        <button class="lib-sub-tab premium" data-subtab="premium" onclick="switchLibrarySubTab('premium')">
-          <span>👑</span> Premium Library Universe
-          <span class="lib-sub-badge" id="libSubPremiumBadge">—</span>
-        </button>
-      </div>
-
       <!-- Book Open Modal -->
       <div id="bsfOpenModal">
         <div class="bsf-open-book-wrap">
@@ -21590,7 +21607,6 @@ CREATE TRIGGER trg_progress_updated
 
     // ── Init render ───────────────────────────────────────────────
     bsfRender();
-    window.bsfRender = bsfRender; // Make accessible to switchLibrarySubTab
 
     // ── Populate PWA Diagnostics if admin panel is visible ──────
     if (BSF.isAdmin && window.pwaAppCenter) {
@@ -21623,226 +21639,6 @@ CREATE TRIGGER trg_progress_updated
       if (tipEl) tipEl.style.display = 'none';
       bsfRender();
     };
-
-    // ── LIBRARY SUB-TAB SWITCHER ────────────────────────────────
-    // Only changes the PDF data source. Reuses the EXACT SAME renderer,
-    // cards, open/download, Reading Room, PDF.js, analytics — everything.
-    // Purchased tab: BSF.allPdfs = purchased PDFs (ownership check in downloadPDF)
-    // Premium tab:  BSF.allPdfs = premium-category PDFs (membership check in downloadPDF)
-    // No duplicate architecture — just a different data source.
-    // ── LIBRARY SUB-TAB SWITCHER ────────────────────────────────
-    // The ONLY difference between tabs is the data source (BSF.allPdfs).
-    // Everything else — renderer, cards, open/download, Reading Room,
-    // PDF.js, analytics, signed URLs — is 100% shared.
-    //
-    // Permission model:
-    //   purchased → downloadPDF() STEP 4  (purchase ownership check)
-    //   premium   → downloadPDF() STEP 4.5 (premium membership check)
-    //
-    // No hard SMCI dependency — polls with timeout + Supabase fallback
-    // so it works even before premium-content.js finishes loading.
-    // ── LIBRARY SUB-TAB SWITCHER ────────────────────────────────
-    // Both tabs use the EXACT SAME renderer (bsfRender).
-    // Only difference: data source for BSF.allPdfs.
-    //
-    // Purchased → purchase ownership check in downloadPDF() STEP 4
-    // Premium   → membership check in downloadPDF() STEP 4.5
-    //
-    // Membership check uses sb.auth.getSession() directly — NOT
-    // window.currentUser which may not be set when user opens My Library
-    // directly without visiting the Premium page first.
-    // This is the root cause of "Premium Membership Required" on active accounts.
-    window.switchLibrarySubTab = async function(subTab) {
-      librarySubTab = subTab;
-
-      // Update sub-tab active states
-      document.querySelectorAll('.lib-sub-tab').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.subtab === subTab);
-      });
-
-      // Reset filter + search
-      BSF.filter = 'all';
-      BSF.query = '';
-      const searchInput = document.getElementById('bsfSearch');
-      if (searchInput) searchInput.value = '';
-      const clearBtn2 = document.getElementById('bsfSearchClear');
-      if (clearBtn2) clearBtn2.style.display = 'none';
-      document.querySelectorAll('.sdl-chip').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes("'all'"));
-      });
-
-      // Show skeleton while loading
-      const wrap = document.getElementById('bsfShelvesWrap');
-      if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="me-skeleton" style="height:180px;border-radius:16px;margin-bottom:12px"></div><div class="me-skeleton" style="height:120px;border-radius:12px"></div></div>';
-
-      if (subTab === 'purchased') {
-        // ── DATA SOURCE: Purchased PDFs ──────────────────────────
-        window._dashCache = null;
-        const stats = await _fetchDashStats();
-        BSF.allPdfs = stats ? stats.purchasedPdfs : [];
-
-        const pdfIds = BSF.allPdfs.map(p => String(p.id));
-        const _uid2 = (window.currentUser?.id || window.currentUser?.uid);
-        if (window.supabaseClient && _uid2 && pdfIds.length) {
-          try {
-            const { data: aRows } = await window.supabaseClient
-              .from('pdf_analytics')
-              .select('pdf_id,download_count,last_opened_at,opened_count,first_opened_at')
-              .eq('user_id', _uid2)
-              .in('pdf_id', pdfIds);
-            analyticsMap = {};
-            (aRows || []).forEach(r => { analyticsMap[r.pdf_id] = r; });
-          } catch(e) {}
-        } else { analyticsMap = {}; }
-
-        const badge = document.getElementById('libSubPurchasedBadge');
-        if (badge) badge.textContent = BSF.allPdfs.length;
-        const subEl = document.querySelector('.sdl-header-sub');
-        if (subEl) subEl.textContent = BSF.allPdfs.length + ' title' + (BSF.allPdfs.length !== 1 ? 's' : '') + ' in your collection';
-        bsfRender();
-
-      } else if (subTab === 'premium') {
-        // ── DATA SOURCE: Premium membership PDFs ─────────────────
-        // MEMBERSHIP CHECK STRATEGY (single source of truth):
-        //
-        // Priority 1: SMCI._state already has fresh data (fetchedAt < 60s ago)
-        //   — use it directly, no re-fetch, no Supabase call
-        //   — this is the state set by _prmPageInit or _injectStatus
-        //
-        // Priority 2: SMCI is loaded but state is stale — call getStatus()
-        //   — SMCI._uid() uses window.currentUser, may fail if not set
-        //   — fall through to Priority 3 on failure
-        //
-        // Priority 3: Direct Supabase query using sb.auth.getSession()
-        //   — works even if window.currentUser is not set
-        //   — same query as _prmPageInit (the single source of truth)
-        //   — injects result back into SMCI state for consistency
-
-        const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
-        let isPremium = false;
-
-        // Priority 1: Use SMCI cached state if fresh (< 60 seconds old)
-        if (window.SMCI && typeof window.SMCI._getState === 'function') {
-          const cached = window.SMCI._getState();
-          const age = Date.now() - (cached.fetchedAt || 0);
-          if (cached.fetchedAt > 0 && age < 60000) {
-            isPremium = !!(cached.isPremium);
-            console.debug('[LibTab] Using cached SMCI state, isPremium=', isPremium, 'age=', age + 'ms');
-          }
-        }
-
-        // Priority 2: SMCI loaded, state stale — try getStatus()
-        if (!isPremium && window.SMCI && typeof window.SMCI.getStatus === 'function') {
-          try {
-            const st = await window.SMCI.getStatus(false); // false = use cache if available
-            if (st && st.isPremium) {
-              isPremium = true;
-              console.debug('[LibTab] SMCI.getStatus says isPremium=true');
-            }
-          } catch(e) {
-            console.debug('[LibTab] SMCI.getStatus failed, trying direct Supabase', e);
-          }
-        }
-
-        // Priority 3: Direct Supabase using session auth (works without window.currentUser)
-        if (!isPremium && sb) {
-          try {
-            let uid = null;
-            // Try getSession first (most reliable)
-            const sessionRes = await sb.auth.getSession();
-            uid = sessionRes?.data?.session?.user?.id || null;
-            // Fallback to window.currentUser
-            if (!uid) uid = window.currentUser?.id || window.currentUser?.uid || null;
-
-            if (uid) {
-              const { data: mRows, error: mErr } = await sb
-                .from('user_memberships')
-                .select('id,plan_id,status,started_at,expires_at')
-                .eq('user_id', uid)
-                .eq('status', 'active')
-                .order('expires_at', { ascending: false })
-                .limit(1)
-                .maybeSingle();
-
-              if (!mErr && mRows) {
-                const exp = mRows.expires_at ? new Date(mRows.expires_at) : null;
-                isPremium = !exp || exp > new Date();
-                console.debug('[LibTab] Direct Supabase check: isPremium=', isPremium);
-
-                // Inject result into SMCI so future calls use cached state
-                if (isPremium && window.SMCI && typeof window.SMCI._injectStatus === 'function') {
-                  let planName = 'Premium';
-                  if (mRows.plan_id) {
-                    try {
-                      const pr = await sb.from('membership_plans').select('name').eq('id', mRows.plan_id).maybeSingle();
-                      if (!pr.error && pr.data) planName = pr.data.name || 'Premium';
-                    } catch(_) {}
-                  }
-                  window.SMCI._injectStatus({ isPremium: true, planName: planName, expiresAt: mRows.expires_at });
-                }
-              }
-            }
-          } catch(e) {
-            console.warn('[LibTab] Direct Supabase membership check failed', e);
-          }
-        }
-
-        if (!isPremium) {
-          if (wrap) wrap.innerHTML = '<div class="sdl-empty"><div class="sdl-empty-icon">🔒</div><div class="sdl-empty-title">Premium Membership Required</div><div class="sdl-empty-sub">Unlock the Premium Library with an active membership.</div><button class="btn btn-primary" onclick="navigate(\'premium\')" style="margin-top:16px">👑 Explore Premium</button></div>';
-          const badge2 = document.getElementById('libSubPremiumBadge');
-          if (badge2) badge2.textContent = '🔒';
-          return;
-        }
-
-        // Fetch premium PDFs
-        let premiumPdfs = [];
-
-        // Try SMCI first (uses category config from Supabase)
-        if (window.SMCI && typeof window.SMCI.getPremiumCategoryPdfs === 'function') {
-          try { premiumPdfs = await window.SMCI.getPremiumCategoryPdfs(true); } catch(e) {}
-        }
-
-        // Direct Supabase fallback — category name must match exactly
-        if (premiumPdfs.length === 0 && sb) {
-          try {
-            const { data: pRows } = await sb
-              .from('pdfs')
-              .select('id,title,category,price,cover_url,cover_image,coverImage,thumbnail,image,pdf_url,free,slug,rating,download_count,discount,status,created_at')
-              .eq('status', 'published')
-              .ilike('category', '%premium%')
-              .order('created_at', { ascending: false })
-              .limit(200);
-            premiumPdfs = pRows || [];
-          } catch(e) {}
-        }
-
-        // ── CRITICAL: Merge into window.PDFS ─────────────────────
-        // downloadPDF() looks up pdf by id in window.PDFS.
-        // If a premium PDF is not in window.PDFS → "PDF not found" error.
-        if (!window.PDFS) window.PDFS = [];
-        premiumPdfs.forEach(p => {
-          if (!window.PDFS.some(x => String(x.id) === String(p.id))) window.PDFS.push(p);
-        });
-
-        // Seed analytics map (display only)
-        premiumPdfs.forEach(p => {
-          if (!analyticsMap[String(p.id)]) {
-            analyticsMap[String(p.id)] = { download_count: p.download_count || 0, opened_count: 0, last_opened_at: null };
-          }
-        });
-
-        BSF.allPdfs = premiumPdfs;
-
-        const badge3 = document.getElementById('libSubPremiumBadge');
-        if (badge3) badge3.textContent = premiumPdfs.length;
-        const subEl2 = document.querySelector('.sdl-header-sub');
-        if (subEl2) subEl2.textContent = premiumPdfs.length + ' premium title' + (premiumPdfs.length !== 1 ? 's' : '') + ' — included in your membership';
-
-        // ── RENDER: identical to purchased tab — same bsfRender() ──
-        bsfRender();
-      }
-    };
-
 
     window.bsfToggleFav = function(id) {
       const idx = BSF.favorites.indexOf(String(id));
@@ -22599,7 +22395,7 @@ function switchAdminTab(tab) {
     case 'add-pdf':    renderAdminAddPDF(main); break;
     case 'categories': renderAdminCategories(main); break;
     case 'orders':       renderAdminOrders(main); break;
-    case 'memberships':  _safeRender(window.AMEM && window.AMEM.render, 'Enterprise Memberships'); break;
+    case 'memberships':  _safeRender(window.renderAdminMemberships, 'Memberships'); break;
     case 'users':      renderAdminUsers(main); break;
     case 'revenue':    renderAdminRevenue(main); break;
     case 'activity':   renderAdminActivity(main); break;
@@ -39338,22 +39134,14 @@ async function hlmSaveTheme() {
   ══════════════════════════════════════════════════════════════════════
 -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js" defer></script>
 <script>
-  /* FIX: Set workerSrc immediately since pdf.js is now synchronous (no defer) */
-  (function() {
+  window.addEventListener('DOMContentLoaded', function () {
     if (window.pdfjsLib) {
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-    } else {
-      window.addEventListener('DOMContentLoaded', function () {
-        if (window.pdfjsLib) {
-          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-        }
-      });
     }
-  })();
+  });
 </script>
 
 <script src="app.js" defer></script>
@@ -46391,6 +46179,7 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 <script src="premium-content.js" defer></script>
 <script src="premium-dashboard.js" defer></script>
+<script src="admin-membership-manager.js" defer></script>
 <script>
 /* PATCH: Extend SMCI._updateBadges to sync Premium tab status pill — realtime */
 (function() {
