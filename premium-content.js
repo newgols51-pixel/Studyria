@@ -77,16 +77,40 @@
         .eq('user_id', uid).order('expires_at', { ascending: false }).limit(1).maybeSingle();
       var mem = (!memRes.error && memRes.data) ? memRes.data : null;
 
-      if (!mem || mem.status !== 'active') {
-        Object.assign(_state, { isPremium: false, status: mem ? 'expired' : 'none',
+      /* Enterprise status handling: active, trial, lifetime, manual = premium access.
+         expired, suspended, cancelled, pending = no premium access. */
+      var premiumStatuses = ['active', 'trial', 'lifetime', 'manual'];
+
+      if (!mem || premiumStatuses.indexOf(mem.status) === -1) {
+        var nonPremiumStatus = mem ? mem.status : 'none';
+        Object.assign(_state, { isPremium: false, status: nonPremiumStatus,
           planName: 'Free', planSlug: null, expiresAt: mem ? mem.expires_at : null,
           daysLeft: 0, fetchedAt: Date.now(), fetching: false });
         return;
       }
+
+      /* Lifetime: no expiry check needed — never expires */
+      if (mem.status === 'lifetime') {
+        var ltPlanName = 'Lifetime', ltPlanSlug = 'lifetime';
+        if (mem.plan_id) {
+          try {
+            var ltPr = await client.from('membership_plans').select('name,slug').eq('id', mem.plan_id).maybeSingle();
+            if (!ltPr.error && ltPr.data) { ltPlanName = ltPr.data.name || 'Lifetime'; ltPlanSlug = ltPr.data.slug || 'lifetime'; }
+          } catch (_) {}
+        }
+        Object.assign(_state, { isPremium: true, status: 'lifetime',
+          planName: ltPlanName, planSlug: ltPlanSlug, expiresAt: null, daysLeft: 99999,
+          fetchedAt: Date.now(), fetching: false });
+        _log('LIFETIME premium — never expires', { plan: ltPlanName });
+        return;
+      }
+
+      /* trial, manual, active: check expiry */
       var now = new Date(), exp = mem.expires_at ? new Date(mem.expires_at) : null;
       if (!exp || exp <= now) {
         Object.assign(_state, { isPremium: false, status: 'expired', planName: 'Free',
           planSlug: null, expiresAt: mem.expires_at, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
+        _log('Membership EXPIRED on', mem.expires_at);
         return;
       }
       var planName = 'Premium', planSlug = null;
@@ -97,9 +121,9 @@
         } catch (_) {}
       }
       var daysLeft = Math.max(0, Math.ceil((exp - now) / 86400000));
-      Object.assign(_state, { isPremium: true, status: 'active', planName: planName, planSlug: planSlug,
+      Object.assign(_state, { isPremium: true, status: mem.status || 'active', planName: planName, planSlug: planSlug,
         expiresAt: mem.expires_at, daysLeft: daysLeft, fetchedAt: Date.now(), fetching: false });
-      _log('Active premium', { plan: planName, daysLeft: daysLeft });
+      _log('Active premium', { status: mem.status, plan: planName, daysLeft: daysLeft });
     } catch (e) {
       _warn('_fetchStatus exception', e);
       _state.isPremium = false; _state.status = 'none';
@@ -833,7 +857,7 @@
 
 
   window.SMCI = {
-    _version:               'pci-2.3',
+    _version:               'pci-3.0',
     isPremium:              function() { return _getStatus(false).then(function(s) { return s.isPremium; }); },
     getStatus:              function(f) { return _getStatus(f || false); },
     syncAll:                function(f) { return syncAll(f || false); },
@@ -846,17 +870,19 @@
        the injected value without re-fetching. */
     _injectStatus: function(data) {
       if (!data) return;
+      /* Handle lifetime: status='lifetime', no expiresAt, infinite daysLeft */
+      var isLifetime = data.status === 'lifetime' || data.isLifetime;
       Object.assign(_state, {
         isPremium:  !!(data.isPremium),
-        status:     data.isPremium ? 'active' : (data.status || 'none'),
+        status:     isLifetime ? 'lifetime' : (data.isPremium ? 'active' : (data.status || 'none')),
         planName:   data.planName  || (data.isPremium ? 'Premium' : 'Free'),
         planSlug:   data.planSlug  || null,
-        expiresAt:  data.expiresAt || null,
-        daysLeft:   data.daysLeft  || 0,
+        expiresAt:  isLifetime ? null : (data.expiresAt || null),
+        daysLeft:   isLifetime ? 99999 : (data.daysLeft  || 0),
         fetchedAt:  Date.now(),
         fetching:   false
       });
-      _log('_injectStatus: isPremium=' + _state.isPremium + ' plan=' + _state.planName);
+      _log('_injectStatus: isPremium=' + _state.isPremium + ' status=' + _state.status + ' plan=' + _state.planName);
     },
     /* _getState: returns a copy of current _state without triggering a fetch */
     _getState: function() { return Object.assign({}, _state); },
