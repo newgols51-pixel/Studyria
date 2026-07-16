@@ -14834,13 +14834,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       </div>
     </div>
 
-    <!-- § 8 · PLANS FOR MEMBERS (upgrade / extend) -->
-    <div id="prmPlansSection" style="padding:0 0 8px">
-      <div style="padding:16px 16px 4px">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:3px">&#x1F4CB; Choose Your Plan</div>
-        <div style="font-size:.76rem;color:var(--text2)">Swipe to explore &mdash; tap a plan to unlock</div>
-      </div>
-    </div>
+    <!-- § 8 · PLANS FOR MEMBERS (upgrade / extend) — populated by _clonePlans() -->
+    <div id="prmPlansSection" style="padding:0 0 8px"></div>
 
     <!-- § 9 · MEMBER FAQ -->
     <div id="prmMemberFaqSection" style="padding:0 16px 40px;max-width:700px;margin:0 auto">
@@ -17026,15 +17021,26 @@ async function navigate(page) {
           var src  = document.getElementById('prmPlans');
           var dest = document.getElementById('prmPlansSection');
           if (!src || !dest) return;
-          if (dest.hasChildNodes()) return; // idempotency guard — only clone once per session
+          if (dest.dataset.cloned === '1') return; // idempotency: fire only once per session
+          dest.dataset.cloned = '1';
+
+          // Inject carousel header (own markup — keeps it separate from the marketing clone)
+          var hdr = document.createElement('div');
+          hdr.style.cssText = 'padding:16px 16px 4px';
+          hdr.innerHTML = '<div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;'
+            + 'color:var(--text3);text-transform:uppercase;margin-bottom:3px">&#x1F4CB; Choose Your Plan</div>'
+            + '<div style="font-size:.76rem;color:var(--text2)">Swipe to explore — tap a plan to unlock</div>';
+          dest.appendChild(hdr);
+
+          // Clone plan section from #prmPlans — source lives in prmFreeMarketing (hidden for premium users)
           var clone = src.cloneNode(true);
           clone.id = '';
-          // Convert grid to horizontal swipe carousel for member dashboard
+          // Convert the grid to a horizontal swipe carousel
           var grid = clone.querySelector('.prm-plans-grid');
           if (grid) {
             grid.classList.add('prm-plans-carousel');
-            // Build dot indicators
             var cards = grid.querySelectorAll('.prm-plan-card');
+            // Build dot indicators
             var dotsWrap = document.createElement('div');
             dotsWrap.className = 'prm-carousel-dots';
             cards.forEach(function(_, i) {
