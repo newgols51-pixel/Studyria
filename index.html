@@ -14736,7 +14736,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
         <div style="font-size:2.2rem;margin-bottom:10px">&#x1F451;</div>
         <h1 style="font-size:clamp(1.3rem,4vw,1.8rem);font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0 0 8px">Welcome, Premium Member</h1>
         <p style="font-size:.88rem;color:var(--text2);margin:0 0 18px">Your complete Premium Collection is ready.</p>
-        <button onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem;box-shadow:0 4px 16px rgba(251,191,36,.3)">&#x1F451; Access Premium Library</button>
+        <button onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem;box-shadow:0 4px 16px rgba(251,191,36,.3)">&#x1F451; Go to My Library</button>
       </div>
     </div>
 
@@ -14796,108 +14796,32 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       </div>
     </div>
 
-    <!-- § 5 · PREMIUM LIBRARY SHELVES -->
-    <!-- MEMBER BANNER — shown only for active Premium Members -->
-      <div id="prmMemberBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border-top:1px solid rgba(251,191,36,0.2);border-bottom:1px solid rgba(251,191,36,0.2);padding:16px 20px;text-align:center">
-        <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
-          <span style="font-size:.9rem;font-weight:700;color:#fbbf24">&#x1F451; You're an Active Premium Member!</span>
-          <button onclick="navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');})})" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
-            Explore All Premium Notes &#x2192;
-          </button>
+    <!-- § 6 · FREE vs PREMIUM COMPARISON TABLE -->
+    <div style="padding:20px 16px 16px;max-width:700px;margin:0 auto">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:4px;text-transform:uppercase">&#x1F4CA; What You Unlock</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:14px">Everything included in your Premium membership</div>
+      <div style="border-radius:18px;overflow:hidden;border:1px solid rgba(251,191,36,0.20);background:rgba(255,255,255,0.03)">
+        <!-- Table header -->
+        <div style="display:grid;grid-template-columns:1fr auto auto;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(139,92,246,0.08));padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07)">
+          <span style="font-size:.72rem;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase">Feature</span>
+          <span style="font-size:.72rem;font-weight:700;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;text-align:center;min-width:52px">Free</span>
+          <span style="font-size:.72rem;font-weight:800;color:#fbbf24;letter-spacing:.05em;text-transform:uppercase;text-align:center;min-width:72px">&#x1F451; Premium</span>
         </div>
-      </div>
-
-    <!-- ═════════════════════════════════════════════════════════════
-           SECTION 3: 📚 PREMIUM LIBRARY UNIVERSE
-           Preview shelf of Premium Handwritten Notes.
-           Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-           View All → navigate('premium-library')
-      ══════════════════════════════════════════════════════════════ -->
-      <section class="prmdash-section" id="prmDashLibraryUniverse">
-        <div class="prmdash-head">
-          <div class="prmdash-title">
-            <span class="prmdash-title-icon">📚</span>
-            <span>Premium Library Universe</span>
-            <span class="prmdash-sub" id="prmDashLibCount"></span>
-          </div>
-          <button class="prmdash-viewall" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All →</button>
+        <!-- Rows -->
+        <div id="prmBenefitsTable">
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Free PDFs</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x2705;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(251,191,36,0.04);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:600">Premium Handwritten Notes</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Premium Reading Room</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(251,191,36,0.04);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Continue Reading</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Reading Progress</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(251,191,36,0.04);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Ad-Free Experience</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Unlimited Wishlist</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(251,191,36,0.04);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Premium Badge</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Early Access to New Notes</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(251,191,36,0.04);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Member Discounts</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Printed Books Discount</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
+          <div style="display:grid;grid-template-columns:1fr auto auto;padding:11px 16px;align-items:center"><span style="font-size:.80rem;color:var(--text1);font-weight:500">Priority Support</span><span style="text-align:center;min-width:52px;font-size:1rem">&#x274C;</span><span style="text-align:center;min-width:72px;font-size:1rem">&#x2705;</span></div>
         </div>
-        <div class="prmdash-shelf-outer">
-          <div class="prmdash-shelf-track">
-            <div style="text-align:center;padding:40px;color:var(--text2)">
-              <div style="font-size:1.5rem;margin-bottom:8px">👑</div>
-              <div style="font-size:.85rem">Loading Premium Library…</div>
-            </div>
-          </div>
-        </div>
-      </section>
-    
-      <!-- ═════════════════════════════════════════════════════════════
-           SECTION 4: CONTINUE READING
-           Shows recently read Premium PDFs with progress bars.
-           Populated by premium-dashboard.js (PRMDASH) from localStorage reading history.
-           Premium users only.
-      ══════════════════════════════════════════════════════════════ -->
-      <section class="prmdash-section prmdash-hidden" id="prmDashContinueReading">
-        <div class="prmdash-head">
-          <div class="prmdash-title">
-            <span class="prmdash-title-icon">📖</span>
-            <span>Continue Reading</span>
-            <span class="prmdash-sub">Pick up where you left off</span>
-          </div>
-        </div>
-        <div class="prmdash-shelf-outer">
-          <div class="prmdash-shelf-track"></div>
-        </div>
-      </section>
-    
-      <!-- ═════════════════════════════════════════════════════════════
-           SECTION 5: RECENTLY ADDED PREMIUM NOTES
-           Latest Premium Handwritten Notes, sorted by created_at desc.
-           Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-           Premium users only.
-      ══════════════════════════════════════════════════════════════ -->
-      <section class="prmdash-section prmdash-hidden" id="prmDashRecentlyAdded">
-        <div class="prmdash-head">
-          <div class="prmdash-title">
-            <span class="prmdash-title-icon">🆕</span>
-            <span>Recently Added Premium Notes</span>
-            <span class="prmdash-sub">Fresh from the library</span>
-          </div>
-        </div>
-        <div class="prmdash-shelf-outer">
-          <div class="prmdash-shelf-track"></div>
-        </div>
-      </section>
-    
-      <!-- ═════════════════════════════════════════════════════════════
-           SECTION 6: MY PREMIUM CARDS
-           Grid view of all Premium Handwritten Notes.
-           Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-           Premium users only.
-      ══════════════════════════════════════════════════════════════ -->
-      <section class="prmdash-section prmdash-hidden" id="prmDashMyCards">
-        <div class="prmdash-head">
-          <div class="prmdash-title">
-            <span class="prmdash-title-icon">👑</span>
-            <span>My Premium Cards</span>
-            <span class="prmdash-sub" id="prmDashMyCardsCount"></span>
-          </div>
-          <button class="prmdash-viewall" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All →</button>
-        </div>
-        <div class="prmdash-grid"></div>
-      </section>
-
-    <!-- § 6 · PREMIUM BENEFITS -->
-    <div style="padding:20px 16px 8px;max-width:700px;margin:0 auto">
-      <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:12px;text-transform:uppercase">&#x1F381; Premium Benefits</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">
-        <div style="background:rgba(61,142,248,.08);border:1px solid rgba(61,142,248,.15);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">&#x1F4DA;</div><div style="font-size:.78rem;font-weight:600;color:var(--text1)">Premium Handwritten Notes</div></div>
-        <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.15);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">&#x1F4D6;</div><div style="font-size:.78rem;font-weight:600;color:var(--text1)">Premium PDF Library</div></div>
-        <div style="background:rgba(16,217,142,.08);border:1px solid rgba(16,217,142,.15);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">&#x1F4C4;</div><div style="font-size:.78rem;font-weight:600;color:var(--text1)">Previous Year Questions</div></div>
-        <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">&#x1F4DD;</div><div style="font-size:.78rem;font-weight:600;color:var(--text1)">Practice Sets</div></div>
-        <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.15);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">&#x1F3AF;</div><div style="font-size:.78rem;font-weight:600;color:var(--text1)">Mock Tests</div></div>
-        <div style="background:rgba(251,191,36,.05);border:1px dashed rgba(251,191,36,.25);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:1.4rem;margin-bottom:6px">&#x1F52E;</div><div style="font-size:.78rem;font-weight:600;color:var(--text3)">Future Premium Releases</div><div style="font-size:.65rem;color:var(--text3);margin-top:3px">Coming Soon</div></div>
       </div>
     </div>
 
@@ -15097,20 +15021,20 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
                 </tr>
               </thead>
               <tbody>
-                <tr><td>Free PDFs</td>                 <td><span class="prm-check-y">✓</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Premium Handwritten Notes</td> <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Continue Reading</td>          <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Reading Progress</td>          <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Premium Reading Room</td>      <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Unlimited Wishlist</td>        <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Ad-Free</td>                   <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Premium Badge</td>             <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Early Access</td>              <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Member Discounts</td>          <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Printed Book Discount</td>     <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Priority Support</td>          <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>AI Study Assistant</td>        <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
-                <tr><td>Premium Mock Tests</td>        <td><span class="prm-check-n">✗</span></td><td><span class="prm-check-g">✓</span></td></tr>
+                <tr><td>Free PDFs</td>                 <td><span class="prm-check-y">✅</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Premium Handwritten Notes</td> <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Continue Reading</td>          <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Reading Progress</td>          <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Premium Reading Room</td>      <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Unlimited Wishlist</td>        <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Ad-Free</td>                   <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Premium Badge</td>             <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Early Access</td>              <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Member Discounts</td>          <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Printed Book Discount</td>     <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Priority Support</td>          <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>AI Study Assistant</td>        <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
+                <tr><td>Premium Mock Tests</td>        <td><span class="prm-check-n">❌</span></td><td><span class="prm-check-g">✅</span></td></tr>
               </tbody>
             </table>
           </div>
