@@ -1,33 +1,31 @@
 /**
- * admin-membership-manager.js — Studyria Admin Membership Manager v1.0
- * 
+ * admin-membership-manager.js — Studyria Admin Membership Manager v1.1
+ *
+ * FIXES in v1.1:
+ *   BUG 1 FIXED: _executeGrant() — "overlay is not defined" error removed.
+ *                Now uses document.querySelector('#ammGrantModal .amm-btn-primary') correctly.
+ *   BUG 2 FIXED: Downgrade/Upgrade "Plan" action — now adds days from CURRENT expiry
+ *                (not from today). Downgrade = fewer days added from current expiry.
+ *                Expired membership → days counted from today.
+ *
  * ADDITIVE ONLY — does NOT modify or replace any existing admin membership functions.
- * Adds: Manual Grant, Extend, Renew, Activate, Deactivate, Suspend, Resume, 
- *       Upgrade/Downgrade Plan, Custom Plan support, Audit Logging.
- *
- * All new data stored in Supabase:
- *   - user_memberships (existing table, new writes)
- *   - membership_audit_log (new table for audit trail)
- *
- * RLS Requirements:
- *   - membership_audit_log: admin-only writes, admin-only reads
- *   - user_memberships: admin-only writes (existing), user reads own row (existing)
  */
 
 (function () {
   'use strict';
 
-  if (window.AdminMembershipManager && window.AdminMembershipManager._version === '1.0') return;
+  /* ── Guard: only run once, but allow v1.0 → v1.1 upgrade ── */
+  if (window.AdminMembershipManager && window.AdminMembershipManager._version === '1.1') return;
 
   /* ── Plan Definitions ────────────────────────────────────────── */
   var AMM_PLANS = {
-    trial_1day:  { label: '1 Day Trial',    days: 1,   slug: 'trial_1day' },
-    trial_15day: { label: '15 Days',         days: 15,  slug: 'trial_15day' },
-    monthly:     { label: '30 Days',         days: 30,  slug: 'monthly' },
-    quarterly:   { label: '90 Days',         days: 90,  slug: 'quarterly' },
-    half_year:   { label: '180 Days',        days: 180, slug: 'half_year' },
-    yearly:      { label: '365 Days',        days: 365, slug: 'yearly' },
-    lifetime:    { label: 'Lifetime',        days: 36500, slug: 'lifetime' }
+    trial_1day:  { label: '1 Day Trial', days: 1,     slug: 'trial_1day'  },
+    trial_15day: { label: '15 Days',     days: 15,    slug: 'trial_15day' },
+    monthly:     { label: '30 Days',     days: 30,    slug: 'monthly'     },
+    quarterly:   { label: '90 Days',     days: 90,    slug: 'quarterly'   },
+    half_year:   { label: '180 Days',    days: 180,   slug: 'half_year'   },
+    yearly:      { label: '365 Days',    days: 365,   slug: 'yearly'      },
+    lifetime:    { label: 'Lifetime ♾️', days: 36500, slug: 'lifetime'    }
   };
 
   var AMM_STATUS_COLORS = {
@@ -40,19 +38,37 @@
   };
 
   /* ── Utilities ───────────────────────────────────────────────── */
-  function _sb() { return window.supabaseClient; }
-  function _esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;'); }
-  function _toast(msg, type) { if (typeof window.showToast === 'function') window.showToast(msg, type || 'info'); }
+  function _sb()  { return window.supabaseClient; }
+
+  function _esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+  }
+
+  function _toast(msg, type) {
+    if (typeof window.showToast === 'function') window.showToast(msg, type || 'info');
+  }
+
   function _fmtDate(iso) {
     if (!iso) return '—';
     try { return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
     catch (e) { return iso.slice(0, 10); }
   }
+
+  /** Add `days` from today */
   function _daysFromNow(days) {
     return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
   }
-  function _addDaysToDate(dateStr, days) {
-    var base = dateStr ? new Date(dateStr) : new Date();
+
+  /**
+   * BUG 2 FIX — Add `days` from the CURRENT expiry date.
+   * If expiry is in the past (expired membership), count from today instead.
+   * This means Downgrade also correctly shrinks remaining time.
+   */
+  function _addDaysFromExpiry(currentExpiryIso, days) {
+    var base = currentExpiryIso ? new Date(currentExpiryIso) : new Date();
+    // If already expired → count from today
     if (base < new Date()) base = new Date();
     return new Date(base.getTime() + days * 24 * 60 * 60 * 1000).toISOString();
   }
@@ -62,8 +78,6 @@
     var client = _sb();
     if (!client) return;
     try {
-      // Try to write to membership_audit_log table
-      // If table doesn't exist yet, silently fail (graceful degradation)
       var adminUid = null;
       try {
         var authRes = await client.auth.getUser();
@@ -71,32 +85,22 @@
       } catch (_) {}
 
       await client.from('membership_audit_log').insert({
-        membership_id: entry.membership_id || null,
-        user_id: entry.user_id || null,
-        action: entry.action || 'unknown',
-        admin_user_id: adminUid,
-        old_status: entry.old_status || null,
-        new_status: entry.new_status || null,
+        membership_id:  entry.membership_id  || null,
+        user_id:        entry.user_id        || null,
+        action:         entry.action         || 'unknown',
+        admin_user_id:  adminUid,
+        old_status:     entry.old_status     || null,
+        new_status:     entry.new_status     || null,
         old_expires_at: entry.old_expires_at || null,
         new_expires_at: entry.new_expires_at || null,
-        old_plan_id: entry.old_plan_id || null,
-        new_plan_id: entry.new_plan_id || null,
-        plan_slug: entry.plan_slug || null,
-        notes: entry.notes || null
+        old_plan_id:    entry.old_plan_id    || null,
+        new_plan_id:    entry.new_plan_id    || null,
+        plan_slug:      entry.plan_slug      || null,
+        notes:          entry.notes          || null
       });
     } catch (e) {
       console.warn('[AMM] Audit log write failed (table may not exist yet):', e.message || e);
     }
-  }
-
-  /* ── Get current admin UID ───────────────────────────────────── */
-  async function _getAdminUid() {
-    var client = _sb();
-    if (!client) return null;
-    try {
-      var res = await client.auth.getUser();
-      return res && res.data && res.data.user ? res.data.user.id : null;
-    } catch (_) { return null; }
   }
 
   /* ── Fetch all membership plans from Supabase ────────────────── */
@@ -104,7 +108,9 @@
     var client = _sb();
     if (!client) return [];
     try {
-      var res = await client.from('membership_plans').select('id,slug,name,price_inr,duration_days').order('price_inr', { ascending: true });
+      var res = await client.from('membership_plans')
+        .select('id,slug,name,price_inr,duration_days')
+        .order('price_inr', { ascending: true });
       return (res.data || []).map(function (p) {
         return { id: p.id, slug: p.slug, name: p.name, price: p.price_inr, days: p.duration_days };
       });
@@ -121,189 +127,196 @@
   /* ── CSS Injection ───────────────────────────────────────────── */
   function _injectCSS() {
     if (document.getElementById('amm-styles')) return;
-    var css = [
-      /* Grant Modal */
-      '.amm-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999998;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}',
-      '.amm-modal{background:#0e1320;border:1px solid rgba(255,255,255,0.12);border-radius:18px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5)}',
-      '.amm-modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.08)}',
-      '.amm-modal-title{font-size:1.1rem;font-weight:800;color:#fbbf24;display:flex;align-items:center;gap:8px}',
-      '.amm-modal-close{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:6px 12px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:.85rem}',
-      '.amm-modal-close:hover{background:rgba(255,255,255,0.1)}',
-      '.amm-modal-body{padding:20px 24px}',
-      '.amm-field{margin-bottom:16px}',
-      '.amm-label{font-size:.75rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:6px;display:block;letter-spacing:.03em}',
-      '.amm-input,.amm-select,.amm-textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;color:rgba(255,255,255,0.9);font-size:.85rem;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s}',
-      '.amm-input:focus,.amm-select:focus,.amm-textarea:focus{border-color:#3d8ef8}',
-      '.amm-textarea{min-height:70px;resize:vertical}',
-      '.amm-plan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:12px}',
-      '.amm-plan-chip{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);cursor:pointer;font-size:.78rem;text-align:center;transition:all .2s;color:rgba(255,255,255,0.7)}',
-      '.amm-plan-chip:hover{background:rgba(255,255,255,0.08)}',
-      '.amm-plan-chip.selected{background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4);color:#fbbf24;font-weight:700}',
-      '.amm-btn{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit;transition:all .2s}',
+    var rules = [
+      /* Overlay + Modal */
+      '.amm-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999998;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}',
+      '.amm-modal{background:#0e1320;border:1px solid rgba(255,255,255,0.12);border-radius:18px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.55)}',
+      '.amm-modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.08)}',
+      '.amm-modal-title{font-size:1.05rem;font-weight:800;color:#fbbf24}',
+      '.amm-modal-close{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:6px 12px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:.82rem}',
+      '.amm-modal-close:hover{background:rgba(255,255,255,0.1);color:#fff}',
+      '.amm-modal-body{padding:20px 22px}',
+      /* Fields */
+      '.amm-field{margin-bottom:15px}',
+      '.amm-label{font-size:.73rem;font-weight:700;color:rgba(255,255,255,0.45);margin-bottom:6px;display:block;letter-spacing:.04em;text-transform:uppercase}',
+      '.amm-input,.amm-select,.amm-textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 13px;color:rgba(255,255,255,0.9);font-size:.85rem;font-family:inherit;box-sizing:border-box;outline:none;transition:border-color .2s}',
+      '.amm-input:focus,.amm-select:focus,.amm-textarea:focus{border-color:#fbbf24}',
+      '.amm-textarea{min-height:68px;resize:vertical}',
+      /* Plan chips */
+      '.amm-plan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;margin-bottom:4px}',
+      '.amm-plan-chip{padding:9px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);cursor:pointer;font-size:.78rem;text-align:center;transition:all .18s;color:rgba(255,255,255,0.65);user-select:none}',
+      '.amm-plan-chip:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.2)}',
+      '.amm-plan-chip.selected{background:rgba(251,191,36,0.18);border-color:rgba(251,191,36,0.5);color:#fbbf24;font-weight:700}',
+      /* Buttons */
+      '.amm-btn{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-size:.82rem;font-weight:700;font-family:inherit;transition:all .2s;display:inline-flex;align-items:center;gap:6px}',
+      '.amm-btn:disabled{opacity:.5;cursor:not-allowed}',
       '.amm-btn-primary{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000}',
-      '.amm-btn-primary:hover{filter:brightness(1.1)}',
-      '.amm-btn-secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.8)}',
-      '.amm-btn-secondary:hover{background:rgba(255,255,255,0.1)}',
-      '.amm-btn-danger{background:rgba(255,77,109,0.15);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d}',
-      '.amm-btn-danger:hover{background:rgba(255,77,109,0.25)}',
-      '.amm-btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}',
-      '.amm-custom-fields{margin-top:8px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1)}',
-      /* Action buttons in table */
-      '.amm-action-btn{padding:4px 10px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);font-size:.68rem;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}',
+      '.amm-btn-primary:hover:not(:disabled){filter:brightness(1.08)}',
+      '.amm-btn-secondary{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.75)}',
+      '.amm-btn-secondary:hover:not(:disabled){background:rgba(255,255,255,0.1)}',
+      '.amm-btn-danger{background:rgba(255,77,109,0.14);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d}',
+      '.amm-btn-danger:hover:not(:disabled){background:rgba(255,77,109,0.24)}',
+      '.amm-btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}',
+      '.amm-custom-fields{margin-top:8px;padding:14px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.12)}',
+      /* Info card inside modal */
+      '.amm-info-card{background:rgba(255,255,255,0.03);border-radius:10px;padding:12px 14px;margin-bottom:15px;font-size:.72rem;color:rgba(255,255,255,0.4);line-height:1.7}',
+      '.amm-info-card b{color:rgba(255,255,255,0.75)}',
+      /* Table action buttons */
+      '.amm-action-btn{padding:4px 9px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);font-size:.66rem;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;margin:1px}',
       '.amm-action-btn:hover{background:rgba(255,255,255,0.1)}',
-      '.amm-action-btn.extend{border-color:rgba(61,142,248,0.3);color:#3d8ef8;background:rgba(61,142,248,0.08)}',
-      '.amm-action-btn.renew{border-color:rgba(16,217,142,0.3);color:#10d98e;background:rgba(16,217,142,0.08)}',
-      '.amm-action-btn.suspend{border-color:rgba(245,158,11,0.3);color:#f59e0b;background:rgba(245,158,11,0.08)}',
-      '.amm-action-btn.resume{border-color:rgba(16,217,142,0.3);color:#10d98e;background:rgba(16,217,142,0.08)}',
-      '.amm-action-btn.upgrade{border-color:rgba(139,92,246,0.3);color:#a78bfa;background:rgba(139,92,246,0.08)}',
-      '.amm-action-btn.deactivate{border-color:rgba(255,77,109,0.3);color:#ff4d6d;background:rgba(255,77,109,0.08)}',
-      /* Grant button */
-      '.amm-grant-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:14px 18px;background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(245,158,11,0.04));border:1px solid rgba(251,191,36,0.15);border-radius:14px}',
-      '.amm-grant-title{font-size:.9rem;font-weight:700;color:#fbbf24;display:flex;align-items:center;gap:6px}',
-      '.amm-grant-btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:700;padding:8px 18px;border-radius:10px;border:none;cursor:pointer;font-size:.8rem;transition:all .2s}',
+      '.amm-action-btn.extend{border-color:rgba(61,142,248,0.35);color:#3d8ef8;background:rgba(61,142,248,0.08)}',
+      '.amm-action-btn.renew{border-color:rgba(16,217,142,0.35);color:#10d98e;background:rgba(16,217,142,0.08)}',
+      '.amm-action-btn.suspend{border-color:rgba(245,158,11,0.35);color:#f59e0b;background:rgba(245,158,11,0.08)}',
+      '.amm-action-btn.resume{border-color:rgba(16,217,142,0.35);color:#10d98e;background:rgba(16,217,142,0.08)}',
+      '.amm-action-btn.upgrade{border-color:rgba(139,92,246,0.35);color:#a78bfa;background:rgba(139,92,246,0.08)}',
+      '.amm-action-btn.deactivate{border-color:rgba(255,77,109,0.35);color:#ff4d6d;background:rgba(255,77,109,0.08)}',
+      /* Grant bar */
+      '.amm-grant-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(245,158,11,0.03));border:1px solid rgba(251,191,36,0.2);border-radius:14px}',
+      '.amm-grant-title{font-size:.88rem;font-weight:700;color:#fbbf24}',
+      '.amm-grant-btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 18px;border-radius:10px;border:none;cursor:pointer;font-size:.8rem;transition:all .2s}',
       '.amm-grant-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}',
-      /* History section */
-      '.amm-history-row{display:flex;gap:10px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.72rem}',
-      '.amm-history-action{font-weight:700;min-width:80px}',
-      '.amm-history-date{color:rgba(255,255,255,0.4);min-width:100px}',
-      '.amm-history-notes{color:rgba(255,255,255,0.5);flex:1}'
-    ].join('\n');
+      /* History */
+      '.amm-history-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.72rem;align-items:flex-start}',
+      '.amm-history-action{font-weight:700;min-width:90px}',
+      '.amm-history-date{color:rgba(255,255,255,0.35);min-width:96px}',
+      '.amm-history-notes{color:rgba(255,255,255,0.45);flex:1}'
+    ];
     var s = document.createElement('style');
     s.id = 'amm-styles';
-    s.textContent = css;
+    s.textContent = rules.join('');
     document.head.appendChild(s);
   }
 
-  /* ── Selected plan state ─────────────────────────────────────── */
-  var _selectedPlanSlug = null;
+  /* ── Module state ────────────────────────────────────────────── */
+  var _selectedPlanSlug    = null;
   var _selectedMembershipId = null;
-  var _cachedPlans = null;
+  var _cachedPlans         = null;
 
-  /* ── Show Grant Membership Modal ─────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════════════
+     GRANT MEMBERSHIP MODAL
+  ═══════════════════════════════════════════════════════════════ */
+
   function _showGrantModal() {
     _injectCSS();
     _selectedPlanSlug = null;
 
-    var overlay = document.createElement('div');
-    overlay.className = 'amm-modal-overlay';
-    overlay.id = 'ammGrantModal';
+    // Remove existing modal if any
+    var old = document.getElementById('ammGrantModal');
+    if (old) old.remove();
 
     var planChipsHtml = Object.keys(AMM_PLANS).map(function (slug) {
       var p = AMM_PLANS[slug];
-      var extra = slug === 'lifetime' ? ' ♾️' : '';
-      return '<div class="amm-plan-chip" data-plan="' + slug + '" onclick="window.AdminMembershipManager._selectPlan(\'' + slug + '\')">' + _esc(p.label) + extra + '</div>';
+      return '<div class="amm-plan-chip" data-plan="' + slug + '" onclick="window.AdminMembershipManager._selectPlan(\'' + slug + '\')">' + _esc(p.label) + '</div>';
     }).join('');
-    planChipsHtml += '<div class="amm-plan-chip" data-plan="custom" onclick="window.AdminMembershipManager._selectPlan(\'custom\')">⚙️ Custom Plan</div>';
+    planChipsHtml += '<div class="amm-plan-chip" data-plan="custom" onclick="window.AdminMembershipManager._selectPlan(\'custom\')">⚙️ Custom</div>';
 
-    overlay.innerHTML = '<div class="amm-modal">'
+    var html = '<div class="amm-modal" id="ammGrantModalInner">'
       + '<div class="amm-modal-header">'
-      + '<div class="amm-modal-title">👑 Grant Membership</div>'
-      + '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeModal()">✕ Close</button>'
+      +   '<div class="amm-modal-title">👑 Grant Membership</div>'
+      +   '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeModal()">✕ Close</button>'
       + '</div>'
       + '<div class="amm-modal-body">'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">User Email or User ID</label>'
-      + '<input class="amm-input" id="ammGrantUserId" placeholder="e.g. user@example.com or UUID" autocomplete="off">'
-      + '</div>'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">Select Plan</label>'
-      + '<div class="amm-plan-grid">' + planChipsHtml + '</div>'
-      + '</div>'
-      + '<div id="ammCustomFields" style="display:none">'
-      + '<div class="amm-custom-fields">'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">Custom Plan Name</label>'
-      + '<input class="amm-input" id="ammCustomName" placeholder="e.g. Special Promo Plan">'
-      + '</div>'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">Custom Duration (days)</label>'
-      + '<input class="amm-input" id="ammCustomDays" type="number" min="1" placeholder="e.g. 45">'
-      + '</div>'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">Custom Expiry Date (optional — overrides duration)</label>'
-      + '<input class="amm-input" id="ammCustomExpiry" type="date">'
-      + '</div>'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">Custom Notes</label>'
-      + '<textarea class="amm-textarea" id="ammCustomNotes" placeholder="Reason for custom plan..."></textarea>'
-      + '</div>'
-      + '</div>'
-      + '</div>'
-      + '<div class="amm-field">'
-      + '<label class="amm-label">Admin Notes (optional)</label>'
-      + '<textarea class="amm-textarea" id="ammGrantNotes" placeholder="Reason for manual grant..."></textarea>'
-      + '</div>'
-      + '<div class="amm-btn-row">'
-      + '<button class="amm-btn amm-btn-secondary" onclick="window.AdminMembershipManager._closeModal()">Cancel</button>'
-      + '<button class="amm-btn amm-btn-primary" onclick="window.AdminMembershipManager._executeGrant()">👑 Grant Membership</button>'
-      + '</div>'
+      /* User field */
+      +   '<div class="amm-field">'
+      +     '<label class="amm-label">User Email or User ID (UUID)</label>'
+      +     '<input class="amm-input" id="ammGrantUserId" placeholder="user@example.com  or  xxxxxxxx-xxxx-…" autocomplete="off">'
+      +   '</div>'
+      /* Plan chips */
+      +   '<div class="amm-field">'
+      +     '<label class="amm-label">Select Plan</label>'
+      +     '<div class="amm-plan-grid">' + planChipsHtml + '</div>'
+      +   '</div>'
+      /* Custom plan fields (hidden by default) */
+      +   '<div id="ammCustomFields" style="display:none">'
+      +     '<div class="amm-custom-fields">'
+      +       '<div class="amm-field"><label class="amm-label">Custom Plan Name</label><input class="amm-input" id="ammCustomName" placeholder="e.g. Special Promo Plan"></div>'
+      +       '<div class="amm-field"><label class="amm-label">Custom Duration (days)</label><input class="amm-input" id="ammCustomDays" type="number" min="1" placeholder="e.g. 45"></div>'
+      +       '<div class="amm-field"><label class="amm-label">Or — Set Exact Expiry Date</label><input class="amm-input" id="ammCustomExpiry" type="date"></div>'
+      +       '<div class="amm-field"><label class="amm-label">Custom Notes</label><textarea class="amm-textarea" id="ammCustomNotes" placeholder="Reason…"></textarea></div>'
+      +     '</div>'
+      +   '</div>'
+      /* Admin notes */
+      +   '<div class="amm-field">'
+      +     '<label class="amm-label">Admin Notes (optional)</label>'
+      +     '<textarea class="amm-textarea" id="ammGrantNotes" placeholder="Reason for manual grant…"></textarea>'
+      +   '</div>'
+      /* Buttons */
+      +   '<div class="amm-btn-row">'
+      +     '<button class="amm-btn amm-btn-secondary" onclick="window.AdminMembershipManager._closeModal()">Cancel</button>'
+      +     '<button class="amm-btn amm-btn-primary" id="ammGrantSubmitBtn" onclick="window.AdminMembershipManager._executeGrant()">👑 Grant Membership</button>'
+      +   '</div>'
       + '</div>'
       + '</div>';
 
+    var overlay = document.createElement('div');
+    overlay.className = 'amm-modal-overlay';
+    overlay.id = 'ammGrantModal';
+    overlay.innerHTML = html;
     document.body.appendChild(overlay);
   }
 
-  /* ── Show Action Modal (Extend, Renew, Upgrade, etc.) ────────── */
+  /* ═══════════════════════════════════════════════════════════════
+     ACTION MODAL (Extend / Renew / Suspend / Resume / Upgrade-Downgrade)
+  ═══════════════════════════════════════════════════════════════ */
+
   function _showActionModal(action, membership) {
     _injectCSS();
     _selectedMembershipId = membership.id;
     _selectedPlanSlug = null;
 
-    var actionLabels = {
-      extend: { title: '📅 Extend Membership', btn: 'Extend', btnClass: 'amm-btn-primary', desc: 'Add days to the current expiry date.' },
-      renew: { title: '🔄 Renew Membership', btn: 'Renew', btnClass: 'amm-btn-primary', desc: 'Reset and start a new membership period.' },
-      upgrade: { title: '⬆️ Upgrade/Downgrade Plan', btn: 'Change Plan', btnClass: 'amm-btn-primary', desc: 'Change the membership plan for this user.' },
-      suspend: { title: '⏸️ Suspend Membership', btn: 'Suspend', btnClass: 'amm-btn-danger', desc: 'Temporarily suspend access. Can be resumed later.' },
-      resume: { title: '▶️ Resume Membership', btn: 'Resume', btnClass: 'amm-btn-primary', desc: 'Restore access from a suspended state.' }
+    var old = document.getElementById('ammActionModal');
+    if (old) old.remove();
+
+    var cfgMap = {
+      extend:  { title: '📅 Extend Membership',          btn: '📅 Extend',      cls: 'amm-btn-primary', desc: 'Add days on top of current expiry date.' },
+      renew:   { title: '🔄 Renew Membership',            btn: '🔄 Renew',       cls: 'amm-btn-primary', desc: 'Start a fresh membership period from today.' },
+      upgrade: { title: '⬆️ Change Plan (Up / Down)',     btn: '✅ Change Plan', cls: 'amm-btn-primary', desc: 'Change plan and add those days from current expiry.' },
+      suspend: { title: '⏸️ Suspend Membership',          btn: '⏸️ Suspend',    cls: 'amm-btn-danger',  desc: 'Temporarily suspend access. Resume anytime.' },
+      resume:  { title: '▶️ Resume Membership',           btn: '▶️ Resume',     cls: 'amm-btn-primary', desc: 'Restore access from suspended state.' }
     };
+    var cfg = cfgMap[action] || cfgMap.extend;
 
-    var cfg = actionLabels[action] || actionLabels.extend;
-    var isSuspend = action === 'suspend';
-    var isResume = action === 'resume';
-    var isUpgrade = action === 'upgrade';
+    var showPlans = (action === 'extend' || action === 'renew' || action === 'upgrade');
 
-    var planChipsHtml = '';
-    if (action === 'extend' || action === 'renew' || action === 'upgrade') {
-      planChipsHtml = Object.keys(AMM_PLANS).map(function (slug) {
-        var p = AMM_PLANS[slug];
-        var extra = slug === 'lifetime' ? ' ♾️' : '';
-        return '<div class="amm-plan-chip" data-plan="' + slug + '" onclick="window.AdminMembershipManager._selectPlan(\'' + slug + '\')">' + _esc(p.label) + extra + '</div>';
-      }).join('');
-      planChipsHtml += '<div class="amm-plan-chip" data-plan="custom" onclick="window.AdminMembershipManager._selectPlan(\'custom\')">⚙️ Custom</div>';
-    }
-
+    /* Info card */
     var currentExpiry = membership.expires_at ? _fmtDate(membership.expires_at) : '—';
-    var currentStatus = membership.status || '—';
+    var statusColor   = AMM_STATUS_COLORS[membership.status] || '#999';
 
-    var bodyHtml = '';
-    bodyHtml += '<div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:12px;margin-bottom:16px">'
-      + '<div style="font-size:.72rem;color:rgba(255,255,255,0.4)">User ID: <span style="font-family:monospace">' + _esc((membership.user_id || '').slice(0, 12)) + '…</span></div>'
-      + '<div style="font-size:.72rem;color:rgba(255,255,255,0.4);margin-top:4px">Current Status: <span style="font-weight:700;color:' + (AMM_STATUS_COLORS[currentStatus] || '#999') + '">' + _esc(currentStatus) + '</span></div>'
-      + '<div style="font-size:.72rem;color:rgba(255,255,255,0.4);margin-top:4px">Current Expiry: ' + currentExpiry + '</div>'
+    var body = '<div class="amm-info-card">'
+      + 'User: <b>' + _esc((membership.user_id || '').slice(0, 16)) + '…</b><br>'
+      + 'Status: <b style="color:' + statusColor + '">' + _esc(membership.status || '—') + '</b><br>'
+      + 'Current Expiry: <b>' + currentExpiry + '</b>'
       + '</div>';
 
-    bodyHtml += '<div style="font-size:.82rem;color:rgba(255,255,255,0.6);margin-bottom:14px">' + _esc(cfg.desc) + '</div>';
+    body += '<div style="font-size:.82rem;color:rgba(255,255,255,0.55);margin-bottom:14px">' + _esc(cfg.desc) + '</div>';
 
-    if (planChipsHtml) {
-      bodyHtml += '<div class="amm-field"><label class="amm-label">Select Plan</label><div class="amm-plan-grid">' + planChipsHtml + '</div></div>';
-      bodyHtml += '<div id="ammCustomFields" style="display:none"><div class="amm-custom-fields">'
-        + '<div class="amm-field"><label class="amm-label">Custom Plan Name</label><input class="amm-input" id="ammCustomName" placeholder="e.g. Special Promo Plan"></div>'
+    if (showPlans) {
+      var planChipsHtml = Object.keys(AMM_PLANS).map(function (slug) {
+        var p = AMM_PLANS[slug];
+        return '<div class="amm-plan-chip" data-plan="' + slug + '" onclick="window.AdminMembershipManager._selectPlan(\'' + slug + '\')">' + _esc(p.label) + '</div>';
+      }).join('');
+      planChipsHtml += '<div class="amm-plan-chip" data-plan="custom" onclick="window.AdminMembershipManager._selectPlan(\'custom\')">⚙️ Custom</div>';
+
+      body += '<div class="amm-field"><label class="amm-label">Select Plan</label>'
+        + '<div class="amm-plan-grid">' + planChipsHtml + '</div>'
+        + '</div>'
+        + '<div id="ammCustomFields" style="display:none"><div class="amm-custom-fields">'
+        + '<div class="amm-field"><label class="amm-label">Custom Plan Name</label><input class="amm-input" id="ammCustomName" placeholder="Special plan…"></div>'
         + '<div class="amm-field"><label class="amm-label">Custom Duration (days)</label><input class="amm-input" id="ammCustomDays" type="number" min="1" placeholder="e.g. 45"></div>'
-        + '<div class="amm-field"><label class="amm-label">Custom Expiry Date (optional — overrides duration)</label><input class="amm-input" id="ammCustomExpiry" type="date"></div>'
+        + '<div class="amm-field"><label class="amm-label">Or — Set Exact Expiry Date</label><input class="amm-input" id="ammCustomExpiry" type="date"></div>'
         + '</div></div>';
     }
 
-    if (isSuspend) {
-      bodyHtml += '<div class="amm-field"><label class="amm-label">Reason for Suspension</label><textarea class="amm-textarea" id="ammActionNotes" placeholder="e.g. Payment dispute, abuse, etc."></textarea></div>';
-    } else if (isResume) {
-      bodyHtml += '<div class="amm-field"><label class="amm-label">Notes (optional)</label><textarea class="amm-textarea" id="ammActionNotes" placeholder="e.g. Issue resolved, payment received..."></textarea></div>';
-    } else {
-      bodyHtml += '<div class="amm-field"><label class="amm-label">Admin Notes (optional)</label><textarea class="amm-textarea" id="ammActionNotes" placeholder="Reason for this action..."></textarea></div>';
-    }
+    var notePlaceholder = action === 'suspend'
+      ? 'Reason for suspension (e.g. payment dispute)…'
+      : 'Admin notes (optional)…';
+    body += '<div class="amm-field"><label class="amm-label">Admin Notes</label>'
+      + '<textarea class="amm-textarea" id="ammActionNotes" placeholder="' + notePlaceholder + '"></textarea>'
+      + '</div>';
 
-    bodyHtml += '<div class="amm-btn-row">'
+    body += '<div class="amm-btn-row">'
       + '<button class="amm-btn amm-btn-secondary" onclick="window.AdminMembershipManager._closeModal()">Cancel</button>'
-      + '<button class="amm-btn ' + cfg.btnClass + '" onclick="window.AdminMembershipManager._executeAction(\'' + action + '\')">' + _esc(cfg.btn) + '</button>'
+      + '<button class="amm-btn ' + cfg.cls + '" id="ammActionSubmitBtn" onclick="window.AdminMembershipManager._executeAction(\'' + action + '\')">' + cfg.btn + '</button>'
       + '</div>';
 
     var overlay = document.createElement('div');
@@ -311,113 +324,114 @@
     overlay.id = 'ammActionModal';
     overlay.innerHTML = '<div class="amm-modal">'
       + '<div class="amm-modal-header">'
-      + '<div class="amm-modal-title">' + cfg.title + '</div>'
-      + '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeModal()">✕ Close</button>'
+      +   '<div class="amm-modal-title">' + cfg.title + '</div>'
+      +   '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeModal()">✕ Close</button>'
       + '</div>'
-      + '<div class="amm-modal-body">' + bodyHtml + '</div>'
+      + '<div class="amm-modal-body">' + body + '</div>'
       + '</div>';
-
     document.body.appendChild(overlay);
   }
 
-  /* ── Select Plan (chip click handler) ────────────────────────── */
+  /* ── Plan chip click ─────────────────────────────────────────── */
   function _selectPlan(slug) {
     _selectedPlanSlug = slug;
-    document.querySelectorAll('.amm-plan-chip').forEach(function (chip) {
-      chip.classList.toggle('selected', chip.getAttribute('data-plan') === slug);
+    document.querySelectorAll('.amm-plan-chip').forEach(function (c) {
+      c.classList.toggle('selected', c.getAttribute('data-plan') === slug);
     });
-    var customFields = document.getElementById('ammCustomFields');
-    if (customFields) customFields.style.display = (slug === 'custom') ? 'block' : 'none';
+    var cf = document.getElementById('ammCustomFields');
+    if (cf) cf.style.display = (slug === 'custom') ? 'block' : 'none';
   }
 
-  /* ── Close Modal ─────────────────────────────────────────────── */
+  /* ── Close any modal ─────────────────────────────────────────── */
   function _closeModal() {
-    var m1 = document.getElementById('ammGrantModal');
-    if (m1) m1.remove();
-    var m2 = document.getElementById('ammActionModal');
-    if (m2) m2.remove();
-    _selectedPlanSlug = null;
+    ['ammGrantModal','ammActionModal','ammHistoryModal','ammSQLModal'].forEach(function (id) {
+      var m = document.getElementById(id);
+      if (m) m.remove();
+    });
+    _selectedPlanSlug     = null;
     _selectedMembershipId = null;
   }
 
-  /* ── Resolve user ID from email or UUID ──────────────────────── */
+  /* ── Resolve user: email → UUID lookup, else pass-through ─────── */
   async function _resolveUserId(input) {
     input = (input || '').trim();
     if (!input) return null;
-    // If it looks like a UUID, return as-is
     if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input)) return input;
-    // Try to look up by email in the profiles/users table
     var client = _sb();
-    if (!client) return null;
+    if (!client) return input; // pass-through
     try {
-      // Try profiles table first
       var res = await client.from('profiles').select('id').eq('email', input).maybeSingle();
-      if (res && res.data) return res.data.id;
-      // Try auth.users via admin API (may not work without service role)
-      // Fallback: check user_memberships for this email as user_id
-      return null;
-    } catch (e) { return null; }
+      if (res && res.data && res.data.id) return res.data.id;
+    } catch (_) {}
+    // Fallback: return the raw input (might be a non-standard UUID or email-based ID)
+    return input;
   }
 
-  /* ── Get plan details from selection ──────────────────────────── */
+  /* ── Build plan details from current selection ────────────────── */
   function _getSelectedPlanDetails() {
     if (!_selectedPlanSlug) return null;
+
     if (_selectedPlanSlug === 'custom') {
-      var name = (document.getElementById('ammCustomName') || {}).value || 'Custom Plan';
-      var days = parseInt((document.getElementById('ammCustomDays') || {}).value || '0', 10);
-      var expiryDate = (document.getElementById('ammCustomExpiry') || {}).value || '';
-      var notes = (document.getElementById('ammCustomNotes') || {}).value || '';
+      var name       = (document.getElementById('ammCustomName')   || {}).value || 'Custom Plan';
+      var daysRaw    = parseInt((document.getElementById('ammCustomDays')   || {}).value || '0', 10);
+      var expiryDate = ((document.getElementById('ammCustomExpiry') || {}).value || '').trim();
+      var notes      = (document.getElementById('ammCustomNotes')  || {}).value || '';
+
+      var days = daysRaw;
       if (expiryDate) {
         days = Math.ceil((new Date(expiryDate + 'T23:59:59') - Date.now()) / 86400000);
         if (days < 1) days = 1;
       }
       if (!days || days < 1) days = 30;
+
       return { slug: 'custom', label: name, days: days, custom: true, notes: notes, expiryOverride: expiryDate || null };
     }
+
     var p = AMM_PLANS[_selectedPlanSlug];
     if (!p) return null;
-    return { slug: p.slug, label: p.label, days: p.days, custom: false };
+    return { slug: p.slug, label: p.label, days: p.days, custom: false, expiryOverride: null };
   }
 
-  /* ── Execute Grant Membership ────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════════════
+     BUG 1 FIX — _executeGrant
+     Old code used `overlay` which was NOT in scope → ReferenceError.
+     Fixed: use document.getElementById('ammGrantSubmitBtn') instead.
+  ═══════════════════════════════════════════════════════════════ */
   async function _executeGrant() {
-    var userInput = (document.getElementById('ammGrantUserId') || {}).value || '';
-    var notes = (document.getElementById('ammGrantNotes') || {}).value || '';
+    var userInput   = (document.getElementById('ammGrantUserId')  || {}).value || '';
+    var notes       = (document.getElementById('ammGrantNotes')   || {}).value || '';
     var planDetails = _getSelectedPlanDetails();
 
-    if (!userInput.trim()) { _toast('Please enter a user email or ID.', 'error'); return; }
-    if (!planDetails) { _toast('Please select a plan.', 'error'); return; }
+    // Validation
+    if (!userInput.trim()) { _toast('⚠️ Please enter a user email or User ID.', 'error'); return; }
+    if (!planDetails)      { _toast('⚠️ Please select a plan.', 'error'); return; }
 
     var client = _sb();
-    if (!client) { _toast('Supabase not connected.', 'error'); return; }
+    if (!client) { _toast('❌ Supabase not connected.', 'error'); return; }
 
-    // Show loading state
-    var btn = overlay.querySelector('.amm-btn-primary');
-    if (btn) { btn.textContent = 'Granting…'; btn.disabled = true; }
+    /* BUG 1 FIX: reference the button by its ID — not via 'overlay' */
+    var btn = document.getElementById('ammGrantSubmitBtn');
+    var origText = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '⏳ Granting…'; btn.disabled = true; }
 
     try {
-      // Resolve user ID
       var userId = await _resolveUserId(userInput);
-      if (!userId) userId = userInput.trim(); // assume it's a UUID
+      if (!userId) { _toast('❌ Could not resolve user. Check email or UUID.', 'error'); return; }
 
-      // Find or create plan in membership_plans
       if (!_cachedPlans) _cachedPlans = await _fetchPlans();
-      var planId = await _findPlanId(planDetails.slug, _cachedPlans);
 
-      // For custom plans, try to find a 'custom' plan or use the first plan
-      if (!planId && planDetails.slug === 'custom') {
-        planId = await _findPlanId('custom', _cachedPlans) || (_cachedPlans[0] ? _cachedPlans[0].id : null);
+      // Find the plan ID in membership_plans table
+      var planId = null;
+      if (planDetails.slug !== 'custom') {
+        planId = await _findPlanId(planDetails.slug, _cachedPlans);
+        // Fallbacks for slugs that might differ in DB
+        if (!planId && planDetails.slug === 'yearly')   planId = await _findPlanId('annual', _cachedPlans);
+        if (!planId && planDetails.slug === 'lifetime') planId = await _findPlanId('lifetime', _cachedPlans) || await _findPlanId('yearly', _cachedPlans) || await _findPlanId('annual', _cachedPlans);
       }
-      // For lifetime, try to find existing lifetime plan
-      if (!planId && planDetails.slug === 'lifetime') {
-        planId = await _findPlanId('lifetime', _cachedPlans) || await _findPlanId('yearly', _cachedPlans);
-      }
-      // For yearly, try yearly then annual
-      if (!planId && planDetails.slug === 'yearly') {
-        planId = await _findPlanId('yearly', _cachedPlans) || await _findPlanId('annual', _cachedPlans);
-      }
+      // For custom or still no match → use first available plan
+      if (!planId && _cachedPlans.length) planId = _cachedPlans[0].id;
 
-      // Compute expiry
+      // Compute expiry date
       var expiresAt;
       if (planDetails.expiryOverride) {
         expiresAt = new Date(planDetails.expiryOverride + 'T23:59:59').toISOString();
@@ -425,605 +439,514 @@
         expiresAt = _daysFromNow(planDetails.days);
       }
 
-      // Check if user already has an active membership
-      var existing = await client.from('user_memberships')
+      // Check for existing membership (any status — get latest)
+      var existRes = await client.from('user_memberships')
         .select('id,status,expires_at,plan_id')
         .eq('user_id', userId)
-        .order('expires_at', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      var newStatus = 'active';
-      var startedAt = new Date().toISOString();
+      var existing = existRes && existRes.data ? existRes.data : null;
+      var isCurrentlyActive = existing
+        && existing.status === 'active'
+        && existing.expires_at
+        && new Date(existing.expires_at) > new Date();
 
-      if (existing && existing.data && existing.data.status === 'active' && existing.data.expires_at && new Date(existing.data.expires_at) > new Date()) {
-        // Extend existing membership
-        var oldExpiry = existing.data.expires_at;
-        var baseDate = new Date(oldExpiry);
-        expiresAt = new Date(baseDate.getTime() + planDetails.days * 24 * 60 * 60 * 1000).toISOString();
-        if (planDetails.expiryOverride) expiresAt = new Date(planDetails.expiryOverride + 'T23:59:59').toISOString();
+      if (isCurrentlyActive) {
+        /* Active member → extend their existing expiry */
+        var extendedExpiry = planDetails.expiryOverride
+          ? new Date(planDetails.expiryOverride + 'T23:59:59').toISOString()
+          : _addDaysFromExpiry(existing.expires_at, planDetails.days);
 
-        await client.from('user_memberships')
-          .update({ plan_id: planId || existing.data.plan_id, expires_at: expiresAt })
-          .eq('id', existing.data.id);
+        var upRes = await client.from('user_memberships')
+          .update({ plan_id: planId || existing.plan_id, expires_at: extendedExpiry })
+          .eq('id', existing.id);
+        if (upRes.error) throw new Error(upRes.error.message);
 
         await _logAudit({
-          membership_id: existing.data.id,
-          user_id: userId,
+          membership_id: existing.id, user_id: userId,
           action: 'grant_extend',
-          old_status: existing.data.status,
-          new_status: newStatus,
-          old_expires_at: oldExpiry,
-          new_expires_at: expiresAt,
-          old_plan_id: existing.data.plan_id,
-          new_plan_id: planId,
+          old_status: existing.status, new_status: 'active',
+          old_expires_at: existing.expires_at, new_expires_at: extendedExpiry,
+          old_plan_id: existing.plan_id, new_plan_id: planId,
           plan_slug: planDetails.slug,
-          notes: notes || (planDetails.notes || '') + (planDetails.custom ? ' | Custom: ' + planDetails.label : '')
+          notes: notes || ('Grant extend: ' + planDetails.label + (planDetails.custom ? ' [custom]' : ''))
         });
 
-        _toast('✅ Membership extended for ' + planDetails.label + '.', 'success');
+        _toast('✅ Membership extended → ' + planDetails.label + ' added from current expiry.', 'success');
+
       } else {
-        // Create new membership
-        var insertRes = await client.from('user_memberships').insert({
-          user_id: userId,
-          plan_id: planId,
-          status: newStatus,
-          started_at: startedAt,
+        /* No active membership → create new row */
+        var now = new Date().toISOString();
+        var insRes = await client.from('user_memberships').insert({
+          user_id:    userId,
+          plan_id:    planId,
+          status:     'active',
+          started_at: now,
           expires_at: expiresAt,
           auto_renew: false
         }).select('id').single();
-
-        var newMemId = insertRes && insertRes.data ? insertRes.data.id : null;
+        if (insRes.error) throw new Error(insRes.error.message);
 
         await _logAudit({
-          membership_id: newMemId,
-          user_id: userId,
+          membership_id: insRes.data ? insRes.data.id : null, user_id: userId,
           action: 'grant',
-          old_status: existing && existing.data ? existing.data.status : null,
-          new_status: newStatus,
-          old_expires_at: existing && existing.data ? existing.data.expires_at : null,
-          new_expires_at: expiresAt,
-          old_plan_id: existing && existing.data ? existing.data.plan_id : null,
-          new_plan_id: planId,
+          old_status: existing ? existing.status : null, new_status: 'active',
+          old_expires_at: existing ? existing.expires_at : null, new_expires_at: expiresAt,
+          old_plan_id: existing ? existing.plan_id : null, new_plan_id: planId,
           plan_slug: planDetails.slug,
-          notes: notes || (planDetails.notes || '') + (planDetails.custom ? ' | Custom: ' + planDetails.label : '')
+          notes: notes || ('Manual grant: ' + planDetails.label + (planDetails.custom ? ' [custom]' : ''))
         });
 
         _toast('✅ Membership granted: ' + planDetails.label + '.', 'success');
       }
 
       _closeModal();
-      var main = document.getElementById('adminMain');
-      if (main && typeof window.renderAdminMemberships === 'function') window.renderAdminMemberships(main);
+      _refreshMembershipTable();
+
     } catch (e) {
       console.error('[AMM] Grant error:', e);
-      _toast('Error: ' + (e.message || String(e)), 'error');
-      if (btn) { btn.textContent = '👑 Grant Membership'; btn.disabled = false; }
+      _toast('❌ Error: ' + (e.message || String(e)), 'error');
+      if (btn) { btn.innerHTML = origText; btn.disabled = false; }
     }
   }
 
-  /* ── Execute Action (Extend, Renew, Suspend, Resume, Upgrade) ─ */
+  /* ═══════════════════════════════════════════════════════════════
+     BUG 2 FIX — _executeAction (Extend / Renew / Upgrade / Downgrade)
+     Old code: upgrade used _daysFromNow(days) → counted from TODAY always.
+     Fixed: extend & upgrade now use _addDaysFromExpiry() → days added
+            FROM CURRENT EXPIRY. Downgrade = fewer days from expiry → correct.
+            Renew still counts from today (intentional: fresh start).
+  ═══════════════════════════════════════════════════════════════ */
   async function _executeAction(action) {
-    if (!_selectedMembershipId) { _toast('No membership selected.', 'error'); return; }
+    if (!_selectedMembershipId) { _toast('⚠️ No membership selected.', 'error'); return; }
 
     var client = _sb();
-    if (!client) { _toast('Supabase not connected.', 'error'); return; }
+    if (!client) { _toast('❌ Supabase not connected.', 'error'); return; }
 
-    var notes = (document.getElementById('ammActionNotes') || {}).value || '';
+    var notes       = (document.getElementById('ammActionNotes') || {}).value || '';
     var planDetails = _getSelectedPlanDetails();
 
-    // Show loading
-    var buttons = document.querySelectorAll('#ammActionModal .amm-btn');
-    var btn = buttons[buttons.length - 1];
-    if (btn) { btn.textContent = 'Working…'; btn.disabled = true; }
+    /* Button loading state */
+    var btn      = document.getElementById('ammActionSubmitBtn');
+    var origText = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '⏳ Working…'; btn.disabled = true; }
 
     try {
-      // Fetch current membership
+      /* Fetch current membership row */
       var memRes = await client.from('user_memberships')
         .select('id,user_id,plan_id,status,started_at,expires_at')
         .eq('id', _selectedMembershipId)
         .maybeSingle();
 
       if (!memRes || memRes.error || !memRes.data) {
-        _toast('Membership not found.', 'error');
+        _toast('❌ Membership record not found.', 'error');
+        if (btn) { btn.innerHTML = origText; btn.disabled = false; }
         return;
       }
 
-      var mem = memRes.data;
+      var mem       = memRes.data;
       var oldStatus = mem.status;
       var oldExpiry = mem.expires_at;
       var oldPlanId = mem.plan_id;
 
       var updateData = {};
-      var auditAction = action;
-      var newStatus = oldStatus;
-      var newExpiry = oldExpiry;
-      var newPlanId = oldPlanId;
-      var planSlug = null;
+      var newStatus  = oldStatus;
+      var newExpiry  = oldExpiry;
+      var newPlanId  = oldPlanId;
+      var planSlug   = null;
 
+      /* ── Extend: add days from current expiry ── */
       if (action === 'extend') {
-        if (!planDetails) { _toast('Please select a plan.', 'error'); return; }
-        var baseDate = (oldExpiry && new Date(oldExpiry) > new Date()) ? new Date(oldExpiry) : new Date();
-        newExpiry = new Date(baseDate.getTime() + planDetails.days * 24 * 60 * 60 * 1000).toISOString();
-        if (planDetails.expiryOverride) newExpiry = new Date(planDetails.expiryOverride + 'T23:59:59').toISOString();
+        if (!planDetails) { _toast('⚠️ Please select a plan.', 'error'); if (btn) { btn.innerHTML = origText; btn.disabled = false; } return; }
+        newExpiry = planDetails.expiryOverride
+          ? new Date(planDetails.expiryOverride + 'T23:59:59').toISOString()
+          : _addDaysFromExpiry(oldExpiry, planDetails.days);  /* BUG 2 FIX */
         updateData.expires_at = newExpiry;
-        updateData.status = 'active';
-        newStatus = 'active';
-        planSlug = planDetails.slug;
+        updateData.status     = 'active';
+        newStatus  = 'active';
+        planSlug   = planDetails.slug;
         if (planDetails.slug !== 'custom') {
-          var pid = await _findPlanId(planDetails.slug, _cachedPlans);
-          if (pid) { updateData.plan_id = pid; newPlanId = pid; }
+          if (!_cachedPlans) _cachedPlans = await _fetchPlans();
+          var ep = await _findPlanId(planDetails.slug, _cachedPlans);
+          if (ep) { updateData.plan_id = ep; newPlanId = ep; }
         }
-      } else if (action === 'renew') {
-        if (!planDetails) { _toast('Please select a plan.', 'error'); return; }
-        newExpiry = _daysFromNow(planDetails.days);
-        if (planDetails.expiryOverride) newExpiry = new Date(planDetails.expiryOverride + 'T23:59:59').toISOString();
-        updateData.expires_at = newExpiry;
-        updateData.status = 'active';
-        updateData.started_at = new Date().toISOString();
-        updateData.cancelled_at = null;
-        newStatus = 'active';
-        planSlug = planDetails.slug;
-        if (planDetails.slug !== 'custom') {
-          var rpid = await _findPlanId(planDetails.slug, _cachedPlans);
-          if (rpid) { updateData.plan_id = rpid; newPlanId = rpid; }
-        }
-      } else if (action === 'suspend') {
-        updateData.status = 'suspended';
-        newStatus = 'suspended';
-      } else if (action === 'resume') {
-        updateData.status = 'active';
-        newStatus = 'active';
-        // If expiry has passed, extend by 30 days
-        if (oldExpiry && new Date(oldExpiry) <= new Date()) {
-          newExpiry = _daysFromNow(30);
-          updateData.expires_at = newExpiry;
-        }
-      } else if (action === 'upgrade') {
-        if (!planDetails) { _toast('Please select a new plan.', 'error'); return; }
-        if (planDetails.slug !== 'custom') {
-          var upid = await _findPlanId(planDetails.slug, _cachedPlans);
-          if (upid) { updateData.plan_id = upid; newPlanId = upid; }
-        }
-        newExpiry = _daysFromNow(planDetails.days);
-        if (planDetails.expiryOverride) newExpiry = new Date(planDetails.expiryOverride + 'T23:59:59').toISOString();
-        updateData.expires_at = newExpiry;
-        updateData.status = 'active';
-        newStatus = 'active';
-        planSlug = planDetails.slug;
       }
 
-      // Execute update
-      var updateRes = await client.from('user_memberships')
+      /* ── Renew: fresh start from today ── */
+      else if (action === 'renew') {
+        if (!planDetails) { _toast('⚠️ Please select a plan.', 'error'); if (btn) { btn.innerHTML = origText; btn.disabled = false; } return; }
+        newExpiry = planDetails.expiryOverride
+          ? new Date(planDetails.expiryOverride + 'T23:59:59').toISOString()
+          : _daysFromNow(planDetails.days);                   /* fresh start = from today */
+        updateData.expires_at  = newExpiry;
+        updateData.status      = 'active';
+        updateData.started_at  = new Date().toISOString();
+        updateData.cancelled_at = null;
+        newStatus  = 'active';
+        planSlug   = planDetails.slug;
+        if (planDetails.slug !== 'custom') {
+          if (!_cachedPlans) _cachedPlans = await _fetchPlans();
+          var rp = await _findPlanId(planDetails.slug, _cachedPlans);
+          if (rp) { updateData.plan_id = rp; newPlanId = rp; }
+        }
+      }
+
+      /* ── Suspend ── */
+      else if (action === 'suspend') {
+        updateData.status = 'suspended';
+        newStatus = 'suspended';
+      }
+
+      /* ── Resume ── */
+      else if (action === 'resume') {
+        newStatus = 'active';
+        updateData.status = 'active';
+        // If expiry has passed, give 30 days from today
+        if (!oldExpiry || new Date(oldExpiry) <= new Date()) {
+          newExpiry = _daysFromNow(30);
+          updateData.expires_at = newExpiry;
+          _toast('ℹ️ Membership was expired — extended by 30 days from today.', 'info');
+        }
+      }
+
+      /*
+       * ── Change Plan (Upgrade OR Downgrade) ──
+       * BUG 2 FIX: previously used _daysFromNow() for upgrades,
+       * which ignored remaining days and always counted from today.
+       * Now uses _addDaysFromExpiry(oldExpiry, newPlanDays) so that:
+       *   - Upgrade: more days are added from current expiry ✓
+       *   - Downgrade: fewer days are added from current expiry ✓
+       * Example: 180-day plan with 100 days left → downgrade to 30-day plan
+       * → new expiry = currentExpiry + 30 days (user gets 100 + 30 remaining) ✓
+       */
+      else if (action === 'upgrade') {
+        if (!planDetails) { _toast('⚠️ Please select a plan.', 'error'); if (btn) { btn.innerHTML = origText; btn.disabled = false; } return; }
+        newExpiry = planDetails.expiryOverride
+          ? new Date(planDetails.expiryOverride + 'T23:59:59').toISOString()
+          : _addDaysFromExpiry(oldExpiry, planDetails.days);  /* BUG 2 FIX */
+        updateData.expires_at = newExpiry;
+        updateData.status     = 'active';
+        newStatus  = 'active';
+        planSlug   = planDetails.slug;
+        if (planDetails.slug !== 'custom') {
+          if (!_cachedPlans) _cachedPlans = await _fetchPlans();
+          var up = await _findPlanId(planDetails.slug, _cachedPlans);
+          if (up) { updateData.plan_id = up; newPlanId = up; }
+        }
+      }
+
+      /* Execute update */
+      var upRes = await client.from('user_memberships')
         .update(updateData)
         .eq('id', _selectedMembershipId);
+      if (upRes.error) throw new Error(upRes.error.message);
 
-      if (updateRes.error) throw new Error(updateRes.error.message);
-
-      // Audit log
+      /* Audit log */
       await _logAudit({
-        membership_id: _selectedMembershipId,
-        user_id: mem.user_id,
-        action: auditAction,
-        old_status: oldStatus,
-        new_status: newStatus,
-        old_expires_at: oldExpiry,
-        new_expires_at: newExpiry,
-        old_plan_id: oldPlanId,
-        new_plan_id: newPlanId,
+        membership_id: _selectedMembershipId, user_id: mem.user_id,
+        action: action,
+        old_status: oldStatus, new_status: newStatus,
+        old_expires_at: oldExpiry, new_expires_at: newExpiry,
+        old_plan_id: oldPlanId, new_plan_id: newPlanId,
         plan_slug: planSlug,
-        notes: notes || (planDetails && planDetails.custom ? 'Custom: ' + planDetails.label : '')
+        notes: notes || (planDetails ? planDetails.label : '')
       });
 
-      var actionMsgs = {
-        extend: '✅ Membership extended successfully.',
-        renew: '✅ Membership renewed successfully.',
+      var msgs = {
+        extend:  '✅ Membership extended from current expiry.',
+        renew:   '✅ Membership renewed from today.',
         suspend: '⏸️ Membership suspended.',
-        resume: '▶️ Membership resumed.',
-        upgrade: '✅ Plan changed successfully.'
+        resume:  '▶️ Membership resumed.',
+        upgrade: '✅ Plan changed. Days added from current expiry.'
       };
-      _toast(actionMsgs[action] || '✅ Action completed.', 'success');
+      _toast(msgs[action] || '✅ Done.', 'success');
 
       _closeModal();
-      var main = document.getElementById('adminMain');
-      if (main && typeof window.renderAdminMemberships === 'function') window.renderAdminMemberships(main);
+      _refreshMembershipTable();
+
     } catch (e) {
       console.error('[AMM] Action error:', e);
-      _toast('Error: ' + (e.message || String(e)), 'error');
-      if (btn) { btn.disabled = false; btn.textContent = 'Retry'; }
+      _toast('❌ Error: ' + (e.message || String(e)), 'error');
+      if (btn) { btn.innerHTML = origText; btn.disabled = false; }
     }
   }
 
-  /* ── Activate membership (uses existing _amemActivate but with audit) ─ */
+  /* ── Helper: refresh the membership table ────────────────────── */
+  function _refreshMembershipTable() {
+    var main = document.getElementById('adminMain');
+    if (main && typeof window.renderAdminMemberships === 'function') {
+      window.renderAdminMemberships(main);
+    }
+  }
+
+  /* ── Activate with audit ─────────────────────────────────────── */
   async function _activateWithAudit(id) {
     var client = _sb();
     if (!client) return;
     try {
-      // Get current state for audit
       var memRes = await client.from('user_memberships')
-        .select('id,user_id,status,expires_at,plan_id')
-        .eq('id', id).maybeSingle();
-      var mem = memRes && memRes.data ? memRes.data : {};
-
+        .select('id,user_id,status,expires_at,plan_id').eq('id', id).maybeSingle();
+      var mem = (memRes && memRes.data) ? memRes.data : {};
       var newExpiry = _daysFromNow(30);
+
       var res = await client.from('user_memberships')
-        .update({ status: 'active', expires_at: newExpiry })
-        .eq('id', id);
+        .update({ status: 'active', expires_at: newExpiry }).eq('id', id);
       if (res.error) throw new Error(res.error.message);
 
       await _logAudit({
-        membership_id: id,
-        user_id: mem.user_id,
+        membership_id: id, user_id: mem.user_id,
         action: 'activate',
-        old_status: mem.status,
-        new_status: 'active',
-        old_expires_at: mem.expires_at,
-        new_expires_at: newExpiry,
-        old_plan_id: mem.plan_id,
-        new_plan_id: mem.plan_id,
-        notes: 'Manual activation (+30 days)'
+        old_status: mem.status, new_status: 'active',
+        old_expires_at: mem.expires_at, new_expires_at: newExpiry,
+        old_plan_id: mem.plan_id, new_plan_id: mem.plan_id,
+        notes: 'Manual activate (+30 days)'
       });
 
-      _toast('✅ Membership activated for 30 days.', 'success');
-      var main = document.getElementById('adminMain');
-      if (main && typeof window.renderAdminMemberships === 'function') window.renderAdminMemberships(main);
+      _toast('✅ Membership activated (+30 days).', 'success');
+      _refreshMembershipTable();
     } catch (e) {
       console.error('[AMM] Activate error:', e);
-      _toast('Error: ' + e.message, 'error');
+      _toast('❌ ' + e.message, 'error');
     }
   }
 
-  /* ── Deactivate membership (with audit) ───────────────────────── */
+  /* ── Deactivate with audit ───────────────────────────────────── */
   async function _deactivateWithAudit(id) {
     if (!confirm('Deactivate this membership? The user will lose Premium access immediately.')) return;
     var client = _sb();
     if (!client) return;
     try {
       var memRes = await client.from('user_memberships')
-        .select('id,user_id,status,expires_at,plan_id')
-        .eq('id', id).maybeSingle();
-      var mem = memRes && memRes.data ? memRes.data : {};
+        .select('id,user_id,status,expires_at,plan_id').eq('id', id).maybeSingle();
+      var mem = (memRes && memRes.data) ? memRes.data : {};
+      var now = new Date().toISOString();
 
       var res = await client.from('user_memberships')
-        .update({ status: 'cancelled', expires_at: new Date().toISOString() })
-        .eq('id', id);
+        .update({ status: 'cancelled', expires_at: now }).eq('id', id);
       if (res.error) throw new Error(res.error.message);
 
       await _logAudit({
-        membership_id: id,
-        user_id: mem.user_id,
+        membership_id: id, user_id: mem.user_id,
         action: 'deactivate',
-        old_status: mem.status,
-        new_status: 'cancelled',
-        old_expires_at: mem.expires_at,
-        new_expires_at: new Date().toISOString(),
-        old_plan_id: mem.plan_id,
-        new_plan_id: mem.plan_id,
+        old_status: mem.status, new_status: 'cancelled',
+        old_expires_at: mem.expires_at, new_expires_at: now,
+        old_plan_id: mem.plan_id, new_plan_id: mem.plan_id,
         notes: 'Manual deactivation'
       });
 
       _toast('🚫 Membership deactivated.', 'info');
-      var main = document.getElementById('adminMain');
-      if (main && typeof window.renderAdminMemberships === 'function') window.renderAdminMemberships(main);
+      _refreshMembershipTable();
     } catch (e) {
       console.error('[AMM] Deactivate error:', e);
-      _toast('Error: ' + e.message, 'error');
+      _toast('❌ ' + e.message, 'error');
     }
   }
 
-  /* ── Enhance the existing membership table with new action buttons ─ */
-  function _enhanceTableActions() {
-    // Find all rows in the membership table and add enhanced action buttons
-    var rows = document.querySelectorAll('table.amem-table tbody tr');
-    rows.forEach(function (row) {
-      var actionCell = row.querySelector('td:last-child');
-      if (!actionCell || actionCell.querySelector('.amm-action-btn')) return; // already enhanced
-
-      var rowId = (row.id || '').replace('amem-row-', '');
-      if (!rowId) return;
-
-      // Read current status from the badge
-      var badgeText = '';
-      var badge = row.querySelector('.amem-badge');
-      if (badge) badgeText = badge.textContent.trim().toLowerCase();
-
-      var isSuspended = badgeText.indexOf('suspend') >= 0;
-      var isActive = badgeText.indexOf('active') >= 0;
-      var isExpired = badgeText.indexOf('expired') >= 0;
-
-      // Build enhanced action buttons
-      var btns = '';
-
-      if (isSuspended) {
-        btns += '<button class="amm-action-btn resume" onclick="window.AdminMembershipManager._resumeMembership(\'' + rowId + '\')">▶️ Resume</button>';
-      }
-
-      if (isActive || isExpired) {
-        btns += '<button class="amm-action-btn extend" onclick="window.AdminMembershipManager._extendMembership(\'' + rowId + '\')">📅 Extend</button>';
-        btns += '<button class="amm-action-btn renew" onclick="window.AdminMembershipManager._renewMembership(\'' + rowId + '\')">🔄 Renew</button>';
-        btns += '<button class="amm-action-btn upgrade" onclick="window.AdminMembershipManager._upgradeMembership(\'' + rowId + '\')">⬆️ Plan</button>';
-      }
-
-      if (isActive && !isSuspended) {
-        btns += '<button class="amm-action-btn suspend" onclick="window.AdminMembershipManager._suspendMembership(\'' + rowId + '\')">⏸️ Suspend</button>';
-      }
-
-      // Keep existing activate/deactivate buttons
-      var existingBtns = actionCell.querySelectorAll('.amem-action-btn');
-      var existingHtml = '';
-      existingBtns.forEach(function (b) { existingHtml += b.outerHTML; });
-
-      // Replace existing activate/deactivate with audited versions
-      // But DON'T remove them — just add new buttons before them
-      actionCell.innerHTML = btns + existingHtml;
-
-      // Patch existing activate/deactivate to use audited versions
-      var actBtn = actionCell.querySelector('.amem-action-btn.approve');
-      if (actBtn) {
-        actBtn.setAttribute('onclick', "window.AdminMembershipManager._activateMembership('" + rowId + "')");
-      }
-      var deactBtn = actionCell.querySelector('.amem-action-btn.deactivate');
-      if (deactBtn) {
-        deactBtn.setAttribute('onclick', "window.AdminMembershipManager._deactivateMembership('" + rowId + "')");
-      }
-    });
-  }
-
-  /* ── Add Grant button to the top of the memberships section ──── */
-  function _injectGrantButton() {
-    var sectionTitle = document.querySelector('.amem-section-title');
-    if (!sectionTitle || document.getElementById('ammGrantBar')) return;
-
-    var grantBar = document.createElement('div');
-    grantBar.className = 'amm-grant-bar';
-    grantBar.id = 'ammGrantBar';
-    grantBar.innerHTML = '<div class="amm-grant-title">👑 Manual Membership Management</div>'
-      + '<button class="amm-grant-btn" onclick="window.AdminMembershipManager._showGrantModal()">✨ Grant Membership</button>';
-
-    sectionTitle.parentNode.insertBefore(grantBar, sectionTitle);
-  }
-
-  /* ── Fetch and display audit history for a membership ────────── */
-  async function _showHistory(membershipId) {
-    _injectCSS();
-    var client = _sb();
-    if (!client) { _toast('Supabase not connected.', 'error'); return; }
-
-    var overlay = document.createElement('div');
-    overlay.className = 'amm-modal-overlay';
-    overlay.id = 'ammHistoryModal';
-    overlay.innerHTML = '<div class="amm-modal">'
-      + '<div class="amm-modal-header">'
-      + '<div class="amm-modal-title">📜 Membership History</div>'
-      + '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeHistoryModal()">✕ Close</button>'
-      + '</div>'
-      + '<div class="amm-modal-body"><div style="text-align:center;padding:24px;color:rgba(255,255,255,0.4)">Loading history…</div></div>'
-      + '</div>';
-    document.body.appendChild(overlay);
-
-    try {
-      var res = await client.from('membership_audit_log')
-        .select('id,action,old_status,new_status,old_expires_at,new_expires_at,notes,created_at,admin_user_id')
-        .eq('membership_id', membershipId)
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      var body = overlay.querySelector('.amm-modal-body');
-      if (!res || res.error || !res.data || res.data.length === 0) {
-        body.innerHTML = '<div style="text-align:center;padding:24px;color:rgba(255,255,255,0.35);font-size:.85rem">No history records found. (Audit logging was added recently — older actions may not be logged.)</div>';
-        return;
-      }
-
-      var rowsHtml = res.data.map(function (r) {
-        return '<div class="amm-history-row">'
-          + '<div class="amm-history-date">' + _fmtDate(r.created_at) + '</div>'
-          + '<div class="amm-history-action" style="color:' + (AMM_STATUS_COLORS[r.new_status] || '#999') + '">' + _esc(r.action) + '</div>'
-          + '<div class="amm-history-notes">' + _esc(r.notes || '') + '</div>'
-          + '</div>';
-      }).join('');
-
-      body.innerHTML = '<div style="font-size:.72rem;color:rgba(255,255,255,0.4);margin-bottom:12px">'
-        + res.data.length + ' records</div>' + rowsHtml;
-    } catch (e) {
-      var body2 = overlay.querySelector('.amm-modal-body');
-      if (body2) body2.innerHTML = '<div style="text-align:center;padding:24px;color:rgba(255,255,255,0.35);font-size:.85rem">'
-        + 'Audit log table not available yet. Run the SQL migration to create it.</div>';
-    }
-  }
-
-  function _closeHistoryModal() {
-    var m = document.getElementById('ammHistoryModal');
-    if (m) m.remove();
-  }
-
-  /* ── Fetch membership data for action modal ──────────────────── */
+  /* ── Per-row action wrappers ─────────────────────────────────── */
   async function _fetchMembership(id) {
     var client = _sb();
     if (!client) return null;
     try {
       var res = await client.from('user_memberships')
-        .select('id,user_id,plan_id,status,started_at,expires_at')
-        .eq('id', id).maybeSingle();
+        .select('id,user_id,plan_id,status,started_at,expires_at').eq('id', id).maybeSingle();
       return (res && res.data) ? res.data : null;
     } catch (e) { return null; }
   }
 
-  /* ── Public wrapper functions for onclick handlers ───────────── */
-  async function _extendMembership(id) {
-    if (!_cachedPlans) _cachedPlans = await _fetchPlans();
-    var mem = await _fetchMembership(id);
-    if (mem) _showActionModal('extend', mem);
-  }
-  async function _renewMembership(id) {
-    if (!_cachedPlans) _cachedPlans = await _fetchPlans();
-    var mem = await _fetchMembership(id);
-    if (mem) _showActionModal('renew', mem);
-  }
-  async function _suspendMembership(id) {
-    if (!_cachedPlans) _cachedPlans = await _fetchPlans();
-    var mem = await _fetchMembership(id);
-    if (mem) _showActionModal('suspend', mem);
-  }
-  async function _resumeMembership(id) {
-    if (!_cachedPlans) _cachedPlans = await _fetchPlans();
-    var mem = await _fetchMembership(id);
-    if (mem) _showActionModal('resume', mem);
-  }
-  async function _upgradeMembership(id) {
-    if (!_cachedPlans) _cachedPlans = await _fetchPlans();
-    var mem = await _fetchMembership(id);
-    if (mem) _showActionModal('upgrade', mem);
-  }
-  async function _activateMembership(id) {
-    await _activateWithAudit(id);
-  }
-  async function _deactivateMembership(id) {
-    await _deactivateWithAudit(id);
+  async function _extendMembership(id)  { if (!_cachedPlans) _cachedPlans = await _fetchPlans(); var m = await _fetchMembership(id); if (m) _showActionModal('extend',  m); }
+  async function _renewMembership(id)   { if (!_cachedPlans) _cachedPlans = await _fetchPlans(); var m = await _fetchMembership(id); if (m) _showActionModal('renew',   m); }
+  async function _suspendMembership(id) { if (!_cachedPlans) _cachedPlans = await _fetchPlans(); var m = await _fetchMembership(id); if (m) _showActionModal('suspend', m); }
+  async function _resumeMembership(id)  { if (!_cachedPlans) _cachedPlans = await _fetchPlans(); var m = await _fetchMembership(id); if (m) _showActionModal('resume',  m); }
+  async function _upgradeMembership(id) { if (!_cachedPlans) _cachedPlans = await _fetchPlans(); var m = await _fetchMembership(id); if (m) _showActionModal('upgrade', m); }
+  async function _activateMembership(id)   { await _activateWithAudit(id); }
+  async function _deactivateMembership(id) { await _deactivateWithAudit(id); }
+
+  /* ── Inject "Grant Membership" bar above membership table ─────── */
+  function _injectGrantButton() {
+    if (document.getElementById('ammGrantBar')) return;
+    var sectionTitle = document.querySelector('.amem-section-title');
+    if (!sectionTitle) return;
+
+    var bar = document.createElement('div');
+    bar.className = 'amm-grant-bar';
+    bar.id = 'ammGrantBar';
+    bar.innerHTML = '<div class="amm-grant-title">👑 Manual Membership Management</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      + '<button class="amm-grant-btn" onclick="window.AdminMembershipManager._showGrantModal()">✨ Grant Membership</button>'
+      + '<button style="padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.55);font-size:.72rem;cursor:pointer" onclick="window.AdminMembershipManager._showSQLMigration()">🗄️ Audit Log SQL</button>'
+      + '</div>';
+    sectionTitle.parentNode.insertBefore(bar, sectionTitle);
   }
 
-  /* ── SQL Migration Helper (shows SQL for admin to run) ───────── */
+  /* ── Enhance table rows with new action buttons ──────────────── */
+  function _enhanceTableActions() {
+    var rows = document.querySelectorAll('table.amem-table tbody tr');
+    rows.forEach(function (row) {
+      // Skip already enhanced rows
+      if (row.dataset.ammEnhanced === '1') return;
+
+      var rowId = (row.id || '').replace('amem-row-', '');
+      if (!rowId) return;
+
+      var actionCell = row.querySelector('td:last-child');
+      if (!actionCell) return;
+
+      var badgeText = '';
+      var badge = row.querySelector('.amem-badge');
+      if (badge) badgeText = badge.textContent.trim().toLowerCase();
+
+      var isSuspended = badgeText.indexOf('suspend') >= 0;
+      var isActive    = badgeText.indexOf('active')  >= 0;
+      var isExpired   = badgeText.indexOf('expired') >= 0;
+
+      var newBtns = '';
+
+      if (isSuspended) {
+        newBtns += '<button class="amm-action-btn resume"  onclick="window.AdminMembershipManager._resumeMembership(\''  + rowId + '\')">▶️ Resume</button>';
+      } else if (isActive) {
+        newBtns += '<button class="amm-action-btn extend"  onclick="window.AdminMembershipManager._extendMembership(\''  + rowId + '\')">📅 Extend</button>';
+        newBtns += '<button class="amm-action-btn renew"   onclick="window.AdminMembershipManager._renewMembership(\''   + rowId + '\')">🔄 Renew</button>';
+        newBtns += '<button class="amm-action-btn upgrade" onclick="window.AdminMembershipManager._upgradeMembership(\'' + rowId + '\')">⬆️ Plan</button>';
+        newBtns += '<button class="amm-action-btn suspend" onclick="window.AdminMembershipManager._suspendMembership(\'' + rowId + '\')">⏸️ Suspend</button>';
+      } else if (isExpired) {
+        newBtns += '<button class="amm-action-btn renew"   onclick="window.AdminMembershipManager._renewMembership(\''   + rowId + '\')">🔄 Renew</button>';
+        newBtns += '<button class="amm-action-btn upgrade" onclick="window.AdminMembershipManager._upgradeMembership(\'' + rowId + '\')">⬆️ Plan</button>';
+      }
+
+      // Patch existing activate/deactivate buttons to use audited versions
+      var existingBtns = actionCell.innerHTML;
+      existingBtns = existingBtns
+        .replace(/window\._amemActivate\(/g,   "window.AdminMembershipManager._activateMembership(")
+        .replace(/window\._amemDeactivate\(/g, "window.AdminMembershipManager._deactivateMembership(");
+
+      actionCell.innerHTML = newBtns + existingBtns;
+      row.dataset.ammEnhanced = '1';
+    });
+  }
+
+  /* ── Audit History Modal ─────────────────────────────────────── */
+  async function _showHistory(membershipId) {
+    _injectCSS();
+    var client = _sb();
+    if (!client) { _toast('❌ Supabase not connected.', 'error'); return; }
+
+    var old = document.getElementById('ammHistoryModal');
+    if (old) old.remove();
+
+    var overlay = document.createElement('div');
+    overlay.className = 'amm-modal-overlay';
+    overlay.id = 'ammHistoryModal';
+    overlay.innerHTML = '<div class="amm-modal">'
+      + '<div class="amm-modal-header"><div class="amm-modal-title">📜 Membership History</div>'
+      + '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeModal()">✕ Close</button></div>'
+      + '<div class="amm-modal-body"><div style="text-align:center;padding:28px;color:rgba(255,255,255,0.35)">Loading…</div></div>'
+      + '</div>';
+    document.body.appendChild(overlay);
+
+    try {
+      var res = await client.from('membership_audit_log')
+        .select('action,old_status,new_status,old_expires_at,new_expires_at,notes,created_at')
+        .eq('membership_id', membershipId)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      var body = overlay.querySelector('.amm-modal-body');
+      if (!res || res.error || !res.data || !res.data.length) {
+        body.innerHTML = '<div style="text-align:center;padding:28px;color:rgba(255,255,255,0.35);font-size:.82rem">No history found. Run the SQL migration to enable audit logging.</div>';
+        return;
+      }
+      var rows = res.data.map(function (r) {
+        var color = AMM_STATUS_COLORS[r.new_status] || '#999';
+        return '<div class="amm-history-row">'
+          + '<div class="amm-history-date">' + _fmtDate(r.created_at) + '</div>'
+          + '<div class="amm-history-action" style="color:' + color + '">' + _esc(r.action) + '</div>'
+          + '<div class="amm-history-notes">' + _esc(r.notes || '') + '</div>'
+          + '</div>';
+      }).join('');
+      body.innerHTML = '<div style="font-size:.72rem;color:rgba(255,255,255,0.35);margin-bottom:10px">' + res.data.length + ' records</div>' + rows;
+    } catch (e) {
+      var body2 = overlay.querySelector('.amm-modal-body');
+      if (body2) body2.innerHTML = '<div style="text-align:center;padding:28px;color:rgba(255,255,255,0.35);font-size:.82rem">Audit log table not yet created. Run the SQL migration first.</div>';
+    }
+  }
+
+  /* ── SQL Migration Modal ─────────────────────────────────────── */
   function _showSQLMigration() {
     _injectCSS();
-    var sql = `-- ═══════════════════════════════════════════════════════════════
--- STUDYRIA — Membership Audit Log Table
--- Run this in Supabase SQL Editor to enable audit logging
--- ═══════════════════════════════════════════════════════════════
+    var old = document.getElementById('ammSQLModal');
+    if (old) old.remove();
 
-CREATE TABLE IF NOT EXISTS membership_audit_log (
-  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  membership_id   UUID REFERENCES user_memberships(id) ON DELETE SET NULL,
-  user_id         TEXT,
-  action          TEXT NOT NULL DEFAULT 'unknown',
-  admin_user_id   TEXT,
-  old_status      TEXT,
-  new_status      TEXT,
-  old_expires_at  TIMESTAMPTZ,
-  new_expires_at  TIMESTAMPTZ,
-  old_plan_id     UUID,
-  new_plan_id     UUID,
-  plan_slug       TEXT,
-  notes           TEXT,
-  created_at      TIMESTAMPTZ DEFAULT now()
-);
-
--- Enable Row Level Security
-ALTER TABLE membership_audit_log ENABLE ROW LEVEL SECURITY;
-
--- Admin-only: full access (adjust 'authenticated' to your admin role/policy as needed)
-CREATE POLICY "Admin read audit log" ON membership_audit_log
-  FOR SELECT TO authenticated USING (true);
-
-CREATE POLICY "Admin write audit log" ON membership_audit_log
-  FOR INSERT TO authenticated WITH CHECK (true);
-
--- Also ensure user_memberships allows admin writes (should already be the case)
--- If not, add:
--- CREATE POLICY "Admin update memberships" ON user_memberships
---   FOR UPDATE TO authenticated USING (true);
-
--- Add 'suspended' as valid status (if not already supported)
--- user_memberships.status is TEXT so no constraint change needed.`;
+    var sql = "-- STUDYRIA Membership Audit Log Migration\n-- Paste in Supabase SQL Editor and click Run\n\nCREATE TABLE IF NOT EXISTS membership_audit_log (\n  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n  membership_id   UUID REFERENCES user_memberships(id) ON DELETE SET NULL,\n  user_id         TEXT,\n  action          TEXT NOT NULL DEFAULT 'unknown',\n  admin_user_id   TEXT,\n  old_status      TEXT,\n  new_status      TEXT,\n  old_expires_at  TIMESTAMPTZ,\n  new_expires_at  TIMESTAMPTZ,\n  old_plan_id     UUID,\n  new_plan_id     UUID,\n  plan_slug       TEXT,\n  notes           TEXT,\n  created_at      TIMESTAMPTZ DEFAULT now()\n);\n\nALTER TABLE membership_audit_log ENABLE ROW LEVEL SECURITY;\n\nCREATE POLICY \"Admin read audit log\" ON membership_audit_log\n  FOR SELECT TO authenticated USING (true);\n\nCREATE POLICY \"Admin write audit log\" ON membership_audit_log\n  FOR INSERT TO authenticated WITH CHECK (true);\n\nCREATE INDEX IF NOT EXISTS idx_mal_mem_id  ON membership_audit_log(membership_id);\nCREATE INDEX IF NOT EXISTS idx_mal_user_id ON membership_audit_log(user_id);\nCREATE INDEX IF NOT EXISTS idx_mal_ts      ON membership_audit_log(created_at DESC);";
 
     var overlay = document.createElement('div');
     overlay.className = 'amm-modal-overlay';
     overlay.id = 'ammSQLModal';
-    overlay.innerHTML = '<div class="amm-modal" style="max-width:680px">'
-      + '<div class="amm-modal-header">'
-      + '<div class="amm-modal-title">🗄️ SQL Migration</div>'
-      + '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeSQLModal()">✕ Close</button>'
-      + '</div>'
+    overlay.innerHTML = '<div class="amm-modal" style="max-width:640px">'
+      + '<div class="amm-modal-header"><div class="amm-modal-title">🗄️ Audit Log SQL Migration</div>'
+      + '<button class="amm-modal-close" onclick="window.AdminMembershipManager._closeModal()">✕ Close</button></div>'
       + '<div class="amm-modal-body">'
-      + '<div style="font-size:.8rem;color:rgba(255,255,255,0.5);margin-bottom:12px">Run this SQL in your Supabase Dashboard → SQL Editor to create the audit log table:</div>'
-      + '<textarea readonly style="width:100%;min-height:320px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px;color:#10d98e;font-family:monospace;font-size:.72rem;line-height:1.5;white-space:pre;resize:vertical">' + _esc(sql) + '</textarea>'
+      + '<p style="font-size:.8rem;color:rgba(255,255,255,0.45);margin-bottom:12px">Copy and run in <b style="color:#fbbf24">Supabase → SQL Editor</b>:</p>'
+      + '<textarea readonly id="ammSQLText" style="width:100%;min-height:280px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px;color:#10d98e;font-family:monospace;font-size:.72rem;line-height:1.6;resize:vertical;box-sizing:border-box">' + _esc(sql) + '</textarea>'
       + '<div class="amm-btn-row">'
-      + '<button class="amm-btn amm-btn-secondary" onclick="window.AdminMembershipManager._closeSQLModal()">Close</button>'
+      + '<button class="amm-btn amm-btn-secondary" onclick="window.AdminMembershipManager._closeModal()">Close</button>'
       + '<button class="amm-btn amm-btn-primary" onclick="window.AdminMembershipManager._copySQL()">📋 Copy SQL</button>'
-      + '</div>'
-      + '</div>'
-      + '</div>';
+      + '</div></div></div>';
     document.body.appendChild(overlay);
   }
 
-  function _closeSQLModal() {
-    var m = document.getElementById('ammSQLModal');
-    if (m) m.remove();
-  }
-
   function _copySQL() {
-    var textarea = document.querySelector('#ammSQLModal textarea');
-    if (textarea) {
-      textarea.select();
-      try { document.execCommand('copy'); _toast('✅ SQL copied to clipboard.', 'success'); }
-      catch (e) { _toast('Copy failed. Select manually.', 'error'); }
-    }
+    var ta = document.getElementById('ammSQLText');
+    if (!ta) return;
+    ta.select();
+    try { document.execCommand('copy'); _toast('✅ SQL copied!', 'success'); }
+    catch (e) { _toast('❌ Copy failed — select manually.', 'error'); }
   }
 
-  /* ── Init: hook into renderAdminMemberships to add UI ────────── */
+  /* ── Init: hook renderAdminMemberships ───────────────────────── */
   function _init() {
     _injectCSS();
 
-    // Hook into the existing renderAdminMemberships function
     var origRender = window.renderAdminMemberships;
     if (origRender && !origRender._ammHooked) {
       window.renderAdminMemberships = async function (container) {
         await origRender.call(this, container);
-        // After render completes, inject our enhancements
         setTimeout(function () {
           _injectGrantButton();
           _enhanceTableActions();
-        }, 200);
+        }, 250);
       };
       window.renderAdminMemberships._ammHooked = true;
     }
-
-    // Also add a "Setup Audit Log" button that appears once
-    setTimeout(function () {
-      var grantBar = document.getElementById('ammGrantBar');
-      if (grantBar && !document.getElementById('ammSQLBtn')) {
-        var sqlBtn = document.createElement('button');
-        sqlBtn.id = 'ammSQLBtn';
-        sqlBtn.className = 'amm-btn amm-btn-secondary';
-        sqlBtn.style.cssText = 'margin-left:10px;font-size:.72rem;padding:6px 14px';
-        sqlBtn.textContent = '🗄️ Setup Audit Log';
-        sqlBtn.onclick = function () { _showSQLMigration(); };
-        grantBar.appendChild(sqlBtn);
-      }
-    }, 500);
   }
 
   /* ── Public API ──────────────────────────────────────────────── */
   window.AdminMembershipManager = {
-    _version: '1.0',
+    _version: '1.1',
 
-    // Modal operations
-    _showGrantModal: _showGrantModal,
-    _showActionModal: _showActionModal,
-    _selectPlan: _selectPlan,
-    _closeModal: _closeModal,
-    _executeGrant: _executeGrant,
-    _executeAction: _executeAction,
-    _closeHistoryModal: _closeHistoryModal,
-    _showSQLMigration: _showSQLMigration,
-    _closeSQLModal: _closeSQLModal,
-    _copySQL: _copySQL,
+    _showGrantModal:      _showGrantModal,
+    _showActionModal:     _showActionModal,
+    _selectPlan:          _selectPlan,
+    _closeModal:          _closeModal,
+    _executeGrant:        _executeGrant,
+    _executeAction:       _executeAction,
 
-    // Per-row action wrappers
-    _extendMembership: _extendMembership,
-    _renewMembership: _renewMembership,
-    _suspendMembership: _suspendMembership,
-    _resumeMembership: _resumeMembership,
-    _upgradeMembership: _upgradeMembership,
-    _activateMembership: _activateMembership,
-    _deactivateMembership: _deactivateMembership,
+    _extendMembership:    _extendMembership,
+    _renewMembership:     _renewMembership,
+    _suspendMembership:   _suspendMembership,
+    _resumeMembership:    _resumeMembership,
+    _upgradeMembership:   _upgradeMembership,
+    _activateMembership:  _activateMembership,
+    _deactivateMembership:_deactivateMembership,
 
-    // History
-    _showHistory: _showHistory,
+    _showHistory:         _showHistory,
+    _showSQLMigration:    _showSQLMigration,
+    _copySQL:             _copySQL,
 
-    // Plans (for external reference)
     plans: AMM_PLANS
   };
 
-  // Auto-init on DOM ready or immediately
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', _init);
   } else {
