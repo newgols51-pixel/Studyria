@@ -489,42 +489,6 @@
         return;
       }
 
-      /* ── 8.5. Insert membership_history (enterprise audit trail) ── */
-      try {
-        await client.from('membership_history').insert({
-          membership_id: membershipId,
-          user_id:       user.id,
-          action:        existingMembership ? 'renewed' : 'created',
-          old_status:    existingMembership ? existingMembership.status : null,
-          new_status:    'active',
-          old_expires_at: existingMembership ? existingMembership.expires_at : null,
-          new_expires_at: expiresAt,
-          plan_id:       plan.id,
-          changed_by:     user.id,
-          reason:         'razorpay_payment:' + paymentResponse.payment_id,
-        });
-        _log('checkout', 'membership_history inserted');
-      } catch (e) {
-        _warn('checkout', 'membership_history insert failed (non-fatal):', e);
-      }
-
-      /* ── 8.6. Create notification for user ────────────────────── */
-      try {
-        await client.from('membership_notifications').insert({
-          user_id:       user.id,
-          notification_type: existingMembership ? 'membership_renewed' : 'membership_activated',
-          title:          existingMembership ? 'Membership Renewed!' : 'Premium Activated!',
-          message:        'Your ' + plan.name + ' membership is active. ' +
-                          (plan.is_lifetime ? 'Lifetime access — never expires!' :
-                           'Valid until ' + new Date(expiresAt).toLocaleDateString('en-IN')),
-          related_membership_id: membershipId,
-          is_read:        false,
-        });
-        _log('checkout', 'membership_notification inserted');
-      } catch (e) {
-        _warn('checkout', 'membership_notification insert failed (non-fatal):', e);
-      }
-
       /* ── 9. Insert membership_transactions (immutable receipt) ── */
       try {
         var txInsert = {
@@ -658,6 +622,22 @@
     document.querySelectorAll('[data-prm-status]').forEach(function (el) {
       el.textContent = '👑 Premium';
     });
+
+    /* ENTERPRISE: Refresh SMCI cache so premium status is immediate */
+    if (window.SMCI && typeof window.SMCI.refresh === 'function') {
+      try { window.SMCI.refresh(); } catch (_) {}
+    }
+
+    /* ENTERPRISE: Insert activity log via Supabase */
+    try {
+      var client = window.supabaseClient;
+      if (client && membershipId) {
+        client.from('membership_activity_logs').insert({
+          activity_type: 'activation',
+          metadata: { planSlug: planSlug, membershipId: membershipId, expiresAt: expiresAt }
+        }).then(function(){}).catch(function(){});
+      }
+    } catch (_) {}
   }
 
   /* ── Wire plan buttons ────────────────────────────────────────── */
