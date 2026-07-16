@@ -353,18 +353,47 @@
   }
 
   /* ── Resolve user: email → UUID lookup, else pass-through ─────── */
+  /**
+   * Resolve email → user UUID.
+   * Strategy (in order):
+   *   1. If already UUID → return as-is.
+   *   2. Try purchased_pdfs.user_email → user_id (most reliable: has both columns).
+   *   3. Try membership_transactions.user_id via email lookup (if that table has email).
+   *   4. Return null so _executeGrant can show a clear error.
+   * NOTE: Supabase anon client cannot access auth.users directly.
+   */
   async function _resolveUserId(input) {
     input = (input || '').trim();
     if (!input) return null;
+
+    // Already a UUID → use directly
     if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input)) return input;
+
     var client = _sb();
-    if (!client) return input; // pass-through
+    if (!client) return null;
+
+    // Strategy 1: purchased_pdfs has user_email + user_id columns
     try {
-      var res = await client.from('profiles').select('id').eq('email', input).maybeSingle();
-      if (res && res.data && res.data.id) return res.data.id;
+      var r1 = await client.from('purchased_pdfs')
+        .select('user_id')
+        .eq('user_email', input)
+        .not('user_id', 'is', null)
+        .limit(1)
+        .maybeSingle();
+      if (r1 && r1.data && r1.data.user_id) {
+        console.log('[AMM] Resolved email via purchased_pdfs:', r1.data.user_id);
+        return r1.data.user_id;
+      }
     } catch (_) {}
-    // Fallback: return the raw input (might be a non-standard UUID or email-based ID)
-    return input;
+
+    // Strategy 2: profiles table (may exist on some Supabase setups)
+    try {
+      var r2 = await client.from('profiles').select('id').eq('email', input).maybeSingle();
+      if (r2 && r2.data && r2.data.id) return r2.data.id;
+    } catch (_) {}
+
+    // Could not resolve email to UUID
+    return null;
   }
 
   /* ── Build plan details from current selection ────────────────── */
@@ -416,7 +445,11 @@
 
     try {
       var userId = await _resolveUserId(userInput);
-      if (!userId) { _toast('❌ Could not resolve user. Check email or UUID.', 'error'); return; }
+      if (!userId) {
+        _toast('❌ Email not found in database. Please use the User ID (UUID) from Supabase instead.', 'error');
+        if (btn) { btn.innerHTML = origText; btn.disabled = false; }
+        return;
+      }
 
       if (!_cachedPlans) _cachedPlans = await _fetchPlans();
 
