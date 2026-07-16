@@ -660,7 +660,7 @@
         + (status === 'active' ? days + ' days remaining' : 'Expired ' + _fmtDate(mem.expires_at))
         + '</div>'
         + '</div>'
-        + '<button class="p5d-btn p5d-btn-secondary" style="min-width:0;padding:9px 14px;font-size:.75rem" onclick="switchMeTab(\'membership\')">Manage →</button>';
+        + '<button class="p5d-btn p5d-btn-secondary" style="min-width:0;padding:9px 14px;font-size:.75rem" onclick="navigate(\'premium\')">&#x1F451; Manage Membership</button>';
     } else if (status === 'expired') {
       /* Show expired prompt in banner */
       banner.style.background = 'linear-gradient(135deg,rgba(255,77,109,.12) 0%,rgba(244,63,94,.08) 100%)';
@@ -671,7 +671,7 @@
         + '<div style="font-size:.9rem;font-weight:700;color:#ff4d6d;margin-bottom:3px">Membership Expired</div>'
         + '<div style="font-size:.74rem;color:#718096">Renew to restore Premium access</div>'
         + '</div>'
-        + '<button class="p5d-btn p5d-btn-primary" style="min-width:0;padding:9px 14px;font-size:.75rem;background:linear-gradient(135deg,#ff4d6d,#f43f5e);color:#fff" onclick="switchMeTab(\'membership\')">Renew →</button>';
+        + '<button class="p5d-btn p5d-btn-primary" style="min-width:0;padding:9px 14px;font-size:.75rem;background:linear-gradient(135deg,#ff4d6d,#f43f5e);color:#fff" onclick="navigate(\'premium\')">Renew &#x2192;</button>';
     }
     /* If status === 'none', leave the original "Unlock Better Learning" banner */
 
