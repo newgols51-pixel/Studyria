@@ -102,9 +102,11 @@
   }
 
   function _addDays(dateStr, days) {
-    var d = new Date(dateStr);
-    d.setDate(d.getDate() + days);
-    return d.toISOString();
+    /* Exact timestamp arithmetic — preserves full precision (hour/min/sec).
+       Uses UTC milliseconds to avoid local-timezone edge cases.
+       1 day = 86400000 ms. Result is a full ISO timestamp. */
+    var ms = new Date(dateStr).getTime();
+    return new Date(ms + days * 86400000).toISOString();
   }
 
   function _fmtDate(iso) {
@@ -265,25 +267,37 @@
       }
       _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays });
 
-      /* ── 3. Check existing active membership ──────────────────── */
+      /* ── 3. Check existing membership (ANY status) ───────────────
+         CRITICAL FIX: Previously filtered by status='active' AND expires_at > now.
+         This missed memberships where status was still 'active' in DB but
+         expires_at < now (effectively expired). For those, the query returned
+         null → code tried to INSERT → hit UNIQUE INDEX idx_user_memberships_one_active
+         → INSERT failed silently → membership stayed expired.
+         
+         FIX: Get the LATEST membership row by expires_at, regardless of status.
+         This ensures we always find the existing row to UPDATE instead of INSERT.
+      */
       var existingMembership = null;
       try {
         var memRes = await client
           .from('user_memberships')
-          .select('id, plan_id, status, expires_at')
+          .select('id, plan_id, status, started_at, expires_at')
           .eq('user_id', user.id)
-          .eq('status', 'active')
-          .gt('expires_at', new Date().toISOString())
           .order('expires_at', { ascending: false })
           .limit(1)
           .maybeSingle();
 
-        if (!memRes.error) existingMembership = memRes.data;
+        if (!memRes.error && memRes.data) {
+          existingMembership = memRes.data;
+          _log('checkout', 'Found existing membership row:', {
+            id: existingMembership.id,
+            status: existingMembership.status,
+            expires_at: existingMembership.expires_at
+          });
+        }
       } catch (e) {
-        _warn('checkout', 'Active membership check exception:', e);
+        _warn('checkout', 'Membership check exception:', e);
       }
-
-      _log('checkout', 'Existing active membership:', existingMembership);
 
       /* ── 4. Load Razorpay SDK ─────────────────────────────────── */
       await _loadSDK();
@@ -371,32 +385,67 @@
         _log('checkout', 'New membership, expires_at:', expiresAt);
       }
 
-      /* ── 8. Upsert user_memberships ───────────────────────────── */
+      /* ── 8. Upsert user_memberships (CRITICAL — must succeed) ────
+         ROOT CAUSE FIX: Previously, if this write failed, the code
+         continued to insert a transaction (step 9) and dispatch
+         activation events (step 11) — user saw the transaction but
+         membership stayed expired.
+         
+         FIX: Membership write is now a HARD requirement. If it fails,
+         we abort immediately with an error toast and do NOT record
+         a transaction or dispatch activation.
+      */
       var membershipId = null;
+      var membershipWriteOk = false;
       try {
         if (existingMembership) {
-          /* Update existing — extend expires_at */
+          /* UPDATE existing row — always UPDATE, never INSERT.
+             This avoids the UNIQUE INDEX idx_user_memberships_one_active
+             violation that occurred when trying to INSERT a second
+             'active' row for the same user. */
+          
+          /* Determine if this is a renewal after expiry.
+             If current expiry < now, update started_at to now. */
+          var isExpired = new Date(existingMembership.expires_at) <= new Date(now);
+          
+          var updateData = {
+            plan_id:    plan.id,
+            expires_at: expiresAt,
+            status:     'active',
+            auto_renew: false,
+          };
+          /* If expired: reset started_at to current purchase time */
+          if (isExpired) {
+            updateData.started_at = startsAt;
+          }
+          
           var updRes = await client
             .from('user_memberships')
-            .update({
-              plan_id:    plan.id,
-              expires_at: expiresAt,
-              status:     'active',
-              auto_renew: false,
-            })
+            .update(updateData)
             .eq('id', existingMembership.id)
             .eq('user_id', user.id)
             .select('id')
             .single();
 
           if (updRes.error) {
-            _warn('checkout', 'user_memberships UPDATE error:', updRes.error.message);
+            _err('checkout', 'user_memberships UPDATE FAILED:', {
+              message: updRes.error.message,
+              code:    updRes.error.code,
+              hint:    updRes.error.hint,
+              details: updRes.error.details,
+            });
           } else {
             membershipId = updRes.data && updRes.data.id;
-            _log('checkout', 'user_memberships extended:', membershipId);
+            membershipWriteOk = true;
+            _log('checkout', 'user_memberships UPDATED:', {
+              id: membershipId,
+              expires_at: expiresAt,
+              isExpired: isExpired,
+              started_at: isExpired ? startsAt : '(unchanged)'
+            });
           }
         } else {
-          /* Insert new membership */
+          /* INSERT new membership (first-time buyer) */
           var insRes = await client
             .from('user_memberships')
             .insert({
@@ -416,15 +465,28 @@
               code:    insRes.error.code,
               hint:    insRes.error.hint,
               details: insRes.error.details,
-              insert:  { user_id: user.id, plan_id: plan.id, status:'active', started_at: startsAt, expires_at: expiresAt },
             });
           } else {
             membershipId = insRes.data && insRes.data.id;
-            _log('checkout', 'user_memberships created:', membershipId);
+            membershipWriteOk = true;
+            _log('checkout', 'user_memberships CREATED:', membershipId);
           }
         }
       } catch (e) {
-        _warn('checkout', 'user_memberships write exception:', e);
+        _err('checkout', 'user_memberships write exception:', e);
+      }
+
+      /* HARD ABORT: If membership write failed, do NOT insert transaction
+         or dispatch activation. Show error and return. */
+      if (!membershipWriteOk) {
+        _btnRestore(triggerBtn);
+        _toast(
+          '⚠️ Payment received but membership activation failed. ' +
+          'Please contact support with Payment ID: ' + paymentResponse.payment_id,
+          'error'
+        );
+        _err('checkout', 'ABORTED: membership write failed. Transaction NOT recorded. Payment ID:', paymentResponse.payment_id);
+        return;
       }
 
       /* ── 9. Insert membership_transactions (immutable receipt) ── */
@@ -478,8 +540,53 @@
         _warn('checkout', 'membership_transactions write exception:', e);
       }
 
-      /* ── 10. Bust caches ─────────────────────────────────────── */
+      /* ── 10. Bust ALL caches + inject new membership state ───────
+         Previously only cleared window._dashCache. SMCI._state,
+         P5D._cache, and Premium Library tab state were NOT invalidated.
+         The user had to refresh/logout to see updated status.
+         
+         FIX: Invalidate everything and inject the new membership
+         status directly into SMCI — no re-fetch needed.
+      */
+      // Dashboard cache
       if (typeof window._dashCache !== 'undefined') window._dashCache = null;
+
+      // SMCI: inject the new membership state directly (no Supabase re-fetch)
+      if (window.SMCI && typeof window.SMCI._injectStatus === 'function') {
+        window.SMCI._injectStatus({
+          isPremium:  true,
+          status:     'active',
+          planName:   plan.name,
+          planSlug:   planSlug,
+          expiresAt:  expiresAt,
+        });
+        _log('checkout', 'SMCI state injected: isPremium=true, expiresAt=', expiresAt);
+      }
+
+      // SMCI: also refresh badges + home shelf
+      if (window.SMCI && typeof window.SMCI.syncAll === 'function') {
+        // syncAll with force=false will use the injected state (no re-fetch)
+        window.SMCI.syncAll(false).catch(function() {});
+      }
+
+      // P5D: bust cache
+      if (window.P5D && typeof window.P5D.refreshBadges === 'function') {
+        try { window.P5D.refreshBadges(); } catch(_) {}
+      }
+
+      // If user is on My Library → Premium sub-tab, re-render it
+      if (typeof window.librarySubTab !== 'undefined' && window.librarySubTab === 'premium') {
+        if (typeof window.switchLibrarySubTab === 'function') {
+          window.switchLibrarySubTab('premium');
+        }
+      }
+
+      // Dispatch status update event for any other listeners
+      try {
+        window.dispatchEvent(new CustomEvent('smci:statusUpdated', {
+          detail: { isPremium: true, status: 'active', planName: plan.name, expiresAt: expiresAt }
+        }));
+      } catch(_) {}
 
       /* ── 11. Success UI ──────────────────────────────────────── */
       _btnSuccess(triggerBtn);

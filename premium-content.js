@@ -55,6 +55,16 @@
   ──────────────────────────────────────────────────────────────────*/
   async function _fetchStatus() {
     var client = _sb(), uid = _uid();
+    /* FALLBACK: if window.currentUser is not set, get UID from Supabase auth session.
+       This fixes the bug where SMCI returns isPremium=false even for active members
+       because window.currentUser hasn't been populated yet. */
+    if (!uid && client) {
+      try {
+        var authRes = await client.auth.getUser();
+        uid = authRes && authRes.data && authRes.data.user ? authRes.data.user.id : null;
+        if (uid) _log('_fetchStatus: got UID from auth.getUser() (window.currentUser was null)');
+      } catch(_) {}
+    }
     if (!client || !uid) {
       Object.assign(_state, { isPremium: false, status: 'none', planName: 'Free',
         planSlug: null, expiresAt: null, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
@@ -586,15 +596,31 @@
 
   function _onActivated(e) {
     _log('membership:activated', e && e.detail);
-    _state.fetchedAt = 0;
-    _catCache.fetchedAt = 0;
-    syncAll(true).then(function(s) {
-      if (s.isPremium) {
-        _toast('👑 Premium active! All Premium Notes unlocked.', 'success');
-        /* Refresh home premium shelf if user is on home page */
-        setTimeout(function() { renderHomePremiumShelf(true); }, 400);
-      }
-    });
+    var detail = e && e.detail;
+
+    /* If PPAY already injected status via _injectStatus (step 10 in checkout),
+       the cached state is fresh and correct. syncAll(false) will use it
+       without re-fetching from Supabase (avoiding _uid() timing issues).
+       Only force-refresh if _injectStatus wasn't called (old PPAY versions). */
+    if (detail && detail.expiresAt) {
+      /* PPAY already wrote to DB and injected state — just refresh badges/shelf */
+      syncAll(false).then(function(s) {
+        if (s.isPremium) {
+          _toast('👑 Premium active! All Premium Notes unlocked.', 'success');
+          setTimeout(function() { renderHomePremiumShelf(true); }, 400);
+        }
+      });
+    } else {
+      /* Fallback: force re-fetch from Supabase (legacy path) */
+      _state.fetchedAt = 0;
+      _catCache.fetchedAt = 0;
+      syncAll(true).then(function(s) {
+        if (s.isPremium) {
+          _toast('👑 Premium active! All Premium Notes unlocked.', 'success');
+          setTimeout(function() { renderHomePremiumShelf(true); }, 400);
+        }
+      });
+    }
   }
 
   /* ─────────────────────────────────────────────────────────────────
