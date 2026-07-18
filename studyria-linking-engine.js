@@ -48,7 +48,7 @@
     maxFooterLinks: 8,        // max dynamic links per footer column
     maxBreadcrumbDepth: 5,    // max breadcrumb levels
     cacheTTL: 5 * 60 * 1000,  // 5 minutes
-    renderDelay: 300,          // ms after navigate to inject
+    renderDelay: 500,          // ms after navigate to inject
     debounceMs: 150,          // debounce for rapid navigations
     enableBreadcrumbs: true,
     enableRelatedContent: true,
@@ -1407,6 +1407,33 @@
       context.subject_id = selectedPdf.subject_id;
     }
 
+    // Fallback: if detail page but selectedPdf not ready, wait and retry
+    if (page === 'detail' && (typeof selectedPdf === 'undefined' || !selectedPdf)) {
+      var _retryCount = 0;
+      var _retryTimer = setInterval(function() {
+        _retryCount++;
+        if (typeof selectedPdf !== 'undefined' && selectedPdf && document.getElementById('pdpWrap')) {
+          clearInterval(_retryTimer);
+          if (_currentPage === 'detail') _dispatch('detail');
+        }
+        if (_retryCount > 10) clearInterval(_retryTimer); // 5s timeout
+      }, 500);
+      return;
+    }
+
+    // Fallback: if detail page and pdpWrap not yet rendered, wait for it
+    if (page === 'detail' && !document.getElementById('pdpWrap')) {
+      var _pdpObserver = new MutationObserver(function(mutations, obs) {
+        if (document.getElementById('pdpWrap')) {
+          obs.disconnect();
+          if (_currentPage === 'detail') _dispatch('detail');
+        }
+      });
+      _pdpObserver.observe(document.body, { childList: true, subtree: true });
+      setTimeout(function() { _pdpObserver.disconnect(); }, 5000);
+      return;
+    }
+
     // Dispatch to page-specific injector
     try {
       switch (page) {
@@ -1472,7 +1499,8 @@
 
     // Hook into navigate via studyria:navigate custom event
     document.addEventListener('studyria:navigate', function (e) {
-      var page = e.detail || e.page || window.currentPage;
+      var detail = e.detail || {};
+      var page = (typeof detail === 'string') ? detail : (detail.page || e.page || window.currentPage);
       if (!page) return;
 
       // Debounce rapid navigations
