@@ -4956,10 +4956,17 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": ["EducationalOrganization", "Organization"],
+  "@type": [
+    "EducationalOrganization",
+    "Organization"
+  ],
   "@id": "https://studyria.qzz.io/#organization",
   "name": "Studyria",
-  "alternateName": ["Studyria India", "Studyria – Assam's #1 PDF Study Platform", "Studyria Education"],
+  "alternateName": [
+    "Studyria India",
+    "Studyria – Assam's #1 PDF Study Platform",
+    "Studyria Education"
+  ],
   "legalName": "Studyria",
   "url": "https://studyria.qzz.io",
   "logo": {
@@ -4973,12 +4980,13 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   },
   "image": {
     "@type": "ImageObject",
+    "@id": "https://studyria.qzz.io/#og-image",
     "url": "https://studyria.qzz.io/og-cover.png",
     "width": 1200,
     "height": 630,
-    "caption": "Studyria – Assam's #1 PDF Study Platform for ADRE, APSC, Assam Police & State Exams"
+    "caption": "Studyria – Free & Premium PDF Study Materials for Assam Exams"
   },
-  "description": "Studyria is Assam's leading digital education platform providing free and premium PDF study materials, career alerts, and exam preparation resources for students preparing for ADRE, APSC, Assam Police, Assam TET, HSLC, HS and all Assam state competitive exams. Founded in 2024 in Nalbari, Assam.",
+  "description": "Studyria is Assam's leading digital education platform providing free and premium PDF study materials, career alerts, and exam preparation resources for ADRE, APSC, Assam Police, Assam TET, HSLC, HS and all Assam competitive exams. Founded in 2024 in Nalbari, Assam.",
   "slogan": "Assam's #1 Smart Education Platform",
   "foundingDate": "2024",
   "foundingLocation": {
@@ -4990,6 +4998,15 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
       "addressRegion": "Assam",
       "addressCountry": "IN",
       "postalCode": "781335"
+    }
+  },
+  "founder": {
+    "@type": "Person",
+    "@id": "https://studyria.qzz.io/#founder-pkd",
+    "name": "PKD",
+    "jobTitle": "Founder & Creator",
+    "worksFor": {
+      "@id": "https://studyria.qzz.io/#organization"
     }
   },
   "address": {
@@ -5005,8 +5022,27 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     "longitude": "91.4301"
   },
   "areaServed": [
-    { "@type": "Country", "name": "India", "sameAs": "https://www.wikidata.org/wiki/Q668" },
-    { "@type": "State", "name": "Assam", "sameAs": "https://www.wikidata.org/wiki/Q1444" }
+    {
+      "@type": "Country",
+      "name": "India",
+      "sameAs": "https://www.wikidata.org/wiki/Q668"
+    },
+    {
+      "@type": "State",
+      "name": "Assam",
+      "sameAs": "https://www.wikidata.org/wiki/Q1444"
+    }
+  ],
+  "educationalLevel": "Competitive Exam, Secondary, Higher Secondary",
+  "teaches": [
+    "ADRE Exam Preparation",
+    "APSC Exam Preparation",
+    "Assam Police Exam Preparation",
+    "Assam TET Preparation",
+    "HSLC Board Exam",
+    "HS Board Exam",
+    "SSC Exam Preparation",
+    "Assam Current Affairs"
   ],
   "knowsAbout": [
     "ADRE – Assam Direct Recruitment Exam",
@@ -5018,48 +5054,118 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     "SSC – Staff Selection Commission",
     "Assam competitive exam preparation",
     "Free PDF study materials for Assam exams",
-    "Assam government jobs and recruitment",
+    "Assam government jobs",
     "Assam Current Affairs",
     "ADRE 3.0 exam preparation 2026"
   ],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "Studyria PDF Study Materials",
+    "name": "Studyria PDF Study Materials & Services",
     "itemListElement": [
-      { "@type": "Offer", "itemOffered": { "@type": "LearningResource", "name": "ADRE Study PDFs", "url": "https://studyria.qzz.io/?page=library&cat=ADRE" } },
-      { "@type": "Offer", "itemOffered": { "@type": "LearningResource", "name": "APSC Study PDFs", "url": "https://studyria.qzz.io/?page=library&cat=APSC" } },
-      { "@type": "Offer", "itemOffered": { "@type": "LearningResource", "name": "Assam Police Exam PDFs", "url": "https://studyria.qzz.io/?page=library&cat=Assam+Police" } },
-      { "@type": "Offer", "itemOffered": { "@type": "LearningResource", "name": "Assam TET PDFs", "url": "https://studyria.qzz.io/?page=library&cat=Assam+TET" } },
-      { "@type": "Offer", "itemOffered": { "@type": "LearningResource", "name": "Premium Membership", "url": "https://studyria.qzz.io/?page=premium" } }
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "LearningResource",
+          "name": "ADRE Study PDFs",
+          "url": "https://studyria.qzz.io/?page=library&cat=ADRE"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "LearningResource",
+          "name": "APSC Study PDFs",
+          "url": "https://studyria.qzz.io/?page=library&cat=APSC"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "LearningResource",
+          "name": "Assam Police PDFs",
+          "url": "https://studyria.qzz.io/?page=library&cat=Assam+Police"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "LearningResource",
+          "name": "Assam TET PDFs",
+          "url": "https://studyria.qzz.io/?page=library&cat=Assam+TET"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Career Hub – Assam Job Alerts",
+          "url": "https://studyria.qzz.io/?page=career-hub"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Premium Membership",
+          "url": "https://studyria.qzz.io/?page=premium"
+        }
+      }
     ]
   },
+  "department": [
+    {
+      "@type": "EducationalOrganization",
+      "name": "Studyria PDF Library",
+      "url": "https://studyria.qzz.io/?page=library"
+    },
+    {
+      "@type": "EducationalOrganization",
+      "name": "Studyria Career Hub",
+      "url": "https://studyria.qzz.io/?page=career-hub"
+    },
+    {
+      "@type": "EducationalOrganization",
+      "name": "Studyria Premium",
+      "url": "https://studyria.qzz.io/?page=premium"
+    }
+  ],
   "contactPoint": [
     {
       "@type": "ContactPoint",
       "contactType": "customer support",
       "email": "studyria24@gmail.com",
       "telephone": "+91-8011267054",
-      "availableLanguage": ["English", "Assamese"],
-      "areaServed": "IN",
-      "contactOption": "TollFree"
+      "availableLanguage": [
+        "English",
+        "Assamese"
+      ],
+      "areaServed": "IN"
     },
     {
       "@type": "ContactPoint",
       "contactType": "technical support",
       "url": "https://t.me/studyria",
-      "availableLanguage": ["English", "Assamese"]
+      "availableLanguage": [
+        "English",
+        "Assamese"
+      ]
     }
   ],
   "sameAs": [
+    "https://studyria.qzz.io/",
     "https://instagram.com/studyria.official",
     "https://facebook.com/studyria",
     "https://youtube.com/@studyria",
     "https://t.me/studyria",
-    "https://twitter.com/studyria"
+    "https://twitter.com/studyria",
+    "https://github.com/newgols51-pixel"
   ],
-  "numberOfEmployees": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 10 },
+  "numberOfEmployees": {
+    "@type": "QuantitativeValue",
+    "minValue": 1,
+    "maxValue": 10
+  },
   "publishingPrinciples": "https://studyria.qzz.io/?page=about",
-  "ethicsPolicy": "https://studyria.qzz.io/?page=privacy",
   "privacyPolicy": "https://studyria.qzz.io/?page=privacy",
   "termsOfService": "https://studyria.qzz.io/?page=terms"
 }
@@ -5073,19 +5179,59 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "@id": "https://studyria.qzz.io/#website",
   "url": "https://studyria.qzz.io/",
   "name": "Studyria",
-  "alternateName": "Studyria – Assam's #1 PDF Study Platform",
+  "alternateName": [
+    "Studyria India",
+    "Studyria – Assam's #1 PDF Study Platform"
+  ],
   "description": "Free and premium PDF study materials for ADRE, APSC, Assam Police and all Assam competitive exams. Career Hub, job alerts, scholarships and more.",
-  "inLanguage": ["en-IN", "en"],
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "inLanguage": [
+    "en-IN",
+    "en",
+    "as"
+  ],
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "author": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
   "copyrightYear": "2026",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://studyria.qzz.io/?page=library&q={search_term_string}"
+  "copyrightHolder": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "hasPart": [
+    {
+      "@id": "https://studyria.qzz.io/#webapp"
     },
-    "query-input": "required name=search_term_string"
-  }
+    {
+      "@id": "https://studyria.qzz.io/?page=library#collection"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=career-hub#careerhub"
+    }
+  ],
+  "potentialAction": [
+    {
+      "@type": "SearchAction",
+      "@id": "https://studyria.qzz.io/#pdf-search-action",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://studyria.qzz.io/?page=library&q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string",
+      "description": "Search PDF study materials on Studyria"
+    },
+    {
+      "@type": "SearchAction",
+      "@id": "https://studyria.qzz.io/#career-search-action",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://studyria.qzz.io/?page=career-hub&q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string",
+      "description": "Search Assam jobs and career opportunities on Studyria"
+    }
+  ]
 }
 </script>
 
@@ -5135,23 +5281,55 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "headline": "Download Free & Premium PDF Study Materials for ADRE, APSC, Assam Police & State Exams",
   "description": "Download free & premium PDF study materials for ADRE, APSC, Assam Police & all Assam competitive exams. Career Hub, job alerts, scholarships & more.",
   "inLanguage": "en-IN",
-  "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
-  "about": { "@id": "https://studyria.qzz.io/#organization" },
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
   "breadcrumb": {
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://studyria.qzz.io/" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      }
     ]
   },
   "primaryImageOfPage": {
     "@type": "ImageObject",
+    "@id": "https://studyria.qzz.io/#og-image",
     "url": "https://studyria.qzz.io/og-cover.png",
     "width": 1200,
     "height": 630
   },
   "datePublished": "2024-01-01",
-  "dateModified": "2026-06-27",
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" }
+  "dateModified": "2026-07-18",
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+      ".hero-title",
+      ".hero-subtitle",
+      "h1",
+      ".stats-label"
+    ]
+  },
+  "accessibilityFeature": [
+    "alternativeText",
+    "readingOrder",
+    "structuralNavigation"
+  ],
+  "accessibilityHazard": "none",
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student",
+    "geographicArea": "Assam, India"
+  }
 }
 </script>
 
@@ -5229,17 +5407,65 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "@type": "CollectionPage",
   "@id": "https://studyria.qzz.io/?page=library#collection",
   "url": "https://studyria.qzz.io/?page=library",
-  "name": "Studyria PDF Library – Free Study Materials",
-  "description": "Browse free and premium PDF study materials for ADRE, APSC, Assam Police and all Assam competitive exams.",
-  "inLanguage": "en-IN",
-  "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
-  "about": [
-    { "@type": "Thing", "name": "ADRE question papers" },
-    { "@type": "Thing", "name": "APSC study PDF" },
-    { "@type": "Thing", "name": "Assam Police exam PDF" },
-    { "@type": "Thing", "name": "Assam board exam notes" }
+  "name": "Studyria PDF Library – Free Study Materials for Assam Exams",
+  "headline": "Browse 100+ Free & Premium PDF Study Notes for ADRE, APSC, Assam Police & All Assam Exams",
+  "description": "Browse free and premium PDF study materials for ADRE, APSC, Assam Police, Assam TET, HSLC, HS, SSC and all Assam competitive exams. Search, filter by category and download instantly.",
+  "inLanguage": [
+    "en-IN",
+    "as"
   ],
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" }
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": [
+    {
+      "@type": "Thing",
+      "name": "ADRE question papers"
+    },
+    {
+      "@type": "Thing",
+      "name": "APSC study PDF"
+    },
+    {
+      "@type": "Thing",
+      "name": "Assam Police exam PDF"
+    },
+    {
+      "@type": "Thing",
+      "name": "Assam board exam notes"
+    }
+  ],
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "provider": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "dateModified": "2026-07-18",
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://studyria.qzz.io/og-cover.png"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Library",
+        "item": "https://studyria.qzz.io/?page=library"
+      }
+    ]
+  },
+  "mainEntity": {
+    "@id": "https://studyria.qzz.io/?page=library#learning-resources"
+  }
 }
 </script>
 
@@ -5412,15 +5638,39 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "headline": "About Studyria – Our Story, Mission, and Team",
   "description": "Learn about Studyria — Assam's leading digital education platform. Founded in 2024 in Nalbari, Assam to democratise access to quality study materials for ADRE, APSC, Assam Police and all Assam competitive exams.",
   "inLanguage": "en-IN",
-  "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
-  "about": { "@id": "https://studyria.qzz.io/#organization" },
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "dateModified": "2026-07-18",
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://studyria.qzz.io/og-cover.png"
+  },
   "breadcrumb": {
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://studyria.qzz.io/" },
-      { "@type": "ListItem", "position": 2, "name": "About", "item": "https://studyria.qzz.io/?page=about" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About",
+        "item": "https://studyria.qzz.io/?page=about"
+      }
     ]
+  },
+  "mainEntity": {
+    "@id": "https://studyria.qzz.io/#organization"
   }
 }
 </script>
@@ -5435,9 +5685,16 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "name": "Contact Studyria – Support & Inquiries",
   "description": "Contact Studyria for support, partnership inquiries, creator program questions, or content feedback. Reach us via email, WhatsApp, or Telegram.",
   "inLanguage": "en-IN",
-  "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
-  "about": { "@id": "https://studyria.qzz.io/#organization" },
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "dateModified": "2026-07-18",
   "mainEntity": {
     "@type": "Organization",
     "@id": "https://studyria.qzz.io/#organization",
@@ -5447,10 +5704,20 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
         "contactType": "customer support",
         "email": "studyria24@gmail.com",
         "telephone": "+91-8011267054",
-        "availableLanguage": ["English", "Assamese"],
+        "availableLanguage": [
+          "English",
+          "Assamese"
+        ],
         "hoursAvailable": {
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
           "opens": "09:00",
           "closes": "18:00"
         },
@@ -5460,16 +5727,28 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
         "@type": "ContactPoint",
         "contactType": "technical support",
         "url": "https://t.me/studyria",
-        "availableLanguage": ["English", "Assamese"],
-        "areaServed": "IN"
+        "availableLanguage": [
+          "English",
+          "Assamese"
+        ]
       }
     ]
   },
   "breadcrumb": {
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://studyria.qzz.io/" },
-      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://studyria.qzz.io/?page=contact" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Contact",
+        "item": "https://studyria.qzz.io/?page=contact"
+      }
     ]
   }
 }
@@ -5486,21 +5765,59 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "headline": "Latest Assam Government Jobs, Exam Results, Scholarships & Admit Cards 2026",
   "description": "Daily-updated Assam government job alerts, state and central recruitment notifications, exam result announcements, scholarship listings, and admit card releases. Free for all students.",
   "inLanguage": "en-IN",
-  "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
   "about": [
-    { "@type": "Thing", "name": "Assam government jobs 2026" },
-    { "@type": "Thing", "name": "Assam exam results 2026" },
-    { "@type": "Thing", "name": "Assam scholarship 2026" },
-    { "@type": "Thing", "name": "Assam admit card 2026" },
-    { "@type": "Thing", "name": "Central government recruitment" }
+    {
+      "@type": "Thing",
+      "name": "Assam government jobs 2026"
+    },
+    {
+      "@type": "Thing",
+      "name": "Assam exam results 2026"
+    },
+    {
+      "@type": "Thing",
+      "name": "Assam scholarship 2026"
+    },
+    {
+      "@type": "Thing",
+      "name": "Assam admit card 2026"
+    }
   ],
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "provider": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
   "dateModified": "2026-07-18",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+      ".career-hub-title",
+      ".job-card-title",
+      ".latest-jobs-heading",
+      "h1",
+      "h2"
+    ]
+  },
   "breadcrumb": {
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://studyria.qzz.io/" },
-      { "@type": "ListItem", "position": 2, "name": "Career Hub", "item": "https://studyria.qzz.io/?page=career-hub" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Career Hub",
+        "item": "https://studyria.qzz.io/?page=career-hub"
+      }
     ]
   }
 }
@@ -5515,28 +5832,61 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "name": "Studyria Premium Membership",
   "description": "Unlock all premium PDF study materials on Studyria with a single membership. Get instant access to exclusive handwritten notes, model papers, and premium question banks for ADRE, APSC, Assam Police, Assam TET and all Assam competitive exams.",
   "url": "https://studyria.qzz.io/?page=premium",
-  "image": "https://studyria.qzz.io/og-cover.png",
-  "brand": { "@id": "https://studyria.qzz.io/#organization" },
-  "category": "Educational Subscription / Learning Resource Access",
+  "image": {
+    "@type": "ImageObject",
+    "@id": "https://studyria.qzz.io/#og-image"
+  },
+  "brand": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "category": "Educational Subscription",
   "audience": {
     "@type": "Audience",
     "audienceType": "Students preparing for Assam competitive exams",
-    "geographicArea": { "@type": "State", "name": "Assam", "addressCountry": "IN" }
+    "geographicArea": {
+      "@type": "State",
+      "name": "Assam",
+      "addressCountry": "IN"
+    }
   },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "INR",
     "availability": "https://schema.org/InStock",
-    "seller": { "@id": "https://studyria.qzz.io/#organization" },
+    "seller": {
+      "@id": "https://studyria.qzz.io/#organization"
+    },
     "url": "https://studyria.qzz.io/?page=premium",
-    "description": "Full access to all premium handwritten notes and PDFs. Check the Premium page for current pricing."
+    "description": "Full access to all premium handwritten notes and PDFs."
   },
   "additionalProperty": [
-    { "@type": "PropertyValue", "name": "Access Type", "value": "All Premium PDFs" },
-    { "@type": "PropertyValue", "name": "Content Type", "value": "Handwritten Notes, Model Papers, Previous Year Papers" },
-    { "@type": "PropertyValue", "name": "Exams Covered", "value": "ADRE, APSC, Assam Police, Assam TET, HSLC, HS, SSC" },
-    { "@type": "PropertyValue", "name": "Reading", "value": "In-app PDF Reader with offline access" }
-  ]
+    {
+      "@type": "PropertyValue",
+      "name": "Access Type",
+      "value": "All Premium PDFs"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Content Type",
+      "value": "Handwritten Notes, Model Papers, Previous Year Papers"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Exams Covered",
+      "value": "ADRE, APSC, Assam Police, Assam TET, HSLC, HS, SSC"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Reading",
+      "value": "In-app PDF Reader with offline access"
+    }
+  ],
+  "isRelatedTo": {
+    "@id": "https://studyria.qzz.io/?page=library#collection"
+  },
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  }
 }
 </script>
 
@@ -5617,6 +5967,475 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   ]
 }
 </script>
+
+
+
+<!-- 16. DefinedTermSet — Exam Taxonomy -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "@id": "https://studyria.qzz.io/#exam-taxonomy",
+  "name": "Assam Competitive Exams",
+  "description": "A comprehensive taxonomy of Assam state and national competitive examinations covered by Studyria study materials.",
+  "url": "https://studyria.qzz.io/?page=library",
+  "inLanguage": [
+    "en-IN",
+    "as"
+  ],
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "hasPart": [
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=ADRE#adre-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=APSC#apsc-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=Assam+Police#police-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=Assam+TET#tet-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=HSLC#hslc-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=HS#hs-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=SSC#ssc-entity"
+    },
+    {
+      "@id": "https://studyria.qzz.io/?page=library&cat=Current+Affairs#ca-entity"
+    }
+  ]
+}
+</script>
+
+<!-- 17. DefinedTermSet — School Subjects -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "@id": "https://studyria.qzz.io/#subject-taxonomy",
+  "name": "School & Competitive Exam Subjects",
+  "description": "Academic subjects and topics covered in Studyria study materials for Assam board and competitive exams.",
+  "url": "https://studyria.qzz.io/?page=library",
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "hasPart": [
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-gk",
+      "name": "General Knowledge",
+      "description": "General knowledge and current affairs for Assam and India.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-assam-gk",
+      "name": "Assam GK",
+      "description": "Assam-specific general knowledge covering history, culture, geography, economy, and polity of Assam.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-reasoning",
+      "name": "Reasoning & Mental Ability",
+      "description": "Logical reasoning, mental ability, and analytical reasoning for competitive exams.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-english",
+      "name": "English Language",
+      "description": "English grammar, comprehension, vocabulary, and writing for Assam competitive exams.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-maths",
+      "name": "Mathematics",
+      "description": "Quantitative aptitude, arithmetic, and advanced mathematics for board and competitive exams.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-science",
+      "name": "General Science",
+      "description": "Physics, chemistry, biology, and environmental science for Assam competitive exams.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-ca",
+      "name": "Current Affairs",
+      "description": "Monthly current affairs compilation covering Assam, India, and world events for competitive exams.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "@id": "https://studyria.qzz.io/#subj-computer",
+      "name": "Computer Knowledge",
+      "description": "Basic computer science, digital literacy, MS Office, and internet fundamentals.",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#subject-taxonomy"
+      }
+    }
+  ]
+}
+</script>
+
+<!-- 18. DefinedTermSet — Government Jobs -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "@id": "https://studyria.qzz.io/#job-taxonomy",
+  "name": "Government Jobs Categories",
+  "description": "Categories of government job notifications listed in Studyria Career Hub.",
+  "url": "https://studyria.qzz.io/?page=career-hub",
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "hasPart": [
+    {
+      "@type": "DefinedTerm",
+      "name": "Assam State Government Jobs",
+      "description": "Recruitment notifications from Assam state government departments.",
+      "url": "https://studyria.qzz.io/?page=career-hub&tab=jobs",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#job-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "Central Government Jobs",
+      "description": "Recruitment notifications from central government and PSU organizations.",
+      "url": "https://studyria.qzz.io/?page=career-hub&tab=jobs",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#job-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "Scholarships",
+      "description": "Scholarship schemes for students in Assam and India.",
+      "url": "https://studyria.qzz.io/?page=career-hub&tab=scholarships",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#job-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "Exam Results",
+      "description": "Assam and national competitive exam result announcements.",
+      "url": "https://studyria.qzz.io/?page=career-hub&tab=results",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#job-taxonomy"
+      }
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "Admit Cards",
+      "description": "Admit card release notifications for Assam and national exams.",
+      "url": "https://studyria.qzz.io/?page=career-hub&tab=admit-cards",
+      "inDefinedTermSet": {
+        "@id": "https://studyria.qzz.io/#job-taxonomy"
+      }
+    }
+  ]
+}
+</script>
+
+<!-- 19. ProfilePage — Creator/Author template -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": "https://studyria.qzz.io/?page=creator-dashboard#profile",
+  "url": "https://studyria.qzz.io/?page=creator-dashboard",
+  "name": "Studyria Creator Dashboard",
+  "description": "Creator and author profiles on Studyria. Educators and subject-matter experts who publish study materials for Assam competitive exams.",
+  "inLanguage": "en-IN",
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Creator Dashboard",
+        "item": "https://studyria.qzz.io/?page=creator-dashboard"
+      }
+    ]
+  }
+}
+</script>
+
+<!-- 20. Premium Library CollectionPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://studyria.qzz.io/?page=premium-library#collection",
+  "url": "https://studyria.qzz.io/?page=premium-library",
+  "name": "Studyria Premium Library – Exclusive Handwritten Notes",
+  "headline": "Access All Premium Handwritten Notes for ADRE, APSC & Assam Exams",
+  "description": "Exclusive premium handwritten PDF notes for ADRE, APSC, Assam Police, Assam TET and all Assam competitive exams. Available to premium members only.",
+  "inLanguage": [
+    "en-IN",
+    "as"
+  ],
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": [
+    {
+      "@type": "Thing",
+      "name": "Premium Handwritten Notes"
+    },
+    {
+      "@type": "Thing",
+      "name": "ADRE premium study notes"
+    },
+    {
+      "@type": "Thing",
+      "name": "APSC premium notes"
+    }
+  ],
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "isAccessibleForFree": false,
+  "dateModified": "2026-07-18",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Premium",
+        "item": "https://studyria.qzz.io/?page=premium"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Premium Library",
+        "item": "https://studyria.qzz.io/?page=premium-library"
+      }
+    ]
+  }
+}
+</script>
+
+<!-- 21. Blog CollectionPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://studyria.qzz.io/?page=blog#collection",
+  "url": "https://studyria.qzz.io/?page=blog",
+  "name": "Studyria Blog – Exam Tips, Current Affairs & Study Guides",
+  "headline": "Latest Exam Tips, Monthly Current Affairs & Study Strategies for Assam Exams",
+  "description": "Read exam tips, monthly Assam current affairs digests, syllabus guides, and study strategies for ADRE, APSC, Assam Police and all Assam competitive exams.",
+  "inLanguage": [
+    "en-IN",
+    "as"
+  ],
+  "isPartOf": {
+    "@id": "https://studyria.qzz.io/#website"
+  },
+  "about": [
+    {
+      "@type": "Thing",
+      "name": "Assam Current Affairs"
+    },
+    {
+      "@type": "Thing",
+      "name": "Exam tips for ADRE APSC"
+    },
+    {
+      "@type": "Thing",
+      "name": "Study strategies Assam competitive exams"
+    }
+  ],
+  "publisher": {
+    "@id": "https://studyria.qzz.io/#organization"
+  },
+  "dateModified": "2026-07-18",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+      "h1",
+      "h2",
+      ".blog-card-title",
+      ".current-affairs-heading"
+    ]
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://studyria.qzz.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://studyria.qzz.io/?page=blog"
+      }
+    ]
+  }
+}
+</script>
+
+<!-- 22. Legal pages WebPage schemas -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://studyria.qzz.io/?page=privacy#page",
+      "url": "https://studyria.qzz.io/?page=privacy",
+      "name": "Privacy Policy – Studyria",
+      "description": "Studyria's privacy policy covering data collection, storage, use, and user rights.",
+      "isPartOf": {
+        "@id": "https://studyria.qzz.io/#website"
+      },
+      "publisher": {
+        "@id": "https://studyria.qzz.io/#organization"
+      },
+      "inLanguage": "en-IN",
+      "dateModified": "2026-07-18",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://studyria.qzz.io/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Privacy Policy",
+            "item": "https://studyria.qzz.io/?page=privacy"
+          }
+        ]
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://studyria.qzz.io/?page=terms#page",
+      "url": "https://studyria.qzz.io/?page=terms",
+      "name": "Terms of Service – Studyria",
+      "description": "Studyria's terms of service governing use of the platform, content, and premium services.",
+      "isPartOf": {
+        "@id": "https://studyria.qzz.io/#website"
+      },
+      "publisher": {
+        "@id": "https://studyria.qzz.io/#organization"
+      },
+      "inLanguage": "en-IN",
+      "dateModified": "2026-07-18",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://studyria.qzz.io/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Terms of Service",
+            "item": "https://studyria.qzz.io/?page=terms"
+          }
+        ]
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://studyria.qzz.io/?page=refund#page",
+      "url": "https://studyria.qzz.io/?page=refund",
+      "name": "Refund Policy – Studyria",
+      "description": "Studyria's refund and cancellation policy for premium memberships and individual PDF purchases.",
+      "isPartOf": {
+        "@id": "https://studyria.qzz.io/#website"
+      },
+      "publisher": {
+        "@id": "https://studyria.qzz.io/#organization"
+      },
+      "inLanguage": "en-IN",
+      "dateModified": "2026-07-18",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://studyria.qzz.io/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Refund Policy",
+            "item": "https://studyria.qzz.io/?page=refund"
+          }
+        ]
+      }
+    }
+  ]
+}
+</script>
+
 
 <style>
   [x-cloak] { display: none !important; }
@@ -14973,6 +15792,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       return;
     }
     grid.innerHTML = posts.map(_blogCardHTML).join('');
+    _injectBlogItemList(posts);
     const pageCount = Math.max(1, Math.ceil(total / s.pageSize));
     if (pager) {
       if (pageCount <= 1) { pager.innerHTML = ''; }
@@ -17159,11 +17979,14 @@ async function navigate(page) {
   }
   _pdpResetPageZoom();
 
-  // ── Reset dynamic structured data & metadata when leaving PDF detail ─
+  // ── Reset dynamic structured data & metadata on page change ─────────
   if (page !== 'detail') {
     // Remove PDF-specific JSON-LD
     const pdfLd = document.getElementById('pdfDetailLd');
     if (pdfLd) pdfLd.remove();
+    // Remove library/blog ItemList LDs when leaving those pages
+    if (page !== 'library') { const ll = document.getElementById('libItemListLd'); if (ll) ll.remove(); }
+    if (page !== 'blog')    { const bl = document.getElementById('blogListLd');    if (bl) bl.remove(); }
     // Reset breadcrumb to home
     const bcLd = document.getElementById('dynamicBreadcrumbLd');
     if (bcLd) bcLd.textContent = JSON.stringify({
@@ -17174,27 +17997,84 @@ async function navigate(page) {
       ]
     });
   }
-  // ── Update page-level metadata per route ──────────────────────────
+  // ── Update page-level metadata + WebPage JSON-LD per route ─────────
+  const _BASE = 'https://studyria.qzz.io/';
   const _pageMeta = {
-    'home':       { title: 'Studyria – Assam\'s #1 PDF Study Platform', desc: 'Download free & premium PDF study materials for ADRE, APSC, Assam Police & all Assam competitive exams. Career Hub, job alerts & more.' },
-    'library':    { title: 'PDF Library – Free Study Materials | Studyria', desc: 'Browse 100+ free and premium PDF notes for ADRE, APSC, Assam Police, Assam TET, HSLC, HS and all Assam state exams.' },
-    'career-hub': { title: 'Career Hub – Assam Jobs, Results & Scholarships | Studyria', desc: 'Latest Assam government job alerts, recruitment notifications, exam results, scholarship listings and admit cards updated daily.' },
-    'about':      { title: 'About Studyria – Assam\'s #1 PDF Study Platform', desc: 'Learn about Studyria — founded in Nalbari, Assam to democratise access to quality study materials for all Assam competitive exams.' },
-    'contact':    { title: 'Contact Studyria – Support & Inquiries', desc: 'Contact Studyria for support, partnership or creator program inquiries. Reach us via email, WhatsApp or Telegram.' },
-    'premium':    { title: 'Premium Membership – Unlock All PDFs | Studyria', desc: 'Get unlimited access to all premium handwritten notes and PDFs for ADRE, APSC, Assam Police and all Assam competitive exams.' },
-    'blog':       { title: 'Blog – Exam Tips, Current Affairs & Study Guides | Studyria', desc: 'Read exam tips, monthly current affairs digests, syllabus guides and study strategies for Assam and national competitive exams.' },
+    'home':           { title: 'Studyria – Assam\'s #1 PDF Study Platform', desc: 'Download free & premium PDF study materials for ADRE, APSC, Assam Police & all Assam competitive exams. Career Hub, job alerts & more.', type: 'WebPage', url: _BASE },
+    'library':        { title: 'PDF Library – Free Study Materials | Studyria', desc: 'Browse 100+ free and premium PDF notes for ADRE, APSC, Assam Police, Assam TET, HSLC, HS and all Assam state exams.', type: 'CollectionPage', url: _BASE + '?page=library' },
+    'premium-library':{ title: 'Premium Library – Exclusive Handwritten Notes | Studyria', desc: 'Access all premium handwritten PDF notes for ADRE, APSC, Assam Police and all Assam competitive exams. Premium members only.', type: 'CollectionPage', url: _BASE + '?page=premium-library' },
+    'career-hub':     { title: 'Career Hub – Assam Jobs, Results & Scholarships | Studyria', desc: 'Latest Assam government job alerts, recruitment notifications, exam results, scholarship listings and admit cards updated daily.', type: 'CollectionPage', url: _BASE + '?page=career-hub' },
+    'about':          { title: 'About Studyria – Assam\'s #1 PDF Study Platform', desc: 'Learn about Studyria — founded in Nalbari, Assam to democratise access to quality study materials for all Assam competitive exams.', type: 'AboutPage', url: _BASE + '?page=about' },
+    'contact':        { title: 'Contact Studyria – Support & Inquiries', desc: 'Contact Studyria for support, partnership or creator program inquiries. Reach us via email, WhatsApp or Telegram.', type: 'ContactPage', url: _BASE + '?page=contact' },
+    'premium':        { title: 'Premium Membership – Unlock All PDFs | Studyria', desc: 'Get unlimited access to all premium handwritten notes and PDFs for ADRE, APSC, Assam Police and all Assam competitive exams.', type: 'WebPage', url: _BASE + '?page=premium' },
+    'blog':           { title: 'Blog – Exam Tips, Current Affairs & Study Guides | Studyria', desc: 'Read exam tips, monthly current affairs digests, syllabus guides and study strategies for Assam and national competitive exams.', type: 'CollectionPage', url: _BASE + '?page=blog' },
+    'privacy':        { title: 'Privacy Policy – Studyria', desc: 'Studyria privacy policy: how we collect, use, and protect your data.', type: 'WebPage', url: _BASE + '?page=privacy' },
+    'terms':          { title: 'Terms of Service – Studyria', desc: 'Terms of service governing use of the Studyria platform, content, and premium services.', type: 'WebPage', url: _BASE + '?page=terms' },
+    'refund':         { title: 'Refund Policy – Studyria', desc: 'Refund and cancellation policy for Studyria premium memberships and individual PDF purchases.', type: 'WebPage', url: _BASE + '?page=refund' },
+    'login':          { title: 'Login – Studyria', desc: 'Sign in to your Studyria account to access your library, premium notes, and reading history.', type: 'WebPage', url: _BASE + '?page=login' },
+    'register':       { title: 'Create Account – Studyria', desc: 'Create a free Studyria account to download PDFs, track reading progress, and access premium study materials.', type: 'WebPage', url: _BASE + '?page=register' },
+    'dashboard':      { title: 'My Dashboard – Studyria', desc: 'Your Studyria personal dashboard: my library, wishlist, reading history, and account settings.', type: 'WebPage', url: _BASE + '?page=dashboard' },
+    'wishlist':       { title: 'My Wishlist – Studyria', desc: 'Your saved PDFs and study materials on Studyria.', type: 'WebPage', url: _BASE + '?page=wishlist' },
+    'creator-register': { title: 'Become a Creator – Studyria', desc: 'Publish your study materials on Studyria and earn up to 80% revenue share. Join Studyria as a creator today.', type: 'WebPage', url: _BASE + '?page=creator-register' },
+    'creator-dashboard': { title: 'Creator Dashboard – Studyria', desc: 'Manage your published PDFs, track sales, and monitor earnings on Studyria.', type: 'ProfilePage', url: _BASE + '?page=creator-dashboard' },
   };
   if (page !== 'detail' && _pageMeta[page]) {
     const m = _pageMeta[page];
     document.title = m.title;
-    const descEl = document.querySelector('meta[name="description"]');
+    const descEl  = document.querySelector('meta[name="description"]');
     const ogTitle = document.querySelector('meta[property="og:title"]');
     const ogDesc  = document.querySelector('meta[property="og:description"]');
     const canon   = document.querySelector('link[rel="canonical"]');
     if (descEl)  descEl.setAttribute('content', m.desc);
     if (ogTitle) ogTitle.setAttribute('content', m.title);
     if (ogDesc)  ogDesc.setAttribute('content', m.desc);
-    if (canon)   canon.href = 'https://studyria.qzz.io/' + (page !== 'home' ? '?page=' + page : '');
+    if (canon)   canon.href = m.url;
+
+    // Inject dynamic WebPage / CollectionPage JSON-LD for this route
+    let dynLd = document.getElementById('dynPageLd');
+    if (!dynLd) {
+      dynLd = document.createElement('script');
+      dynLd.type = 'application/ld+json';
+      dynLd.id = 'dynPageLd';
+      document.head.appendChild(dynLd);
+    }
+    const now = new Date().toISOString().split('T')[0];
+    dynLd.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': m.type,
+      '@id': m.url + '#page',
+      'url': m.url,
+      'name': m.title,
+      'description': m.desc,
+      'inLanguage': 'en-IN',
+      'isPartOf': { '@id': 'https://studyria.qzz.io/#website' },
+      'publisher': { '@id': 'https://studyria.qzz.io/#organization' },
+      'dateModified': now,
+      'breadcrumb': {
+        '@type': 'BreadcrumbList',
+        'itemListElement': page === 'home' ? [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': _BASE }
+        ] : [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': _BASE },
+          { '@type': 'ListItem', 'position': 2, 'name': m.title.split('–')[0].trim(), 'item': m.url }
+        ]
+      }
+    });
+
+    // Also update dynamic breadcrumb LD
+    const bcLd = document.getElementById('dynamicBreadcrumbLd');
+    if (bcLd) {
+      bcLd.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': page === 'home' ? [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': _BASE }
+        ] : [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': _BASE },
+          { '@type': 'ListItem', 'position': 2, 'name': m.title.split('–')[0].trim(), 'item': m.url }
+        ]
+      });
+    }
   }
 
   // ── Already signed in? Don't show the login/register screen ─────
@@ -18201,6 +19081,9 @@ async function renderLibGrid() {
 
   if (countEl) countEl.textContent = `${filtered.length} PDFs`;
 
+  // ── Dynamic ItemList JSON-LD for Library listing ─────────────────
+  _injectLibraryItemList(filtered);
+
   if (grid) {
     if (filtered.length === 0) {
       // Show friendly empty state instead of blank grid
@@ -18255,6 +19138,107 @@ function renderDetail() {
     _loadOwnershipCache().then(() => {
       setTimeout(_refreshFreeButtonLabels, 50);
     });
+  }
+}
+
+
+
+// ── Dynamic ItemList JSON-LD for Blog listing ──────────────────────────────
+function _injectBlogItemList(posts) {
+  try {
+    if (!posts || posts.length === 0) return;
+    const s = window._blogState || {};
+    const catParam = s.category ? '&category=' + encodeURIComponent(s.category) : '';
+    const pageUrl = 'https://studyria.qzz.io/?page=blog' + catParam;
+
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': pageUrl + '#blog-list',
+      'name': s.category ? s.category + ' – Studyria Blog' : 'Studyria Blog – Exam Tips & Current Affairs',
+      'description': 'Latest blog posts and articles' + (s.category ? ' in ' + s.category : '') + ' on Studyria',
+      'url': pageUrl,
+      'numberOfItems': posts.length,
+      'itemListElement': posts.slice(0, 15).map((post, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'name': post.title || 'Blog Post',
+        'url': 'https://studyria.qzz.io/#blog/' + (post.slug || post.id),
+        'item': {
+          '@type': 'BlogPosting',
+          '@id': 'https://studyria.qzz.io/#blog/' + (post.slug || post.id),
+          'headline': post.title,
+          'description': (post.excerpt || post.description || '').slice(0, 160),
+          'datePublished': post.published_at || post.created_at,
+          'author': post.author_name ? { '@type': 'Person', 'name': post.author_name } : { '@id': 'https://studyria.qzz.io/#organization' },
+          'publisher': { '@id': 'https://studyria.qzz.io/#organization' },
+          'image': post.cover_image ? { '@type': 'ImageObject', 'url': post.cover_image } : undefined
+        }
+      }))
+    };
+
+    // Remove undefined values
+    const clean = JSON.parse(JSON.stringify(schema, (k, v) => v === undefined ? undefined : v));
+
+    let ld = document.getElementById('blogListLd');
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.id = 'blogListLd';
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify(clean);
+  } catch(e) {
+    console.warn('[Studyria] Blog ItemList LD error:', e);
+  }
+}
+
+// ── Dynamic ItemList + CollectionPage JSON-LD for Library ─────────────────
+function _injectLibraryItemList(pdfs) {
+  try {
+    if (!pdfs || pdfs.length === 0) return;
+    const topPdfs = pdfs.slice(0, 20); // top 20 for schema
+    const catParam = (window.libCat && window.libCat !== 'All') ? '&cat=' + encodeURIComponent(window.libCat) : '';
+    const pageUrl = 'https://studyria.qzz.io/?page=library' + catParam;
+
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': pageUrl + '#item-list',
+      'name': window.libCat && window.libCat !== 'All'
+        ? window.libCat + ' PDF Study Materials – Studyria'
+        : 'PDF Study Materials – Studyria Library',
+      'description': 'Curated PDF study materials' + (window.libCat && window.libCat !== 'All' ? ' for ' + window.libCat : '') + ' on Studyria',
+      'url': pageUrl,
+      'numberOfItems': topPdfs.length,
+      'itemListElement': topPdfs.map((pdf, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'name': pdf.title || 'PDF Study Material',
+        'url': 'https://studyria.qzz.io/pdf/' + (pdf.slug || pdf.id) + '.html',
+        'item': {
+          '@type': 'DigitalDocument',
+          '@id': 'https://studyria.qzz.io/pdf/' + (pdf.slug || pdf.id) + '.html',
+          'name': pdf.title || 'PDF Study Material',
+          'description': (pdf.description || '').slice(0, 160),
+          'url': 'https://studyria.qzz.io/pdf/' + (pdf.slug || pdf.id) + '.html',
+          'isAccessibleForFree': Number(pdf.price ?? 0) === 0,
+          'inLanguage': 'en-IN',
+          'publisher': { '@id': 'https://studyria.qzz.io/#organization' }
+        }
+      }))
+    };
+
+    let ld = document.getElementById('libItemListLd');
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.id = 'libItemListLd';
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify(schema);
+  } catch(e) {
+    console.warn('[Studyria] Library ItemList LD error:', e);
   }
 }
 
