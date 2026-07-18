@@ -4999,6 +4999,12 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   },
   "description": "Studyria is Assam's leading digital platform for high-quality PDF study materials, notes, and resources for students preparing for ADRE, APSC, Assam Police, Assam TET and all Assam state competitive exams.",
   "foundingDate": "2024",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Nalbari, Assam, India"
+  },
+  "email": "studyria24@gmail.com",
+  "telephone": "+91-8011267054",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Nalbari",
@@ -5016,11 +5022,11 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     "Assam competitive exam preparation", "free study PDFs Assam"
   ],
   "sameAs": [
-    "https://instagram.com/studyria",
+    "https://www.instagram.com/studyria.official/",
     "https://facebook.com/studyria",
     "https://youtube.com/@studyria",
     "https://t.me/studyria",
-    "https://twitter.com/studyria"
+    "https://pin.it/3f4ctNDO7"
   ],
   "contactPoint": {
     "@type": "ContactPoint",
@@ -15687,7 +15693,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 
           <!-- Socials -->
           <div class="sf-socials">
-            <a class="sf-social" href="https://instagram.com/studyria" title="Instagram" target="_blank" rel="noopener noreferrer" aria-label="Studyria on Instagram">
+            <a class="sf-social" href="https://www.instagram.com/studyria.official/" title="Studyria on Instagram" target="_blank" rel="noopener noreferrer" aria-label="Studyria on Instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
             <a class="sf-social" href="https://t.me/studyria" title="Telegram" target="_blank" rel="noopener noreferrer" aria-label="Studyria on Telegram">
@@ -23950,7 +23956,7 @@ async function chmSaveJob() {
 // custom link an admin adds later that isn't one of these four platforms.
 const COMMUNITY_DEFAULTS = [
   { id: 'a1b2c3d4-0000-4000-8000-000000000000', platform: 'whatsapp',  title: 'WhatsApp Community', description: 'Instant exam alerts, important notices & student discussions.',       icon: '💬', color: '#25d366', url: 'https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R', enabled: true, is_primary: false, sort_order: 1 },
-  { id: 'a1b2c3d4-0001-4000-8000-000000000001', platform: 'instagram', title: 'Instagram',          description: 'Daily study motivation, reels, success stories & learning tips.',     icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', enabled: true, is_primary: false, sort_order: 2 },
+  { id: 'a1b2c3d4-0001-4000-8000-000000000001', platform: 'instagram', title: 'Instagram',          description: 'Daily study motivation, reels, success stories & learning tips.',     icon: '📸', color: '#e1306c', url: 'https://www.instagram.com/studyria.official/', enabled: true, is_primary: false, sort_order: 2 },
   { id: 'a1b2c3d4-0002-4000-8000-000000000002', platform: 'telegram',  title: 'Telegram',           description: 'Fast job alerts, premium PDF updates & exclusive announcements.',      icon: '✈️', color: '#0088cc', url: 'https://t.me/studyria',                                                enabled: true, is_primary: false, sort_order: 3 },
   { id: 'a1b2c3d4-0003-4000-8000-000000000003', platform: 'pinterest', title: 'Pinterest',          description: 'Premium notes, study inspiration & exam preparation collections.',     icon: '📌', color: '#e60023', url: 'https://pin.it/3f4ctNDO7',                                             enabled: true, is_primary: false, sort_order: 4 },
 ];
@@ -31220,7 +31226,7 @@ CREATE POLICY "admin_select" ON broken_pdf_reports FOR SELECT USING (true);</pre
         <div class="form-group"><label class="form-label">Twitter / X URL</label>
           <input class="form-input" id="hmFooterTwitter" placeholder="https://x.com/studyria" value="${s('footer_twitter','')}"/></div>
         <div class="form-group"><label class="form-label">Instagram URL</label>
-          <input class="form-input" id="hmFooterInstagram" placeholder="https://instagram.com/studyria" value="${s('footer_instagram','')}"/></div>
+          <input class="form-input" id="hmFooterInstagram" placeholder="https://www.instagram.com/studyria.official/" value="${s('footer_instagram','')}/></div>
         <div class="form-group"><label class="form-label">Telegram URL</label>
           <input class="form-input" id="hmFooterTelegram" placeholder="https://t.me/studyria" value="${s('footer_telegram','')}"/></div>
         <div class="form-group"><label class="form-label">YouTube URL</label>
@@ -37089,12 +37095,14 @@ document.addEventListener('keydown', e => {
  * ══════════════════════════════════════════════════════════════════════
  *
  * HOW TO USE:
- *   Paste this entire <script> block at the very END of index.html,
- *   just before 
-<!-- ══════════════════════════════════════════════════════════════════════
-     STUDYRIA PHASE 1 — OMNI SEARCH + MULTI-LANGUAGE
-     Injected just before </body> — fully backward compatible
-  ══════════════════════════════════════════════════════════════════════ -->
+ *   Paste this entire script block at the very END of index.html,
+ *   just before the Omni Search + Multi-Language section.
+ *
+ * STUDYRIA PHASE 1 — OMNI SEARCH + MULTI-LANGUAGE
+ *   Injected just before </body> — fully backward compatible
+ * ══════════════════════════════════════════════════════════════════════ */
+</script>
+
 <style>
 /* ── Lang dropdown animation ─────────────────────────────────────── */
 @keyframes langFadeIn {
@@ -37146,7 +37154,7 @@ window.I18N = {
     login: 'লগইন', logout: 'লগআউট', profile: 'প্ৰফাইল',
     wishlist: 'উইশলিষ্ট', my_pdfs: 'মোৰ PDF', categories: 'বিভাগসমূহ',
     trending: 'ট্ৰেণ্ডিং', new_arrivals: 'নতুন আগমন', bestsellers: 'বেষ্টচেলাৰ',
-    all_pdfs: 'সকলো PDF', no_results: 'কোনো ফলাফল পোৱা নগ'ল',
+    all_pdfs: 'সকলো PDF', no_results: 'কোনো ফলাফল পোৱা নগ\'ল',
     filter: 'ফিল্টাৰ', sort_by: 'ক্ৰমানুসাৰে', newest: 'নতুনতম',
     popular: 'জনপ্ৰিয়', az: 'A-Z', free_filter: 'বিনামূলীয়া',
     paid_filter: 'পেইড', loading: 'লোড হৈ আছে…', share: 'শ্বেয়াৰ কৰক',
@@ -37346,13 +37354,13 @@ function renderDropdown(q) {
       html += '<div class="omni-section-hd">' + i18nT('recent_searches') +
               ' <span onclick="window._omniClearRecent()" style="cursor:pointer;color:rgba(61,142,248,0.8);font-size:.65rem;font-weight:400;float:right;margin-right:2px">Clear</span></div>';
       recent.forEach(function(s){
-        html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect('' + esc(s) + '')">' +
+        html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect(\'' + esc(s) + '\')">' +
                   '<span class="omni-row-icon">🕐</span>' + esc(s) + '</div>';
       });
     }
     html += '<div class="omni-section-hd">' + i18nT('trending_searches') + '</div>';
     TRENDING.forEach(function(s){
-      html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect('' + esc(s) + '')">' +
+      html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect(\'' + esc(s) + '\')">' +
                 '<span class="omni-row-icon">🔥</span>' + esc(s) + '</div>';
     });
   } else {
@@ -37366,7 +37374,7 @@ function renderDropdown(q) {
         var price = p.free || parseFloat(p.selling_price||p.price||0) === 0
           ? '<span style="color:#10d98e;font-size:.72rem;margin-left:auto">Free</span>'
           : '<span style="color:var(--accent);font-size:.72rem;margin-left:auto">₹' + (p.selling_price||p.price) + '</span>';
-        html += '<div class="omni-row" role="option" data-query="' + title + '" onclick="omniSelect('' + title + '')">' +
+        html += '<div class="omni-row" role="option" data-query="' + title + '" onclick="omniSelect(\'' + title + '\')">' +
                   '<span class="omni-row-icon">📄</span>' +
                   '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + title + cat + '</span>' +
                   price + '</div>';
