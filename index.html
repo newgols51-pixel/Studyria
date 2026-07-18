@@ -133,6 +133,7 @@ window.SUPABASE_URL = 'https://qsdfmgcekdpjdcyqhuhi.supabase.co';
 <title>Studyria – Assam's #1 PDF Study Platform</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="pwa-v3.css">
+<link rel="stylesheet" href="pwa-v32.css">
 
 <!-- ── Favicon & PWA Icons ── -->
 <link id="siteFavicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233d8ef8'/%3E%3Cstop offset='1' stop-color='%2300c8e8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,Helvetica,sans-serif' font-size='58' font-weight='800' fill='white' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
@@ -11468,6 +11469,10 @@ body.light .me-stat-val { filter:none; }
           <span class="admin-nav-badge" style="background:rgba(139,92,246,0.12);color:#a78bfa;border-color:rgba(139,92,246,0.25)">New</span>
         </button>
 
+        <div class="admin-nav-section-label" style="margin-top:16px">🚀 PWA SYSTEM</div>
+        <button class="admin-nav-item" data-atab="pwa-control" onclick="switchAdminTab('pwa-control')" style="background:linear-gradient(90deg,rgba(61,142,248,0.12),rgba(16,217,142,0.07));border-left:2px solid #3d8ef8">
+          🚀 PWA Control Center
+        </button>
         <div class="admin-nav-section-label" style="margin-top:16px">📚 LIBRARY</div>
         <button class="admin-nav-item" data-atab="library-manager" onclick="switchAdminTab('library-manager')" style="background:linear-gradient(90deg,rgba(61,142,248,0.13),rgba(0,200,232,0.07));border-left:2px solid #3d8ef8">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
@@ -15262,6 +15267,9 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   </div>
 </div>
 
+<!-- ── PWA V3.2 PAGE ── -->
+<div class="page" id="page-pwa"></div>
+
 <div class="page" id="page-404" style="display:none">
   <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:20px;">
     <div style="font-size:5rem;line-height:1;">🔍</div>
@@ -15726,6 +15734,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
           <ul class="sf-col-links">
             <li><span onclick="if(typeof navigate==='function')navigate('creator-register')">✨ Become a Creator <span class="sf-link-arrow">›</span></span></li>
             <li><span onclick="if(typeof navigate==='function')navigate('about')">ℹ️ About Us <span class="sf-link-arrow">›</span></span></li>
+            <li><span onclick="if(typeof navigate==='function')navigate('pwa')">📱 App & Updates <span class="sf-link-arrow">›</span></span></li>
             <li><span onclick="if(typeof navigate==='function')navigate('contact')">📩 Contact <span class="sf-link-arrow">›</span></span></li>
             <li><span onclick="if(typeof navigate==='function')navigate('contact')">🛟 Support <span class="sf-link-arrow">›</span></span></li>
             <li>
@@ -16655,7 +16664,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload',
-  'privacy','terms','refund','about','contact','blog','premium','premium-library'
+  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa'
 ]);
 
 // Force-resets any leftover native browser pinch-zoom. Needed because a
@@ -16795,6 +16804,9 @@ async function navigate(page) {
   if (page === 'about') {
     // Populate About page stats from the shared Supabase source
     if (typeof initAboutStats === 'function') initAboutStats();
+  }
+  if (page === 'pwa') {
+    if (window.PWA32 && typeof window.PWA32.renderPage === 'function') window.PWA32.renderPage();
   }
   if (page === 'blog') {
     // Reset to the article-list view (openBlogPost switches to article view)
@@ -22866,7 +22878,7 @@ function switchAdminTab(tab) {
     'pdf-manager-pro':'Advanced PDF Manager', 'category-manager-pro':'Advanced Category Manager', 'homepage-manager':'Homepage Manager', 'header-manager':'Header Manager', 'nav-manager':'Navigation Manager', 'customization':'Website Customization', 'users-pro':'User Management Pro',
     'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
     'seo-manager':'SEO Manager', 'live-analytics':'Live Analytics Center', 'ai-center':'AI Control Center', 'security':'Security Center', 'system-advanced':'Advanced System Settings',
-    'library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community' };
+    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community' };
   if (bc) bc.textContent = tabNames[tab] || tab;
 
   const main = document.getElementById('adminMain');
@@ -22926,6 +22938,7 @@ function switchAdminTab(tab) {
     case 'blog':                  _safeRender(window.renderPCCBlog,               'Blog Manager'); break;
     case 'announcements':         _safeRender(window.renderPCCAnnouncements,      'Announcements'); break;
     case 'branding':              _safeRender(window.renderPCCBranding,           'Branding'); break;
+    case 'pwa-control':            _safeRender(window.renderPWAdmin32,              'PWA Control Center'); break;
     case 'library-manager':       _safeRender(renderAdminLibraryManager,          'Library Manager'); break;
     case 'career-hub-manager':    _safeRender(renderAdminCareerHubManager,        'Career Hub Manager'); break;
     case 'community-manager':     _safeRender(renderAdminCommunityManager,        'Community Manager'); break;
@@ -44734,5 +44747,7 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 <script src="pwa-v3.js" defer></script>
 <script src="pwa-update.js" defer></script>
+<script src="pwa-v32.js" defer></script>
+<script src="pwa-admin-v32.js" defer></script>
 </body>
 </html>

@@ -31,14 +31,14 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v31';
+const CACHE_VERSION = 'v32';
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.07.18-pwa-v3';
+const SW_BUILD      = '2026.07.18-pwa-v3.2';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🚀 PWA V3 — Animated splash, smart caching, periodic sync, install analytics, offline-first, one-click updates.';
+const WHATS_NEW = '🚀 PWA V3.2 — Intelligent PWA Platform: auto release notes, download manager, notification V2.0, offline engine, admin control center, route prefetch, secure cache.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -96,7 +96,7 @@ self.addEventListener('install', event => {
           )
         )
       )
-      .then(() => console.log('[SW] v31 installed ✅'))
+      .then(() => console.log('[SW] v32 installed ✅'))
   );
   // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
 });
@@ -239,7 +239,7 @@ async function fontCacheFirst(request) {
 
 // ── BACKGROUND SYNC ───────────────────────────────────────────────
 self.addEventListener('sync', event => {
-  if (event.tag === 'sync-data') {
+  if (event.tag === 'sync-data' || event.tag === 'studyria-sync-progress') {
     event.waitUntil(
       self.clients.matchAll().then(clients =>
         clients.forEach(c => c.postMessage({ type: 'SYNC_FIRED', tag: event.tag }))
@@ -333,6 +333,55 @@ self.addEventListener('message', event => {
     caches.open(CACHE_NAME).then(cache =>
       Promise.allSettled(urls.map(url => cache.add(url).catch(() => {})))
     );
+    return;
+  }
+
+  // ── PWA V3.2: SHOW_NOTIFICATION — display notification from admin ──
+  if (type === 'SHOW_NOTIFICATION') {
+    const payload = event.data.payload || {};
+    const title = payload.title || 'Studyria';
+    const options = {
+      body: payload.body || '',
+      icon: payload.icon || '/icon-192.png',
+      badge: payload.badge || '/icon-96.png',
+      image: payload.image || undefined,
+      data: { url: payload.deep_link || '/' },
+      tag: payload.tag || 'studyria-admin',
+      requireInteraction: payload.requireInteraction || false,
+      actions: payload.actions || [],
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+    return;
+  }
+
+  // ── PWA V3.2: GET_CACHE_STATS — return cache size info ──
+  if (type === 'GET_CACHE_STATS') {
+    Promise.all([
+      caches.open(CACHE_NAME).then(c => c.keys()).then(k => k.length),
+      caches.open(IMG_CACHE).then(c => c.keys()).then(k => k.length),
+      caches.open(FONT_CACHE).then(c => c.keys()).then(k => k.length),
+    ]).then(function(stats) {
+      event.source && event.source.postMessage({
+        type: 'CACHE_STATS',
+        mainCache: stats[0],
+        imgCache: stats[1],
+        fontCache: stats[2],
+      });
+    });
+    return;
+  }
+
+  // ── PWA V3.2: REFRESH_SPECIFIC — refresh specific cached URLs ──
+  if (type === 'REFRESH_URLS' && Array.isArray(urls)) {
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await Promise.allSettled(urls.map(url =>
+        fetch(url, { cache: 'no-store' }).then(res => {
+          if (res && res.ok) cache.put(url, res);
+        }).catch(() => {})
+      ));
+      event.source && event.source.postMessage({ type: 'REFRESH_COMPLETE' });
+    })();
     return;
   }
 });

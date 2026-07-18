@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-// pwa-update.js — Studyria Smart Update System  v3.1  (2026)
+// pwa-update.js — Studyria Smart Update System  v3.2  (2026)
 // ══════════════════════════════════════════════════════════════════
 //
 // Features:
@@ -23,17 +23,24 @@
 
   // ── APP VERSION ──────────────────────────────────────────────────
   const APP = {
-    VERSION:       '3.1.1',
+    VERSION:       '3.2.0',
     BUILD:         '2026.07.18',
     NAME:          'Studyria',
     WHATS_NEW: [
-      { type: 'new',  text: 'PWA V3 Smart Update System with one-click updates' },
-      { type: 'new',  text: 'Animated splash screen on app launch' },
-      { type: 'new',  text: '8 app shortcuts for quick access' },
-      { type: 'fix',  text: 'Eliminated raw code leak below footer' },
-      { type: 'fix',  text: 'Premium content category filtering fixed' },
-      { type: 'perf', text: 'Image cache-first strategy — faster load' },
-      { type: 'perf', text: 'Font CDN cached for instant renders' },
+      { type: 'new',  text: 'Intelligent PWA Platform with self-managing updates' },
+      { type: 'new',  text: 'Dedicated PWA page with clean status overview' },
+      { type: 'new',  text: "What's New Center with searchable version history" },
+      { type: 'new',  text: 'AI-powered automatic release notes generation' },
+      { type: 'new',  text: 'Download Manager with queue, pause, resume, and retry' },
+      { type: 'new',  text: 'Notification V2.0 with rich media and deep links' },
+      { type: 'new',  text: 'Offline Engine with reading progress sync' },
+      { type: 'new',  text: 'Admin PWA Control Center with remote configuration' },
+      { type: 'new',  text: 'Route prefetch and predictive loading' },
+      { type: 'new',  text: 'Secure cache with version validation' },
+      { type: 'fix',  text: 'Premium Library Razorpay bypass for premium members' },
+      { type: 'fix',  text: 'Lifetime membership validation for NULL expiry' },
+      { type: 'perf', text: 'Memory optimization and battery-friendly background tasks' },
+      { type: 'perf', text: 'Enhanced offline reading experience' },
     ],
     // Set this to a version string to force update users below that version
     CRITICAL_MIN_VERSION: null,   // e.g. '3.0.0' — null = no force update
