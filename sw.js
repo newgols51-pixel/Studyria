@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v30';
+const CACHE_VERSION = 'v31';
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
@@ -52,6 +52,11 @@ const PRECACHE_ASSETS = [
   '/icon-96.png',
   '/icon-144.png',
   '/sw.js',
+  '/screenshot-home.png',
+  '/screenshot-library.png',
+  '/screenshot-premium.png',
+  '/screenshot-career.png',
+  '/screenshot-desktop.png',
 ];
 
 // ── BYPASS HOSTS (always network) ─────────────────────────────────
@@ -91,7 +96,7 @@ self.addEventListener('install', event => {
           )
         )
       )
-      .then(() => console.log('[SW] v30 installed ✅'))
+      .then(() => console.log('[SW] v31 installed ✅'))
   );
   // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
 });
