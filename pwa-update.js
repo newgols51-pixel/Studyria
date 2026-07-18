@@ -137,6 +137,7 @@
         </div>
         <div class="pwa-ub-actions">
           <button class="pwa-ub-btn pwa-ub-btn--now"   id="pwaUBUpdateNow">Update Now</button>
+          <button class="pwa-ub-btn pwa-ub-btn--details" id="pwaUBDetails">View Details</button>
           <button class="pwa-ub-btn pwa-ub-btn--later" id="pwaUBLater">Later</button>
           <button class="pwa-ub-btn pwa-ub-btn--x"     id="pwaUBDismiss" aria-label="Dismiss">✕</button>
         </div>
@@ -147,6 +148,10 @@
 
     document.getElementById('pwaUBUpdateNow').addEventListener('click', function() {
       _runUpdate(swReg);
+    });
+    document.getElementById('pwaUBDetails').addEventListener('click', function() {
+      _bannerEl.classList.remove('pwa-ub--visible');
+      if (typeof navigate === 'function') navigate('pwa');
     });
     document.getElementById('pwaUBLater').addEventListener('click', function() {
       _dismissed = true;

@@ -5585,7 +5585,7 @@ function studyriaApp() {
       </div>
       <div class="nav-actions">
 
-        <button class="icon-btn" id="pwaInstallBtn" title="Install Studyria App" style="display:none" onclick="triggerPWAInstall()">
+        <button class="icon-btn" id="pwaInstallBtn" title="Install Studyria App" style="display:none" onclick="navigate('pwa')">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
         <button class="icon-btn" id="themeToggle" @click="toggleTheme()" aria-label="Toggle theme"><svg width="17" height="17"><use :href="isDarkMode ? '#ic-moon' : '#ic-sun'" id="themeIcon"/></svg></button>
@@ -5634,11 +5634,11 @@ function studyriaApp() {
                     <span class="pwa-card-title">Install Studyria App</span>
                     <span class="pwa-card-sub">Fast, offline-ready &amp; lightweight</span>
                   </div>
-                  <button class="pwa-install-btn" id="pwaHmInstallBtn" onclick="pwaAppCenter.install()">INSTALL</button>
+                  <button class="pwa-install-btn" id="pwaHmInstallBtn" onclick="navigate('pwa')">INSTALL</button>
                 </div>
                 <div class="pwa-check-row">
                   <span class="pwa-check-txt" id="pwaHmCheckTxt">Check for new updates</span>
-                  <button class="pwa-check-btn" id="pwaHmCheckBtn" onclick="pwaAppCenter.checkForUpdates()">&#8635; Check</button>
+                  <button class="pwa-check-btn" id="pwaHmCheckBtn" onclick="navigate('pwa')">&#8635; Check</button>
                 </div>
               </div>
 
@@ -5655,7 +5655,7 @@ function studyriaApp() {
                 </div>
                 <div class="pwa-check-row">
                   <span class="pwa-check-txt" id="pwaHmCheckTxt2">Check for new updates</span>
-                  <button class="pwa-check-btn" id="pwaHmCheckBtn2" onclick="pwaAppCenter.checkForUpdates()">&#8635; Check</button>
+                  <button class="pwa-check-btn" id="pwaHmCheckBtn2" onclick="navigate('pwa')">&#8635; Check</button>
                 </div>
               </div>
 
@@ -15706,7 +15706,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
 
           <!-- PWA install badge -->
           <div class="sf-app-badge">
-            <a class="sf-app-badge-btn" onclick="triggerPWAInstall()" id="sfAppBadgeBtn">
+            <a class="sf-app-badge-btn" onclick="navigate('pwa')" id="sfAppBadgeBtn">
               <div class="sf-app-badge-icon">📱</div>
               <div class="sf-app-badge-text">
                 <span class="sf-app-badge-sub">Install Free App</span>

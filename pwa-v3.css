@@ -445,6 +445,13 @@
   border: 1px solid rgba(255,255,255,0.1) !important;
 }
 .pwa-ub-btn--later:hover { background: rgba(255,255,255,0.1); }
+.pwa-ub-btn--details {
+  padding: 8px 11px;
+  background: rgba(61,142,248,0.12);
+  color: #3d8ef8;
+  border: 1px solid rgba(61,142,248,0.25) !important;
+}
+.pwa-ub-btn--details:hover { background: rgba(61,142,248,0.2); }
 .pwa-ub-btn--x {
   padding: 6px 9px;
   background: none;

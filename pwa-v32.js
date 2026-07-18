@@ -611,7 +611,7 @@
     var pageEl = document.getElementById('page-pwa');
     if (!pageEl) return;
 
-    var isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    var isInstalled = (window.PWA && typeof window.PWA.isInstalled === 'function') ? window.PWA.isInstalled() : (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
     var notifPermission = Notification.permission;
     var isOnline = navigator.onLine;
     var storageUsage = _estimateStorage();
@@ -754,11 +754,8 @@
   }
 
   // ── PWA Install Prompt ───────────────────────────────────────────
-  var _deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    _deferredPrompt = e;
-  });
+  // NOTE: beforeinstallprompt is owned exclusively by app.js (window.PWA).
+  // Do NOT register a duplicate listener here — use window.PWA.promptInstall().
 
   // ═══════════════════════════════════════════════════════════════════
   // § 10. PUBLIC API
@@ -799,9 +796,13 @@
       }
     },
     _triggerInstall: function() {
-      if (_deferredPrompt) {
-        _deferredPrompt.prompt();
-        _deferredPrompt.userChoice.then(function() { _deferredPrompt = null; renderPWAPage(); });
+      // Delegate to the canonical install handler in app.js (window.PWA).
+      // This is the SAME handler used by the burger menu and install banner.
+      if (window.PWA && typeof window.PWA.promptInstall === 'function') {
+        window.PWA.promptInstall();
+      } else if (window._pwaInstallPrompt) {
+        window._pwaInstallPrompt.prompt();
+        window._pwaInstallPrompt.userChoice.then(function() { window._pwaInstallPrompt = null; renderPWAPage(); });
       } else {
         showToast && showToast('Use your browser menu → Add to Home Screen', 'info');
       }

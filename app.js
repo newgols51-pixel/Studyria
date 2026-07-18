@@ -508,7 +508,7 @@ function showInstallBanner() {
     <div style="display:flex;gap:8px;margin-top:12px">
       <button id="_pwaInstallConfirm"
         style="flex:1;padding:10px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer">
-        ⬇ Install
+        ⬇ View & Install
       </button>
       <button id="_pwaInstallLater"
         style="padding:10px 14px;background:rgba(255,255,255,0.06);color:#7a8caa;border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:.85rem;cursor:pointer">
@@ -519,7 +519,7 @@ function showInstallBanner() {
 
   document.body.appendChild(banner);
 
-  document.getElementById('_pwaInstallConfirm').addEventListener('click', promptInstall);
+  document.getElementById('_pwaInstallConfirm').addEventListener('click', function() { dismissInstallBanner(); if (typeof navigate === 'function') navigate('pwa'); });
   document.getElementById('_pwaInstallLater').addEventListener('click', dismissInstallBanner);
   document.getElementById('_pwaInstallClose').addEventListener('click', dismissInstallBanner);
 
@@ -551,23 +551,28 @@ function _isAlreadyInstalled() {
  * Safe to call multiple times.
  */
 function _updateInstallButtonVisibility() {
-  var btn = document.getElementById('pwaHmInstallBtn');
-  if (!btn) return;
+  // Both pwaHmInstallBtn (burger menu) and pwaInstallBtn (header) now navigate
+  // to the App & Updates page. Show them whenever the app is not installed.
+  ['pwaHmInstallBtn', 'pwaInstallBtn'].forEach(function(id) {
+    var btn = document.getElementById(id);
+    if (!btn) return;
 
-  if (_isAlreadyInstalled()) {
-    btn.style.display = 'none';
-    return;
-  }
+    if (_isAlreadyInstalled()) {
+      btn.style.display = 'none';
+      return;
+    }
 
-  // Show only when a native prompt is available
-  if (_state.deferredPrompt || window._pwaInstallPrompt) {
-    btn.style.display = '';
-    btn.disabled      = false;
-  }
+    btn.style.display   = '';
+    btn.disabled        = false;
+    btn.style.opacity   = '';
+    btn.style.cursor    = '';
+  });
 }
 
 /**
- * _bindInstallButton — attaches ONE click listener to the burger Install button.
+ * _bindInstallButton — ensures the burger Install button visibility is correct.
+ * The button now uses onclick="navigate('pwa')" to open the App & Updates page.
+ * No click listener is needed here — the PWA page handles the actual install.
  * Uses a guard flag so calling this multiple times is safe.
  */
 function _bindInstallButton() {
@@ -587,9 +592,9 @@ function _bindInstallButton() {
       return true;
     }
 
-    btn.addEventListener('click', function() {
-      promptInstall();
-    });
+    // No click listener — the button uses onclick="navigate('pwa')"
+    // to open the unified App & Updates page, where the actual install
+    // is handled by the canonical window.PWA.promptInstall() handler.
 
     return true;
   }
@@ -613,13 +618,9 @@ async function promptInstall() {
   var prompt = window._pwaInstallPrompt || _state.deferredPrompt;
 
   if (!prompt) {
-    // Silently disable button — do not show repeated messages
-    var btn = document.getElementById('pwaHmInstallBtn');
-    if (btn) {
-      btn.disabled = true;
-      btn.style.opacity = '0.5';
-      btn.style.cursor  = 'not-allowed';
-    }
+    // No native install prompt available — show fallback instructions.
+    // Do NOT disable the burger menu button — it now navigates to the
+    // App & Updates page, which handles the fallback UI.
     showiOSInstallTip();
     return;
   }
