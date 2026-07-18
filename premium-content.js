@@ -147,7 +147,10 @@
         return;
       }
       var now = new Date(), exp = mem.expires_at ? new Date(mem.expires_at) : null;
-      if (!exp || exp <= now) {
+      /* FIX: Lifetime members have expires_at = NULL + status='active'.
+         NULL expiry means NEVER expires — should be treated as premium, NOT expired.
+         Only mark expired if there IS an expiry date AND it's in the past. */
+      if (exp && exp <= now) {
         Object.assign(_state, { isPremium: false, status: 'expired', planName: 'Free',
           planSlug: null, expiresAt: mem.expires_at, daysLeft: 0, fetchedAt: Date.now(), fetching: false });
         return;
@@ -159,7 +162,7 @@
           if (!pr.error && pr.data) { planName = pr.data.name || 'Premium'; planSlug = pr.data.slug || null; }
         } catch (_) {}
       }
-      var daysLeft = Math.max(0, Math.ceil((exp - now) / 86400000));
+      var daysLeft = exp ? Math.max(0, Math.ceil((exp - now) / 86400000)) : 999999; /* lifetime = large number */
       Object.assign(_state, { isPremium: true, status: 'active', planName: planName, planSlug: planSlug,
         expiresAt: mem.expires_at, daysLeft: daysLeft, isLifetime: false, role: mem.role || 'viewer',
         fetchedAt: Date.now(), fetching: false });

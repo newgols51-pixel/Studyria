@@ -20317,6 +20317,32 @@ async function downloadPDF(pdfId, _legacyUrl) {
     return;
   }
 
+  // ── STEP 4.5: Premium Membership bypass ───────────────────────
+  // If the user has an active Premium Membership, bypass ALL payment checks.
+  // Premium members get unlimited access to all Premium Library content.
+  // Never create a Razorpay order, never show payment UI for premium members.
+  if (window.SMCI && typeof window.SMCI.isPremium === 'function') {
+    try {
+      const _isPrem = await window.SMCI.isPremium();
+      if (_isPrem) {
+        console.log('[Premium Bypass] User has active premium membership — bypassing payment for pdfId:', pdfId);
+        const { signedUrl: _premUrl, error: _premErr } = await resolvePdfUrlAsync(pdfUrl);
+        if (_premUrl) {
+          window.open(_premUrl, '_blank');
+          trackReadingSession(pdfId);
+          trackPdfDownloadEvent(pdf, 'premium_user');
+          showToast('Opening Premium PDF… 👑', 'success');
+        } else {
+          console.error('[Premium Bypass] Could not resolve URL:', _premErr);
+          showToast('PDF link not available. Contact support.', 'error');
+        }
+        return; // NEVER reach Razorpay for premium members
+      }
+    } catch(e) {
+      console.warn('[Premium Bypass] SMCI.isPremium check failed:', e.message);
+    }
+  }
+
   // ── STEP 5: Not paid → open Razorpay ─────────────────────────
   if (typeof Razorpay === 'undefined') {
     showToast('Payment gateway loading… please try again.', 'info');
@@ -20535,6 +20561,57 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
       navigate('library');
     }
     return;
+  }
+
+  // ── PREMIUM MEMBERSHIP BYPASS ────────────────────────────────────
+  // Active Premium Members must NEVER see Razorpay for Premium Library content.
+  // Check membership status and open the PDF directly if premium.
+  if (window.SMCI && typeof window.SMCI.isPremium === 'function') {
+    try {
+      const _isPrem = await window.SMCI.isPremium();
+      if (_isPrem) {
+        console.log('[buyPDF Premium Bypass] User has active premium — opening PDF directly, skipping Razorpay');
+        let _premUrl = '';
+        try {
+          const _pClient = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+          if (_pClient) {
+            const { data: _pRow } = await _pClient.from('pdfs').select('pdf_url').eq('id', pdfId).single();
+            if (_pRow) _premUrl = _pRow.pdf_url || '';
+          }
+        } catch(e) {}
+        if (!_premUrl) _premUrl = pdf.pdf_url || pdf.pdfUrl || '';
+        if (_premUrl && _premUrl !== '#') {
+          const _sc = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+          let _filePath = _premUrl;
+          if (_premUrl.startsWith('http://') || _premUrl.startsWith('https://')) {
+            const _m = _premUrl.match(/\/object\/(?:public|sign)\/[^/]+\/(.+?)(?:\?|$)/);
+            if (_m) _filePath = decodeURIComponent(_m[1]);
+            else { window.open(_premUrl, '_blank'); trackReadingSession(pdfId); trackPdfDownloadEvent(pdf, 'premium_user'); return; }
+          }
+          if (_sc) {
+            const { data: _sd, error: _se } = await _sc.storage.from('pdfs').createSignedUrl(_filePath, 3600);
+            if (_se) {
+              console.error('[buyPDF Premium Bypass] createSignedUrl failed:', _se.message);
+              showToast('PDF link not available. Contact support.', 'error');
+            } else {
+              window.open(_sd.signedUrl, '_blank');
+              trackReadingSession(pdfId);
+              trackPdfDownloadEvent(pdf, 'premium_user');
+              showToast('Opening Premium PDF… 👑', 'success');
+            }
+          } else {
+            window.open(_premUrl, '_blank');
+            trackReadingSession(pdfId);
+            trackPdfDownloadEvent(pdf, 'premium_user');
+          }
+        } else {
+          showToast('PDF link not available. Contact support.', 'error');
+        }
+        return; // NEVER reach Razorpay for premium members
+      }
+    } catch(e) {
+      console.warn('[buyPDF Premium Bypass] SMCI.isPremium check failed:', e.message);
+    }
   }
 
   // ── FETCH REAL PDF URL FROM DATABASE ─────────────────────────────
