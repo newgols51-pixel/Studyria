@@ -13,7 +13,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://studyria.qzz.io/</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -26,7 +26,7 @@
   <!-- PDF Library — primary content hub -->
   <url>
     <loc>https://studyria.qzz.io/?page=library</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
@@ -42,7 +42,7 @@
   <!-- Career Hub — Jobs, Scholarships, Results -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
@@ -61,6 +61,54 @@
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=blog</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- Premium Membership -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=premium</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Library — SSC category -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=SSC</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Library — Current Affairs category -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=Current+Affairs</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- Library — Premium Handwritten Notes -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=library&amp;cat=Premium+Handwritten+Notes</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- llms.txt — AI-readable platform summary -->
+  <url>
+    <loc>https://studyria.qzz.io/llms.txt</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.40</priority>
   </url>
 
   <!-- Privacy Policy -->
