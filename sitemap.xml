@@ -826,35 +826,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <!-- Premium & Membership -->
-  <url>
-    <loc>https://studyria.qzz.io/#premium</loc>
-    <lastmod>2026-07-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://studyria.qzz.io/og-cover.png</image:loc>
-      <image:title>Studyria Premium Membership</image:title>
-      <image:caption>Unlock all premium PDFs with a Studyria membership</image:caption>
-    </image:image>
-  </url>
-
-  <!-- Blog -->
-  <url>
-    <loc>https://studyria.qzz.io/#blog</loc>
-    <lastmod>2026-07-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- HTML Sitemap -->
-  <url>
-    <loc>https://studyria.qzz.io/sitemap.html</loc>
-    <lastmod>2026-07-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
   <!-- ═══ END AUTO-GENERATED PAGES ═══ -->
 
 </urlset>
