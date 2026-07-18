@@ -118,4 +118,5 @@ Disallow: /
 Sitemap: https://studyria.qzz.io/sitemap.xml
 
 # LLM / AI-assistant readable summary
-# Allow: /llms.txt
+Allow: /llms.txt
+Allow: /sitemap.html
