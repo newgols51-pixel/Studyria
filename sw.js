@@ -1,272 +1,315 @@
 // ══════════════════════════════════════════════════════════════════
-// sw.js — Studyria Service Worker  v8  (Production-Ready PWA)
+// sw.js — Studyria Service Worker  v30  (PWA V3 — 2026 Ultimate)
 // ══════════════════════════════════════════════════════════════════
 //
-// Cache Strategy:
-//   • Navigation (HTML)         — Network-first, offline fallback.
-//   • Same-origin JS/CSS/fonts  — Stale-while-revalidate.
-//   • API / Supabase / Razorpay / Pipedream / CDN
-//     — Bypassed entirely (always fresh from network).
+// Cache Strategies:
+//   • Navigation (HTML)         — Network-first → cache fallback → offline.html
+//   • Same-origin JS/CSS/fonts  — Stale-while-revalidate (instant + fresh bg)
+//   • Images                    — Cache-first (long-lived, revalidate in bg)
+//   • Fonts (CDN)               — Cache-first, 365-day TTL
+//   • API / Supabase / Razorpay — Network-only (bypass entirely)
 //
-// Messages:
-//   • SKIP_WAITING  → activates this waiting SW immediately.
-//   • GET_VERSION   → replies with cache name, build label, whats new.
-//   • CLEAR_CACHE   → wipes all caches.
+// Messages handled:
+//   SKIP_WAITING         → activate waiting SW immediately
+//   GET_VERSION          → reply with version info
+//   CLEAR_CACHE          → wipe all caches
+//   PREFETCH_URLS        → warm cache with given URL list
 //
-// OneSignal:
-//   • SDK imported via importScripts at the very top of this file,
-//     before any custom event listeners, so the SDK can register its
-//     own push/notificationclick handlers first.
-//   • OneSignalSDKWorker.js is no longer needed; this file replaces it.
-//   • The OneSignal SDK is only imported once (guard via a flag) to
-//     prevent duplicate handler registration if the file is re-parsed.
+// Push: OneSignal SDK first, then our custom handlers.
+// Periodic Sync: 'studyria-content-refresh' every 12 hours.
+// Background Sync: 'sync-data' for deferred writes.
 // ══════════════════════════════════════════════════════════════════
 
-// ── ONESIGNAL SDK (must be first, before any custom push handlers) ─
-// importScripts is synchronous and runs immediately during SW evaluation.
-// Placing it here guarantees OneSignal's push/notificationclick listeners
-// are registered before our own listeners below, matching the behaviour
-// OneSignal expects when it is the sole SW entry-point.
-//
-// We guard with a flag so that if the browser somehow re-evaluates this
-// script (e.g. hot-update edge-cases) the import runs only once per
-// SW context lifetime.
+// ── ONESIGNAL (must be first) ─────────────────────────────────────
 if (typeof self._oneSignalSDKLoaded === 'undefined') {
   self._oneSignalSDKLoaded = true;
-  importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
+  try {
+    importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
+  } catch (e) {
+    console.warn('[SW] OneSignal SDK load failed:', e.message);
+  }
 }
 
-const CACHE_NAME   = 'studyria-v29';  // premium page visibility fix
-const SW_BUILD     = '2026.07.15-fix-open-free';
-const OFFLINE_PAGE = '/offline.html';
+// ── VERSION ───────────────────────────────────────────────────────
+const CACHE_VERSION = 'v30';
+const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
+const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
+const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
+const SW_BUILD      = '2026.07.18-pwa-v3';
+const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🐛 Fixed ReferenceError: _blockDoubleTap is not defined — function was renamed to _handleDoubleTap and cache was stale. All clients now receive the latest build.';
+const WHATS_NEW = '🚀 PWA V3 — Animated splash, smart caching, periodic sync, install analytics, offline-first, one-click updates.';
 
-// Static assets to pre-cache on install
+// ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
-  '/',           // SPA shell (index.html) — required for SPA fallback
+  '/',
   OFFLINE_PAGE,
   '/manifest.json',
-  '/icon-72.png',
-  '/icon-96.png',
-  '/icon-128.png',
-  '/icon-144.png',
-  '/icon-152.png',
   '/icon-192.png',
-  '/icon-384.png',
   '/icon-512.png',
   '/icon-maskable-192.png',
   '/icon-maskable-512.png',
+  '/icon-96.png',
+  '/icon-144.png',
+  '/sw.js',
 ];
 
-// ── INSTALL ──────────────────────────────────────────────────────
-// Do NOT call self.skipWaiting() unconditionally here.
-// Doing so prevents the "waiting" state that triggers the App Center
-// update card. SKIP_WAITING is sent from the page when the user
-// explicitly clicks "Update Now".
+// ── BYPASS HOSTS (always network) ─────────────────────────────────
+const BYPASS_HOSTS = [
+  'supabase.co',
+  'razorpay.com',
+  'checkout.razorpay.com',
+  'pipedream.net',
+  'm.pipedream.net',
+  'googleapis.com',
+  'gstatic.com',
+  'rapidapi.com',
+  'firebaseapp.com',
+  'firebaseio.com',
+  'onesignal.com',
+  'api.onesignal.com',
+];
+
+const BYPASS_CDNS = [
+  'jsdelivr.net',
+  'cdnjs.cloudflare.com',
+  'unpkg.com',
+  'tailwindcss.com',
+];
+
+// Font CDNs to cache-first
+const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+
+// ── INSTALL ───────────────────────────────────────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache =>
-      // allSettled: don't fail install if one asset is missing
-      Promise.allSettled(
-        PRECACHE_ASSETS.map(url =>
-          cache.add(url).catch(err => {
-            console.warn('[SW] Pre-cache failed for:', url, err);
-          })
+    caches.open(CACHE_NAME)
+      .then(cache =>
+        Promise.allSettled(
+          PRECACHE_ASSETS.map(url =>
+            cache.add(url).catch(e => console.warn('[SW] Precache miss:', url, e.message))
+          )
         )
       )
-    )
+      .then(() => console.log('[SW] v30 installed ✅'))
   );
-  // NOT calling self.skipWaiting() — intentional.
+  // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
 });
 
 // ── ACTIVATE ─────────────────────────────────────────────────────
 self.addEventListener('activate', event => {
+  const keepCaches = [CACHE_NAME, IMG_CACHE, FONT_CACHE];
   event.waitUntil(
     Promise.all([
-      // Delete all old caches (any studyria-vN that isn't current)
       caches.keys().then(keys =>
         Promise.all(
           keys
-            .filter(k => k !== CACHE_NAME)
-            .map(k => {
-              console.log('[SW] Deleting old cache:', k);
-              return caches.delete(k);
-            })
+            .filter(k => !keepCaches.includes(k))
+            .map(k => { console.log('[SW] Purging old cache:', k); return caches.delete(k); })
         )
       ),
-      // Enable navigation preload if supported (speeds up navigation)
       (async () => {
         if (self.registration.navigationPreload) {
           await self.registration.navigationPreload.enable();
+          console.log('[SW] Navigation preload enabled ✅');
         }
       })(),
-    ])
+    ]).then(() => self.clients.claim())
   );
-  // Take control of all clients immediately after activation
-  self.clients.claim();
 });
 
 // ── FETCH ─────────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const { request } = event;
-  const url = new URL(request.url);
-
-  // ① Only intercept GET requests
   if (request.method !== 'GET') return;
 
-  // ② Bypass all third-party API & data hosts
-  const bypassHosts = [
-    'supabase.co',
-    'razorpay.com',
-    'checkout.razorpay.com',
-    'pipedream.net',
-    'm.pipedream.net',
-    'googleapis.com',
-    'gstatic.com',
-    'rapidapi.com',
-    'jsearch.p.rapidapi.com',
-    'sarkariresult.com',
-    'freshersworld.com',
-    'employmentnews.gov.in',
-    'assamcareer.in',
-    'firebaseapp.com',
-    'firebaseio.com',
-    'firebase.google.com',
-  ];
-  if (bypassHosts.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
+  const url = new URL(request.url);
 
-  // ③ Bypass CDN scripts (always fresh).
-  //    NOTE: onesignal.com is intentionally excluded from bypass so that
-  //    the OneSignal SDK fetch (importScripts above) is not intercepted
-  //    by this SW's own fetch handler. importScripts is handled by the
-  //    browser internally and does not go through the fetch event, so
-  //    there is no conflict — this comment is here for future clarity.
-  const bypassCDNs = [
-    'jsdelivr.net',
-    'cdnjs.cloudflare.com',
-    'unpkg.com',
-    'tailwindcss.com',
-    'fonts.googleapis.com',
-    'fonts.gstatic.com',
-  ];
-  if (bypassCDNs.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
+  // Bypass third-party API/data hosts
+  if (BYPASS_HOSTS.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
+  if (BYPASS_CDNS.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) return;
 
-  // ④ HTML navigation — SPA fallback: always serve index.html (the SPA shell).
-  //
-  //    WHY: This is a Single-Page App. Every path (/library, /dashboard,
-  //    /privacy, /terms, /refund, /about, /contact …) is rendered entirely
-  //    by client-side JS inside index.html. The server has no separate file
-  //    for those paths, so any direct visit or refresh returns a 404 from
-  //    the origin. The Service Worker intercepts all navigate requests BEFORE
-  //    they reach the network and returns the cached SPA shell instead,
-  //    which then reads location.hash (set by the early path→hash redirect
-  //    script in <head>) and renders the correct page — zero 404s, zero
-  //    reloads.
-  //
-  //    On first visit (SW not yet installed) the path→hash redirect script
-  //    in index.html's <head> handles the redirect client-side.
+  // Font CDN — Cache-first, very long TTL
+  if (FONT_HOSTS.some(h => url.hostname === h || url.hostname.endsWith('.' + h))) {
+    event.respondWith(fontCacheFirst(request));
+    return;
+  }
+
+  // Navigation — SPA shell, Network-first
   if (request.mode === 'navigate') {
-    event.respondWith(
-      (async () => {
-        const cache = await caches.open(CACHE_NAME);
-
-        // 1. Try navigation preload first (speeds up first frame when
-        //    enabled) — this IS a live network response, so treat it the
-        //    same as a fresh fetch: cache it, then serve it.
-        try {
-          const preloadResponse = await event.preloadResponse;
-          if (preloadResponse && preloadResponse.ok) {
-            cache.put('/', preloadResponse.clone());
-            return preloadResponse;
-          }
-        } catch (_) { /* fall through to network fetch below */ }
-
-        // 2. NETWORK-FIRST for the SPA shell. This is the fix: previously
-        //    step 2 served the cached shell before ever touching the
-        //    network, so a fresh deploy (new index.html, new features like
-        //    the WhatsApp button) could stay invisible to any returning
-        //    visitor indefinitely — the SW would keep answering navigation
-        //    requests out of the old cached copy forever. Always try the
-        //    network first so new deploys are picked up on the very next
-        //    visit; only fall back to cache when the network genuinely
-        //    fails (offline / no connectivity).
-        try {
-          const networkShell = await fetch('/', { cache: 'no-store' });
-          if (networkShell && networkShell.ok) {
-            cache.put('/', networkShell.clone());
-            return networkShell;
-          }
-          throw new Error('Network response not ok: ' + networkShell.status);
-        } catch (_) {
-          // 3. Network failed — fall back to whatever SPA shell we have
-          //    cached, so /library, /dashboard etc. still work offline.
-          const cachedShell = await cache.match('/');
-          if (cachedShell) return cachedShell;
-
-          // 4. No cache at all — last resort offline page.
-          const offlinePage = await caches.match(OFFLINE_PAGE);
-          return offlinePage || new Response('Offline', { status: 503 });
-        }
-      })()
-    );
+    event.respondWith(navigationStrategy(event));
     return;
   }
 
-  // ⑤ Same-origin JS / CSS / fonts / images — Stale-while-revalidate
+  // Images — Cache-first with background revalidate
+  if (request.destination === 'image') {
+    event.respondWith(imageCacheFirst(request));
+    return;
+  }
+
+  // Same-origin JS/CSS/workers — Stale-while-revalidate
   if (url.origin === self.location.origin) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then(async cache => {
-        const cached = await cache.match(request);
-
-        // Always fetch in background to keep cache fresh
-        const networkFetch = fetch(request)
-          .then(res => {
-            if (res && res.status === 200 && res.type !== 'opaque') {
-              cache.put(request, res.clone());
-            }
-            return res;
-          })
-          .catch(() => null);
-
-        // Return cached immediately if available, else await network
-        return cached || networkFetch;
-      })
-    );
+    event.respondWith(staleWhileRevalidate(request));
     return;
   }
 
-  // ⑥ Everything else — pass through to network
+  // Everything else — network passthrough
 });
+
+// ── STRATEGY: Navigation (SPA shell) ─────────────────────────────
+async function navigationStrategy(event) {
+  const cache = await caches.open(CACHE_NAME);
+
+  // 1. Try navigation preload
+  try {
+    const preload = await event.preloadResponse;
+    if (preload && preload.ok) {
+      cache.put('/', preload.clone());
+      return preload;
+    }
+  } catch (_) {}
+
+  // 2. Network-first
+  try {
+    const res = await fetch('/', { cache: 'no-store' });
+    if (res && res.ok) {
+      cache.put('/', res.clone());
+      return res;
+    }
+  } catch (_) {}
+
+  // 3. Cache fallback (SPA shell)
+  const cached = await cache.match('/');
+  if (cached) return cached;
+
+  // 4. Offline page
+  const offline = await caches.match(OFFLINE_PAGE);
+  return offline || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+}
+
+// ── STRATEGY: Stale-while-revalidate ─────────────────────────────
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  const networkFetch = fetch(request).then(res => {
+    if (res && res.status === 200 && res.type !== 'opaque') cache.put(request, res.clone());
+    return res;
+  }).catch(() => null);
+  return cached || networkFetch;
+}
+
+// ── STRATEGY: Image cache-first ───────────────────────────────────
+async function imageCacheFirst(request) {
+  const cache = await caches.open(IMG_CACHE);
+  const cached = await cache.match(request);
+  if (cached) {
+    // Background revalidate
+    fetch(request).then(res => {
+      if (res && res.status === 200) cache.put(request, res.clone());
+    }).catch(() => {});
+    return cached;
+  }
+  try {
+    const res = await fetch(request);
+    if (res && res.status === 200) cache.put(request, res.clone());
+    return res;
+  } catch (e) {
+    return new Response('', { status: 503 });
+  }
+}
+
+// ── STRATEGY: Font cache-first (long TTL) ─────────────────────────
+async function fontCacheFirst(request) {
+  const cache = await caches.open(FONT_CACHE);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  try {
+    const res = await fetch(request);
+    if (res && res.status === 200) cache.put(request, res.clone());
+    return res;
+  } catch (e) {
+    return new Response('', { status: 503 });
+  }
+}
 
 // ── BACKGROUND SYNC ───────────────────────────────────────────────
 self.addEventListener('sync', event => {
   if (event.tag === 'sync-data') {
     event.waitUntil(
-      // Notify all clients that sync fired
       self.clients.matchAll().then(clients =>
-        clients.forEach(client =>
-          client.postMessage({ type: 'sync_registered', tag: event.tag })
-        )
+        clients.forEach(c => c.postMessage({ type: 'SYNC_FIRED', tag: event.tag }))
       )
     );
   }
 });
 
+// ── PERIODIC BACKGROUND SYNC ─────────────────────────────────────
+self.addEventListener('periodicsync', event => {
+  if (event.tag === 'studyria-content-refresh') {
+    event.waitUntil(refreshCriticalAssets());
+  }
+});
+
+async function refreshCriticalAssets() {
+  const cache = await caches.open(CACHE_NAME);
+  const urls  = ['/', '/manifest.json'];
+  await Promise.allSettled(
+    urls.map(url =>
+      fetch(url, { cache: 'no-store' })
+        .then(res => { if (res && res.ok) cache.put(url, res); })
+        .catch(() => {})
+    )
+  );
+  const clients = await self.clients.matchAll();
+  clients.forEach(c => c.postMessage({ type: 'CONTENT_REFRESHED' }));
+}
+
+// ── PUSH NOTIFICATIONS ────────────────────────────────────────────
+// OneSignal handles push events first (via importScripts above).
+// We add a fallback for any non-OneSignal pushes.
+self.addEventListener('push', event => {
+  if (!event.data) return;
+  let payload;
+  try { payload = event.data.json(); } catch (_) { payload = { title: 'Studyria', body: event.data.text() }; }
+  const title   = payload.title || 'Studyria';
+  const options = {
+    body:    payload.body    || '',
+    icon:    payload.icon    || '/icon-192.png',
+    badge:   payload.badge   || '/icon-96.png',
+    image:   payload.image   || undefined,
+    data:    payload.data    || {},
+    tag:     payload.tag     || 'studyria-push',
+    requireInteraction: payload.requireInteraction || false,
+    actions: payload.actions || [],
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || '/';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+      const existing = clients.find(c => c.url === url && 'focus' in c);
+      if (existing) return existing.focus();
+      return self.clients.openWindow(url);
+    })
+  );
+});
+
 // ── MESSAGE HANDLER ───────────────────────────────────────────────
 self.addEventListener('message', event => {
-  const { type } = event.data || {};
+  const { type, urls } = event.data || {};
 
-  // Activate this waiting SW immediately (called by "Update Now" button)
   if (type === 'SKIP_WAITING') {
-    console.log('[SW] SKIP_WAITING received — activating now');
+    console.log('[SW] SKIP_WAITING — activating update');
     self.skipWaiting();
     return;
   }
 
-  // App Center: query SW version & what's-new text
   if (type === 'GET_VERSION') {
-    event.ports?.[0]?.postMessage({
+    event.source && event.source.postMessage({
+      type:      'VERSION_INFO',
       cacheName: CACHE_NAME,
       build:     SW_BUILD,
       version:   SW_BUILD,
@@ -275,14 +318,16 @@ self.addEventListener('message', event => {
     return;
   }
 
-  // Clear all caches (admin / force-refresh)
   if (type === 'CLEAR_CACHE') {
-    caches.keys()
-      .then(keys => Promise.all(keys.map(k => caches.delete(k))))
-      .then(() => {
-        event.ports?.[0]?.postMessage({ ok: true });
-        console.log('[SW] All caches cleared on request.');
-      });
+    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      .then(() => event.source && event.source.postMessage({ type: 'CACHE_CLEARED' }));
+    return;
+  }
+
+  if (type === 'PREFETCH_URLS' && Array.isArray(urls)) {
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.allSettled(urls.map(url => cache.add(url).catch(() => {})))
+    );
     return;
   }
 });
