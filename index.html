@@ -8462,7 +8462,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
         <span class="sh-section-title" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">&#x1F451; Premium Content</span>
         <span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.25);margin-left:4px">MEMBERS ONLY</span>
       </div>
-      <button class="sh-see-all" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All &#8594;</button>
+
     </div>
   </div>
   <div class="sh-row-outer">
@@ -16026,9 +16026,6 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   <div id="prmMemberBanner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(245,158,11,0.08));border-top:1px solid rgba(251,191,36,0.2);border-bottom:1px solid rgba(251,191,36,0.2);padding:16px 20px;text-align:center">
     <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
       <span style="font-size:.9rem;font-weight:700;color:#fbbf24">&#x1F451; You're an Active Premium Member!</span>
-      <button onclick="navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');})})" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:8px 22px;border-radius:20px;border:none;cursor:pointer;font-size:.82rem;white-space:nowrap">
-        Explore All Premium Notes &#x2192;
-      </button>
     </div>
   </div>
 
@@ -16053,89 +16050,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   </div>
 
 
-  <!-- ═════════════════════════════════════════════════════════════
-       SECTION 3: 📚 PREMIUM LIBRARY UNIVERSE
-       Preview shelf of Premium Handwritten Notes.
-       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-       View All → navigate('premium-library')
-  ══════════════════════════════════════════════════════════════ -->
-  <section class="prmdash-section" id="prmDashLibraryUniverse">
-    <div class="prmdash-head">
-      <div class="prmdash-title">
-        <span class="prmdash-title-icon">📚</span>
-        <span>Premium Library Universe</span>
-        <span class="prmdash-sub" id="prmDashLibCount"></span>
-      </div>
-      <button class="prmdash-viewall" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All →</button>
-    </div>
-    <div class="prmdash-shelf-outer">
-      <div class="prmdash-shelf-track">
-        <div style="text-align:center;padding:40px;color:var(--text2)">
-          <div style="font-size:1.5rem;margin-bottom:8px">👑</div>
-          <div style="font-size:.85rem">Loading Premium Library…</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═════════════════════════════════════════════════════════════
-       SECTION 4: CONTINUE READING
-       Shows recently read Premium PDFs with progress bars.
-       Populated by premium-dashboard.js (PRMDASH) from localStorage reading history.
-       Premium users only.
-  ══════════════════════════════════════════════════════════════ -->
-  <section class="prmdash-section prmdash-hidden" id="prmDashContinueReading">
-    <div class="prmdash-head">
-      <div class="prmdash-title">
-        <span class="prmdash-title-icon">📖</span>
-        <span>Continue Reading</span>
-        <span class="prmdash-sub">Pick up where you left off</span>
-      </div>
-    </div>
-    <div class="prmdash-shelf-outer">
-      <div class="prmdash-shelf-track"></div>
-    </div>
-  </section>
-
-  <!-- ═════════════════════════════════════════════════════════════
-       SECTION 5: RECENTLY ADDED PREMIUM NOTES
-       Latest Premium Handwritten Notes, sorted by created_at desc.
-       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-       Premium users only.
-  ══════════════════════════════════════════════════════════════ -->
-  <section class="prmdash-section prmdash-hidden" id="prmDashRecentlyAdded">
-    <div class="prmdash-head">
-      <div class="prmdash-title">
-        <span class="prmdash-title-icon">🆕</span>
-        <span>Recently Added Premium Notes</span>
-        <span class="prmdash-sub">Fresh from the library</span>
-      </div>
-    </div>
-    <div class="prmdash-shelf-outer">
-      <div class="prmdash-shelf-track"></div>
-    </div>
-  </section>
-
-  <!-- ═════════════════════════════════════════════════════════════
-       SECTION 6: MY PREMIUM CARDS
-       Grid view of all Premium Handwritten Notes.
-       Populated by premium-dashboard.js (PRMDASH) via SMCI shared loader.
-       Premium users only.
-  ══════════════════════════════════════════════════════════════ -->
-  <section class="prmdash-section prmdash-hidden" id="prmDashMyCards">
-    <div class="prmdash-head">
-      <div class="prmdash-title">
-        <span class="prmdash-title-icon">👑</span>
-        <span>My Premium Cards</span>
-        <span class="prmdash-sub" id="prmDashMyCardsCount"></span>
-      </div>
-      <button class="prmdash-viewall" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All →</button>
-    </div>
-    <div class="prmdash-grid"></div>
-  </section>
-
-
-
+  
   <!-- PRICING ──────────────────────────────────────────────────── -->
   <section class="prm-section" id="prmPlans">
     <div class="container">
@@ -16471,43 +16386,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 
 </div><!-- /page-premium -->
 
-<!-- ══════════════════════════════════════════════════════════════
-     PREMIUM MEMBERSHIP LIBRARY — BUG-2+3 FIX
-     Dedicated page for Premium content with horizontal shelves.
-     Populated by SMCI (premium-content.js) via renderPremiumLibraryPage().
-     Source of truth: site_config.premium_categories_config
-══════════════════════════════════════════════════════════════ -->
-<div class="page" id="page-premium-library" style="display:none">
-  <!-- HERO -->
-  <div class="prm-hero" style="min-height:auto;padding:28px 0 24px">
-    <div class="prm-hero-bg">
-      <div class="prm-orb prm-orb-1"></div>
-      <div class="prm-orb prm-orb-2"></div>
-    </div>
-    <div class="prm-hero-inner" style="padding:0 20px">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <button onclick="history.back()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 14px;font-size:.78rem;color:var(--text2);cursor:pointer">← Back</button>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span style="font-size:1.4rem">👑</span>
-            <span style="font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Premium Membership Library</span>
-          </div>
-          <div style="font-size:.78rem;color:var(--text2)" id="prmLibSubtitle">Your exclusive Premium content — all categories, all notes</div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- CONTENT — populated by renderPremiumLibraryPage() in premium-content.js -->
-  <div id="prmLibContent" style="padding:20px 16px 80px;max-width:1100px;margin:0 auto">
-    <div style="text-align:center;padding:40px;color:var(--text2)">
-      <div style="font-size:2rem;margin-bottom:12px">👑</div>
-      <div style="font-size:.9rem">Loading Premium Library…</div>
-    </div>
-  </div>
-</div>
-
-<div class="page" id="page-404" style="display:none">
+  <div class="page" id="page-404" style="display:none">
   <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:20px;">
     <div style="font-size:5rem;line-height:1;">🔍</div>
     <h1 style="font-family:var(--font-editorial);font-size:clamp(2rem,6vw,3rem);font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0;">Page Not Found</h1>
@@ -18238,23 +18118,9 @@ async function navigate(page) {
       }
     })();
   }
-  // Premium Library: redirect to Me → My Library → Premium tab (sub-tab architecture)
-  if (page === 'premium-library') {
-    // Don't show the premium-library page — go directly to sub-tab
-    if (typeof switchLibrarySubTab === 'function') {
-      // Already on purchased/library tab — just switch sub-tab
-      switchLibrarySubTab('premium');
-    } else {
-      // Navigate to Me/dashboard first, then switch
-      navigate('dashboard').then(function() {
-        switchMeTab('purchased').then(function() {
-          if (typeof switchLibrarySubTab === 'function') switchLibrarySubTab('premium');
-        });
-      });
-    }
-    return; // Don't show page-premium-library
-  }
-}
+
+} // end navigate()
+
 
 // ── Popstate handler: restore page from hash on back/forward ──────
 window.addEventListener('popstate', function(e) {
@@ -23535,9 +23401,7 @@ CREATE TRIGGER trg_progress_updated
     // ── Trigger SMCI premium section injection AFTER BSF renders ──
     // This fires AFTER panel.innerHTML is fully set, so SMCI can inject correctly
     setTimeout(function() {
-      if (window.SMCI && typeof window.SMCI.injectLibrarySection === 'function') {
-        window.SMCI.injectLibrarySection();
-      }
+      /* SMCI library injection removed — premium PDFs now in My Library sub-tab */
     }, 150);
   }
 
