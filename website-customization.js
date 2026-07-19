@@ -265,7 +265,7 @@ function wcRenderGeneralSection() {
         </div>
         <div class="form-group">
           <label class="form-label">Instagram</label>
-          <input class="form-input" id="wc-instagram-url" value="${_wcEsc(s.instagram_url || '')}" placeholder="https://www.instagram.com/studyria.official/" />
+          <input class="form-input" id="wc-instagram-url" value="${_wcEsc(s.instagram_url || '')}" placeholder="https://instagram.com/studyria" />
         </div>
         <div class="form-group">
           <label class="form-label">Telegram</label>

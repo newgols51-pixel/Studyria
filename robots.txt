@@ -1,48 +1,32 @@
 # ══════════════════════════════════════════════════════════════
 # robots.txt — Studyria  (https://studyria.qzz.io)
-# Updated: 2026-07-18
+# Updated: 2026-06-27
 # ══════════════════════════════════════════════════════════════
 
-# ── All well-behaved crawlers (including AI crawlers) ─────────
+# ── All well-behaved crawlers ─────────────────────────────────
 User-agent: *
 Allow: /
 
 # Public SPA pages — explicitly allow both path & query variants
 Allow: /
 Allow: /?page=library
-Allow: /?page=library&cat=ADRE
-Allow: /?page=library&cat=APSC
-Allow: /?page=library&cat=Assam+Police
-Allow: /?page=library&cat=Assam+TET
-Allow: /?page=library&cat=HSLC
-Allow: /?page=library&cat=HS
-Allow: /?page=library&cat=SSC
-Allow: /?page=library&cat=Current+Affairs
-Allow: /?page=library&filter=free
-Allow: /?page=career-hub
-Allow: /?page=career-hub&tab=jobs
-Allow: /?page=career-hub&tab=scholarships
-Allow: /?page=career-hub&tab=results
-Allow: /?page=career-hub&tab=admit-cards
 Allow: /?page=discover
+Allow: /?page=career-hub
 Allow: /?page=about
 Allow: /?page=contact
 Allow: /?page=privacy
 Allow: /?page=terms
 Allow: /?page=refund
-Allow: /?page=blog
-Allow: /?page=premium
 Allow: /#library
+Allow: /#discover
 Allow: /#career-hub
 Allow: /#about
 Allow: /#contact
 Allow: /#privacy
 Allow: /#terms
 Allow: /#refund
-Allow: /#blog
-Allow: /#premium
 
-# Static assets & AI-readable files — always crawlable
+# Static assets — always crawlable
 Allow: /og-cover.png
 Allow: /favicon.ico
 Allow: /icon-*.png
@@ -50,14 +34,7 @@ Allow: /icons/
 Allow: /manifest.json
 Allow: /sitemap.xml
 Allow: /sitemap-index.xml
-Allow: /sitemap.html
 Allow: /sw.js
-Allow: /llms.txt
-Allow: /llms-full.txt
-
-# PDF and Job static pages — allow full indexing
-Allow: /pdf/
-Allow: /job/
 
 # Private / auth / admin pages — block indexing
 Disallow: /?page=admin
@@ -72,8 +49,6 @@ Disallow: /?page=upload
 Disallow: /?page=creator-dashboard
 Disallow: /?page=creator-register
 Disallow: /?page=wishlist
-Disallow: /?page=reading-room
-Disallow: /?page=signin
 
 # Hash-route equivalents (for crawlers that follow fragments)
 Disallow: /#admin
@@ -88,7 +63,6 @@ Disallow: /#creator-dashboard
 Disallow: /#creator-register
 Disallow: /#upload
 Disallow: /#wishlist
-Disallow: /#reading-room
 
 # Block development / API internals
 Disallow: /api/
@@ -101,19 +75,13 @@ Disallow: /*?utm_*
 Disallow: /*?ref=*
 Disallow: /*?fbclid=*
 
-# ── Googlebot ────────────────────────────────────────────────
+# Crawl-rate hint (optional — honoured by Google)
+Crawl-delay: 2
+
+# ── Googlebot specific ────────────────────────────────────────
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
-
-# ── Google AI / Gemini crawler ────────────────────────────────
-User-agent: Google-Extended
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
-Allow: /sitemap.html
-Allow: /pdf/
-Allow: /job/
 
 # ── Googlebot Images ──────────────────────────────────────────
 User-agent: Googlebot-Image
@@ -121,86 +89,13 @@ Allow: /og-cover.png
 Allow: /icon-*.png
 Allow: /icons/
 Allow: /screenshots/
-Allow: /pdf/
-Allow: /job/
 
-# ── Bingbot / Microsoft Copilot ───────────────────────────────
+# ── Bingbot ───────────────────────────────────────────────────
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 2
 
-# ── OpenAI ChatGPT / GPTBot ───────────────────────────────────
-User-agent: GPTBot
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
-Allow: /sitemap.html
-Allow: /pdf/
-Allow: /job/
-
-# ── ChatGPT Search (OAI-SearchBot) ───────────────────────────
-User-agent: OAI-SearchBot
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
-Allow: /sitemap.html
-Allow: /pdf/
-Allow: /job/
-
-# ── Anthropic Claude (ClaudeBot) ─────────────────────────────
-User-agent: ClaudeBot
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
-Allow: /sitemap.html
-Allow: /pdf/
-Allow: /job/
-
-# ── Perplexity AI ─────────────────────────────────────────────
-User-agent: PerplexityBot
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
-Allow: /pdf/
-Allow: /job/
-
-# ── Meta AI (FacebookBot/Meta-ExternalAgent) ──────────────────
-User-agent: FacebookBot
-Allow: /
-Allow: /llms.txt
-User-agent: Meta-ExternalAgent
-Allow: /
-Allow: /llms.txt
-
-# ── Apple Applebot / Siri ─────────────────────────────────────
-User-agent: Applebot
-Allow: /
-Allow: /llms.txt
-
-# ── Amazon Alexa ──────────────────────────────────────────────
-User-agent: Amazonbot
-Allow: /
-Allow: /llms.txt
-
-# ── Brave AI ──────────────────────────────────────────────────
-User-agent: BraveBot
-Allow: /
-
-# ── You.com ───────────────────────────────────────────────────
-User-agent: YouBot
-Allow: /
-Allow: /llms.txt
-
-# ── Yandex ────────────────────────────────────────────────────
-User-agent: YandexBot
-Allow: /
-Crawl-delay: 3
-
-# ── DuckDuckGo ────────────────────────────────────────────────
-User-agent: DuckDuckBot
-Allow: /
-
-# ── Block SEO audit bots — no commercial crawling ─────────────
+# ── Block bad / scraper bots ─────────────────────────────────
 User-agent: SemrushBot
 Disallow: /
 
@@ -219,15 +114,8 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
-User-agent: PetalBot
-Disallow: /
-
-User-agent: DataForSeoBot
-Disallow: /
-
 # ── Sitemap locations ─────────────────────────────────────────
 Sitemap: https://studyria.qzz.io/sitemap.xml
 
-# ── AI-readable content ───────────────────────────────────────
-# LLM-optimized summary: https://studyria.qzz.io/llms.txt
-# Human-readable sitemap: https://studyria.qzz.io/sitemap.html
+# LLM / AI-assistant readable summary
+# Allow: /llms.txt

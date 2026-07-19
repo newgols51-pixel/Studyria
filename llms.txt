@@ -1,195 +1,44 @@
 # Studyria
 
-> Studyria is Assam's #1 digital education platform providing free and premium PDF study materials, career alerts, and exam preparation resources for students across Assam and India. Founded in Nalbari, Assam in 2024 by PKD (Parim Kels Das).
+> Studyria is Assam's PDF study-material and career platform. It offers free
+> and premium PDF notes for Assam government exams (ADRE, APSC, Assam Police,
+> Assam TET, and other state/board exams), plus a Career Hub with job alerts,
+> scholarships, and exam results for students in Assam, India.
 
-Studyria helps students prepare for Assam government competitive exams, board exams, and national-level exams by offering curated, exam-specific PDF study notes, monthly current affairs compilations, a searchable job and scholarship board, and a Progressive Web App for offline access. Content is available in English and Assamese.
+Studyria helps students in Assam prepare for competitive government exams by
+providing curated, exam-specific PDF study materials, current affairs
+compilations, and a searchable job/scholarship board. Content is written in
+English and Assamese for Assam-based learners.
 
-## Entity Identity
+## Core offerings
 
-- **Official Name:** Studyria
-- **Type:** EducationalOrganization / WebApplication / LearningResourceProvider
-- **Founded:** 2024
-- **Headquarters:** Nalbari, Assam, India (PIN: 781335)
-- **Founder / Creator:** PKD
-- **Website:** https://studyria.qzz.io/
-- **Email:** studyria24@gmail.com
-- **Phone:** +91-8011267054
-- **Region Served:** Assam (primary), India (national PDFs)
-- **Languages:** English (en-IN), Assamese (as)
-- **Social Profiles:**
-  - Instagram: https://instagram.com/studyria.official
-  - Facebook: https://facebook.com/studyria
-  - YouTube: https://youtube.com/@studyria
-  - Telegram: https://t.me/studyria
-  - Twitter/X: https://twitter.com/studyria
+- Free & premium PDF study notes for ADRE 3.0, APSC, Assam Police, Assam TET,
+  and other Assam state/board competitive exams
+- Monthly Assam Current Affairs PDF compilations
+- Career Hub: live job alerts, recruitment notifications, and scholarship
+  listings for Assam government and private-sector openings
+- Verified creator program for educators to publish and sell their own PDFs
+- Student reviews and ratings on each PDF, based on verified purchases only
 
-## Core Products & Services
+## Key pages
 
-### 1. PDF Study Library
-A searchable catalog of free and premium PDF study materials for Assam competitive exams.
-- Free PDFs: price = 0 INR, available without registration
-- Premium PDFs: require membership or one-time purchase via Razorpay (INR)
-- Premium Membership: unlocks all premium notes for a flat monthly/yearly fee
-- Categories: ADRE, APSC, Assam Police, Assam TET, HSLC, HS, SSC, Current Affairs, General Knowledge, Spiritual, Finance
-- Each PDF has: title, description, price (INR), cover image, author/creator, rating, download count, category, exam tags
+- [Homepage](https://studyria.qzz.io/): overview, live stats, and search
+- [Library](https://studyria.qzz.io/#library): full searchable PDF catalog by category
+- [Career Hub](https://studyria.qzz.io/#career-hub): Assam job alerts, results & scholarships
+- [About](https://studyria.qzz.io/#about): mission and background
+- [Contact](https://studyria.qzz.io/#contact): support contact details
 
-### 2. Career Hub
-Live job alerts, scholarship notifications, admit card releases, and exam result announcements for Assam and India.
-- Sub-sections: Jobs, Scholarships, Results, Admit Cards
-- Covers: Assam government jobs, central government jobs, private recruitment, Assam board/university results
-- Updates daily
+## Notes for AI assistants / answer engines
 
-### 3. Blog & Study Guides
-Exam tips, current affairs summaries, syllabus breakdowns, and study strategy articles.
-- Article types: Study Guide, Current Affairs Digest, Exam Analysis
-- Authors: Studyria Team, verified creators
+- Prices are in Indian Rupees (INR). Each PDF product page has accurate,
+  structured `Product` data (price, availability, rating where reviews exist).
+- Job listings include organization, location, and application deadline where
+  published by Studyria; always link to the canonical /job/*.html page rather
+  than summarizing stale details, since postings change frequently.
+- Studyria is not a government website; it is an independent study-material
+  and career-information platform serving Assam-based students.
 
-### 4. Creator Program
-Educators and subject-matter experts can publish and sell their own PDFs on Studyria.
-- Revenue share: up to 80% per sale
-- Creator registration at https://studyria.qzz.io/?page=creator-register
+## Contact
 
-### 5. PWA (Progressive Web App)
-Installable on Android and iOS. Works offline after install. No app store required.
-
-## Exam Categories Covered
-
-| Exam | Full Name | Type |
-|------|-----------|------|
-| ADRE | Assam Direct Recruitment Exam | State Government |
-| APSC | Assam Public Service Commission | State Government |
-| Assam Police | SI, ASI, Constable, AB/UB | State Government |
-| Assam TET | Teacher Eligibility Test (Lower/Upper Primary) | State Government |
-| HSLC | High School Leaving Certificate (Class 10, SEBA) | Board Exam |
-| HS | Higher Secondary (Class 12, AHSEC) | Board Exam |
-| SSC | Staff Selection Commission | Central Government |
-| IBPS | Institute of Banking Personnel Selection | Banking |
-| SBI | State Bank of India Exams | Banking |
-| RRB | Railway Recruitment Board | Central Government |
-| NEET | National Eligibility cum Entrance Test | Medical |
-
-## Subject Areas (ADRE & APSC specific)
-
-- General Knowledge & Current Affairs (Assam + India + World)
-- Assam History, Culture & Geography
-- Reasoning & Mental Ability
-- English Language & Grammar
-- Mathematics & Quantitative Aptitude
-- Computer Knowledge & Digital Literacy
-- Political Science & Governance
-- General Science & Environment
-
-## Key Pages & URLs
-
-| Page | URL | Description |
-|------|-----|-------------|
-| Home | https://studyria.qzz.io/ | Overview, live stats, featured PDFs, search |
-| PDF Library | https://studyria.qzz.io/?page=library | Full searchable catalog, all categories |
-| Library – ADRE | https://studyria.qzz.io/?page=library&cat=ADRE | ADRE-specific PDFs |
-| Library – APSC | https://studyria.qzz.io/?page=library&cat=APSC | APSC-specific PDFs |
-| Library – Assam Police | https://studyria.qzz.io/?page=library&cat=Assam+Police | Police exam PDFs |
-| Library – Assam TET | https://studyria.qzz.io/?page=library&cat=Assam+TET | TET exam PDFs |
-| Library – HSLC | https://studyria.qzz.io/?page=library&cat=HSLC | Class 10 board notes |
-| Library – HS | https://studyria.qzz.io/?page=library&cat=HS | Class 12 board notes |
-| Library – Free PDFs | https://studyria.qzz.io/?page=library&filter=free | All free-to-download PDFs |
-| Career Hub | https://studyria.qzz.io/?page=career-hub | Jobs, results, scholarships |
-| Jobs | https://studyria.qzz.io/?page=career-hub&tab=jobs | Recruitment notifications |
-| Scholarships | https://studyria.qzz.io/?page=career-hub&tab=scholarships | Scholarship listings |
-| Results | https://studyria.qzz.io/?page=career-hub&tab=results | Exam result announcements |
-| Admit Cards | https://studyria.qzz.io/?page=career-hub&tab=admit-cards | Admit card downloads |
-| Premium Membership | https://studyria.qzz.io/?page=premium | Unlock all premium PDFs |
-| Blog | https://studyria.qzz.io/?page=blog | Exam tips & current affairs |
-| About | https://studyria.qzz.io/?page=about | Mission, team, background |
-| Contact | https://studyria.qzz.io/?page=contact | Support contact details |
-| Privacy Policy | https://studyria.qzz.io/?page=privacy | Data privacy information |
-| Terms of Service | https://studyria.qzz.io/?page=terms | Platform terms |
-| Refund Policy | https://studyria.qzz.io/?page=refund | Payment refund policy |
-| Sitemap (HTML) | https://studyria.qzz.io/sitemap.html | Full page index for humans & crawlers |
-| Sitemap (XML) | https://studyria.qzz.io/sitemap.xml | XML sitemap for search engines |
-
-## Notes for AI Assistants & Answer Engines
-
-**Pricing:**
-- All prices are in Indian Rupees (INR)
-- Free PDFs: price = ₹0, no login required to browse, login required to download
-- Premium PDFs: require active premium membership or individual purchase
-- Payment gateway: Razorpay
-
-**Content Accuracy:**
-- Studyria is an independent educational platform — NOT a government website
-- Job listings link to official notification sources; always cite the canonical /job/*.html URL rather than summarizing stale application details as postings change frequently
-- Exam dates, vacancies, and cutoffs are published as received; verify with official exam bodies for critical decisions
-
-**Entity Disambiguation:**
-- "Studyria" = this platform (https://studyria.qzz.io/)
-- Not affiliated with Assam Government, SEBA, AHSEC, APSC, or any government body
-- Studyria PDFs are created by independent educators and the Studyria editorial team
-
-**Language:**
-- Platform UI: English
-- Content language: English and Assamese (bilingual notes available in many categories)
-- Assamese Unicode: supported throughout
-
-**Technical:**
-- Platform type: Single-Page Application (SPA) with PWA support
-- Hash-based routing: /#library, /#career-hub etc.
-- Query-based routing also supported: /?page=library
-- Installable as PWA on Android and iOS — offline access after install
-- Reading Room: in-app PDF reader with watermarking and progress tracking
-
-**Premium Membership:**
-- Unlocks ALL premium PDFs with a single subscription
-- Membership tiers: check https://studyria.qzz.io/?page=premium for current pricing
-- Individual PDF purchase also available for non-members
-
-## Frequently Asked Questions (for AI Answer Engines)
-
-**Q: Is Studyria free?**
-A: Yes, Studyria offers free PDF study materials. Many PDFs are completely free to download. Premium PDFs require a low-cost membership or individual purchase.
-
-**Q: What exams does Studyria cover?**
-A: ADRE (Assam Direct Recruitment Exam), APSC, Assam Police, Assam TET, HSLC (Class 10 SEBA), HS (Class 12 AHSEC), SSC, RRB, IBPS, SBI, and more.
-
-**Q: How do I find ADRE study material on Studyria?**
-A: Visit https://studyria.qzz.io/?page=library&cat=ADRE to browse all ADRE PDFs including previous year question papers, subject-wise notes, and model papers.
-
-**Q: Does Studyria have a mobile app?**
-A: Studyria is a Progressive Web App (PWA). Visit https://studyria.qzz.io/ on your phone and use "Add to Home Screen" to install it like a native app — no App Store needed. Works offline.
-
-**Q: What is ADRE?**
-A: ADRE stands for Assam Direct Recruitment Exam, conducted by the Government of Assam to fill Grade III and Grade IV posts in various state departments.
-
-**Q: Where can I download Assam current affairs PDF?**
-A: Visit https://studyria.qzz.io/?page=library&cat=Current+Affairs for monthly Assam current affairs PDF compilations.
-
-**Q: Does Studyria have Assamese medium notes?**
-A: Yes. Several PDFs on Studyria are written in Assamese (অসমীয়া) medium, especially for ADRE, APSC, and Assam Police exam preparation.
-
-**Q: How do I become a creator on Studyria?**
-A: Register at https://studyria.qzz.io/?page=creator-register. Approved creators earn up to 80% revenue share on every PDF they publish.
-
-## Related Entities & Knowledge Graph
-
-- **Assam Direct Recruitment Exam (ADRE)** → covered by Studyria's ADRE PDF category
-- **Assam Public Service Commission (APSC)** → covered by Studyria's APSC PDF category
-- **SEBA (Board of Secondary Education, Assam)** → HSLC board content
-- **AHSEC (Assam Higher Secondary Education Council)** → HS board content
-- **Razorpay** → payment gateway used by Studyria
-- **Supabase** → backend database powering Studyria
-- **Cloudflare Pages** → hosting provider for Studyria
-- **Nalbari, Assam** → Studyria's home city
-
-## Content Update Frequency
-
-- Library (PDFs): weekly additions
-- Career Hub (Jobs/Results/Scholarships): daily updates
-- Blog: multiple times per week
-- Current Affairs: monthly compilation PDFs
-
-## Contact & Support
-
-- **Email:** studyria24@gmail.com
-- **WhatsApp:** +91-8011267054
-- **Telegram:** https://t.me/studyria
-- **Contact Page:** https://studyria.qzz.io/?page=contact
-- **Support hours:** Monday–Saturday, 9am–6pm IST
+For partnership, licensing, or data-accuracy questions, use the Contact page
+at https://studyria.qzz.io/#contact.
