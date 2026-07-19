@@ -5077,13 +5077,79 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     "https://facebook.com/studyria",
     "https://youtube.com/@studyria",
     "https://t.me/studyria",
-    "https://twitter.com/studyria"
+    "https://twitter.com/studyria",
+    "https://wa.me/918011267054",
+    "https://whatsapp.com/channel/studyria",
+    "https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R",
+    "https://github.com/newgols51-pixel/studyria"
   ],
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer support",
     "availableLanguage": ["English", "Assamese"],
     "areaServed": "IN"
+  },
+  "email": "studyria.qzz.io@gmail.com",
+  "telephone": "+91-8011267054",
+  "slogan": "Assam's #1 PDF Study Platform",
+  "knowsLanguage": ["en", "as", "hi"],
+  "keywords": ["ADRE", "APSC", "Assam Police", "Assam TET", "HSLC", "HS", "Assam competitive exams", "PDF study material", "Assam education", "Studyria"],
+  "identifier": {
+    "@type": "PropertyValue",
+    "name": "Studyria",
+    "value": "studyria.qzz.io"
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "Steel Sto",
+    "url": "https://github.com/newgols51-pixel",
+    "description": "Founder and lead developer of Studyria"
+  },
+  "publishingPrinciples": "https://studyria.qzz.io/?page=terms",
+  "diversityPolicy": "https://studyria.qzz.io/?page=about",
+  "parentOrganization": {
+    "@type": "Organization",
+    "name": "Studyria",
+    "url": "https://studyria.qzz.io"
+  },
+  "memberOf": {
+    "@type": "ProgramMembership",
+    "programName": "Assam Digital Education Initiative",
+    "member": { "@id": "https://studyria.qzz.io/#organization" }
+  },
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "Education Platform",
+    "recognizedBy": {
+      "@type": "GovernmentOrganization",
+      "name": "Government of Assam",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Assam",
+        "addressCountry": "IN"
+      }
+    }
+  },
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://studyria.qzz.io/icon-512.png",
+    "width": 512,
+    "height": 512,
+    "caption": "Studyria logo — Assam's #1 PDF Study Platform",
+    "contentUrl": "https://studyria.qzz.io/icon-512.png",
+    "representativeOfPage": true
+  },
+  "brand": {
+    "@type": "Brand",
+    "name": "Studyria",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://studyria.qzz.io/icon-512.png",
+      "width": 512,
+      "height": 512
+    },
+    "slogan": "Assam's #1 PDF Study Platform",
+    "description": "Assam's leading digital education platform for competitive exam preparation"
   }
 }
 </script>
@@ -5098,17 +5164,40 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   "name": "Studyria",
   "alternateName": "Studyria – Assam's #1 PDF Study Platform",
   "description": "Free and premium PDF study materials for ADRE, APSC, Assam Police and all Assam competitive exams. Career Hub, job alerts, scholarships and more.",
-  "inLanguage": ["en-IN", "en"],
+  "inLanguage": ["en-IN", "en", "as-IN", "hi-IN"],
   "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "author": { "@id": "https://studyria.qzz.io/#organization" },
   "copyrightYear": "2026",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://studyria.qzz.io/?page=library&q={search_term_string}"
+  "copyrightHolder": { "@id": "https://studyria.qzz.io/#organization" },
+  "mainEntity": { "@id": "https://studyria.qzz.io/#organization" },
+  "potentialAction": [
+    {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://studyria.qzz.io/?page=library&q={search_term_string}",
+        "actionPlatform": [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+          "https://schema.org/AndroidPlatform",
+          "https://schema.org/IOSPlatform"
+        ]
+      },
+      "query-input": "required name=search_term_string"
     },
-    "query-input": "required name=search_term_string"
-  }
+    {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://studyria.qzz.io/?page=discover&q={search_term_string}",
+        "actionPlatform": [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform"
+        ]
+      },
+      "query-input": "required name=search_term_string"
+    }
+  ]
 }
 </script>
 
@@ -5143,7 +5232,17 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   ],
   "screenshot": "https://studyria.qzz.io/screenshots/home.png",
   "author": { "@id": "https://studyria.qzz.io/#organization" },
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" }
+  "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "inLanguage": ["en-IN", "as-IN"],
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  },
+  "contentRating": "MPAA PG",
+  "keywords": ["ADRE", "APSC", "Assam Police", "Assam TET", "PDF study material"],
+  "softwareRequirements": "Modern web browser with JavaScript enabled",
+  "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge. PWA installable on Android and iOS.",
+  "provider": { "@id": "https://studyria.qzz.io/#organization" }
 }
 </script>
 
@@ -5174,7 +5273,22 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   },
   "datePublished": "2024-01-01",
   "dateModified": "2026-06-27",
-  "publisher": { "@id": "https://studyria.qzz.io/#organization" }
+  "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+  "author": { "@id": "https://studyria.qzz.io/#organization" },
+  "mainEntityOfPage": { "@id": "https://studyria.qzz.io/#website" },
+  "keywords": ["Assam study material", "ADRE PDF", "APSC PDF", "Assam Police exam", "Assam TET notes", "free PDF download Assam", "competitive exam preparation"],
+  "thumbnailUrl": "https://studyria.qzz.io/icon-512.png",
+  "significantLink": [
+    "https://studyria.qzz.io/?page=library",
+    "https://studyria.qzz.io/?page=career-hub",
+    "https://studyria.qzz.io/?page=discover",
+    "https://studyria.qzz.io/?page=about"
+  ],
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": ["h1", ".hero-title", ".hero-subtitle"],
+    "url": "https://studyria.qzz.io/"
+  }
 }
 </script>
 
@@ -5926,6 +6040,190 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="p:domain_verify" content="cd5caf70596f667a2c87419f5615cd4e"/>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868252287561748"
 crossorigin="anonymous"></script>
+
+
+<!-- ═════════════════════════════════════════════════════════════════
+     KNOWLEDGE GRAPH ENTITY CONNECTIONS
+     Cross-links all entity types for Knowledge Graph understanding.
+     Helps Google AI, Gemini, ChatGPT, Claude, Perplexity understand
+     the relationships between Studyria entities.
+     Added 2026-07-19 — Entity SEO Enhancement
+═══════════════════════════════════════════════════════════════ -->
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Graph",
+  "@id": "https://studyria.qzz.io/#knowledge-graph",
+  "graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://studyria.qzz.io/#organization",
+      "name": "Studyria",
+      "url": "https://studyria.qzz.io",
+      "sameAs": [
+        "https://studyria.qzz.io/#website",
+        "https://studyria.qzz.io/#webapp",
+        "https://studyria.qzz.io/#webpage"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://studyria.qzz.io/#website",
+      "name": "Studyria",
+      "url": "https://studyria.qzz.io/",
+      "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://studyria.qzz.io/?page=library&q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://studyria.qzz.io/#webpage",
+      "url": "https://studyria.qzz.io/",
+      "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
+      "about": { "@id": "https://studyria.qzz.io/#organization" },
+      "publisher": { "@id": "https://studyria.qzz.io/#organization" }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://studyria.qzz.io/#webapp",
+      "name": "Studyria",
+      "applicationCategory": "EducationApplication",
+      "provider": { "@id": "https://studyria.qzz.io/#organization" }
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://studyria.qzz.io/?page=library#collection",
+      "isPartOf": { "@id": "https://studyria.qzz.io/#website" },
+      "publisher": { "@id": "https://studyria.qzz.io/#organization" },
+      "about": { "@id": "https://studyria.qzz.io/#exam-taxonomy" }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://studyria.qzz.io/#premium-membership",
+      "brand": { "@id": "https://studyria.qzz.io/#organization" },
+      "seller": { "@id": "https://studyria.qzz.io/#organization" }
+    },
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://studyria.qzz.io/#exam-taxonomy",
+      "name": "Assam Competitive Exam Taxonomy",
+      "isPartOf": { "@id": "https://studyria.qzz.io/#website" }
+    },
+    {
+      "@type": "Brand",
+      "@id": "https://studyria.qzz.io/#brand",
+      "name": "Studyria",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://studyria.qzz.io/icon-512.png",
+        "width": 512,
+        "height": 512
+      },
+      "slogan": "Assam's #1 PDF Study Platform",
+      "url": "https://studyria.qzz.io",
+      "sameAs": [
+        "https://instagram.com/studyria",
+        "https://facebook.com/studyria",
+        "https://youtube.com/@studyria",
+        "https://t.me/studyria",
+        "https://twitter.com/studyria"
+      ],
+      "isAccessibleForFree": true,
+      "parentOrganization": { "@id": "https://studyria.qzz.io/#organization" }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOccupationalCredential",
+  "@id": "https://studyria.qzz.io/#education-credential",
+  "name": "Studyria Competitive Exam Preparation",
+  "credentialCategory": "Competitive Exam Preparation Platform",
+  "recognizedBy": {
+    "@type": "GovernmentOrganization",
+    "name": "Government of Assam",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "Assam",
+      "addressCountry": "IN"
+    }
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "Assam Competitive Exams",
+    "description": "ADRE, APSC, Assam Police, Assam TET, HSLC, HS and other Assam state competitive examinations"
+  },
+  "url": "https://studyria.qzz.io/?page=library",
+  "provider": { "@id": "https://studyria.qzz.io/#organization" }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": "https://studyria.qzz.io/#education-service",
+  "name": "Studyria PDF Study Platform",
+  "description": "Digital education service providing curated PDF study materials, career hub with job alerts, and exam preparation resources for Assam competitive exams.",
+  "serviceType": "Education — Exam Preparation",
+  "provider": { "@id": "https://studyria.qzz.io/#organization" },
+  "areaServed": [
+    { "@type": "State", "name": "Assam" },
+    { "@type": "Country", "name": "India" }
+  ],
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  },
+  "availableChannel": [
+    {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://studyria.qzz.io/",
+      "serviceType": "Web Application"
+    },
+    {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://studyria.qzz.io/?page=library",
+      "serviceType": "PDF Library"
+    },
+    {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://studyria.qzz.io/?page=career-hub",
+      "serviceType": "Career Hub — Job Alerts"
+    }
+  ],
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Free Tier",
+      "price": "0",
+      "priceCurrency": "INR",
+      "description": "Free access to all free PDF study materials and Career Hub"
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium Membership",
+      "price": "99",
+      "priceCurrency": "INR",
+      "description": "Full access to all premium PDFs for 30 days"
+    }
+  ],
+  "url": "https://studyria.qzz.io/",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://studyria.qzz.io/icon-512.png",
+    "width": 512,
+    "height": 512
+  }
+}
+</script>
 
 <!-- ═════════════════════════════════════════════════════════════════
      DYNAMIC SEO SCHEMA INJECTION ENGINE
