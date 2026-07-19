@@ -13,7 +13,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://studyria.qzz.io/</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -26,15 +26,20 @@
   <!-- PDF Library — primary content hub -->
   <url>
     <loc>https://studyria.qzz.io/?page=library</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
-  </url>
+      <image:image>
+      <image:loc>https://studyria.qzz.io/og-cover.png</image:loc>
+      <image:title>Studyria PDF Library – Free Study Materials for Assam Exams</image:title>
+      <image:caption>Browse free and premium PDF study materials for ADRE, APSC, Assam Police, Assam TET and all Assam competitive exams.</image:caption>
+    </image:image>
+</url>
 
   <!-- Discover / Search -->
   <url>
     <loc>https://studyria.qzz.io/?page=discover</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
@@ -42,31 +47,46 @@
   <!-- Career Hub — Jobs, Scholarships, Results -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
-  </url>
+      <image:image>
+      <image:loc>https://studyria.qzz.io/og-cover.png</image:loc>
+      <image:title>Studyria Career Hub – Assam Job Alerts, Results & Scholarships</image:title>
+      <image:caption>Live job alerts, recruitment notifications, scholarship listings and exam results for Assam students.</image:caption>
+    </image:image>
+</url>
 
   <!-- About Us -->
   <url>
     <loc>https://studyria.qzz.io/?page=about</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.55</priority>
-  </url>
+      <image:image>
+      <image:loc>https://studyria.qzz.io/og-cover.png</image:loc>
+      <image:title>About Studyria – Assam's #1 PDF Study Platform</image:title>
+      <image:caption>Studyria's mission, story, and background — built for Assam students preparing for competitive exams.</image:caption>
+    </image:image>
+</url>
 
   <!-- Contact -->
   <url>
     <loc>https://studyria.qzz.io/?page=contact</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
-  </url>
+      <image:image>
+      <image:loc>https://studyria.qzz.io/og-cover.png</image:loc>
+      <image:title>Contact Studyria</image:title>
+      <image:caption>Get in touch with Studyria for support, partnership, or data-accuracy questions.</image:caption>
+    </image:image>
+</url>
 
   <!-- Privacy Policy -->
   <url>
     <loc>https://studyria.qzz.io/?page=privacy</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.35</priority>
   </url>
@@ -74,7 +94,7 @@
   <!-- Terms of Service -->
   <url>
     <loc>https://studyria.qzz.io/?page=terms</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.35</priority>
   </url>
@@ -82,7 +102,7 @@
   <!-- Refund Policy -->
   <url>
     <loc>https://studyria.qzz.io/?page=refund</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.30</priority>
   </url>
@@ -92,7 +112,7 @@
   ══════════════════════════════════════════════ -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;filter=free</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
@@ -104,7 +124,7 @@
   <!-- ADRE (Assam Direct Recruitment Exam) -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=ADRE</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
   </url>
@@ -112,7 +132,7 @@
   <!-- APSC -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=APSC</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
@@ -120,7 +140,7 @@
   <!-- Assam Exams (general) -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+Exams</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.78</priority>
   </url>
@@ -128,7 +148,7 @@
   <!-- Assam Police -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+Police</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -136,7 +156,7 @@
   <!-- Assam TET -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+TET</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -144,7 +164,7 @@
   <!-- SSC -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=SSC</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.72</priority>
   </url>
@@ -152,7 +172,7 @@
   <!-- HSLC Board -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=HSLC</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -160,7 +180,7 @@
   <!-- HS Board (Class 12) -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=HS</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -172,7 +192,7 @@
   <!-- Jobs -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=jobs</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
@@ -180,7 +200,7 @@
   <!-- Scholarships -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=scholarships</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.72</priority>
   </url>
@@ -188,7 +208,7 @@
   <!-- Results -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=results</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
@@ -196,7 +216,7 @@
   <!-- Admit Cards -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=admit-cards</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>

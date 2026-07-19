@@ -1,6 +1,6 @@
 # ══════════════════════════════════════════════════════════════
 # robots.txt — Studyria  (https://studyria.qzz.io)
-# Updated: 2026-06-27
+# Updated: 2026-07-19
 # ══════════════════════════════════════════════════════════════
 
 # ── All well-behaved crawlers ─────────────────────────────────
@@ -35,6 +35,11 @@ Allow: /manifest.json
 Allow: /sitemap.xml
 Allow: /sitemap-index.xml
 Allow: /sw.js
+Allow: /llms.txt
+
+# Static job & blog pages — crawlable
+Allow: /job/
+Allow: /blog/
 
 # Private / auth / admin pages — block indexing
 Disallow: /?page=admin
@@ -89,11 +94,84 @@ Allow: /og-cover.png
 Allow: /icon-*.png
 Allow: /icons/
 Allow: /screenshots/
+Allow: /job/
 
 # ── Bingbot ───────────────────────────────────────────────────
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 2
+
+# ── AI Crawlers — explicitly allowed for AI search visibility ──
+# OpenAI GPTBot — for ChatGPT search & GPT answers
+User-agent: GPTBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# OpenAI OAI-SearchBot — for SearchGPT
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Anthropic ClaudeBot — for Claude AI answers
+User-agent: ClaudeBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Anthropic anthropic-ai
+User-agent: anthropic-ai
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# PerplexityBot — for Perplexity AI search
+User-agent: PerplexityBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Google-Extended — for Gemini AI training & answers
+User-agent: Google-Extended
+Allow: /
+
+# Meta-ExternalAgent — for Meta AI search
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Applebot — for Apple Intelligence & Siri suggestions
+User-agent: Applebot
+Allow: /
+Crawl-delay: 1
+
+# Amazonbot — for Amazon Alexa search
+User-agent: Amazonbot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# CCBot — for various AI indexing services
+User-agent: CCBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
 
 # ── Block bad / scraper bots ─────────────────────────────────
 User-agent: SemrushBot
@@ -116,6 +194,3 @@ Disallow: /
 
 # ── Sitemap locations ─────────────────────────────────────────
 Sitemap: https://studyria.qzz.io/sitemap.xml
-
-# LLM / AI-assistant readable summary
-# Allow: /llms.txt
