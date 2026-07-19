@@ -146,6 +146,17 @@ Disallow: /?page=register
 User-agent: Google-Extended
 Allow: /
 
+# Googlebot (already above, but Google uses it for AI Overviews / SGE too)
+# Google AI Overviews (SGE) uses the standard Googlebot crawl
+
+# GoogleOther — Google's generic crawler for AI/ML products
+User-agent: GoogleOther
+Allow: /
+
+# APIs-Google — Google API discovery (used by AI services)
+User-agent: APIs-Google
+Allow: /
+
 # Meta-ExternalAgent — for Meta AI search
 User-agent: Meta-ExternalAgent
 Allow: /
