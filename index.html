@@ -140,6 +140,35 @@
 <meta name="resource-type" content="document" />
 <meta name="pagetype" content="homepage" />
 <meta name="audience" content="students, job seekers, Assam competitive exam candidates" />
+<!-- Google Discover Optimization -->
+<meta property="article:published_time" content="2024-01-01T00:00:00+05:30" />
+<meta property="article:modified_time" content="2026-07-19T00:00:00+05:30" />
+<meta property="article:author" content="https://studyria.qzz.io/?page=about" />
+<meta property="article:section" content="Education" />
+<meta property="article:tag" content="ADRE" />
+<meta property="article:tag" content="APSC" />
+<meta property="article:tag" content="Assam Police" />
+<meta property="article:tag" content="Assam TET" />
+<meta property="article:tag" content="Assam competitive exams" />
+<meta property="article:tag" content="PDF study material" />
+<meta property="article:tag" content="Assam education" />
+<meta property="article:tag" content="Studyria" />
+<meta property="og:article:published_time" content="2024-01-01T00:00:00+05:30" />
+<meta property="og:article:modified_time" content="2026-07-19T00:00:00+05:30" />
+<meta property="og:ttl" content="345600" />
+<meta name="twitter:image:width" content="1200" />
+<meta name="twitter:image:height" content="630" />
+<!-- Discover: high-resolution image reference -->
+<meta property="og:image" content="https://studyria.qzz.io/og-cover.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="Studyria – Assam's #1 PDF Study Platform for ADRE, APSC, Assam Police & State Exams" />
+<!-- Discover: additional large image for feed -->
+<meta property="og:image" content="https://studyria.qzz.io/icon-512.png" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+<meta property="og:image:alt" content="Studyria logo" />
 
 <meta name="theme-color" content="#080c14" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#f0f4fb" media="(prefers-color-scheme: light)" />
@@ -5897,6 +5926,450 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="p:domain_verify" content="cd5caf70596f667a2c87419f5615cd4e"/>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868252287561748"
 crossorigin="anonymous"></script>
+
+<!-- ═════════════════════════════════════════════════════════════════
+     DYNAMIC SEO SCHEMA INJECTION ENGINE
+     Generates JSON-LD from live page data — PDF details, library listings,
+     career hub jobs. Self-contained: wraps navigate() without modifying it.
+     All injected schema uses unique IDs prefixed with "dyn-" to avoid
+     collisions with existing static schema.
+     Added 2026-07-19 — Dynamic JSON-LD + Google Discover
+═══════════════════════════════════════════════════════════════ -->
+<script id="studyria-dynamic-seo-engine">
+(function() {
+  'use strict';
+
+  var BASE = 'https://studyria.qzz.io';
+  var DYN_PREFIX = 'dyn-seo-';
+  var injectedScripts = {};
+
+  function removeDynSchema(id) {
+    var el = document.getElementById(id);
+    if (el) el.remove();
+    delete injectedScripts[id];
+  }
+
+  function removeAllDynSchema() {
+    Object.keys(injectedScripts).forEach(function(id) {
+      removeDynSchema(id);
+    });
+  }
+
+  function injectSchema(id, data) {
+    removeDynSchema(id);
+    var el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = DYN_PREFIX + id;
+    el.textContent = JSON.stringify(data);
+    document.head.appendChild(el);
+    injectedScripts[DYN_PREFIX + id] = true;
+  }
+
+  function safeStr(v, fallback) {
+    if (!v || v === 'null' || v === 'undefined') return fallback || '';
+    return String(v);
+  }
+
+  function safeNum(v, fallback) {
+    var n = Number(v);
+    return isNaN(n) ? (fallback || 0) : n;
+  }
+
+  function escapeJson(v) {
+    if (!v) return '';
+    return String(v).replace(/[\\"\x00-\x1f]/g, function(c) {
+      var m = {'\\':'\\\\','"':'\\"','\\n':'\\n','\\r':'\\r','\\t':'\\t'};
+      return m[c] || '';
+    });
+  }
+
+  // ── PDF Detail Page Schema ──────────────────────────────────
+  function injectPdfDetailSchema(pdf) {
+    if (!pdf) return;
+    var pdfId = safeStr(pdf.id);
+    var title = safeStr(pdf.title, 'Untitled PDF');
+    var desc = safeStr(pdf.description, '');
+    var price = safeNum(pdf.price, 0);
+    var isFree = pdf.free || price === 0;
+    var category = safeStr(pdf.category, '');
+    var coverImg = safeStr(pdf.cover_image || pdf.coverImage || pdf.cover_url || '');
+    var author = safeStr(pdf.author, '');
+    var pages = safeNum(pdf.pages, 0);
+    var ratingVal = 0;
+    var ratingCount = 0;
+    if (window._cardRatingCache && window._cardRatingCache[String(pdfId)]) {
+      ratingVal = safeNum(window._cardRatingCache[String(pdfId)].avgRating, 0);
+      ratingCount = safeNum(window._cardRatingCache[String(pdfId)].ratingCount, 0);
+    }
+
+    // Product schema for the PDF
+    var product = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "@id": BASE + "/#dyn-product-" + escapeJson(pdfId),
+      "name": title,
+      "description": desc || (title + " — Studyria PDF study material for " + (category || "Assam competitive exams")),
+      "brand": { "@id": BASE + "/#organization" },
+      "category": category || "Education",
+      "url": BASE + "/#detail/" + escapeJson(pdfId),
+      "offers": {
+        "@type": "Offer",
+        "price": String(price),
+        "priceCurrency": "INR",
+        "availability": isFree ? "https://schema.org/InStock" : "https://schema.org/InStock",
+        "url": BASE + "/#detail/" + escapeJson(pdfId),
+        "seller": { "@id": BASE + "/#organization" }
+      }
+    };
+
+    if (coverImg) {
+      product.image = {
+        "@type": "ImageObject",
+        "url": coverImg,
+        "width": 400,
+        "height": 600
+      };
+    }
+
+    if (ratingVal > 0 && ratingCount > 0) {
+      product.aggregateRating = {
+        "@type": "AggregateRating",
+        "ratingValue": String(ratingVal),
+        "reviewCount": String(ratingCount),
+        "bestRating": "5",
+        "worstRating": "1"
+      };
+    }
+
+    injectSchema('product', product);
+
+    // LearningResource schema
+    var lr = {
+      "@context": "https://schema.org",
+      "@type": "LearningResource",
+      "@id": BASE + "/#dyn-lr-" + escapeJson(pdfId),
+      "name": title,
+      "description": desc || (title + " — study material on Studyria"),
+      "learningResourceType": "DigitalDocument",
+      "educationalUse": "Independent study, exam preparation",
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student"
+      },
+      "inLanguage": ["en-IN", "as-IN"],
+      "isAccessibleForFree": isFree,
+      "provider": { "@id": BASE + "/#organization" },
+      "url": BASE + "/#detail/" + escapeJson(pdfId)
+    };
+
+    if (category) lr.teaches = category + " exam preparation";
+    if (pages > 0) lr.numberOfPages = pages;
+    if (author) lr.author = { "@type": "Person", "name": author };
+    if (coverImg) lr.image = coverImg;
+
+    injectSchema('lr', lr);
+
+    // DigitalDocument schema
+    var doc = {
+      "@context": "https://schema.org",
+      "@type": "DigitalDocument",
+      "@id": BASE + "/#dyn-doc-" + escapeJson(pdfId),
+      "name": title,
+      "description": desc,
+      "encodingFormat": "application/pdf",
+      "url": BASE + "/#detail/" + escapeJson(pdfId),
+      "isAccessibleForFree": isFree,
+      "provider": { "@id": BASE + "/#organization" }
+    };
+    if (pages > 0) doc.numberOfPages = pages;
+    if (coverImg) doc.thumbnailUrl = coverImg;
+    if (pdf.created_at) doc.datePublished = pdf.created_at;
+    if (pdf.updated_at) doc.dateModified = pdf.updated_at;
+
+    injectSchema('doc', doc);
+
+    // BreadcrumbList for the PDF
+    var crumbs = [{ "@type": "ListItem", "position": 1, "name": "Home", "item": BASE + "/" }];
+    if (category) {
+      crumbs.push({ "@type": "ListItem", "position": 2, "name": "Library", "item": BASE + "/?page=library" });
+      crumbs.push({ "@type": "ListItem", "position": 3, "name": category, "item": BASE + "/?page=library&cat=" + escapeJson(category) });
+      crumbs.push({ "@type": "ListItem", "position": 4, "name": title, "item": BASE + "/#detail/" + escapeJson(pdfId) });
+    } else {
+      crumbs.push({ "@type": "ListItem", "position": 2, "name": "Library", "item": BASE + "/?page=library" });
+      crumbs.push({ "@type": "ListItem", "position": 3, "name": title, "item": BASE + "/#detail/" + escapeJson(pdfId) });
+    }
+
+    injectSchema('breadcrumb', {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": BASE + "/#dyn-breadcrumb-" + escapeJson(pdfId),
+      "itemListElement": crumbs
+    });
+
+    // Update meta tags dynamically for the PDF detail
+    updateMetaTag('meta[name="description"]', 'content', (desc || title).substring(0, 160));
+    updateMetaTag('meta[property="og:title"]', 'content', title + ' | Studyria');
+    updateMetaTag('meta[property="og:description"]', 'content', (desc || title).substring(0, 200));
+    updateMetaTag('meta[property="og:type"]', 'content', 'article');
+    if (coverImg) updateMetaTag('meta[property="og:image"]', 'content', coverImg);
+    updateMetaTag('meta[property="article:section"]', 'content', category || 'Education');
+    if (pdf.created_at) updateMetaTag('meta[property="article:published_time"]', 'content', pdf.created_at);
+    if (pdf.updated_at) updateMetaTag('meta[property="article:modified_time"]', 'content', pdf.updated_at);
+    updateMetaTag('meta[name="twitter:title"]', 'content', title + ' | Studyria');
+    updateMetaTag('meta[name="twitter:description"]', 'content', (desc || title).substring(0, 180));
+    if (coverImg) updateMetaTag('meta[name="twitter:image"]', 'content', coverImg);
+  }
+
+  // ── Library Page: Dynamic ItemList ───────────────────────────
+  function injectLibrarySchema() {
+    var pdfs = window.PDFS || [];
+    var items = [];
+    var maxItems = Math.min(pdfs.length, 20); // cap for performance
+    for (var i = 0; i < maxItems; i++) {
+      var p = pdfs[i];
+      if (!p || !p.id) continue;
+      items.push({
+        "@type": "ListItem",
+        "position": i + 1,
+        "name": safeStr(p.title, 'Untitled'),
+        "url": BASE + "/#detail/" + safeStr(p.id),
+        "item": {
+          "@type": "Product",
+          "name": safeStr(p.title, 'Untitled'),
+          "category": safeStr(p.category, 'Education'),
+          "offers": {
+            "@type": "Offer",
+            "price": String(safeNum(p.price, 0)),
+            "priceCurrency": "INR",
+            "availability": (p.free || safeNum(p.price, 0) === 0) ? "https://schema.org/InStock" : "https://schema.org/InStock"
+          }
+        }
+      });
+    }
+
+    if (items.length > 0) {
+      injectSchema('library-itemlist', {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "@id": BASE + "/?page=library#dyn-itemlist",
+        "name": "Studyria PDF Library — All Study Materials",
+        "description": "Complete catalog of " + pdfs.length + " PDF study materials for Assam competitive exams including ADRE, APSC, Assam Police, Assam TET and more.",
+        "numberOfItems": String(pdfs.length),
+        "itemListElement": items,
+        "url": BASE + "/?page=library"
+      });
+    }
+  }
+
+  // ── Career Hub: Dynamic ItemList ──────────────────────────────
+  function injectCareerHubSchema() {
+    // Try to get jobs from career hub data
+    var jobs = [];
+    if (window._careerHubJobs) jobs = window._careerHubJobs;
+    else if (window.careerHubJobs) jobs = window.careerHubJobs;
+    else if (window.CH_DATA && window.CH_DATA.jobs) jobs = window.CH_DATA.jobs;
+
+    if (!jobs || jobs.length === 0) return;
+
+    var items = [];
+    var maxItems = Math.min(jobs.length, 20);
+    for (var i = 0; i < maxItems; i++) {
+      var j = jobs[i];
+      if (!j) continue;
+      var jTitle = safeStr(j.title || j.job_title, 'Job Listing');
+      var jSlug = safeStr(j.slug || j.id, '');
+      var jUrl = jSlug ? (BASE + '/job/' + escapeJson(jSlug) + '.html') : (BASE + '/?page=career-hub');
+      var jOrg = safeStr(j.organization || j.company || j.hiring_organization, '');
+      var jLoc = safeStr(j.location || j.job_location, 'Assam');
+      var jDate = safeStr(j.date_posted || j.created_at || j.published_at, '');
+
+      items.push({
+        "@type": "ListItem",
+        "position": i + 1,
+        "name": jTitle,
+        "url": jUrl,
+        "item": {
+          "@type": "JobPosting",
+          "title": jTitle,
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": jOrg || "Studyria Career Hub"
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": jLoc,
+              "addressRegion": "Assam",
+              "addressCountry": "IN"
+            }
+          },
+          "url": jUrl,
+          "directApply": false
+        }
+      });
+    }
+
+    if (items.length > 0) {
+      injectSchema('careerhub-itemlist', {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "@id": BASE + "/?page=career-hub#dyn-itemlist",
+        "name": "Studyria Career Hub — Latest Assam Job Alerts",
+        "description": "Live job alerts and recruitment notifications for Assam — " + jobs.length + " listings updated daily.",
+        "numberOfItems": String(jobs.length),
+        "itemListElement": items,
+        "url": BASE + "/?page=career-hub"
+      });
+    }
+  }
+
+  // ── Generic Page WebPage schema ──────────────────────────────
+  var PAGE_NAMES = {
+    'home': 'Studyria — Assam\'s #1 PDF Study Platform',
+    'library': 'Studyria PDF Library — Free Study Materials',
+    'discover': 'Discover & Search PDFs on Studyria',
+    'career-hub': 'Studyria Career Hub — Assam Job Alerts, Results & Scholarships',
+    'about': 'About Studyria',
+    'contact': 'Contact Studyria',
+    'privacy': 'Privacy Policy — Studyria',
+    'terms': 'Terms of Service — Studyria',
+    'refund': 'Refund Policy — Studyria'
+  };
+
+  var PAGE_CANONICAL = {
+    'home': BASE + '/',
+    'library': BASE + '/?page=library',
+    'discover': BASE + '/?page=discover',
+    'career-hub': BASE + '/?page=career-hub',
+    'about': BASE + '/?page=about',
+    'contact': BASE + '/?page=contact',
+    'privacy': BASE + '/?page=privacy',
+    'terms': BASE + '/?page=terms',
+    'refund': BASE + '/?page=refund'
+  };
+
+  function injectPageSchema(page) {
+    if (page === 'detail' || page === '404' || page === 'login' || page === 'register' ||
+        page === 'dashboard' || page === 'admin' || page === 'admin-login' ||
+        page === 'wishlist' || page === 'wallet' || page === 'upload' ||
+        page === 'creator-dashboard' || page === 'creator-register' || page === 'marketplace') {
+      return;
+    }
+
+    var name = PAGE_NAMES[page];
+    var url = PAGE_CANONICAL[page];
+    if (!name || !url) return;
+
+    var crumbs = [{ "@type": "ListItem", "position": 1, "name": "Home", "item": BASE + "/" }];
+    if (page !== 'home') {
+      crumbs.push({ "@type": "ListItem", "position": 2, "name": name.split('—')[0].trim(), "item": url });
+    }
+
+    injectSchema('page-webpage', {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": url + "#dyn-webpage",
+      "url": url,
+      "name": name,
+      "inLanguage": "en-IN",
+      "isPartOf": { "@id": BASE + "/#website" },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": crumbs
+      },
+      "publisher": { "@id": BASE + "/#organization" }
+    });
+  }
+
+  // ── Helper: update meta tag ─────────────────────────────────
+  function updateMetaTag(selector, attr, value) {
+    if (!value) return;
+    var el = document.querySelector(selector);
+    if (el) el.setAttribute(attr, value);
+  }
+
+  // ── Main: hook into navigate ─────────────────────────────────
+  function initDynamicSEO() {
+    if (typeof window.navigate !== 'function' || window.navigate.__dynSeoWrapped) return;
+
+    var originalNavigate = window.navigate;
+    var wrappedNavigate = function(page) {
+      // Clean up all previously injected dynamic schema
+      removeAllDynSchema();
+
+      // Reset meta tags to defaults for non-detail pages
+      if (page !== 'detail') {
+        updateMetaTag('meta[property="og:type"]', 'content', 'website');
+        updateMetaTag('meta[name="description"]', 'content', "Studyria — Assam's #1 PDF Study Platform. Download free & premium PDFs for ADRE, APSC, Assam Police, Assam TET & all Assam board/state exams.");
+        updateMetaTag('meta[property="og:title"]', 'content', "Studyria – Assam's #1 PDF Study Platform | Free & Premium PDFs");
+        updateMetaTag('meta[property="og:description"]', 'content', "Download free & premium PDF study materials for ADRE, APSC, Assam Police & all Assam competitive exams.");
+        updateMetaTag('meta[property="og:image"]', 'content', BASE + '/og-cover.png');
+        updateMetaTag('meta[name="twitter:title"]', 'content', "Studyria – Assam's #1 PDF Study Platform | Free & Premium PDFs");
+        updateMetaTag('meta[name="twitter:description"]', 'content', "Download free & premium PDF study materials for ADRE, APSC, Assam Police & all Assam state exams.");
+        updateMetaTag('meta[name="twitter:image"]', 'content', BASE + '/og-cover.png');
+      }
+
+      var result = originalNavigate.apply(this, arguments);
+
+      // Inject dynamic schema after a short delay (let page data load)
+      setTimeout(function() {
+        if (page === 'detail' && window.selectedPdf) {
+          injectPdfDetailSchema(window.selectedPdf);
+        } else if (page === 'library') {
+          injectLibrarySchema();
+          injectPageSchema('library');
+        } else if (page === 'career-hub') {
+          injectCareerHubSchema();
+          injectPageSchema('career-hub');
+        } else if (page === 'home') {
+          injectPageSchema('home');
+        } else if (page === 'discover') {
+          injectPageSchema('discover');
+        } else if (page === 'about') {
+          injectPageSchema('about');
+        } else if (page === 'contact') {
+          injectPageSchema('contact');
+        } else if (page === 'privacy') {
+          injectPageSchema('privacy');
+        } else if (page === 'terms') {
+          injectPageSchema('terms');
+        } else if (page === 'refund') {
+          injectPageSchema('refund');
+        }
+      }, 300);
+
+      return result;
+    };
+
+    wrappedNavigate.__dynSeoWrapped = true;
+    window.navigate = wrappedNavigate;
+
+    // Also inject schema for the initial page load
+    setTimeout(function() {
+      var currentPage = window.currentPage || 'home';
+      if (currentPage === 'library') {
+        injectLibrarySchema();
+        injectPageSchema('library');
+      } else if (currentPage === 'career-hub') {
+        injectCareerHubSchema();
+        injectPageSchema('career-hub');
+      } else {
+        injectPageSchema(currentPage);
+      }
+    }, 500);
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(initDynamicSEO, 100);
+    });
+  } else {
+    setTimeout(initDynamicSEO, 100);
+  }
+})();
+</script>
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
