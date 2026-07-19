@@ -173,6 +173,140 @@ Allow: /
 Disallow: /?page=admin
 Disallow: /?page=dashboard
 
+
+# ── Additional AI Crawlers — extended AI search visibility ───────
+
+# ChatGPT-User — ChatGPT user-initiated browsing
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Claude-Web — Anthropic web fetcher for Claude
+User-agent: Claude-Web
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Perplexity-User — Perplexity user-initiated browsing
+User-agent: Perplexity-User
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# cohere-ai — Cohere AI search & language models
+User-agent: cohere-ai
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# YouBot — You.com AI search engine
+User-agent: YouBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Omgilibot — AI search aggregator (legacy name for GPTBot)
+User-agent: Omgilibot
+Allow: /
+
+# Omgili — AI search aggregator
+User-agent: Omgili
+Allow: /
+
+# FacebookBot — Meta content crawling for AI
+User-agent: FacebookBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# DuckDuckBot — DuckDuckGo (feeds AI search results)
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# YandexBot — Yandex search (AI-powered results)
+User-agent: YandexBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+Crawl-delay: 2
+
+# YandexImages — for Yandex image search
+User-agent: YandexImages
+Allow: /og-cover.png
+Allow: /icon-*.png
+Allow: /icons/
+
+# AI2Bot — Allen Institute for AI (research crawling)
+User-agent: AI2Bot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Diffbot — AI knowledge extraction
+User-agent: Diffbot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# Timpibot — Timpi decentralized AI search
+User-agent: Timpibot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+Disallow: /?page=login
+Disallow: /?page=register
+
+# ImagesiftBot — AI-powered image search
+User-agent: ImagesiftBot
+Allow: /
+Disallow: /?page=admin
+Disallow: /?page=dashboard
+
+# MojeekBot — independent search engine (AI-enhanced)
+User-agent: MojeekBot
+Allow: /
+Crawl-delay: 1
+
+# QwantBot — European search engine (AI-enhanced)
+User-agent: QwantBot
+Allow: /
+Crawl-delay: 1
+
+# Sogou web spider — Chinese search engine
+User-agent: Sogou
+Allow: /
+Crawl-delay: 3
+
+# SeznamBot — Czech search engine
+User-agent: SeznamBot
+Allow: /
+Crawl-delay: 2
+
+# PetalBot — Huawei search engine
+User-agent: PetalBot
+Allow: /
+Crawl-delay: 2
+
 # ── Block bad / scraper bots ─────────────────────────────────
 User-agent: SemrushBot
 Disallow: /
