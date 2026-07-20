@@ -29,14 +29,27 @@ function saveConfig(){
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(_config))}catch(e){}
   // Also save to Supabase (fire-and-forget)
   _saveToSupabase()}
-var _saveTimer=null;
-function _saveToSupabase(){var client=window.supabaseClient;if(!client)return;
-  // Debounce saves to avoid hammering Supabase
+var _saveTimer=null;var _savingToastShown=false;
+function _saveToSupabase(){var client=window.supabaseClient;if(!client){console.warn('[SPM] No Supabase client — localStorage only');return}
   if(_saveTimer)clearTimeout(_saveTimer);
   _saveTimer=setTimeout(function(){
+    if(typeof showToast==='function'&&!_savingToastShown){showToast(' Saving to Supabase...','info')}
     client.from('site_config').upsert({key:'pass_management_config',value:JSON.stringify(_config)},{onConflict:'key'}).then(function(res){
-      if(res.error)console.warn('[SPM] Supabase save error:',res.error.message);
-    }).catch(function(e){console.warn('[SPM] Supabase save failed:',e)})
+      if(res.error){
+        console.warn('[SPM] Supabase save error:',res.error.message);
+        if(typeof showToast==='function')showToast('❌ Supabase save failed: '+res.error.message,'error');
+      }else{
+        console.log('[SPM] ✅ Saved to Supabase');
+        if(typeof showToast==='function')showToast('✅ Saved to Supabase','success');
+        // Refresh the website renderer
+        if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function'){
+          setTimeout(function(){window.PassRenderer.refresh()},100)
+        }
+      }
+    }).catch(function(e){
+      console.warn('[SPM] Supabase save failed:',e);
+      if(typeof showToast==='function')showToast('❌ Save error: '+(e.message||e),'error');
+    })
   },500)}
 function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function _uid(){return'x'+Math.random().toString(36).slice(2,9)}
