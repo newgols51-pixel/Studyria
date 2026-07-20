@@ -12766,6 +12766,8 @@ body.light .me-stat-val { filter:none; }
         </button>
 
         <div class="admin-nav-section-label" style="margin-top:16px">🎓 CREATOR PROGRAM</div>
+        <button class="admin-nav-item" data-atab="pass-management" onclick="switchAdminTab('pass-management')" style="background:linear-gradient(90deg,rgba(251,191,36,0.15),rgba(245,158,11,0.08));border-left:2px solid #fbbf24"> Pass Management
+        </button>
         <button class="admin-nav-item" data-atab="creator-manager" onclick="switchAdminTab('creator-manager')" style="background:linear-gradient(90deg,rgba(16,217,142,0.13),rgba(6,182,212,0.07));border-left:2px solid #10d98e">
           <span style="font-size:1rem">🎓</span>Creator Manager
           <span class="admin-nav-badge" style="background:rgba(16,217,142,.12);color:#10d98e;border-color:rgba(16,217,142,.2)">NEW</span>
@@ -24115,7 +24117,7 @@ function switchAdminTab(tab) {
     'pdf-manager-pro':'Advanced PDF Manager', 'category-manager-pro':'Advanced Category Manager', 'homepage-manager':'Homepage Manager', 'header-manager':'Header Manager', 'nav-manager':'Navigation Manager', 'customization':'Website Customization', 'users-pro':'User Management Pro',
     'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
     'seo-manager':'SEO Manager', 'live-analytics':'Live Analytics Center', 'ai-center':'AI Control Center', 'security':'Security Center', 'system-advanced':'Advanced System Settings',
-    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community' };
+    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community', 'pass-management':'👑 Pass Management' };
   if (bc) bc.textContent = tabNames[tab] || tab;
 
   const main = document.getElementById('adminMain');
@@ -24180,6 +24182,7 @@ function switchAdminTab(tab) {
     case 'career-hub-manager':    _safeRender(renderAdminCareerHubManager,        'Career Hub Manager'); break;
     case 'community-manager':     _safeRender(renderAdminCommunityManager,        'Community Manager'); break;
     case 'whatsapp-community':    _safeRender(renderAdminWhatsAppCommunity,       'WhatsApp Community'); break;
+    case 'pass-management':  _safeRender(window.renderPassManagement,       'Pass Management'); break;
     case 'testimonials':          _safeRender(window.renderPCCTestimonials,       'Testimonials'); break;
     case 'reviews':               _safeRender(window.renderAdminReviews,          'Reviews'); break;
     case 'achievements':          _safeRender(window.renderPCCAchievements,       'Achievements'); break;
@@ -45927,6 +45930,7 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 })();
 </script>
 
+<script src="/pass-management.js" defer></script>
 <script src="/premium-p2.js" defer></script>
 <script src="/premium-p3.js" defer></script>
 
