@@ -103,12 +103,10 @@ SPM._editPlanModal=function(plan){
   // Smart pricing section with auto-calc
   +'<div class="spm-smart-pricing-wrap" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:16px;margin-bottom:14px">'
   +'<div class="spm-label" style="margin-bottom:10px;color:#fbbf24;font-size:.75rem">\uF0B2 Smart Pricing — Auto Discount Calculator</div>'
-  +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Original Price (\u20B9)','number','plan-oprice',p.originalPrice,'149')+'</div><div class="spm-form-group">'+SPM._field('Offer Price (\u20B9)','number','plan-oprice2',p.offerPrice,'99')+'</div><div class="spm-form-group"><label class="spm-label">Discount % (auto)</label><input class="spm-input" type="number" id="plan-discount" value="'+_esc(p.discount)+'" placeholder="0" readonly style="background:rgba(16,217,142,0.08);border-color:rgba(16,217,142,0.2);color:#10d98e;font-weight:700"></div></div>'
-  // Live savings preview
-  +'<div id="spm-savings-preview" class="spm-savings-preview" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(16,217,142,0.06);border:1px solid rgba(16,217,142,0.12);font-size:.75rem"></div>'
-  // Smart recommendations
-  +'<div id="spm-smart-tips" class="spm-smart-tips" style="margin-top:8px;font-size:.7rem;color:var(--text2,rgba(255,255,255,0.5))"></div>'
-  +'</div>'
+  +'<div class="spm-form-row"><div class="spm-form-group"><label class="spm-label">Original Price (\u20B9)</label><input class="spm-input" type="number" id="plan-oprice" value="'+_esc(p.originalPrice)+'" placeholder="149" oninput="SPM._calcDiscount()"></div><div class="spm-form-group"><label class="spm-label">Offer Price (\u20B9)</label><input class="spm-input" type="number" id="plan-oprice2" value="'+_esc(p.offerPrice)+'" placeholder="99" oninput="SPM._calcDiscount()"></div></div>'
+  +'<div id="spm-discount-display" style="display:none;padding:10px 12px;border-radius:10px;background:rgba(16,217,142,0.08);border:1px solid rgba(16,217,142,0.2);margin-bottom:8px"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span id="spm-disc-pct" style="font-size:1.3rem;font-weight:900;color:#10d98e"></span><span id="spm-disc-savings" style="font-size:.78rem;color:#10d98e"></span><span id="spm-disc-perday" style="font-size:.7rem;color:var(--text2);margin-left:auto"></span></div><div id="spm-smart-tips" style="margin-top:4px;font-size:.7rem;color:var(--text2)"></div></div>'
+  +'<div id="spm-price-error" style="display:none;padding:8px 12px;border-radius:8px;background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);color:#ff4d6d;font-size:.75rem;margin-bottom:8px"></div>'
+  +'<input type="hidden" id="plan-discount" value="'+_esc(p.discount)+'">'  +'</div>'
   +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Badge Text','text','plan-badge',p.badge,'POPULAR')+'</div><div class="spm-form-group"><label class="spm-label">Badge Color</label><select class="spm-input" id="plan-btype"><option value="gold"'+(p.badgeType==='gold'?' selected':'')+'>Gold</option><option value="green"'+(p.badgeType==='green'?' selected':'')+'>Green</option><option value="purple"'+(p.badgeType==='purple'?' selected':'')+'>Purple</option><option value="blue"'+(p.badgeType==='blue'?' selected':'')+'>Blue</option><option value="red"'+(p.badgeType==='red'?' selected':'')+'>Red</option><option value="rainbow"'+(p.badgeType==='rainbow'?' selected':'')+'>Rainbow</option></select></div></div>'
   +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Button Text','text','plan-btn',p.buttonText,'Get Pass')+'</div><div class="spm-form-group">'+SPM._field('Icon (emoji)','text','plan-icon',p.icon,'\uF0A4')+'</div></div>'
   +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Gradient (CSS)','text','plan-gradient',p.gradient,'linear-gradient(135deg,#fbbf24,#f59e0b)')+'</div><div class="spm-form-group">'+SPM._field('Card BG (CSS)','text','plan-bg',p.bgColor,'rgba(251,191,36,0.08)')+'</div></div>'
@@ -128,16 +126,15 @@ SPM._editPlanModal=function(plan){
 
 // Smart discount auto-calc
 SPM._initSmartPricing=function(){
-  var op=document.getElementById('plan-oprice');var of=document.getElementById('plan-oprice2');
-  if(op)op.addEventListener('input',function(){SPM._calcDiscount();SPM._updatePreview()});
-  if(of)of.addEventListener('input',function(){SPM._calcDiscount();SPM._updatePreview()});
+  // oninput for price fields is now inline in HTML — no need to add here
+  // Handle smart badge dropdown
   var sb=document.getElementById('plan-smart-badge');
   if(sb)sb.addEventListener('change',function(){
     var bt=document.getElementById('plan-badge');
     if(bt&&sb.value)bt.value=sb.value;
     SPM._updatePreview()
   });
-  // Also update preview on name/icon/badge/gradient changes
+  // Update preview on other field changes
   ['plan-name','plan-icon','plan-badge','plan-btn','plan-gradient','plan-bg'].forEach(function(id){
     var el=document.getElementById(id);
     if(el)el.addEventListener('input',SPM._updatePreview)
@@ -147,51 +144,57 @@ SPM._initSmartPricing=function(){
 SPM._calcDiscount=function(){
   var op=parseFloat(SPM._val('plan-oprice'))||0;
   var of=parseFloat(SPM._val('plan-oprice2'))||0;
-  var discEl=document.getElementById('plan-discount');
-  var prevEl=document.getElementById('spm-savings-preview');
+  var hiddenDisc=document.getElementById('plan-discount');
+  var displayWrap=document.getElementById('spm-discount-display');
+  var discPct=document.getElementById('spm-disc-pct');
+  var discSav=document.getElementById('spm-disc-savings');
+  var discPerDay=document.getElementById('spm-disc-perday');
   var tipsEl=document.getElementById('spm-smart-tips');
-  if(op<=0||of<=0){if(discEl)discEl.value='0';if(prevEl)prevEl.style.display='none';if(tipsEl)tipsEl.innerHTML='';return}
+  var errEl=document.getElementById('spm-price-error');
+
+  if(errEl)errEl.style.display='none';
+  if(displayWrap)displayWrap.style.display='none';
+
+  if(op<=0||of<=0){if(hiddenDisc)hiddenDisc.value='0';SPM._updatePreview();return}
+
   if(of>=op){
-    if(discEl)discEl.value='0';
-    if(prevEl){prevEl.style.display='block';prevEl.innerHTML='\u26A0 Offer price is higher than or equal to original price — no discount applied';prevEl.style.background='rgba(255,77,109,0.06)';prevEl.style.borderColor='rgba(255,77,109,0.12)';prevEl.style.color='#ff4d6d'}
-    if(tipsEl)tipsEl.innerHTML='\u26A0 Tip: Offer price should be lower than original price to show a discount';
-    return
+    if(errEl){errEl.style.display='block';errEl.textContent='\u26A0 Offer price must be less than original price'}
+    if(hiddenDisc)hiddenDisc.value='0';
+    SPM._updatePreview();return
   }
+
   var disc=Math.round(((op-of)/op)*100);
-  if(discEl)discEl.value=disc;
   var savings=op-of;
-  if(prevEl){
-    prevEl.style.display='block';
-    prevEl.style.background='rgba(16,217,142,0.06)';
-    prevEl.style.borderColor='rgba(16,217,142,0.12)';
-    prevEl.style.color='#10d98e';
-    prevEl.innerHTML='\u2705 Customer saves \u20B9'+savings+' ('+disc+'% off) — Effective price: \u20B9'+of
-  }
-  // Smart tips
-  var tips='';
-  if(disc>=60)tips='\uF0A7 Great deal! '+disc+'% discount is very attractive for conversions';
-  else if(disc>=40)tips='\u2705 '+disc+'% discount is solid — good balance of value and revenue';
-  else if(disc>=20)tips='\uF0AD '+disc+'% discount is moderate — consider increasing the offer for better conversions';
-  else if(disc>0)tips='\u26A0 '+disc+'% is a small discount — customers may not notice significant savings';
-  if(disc===0)tips='';
-  // Price-per-day smart calc
+  if(hiddenDisc)hiddenDisc.value=disc;
+
+  if(displayWrap)displayWrap.style.display='block';
+  if(discPct)discPct.textContent=disc+'% OFF';
+  if(discSav)discSav.textContent='\u2665 Save \u20B9'+savings+' \u2014 Effective price: \u20B9'+of;
+
   var dur=parseInt(SPM._val('plan-duration'))||30;
-  var unit=document.getElementById('plan-unit').value;
+  var unitEl=document.getElementById('plan-unit');
+  var unit=unitEl?unitEl.value:'days';
   if(unit==='months')dur=dur*30;
   if(unit==='lifetime')dur=36500;
   if(dur>0&&of>0){
     var perDay=(of/dur).toFixed(2);
-    tips+='  |  \uF0C5 \u20B9'+perDay+'/day effective cost';
-    if(perDay<1)tips+='  |  \uF0AB Under \u20B91/day — excellent value proposition!'
+    if(discPerDay)discPerDay.textContent='\u20B9'+perDay+'/day'+(parseFloat(perDay)<1?' \u2014 Under \u20B91/day!':'')
   }
-  if(tipsEl)tipsEl.innerHTML=tips
-};
 
+  var tips='';
+  if(disc>=60)tips='\uD83D\uDD25 Great deal \u2014 very attractive for conversions';
+  else if(disc>=40)tips='\u2705 Solid discount \u2014 good balance of value and revenue';
+  else if(disc>=20)tips='\uD83D\uDCA1 Moderate \u2014 consider a bigger discount for conversions';
+  else if(disc>0)tips='\u26A0 Small discount \u2014 may not excite customers much';
+  if(tipsEl)tipsEl.textContent=tips;
+
+  SPM._updatePreview()
+};
 SPM._updatePreview=function(){
   var name=SPM._val('plan-name')||'Plan Name';
   var op=parseFloat(SPM._val('plan-oprice'))||0;
   var of=parseFloat(SPM._val('plan-oprice2'))||0;
-  var disc=parseInt(document.getElementById('plan-discount')?document.getElementById('plan-discount').value:0)||0;
+  var discEl=document.getElementById('plan-discount');var disc=discEl?parseInt(discEl.value)||0:0;
   var badge=SPM._val('plan-badge')||'';
   var icon=SPM._val('plan-icon')||'\uF0A4';
   var btn=SPM._val('plan-btn')||'Get Pass';
