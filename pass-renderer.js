@@ -11,6 +11,7 @@ function _loadFromStorage(){try{var raw=localStorage.getItem(STORAGE_KEY);if(raw
 
 function _defaultPlans(){
   return [
+    {name:'7 Day Trial',offerPrice:29,originalPrice:149,duration:'7',durationUnit:'days',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',icon:'\u26A1',planSlug:'trial_7day',features:['All Pass Notes','Pass Reading Room','Pass Notes','Handwritten Notes','MCQs & PYQs','Career Hub Benefits','AI Study Tools','Unlimited Downloads','Priority Updates','Future Pass Features']},
     {name:'1 Day Trial',offerPrice:9,originalPrice:0,duration:'1',durationUnit:'days',badge:'NEW',badgeType:'gold',buttonText:'Try Now',icon:'\u26A1',planSlug:'trial_1day',features:['All Pass Notes','Pass Reading Room','Reading Progress','Unlimited Wishlist','Ad-Free Experience']},
     {name:'15 Day Trial',offerPrice:49,originalPrice:99,duration:'15',durationUnit:'days',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',icon:'\uF0AB',planSlug:'trial_15day',features:['All Pass Notes','Pass Reading Room','Reading Progress','Unlimited Wishlist','Ad-Free Experience']},
     {name:'Monthly',offerPrice:99,originalPrice:149,duration:'30',durationUnit:'days',badge:'',badgeType:'blue',buttonText:'Subscribe',icon:'\uF0AA',planSlug:'monthly',features:['All Pass Notes','Pass Reading Room','Continue Reading','Reading Progress','Unlimited Wishlist','Ad-Free Experience','Pass Badge']},
@@ -21,7 +22,7 @@ function _defaultPlans(){
 
 function _getPlans(cfg){
   if(!cfg||!cfg.plans)return _defaultPlans();
-  var slugMap={'1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly','Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
+  var slugMap={'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly','Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
   return cfg.plans.filter(function(p){return p.active}).sort(function(a,b){return(a.order||0)-(b.order||0)}).map(function(p){
     var slug=slugMap[p.name]||p.name.toLowerCase().replace(/\\s+/g,'_');
     var features=['All Pass Notes','Pass Reading Room'];

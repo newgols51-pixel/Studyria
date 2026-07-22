@@ -52,9 +52,9 @@ function _saveToSupabase(){var client=window.supabaseClient;if(!client){console.
 // Sync Pass Management prices → membership_plans table (used by PPAY/Razorpay)
 function _syncPricesToMembershipPlans(client){
   if(!_config||!_config.plans||!_config.plans.length)return;
-  var slugMap={'1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
+  var slugMap={'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
     'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
-  var cycleMap={'trial_1day':'trial_1day','trial_15day':'trial_15day','monthly':'monthly',
+  var cycleMap={'trial_7day':'trial_7day','trial_1day':'trial_1day','trial_15day':'trial_15day','monthly':'monthly',
     'quarterly':'quarterly','half_year':'half_year','yearly':'yearly','lifetime':'lifetime'};
   var activePlans=_config.plans.filter(function(p){return p.active});
   if(!activePlans.length)return;

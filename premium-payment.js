@@ -51,6 +51,7 @@
 
   /* billing_cycle → days (requirement: monthly=30, yearly=365) */
   var CYCLE_DAYS = {
+    trial_7day:  7,
     trial_1day:  1,
     trial_15day: 15,
     monthly:     30,
@@ -67,9 +68,10 @@
   /* Plan catalogue — fallback display prices if DB fetch fails.
      Server never trusts these amounts; they are for modal display only. */
   var PLAN_DISPLAY = {
-    trial_1day:  { name: '1 Day Trial',       display_inr: 9   },
-    trial_15day: { name: '15 Day Trial',      display_inr: 49  },
-    monthly:     { name: 'Monthly Premium',   display_inr: 99  },
+    trial_7day:  { name: '7 Day Trial',        display_inr: 29  },
+    trial_1day:  { name: '1 Day Trial',        display_inr: 9   },
+    trial_15day: { name: '15 Day Trial',       display_inr: 49  },
+    monthly:     { name: 'Monthly Premium',   display_inr: 69  },
     quarterly:   { name: 'Quarterly Premium', display_inr: 249 },
     half_year:   { name: 'Half Year Premium', display_inr: 449 },
     // Legacy aliases
@@ -239,7 +241,7 @@
             .maybeSingle();
           if (cfgRes.data && cfgRes.data.value) {
             var pmCfg = JSON.parse(cfgRes.data.value);
-            var pmSlugMap = {'1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
+            var pmSlugMap = {'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
               'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
             var pmPlan = null;
             if (pmCfg.plans) {
