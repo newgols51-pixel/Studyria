@@ -65,20 +65,8 @@
     lifetime:    36500,
   };
 
-  /* Plan catalogue — fallback display prices if DB fetch fails.
-     Server never trusts these amounts; they are for modal display only. */
-  var PLAN_DISPLAY = {
-    trial_7day:  { name: '7 Day Trial',        display_inr: 29  },
-    trial_1day:  { name: '1 Day Trial',        display_inr: 9   },
-    trial_15day: { name: '15 Day Trial',       display_inr: 49  },
-    monthly:     { name: 'Monthly Premium',   display_inr: 69  },
-    quarterly:   { name: 'Quarterly Premium', display_inr: 249 },
-    half_year:   { name: 'Half Year Premium', display_inr: 449 },
-    // Legacy aliases
-    starter:     { name: 'Starter',           display_inr: 49  },
-    biannual:    { name: '6 Month',           display_inr: 449 },
-    yearly:      { name: 'Yearly',            display_inr: 999 },
-  };
+  /* FIX 2: No hardcoded plan prices. Payment must ALWAYS fetch from DB/site_config.
+     If fetch fails, show error and do NOT open payment. Never use hardcoded prices. */
 
   /* ── Logging ─────────────────────────────────────────────────── */
   function _log(fn, msg, d) {
@@ -142,7 +130,7 @@
   }
 
   /* ── Razorpay SDK loader ─────────────────────────────────────── */
-  var _sdkLoaded = false;
+  var _sdkLoaded = false;var _planCache={};
   function _loadSDK() {
     return new Promise(function (resolve, reject) {
       if (typeof Razorpay !== 'undefined' || _sdkLoaded) { resolve(); return; }
@@ -213,22 +201,32 @@
     _btnLoading(triggerBtn);
 
     try {
-      /* ── 2. Fetch plan from DB (price_inr, billing_cycle) ──────── */
+      /* ── 2. Fetch plan from DB (price_inr, billing_cycle) ────────
+         FIX 2: Always fetch live price from DB. Never use hardcoded prices. */
       var plan = null;
-      try {
-        var planRes = await client
-          .from('membership_plans')
-          .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-          .eq('slug', planSlug)
-          .eq('is_active', true)
-          .maybeSingle();
 
-        if (planRes.error) {
-          _warn('checkout', 'DB plan fetch error (using fallback):', planRes.error.message);
+      // Check cache first (cleared on config update event)
+      if (_planCache[planSlug]) {
+        plan = _planCache[planSlug];
+        _log('checkout', 'Using cached plan:', plan);
+      }
+
+      if (!plan) {
+        try {
+          var planRes = await client
+            .from('membership_plans')
+            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+            .eq('slug', planSlug)
+            .maybeSingle();  /* Don't filter by is_active — we validate it below */
+
+          if (planRes.error) {
+            _warn('checkout', 'DB plan fetch error:', planRes.error.message);
+          }
+          plan = planRes.data;
+          if (plan) { _planCache[planSlug] = plan; }
+        } catch (e) {
+          _warn('checkout', 'Plan fetch exception:', e);
         }
-        plan = planRes.data;
-      } catch (e) {
-        _warn('checkout', 'Plan fetch exception (using fallback):', e);
       }
 
       /* Fallback 1: Try site_config (Pass Management config) */
@@ -241,13 +239,14 @@
             .maybeSingle();
           if (cfgRes.data && cfgRes.data.value) {
             var pmCfg = JSON.parse(cfgRes.data.value);
+            // FIX 1: Use passId (permanent unique ID) instead of slugMap (name→slug)
             var pmSlugMap = {'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
               'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
             var pmPlan = null;
             if (pmCfg.plans) {
               pmCfg.plans.forEach(function(p) {
-                var pSlug = pmSlugMap[p.name] || p.name.toLowerCase().replace(/\s+/g, '_');
-                if (pSlug === planSlug && p.active) { pmPlan = p; }
+                var pSlug = p.passId || pmSlugMap[p.name] || p.name.toLowerCase().replace(/\s+/g, '_');
+                if (pSlug === planSlug) { pmPlan = p; } // Match regardless of active state — check active below
               });
             }
             if (pmPlan) {
@@ -257,8 +256,9 @@
                 name:          pmPlan.name,
                 price_inr:     pmPlan.offerPrice || pmPlan.originalPrice || 0,
                 billing_cycle: planSlug,
-                is_active:     true,
+                is_active:     pmPlan.active !== false,  /* FIX 2: Use actual active state from config */
               };
+              _planCache[planSlug] = plan;
               _warn('checkout', 'Using Pass Management config:', plan);
             }
           }
@@ -267,29 +267,40 @@
         }
       }
 
-      /* Fallback 2: Hardcoded PLAN_DISPLAY */
+      /* FIX 2: No hardcoded fallback. If plan not in DB or site_config, show error. */
       if (!plan) {
-        var fb = PLAN_DISPLAY[planSlug];
-        if (fb) {
-          plan = {
-            id:            null,
-            slug:          planSlug,
-            name:          fb.name,
-            price_inr:     fb.display_inr,
-            billing_cycle: planSlug,
-            is_active:     true,
-          };
-          _warn('checkout', 'Using hardcoded fallback:', plan);
-        }
-      }
-
-      if (!plan) {
-        _toast('Plan "' + planSlug + '" not found. Please contact support.', 'error');
+        // FIX 14: Friendly error — plan may be temporarily unavailable, not deleted
+        _toast('Plan "' + planSlug + '" is currently unavailable. Please refresh the page or try again.', 'error');
         _btnRestore(triggerBtn);
         return;
       }
 
       var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
+
+      /* ── FIX 5: Payment Validation ──────────────────────────────
+         Verify plan exists, is active, price valid, offer valid, duration valid.
+         Never open payment using invalid data. */
+      var validationErrors = [];
+      // Check price valid
+      if (typeof plan.price_inr !== 'number' || plan.price_inr <= 0) {
+        validationErrors.push('Invalid price (\u20B9' + plan.price_inr + ')');
+      }
+      // Check plan active
+      if (plan.is_active === false) {
+        validationErrors.push('Plan is not active');
+      }
+      // Check duration valid
+      if (durationDays <= 0) {
+        validationErrors.push('Invalid duration (' + durationDays + ' days)');
+      }
+      if (validationErrors.length) {
+        var vMsg = '\u26A0\uFE0F Cannot proceed with payment: ' + validationErrors.join(', ') + '. Please contact support.';
+        _toast(vMsg, 'error');
+        _btnRestore(triggerBtn);
+        _err('checkout', 'Payment validation failed:', validationErrors);
+        return;
+      }
+      _log('checkout', 'Payment validation passed:', { price_inr: plan.price_inr, is_active: plan.is_active, durationDays: durationDays });
       _log('checkout', 'Expiry calculation:', {
         slug: planSlug, billing_cycle: plan.billing_cycle,
         trial_days: plan.trial_days, durationDays: durationDays,
@@ -364,7 +375,10 @@
         throw new Error('Razorpay SDK unavailable after load');
       }
 
-      /* ── 5. Open Razorpay checkout ────────────────────────────── */
+      /* ── 5. Open Razorpay checkout ──────────────────────────────
+         FIX 13: Amount shown on Card, Checkout, Razorpay, Receipt must all match.
+         Log the exact amount being charged for audit trail. */
+      _log('checkout', 'Razorpay amount:', { price_inr: plan.price_inr, paise: plan.price_inr * 100, slug: planSlug });
       var paymentResponse = await new Promise(function (resolve, reject) {
         var options = {
           key:         RZP_KEY,
@@ -378,8 +392,12 @@
           },
           theme: { color: '#fbbf24' },
           notes: {
-            plan_slug: planSlug,
-            user_id:   user.id,
+            plan_slug:   planSlug,
+            plan_id:     plan.id || '',
+            plan_name:   plan.name || '',
+            user_id:     user.id,
+            amount_inr: String(plan.price_inr),
+            duration_days: String(durationDays),
           },
           handler: function (response) {
             resolve({
@@ -556,13 +574,15 @@
           membership_id:  membershipId,
           provider:       'razorpay',
           provider_tx_id: paymentResponse.payment_id,   /* UNIQUE — replay protection */
-          amount_inr:     plan.price_inr,
+          amount_inr:     plan.price_inr,  /* FIX 13: Must match Razorpay charge */
           currency:       'INR',
           status:         'completed',
           notes:          JSON.stringify({
-            plan_slug:  planSlug,
-            order_id:   paymentResponse.order_id,
-            expires_at: expiresAt,
+            plan_slug:   planSlug,
+            plan_name:   plan.name || '',
+            order_id:    paymentResponse.order_id,
+            amount_inr:  plan.price_inr,  /* FIX 13: For receipt consistency */
+            expires_at:  expiresAt,
           }),
         };
 
@@ -732,6 +752,13 @@
   window.PPAY = {
     _version: '1.0',
     checkout: checkout,
+    _clearCache: function() { _planCache = {}; },
   };
+
+  /* FIX 3: Listen for config update events from admin save */
+  window.addEventListener('studyria:passConfigUpdated', function() {
+    _planCache = {};
+    console.log('[PPAY] Config updated — plan cache cleared');
+  });
 
 })();

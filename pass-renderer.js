@@ -1,38 +1,41 @@
-/* pass-renderer.js — Dynamic Pass Page Renderer
+/* pass-renderer.js — Dynamic Pass Page Renderer v2.0
  * Loads Pass Management config from Supabase (site_config table) and
  * dynamically renders pricing cards, hero text, and benefits on the website.
- * Falls back to hardcoded HTML if config not available.
+ *
+ * FIX 6: No hardcoded plans — renders ONLY from database/site_config.
+ * FIX 3: Auto-refresh via Supabase realtime + custom events.
+ * FIX 1: Uses passId (permanent unique ID) instead of slugMap (name→slug).
+ * FIX 14: Retry logic for config loading + friendly errors.
  */
 (function(){'use strict';
 var STORAGE_KEY='studyria_pass_config';
-var _cfg=null;var _loaded=false;
+var _cfg=null;var _loaded=false;var _retryCount=0;var _maxRetries=3;
 
 function _loadFromStorage(){try{var raw=localStorage.getItem(STORAGE_KEY);if(raw)return JSON.parse(raw)}catch(e){}return null}
 
-function _defaultPlans(){
-  return [
-    {name:'7 Day Trial',offerPrice:29,originalPrice:149,duration:'7',durationUnit:'days',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',icon:'\u26A1',planSlug:'trial_7day',features:['All Pass Notes','Pass Reading Room','Pass Notes','Handwritten Notes','MCQs & PYQs','Career Hub Benefits','AI Study Tools','Unlimited Downloads','Priority Updates','Future Pass Features']},
-    {name:'1 Day Trial',offerPrice:9,originalPrice:0,duration:'1',durationUnit:'days',badge:'NEW',badgeType:'gold',buttonText:'Try Now',icon:'\u26A1',planSlug:'trial_1day',features:['All Pass Notes','Pass Reading Room','Reading Progress','Unlimited Wishlist','Ad-Free Experience']},
-    {name:'15 Day Trial',offerPrice:49,originalPrice:99,duration:'15',durationUnit:'days',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',icon:'\uF0AB',planSlug:'trial_15day',features:['All Pass Notes','Pass Reading Room','Reading Progress','Unlimited Wishlist','Ad-Free Experience']},
-    {name:'Monthly',offerPrice:99,originalPrice:149,duration:'30',durationUnit:'days',badge:'',badgeType:'blue',buttonText:'Subscribe',icon:'\uF0AA',planSlug:'monthly',features:['All Pass Notes','Pass Reading Room','Continue Reading','Reading Progress','Unlimited Wishlist','Ad-Free Experience','Pass Badge']},
-    {name:'Quarterly',offerPrice:249,originalPrice:449,duration:'90',durationUnit:'days',badge:'MOST POPULAR',badgeType:'purple',buttonText:'Best Choice',icon:'\uF0AC',planSlug:'quarterly',features:['All Pass Notes','Pass Reading Room','Continue Reading','Reading Progress','Unlimited Wishlist','Ad-Free Experience','Pass Badge','Early Access','Member Discounts']},
-    {name:'Half Year',offerPrice:449,originalPrice:899,duration:'180',durationUnit:'days',badge:'BEST VALUE',badgeType:'gold',buttonText:'Best Value',icon:'\uF0A9',planSlug:'half_year',features:['All Pass Notes','Pass Reading Room','Continue Reading','Reading Progress','Unlimited Wishlist','Ad-Free Experience','Pass Badge','Early Access','Member Discounts','Printed Books Discount','Priority Support']}
-  ]
-}
+function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 
+// FIX 6: No hardcoded plans. Return empty array if no config.
 function _getPlans(cfg){
-  if(!cfg||!cfg.plans)return _defaultPlans();
-  var slugMap={'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly','Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
+  if(!cfg||!cfg.plans)return [];
+  // FIX 1: Use passId as permanent slug. Fall back to slugMap for backward compat.
+  var slugMap={'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
+    'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
   return cfg.plans.filter(function(p){return p.active}).sort(function(a,b){return(a.order||0)-(b.order||0)}).map(function(p){
-    var slug=slugMap[p.name]||p.name.toLowerCase().replace(/\\s+/g,'_');
+    var slug=p.passId||slugMap[p.name]||p.name.toLowerCase().replace(/\s+/g,'_');
     var features=['All Pass Notes','Pass Reading Room'];
     if(cfg.features){cfg.features.filter(function(f){return f.active}).sort(function(a,b){return(a.order||0)-(b.order||0)}).forEach(function(f){if(features.indexOf(f.name)===-1)features.push(f.name)})}
-    return{name:p.name,offerPrice:p.offerPrice||0,originalPrice:p.originalPrice||0,duration:p.duration||'30',durationUnit:p.durationUnit||'days',badge:p.badge||'',badgeType:p.badgeType||'gold',buttonText:p.buttonText||'Get Pass',icon:p.icon||'\uF0A4',planSlug:slug,features:features,discount:p.discount||0}
+    return{name:p.name,offerPrice:p.offerPrice||0,originalPrice:p.originalPrice||0,duration:p.duration||'30',durationUnit:p.durationUnit||'days',badge:p.badge||'',badgeType:p.badgeType||'gold',buttonText:p.buttonText||'Get Pass',icon:p.icon||'\uF0A4',planSlug:slug,features:features,discount:p.discount||0,passId:p.passId||slug,gradient:p.gradient||'',bgColor:p.bgColor||''}
   })
 }
 
 function _renderPricingCards(plans,cfg){
   var grid=document.querySelector('.prm-plans-grid');if(!grid)return;
+  if(!plans.length){
+    // FIX 14: Show friendly loading message, not "plan not found"
+    grid.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);font-size:.9rem">Loading plans…</div>';
+    return;
+  }
   var h='';
   plans.forEach(function(p,i){
     var badgeClass=i===3?'prm-popular':(i===4?'prm-best':(i===0?'prm-trial':''));
@@ -48,7 +51,9 @@ function _renderPricingCards(plans,cfg){
     }
     var durationText=p.durationUnit==='lifetime'?'Lifetime':p.duration+' '+(p.durationUnit==='days'?'Days':p.durationUnit==='months'?'Months':'Days');
     var featuresHtml=p.features.map(function(f){return'<li>'+_esc(f)+'</li>'}).join('');
-    h+='<div class="prm-plan-card '+badgeClass+'">'+badgeHtml+emojiHtml+'<div class="prm-plan-name">'+_esc(p.name)+'</div><div class="prm-plan-price">'+strikeHtml+'\u20B9'+p.offerPrice+discountHtml+'</div><div class="prm-plan-only">Only</div><div class="prm-plan-duration">\uF0C5 '+durationText+'</div><ul class="prm-plan-features">'+featuresHtml+'</ul><button class="prm-plan-btn" data-plan="'+p.planSlug+'" onclick="PPAY.checkout(\''+p.planSlug+'\', this)">'+_esc(p.buttonText)+' \u2192</button></div>'
+    // FIX 7: Use gradient from config if available
+    var cardStyle=p.gradient?'style="background:'+p.gradient+';"':'';
+    h+='<div class="prm-plan-card '+badgeClass+'" '+cardStyle+'>'+badgeHtml+emojiHtml+'<div class="prm-plan-name">'+_esc(p.name)+'</div><div class="prm-plan-price">'+strikeHtml+'\u20B9'+p.offerPrice+discountHtml+'</div><div class="prm-plan-only">Only</div><div class="prm-plan-duration">\uF0C5 '+durationText+'</div><ul class="prm-plan-features">'+featuresHtml+'</ul><button class="prm-plan-btn" data-plan="'+p.planSlug+'" data-pass-id="'+p.passId+'" onclick="PPAY.checkout(\''+p.planSlug+'\', this)">'+_esc(p.buttonText)+' \u2192</button></div>'
   });
   grid.innerHTML=h
 }
@@ -77,8 +82,6 @@ function _renderBenefits(cfg){
   }
 }
 
-function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-
 function _applyConfig(cfg){
   if(!cfg)return;
   var plans=_getPlans(cfg);
@@ -88,27 +91,71 @@ function _applyConfig(cfg){
   console.log('[PassRenderer] Config applied — '+plans.length+' plans rendered')
 }
 
+// FIX 14: Retry logic for config loading
+function _loadFromSupabase(retry){
+  retry=retry||0;
+  var client=window.supabaseClient;
+  if(!client){
+    if(retry<_maxRetries){setTimeout(function(){_loadFromSupabase(retry+1)},1000*(retry+1))}
+    return;
+  }
+  client.from('site_config').select('value').eq('key','pass_management_config').maybeSingle().then(function(res){
+    if(res.error||!res.data||!res.data.value){
+      if(retry<_maxRetries){
+        console.warn('[PassRenderer] Config load failed, retrying ('+(retry+1)+'/'+_maxRetries+')');
+        setTimeout(function(){_loadFromSupabase(retry+1)},1000*(retry+1));
+      }else{
+        console.warn('[PassRenderer] No config after '+_maxRetries+' retries. Using localStorage.');
+      }
+      return;
+    }
+    try{
+      var sbCfg=JSON.parse(res.data.value);
+      // Update localStorage cache
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(sbCfg))}catch(e){}
+      _cfg=sbCfg;
+      _applyConfig(sbCfg);
+      _retryCount=0; // Reset retry count on success
+    }catch(e){console.warn('[PassRenderer] Parse error:',e)}
+  }).catch(function(e){
+    if(retry<_maxRetries){
+      console.warn('[PassRenderer] Supabase error, retrying ('+(retry+1)+'/'+_maxRetries+'):',e);
+      setTimeout(function(){_loadFromSupabase(retry+1)},1000*(retry+1));
+    }else{
+      console.warn('[PassRenderer] Supabase error after retries:',e);
+    }
+  })
+}
+
+// FIX 3: Listen for config update events (from admin save)
+function _initEventListeners(){
+  // Listen for custom event from pass-management.js
+  window.addEventListener('studyria:passConfigUpdated',function(e){
+    console.log('[PassRenderer] Config updated event received, refreshing');
+    _loaded=false;
+    _cfg=_loadFromStorage();
+    if(_cfg){_applyConfig(_cfg)}
+    // Also re-fetch from Supabase
+    _loadFromSupabase();
+  });
+}
+
 window.PassRenderer={
   init:function(){
     if(_loaded)return;_loaded=true;
+    _initEventListeners();
     // 1. Try localStorage for instant render
     _cfg=_loadFromStorage();
     if(_cfg){_applyConfig(_cfg)}
-    // 2. Try Supabase for authoritative config
-    var client=window.supabaseClient;
-    if(!client)return;
-    client.from('site_config').select('value').eq('key','pass_management_config').maybeSingle().then(function(res){
-      if(res.error||!res.data||!res.data.value){return}
-      try{
-        var sbCfg=JSON.parse(res.data.value);
-        // Update localStorage cache
-        try{localStorage.setItem(STORAGE_KEY,JSON.stringify(sbCfg))}catch(e){}
-        _cfg=sbCfg;
-        _applyConfig(sbCfg)
-      }catch(e){console.warn('[PassRenderer] Parse error:',e)}
-    }).catch(function(e){console.warn('[PassRenderer] Supabase error:',e)})
+    // 2. Try Supabase for authoritative config (with retry)
+    _loadFromSupabase();
   },
-  refresh:function(){_loaded=false;this.init()}
+  refresh:function(){
+    _loaded=false;
+    _cfg=_loadFromStorage();
+    if(_cfg){_applyConfig(_cfg)}
+    _loadFromSupabase();
+  }
 };
 
 // Auto-init when premium page is shown

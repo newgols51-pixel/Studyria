@@ -53,10 +53,11 @@ export const RAZORPAY_RETRY_MAX = 2;
 /** Timeout (ms) for order-creation fetch calls made from Edge Functions */
 export const ORDER_FETCH_TIMEOUT_MS = 12_000;
 
-// ── Membership plan catalogue (prices in INR, durations in days) ─────────────
-// NOTE: These are the DISPLAY-ONLY plan definitions used to build order payloads.
-//       No membership is activated until a successful payment_capture webhook
-//       is verified and processed by the server-side Edge Function.
+// ── Membership plan catalogue (DEPRECATED — DO NOT USE FOR NEW CODE) ──────────
+// FIX 6: This hardcoded plan catalogue is DEPRECATED. All plan data must come
+//        from the database (membership_plans table) or site_config (pass_management_config).
+//        Kept only for backward compatibility with code that may still import it.
+//        New code MUST fetch prices from Supabase — never from these constants.
 export const MEMBERSHIP_PLANS = Object.freeze([
   {
     id:          'trial_1day',
