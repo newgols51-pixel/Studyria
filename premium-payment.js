@@ -214,9 +214,9 @@
       var _fetchAttempt = 0;
 
       async function _fetchPlanFromDB(attempt) {
-        _log('checkout', 'Fetching plan "' + planSlug + '" from database' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
+        _log('checkout', 'Fetching plan "' + planSlug + '"' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
 
-        /* STEP 1: Fetch from site_config — the AUTHORITATIVE source */
+        /* STEP 1A: Try site_config from DB (authenticated users only — RLS allows this) */
         var sitePlan = null;
         try {
           var cfgRes = await client
@@ -234,11 +234,32 @@
             }
           }
         } catch (e) {
-          _warn('checkout', 'site_config fetch error:', e);
+          _warn('checkout', 'site_config DB fetch error:', e);
+        }
+
+        /* STEP 1B: Fall back to localStorage (same source pass-renderer uses).
+           RLS blocks anon reads on site_config, but localStorage has the admin-saved
+           config with the CORRECT prices (₹29, ₹69, etc.) */
+        if (!sitePlan) {
+          try {
+            var lsRaw = localStorage.getItem('studyria_pass_config');
+            if (lsRaw) {
+              var lsCfg = JSON.parse(lsRaw);
+              if (lsCfg && lsCfg.plans) {
+                lsCfg.plans.forEach(function(p) {
+                  var pId = p.passId || p.name.toLowerCase().replace(/\s+/g, '_');
+                  if (pId === planSlug) { sitePlan = p; }
+                });
+                if (sitePlan) { _log('checkout', 'Plan found in localStorage (pass-renderer cache):', planSlug); }
+              }
+            }
+          } catch (e) {
+            _warn('checkout', 'localStorage read error:', e);
+          }
         }
 
         if (!sitePlan) {
-          _warn('checkout', 'Plan "' + planSlug + '" not found in site_config' + (attempt > 0 ? ' after retry' : ''));
+          _warn('checkout', 'Plan "' + planSlug + '" not found in site_config or localStorage' + (attempt > 0 ? ' after retry' : ''));
           return null;
         }
 
