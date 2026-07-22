@@ -54,52 +54,69 @@ function _syncPricesToMembershipPlans(client){
   if(!_config||!_config.plans||!_config.plans.length)return;
   var slugMap={'1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
     'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
+  var cycleMap={'trial_1day':'trial_1day','trial_15day':'trial_15day','monthly':'monthly',
+    'quarterly':'quarterly','half_year':'half_year','yearly':'yearly','lifetime':'lifetime'};
   var activePlans=_config.plans.filter(function(p){return p.active});
   if(!activePlans.length)return;
-  // Fetch existing membership_plans rows to get their UUIDs
-  client.from('membership_plans').select('id,slug,name,price_inr').then(function(res){
-    if(res.error){console.warn('[SPM] membership_plans fetch error:',res.error.message);return}
+  client.from('membership_plans').select('id,slug,name,price_inr,billing_cycle,is_active').then(function(res){
+    if(res.error){console.warn('[SPM] membership_plans fetch error:',res.error.message);
+      if(typeof showToast==='function')showToast('\u2705 Saved (site config)','success');
+      if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
+      return}
     var existingRows=res.data||[];
     var existingMap={};
     existingRows.forEach(function(r){existingMap[r.slug]=r});
-    var updates=[];
+    var updates=[];var inserts=[];
     activePlans.forEach(function(p){
       var slug=slugMap[p.name]||p.name.toLowerCase().replace(/\s+/g,'_');
       var price=p.offerPrice||0;
       if(!slug||!price)return;
+      var billingCycle=cycleMap[slug]||slug;
       var existing=existingMap[slug];
       if(existing){
-        // Update price_inr if changed
         if(existing.price_inr!==price){
           updates.push({id:existing.id,slug:slug,name:existing.name||p.name,price_inr:price})
         }
       }else{
-        console.warn('[SPM] No membership_plans row for slug:',slug,'— skipping price sync');
+        // CREATE new plan in membership_plans if it doesn't exist
+        inserts.push({slug:slug,name:p.name,price_inr:price,billing_cycle:billingCycle,is_active:true});
+        console.log('[SPM] Creating new membership_plans row:',slug,'\u20B9'+price)
       }
     });
-    if(!updates.length){
-      if(typeof showToast==='function')showToast('✅ Saved — prices already up to date','success');
+    var totalOps=updates.length+inserts.length;
+    if(totalOps===0){
+      if(typeof showToast==='function')showToast('\u2705 Saved \u2014 prices already up to date','success');
       if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
       return
     }
-    // Upsert each updated plan price
-    Promise.all(updates.map(function(u){
-      return client.from('membership_plans').update({price_inr:u.price_inr,name:u.name}).eq('id',u.id)
-    })).then(function(results){
-      var errors=results.filter(function(r){return r.error});
+    var ops=[];
+    updates.forEach(function(u){
+      ops.push(client.from('membership_plans').update({price_inr:u.price_inr,name:u.name}).eq('id',u.id).then(function(r){return{type:'update',slug:u.slug,ok:!r.error,err:r.error}}))
+    });
+    inserts.forEach(function(ins){
+      ops.push(client.from('membership_plans').insert(ins).then(function(r){return{type:'insert',slug:ins.slug,ok:!r.error,err:r.error}}))
+    });
+    Promise.all(ops).then(function(results){
+      var errors=results.filter(function(r){return!r.ok});
+      var inserted=results.filter(function(r){return r.type==='insert'&&r.ok});
+      var updated=results.filter(function(r){return r.type==='update'&&r.ok});
       if(errors.length){
-        console.warn('[SPM] Some membership_plans updates failed:',errors.map(function(r){return r.error.message}));
-        if(typeof showToast==='function')showToast('⚠ Saved but price sync partially failed','error');
+        console.warn('[SPM] Some ops failed:',errors.map(function(r){return r.slug+': '+(r.err?r.err.message:'unknown')}));
+        if(typeof showToast==='function')showToast('\u26A0 Saved but '+(errors.length)+' plan(s) failed to sync','error');
       }else{
-        console.log('[SPM] ✅ membership_plans prices synced:',updates.map(function(u){return u.slug+': ₹'+u.price_inr}));
-        if(typeof showToast==='function')showToast('✅ Saved — Razorpay prices updated!','success');
-        if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
+        var msg='\u2705 Saved \u2014 '+updated.length+' updated'+(inserted.length>0?', '+inserted.length+' created':'')+'!';
+        console.log('[SPM] \u2705 membership_plans synced: '+updated.length+' updates, '+inserted.length+' inserts');
+        if(typeof showToast==='function')showToast(msg,'success');
       }
+      if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
     }).catch(function(e){
-      console.warn('[SPM] membership_plans sync error:',e);
-      if(typeof showToast==='function')showToast('⚠ Saved but Razorpay price sync failed','error');
+      console.warn('[SPM] sync error:',e);
+      if(typeof showToast==='function')showToast('\u26A0 Saved but sync failed: '+(e.message||e),'error');
     })
-  }).catch(function(e){console.warn('[SPM] membership_plans fetch error:',e)})
+  }).catch(function(e){console.warn('[SPM] membership_plans fetch error:',e);
+    if(typeof showToast==='function')showToast('\u2705 Saved (site config)','success');
+    if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
+  })
 }
 function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function _uid(){return'x'+Math.random().toString(36).slice(2,9)}

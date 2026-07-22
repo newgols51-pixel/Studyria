@@ -229,23 +229,62 @@
         _warn('checkout', 'Plan fetch exception (using fallback):', e);
       }
 
-      /* Fallback to display config if DB unavailable */
+      /* Fallback 1: Try site_config (Pass Management config) */
+      if (!plan) {
+        try {
+          var cfgRes = await client
+            .from('site_config')
+            .select('value')
+            .eq('key', 'pass_management_config')
+            .maybeSingle();
+          if (cfgRes.data && cfgRes.data.value) {
+            var pmCfg = JSON.parse(cfgRes.data.value);
+            var pmSlugMap = {'1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
+              'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
+            var pmPlan = null;
+            if (pmCfg.plans) {
+              pmCfg.plans.forEach(function(p) {
+                var pSlug = pmSlugMap[p.name] || p.name.toLowerCase().replace(/\s+/g, '_');
+                if (pSlug === planSlug && p.active) { pmPlan = p; }
+              });
+            }
+            if (pmPlan) {
+              plan = {
+                id:            null,
+                slug:          planSlug,
+                name:          pmPlan.name,
+                price_inr:     pmPlan.offerPrice || pmPlan.originalPrice || 0,
+                billing_cycle: planSlug,
+                is_active:     true,
+              };
+              _warn('checkout', 'Using Pass Management config:', plan);
+            }
+          }
+        } catch (e) {
+          _warn('checkout', 'site_config fallback error:', e);
+        }
+      }
+
+      /* Fallback 2: Hardcoded PLAN_DISPLAY */
       if (!plan) {
         var fb = PLAN_DISPLAY[planSlug];
-        if (!fb) {
-          _toast('Plan not found. Please try again.', 'error');
-          _btnRestore(triggerBtn);
-          return;
+        if (fb) {
+          plan = {
+            id:            null,
+            slug:          planSlug,
+            name:          fb.name,
+            price_inr:     fb.display_inr,
+            billing_cycle: planSlug,
+            is_active:     true,
+          };
+          _warn('checkout', 'Using hardcoded fallback:', plan);
         }
-        plan = {
-          id:            null,
-          slug:          planSlug,
-          name:          fb.name,
-          price_inr:     fb.display_inr,
-          billing_cycle: planSlug,
-          is_active:     true,
-        };
-        _warn('checkout', 'Using fallback plan (DB unavailable):', plan);
+      }
+
+      if (!plan) {
+        _toast('Plan "' + planSlug + '" not found. Please contact support.', 'error');
+        _btnRestore(triggerBtn);
+        return;
       }
 
       var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
@@ -254,18 +293,36 @@
         trial_days: plan.trial_days, durationDays: durationDays,
       });
 
-      /* GUARD: plan.id must be a valid UUID — null causes NOT NULL violation in DB */
+      /* If plan.id is null, try to INSERT it into membership_plans so future checkouts work */
       if (!plan.id) {
-        _err('checkout', 'Plan ID is null — plan "' + planSlug + '" not found in membership_plans DB table.');
+        _warn('checkout', 'Plan "' + planSlug + '" has no DB id \u2014 attempting auto-create in membership_plans');
+        try {
+          var createRes = await client
+            .from('membership_plans')
+            .insert({ slug: planSlug, name: plan.name || planSlug, price_inr: plan.price_inr, billing_cycle: planSlug, is_active: true })
+            .select('id,slug,price_inr')
+            .maybeSingle();
+          if (createRes.data && createRes.data.id) {
+            plan.id = createRes.data.id;
+            _log('checkout', 'Auto-created plan in membership_plans:', plan);
+          }
+        } catch (e) {
+          _warn('checkout', 'Auto-create failed:', e);
+        }
+      }
+
+      /* GUARD: plan.id must exist for DB writes */
+      if (!plan.id) {
+        _err('checkout', 'Plan ID is null \u2014 cannot process payment for "' + planSlug + '"');
         _toast(
-          '⚠️ Plan "' + planSlug + '" is not yet activated in the database. ' +
-          'Please contact support or try again shortly.',
+          '\u26A0\uFE0F Plan "' + planSlug + '" is not in the database. ' +
+          'Go to Admin \u2192 Pass Management \u2192 Save to sync plans.',
           'error'
         );
         _btnRestore(triggerBtn);
         return;
       }
-      _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays });
+      _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays, id: plan.id });
 
       /* ── 3. Check existing membership (ANY status) ───────────────
          CRITICAL FIX: Previously filtered by status='active' AND expires_at > now.
