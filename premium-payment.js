@@ -130,7 +130,7 @@
   }
 
   /* ── Razorpay SDK loader ─────────────────────────────────────── */
-  var _sdkLoaded = false;var _planCache={};
+  var _sdkLoaded = false;
   function _loadSDK() {
     return new Promise(function (resolve, reject) {
       if (typeof Razorpay !== 'undefined' || _sdkLoaded) { resolve(); return; }
@@ -201,36 +201,23 @@
     _btnLoading(triggerBtn);
 
     try {
-      /* ── 2. Fetch plan from DB (price_inr, billing_cycle) ────────
-         FIX 2: Always fetch live price from DB. Never use hardcoded prices. */
+      /* ── 2. Fetch plan from database — ONE SINGLE SOURCE OF TRUTH ──
+         Always fetch from site_config (pass_management_config) — the
+         authoritative source the admin panel updates. NEVER use cache,
+         hardcoded values, or fallback prices. If admin changes ₹99→₹69,
+         this fetch gets ₹69 immediately — no refresh, no cache, no stale data.
+
+         Also fetch from membership_plans for the plan UUID (needed for
+         DB writes). The PRICE always comes from site_config.
+      */
       var plan = null;
+      var _fetchAttempt = 0;
 
-      // Check cache first (cleared on config update event)
-      if (_planCache[planSlug]) {
-        plan = _planCache[planSlug];
-        _log('checkout', 'Using cached plan:', plan);
-      }
+      async function _fetchPlanFromDB(attempt) {
+        _log('checkout', 'Fetching plan "' + planSlug + '" from database' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
 
-      if (!plan) {
-        try {
-          var planRes = await client
-            .from('membership_plans')
-            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-            .eq('slug', planSlug)
-            .maybeSingle();  /* Don't filter by is_active — we validate it below */
-
-          if (planRes.error) {
-            _warn('checkout', 'DB plan fetch error:', planRes.error.message);
-          }
-          plan = planRes.data;
-          if (plan) { _planCache[planSlug] = plan; }
-        } catch (e) {
-          _warn('checkout', 'Plan fetch exception:', e);
-        }
-      }
-
-      /* Fallback 1: Try site_config (Pass Management config) */
-      if (!plan) {
+        /* STEP 1: Fetch from site_config — the AUTHORITATIVE source */
+        var sitePlan = null;
         try {
           var cfgRes = await client
             .from('site_config')
@@ -239,35 +226,65 @@
             .maybeSingle();
           if (cfgRes.data && cfgRes.data.value) {
             var pmCfg = JSON.parse(cfgRes.data.value);
-            // FIX 1: Use passId (permanent unique ID) instead of slugMap (name→slug)
-            var pmSlugMap = {'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
-              'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
-            var pmPlan = null;
             if (pmCfg.plans) {
               pmCfg.plans.forEach(function(p) {
-                var pSlug = p.passId || pmSlugMap[p.name] || p.name.toLowerCase().replace(/\s+/g, '_');
-                if (pSlug === planSlug) { pmPlan = p; } // Match regardless of active state — check active below
+                var pId = p.passId || p.name.toLowerCase().replace(/\s+/g, '_');
+                if (pId === planSlug) { sitePlan = p; }
               });
-            }
-            if (pmPlan) {
-              plan = {
-                id:            null,
-                slug:          planSlug,
-                name:          pmPlan.name,
-                price_inr:     pmPlan.offerPrice || pmPlan.originalPrice || 0,
-                billing_cycle: planSlug,
-                is_active:     pmPlan.active !== false,  /* FIX 2: Use actual active state from config */
-              };
-              _planCache[planSlug] = plan;
-              _warn('checkout', 'Using Pass Management config:', plan);
             }
           }
         } catch (e) {
-          _warn('checkout', 'site_config fallback error:', e);
+          _warn('checkout', 'site_config fetch error:', e);
         }
+
+        if (!sitePlan) {
+          _warn('checkout', 'Plan "' + planSlug + '" not found in site_config' + (attempt > 0 ? ' after retry' : ''));
+          return null;
+        }
+
+        /* STEP 2: Fetch from membership_plans for the UUID */
+        var dbPlan = null;
+        try {
+          var planRes = await client
+            .from('membership_plans')
+            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+            .eq('slug', planSlug)
+            .maybeSingle();
+          if (planRes.data) { dbPlan = planRes.data; }
+        } catch (e) {
+          _warn('checkout', 'membership_plans fetch error:', e);
+        }
+
+        /* Build the plan object — PRICE ALWAYS from site_config (authoritative) */
+        var result = {
+          id:            dbPlan ? dbPlan.id : null,
+          slug:          planSlug,
+          name:          sitePlan.name || (dbPlan ? dbPlan.name : planSlug),
+          price_inr:     sitePlan.offerPrice || sitePlan.originalPrice || 0,
+          billing_cycle: dbPlan ? (dbPlan.billing_cycle || planSlug) : planSlug,
+          is_active:     sitePlan.active !== false,
+          trial_days:    dbPlan ? dbPlan.trial_days : null,
+          duration:      sitePlan.duration || '30',
+          durationUnit:  sitePlan.durationUnit || 'days',
+        };
+
+        _log('checkout', 'Plan resolved from database:', {
+          slug: planSlug, name: result.name, price: '₹' + result.price_inr,
+          active: result.is_active, id: result.id, source: 'site_config'
+        });
+
+        return result;
       }
 
-      /* FIX 2: No hardcoded fallback. If plan not in DB or site_config, show error. */
+      plan = await _fetchPlanFromDB(0);
+
+      /* RETRY LOGIC: If plan not found, refetch once */
+      if (!plan) {
+        _log('checkout', 'Plan not found — retrying once…');
+        plan = await _fetchPlanFromDB(1);
+      }
+
+      /* If still not found after retry, show error */
       if (!plan) {
         // FIX 14: Friendly error — plan may be temporarily unavailable, not deleted
         _toast('Plan "' + planSlug + '" is currently unavailable. Please refresh the page or try again.', 'error');
@@ -275,9 +292,15 @@
         return;
       }
 
-      var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
+      /* Compute duration from site_config duration field (authoritative) */
+      var durationDays;
+      if (plan.durationUnit === 'lifetime') {
+        durationDays = 36500;
+      } else {
+        durationDays = parseInt(plan.duration) || _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
+      }
 
-      /* ── FIX 5: Payment Validation ──────────────────────────────
+      /* ── Payment Validation ───────────────────────────────────
          Verify plan exists, is active, price valid, offer valid, duration valid.
          Never open payment using invalid data. */
       var validationErrors = [];
@@ -752,13 +775,12 @@
   window.PPAY = {
     _version: '1.0',
     checkout: checkout,
-    _clearCache: function() { _planCache = {}; },
+    /* No cache — always fetch fresh from database */
   };
 
-  /* FIX 3: Listen for config update events from admin save */
+  /* Listen for config update events from admin save */
   window.addEventListener('studyria:passConfigUpdated', function() {
-    _planCache = {};
-    console.log('[PPAY] Config updated — plan cache cleared');
+    console.log('[PPAY] Config updated — next checkout will fetch fresh from database');
   });
 
 })();

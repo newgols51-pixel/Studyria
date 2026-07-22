@@ -1,6 +1,6 @@
 /* PASS MANAGEMENT SYSTEM - Studyria Admin Panel v1.0 */
 (function(){'use strict';var STORAGE_KEY='studyria_pass_config';var _config=null;var _activeSubTab='plans';
-var DEFAULT_CONFIG={plans:[{id:'p1',passId:'trial_1day',name:'1 Day Trial',shortDesc:'Try Studyria Pass for a day',duration:'1',durationUnit:'days',originalPrice:0,offerPrice:9,discount:0,currency:'INR',badge:'',badgeType:'gold',buttonText:'Try Now',gradient:'linear-gradient(135deg,#3d8ef8,#00c8e8)',bgColor:'rgba(61,142,248,0.08)',icon:'\uF0AA',order:1,active:true},{id:'p2',passId:'trial_15day',name:'15 Day Trial',shortDesc:'Two weeks of unlimited access',duration:'15',durationUnit:'days',originalPrice:99,offerPrice:49,discount:51,currency:'INR',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',gradient:'linear-gradient(135deg,#10d98e,#06b6d4)',bgColor:'rgba(16,217,142,0.08)',icon:'\uF0AB',order:2,active:true},{id:'p3',passId:'monthly',name:'Monthly',shortDesc:'Full month of premium learning',duration:'30',durationUnit:'days',originalPrice:149,offerPrice:99,discount:34,currency:'INR',badge:'',badgeType:'blue',buttonText:'Subscribe',gradient:'linear-gradient(135deg,#3d8ef8,#8b5cf6)',bgColor:'rgba(61,142,248,0.06)',icon:'\uF0AA',order:3,active:true},{id:'p4',passId:'quarterly',name:'Quarterly',shortDesc:'3 months best value',duration:'90',durationUnit:'days',originalPrice:449,offerPrice:249,discount:45,currency:'INR',badge:'MOST POPULAR',badgeType:'purple',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#8b5cf6,#a855f7)',bgColor:'rgba(139,92,246,0.08)',icon:'\uF0AC',order:4,active:true},{id:'p5',passId:'yearly',name:'Yearly',shortDesc:'12 months maximum savings',duration:'365',durationUnit:'days',originalPrice:1499,offerPrice:599,discount:60,currency:'INR',badge:'BEST VALUE',badgeType:'gold',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#f59e0b,#fbbf24)',bgColor:'rgba(245,158,11,0.08)',icon:'\uF0AD',order:5,active:true},{id:'p6',passId:'lifetime',name:'Lifetime',shortDesc:'Lifetime access never expires',duration:'0',durationUnit:'lifetime',originalPrice:2999,offerPrice:999,discount:67,currency:'INR',badge:'LIFETIME',badgeType:'gold',buttonText:'Get Lifetime',gradient:'linear-gradient(135deg,#fbbf24,#f59e0b)',bgColor:'rgba(251,191,36,0.1)',icon:'\uF0A9',order:6,active:true}],features:[{id:'f1',name:'Pass Notes',icon:'\uF0A7',order:1,active:true},{id:'f2',name:'Handwritten Notes',icon:'\u270F',order:2,active:true},{id:'f3',name:'MCQs & PYQs',icon:'\uF044',order:3,active:true},{id:'f4',name:'Career Hub Benefits',icon:'\uF0BC',order:4,active:true},{id:'f5',name:'AI Study Tools',icon:'\uF0AD',order:5,active:true},{id:'f6',name:'Unlimited Downloads',icon:'\u2B07',order:6,active:true},{id:'f7',name:'Priority Updates',icon:'\u26A1',order:7,active:true},{id:'f8',name:'Future Pass Features',icon:'\uF0AE',order:8,active:true}],benefits:{sectionTitle:'Why Studyria Pass?',sectionSubtitle:'Everything you need to study smarter',sectionDescription:'Pass notes MCQs PYQs AI tools and unlimited downloads all in one pass.',cta:'Get Studyria Pass Today',cards:[{id:'b1',icon:'\uF0A7',title:'Unlimited Pass Notes',desc:'Access all premium handwritten notes',color:'#3d8ef8'},{id:'b2',icon:'\uF0A8',title:'New Notes Included',desc:'New notes added automatically',color:'#10d98e'},{id:'b3',icon:'\uF0A9',title:'Pass Reading Experience',desc:'Dark reader progress tracking',color:'#fbbf24'},{id:'b4',icon:'\uF0A9',title:'Pass Badge',desc:'Exclusive badge on your profile',color:'#fbbf24'},{id:'b5',icon:'\uF0AE',title:'Future Features',desc:'All future features included',color:'#8b5cf6'}]},hero:{headline:'Studyria Pass',subheadline:'Everything you need to study smarter.',description:'Pass notes MCQs PYQs AI tools and unlimited downloads all in one pass.',ctaButton:'Get Studyria Pass',bgGradient:'linear-gradient(135deg,rgba(251,191,36,.08),rgba(139,92,246,.05))',bgImage:'',heroBadge:'Studyria Pass'},pricing:{showOffers:true,showStrikePrice:true,showDiscountBadge:true,showCountdown:false,showLimitedOffer:false,showPopularBadge:true,countdownEnd:'',limitedOfferText:'Limited Time Offer'},coupons:[{id:'c1',code:'STUDY20',type:'percentage',value:20,maxDiscount:100,minPurchase:0,maxUses:100,usedCount:0,expiry:'2026-12-31',active:true},{id:'c2',code:'FIRST50',type:'fixed',value:50,maxDiscount:0,minPurchase:99,maxUses:500,usedCount:0,expiry:'2026-12-31',active:true}],badges:[{id:'bd1',emoji:'\uF0AB',label:'Hot',active:true},{id:'bd2',emoji:'\u2B50',label:'Best Seller',active:true},{id:'bd3',emoji:'\uF0A9',label:'Premium',active:true},{id:'bd4',emoji:'\uF0AC',label:'Elite',active:true},{id:'bd5',emoji:'\uF0AD',label:'New',active:true},{id:'bd6',emoji:'\uF0AE',label:'Student Favorite',active:true}],buttons:{getPass:'Get Studyria Pass',unlockPass:'Unlock Studyria Pass',activatePass:'Activate Pass',joinNow:'Join Now',upgradeNow:'Upgrade Now',continue:'Continue',renewPass:'Renew Pass',managePass:'Manage Pass',cancelPass:'Cancel Pass',passActive:'Pass Active',passMember:"You're a Pass Member",passEnabled:'Pass Enabled',learningUnlocked:'Learning Unlocked',passExclusive:'Pass Exclusive',unlockWithPass:'Unlock with Studyria Pass',requiresPass:'Requires Studyria Pass',membersOnly:'Members Only'},landingPage:{title:'Studyria Pass',subtitle:"Assam's #1 PDF Study Platform",seoTitle:'Studyria Pass Premium Notes MCQs PYQs AI Study Tools',seoDescription:'Unlock premium notes MCQs PYQs AI study tools and unlimited downloads with Studyria Pass.',ogImage:'',metaKeywords:'studyria pass premium notes ADRE APSC Assam Police Assam TET competitive exam preparation',faq:[{q:'What is Studyria Pass?',a:'Studyria Pass gives you unlimited access to all premium notes MCQs PYQs AI tools and more for the duration of your plan.'},{q:'How much does it cost?',a:'Pass plans start at Rs 9 for a 1-day trial and go up to Rs 999 for lifetime access.'},{q:'Can I cancel anytime?',a:'Yes. There is no auto-renewal. Your pass simply expires at the end of the period.'}]},notifications:{welcome:'Welcome to Studyria Pass! Your premium learning experience is now active.',purchaseSuccess:'Congratulations! Studyria Pass has been activated successfully.',renewReminder:'Your Studyria Pass expires in {days} days. Renew now to keep learning.',expiryReminder:'Your Studyria Pass has expired. Renew to restore access.',offerReminder:'Special offer on Studyria Pass! Limited time only.',pushEnabled:true,emailEnabled:false,whatsappEnabled:false,emailTemplate:'Welcome to Studyria Pass!\n\nYour premium learning experience is now active.\n\nEnjoy unlimited access to all premium notes MCQs and AI tools.',whatsappTemplate:'Welcome to Studyria Pass! Your premium learning is now active. Enjoy unlimited notes MCQs AI tools!'},design:{primaryColor:'#fbbf24',secondaryColor:'#f59e0b',gradient:'linear-gradient(135deg,#fbbf24,#f59e0b)',borderRadius:'16px',shadow:'0 4px 20px rgba(251,191,36,0.15)',glassEffect:true,darkMode:true,lightMode:false,cardStyle:'glassmorphism',buttonStyle:'pill',animation:'smooth'},aiFeatures:[{id:'ai1',name:'AI Notes',icon:'\uF044',passRequired:true,enabled:true},{id:'ai2',name:'AI Summary',icon:'\uF0CB',passRequired:true,enabled:true},{id:'ai3',name:'Flashcards',icon:'\uF0C8',passRequired:true,enabled:true},{id:'ai4',name:'Quiz Generator',icon:'\u2753',passRequired:true,enabled:true},{id:'ai5',name:'Mind Maps',icon:'\uF0AD',passRequired:true,enabled:false},{id:'ai6',name:'Audio Overview',icon:'\uF0D7',passRequired:true,enabled:false},{id:'ai7',name:'AI Chat',icon:'\uF0AC',passRequired:false,enabled:true}]};
+var DEFAULT_CONFIG={plans:[{id:'p1',passId:'trial_1day',name:'1 Day Trial',shortDesc:'Try Studyria Pass for a day',duration:'1',durationUnit:'days',originalPrice:0,offerPrice:9,discount:0,currency:'INR',badge:'',badgeType:'gold',buttonText:'Try Now',gradient:'linear-gradient(135deg,#3d8ef8,#00c8e8)',bgColor:'rgba(61,142,248,0.08)',icon:'\uF0AA',order:1,active:true},{id:'p2',passId:'trial_15day',name:'15 Day Trial',shortDesc:'Two weeks of unlimited access',duration:'15',durationUnit:'days',originalPrice:99,offerPrice:49,discount:51,currency:'INR',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',gradient:'linear-gradient(135deg,#10d98e,#06b6d4)',bgColor:'rgba(16,217,142,0.08)',icon:'\uF0AB',order:2,active:true},{id:'p3',passId:'monthly',name:'Monthly',shortDesc:'Full month of premium learning',duration:'30',durationUnit:'days',originalPrice:149,offerPrice:99,discount:34,currency:'INR',badge:'',badgeType:'blue',buttonText:'Subscribe',gradient:'linear-gradient(135deg,#3d8ef8,#8b5cf6)',bgColor:'rgba(61,142,248,0.06)',icon:'\uF0AA',order:3,active:true},{id:'p4',passId:'quarterly',name:'Quarterly',shortDesc:'3 months best value',duration:'90',durationUnit:'days',originalPrice:449,offerPrice:249,discount:45,currency:'INR',badge:'MOST POPULAR',badgeType:'purple',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#8b5cf6,#a855f7)',bgColor:'rgba(139,92,246,0.08)',icon:'\uF0AC',order:4,active:true},{id:'p5',passId:'half_year',name:'Half Year',shortDesc:'6 months maximum savings',duration:'180',durationUnit:'days',originalPrice:899,offerPrice:449,discount:50,currency:'INR',badge:'BEST VALUE',badgeType:'gold',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#f59e0b,#fbbf24)',bgColor:'rgba(245,158,11,0.08)',icon:'\uF0A9',order:5,active:true},{id:'p7',passId:'yearly',name:'Yearly',shortDesc:'12 months maximum savings',duration:'365',durationUnit:'days',originalPrice:1499,offerPrice:599,discount:60,currency:'INR',badge:'BEST VALUE',badgeType:'gold',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#f59e0b,#fbbf24)',bgColor:'rgba(245,158,11,0.08)',icon:'\uF0AD',order:5,active:true},{id:'p8',passId:'lifetime',name:'Lifetime',shortDesc:'Lifetime access never expires',duration:'0',durationUnit:'lifetime',originalPrice:2999,offerPrice:999,discount:67,currency:'INR',badge:'LIFETIME',badgeType:'gold',buttonText:'Get Lifetime',gradient:'linear-gradient(135deg,#fbbf24,#f59e0b)',bgColor:'rgba(251,191,36,0.1)',icon:'\uF0A9',order:6,active:true}],features:[{id:'f1',name:'Pass Notes',icon:'\uF0A7',order:1,active:true},{id:'f2',name:'Handwritten Notes',icon:'\u270F',order:2,active:true},{id:'f3',name:'MCQs & PYQs',icon:'\uF044',order:3,active:true},{id:'f4',name:'Career Hub Benefits',icon:'\uF0BC',order:4,active:true},{id:'f5',name:'AI Study Tools',icon:'\uF0AD',order:5,active:true},{id:'f6',name:'Unlimited Downloads',icon:'\u2B07',order:6,active:true},{id:'f7',name:'Priority Updates',icon:'\u26A1',order:7,active:true},{id:'f8',name:'Future Pass Features',icon:'\uF0AE',order:8,active:true}],benefits:{sectionTitle:'Why Studyria Pass?',sectionSubtitle:'Everything you need to study smarter',sectionDescription:'Pass notes MCQs PYQs AI tools and unlimited downloads all in one pass.',cta:'Get Studyria Pass Today',cards:[{id:'b1',icon:'\uF0A7',title:'Unlimited Pass Notes',desc:'Access all premium handwritten notes',color:'#3d8ef8'},{id:'b2',icon:'\uF0A8',title:'New Notes Included',desc:'New notes added automatically',color:'#10d98e'},{id:'b3',icon:'\uF0A9',title:'Pass Reading Experience',desc:'Dark reader progress tracking',color:'#fbbf24'},{id:'b4',icon:'\uF0A9',title:'Pass Badge',desc:'Exclusive badge on your profile',color:'#fbbf24'},{id:'b5',icon:'\uF0AE',title:'Future Features',desc:'All future features included',color:'#8b5cf6'}]},hero:{headline:'Studyria Pass',subheadline:'Everything you need to study smarter.',description:'Pass notes MCQs PYQs AI tools and unlimited downloads all in one pass.',ctaButton:'Get Studyria Pass',bgGradient:'linear-gradient(135deg,rgba(251,191,36,.08),rgba(139,92,246,.05))',bgImage:'',heroBadge:'Studyria Pass'},pricing:{showOffers:true,showStrikePrice:true,showDiscountBadge:true,showCountdown:false,showLimitedOffer:false,showPopularBadge:true,countdownEnd:'',limitedOfferText:'Limited Time Offer'},coupons:[{id:'c1',code:'STUDY20',type:'percentage',value:20,maxDiscount:100,minPurchase:0,maxUses:100,usedCount:0,expiry:'2026-12-31',active:true},{id:'c2',code:'FIRST50',type:'fixed',value:50,maxDiscount:0,minPurchase:99,maxUses:500,usedCount:0,expiry:'2026-12-31',active:true}],badges:[{id:'bd1',emoji:'\uF0AB',label:'Hot',active:true},{id:'bd2',emoji:'\u2B50',label:'Best Seller',active:true},{id:'bd3',emoji:'\uF0A9',label:'Premium',active:true},{id:'bd4',emoji:'\uF0AC',label:'Elite',active:true},{id:'bd5',emoji:'\uF0AD',label:'New',active:true},{id:'bd6',emoji:'\uF0AE',label:'Student Favorite',active:true}],buttons:{getPass:'Get Studyria Pass',unlockPass:'Unlock Studyria Pass',activatePass:'Activate Pass',joinNow:'Join Now',upgradeNow:'Upgrade Now',continue:'Continue',renewPass:'Renew Pass',managePass:'Manage Pass',cancelPass:'Cancel Pass',passActive:'Pass Active',passMember:"You're a Pass Member",passEnabled:'Pass Enabled',learningUnlocked:'Learning Unlocked',passExclusive:'Pass Exclusive',unlockWithPass:'Unlock with Studyria Pass',requiresPass:'Requires Studyria Pass',membersOnly:'Members Only'},landingPage:{title:'Studyria Pass',subtitle:"Assam's #1 PDF Study Platform",seoTitle:'Studyria Pass Premium Notes MCQs PYQs AI Study Tools',seoDescription:'Unlock premium notes MCQs PYQs AI study tools and unlimited downloads with Studyria Pass.',ogImage:'',metaKeywords:'studyria pass premium notes ADRE APSC Assam Police Assam TET competitive exam preparation',faq:[{q:'What is Studyria Pass?',a:'Studyria Pass gives you unlimited access to all premium notes MCQs PYQs AI tools and more for the duration of your plan.'},{q:'How much does it cost?',a:'Pass plans start at Rs 9 for a 1-day trial and go up to Rs 999 for lifetime access.'},{q:'Can I cancel anytime?',a:'Yes. There is no auto-renewal. Your pass simply expires at the end of the period.'}]},notifications:{welcome:'Welcome to Studyria Pass! Your premium learning experience is now active.',purchaseSuccess:'Congratulations! Studyria Pass has been activated successfully.',renewReminder:'Your Studyria Pass expires in {days} days. Renew now to keep learning.',expiryReminder:'Your Studyria Pass has expired. Renew to restore access.',offerReminder:'Special offer on Studyria Pass! Limited time only.',pushEnabled:true,emailEnabled:false,whatsappEnabled:false,emailTemplate:'Welcome to Studyria Pass!\n\nYour premium learning experience is now active.\n\nEnjoy unlimited access to all premium notes MCQs and AI tools.',whatsappTemplate:'Welcome to Studyria Pass! Your premium learning is now active. Enjoy unlimited notes MCQs AI tools!'},design:{primaryColor:'#fbbf24',secondaryColor:'#f59e0b',gradient:'linear-gradient(135deg,#fbbf24,#f59e0b)',borderRadius:'16px',shadow:'0 4px 20px rgba(251,191,36,0.15)',glassEffect:true,darkMode:true,lightMode:false,cardStyle:'glassmorphism',buttonStyle:'pill',animation:'smooth'},aiFeatures:[{id:'ai1',name:'AI Notes',icon:'\uF044',passRequired:true,enabled:true},{id:'ai2',name:'AI Summary',icon:'\uF0CB',passRequired:true,enabled:true},{id:'ai3',name:'Flashcards',icon:'\uF0C8',passRequired:true,enabled:true},{id:'ai4',name:'Quiz Generator',icon:'\u2753',passRequired:true,enabled:true},{id:'ai5',name:'Mind Maps',icon:'\uF0AD',passRequired:true,enabled:false},{id:'ai6',name:'Audio Overview',icon:'\uF0D7',passRequired:true,enabled:false},{id:'ai7',name:'AI Chat',icon:'\uF0AC',passRequired:false,enabled:true}]};
 var _loadingFromSupabase=false;
 function loadConfig(){if(_config)return _config;
   // Try localStorage first for instant load
@@ -54,78 +54,44 @@ function _saveToSupabase(){var client=window.supabaseClient;if(!client){console.
 // Sync Pass Management prices → membership_plans table (used by PPAY/Razorpay)
 function _syncPricesToMembershipPlans(client){
   if(!_config||!_config.plans||!_config.plans.length)return;
-  // FIX 1: Use passId (permanent unique ID) instead of slugMap (name→slug)
-  // Fallback to slugMap for backward compat with old configs without passId
   var slugMap={'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
     'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
   var cycleMap={'trial_7day':'trial_7day','trial_1day':'trial_1day','trial_15day':'trial_15day','monthly':'monthly',
     'quarterly':'quarterly','half_year':'half_year','yearly':'yearly','lifetime':'lifetime'};
-  // FIX 10: Sync ALL plans (not just active) so disabled plans are updated in DB too
   var allPlans=_config.plans;
   if(!allPlans.length)return;
-  client.from('membership_plans').select('id,slug,name,price_inr,billing_cycle,is_active').then(function(res){
-    if(res.error){console.warn('[SPM] membership_plans fetch error:',res.error.message);
-      if(typeof showToast==='function')showToast('\u2705 Saved (site config)','success');
-      _broadcastRefresh();
-      return}
-    var existingRows=res.data||[];
-    var existingMap={};
-    existingRows.forEach(function(r){existingMap[r.slug]=r});
-    var updates=[];var inserts=[];
-    allPlans.forEach(function(p){
-      // FIX 1: Use passId as the permanent slug, fall back to slugMap for backward compat
-      var slug=p.passId||slugMap[p.name]||p.name.toLowerCase().replace(/\s+/g,'_');
-      if(!slug)return;
-      var price=p.offerPrice||0;
-      var billingCycle=cycleMap[slug]||slug;
-      var isActive=!!p.active;
-      var trialDays=0;
-      if(slug==='trial_1day')trialDays=1;
-      else if(slug==='trial_15day')trialDays=15;
-      else if(slug==='trial_7day')trialDays=7;
-      var existing=existingMap[slug];
-      if(existing){
-        // Always update: price, name, is_active, billing_cycle, badge_label
-        updates.push({id:existing.id,slug:slug,name:p.name,price_inr:price,is_active:isActive,billing_cycle:billingCycle,badge_label:p.badge||'',trial_days:trialDays||null})
-      }else{
-        // CREATE new plan in membership_plans if it doesn't exist
-        if(!price)return; // Don't create plans with 0 price
-        inserts.push({slug:slug,name:p.name,price_inr:price,billing_cycle:billingCycle,is_active:isActive,badge_label:p.badge||'',trial_days:trialDays||null,features:{}});
-        console.log('[SPM] Creating new membership_plans row:',slug,'\u20B9'+price)
-      }
-    });
-    var totalOps=updates.length+inserts.length;
-    if(totalOps===0){
-      if(typeof showToast==='function')showToast('\u2705 Saved \u2014 prices already up to date','success');
-      _broadcastRefresh();
-      return
+  /* ROBUST SYNC: Use upsert with onConflict:'slug' — atomic, no race conditions. */
+  var ops=[];
+  allPlans.forEach(function(p){
+    var slug=p.passId||slugMap[p.name]||p.name.toLowerCase().replace(/\s+/g,'_');
+    if(!slug)return;
+    var price=p.offerPrice||0;
+    var billingCycle=cycleMap[slug]||slug;
+    var isActive=!!p.active;
+    var trialDays=0;
+    if(slug==='trial_1day')trialDays=1;
+    else if(slug==='trial_15day')trialDays=15;
+    else if(slug==='trial_7day')trialDays=7;
+    var features={};
+    if(_config.features){_config.features.filter(function(f){return f.active}).forEach(function(f){features[f.name]=true})}
+    ops.push(client.from('membership_plans').upsert({
+      slug:slug,name:p.name,price_inr:price,billing_cycle:billingCycle,
+      is_active:isActive,badge_label:p.badge||'',trial_days:trialDays||null,features:features
+    },{onConflict:'slug'}).then(function(r){return{slug:slug,ok:!r.error,err:r.error}}));
+  });
+  Promise.all(ops).then(function(results){
+    var errors=results.filter(function(r){return!r.ok});
+    if(errors.length){
+      console.warn('[SPM] Some plan syncs failed:',errors.map(function(r){return r.slug+': '+(r.err?r.err.message:'unknown')}));
+      if(typeof showToast==='function')showToast('\u26A0 Saved but '+errors.length+' plan(s) failed to sync','error');
+    }else{
+      console.log('[SPM] All '+results.length+' plans synced to membership_plans via upsert');
+      if(typeof showToast==='function')showToast('Saved - '+results.length+' plans synced!','success');
     }
-    var ops=[];
-    updates.forEach(function(u){
-      ops.push(client.from('membership_plans').update({price_inr:u.price_inr,name:u.name,is_active:u.is_active,billing_cycle:u.billing_cycle,badge_label:u.badge_label,trial_days:u.trial_days}).eq('id',u.id).then(function(r){return{type:'update',slug:u.slug,ok:!r.error,err:r.error}}))
-    });
-    inserts.forEach(function(ins){
-      ops.push(client.from('membership_plans').insert(ins).then(function(r){return{type:'insert',slug:ins.slug,ok:!r.error,err:r.error}}))
-    });
-    Promise.all(ops).then(function(results){
-      var errors=results.filter(function(r){return!r.ok});
-      var inserted=results.filter(function(r){return r.type==='insert'&&r.ok});
-      var updated=results.filter(function(r){return r.type==='update'&&r.ok});
-      if(errors.length){
-        console.warn('[SPM] Some ops failed:',errors.map(function(r){return r.slug+': '+(r.err?r.err.message:'unknown')}));
-        if(typeof showToast==='function')showToast('\u26A0 Saved but '+(errors.length)+' plan(s) failed to sync','error');
-      }else{
-        var msg='\u2705 Saved \u2014 '+updated.length+' updated'+(inserted.length>0?', '+inserted.length+' created':'')+'!';
-        console.log('[SPM] \u2705 membership_plans synced: '+updated.length+' updates, '+inserted.length+' inserts');
-        if(typeof showToast==='function')showToast(msg,'success');
-      }
-      _broadcastRefresh();
-    }).catch(function(e){
-      console.warn('[SPM] sync error:',e);
-      if(typeof showToast==='function')showToast('\u26A0 Saved but sync failed: '+(e.message||e),'error');
-    })
-  }).catch(function(e){console.warn('[SPM] membership_plans fetch error:',e);
-    if(typeof showToast==='function')showToast('\u2705 Saved (site config)','success');
+    _broadcastRefresh();
+  }).catch(function(e){
+    console.warn('[SPM] sync error:',e);
+    if(typeof showToast==='function')showToast('Saved but sync failed: '+(e.message||e),'error');
     _broadcastRefresh();
   })
 }

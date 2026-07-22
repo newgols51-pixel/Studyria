@@ -58,48 +58,7 @@ export const ORDER_FETCH_TIMEOUT_MS = 12_000;
 //        from the database (membership_plans table) or site_config (pass_management_config).
 //        Kept only for backward compatibility with code that may still import it.
 //        New code MUST fetch prices from Supabase — never from these constants.
-export const MEMBERSHIP_PLANS = Object.freeze([
-  {
-    id:          'trial_1day',
-    label:       '⚡ 1 Day Trial',
-    durationDays: 1,
-    priceINR:    9,
-    badge:       'NEW',
-    tagline:     'Try Premium for just ₹9. Risk-free.',
-  },
-  {
-    id:          'trial_15day',
-    label:       '🟢 15 Day Trial',
-    durationDays: 15,
-    priceINR:    49,
-    badge:       'POPULAR',
-    tagline:     'Explore everything for 15 days.',
-  },
-  {
-    id:          'monthly',
-    label:       '🔵 Monthly Premium',
-    durationDays: 30,
-    priceINR:    99,
-    badge:       null,
-    tagline:     'Best for regular exam learners.',
-  },
-  {
-    id:          'quarterly',
-    label:       '🟣 Quarterly Premium',
-    durationDays: 90,
-    priceINR:    249,
-    badge:       'MOST POPULAR',
-    tagline:     'Serious prep? 3 months of access.',
-  },
-  {
-    id:          'half_year',
-    label:       '👑 Half Year Premium',
-    durationDays: 180,
-    priceINR:    449,
-    badge:       'BEST VALUE',
-    tagline:     'Maximum value. 6 months of everything.',
-  },
-]);
+export const MEMBERSHIP_PLANS = Object.freeze([]); // DEPRECATED — All plan data comes from database (site_config/membership_plans). Never use hardcoded prices.
 
 // ── Payment status values (mirrored from DB enum) ────────────────────────────
 // Kept here so payment-service.js and callers share a single source.

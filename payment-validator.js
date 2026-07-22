@@ -178,7 +178,8 @@ export function validateKeyId(keyId) {
  * validatePlanId('unknown');   // { valid: false, error: PlanNotFoundError }
  */
 export function validatePlanId(planId) {
-  const plan = MEMBERSHIP_PLANS.find(p => p.id === planId);
+  /* Plans are now fetched from database — no hardcoded plan lookup */
+  const plan = null;
   if (!plan) {
     return { valid: false, error: new PlanNotFoundError(planId) };
   }
