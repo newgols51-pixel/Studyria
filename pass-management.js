@@ -33,24 +33,74 @@ var _saveTimer=null;var _savingToastShown=false;
 function _saveToSupabase(){var client=window.supabaseClient;if(!client){console.warn('[SPM] No Supabase client — localStorage only');return}
   if(_saveTimer)clearTimeout(_saveTimer);
   _saveTimer=setTimeout(function(){
-    if(typeof showToast==='function'&&!_savingToastShown){showToast(' Saving to Supabase...','info')}
+    if(typeof showToast==='function'){showToast(' Saving...','info')}
     client.from('site_config').upsert({key:'pass_management_config',value:JSON.stringify(_config)},{onConflict:'key'}).then(function(res){
       if(res.error){
-        console.warn('[SPM] Supabase save error:',res.error.message);
-        if(typeof showToast==='function')showToast('❌ Supabase save failed: '+res.error.message,'error');
+        console.warn('[SPM] site_config save error:',res.error.message);
+        if(typeof showToast==='function')showToast('❌ Save failed: '+res.error.message,'error');
       }else{
-        console.log('[SPM] ✅ Saved to Supabase');
-        if(typeof showToast==='function')showToast('✅ Saved to Supabase','success');
-        // Refresh the website renderer
-        if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function'){
-          setTimeout(function(){window.PassRenderer.refresh()},100)
-        }
+        console.log('[SPM] ✅ site_config saved');
+        // CRITICAL: Also sync prices to membership_plans table (used by Razorpay)
+        _syncPricesToMembershipPlans(client);
       }
     }).catch(function(e){
-      console.warn('[SPM] Supabase save failed:',e);
+      console.warn('[SPM] site_config save failed:',e);
       if(typeof showToast==='function')showToast('❌ Save error: '+(e.message||e),'error');
     })
   },500)}
+
+// Sync Pass Management prices → membership_plans table (used by PPAY/Razorpay)
+function _syncPricesToMembershipPlans(client){
+  if(!_config||!_config.plans||!_config.plans.length)return;
+  var slugMap={'1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
+    'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
+  var activePlans=_config.plans.filter(function(p){return p.active});
+  if(!activePlans.length)return;
+  // Fetch existing membership_plans rows to get their UUIDs
+  client.from('membership_plans').select('id,slug,name,price_inr').then(function(res){
+    if(res.error){console.warn('[SPM] membership_plans fetch error:',res.error.message);return}
+    var existingRows=res.data||[];
+    var existingMap={};
+    existingRows.forEach(function(r){existingMap[r.slug]=r});
+    var updates=[];
+    activePlans.forEach(function(p){
+      var slug=slugMap[p.name]||p.name.toLowerCase().replace(/\s+/g,'_');
+      var price=p.offerPrice||0;
+      if(!slug||!price)return;
+      var existing=existingMap[slug];
+      if(existing){
+        // Update price_inr if changed
+        if(existing.price_inr!==price){
+          updates.push({id:existing.id,slug:slug,name:existing.name||p.name,price_inr:price})
+        }
+      }else{
+        console.warn('[SPM] No membership_plans row for slug:',slug,'— skipping price sync');
+      }
+    });
+    if(!updates.length){
+      if(typeof showToast==='function')showToast('✅ Saved — prices already up to date','success');
+      if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
+      return
+    }
+    // Upsert each updated plan price
+    Promise.all(updates.map(function(u){
+      return client.from('membership_plans').update({price_inr:u.price_inr,name:u.name}).eq('id',u.id)
+    })).then(function(results){
+      var errors=results.filter(function(r){return r.error});
+      if(errors.length){
+        console.warn('[SPM] Some membership_plans updates failed:',errors.map(function(r){return r.error.message}));
+        if(typeof showToast==='function')showToast('⚠ Saved but price sync partially failed','error');
+      }else{
+        console.log('[SPM] ✅ membership_plans prices synced:',updates.map(function(u){return u.slug+': ₹'+u.price_inr}));
+        if(typeof showToast==='function')showToast('✅ Saved — Razorpay prices updated!','success');
+        if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
+      }
+    }).catch(function(e){
+      console.warn('[SPM] membership_plans sync error:',e);
+      if(typeof showToast==='function')showToast('⚠ Saved but Razorpay price sync failed','error');
+    })
+  }).catch(function(e){console.warn('[SPM] membership_plans fetch error:',e)})
+}
 function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function _uid(){return'x'+Math.random().toString(36).slice(2,9)}
 var SUB_TABS=[{id:'plans',label:'Pass Plans',icon:'\uF0CB'},{id:'features',label:'Features',icon:'\u2728'},{id:'benefits',label:'Benefits',icon:'\uF0CE'},{id:'hero',label:'Hero Section',icon:'\uF0F1'},{id:'pricing',label:'Pricing',icon:'\uF0B2'},{id:'coupons',label:'Coupons',icon:'\uF0CF'},{id:'badges',label:'Badges',icon:'\uF0C6'},{id:'buttons',label:'Buttons',icon:'\uF0AD'},{id:'landing',label:'Landing Page',icon:'\uF0C4'},{id:'analytics',label:'Analytics',icon:'\uF0CA'},{id:'members',label:'Members',icon:'\uF0C1'},{id:'notifications',label:'Notifications',icon:'\uF0CE'},{id:'design',label:'Design',icon:'\uF0C8'},{id:'ai',label:'AI Features',icon:'\uF0AD'}];
@@ -72,9 +122,14 @@ SPM.renderPlans=function(el){
   var h='<div class="spm-section-header"><h3 class="spm-section-title">Pass Plans</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addPlan()">+ Create Pass</button></div>';
   // Smart stats bar
   h+='<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">';
-  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:140px"><div style="font-size:1.3rem;font-weight:900;color:#fbbf24">'+activePlans+'</div><div style="font-size:.68rem;color:var(--text2)">Active Plans</div></div>';
-  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:140px"><div style="font-size:1.3rem;font-weight:900;color:#10d98e">\u20B9'+avgPrice+'</div><div style="font-size:.68rem;color:var(--text2)">Avg Price</div></div>';
-  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:140px"><div style="font-size:1.3rem;font-weight:900;color:#ff4d6d">'+maxDisc+'%</div><div style="font-size:.68rem;color:var(--text2)">Max Discount</div></div>';
+  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:120px"><div style="font-size:1.3rem;font-weight:900;color:#fbbf24">'+activePlans+'</div><div style="font-size:.68rem;color:var(--text2)">Active Plans</div></div>';
+  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:120px"><div style="font-size:1.3rem;font-weight:900;color:#10d98e">\u20B9'+avgPrice+'</div><div style="font-size:.68rem;color:var(--text2)">Avg Price</div></div>';
+  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:120px"><div style="font-size:1.3rem;font-weight:900;color:#ff4d6d">'+maxDisc+'%</div><div style="font-size:.68rem;color:var(--text2)">Max Discount</div></div>';
+  h+='</div>';
+  // CRITICAL sync warning banner
+  h+='<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">';
+  h+='<div style="font-size:.75rem;color:#fbbf24"><strong>\u26A0 Price Sync:</strong> Saving a plan auto-syncs prices to Razorpay. Use \u201CSync Now\u201D if Razorpay still shows old price.</div>';
+  h+='<button class="spm-btn spm-btn-primary" style="font-size:.72rem;padding:6px 12px" onclick="SPM.forceSyncPrices()">\u1F5C2 Sync to Razorpay</button>';
   h+='</div>';
   h+='<div class="spm-grid spm-grid-3">';
   plans.forEach(function(p){
@@ -90,6 +145,12 @@ SPM.renderPlans=function(el){
   h+='</div>';el.innerHTML=h
 };
 SPM.addPlan=function(){SPM._editPlanModal(null)};
+SPM.forceSyncPrices=function(){
+  var client=window.supabaseClient;
+  if(!client){if(typeof showToast==='function')showToast('\u274C Supabase not connected','error');return}
+  if(typeof showToast==='function')showToast('\u231B Syncing prices to Razorpay...','info');
+  _syncPricesToMembershipPlans(client)
+};
 SPM.editPlan=function(id){var cfg=loadConfig();var plan=cfg.plans.find(function(p){return p.id===id});if(plan)SPM._editPlanModal(plan)};
 SPM._editPlanModal=function(plan){
   var cfg=loadConfig();var isEdit=!!plan;
