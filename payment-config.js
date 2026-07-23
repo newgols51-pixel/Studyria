@@ -54,10 +54,10 @@ export const RAZORPAY_RETRY_MAX = 2;
 export const ORDER_FETCH_TIMEOUT_MS = 12_000;
 
 // ── Membership plan catalogue (DEPRECATED — DO NOT USE FOR NEW CODE) ──────────
-// FIX 6: This hardcoded plan catalogue is DEPRECATED. All plan data must come
-//        from the database (membership_plans table) or site_config (pass_management_config).
-//        Kept only for backward compatibility with code that may still import it.
-//        New code MUST fetch prices from Supabase — never from these constants.
+// This hardcoded plan catalogue is DEPRECATED. All plan data must come
+// from the database (membership_plans table) via pass-sync.js (window.PassSync).
+// Kept only for backward compatibility with code that may still import it.
+// New code MUST fetch prices from Supabase — never from these constants.
 export const MEMBERSHIP_PLANS = Object.freeze([]); // DEPRECATED — All plan data comes from database (site_config/membership_plans). Never use hardcoded prices.
 
 // ── Payment status values (mirrored from DB enum) ────────────────────────────

@@ -22200,6 +22200,10 @@ async function renderDashboard() {
     /* BADGE-FIX: Show placeholder immediately, then fetch real membership status */
     planEl.textContent = 'FREE MEMBER';
     planEl.className = planEl.className.replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
+    /* PassSync: also sync badge from membership_plans DB */
+    if (typeof window.PassSync !== 'undefined' && window.PassSync.syncDashboardBadge) {
+      window.PassSync.syncDashboardBadge();
+    }
     if (badgeRowEl) badgeRowEl.style.display = '';
     /* Async real-time badge update — SMCI is the source of truth */
     (async function() {
@@ -38657,6 +38661,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <script src="premium-p1.js" defer></script>
+<script src="pass-sync.js" defer></script>
 <script src="premium-payment.js" defer></script>
 <link rel="stylesheet" href="premium-p5d.css">
 <script src="premium-p5d.js" defer></script>
@@ -45783,6 +45788,8 @@ window._amemActivate = async function(id){
       .eq('id', id);
     if(res.error) throw new Error(res.error.message);
     if(typeof window.showToast==='function') window.showToast('\u2705 Membership activated for 30 days.','success');
+    /* PassSync: invalidate cache + re-sync DOM badges */
+    if(typeof window.PassSync!=='undefined' && window.PassSync.onAdminSave) window.PassSync.onAdminSave();
     var main = document.getElementById('adminMain');
     if(main) window.renderAdminMemberships(main);
   } catch(e){
@@ -45802,6 +45809,8 @@ window._amemDeactivate = async function(id){
       .eq('id', id);
     if(res.error) throw new Error(res.error.message);
     if(typeof window.showToast==='function') window.showToast('\uD83D\uDEAB Membership deactivated.','info');
+    /* PassSync: invalidate cache + re-sync DOM badges */
+    if(typeof window.PassSync!=='undefined' && window.PassSync.onAdminSave) window.PassSync.onAdminSave();
     var main = document.getElementById('adminMain');
     if(main) window.renderAdminMemberships(main);
   } catch(e){

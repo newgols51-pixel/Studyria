@@ -37,7 +37,7 @@
  *   ✅ monthly → +30 days, yearly → +365 days
  *
  * @module premium-payment
- * @version 1.0
+ * @version 1.1
  */
 
 (function () {
@@ -65,7 +65,7 @@
     lifetime:    36500,
   };
 
-  /* FIX 2: No hardcoded plan prices. Payment must ALWAYS fetch from DB/site_config.
+  /* No hardcoded plan prices. Payment ALWAYS fetches from DB via PassSync.
      If fetch fails, show error and do NOT open payment. Never use hardcoded prices. */
 
   /* ── Logging ─────────────────────────────────────────────────── */
@@ -202,27 +202,34 @@
 
     try {
       /* ── 2. Fetch plan from database — ONE SINGLE SOURCE OF TRUTH ──
-         Always fetch from site_config (pass_management_config) — the
-         authoritative source the admin panel updates. NEVER use cache,
-         hardcoded values, or fallback prices. If admin changes ₹99→₹69,
-         this fetch gets ₹69 immediately — no refresh, no cache, no stale data.
-
-         Also fetch from membership_plans for the plan UUID (needed for
-         DB writes). The PRICE always comes from site_config.
-      */
-      var plan = null;
-      var _fetchAttempt = 0;
-
-      /* ─────────────────────────────────────────────────────────────────
-         PLAN FETCH — SINGLE SOURCE OF TRUTH — v3.0
          Priority:
+           0. PassSync cache (instant, shared across modules)
            1. membership_plans (DB) — authoritative for price + ID
            2. site_config (admin panel config) — display settings
            3. localStorage (offline cache)
            4. PassRenderer.DEFAULT_PLANS (last-resort hardcoded defaults)
-         
-         NEVER "Plan unavailable" if plan exists in membership_plans.
+
          PRICE always from membership_plans.price_inr (admin edits DB).
+      */
+      var plan = null;
+      var _fetchAttempt = 0;
+
+      /* STEP 0: PassSync fast-path — try cached plan first (instant) */
+      if (typeof window.PassSync !== 'undefined' && window.PassSync.getPlanBySlug) {
+        try {
+          plan = await window.PassSync.getPlanBySlug(planSlug);
+          if (plan) {
+            _log('checkout', 'PassSync cache hit for plan:', { slug: planSlug, price_inr: plan.price_inr });
+          }
+        } catch (e) {
+          _warn('checkout', 'PassSync fetch exception:', e);
+        }
+      }
+
+      if (!plan) {
+      /* ─────────────────────────────────────────────────────────────────
+         PLAN FETCH — SINGLE SOURCE OF TRUTH — v3.0
+         NEVER "Plan unavailable" if plan exists in membership_plans.
        ─────────────────────────────────────────────────────────────────── */
       async function _fetchPlanFromDB(attempt) {
         _log('checkout', 'Fetching plan "' + planSlug + '"' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
@@ -374,6 +381,26 @@
       if (!plan) {
         // FIX 14: Friendly error — plan may be temporarily unavailable, not deleted
         // Provide actionable error: if admin hasn't synced yet, direct them there
+        _toast(
+          '⚠️ Plan "' + planSlug + '" not found. Go to Admin → Pass Management → Save Plans to sync, then refresh.',
+          'error'
+        );
+      } /* end inner if — "still not found after retry" */
+      } /* end if (!plan) — close PassSync fallback block (from line 229) */
+
+      /* PassSync retry: if still no plan after _fetchPlanFromDB, force-refresh and try once more */
+      if (!plan && typeof window.PassSync !== 'undefined' && window.PassSync.getPlanBySlug) {
+        _warn('checkout', 'Plan not found after DB fetch -- PassSync force refresh retry');
+        if (window.PassSync.invalidateCache) window.PassSync.invalidateCache();
+        try {
+          plan = await window.PassSync.getPlanBySlug(planSlug, true);
+        } catch (e) {
+          _warn('checkout', 'PassSync retry exception:', e);
+        }
+      }
+
+      if (!plan) {
+        _err('checkout', 'Plan not found in any source after all retries:', planSlug);
         _toast(
           '⚠️ Plan "' + planSlug + '" not found. Go to Admin → Pass Management → Save Plans to sync, then refresh.',
           'error'
