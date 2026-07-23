@@ -706,6 +706,13 @@
     /* Listen for membership activated events from PPAY */
     window.addEventListener('studyria:membership:activated', _onMembershipActivated);
 
+    /* PassSync: refresh dashboard badge after membership activation */
+    window.addEventListener('studyria:membership:activated', function() {
+      if (typeof window.PassSync !== 'undefined' && window.PassSync.syncDashboardBadge) {
+        window.PassSync.syncDashboardBadge();
+      }
+    });
+
     /* Hook switchMeTab to intercept 'membership' tab */
     _hookSwitchMeTab();
     _hookOverviewTab();

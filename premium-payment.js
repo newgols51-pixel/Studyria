@@ -37,7 +37,7 @@
  *   ✅ monthly → +30 days, yearly → +365 days
  *
  * @module premium-payment
- * @version 1.0
+ * @version 1.1
  */
 
 (function () {
@@ -64,18 +64,21 @@
     lifetime:    36500,
   };
 
-  /* Plan catalogue — fallback display prices if DB fetch fails.
-     Server never trusts these amounts; they are for modal display only. */
-  var PLAN_DISPLAY = {
-    trial_1day:  { name: '1 Day Trial',       display_inr: 9   },
-    trial_15day: { name: '15 Day Trial',      display_inr: 49  },
-    monthly:     { name: 'Monthly Premium',   display_inr: 99  },
-    quarterly:   { name: 'Quarterly Premium', display_inr: 249 },
-    half_year:   { name: 'Half Year Premium', display_inr: 449 },
+  /* Plan display names ONLY — NO hardcoded prices.
+     Prices ALWAYS come from membership_plans DB via PassSync.
+     This map is for display name fallback if DB is temporarily unavailable. */
+  var PLAN_NAMES = {
+    trial_1day:  '1 Day Trial',
+    trial_15day: '15 Day Trial',
+    monthly:     'Monthly Premium',
+    quarterly:   'Quarterly Premium',
+    half_year:   'Half Year Premium',
     // Legacy aliases
-    starter:     { name: 'Starter',           display_inr: 49  },
-    biannual:    { name: '6 Month',           display_inr: 449 },
-    yearly:      { name: 'Yearly',            display_inr: 999 },
+    starter:     'Starter',
+    biannual:    'Half Year',
+    yearly:      'Yearly',
+    annual:      'Annual',
+    lifetime:    'Lifetime',
   };
 
   /* ── Logging ─────────────────────────────────────────────────── */
@@ -209,42 +212,60 @@
     _btnLoading(triggerBtn);
 
     try {
-      /* ── 2. Fetch plan from DB (price_inr, billing_cycle) ──────── */
+      /* -- 2. Fetch plan from DB via PassSync (single source of truth) -- */
       var plan = null;
-      try {
-        var planRes = await client
-          .from('membership_plans')
-          .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-          .eq('slug', planSlug)
-          .eq('is_active', true)
-          .maybeSingle();
 
-        if (planRes.error) {
-          _warn('checkout', 'DB plan fetch error (using fallback):', planRes.error.message);
+      /* PRIMARY: Use PassSync if available (has retry + cache + fallback) */
+      if (typeof window.PassSync !== 'undefined' && window.PassSync.getPlanBySlug) {
+        try {
+          plan = await window.PassSync.getPlanBySlug(planSlug);
+        } catch (e) {
+          _warn('checkout', 'PassSync fetch exception:', e);
         }
-        plan = planRes.data;
-      } catch (e) {
-        _warn('checkout', 'Plan fetch exception (using fallback):', e);
       }
 
-      /* Fallback to display config if DB unavailable */
+      /* SECONDARY: Direct DB query if PassSync unavailable or returned null */
       if (!plan) {
-        var fb = PLAN_DISPLAY[planSlug];
-        if (!fb) {
-          _toast('Plan not found. Please try again.', 'error');
-          _btnRestore(triggerBtn);
-          return;
+        try {
+          var planRes = await client
+            .from('membership_plans')
+            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+            .eq('slug', planSlug)
+            .eq('is_active', true)
+            .maybeSingle();
+
+          if (planRes.error) {
+            _warn('checkout', 'Direct DB plan fetch error:', planRes.error.message);
+          }
+          plan = planRes.data;
+        } catch (e) {
+          _warn('checkout', 'Direct DB plan fetch exception:', e);
         }
-        plan = {
-          id:            null,
-          slug:          planSlug,
-          name:          fb.name,
-          price_inr:     fb.display_inr,
-          billing_cycle: planSlug,
-          is_active:     true,
-        };
-        _warn('checkout', 'Using fallback plan (DB unavailable):', plan);
       }
+
+      /* RETRY: If still no plan, force-refresh PassSync cache and try once more */
+      if (!plan && typeof window.PassSync !== 'undefined' && window.PassSync.getPlanBySlug) {
+        _warn('checkout', 'Plan not found on first attempt -- force refreshing cache and retrying');
+        if (window.PassSync.invalidateCache) window.PassSync.invalidateCache();
+        try {
+          plan = await window.PassSync.getPlanBySlug(planSlug, true);
+        } catch (e) {
+          _warn('checkout', 'PassSync retry exception:', e);
+        }
+      }
+
+      /* GRACEFUL ERROR: Only show error if plan truly doesn't exist in DB */
+      if (!plan) {
+        _err('checkout', 'Plan not found in membership_plans after all retries:', planSlug);
+        _toast(
+          'This plan is temporarily unavailable. Please refresh the page and try again.',
+          'error'
+        );
+        _btnRestore(triggerBtn);
+        return;
+      }
+
+      _log('checkout', 'Plan resolved from DB:', { slug: planSlug, price_inr: plan.price_inr, id: plan.id });
 
       var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
       _log('checkout', 'Expiry calculation:', {
@@ -252,18 +273,13 @@
         trial_days: plan.trial_days, durationDays: durationDays,
       });
 
-      /* GUARD: plan.id must be a valid UUID — null causes NOT NULL violation in DB */
+      /* Plan ID guard -- still check but with a better message */
       if (!plan.id) {
-        _err('checkout', 'Plan ID is null — plan "' + planSlug + '" not found in membership_plans DB table.');
-        _toast(
-          '⚠️ Plan "' + planSlug + '" is not yet activated in the database. ' +
-          'Please contact support or try again shortly.',
-          'error'
-        );
+        _err('checkout', 'Plan ID is null for slug:', planSlug);
+        _toast('Plan configuration error. Please contact support.', 'error');
         _btnRestore(triggerBtn);
         return;
       }
-      _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays });
 
       /* ── 3. Check existing active membership ──────────────────── */
       var existingMembership = null;

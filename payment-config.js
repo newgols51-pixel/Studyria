@@ -53,51 +53,23 @@ export const RAZORPAY_RETRY_MAX = 2;
 /** Timeout (ms) for order-creation fetch calls made from Edge Functions */
 export const ORDER_FETCH_TIMEOUT_MS = 12_000;
 
-// ── Membership plan catalogue (prices in INR, durations in days) ─────────────
-// NOTE: These are the DISPLAY-ONLY plan definitions used to build order payloads.
-//       No membership is activated until a successful payment_capture webhook
-//       is verified and processed by the server-side Edge Function.
+// ── Membership plan catalogue — DEPRECATED ─────────────────────────────────
+// WARNING: This array is DEPRECATED. Prices and plan data are now sourced
+//          from the `membership_plans` database table via `pass-sync.js`
+//          (window.PassSync.getPlans() / getPlanBySlug()).
+//
+//          This constant is kept ONLY for backward compatibility with any
+//          code that still imports it. DO NOT use these prices for payment
+//          — always fetch from the database.
+//
+//          To get live plan data:  await window.PassSync.getPlans()
+//          To get a single plan:   await window.PassSync.getPlanBySlug('monthly')
 export const MEMBERSHIP_PLANS = Object.freeze([
-  {
-    id:          'trial_1day',
-    label:       '⚡ 1 Day Trial',
-    durationDays: 1,
-    priceINR:    9,
-    badge:       'NEW',
-    tagline:     'Try Premium for just ₹9. Risk-free.',
-  },
-  {
-    id:          'trial_15day',
-    label:       '🟢 15 Day Trial',
-    durationDays: 15,
-    priceINR:    49,
-    badge:       'POPULAR',
-    tagline:     'Explore everything for 15 days.',
-  },
-  {
-    id:          'monthly',
-    label:       '🔵 Monthly Premium',
-    durationDays: 30,
-    priceINR:    99,
-    badge:       null,
-    tagline:     'Best for regular exam learners.',
-  },
-  {
-    id:          'quarterly',
-    label:       '🟣 Quarterly Premium',
-    durationDays: 90,
-    priceINR:    249,
-    badge:       'MOST POPULAR',
-    tagline:     'Serious prep? 3 months of access.',
-  },
-  {
-    id:          'half_year',
-    label:       '👑 Half Year Premium',
-    durationDays: 180,
-    priceINR:    449,
-    badge:       'BEST VALUE',
-    tagline:     'Maximum value. 6 months of everything.',
-  },
+  { id: 'trial_1day',  label: '1 Day Trial',       durationDays: 1,   priceINR: 0, badge: null, tagline: '' },
+  { id: 'trial_15day', label: '15 Day Trial',      durationDays: 15,  priceINR: 0, badge: null, tagline: '' },
+  { id: 'monthly',     label: 'Monthly Premium',   durationDays: 30,  priceINR: 0, badge: null, tagline: '' },
+  { id: 'quarterly',   label: 'Quarterly Premium', durationDays: 90,  priceINR: 0, badge: null, tagline: '' },
+  { id: 'half_year',   label: 'Half Year Premium', durationDays: 180, priceINR: 0, badge: null, tagline: '' },
 ]);
 
 // ── Payment status values (mirrored from DB enum) ────────────────────────────
