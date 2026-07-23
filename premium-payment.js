@@ -227,7 +227,9 @@
       async function _fetchPlanFromDB(attempt) {
         _log('checkout', 'Fetching plan "' + planSlug + '"' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
 
-        /* STEP 1: ALWAYS fetch from membership_plans first (price-authoritative) */
+        /* STEP 1: Fetch from membership_plans (price-authoritative)
+           1A: Targeted slug query (fastest path)
+           1B: Broad SELECT + client-side match (handles slug mismatches / missing rows) */
         var dbPlan = null;
         try {
           var planRes = await client
@@ -237,12 +239,39 @@
             .maybeSingle();
           if (planRes.data && !planRes.error) {
             dbPlan = planRes.data;
-            _log('checkout', 'Plan found in membership_plans DB:', { slug: planSlug, price: dbPlan.price_inr, id: dbPlan.id });
+            _log('checkout', 'Step 1A: plan found by slug:', { slug: planSlug, price: dbPlan.price_inr, id: dbPlan.id });
           } else if (planRes.error) {
-            _warn('checkout', 'membership_plans fetch error:', planRes.error.message);
+            _warn('checkout', 'Step 1A fetch error:', planRes.error.message);
           }
         } catch (e) {
-          _warn('checkout', 'membership_plans fetch exception:', e);
+          _warn('checkout', 'Step 1A fetch exception:', e);
+        }
+
+        /* STEP 1B: Broad SELECT fallback — if slug query missed (row exists but slug differs) */
+        if (!dbPlan) {
+          try {
+            var allPlansRes = await client
+              .from('membership_plans')
+              .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+              .limit(50);
+            if (allPlansRes.data && allPlansRes.data.length) {
+              var slugNorm = planSlug.toLowerCase().replace(/[\s_-]/g, '');
+              dbPlan = allPlansRes.data.find(function(p) {
+                if (p.slug === planSlug) return true;
+                if ((p.slug || '').toLowerCase().replace(/[\s_-]/g, '') === slugNorm) return true;
+                if ((p.name || '').toLowerCase().replace(/\s+/g, '_') === planSlug) return true;
+                if ((p.name || '').toLowerCase().replace(/[\s_-]/g, '') === slugNorm) return true;
+                return false;
+              }) || null;
+              if (dbPlan) {
+                _log('checkout', 'Step 1B: plan matched by broad SELECT:', { found: dbPlan.slug, id: dbPlan.id });
+              } else {
+                _log('checkout', 'Step 1B: plan "' + planSlug + '" not in DB (' + allPlansRes.data.length + ' plans fetched)');
+              }
+            }
+          } catch (e1b) {
+            _warn('checkout', 'Step 1B broad SELECT failed:', e1b);
+          }
         }
 
         /* STEP 2: Try site_config for display settings (badge, gradient, duration) */
@@ -390,30 +419,77 @@
         trial_days: plan.trial_days, durationDays: durationDays,
       });
 
-      /* If plan.id is null, try to INSERT it into membership_plans so future checkouts work */
+      /* If plan.id is null, try UPSERT into membership_plans.
+         - If row exists but our query missed it (slug mismatch) → upsert returns it
+         - If row truly missing and we have write permission → creates it
+         - If RLS blocks write → falls through to rescue SELECT below */
       if (!plan.id) {
-        _warn('checkout', 'Plan "' + planSlug + '" has no DB id \u2014 attempting auto-create in membership_plans');
+        _warn('checkout', 'Plan "' + planSlug + '" has no DB id \u2014 attempting upsert into membership_plans');
         try {
-          var createRes = await client
+          var upsertRes = await client
             .from('membership_plans')
-            .insert({ slug: planSlug, name: plan.name || planSlug, price_inr: plan.price_inr, billing_cycle: planSlug, is_active: true })
-            .select('id,slug,price_inr')
+            .upsert(
+              { slug: planSlug, name: plan.name || planSlug, price_inr: plan.price_inr, billing_cycle: plan.billing_cycle || planSlug, is_active: true },
+              { onConflict: 'slug', ignoreDuplicates: false }
+            )
+            .select('id, slug, price_inr')
             .maybeSingle();
-          if (createRes.data && createRes.data.id) {
-            plan.id = createRes.data.id;
-            _log('checkout', 'Auto-created plan in membership_plans:', plan);
+          if (upsertRes.data && upsertRes.data.id) {
+            plan.id = upsertRes.data.id;
+            if (upsertRes.data.price_inr) plan.price_inr = upsertRes.data.price_inr;
+            _log('checkout', 'Upsert succeeded — plan.id obtained:', plan.id);
+          } else if (upsertRes.error) {
+            /* 23505 = unique_violation → row exists, SELECT it directly */
+            /* 42501 = insufficient_privilege → RLS blocks INSERT, row may still exist */
+            var errCode = (upsertRes.error.code || '');
+            if (errCode === '23505' || errCode === '42501') {
+              _log('checkout', 'Upsert blocked (' + errCode + ') — will try rescue SELECT');
+            } else {
+              _warn('checkout', 'Upsert error:', upsertRes.error.message);
+            }
           }
         } catch (e) {
-          _warn('checkout', 'Auto-create failed:', e);
+          _warn('checkout', 'Upsert exception:', e.message || e);
         }
       }
 
-      /* GUARD: plan.id must exist for DB writes */
+      /* GUARD: plan.id — broad rescue before final block */
       if (!plan.id) {
-        _err('checkout', 'Plan ID is null \u2014 cannot process payment for "' + planSlug + '"');
+        /* RESCUE: SELECT all active plans and match by slug or name variant.
+           Handles: race conditions after INSERT, slug format mismatches,
+           rows that exist in DB but were missed by the targeted slug query. */
+        try {
+          var rescueRes = await client
+            .from('membership_plans')
+            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+            .limit(50);
+          if (rescueRes.data && rescueRes.data.length) {
+            var planSlugNorm = planSlug.toLowerCase().replace(/[\s_-]/g, '');
+            var match = rescueRes.data.find(function(p) {
+              if (p.slug === planSlug) return true;
+              if ((p.slug || '').toLowerCase().replace(/[\s_-]/g, '') === planSlugNorm) return true;
+              if ((p.name || '').toLowerCase().replace(/\s+/g, '_') === planSlug) return true;
+              if ((p.name || '').toLowerCase().replace(/[\s_-]/g, '') === planSlugNorm) return true;
+              return false;
+            });
+            if (match) {
+              plan.id            = match.id;
+              plan.price_inr     = match.price_inr || plan.price_inr;
+              plan.billing_cycle = match.billing_cycle || plan.billing_cycle;
+              plan.is_active     = match.is_active;
+              _log('checkout', 'RESCUE: plan matched by broad SELECT:', { found: match.slug, id: match.id });
+            }
+          }
+        } catch (rescueErr) {
+          _warn('checkout', 'RESCUE SELECT failed:', rescueErr);
+        }
+      }
+
+      /* FINAL GUARD: no plan.id after all attempts */
+      if (!plan.id) {
+        _err('checkout', 'Plan ID null after rescue for "' + planSlug + '"');
         _toast(
-          '\u26A0\uFE0F Plan "' + planSlug + '" is not in the database. ' +
-          'Go to Admin \u2192 Pass Management \u2192 Save to sync plans.',
+          '\u26A0\uFE0F Plan "' + planSlug + '" needs syncing. Ask admin: Admin \u2192 Pass Management \u2192 Sync Plans, then retry.',
           'error'
         );
         _btnRestore(triggerBtn);
