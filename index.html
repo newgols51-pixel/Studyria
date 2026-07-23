@@ -16138,109 +16138,11 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
         <div class="container">
           <div class="prm-section-title">Choose Your Plan</div>
           <div class="prm-section-sub">All plans unlock every Pass Note — study smarter, learn faster</div>
-          <div class="prm-plans-grid">
-    
-            <!-- ₹9 / 1 Day — NEW -->
-            <div class="prm-plan-card prm-trial">
-              <div class="prm-plan-badge">⚡ NEW</div>
-              <div class="prm-plan-emoji">⚡</div>
-              <div class="prm-plan-name">1 Day Trial</div>
-              <div class="prm-plan-price">₹9</div><!-- dynamic: pass-renderer.js will replace with DB price -->
-              <div class="prm-plan-only">Only</div>
-              <div class="prm-plan-duration">📅 1 Day</div>
-              <ul class="prm-plan-features">
-                <li>All Pass Notes</li>
-                <li>Pass Reading Room</li>
-                <li>Reading Progress</li>
-                <li>Unlimited Wishlist</li>
-                <li>Ad-Free Experience</li>
-              </ul>
-              <button class="prm-plan-btn" data-plan="trial_1day" onclick="PPAY.checkout('trial_1day', this)">Try Now →</button>
-            </div>
-    
-            <!-- ₹49 / 15 Days — POPULAR -->
-            <div class="prm-plan-card">
-              <div class="prm-plan-badge">🟢 POPULAR</div>
-              <div class="prm-plan-emoji">🟢</div>
-              <div class="prm-plan-name">15 Day Trial</div>
-              <div class="prm-plan-price">₹49</div><!-- dynamic: pass-renderer.js will replace with DB price -->
-              <div class="prm-plan-only">Only</div>
-              <div class="prm-plan-duration">📅 15 Days</div>
-              <ul class="prm-plan-features">
-                <li>All Pass Notes</li>
-                <li>Pass Reading Room</li>
-                <li>Reading Progress</li>
-                <li>Unlimited Wishlist</li>
-                <li>Ad-Free Experience</li>
-              </ul>
-              <button class="prm-plan-btn" data-plan="trial_15day" onclick="PPAY.checkout('trial_15day', this)">Get Started →</button>
-            </div>
-    
-            <!-- ₹99 / 1 Month -->
-            <div class="prm-plan-card">
-              <div class="prm-plan-emoji">🔵</div>
-              <div class="prm-plan-name">Monthly</div>
-              <div class="prm-plan-price">₹99</div><!-- dynamic: pass-renderer.js will replace with DB price -->
-              <div class="prm-plan-only">Only</div>
-              <div class="prm-plan-duration">📅 30 Days</div>
-              <ul class="prm-plan-features">
-                <li>All Pass Notes</li>
-                <li>Pass Reading Room</li>
-                <li>Continue Reading</li>
-                <li>Reading Progress</li>
-                <li>Unlimited Wishlist</li>
-                <li>Ad-Free Experience</li>
-                <li>Pass Badge</li>
-              </ul>
-              <button class="prm-plan-btn" data-plan="monthly" onclick="PPAY.checkout('monthly', this)">Subscribe →</button>
-            </div>
-    
-            <!-- ₹249 / 3 Months — MOST POPULAR -->
-            <div class="prm-plan-card prm-popular">
-              <div class="prm-plan-badge">⭐ MOST POPULAR</div>
-              <div class="prm-plan-emoji">🟣</div>
-              <div class="prm-plan-name">Quarterly</div>
-              <div class="prm-plan-price">₹249</div><!-- dynamic: pass-renderer.js will replace with DB price -->
-              <div class="prm-plan-only">Only — Save More!</div>
-              <div class="prm-plan-duration">📅 3 Months</div>
-              <ul class="prm-plan-features">
-                <li>All Pass Notes</li>
-                <li>Pass Reading Room</li>
-                <li>Continue Reading</li>
-                <li>Reading Progress</li>
-                <li>Unlimited Wishlist</li>
-                <li>Ad-Free Experience</li>
-                <li>Pass Badge</li>
-                <li>Early Access</li>
-                <li>Member Discounts</li>
-              </ul>
-              <button class="prm-plan-btn" data-plan="quarterly" onclick="PPAY.checkout('quarterly', this)">⭐ Best Choice →</button>
-            </div>
-    
-            <!-- ₹449 / 6 Months — BEST VALUE -->
-            <div class="prm-plan-card prm-best">
-              <div class="prm-plan-badge">👑 BEST VALUE</div>
-              <div class="prm-plan-emoji">👑</div>
-              <div class="prm-plan-name">Half Year</div>
-              <div class="prm-plan-price">₹449</div><!-- dynamic: pass-renderer.js will replace with DB price -->
-              <div class="prm-plan-only">Only — Max Savings!</div>
-              <div class="prm-plan-duration">📅 6 Months</div>
-              <ul class="prm-plan-features">
-                <li>All Pass Notes</li>
-                <li>Pass Reading Room</li>
-                <li>Continue Reading</li>
-                <li>Reading Progress</li>
-                <li>Unlimited Wishlist</li>
-                <li>Ad-Free Experience</li>
-                <li>Pass Badge</li>
-                <li>Early Access</li>
-                <li>Member Discounts</li>
-                <li>Printed Books Discount</li>
-                <li>Priority Support</li>
-              </ul>
-              <button class="prm-plan-btn" data-plan="half_year" onclick="PPAY.checkout('half_year', this)">👑 Best Value →</button>
-            </div>
-    
+          <div class="prm-plans-grid" id="prmPlansGrid">
+            <!-- LOADING SKELETON (replaced by pass-renderer.js from DB) -->
+            <div class="prm-plan-skeleton pwa-skeleton" style="min-height:320px;border-radius:16px"></div>
+            <div class="prm-plan-skeleton pwa-skeleton" style="min-height:320px;border-radius:16px"></div>
+            <div class="prm-plan-skeleton pwa-skeleton" style="min-height:320px;border-radius:16px"></div>
           </div><!-- /prm-plans-grid -->
         </div>
       </section>

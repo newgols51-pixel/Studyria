@@ -213,10 +213,39 @@
       var plan = null;
       var _fetchAttempt = 0;
 
+      /* ─────────────────────────────────────────────────────────────────
+         PLAN FETCH — SINGLE SOURCE OF TRUTH — v3.0
+         Priority:
+           1. membership_plans (DB) — authoritative for price + ID
+           2. site_config (admin panel config) — display settings
+           3. localStorage (offline cache)
+           4. PassRenderer.DEFAULT_PLANS (last-resort hardcoded defaults)
+         
+         NEVER "Plan unavailable" if plan exists in membership_plans.
+         PRICE always from membership_plans.price_inr (admin edits DB).
+       ─────────────────────────────────────────────────────────────────── */
       async function _fetchPlanFromDB(attempt) {
         _log('checkout', 'Fetching plan "' + planSlug + '"' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
 
-        /* STEP 1A: Try site_config from DB (authenticated users only — RLS allows this) */
+        /* STEP 1: ALWAYS fetch from membership_plans first (price-authoritative) */
+        var dbPlan = null;
+        try {
+          var planRes = await client
+            .from('membership_plans')
+            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+            .eq('slug', planSlug)
+            .maybeSingle();
+          if (planRes.data && !planRes.error) {
+            dbPlan = planRes.data;
+            _log('checkout', 'Plan found in membership_plans DB:', { slug: planSlug, price: dbPlan.price_inr, id: dbPlan.id });
+          } else if (planRes.error) {
+            _warn('checkout', 'membership_plans fetch error:', planRes.error.message);
+          }
+        } catch (e) {
+          _warn('checkout', 'membership_plans fetch exception:', e);
+        }
+
+        /* STEP 2: Try site_config for display settings (badge, gradient, duration) */
         var sitePlan = null;
         try {
           var cfgRes = await client
@@ -228,18 +257,16 @@
             var pmCfg = JSON.parse(cfgRes.data.value);
             if (pmCfg.plans) {
               pmCfg.plans.forEach(function(p) {
-                var pId = p.passId || p.name.toLowerCase().replace(/\s+/g, '_');
+                var pId = p.passId || (p.name || '').toLowerCase().replace(/\s+/g, '_');
                 if (pId === planSlug) { sitePlan = p; }
               });
             }
           }
         } catch (e) {
-          _warn('checkout', 'site_config DB fetch error:', e);
+          _warn('checkout', 'site_config fetch error:', e);
         }
 
-        /* STEP 1B: Fall back to localStorage (same source pass-renderer uses).
-           RLS blocks anon reads on site_config, but localStorage has the admin-saved
-           config with the CORRECT prices (₹29, ₹69, etc.) */
+        /* STEP 3: Try localStorage cache */
         if (!sitePlan) {
           try {
             var lsRaw = localStorage.getItem('studyria_pass_config');
@@ -247,51 +274,60 @@
               var lsCfg = JSON.parse(lsRaw);
               if (lsCfg && lsCfg.plans) {
                 lsCfg.plans.forEach(function(p) {
-                  var pId = p.passId || p.name.toLowerCase().replace(/\s+/g, '_');
+                  var pId = p.passId || (p.name || '').toLowerCase().replace(/\s+/g, '_');
                   if (pId === planSlug) { sitePlan = p; }
                 });
-                if (sitePlan) { _log('checkout', 'Plan found in localStorage (pass-renderer cache):', planSlug); }
               }
             }
-          } catch (e) {
-            _warn('checkout', 'localStorage read error:', e);
+          } catch (e) { /* localStorage unavailable */ }
+        }
+
+        /* STEP 4: Try PassRenderer.DEFAULT_PLANS (known canonical plans) */
+        if (!sitePlan && window.PassRenderer && window.PassRenderer.DEFAULT_PLANS) {
+          var dp = window.PassRenderer.DEFAULT_PLANS.find(function(p) { return p.passId === planSlug; });
+          if (dp) {
+            sitePlan = dp;
+            _log('checkout', 'Plan found in PassRenderer.DEFAULT_PLANS:', planSlug);
           }
         }
 
-        if (!sitePlan) {
-          _warn('checkout', 'Plan "' + planSlug + '" not found in site_config or localStorage' + (attempt > 0 ? ' after retry' : ''));
+        /* STEP 5: If plan is still not found anywhere, it truly doesn't exist */
+        if (!dbPlan && !sitePlan) {
+          _warn('checkout', 'Plan "' + planSlug + '" not found in any source' + (attempt > 0 ? ' after retry' : ''));
           return null;
         }
 
-        /* STEP 2: Fetch from membership_plans for the UUID */
-        var dbPlan = null;
-        try {
-          var planRes = await client
-            .from('membership_plans')
-            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-            .eq('slug', planSlug)
-            .maybeSingle();
-          if (planRes.data) { dbPlan = planRes.data; }
-        } catch (e) {
-          _warn('checkout', 'membership_plans fetch error:', e);
-        }
+        /* BUILD PLAN OBJECT
+           PRICE RULE: membership_plans.price_inr wins over everything.
+           If plan has no DB row yet, use offerPrice from site_config/default.
+           Duration: use sitePlan.duration if available, else CYCLE_DAYS lookup. */
+        var finalPrice = dbPlan
+          ? dbPlan.price_inr
+          : (sitePlan ? (sitePlan.offerPrice || sitePlan.originalPrice || 0) : 0);
 
-        /* Build the plan object — PRICE ALWAYS from site_config (authoritative) */
+        var finalDuration = sitePlan && sitePlan.durationUnit === 'lifetime'
+          ? '0'
+          : (sitePlan ? (sitePlan.duration || null) : null);
+
+        var finalDurationUnit = sitePlan && sitePlan.durationUnit
+          ? sitePlan.durationUnit : 'days';
+
         var result = {
           id:            dbPlan ? dbPlan.id : null,
           slug:          planSlug,
-          name:          sitePlan.name || (dbPlan ? dbPlan.name : planSlug),
-          price_inr:     sitePlan.offerPrice || sitePlan.originalPrice || 0,
+          name:          (dbPlan ? dbPlan.name : null) || (sitePlan ? sitePlan.name : planSlug),
+          price_inr:     finalPrice,
           billing_cycle: dbPlan ? (dbPlan.billing_cycle || planSlug) : planSlug,
-          is_active:     sitePlan.active !== false,
+          is_active:     dbPlan ? dbPlan.is_active : (sitePlan ? sitePlan.active !== false : true),
           trial_days:    dbPlan ? dbPlan.trial_days : null,
-          duration:      sitePlan.duration || '30',
-          durationUnit:  sitePlan.durationUnit || 'days',
+          duration:      finalDuration,
+          durationUnit:  finalDurationUnit,
+          _source:       dbPlan ? 'membership_plans+' + (sitePlan ? 'site_config' : 'default') : 'site_config_only',
         };
 
-        _log('checkout', 'Plan resolved from database:', {
-          slug: planSlug, name: result.name, price: '₹' + result.price_inr,
-          active: result.is_active, id: result.id, source: 'site_config'
+        _log('checkout', 'Plan resolved (v3 — DB price wins):', {
+          slug: planSlug, price: '₹' + result.price_inr,
+          active: result.is_active, id: result.id, source: result._source
         });
 
         return result;
@@ -308,7 +344,11 @@
       /* If still not found after retry, show error */
       if (!plan) {
         // FIX 14: Friendly error — plan may be temporarily unavailable, not deleted
-        _toast('Plan "' + planSlug + '" is currently unavailable. Please refresh the page or try again.', 'error');
+        // Provide actionable error: if admin hasn't synced yet, direct them there
+        _toast(
+          '⚠️ Plan "' + planSlug + '" not found. Go to Admin → Pass Management → Save Plans to sync, then refresh.',
+          'error'
+        );
         _btnRestore(triggerBtn);
         return;
       }
