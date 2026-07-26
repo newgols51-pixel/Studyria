@@ -1,35 +1,21 @@
 /* ═════════════════════════════════════════════════════════════════════
-   STUDYRIA UI/UX 2.0 — ENTERPRISE VISUAL UPGRADE (SAFE MODE)
-   Version: 2.0.1 — Hotfix: removed lazy-image opacity trick
-   Progressive enhancement only. No features removed.
+   STUDYRIA UI/UX 2.0 — SAFE VISUAL UPGRADE (v2.0.2)
+   NO opacity/visibility changes on any page or section.
+   Only hover effects, transitions, typography, shadows.
    ═════════════════════════════════════════════════════════════════════ */
 
-/* ══ DESIGN TOKENS ══════════════════════════════════════════════════ */
+/* ══ TOKENS ══════════════════════════════════════════════════════════ */
 :root {
-  --ui2-shadow-sm:    0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
-  --ui2-shadow-md:    0 4px 16px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
-  --ui2-shadow-lg:    0 12px 40px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.08);
-  --ui2-shadow-xl:    0 24px 60px rgba(0,0,0,0.22), 0 8px 20px rgba(0,0,0,0.10);
-
-  --ui2-glass-blur:    16px;
-  --ui2-ease:          cubic-bezier(0.22, 1, 0.36, 1);
-  --ui2-ease-bounce:   cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ui2-dur-fast:      0.15s;
-  --ui2-dur:           0.25s;
-  --ui2-dur-slow:      0.4s;
-
-  --ui2-radius:        16px;
-  --ui2-radius-sm:     10px;
-  --ui2-radius-lg:     24px;
-  --ui2-radius-xl:     32px;
-  --ui2-radius-pill:   100px;
+  --ui2-shadow-sm:  0 2px 8px rgba(0,0,0,0.08);
+  --ui2-shadow-md:  0 4px 16px rgba(0,0,0,0.12);
+  --ui2-shadow-lg:  0 12px 40px rgba(0,0,0,0.18);
+  --ui2-shadow-xl:  0 24px 60px rgba(0,0,0,0.22);
+  --ui2-ease:       cubic-bezier(0.22, 1, 0.36, 1);
+  --ui2-bounce:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ui2-dur:        0.22s;
 }
 
-body.light {
-  --ui2-glass-blur: 12px;
-}
-
-/* ══ GLOBAL TYPOGRAPHY ══════════════════════════════════════════════ */
+/* ══ TYPOGRAPHY ══════════════════════════════════════════════════════ */
 body {
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
@@ -38,10 +24,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.022em !important;
-  text-wrap: balance !important;
 }
 
-/* ══ PREMIUM SCROLLBAR ══════════════════════════════════════════════ */
+.stat-num { letter-spacing: -0.03em !important; }
+.section-title { letter-spacing: -0.022em !important; }
+
+/* ══ SCROLLBAR ═══════════════════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -49,150 +37,94 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 10px;
 }
 
-/* ══ CARDS ══════════════════════════════════════════════════════════ */
-.card {
-  border-radius: var(--ui2-radius-lg) !important;
-  box-shadow: var(--ui2-shadow-md) !important;
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease),
-    box-shadow var(--ui2-dur) var(--ui2-ease),
-    border-color var(--ui2-dur) var(--ui2-ease) !important;
+/* ══ CARDS — hover lift only ═════════════════════════════════════════ */
+.pdf-card {
+  border-radius: 16px !important;
+  transition: transform var(--ui2-dur) var(--ui2-ease),
+              box-shadow var(--ui2-dur) var(--ui2-ease),
+              border-color var(--ui2-dur) var(--ui2-ease) !important;
+}
+.pdf-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: var(--ui2-shadow-lg) !important;
 }
 
+.ottlib-card {
+  border-radius: 16px !important;
+  transition: transform var(--ui2-dur) var(--ui2-ease),
+              box-shadow var(--ui2-dur) var(--ui2-ease) !important;
+}
+.ottlib-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: var(--ui2-shadow-lg) !important;
+}
+
+.card {
+  border-radius: 20px !important;
+  transition: transform var(--ui2-dur) var(--ui2-ease),
+              box-shadow var(--ui2-dur) var(--ui2-ease),
+              border-color var(--ui2-dur) var(--ui2-ease) !important;
+}
 .card:hover {
   transform: translateY(-4px) !important;
   box-shadow: var(--ui2-shadow-xl) !important;
   border-color: rgba(61,142,248,0.25) !important;
 }
 
-/* PDF card */
-.pdf-card {
-  border-radius: var(--ui2-radius) !important;
-  box-shadow: var(--ui2-shadow-sm) !important;
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease),
-    box-shadow var(--ui2-dur) var(--ui2-ease),
-    border-color var(--ui2-dur) var(--ui2-ease) !important;
-  /* DO NOT touch will-change here — already optimized in original */
-}
-
-.pdf-card:hover {
-  transform: translateY(-5px) !important;
-  box-shadow: var(--ui2-shadow-lg) !important;
-}
-
-body.light .pdf-card { box-shadow: var(--ui2-shadow-sm) !important; }
-body.light .pdf-card:hover { box-shadow: var(--ui2-shadow-lg) !important; }
-
-/* OTT / Library card */
-.ottlib-card {
-  border-radius: var(--ui2-radius) !important;
-  box-shadow: var(--ui2-shadow-sm) !important;
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease),
-    box-shadow var(--ui2-dur) var(--ui2-ease),
-    border-color var(--ui2-dur) var(--ui2-ease) !important;
-}
-
-.ottlib-card:hover {
-  transform: translateY(-5px) !important;
-  box-shadow: var(--ui2-shadow-lg) !important;
-}
-
-body.light .ottlib-card { box-shadow: var(--ui2-shadow-sm) !important; }
-body.light .ottlib-card:hover { box-shadow: var(--ui2-shadow-lg) !important; }
-
-/* Stat cards */
 .stat-card {
-  border-radius: var(--ui2-radius-lg) !important;
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease),
-    box-shadow var(--ui2-dur) var(--ui2-ease) !important;
+  border-radius: 20px !important;
+  transition: transform var(--ui2-dur) var(--ui2-ease),
+              box-shadow var(--ui2-dur) var(--ui2-ease) !important;
 }
-
 .stat-card:hover {
   transform: translateY(-3px) !important;
   box-shadow: var(--ui2-shadow-md) !important;
 }
 
-.stat-num { letter-spacing: -0.03em !important; }
-
-/* ══ BUTTONS ════════════════════════════════════════════════════════ */
+/* ══ BUTTONS ══════════════════════════════════════════════════════════ */
 .btn,
 .sh-btn {
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease-bounce),
-    box-shadow var(--ui2-dur) var(--ui2-ease),
-    filter var(--ui2-dur) var(--ui2-ease),
-    background var(--ui2-dur) var(--ui2-ease),
-    border-color var(--ui2-dur) var(--ui2-ease) !important;
+  transition: transform var(--ui2-dur) var(--ui2-bounce),
+              box-shadow var(--ui2-dur) var(--ui2-ease),
+              filter var(--ui2-dur) var(--ui2-ease),
+              background var(--ui2-dur) var(--ui2-ease) !important;
 }
 
 .btn-primary,
 .sh-btn-primary {
   box-shadow: 0 4px 14px rgba(61,142,248,0.22) !important;
 }
-
 .btn-primary:hover,
 .sh-btn-primary:hover {
   box-shadow: 0 8px 24px rgba(61,142,248,0.32) !important;
   transform: translateY(-2px) !important;
 }
 
-.btn:active,
-.sh-btn:active {
+.btn:active, .sh-btn:active {
   transform: scale(0.97) !important;
 }
 
-.btn-secondary,
-.sh-btn-secondary {
-  backdrop-filter: blur(var(--ui2-glass-blur)) !important;
-  -webkit-backdrop-filter: blur(var(--ui2-glass-blur)) !important;
-}
-
-.btn-ghost:hover {
-  background: rgba(61,142,248,0.06) !important;
-  color: var(--accent) !important;
+.btn-secondary, .sh-btn-secondary {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* ══ INPUTS ══════════════════════════════════════════════════════════ */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="search"],
-input[type="number"],
-input[type="tel"],
-input[type="url"],
-textarea,
-select {
-  transition:
-    border-color var(--ui2-dur) var(--ui2-ease),
-    box-shadow var(--ui2-dur) var(--ui2-ease),
-    background var(--ui2-dur) var(--ui2-ease) !important;
+input, textarea, select {
+  transition: border-color var(--ui2-dur) var(--ui2-ease),
+              box-shadow var(--ui2-dur) var(--ui2-ease) !important;
 }
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="search"]:focus,
-input[type="number"]:focus,
-input[type="tel"]:focus,
-input[type="url"]:focus,
-textarea:focus {
+input:focus, textarea:focus {
   outline: none !important;
-  box-shadow: 0 0 0 3px rgba(61,142,248,0.12),
-              0 4px 16px rgba(61,142,248,0.08) !important;
+  box-shadow: 0 0 0 3px rgba(61,142,248,0.12) !important;
 }
 
-/* ══ NAVIGATION ═════════════════════════════════════════════════════ */
+/* ══ NAV LINK UNDERLINE ══════════════════════════════════════════════ */
 .nav-link {
   position: relative;
-  transition:
-    color var(--ui2-dur) var(--ui2-ease),
-    background var(--ui2-dur) var(--ui2-ease) !important;
+  transition: color var(--ui2-dur) var(--ui2-ease),
+              background var(--ui2-dur) var(--ui2-ease) !important;
 }
-
-/* Bottom indicator line */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -200,30 +132,24 @@ textarea:focus {
   width: 0; height: 2px;
   background: linear-gradient(90deg, var(--accent, #3d8ef8), var(--accent2, #00c8e8));
   border-radius: 2px;
-  transition: width var(--ui2-dur) var(--ui2-ease), left var(--ui2-dur) var(--ui2-ease);
+  transition: width var(--ui2-dur) var(--ui2-ease),
+              left var(--ui2-dur) var(--ui2-ease);
 }
-
 .nav-link.active::after { width: 60%; left: 20%; }
-.nav-link:hover::after  { width: 30%; left: 35%; opacity: 0.5; }
 
-/* ══ MOBILE NAV ═════════════════════════════════════════════════════ */
+/* ══ MOBILE NAV ══════════════════════════════════════════════════════ */
 .mobile-nav-item {
-  transition:
-    transform 0.12s var(--ui2-ease),
-    color var(--ui2-dur) var(--ui2-ease) !important;
+  transition: transform 0.12s var(--ui2-ease), color var(--ui2-dur) var(--ui2-ease) !important;
 }
 .mobile-nav-item:active { transform: scale(0.9) !important; }
-.mobile-nav-item.active { font-weight: 700 !important; }
 
-/* ══ LIBRARY HERO ═══════════════════════════════════════════════════ */
+/* ══ LIBRARY ══════════════════════════════════════════════════════════ */
 .ottlib-hero { border-radius: 0 0 28px 28px; }
 
 .ottlib-stat {
-  border-radius: var(--ui2-radius) !important;
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease),
-    border-color var(--ui2-dur) var(--ui2-ease),
-    box-shadow var(--ui2-dur) var(--ui2-ease) !important;
+  border-radius: 14px !important;
+  transition: transform var(--ui2-dur) var(--ui2-ease),
+              border-color var(--ui2-dur) var(--ui2-ease) !important;
 }
 .ottlib-stat:hover {
   transform: translateY(-2px) !important;
@@ -232,94 +158,59 @@ textarea:focus {
 .ottlib-stat-num { font-weight: 800 !important; letter-spacing: -0.02em !important; }
 
 .ottlib-search-input {
-  border-radius: var(--ui2-radius) !important;
+  border-radius: 14px !important;
   transition: all var(--ui2-dur) var(--ui2-ease) !important;
 }
 .ottlib-search-input:focus {
-  box-shadow: 0 0 0 3px rgba(61,142,248,0.12),
-              0 8px 24px rgba(61,142,248,0.10) !important;
+  box-shadow: 0 0 0 3px rgba(61,142,248,0.12) !important;
 }
 
 .ottlib-cat-pill {
-  border-radius: var(--ui2-radius-pill) !important;
-  transition: all var(--ui2-dur) var(--ui2-ease-bounce) !important;
+  border-radius: 100px !important;
+  transition: all var(--ui2-dur) var(--ui2-bounce) !important;
 }
 .ottlib-cat-pill:hover { transform: translateY(-2px) !important; }
 .ottlib-cat-pill.active { box-shadow: 0 4px 12px rgba(61,142,248,0.22) !important; }
 
-/* ══ HERO TEXT REFINEMENT ═══════════════════════════════════════════ */
-.sh-hero-stat-num {
-  font-size: 1.4rem !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.03em !important;
-}
-
-.sh-btn {
-  padding: 13px 24px !important;
-  border-radius: 14px !important;
-  font-weight: 600 !important;
-}
-
-/* ══ SECTION TITLE ══════════════════════════════════════════════════ */
-.section-title {
-  letter-spacing: -0.022em !important;
-  text-wrap: balance !important;
-}
-
-/* ══ PREMIUM PASS PAGE ══════════════════════════════════════════════ */
+/* ══ PREMIUM PAGE ════════════════════════════════════════════════════ */
 #page-premium .prm-plan-card {
-  transition:
-    transform var(--ui2-dur) var(--ui2-ease-bounce),
-    box-shadow var(--ui2-dur) var(--ui2-ease),
-    border-color var(--ui2-dur) var(--ui2-ease) !important;
+  transition: transform var(--ui2-dur) var(--ui2-bounce),
+              box-shadow var(--ui2-dur) var(--ui2-ease),
+              border-color var(--ui2-dur) var(--ui2-ease) !important;
 }
 #page-premium .prm-plan-card:hover {
   transform: translateY(-8px) scale(1.02) !important;
   box-shadow: 0 28px 60px rgba(0,0,0,0.38) !important;
 }
 
-/* ══ PREMIUM HOME BANNER ════════════════════════════════════════════ */
-.pp2-home-banner {
-  border-radius: var(--ui2-radius-xl) !important;
-  box-shadow: var(--ui2-shadow-lg) !important;
+/* ══ MENU BACKDROP ═══════════════════════════════════════════════════ */
+#hamburgerMenu {
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
 }
 
-/* ══ PAGE TRANSITION ════════════════════════════════════════════════ */
-.page.active {
-  animation: ui2PageEnter 0.3s var(--ui2-ease) both !important;
+/* ══ SELECTION ═══════════════════════════════════════════════════════ */
+::selection {
+  background: rgba(61,142,248,0.22);
+  color: var(--text, #eef2ff);
 }
 
-@keyframes ui2PageEnter {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ══ FOCUS RING ══════════════════════════════════════════════════════ */
+*:focus-visible {
+  outline: 2px solid var(--accent, #3d8ef8) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px !important;
 }
 
-/* ══ SCROLL FADE-IN ═════════════════════════════════════════════════ */
-.ui2-fade-in {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.55s var(--ui2-ease), transform 0.55s var(--ui2-ease);
-}
-.ui2-fade-in.ui2-visible {
-  opacity: 1;
-  transform: translateY(0);
+/* ══ HR ══════════════════════════════════════════════════════════════ */
+hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent,
+    var(--glass-border, rgba(255,255,255,0.09)), transparent) !important;
 }
 
-/* stagger children */
-.ui2-stagger > * {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.45s var(--ui2-ease), transform 0.45s var(--ui2-ease);
-}
-.ui2-stagger.ui2-visible > * { opacity: 1; transform: translateY(0); }
-.ui2-stagger.ui2-visible > *:nth-child(1) { transition-delay: 0.00s; }
-.ui2-stagger.ui2-visible > *:nth-child(2) { transition-delay: 0.06s; }
-.ui2-stagger.ui2-visible > *:nth-child(3) { transition-delay: 0.12s; }
-.ui2-stagger.ui2-visible > *:nth-child(4) { transition-delay: 0.18s; }
-.ui2-stagger.ui2-visible > *:nth-child(5) { transition-delay: 0.24s; }
-.ui2-stagger.ui2-visible > *:nth-child(6) { transition-delay: 0.30s; }
-
-/* ══ SKELETON SHIMMER ═══════════════════════════════════════════════ */
+/* ══ SKELETON UTILITY (opt-in via class) ═════════════════════════════ */
 .ui2-skeleton {
   background: linear-gradient(90deg,
     rgba(255,255,255,0.04) 0%,
@@ -327,13 +218,11 @@ textarea:focus {
     rgba(255,255,255,0.04) 100%);
   background-size: 200% 100%;
   animation: ui2Shimmer 1.6s infinite linear;
-  border-radius: var(--ui2-radius);
+  border-radius: 12px;
 }
 body.light .ui2-skeleton {
   background: linear-gradient(90deg,
-    rgba(0,0,0,0.04) 0%,
-    rgba(0,0,0,0.08) 50%,
-    rgba(0,0,0,0.04) 100%);
+    rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 100%);
   background-size: 200% 100%;
 }
 @keyframes ui2Shimmer {
@@ -341,99 +230,27 @@ body.light .ui2-skeleton {
   100% { background-position: -200% 0; }
 }
 
-/* ══ MODALS / MENUS (backdrop) ══════════════════════════════════════ */
-#hamburgerMenu {
-  backdrop-filter: blur(20px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(170%) !important;
-}
-
-/* ══ TRUST BADGES ═══════════════════════════════════════════════════ */
-.prm-trust-chip,
-.ottlib-hero-badge,
-.sh-hero-eyebrow {
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-}
-
-/* ══ FOOTER DIVIDER ═════════════════════════════════════════════════ */
-.studyria-footer,
-footer {
-  position: relative;
-}
-.studyria-footer::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 8%; right: 8%; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--glass-border, rgba(255,255,255,0.09)), transparent);
-  pointer-events: none;
-}
-
-/* ══ SELECTION ══════════════════════════════════════════════════════ */
-::selection {
-  background: rgba(61,142,248,0.22);
-  color: var(--text, #eef2ff);
-}
-
-/* ══ FOCUS RING (Accessibility) ═════════════════════════════════════ */
-*:focus-visible {
-  outline: 2px solid var(--accent, #3d8ef8) !important;
-  outline-offset: 3px !important;
-  border-radius: 4px !important;
-}
-
-/* ══ HR / DIVIDER ═══════════════════════════════════════════════════ */
-hr {
-  border: none !important;
-  height: 1px !important;
-  background: linear-gradient(90deg, transparent, var(--glass-border, rgba(255,255,255,0.09)), transparent) !important;
-}
-
-/* ══ MOBILE TOUCH TARGETS ═══════════════════════════════════════════ */
+/* ══ MOBILE TOUCH TARGETS ════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .btn, .sh-btn { min-height: 44px; }
 
-  /* Softer hover lifts on mobile (touch users don't hover) */
-  .card:hover,
-  .pdf-card:hover,
-  .ottlib-card:hover {
+  /* Lighter hover lift on touch devices */
+  .card:hover, .pdf-card:hover, .ottlib-card:hover {
     transform: translateY(-2px) !important;
   }
 }
 
-@media (max-width: 480px) {
-  .sh-btn {
-    padding: 12px 18px !important;
-    font-size: 0.85rem !important;
-  }
-}
-
-/* ══ REDUCED MOTION ═════════════════════════════════════════════════ */
+/* ══ REDUCED MOTION ══════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .page.active { animation: none !important; }
-  .ui2-fade-in,
-  .ui2-stagger > * {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
 }
 
-/* ══ PERFORMANCE: GPU compositing only for animated elements ════════ */
-.sh-orb, .ottlib-orb, .prm-orb {
-  transform: translateZ(0);
-}
-
-/* ══ OVERFLOW PROTECTION ════════════════════════════════════════════ */
+/* ══ PERFORMANCE ═════════════════════════════════════════════════════ */
+.sh-orb, .ottlib-orb, .prm-orb { transform: translateZ(0); }
 .page { overflow-x: hidden; }
 
-/* ══ CONTAINER MAX WIDTH ════════════════════════════════════════════ */
-@media (min-width: 1440px) {
-  .container { max-width: 1380px !important; }
-}
-
-/* ══ END STUDYRIA UI/UX 2.0 ═════════════════════════════════════════ */
+/* ══ END STUDYRIA UI/UX 2.0 ══════════════════════════════════════════ */
