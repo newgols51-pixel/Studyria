@@ -1,319 +1,179 @@
 /* ═════════════════════════════════════════════════════════════════════
-   STUDYRIA UI/UX 2.0 — MICRO INTERACTIONS
-   ═════════════════════════════════════════════════════════════════════
-   Progressive enhancement — adds ripple effects, animated counters,
-   scroll fade-ins, lazy image loading, and smooth interactions.
-   Does NOT modify any existing JS or functionality.
+   STUDYRIA UI/UX 2.0 — MICRO INTERACTIONS (v2.0.1 hotfix)
+   Progressive enhancement only. Zero existing functionality touched.
    ═════════════════════════════════════════════════════════════════════ */
-
-(function() {
+(function () {
   'use strict';
 
-  // ── Skip if prefers-reduced-motion ──────────────────────────────
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ══ 1. RIPPLE EFFECT ON BUTTONS ═════════════════════════════════
-  function initRippleEffect() {
-    if (prefersReducedMotion) return;
-
-    document.addEventListener('pointerdown', function(e) {
-      const btn = e.target.closest('.btn, .sh-btn');
-      if (!btn) return;
-
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      btn.style.setProperty('--ripple-x', x + 'px');
-      btn.style.setProperty('--ripple-y', y + 'px');
-    }, { passive: true });
-  }
-
-  // ══ 2. LAZY IMAGE FADE-IN ════════════════════════════════════════
-  function initLazyImageFade() {
-    if (prefersReducedMotion) {
-      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-        img.classList.add('loaded');
-      });
-      return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.classList.add('loaded');
-
-          // Also handle img onload
-          img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-
-          observer.unobserve(img);
-        }
-      });
-    }, { rootMargin: '50px' });
-
-    // Observe all lazy images
-    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-      if (img.complete && img.naturalWidth > 0) {
-        img.classList.add('loaded');
-      } else {
-        observer.observe(img);
-      }
-    });
-
-    // Re-observe new images added dynamically
-    const bodyObserver = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        mutation.addedNodes.forEach(node => {
-          if (node.nodeType === 1) {
-            const imgs = node.querySelectorAll ? node.querySelectorAll('img[loading="lazy"]') : [];
-            imgs.forEach(img => {
-              if (img.complete && img.naturalWidth > 0) {
-                img.classList.add('loaded');
-              } else {
-                observer.observe(img);
-              }
-            });
-          }
-        });
-      });
-    });
-
-    bodyObserver.observe(document.body, { childList: true, subtree: true });
-  }
-
-  // ══ 3. SCROLL FADE-IN ANIMATIONS ═════════════════════════════════
-  function initScrollFadeIn() {
-    if (prefersReducedMotion) {
-      document.querySelectorAll('.ui2-fade-in, .ui2-fade-in-stagger').forEach(el => {
+  /* ── 1. SCROLL FADE-IN ─────────────────────────────────────────── */
+  function initFadeIn() {
+    if (reduced) {
+      document.querySelectorAll('.ui2-fade-in, .ui2-stagger').forEach(function (el) {
         el.classList.add('ui2-visible');
       });
       return;
     }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('ui2-visible');
-          observer.unobserve(entry.target);
+          io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-    // Auto-add fade-in to sections and cards on the home page
-    const homePage = document.getElementById('page-home');
-    if (homePage) {
-      const sections = homePage.querySelectorAll('.ottlib-section, section, .stat-card, .pdf-card');
-      sections.forEach((el, i) => {
-        if (!el.classList.contains('ui2-fade-in')) {
-          el.classList.add('ui2-fade-in');
-        }
-        observer.observe(el);
-      });
-    }
-
-    // Observe any existing ui2-fade-in elements
-    document.querySelectorAll('.ui2-fade-in, .ui2-fade-in-stagger').forEach(el => {
-      observer.observe(el);
+    document.querySelectorAll('.ui2-fade-in, .ui2-stagger').forEach(function (el) {
+      io.observe(el);
     });
   }
 
-  // ══ 4. ANIMATED COUNTERS ═════════════════════════════════════════
-  function initAnimatedCounters() {
-    if (prefersReducedMotion) return;
+  /* ── 2. ANIMATED COUNTERS ──────────────────────────────────────── */
+  function initCounters() {
+    if (reduced) return;
 
-    function animateCounter(el) {
-      const text = el.textContent.trim();
-      const target = parseFloat(text.replace(/[^\d.-]/g, ''));
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.dataset.ui2Done) return;
+        el.dataset.ui2Done = '1';
+        io.unobserve(el);
 
-      if (isNaN(target) || target === 0) return;
+        var raw = el.textContent.trim();
+        var num = parseFloat(raw.replace(/[^\d.]/g, ''));
+        if (isNaN(num) || num === 0) return;
 
-      const suffix = text.replace(/[\d.,\s+-]/g, '');
-      const isFloat = text.includes('.');
-      const duration = 1200;
-      const startTime = performance.now();
+        var suffix = raw.replace(/[\d.,\s]/g, '');
+        var isFloat = raw.includes('.');
+        var dur = 900;
+        var start = performance.now();
 
-      function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
-
-        const value = target * eased;
-        el.textContent = (isFloat ? value.toFixed(1) : Math.round(value).toLocaleString('en-IN')) + suffix;
-
-        if (progress < 1) {
-          requestAnimationFrame(update);
-        } else {
-          el.textContent = (isFloat ? target.toFixed(1) : Math.round(target).toLocaleString('en-IN')) + suffix;
+        function tick(now) {
+          var p = Math.min((now - start) / dur, 1);
+          var ease = 1 - Math.pow(1 - p, 3);
+          var val = num * ease;
+          el.textContent = (isFloat ? val.toFixed(1) : Math.round(val).toLocaleString('en-IN')) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = (isFloat ? num.toFixed(1) : Math.round(num).toLocaleString('en-IN')) + suffix;
         }
-      }
-
-      requestAnimationFrame(update);
-    }
-
-    // Animate stat numbers when they come into view
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounter(entry.target);
-          observer.unobserve(entry.target);
-        }
+        requestAnimationFrame(tick);
       });
     }, { threshold: 0.5 });
 
-    // Target stat numbers
-    document.querySelectorAll('.stat-num, .sh-hero-stat-num, .ottlib-stat-num').forEach(el => {
-      // Only animate if it has a number
-      const text = el.textContent.trim();
-      if (/\d/.test(text) && !el.dataset.ui2Animated) {
-        el.dataset.ui2Animated = '1';
-        observer.observe(el);
-      }
+    document.querySelectorAll('.stat-num, .sh-hero-stat-num, .ottlib-stat-num').forEach(function (el) {
+      if (/\d/.test(el.textContent)) io.observe(el);
     });
   }
 
-  // ══ 5. CARD TOUCH FEEDBACK ═══════════════════════════════════════
-  function initCardTouchFeedback() {
-    if (prefersReducedMotion) return;
+  /* ── 3. BUTTON RIPPLE ──────────────────────────────────────────── */
+  function initRipple() {
+    if (reduced) return;
+    document.addEventListener('pointerdown', function (e) {
+      var btn = e.target.closest('.btn, .sh-btn');
+      if (!btn) return;
+      var r = btn.getBoundingClientRect();
+      var x = ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%';
+      var y = ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%';
 
-    // Scale-down on touch for cards
-    document.addEventListener('touchstart', function(e) {
-      const card = e.target.closest('.pdf-card, .ottlib-card, .card, .stat-card');
-      if (card) {
-        card.style.transition = 'transform 0.1s ease';
-        card.style.transform = 'scale(0.98)';
-      }
-    }, { passive: true });
+      var ripple = document.createElement('span');
+      ripple.style.cssText = [
+        'position:absolute',
+        'inset:0',
+        'pointer-events:none',
+        'border-radius:inherit',
+        'background:radial-gradient(circle at ' + x + ' ' + y + ', rgba(255,255,255,0.22) 0%, transparent 55%)',
+        'opacity:1',
+        'transition:opacity 0.5s ease'
+      ].join(';');
 
-    document.addEventListener('touchend', function(e) {
-      const card = e.target.closest('.pdf-card, .ottlib-card, .card, .stat-card');
-      if (card) {
-        card.style.transform = '';
-        setTimeout(() => {
-          card.style.transition = '';
-        }, 200);
-      }
+      /* btn needs relative positioning */
+      if (getComputedStyle(btn).position === 'static') btn.style.position = 'relative';
+      btn.style.overflow = 'hidden';
+      btn.appendChild(ripple);
+
+      requestAnimationFrame(function () {
+        ripple.style.opacity = '0';
+        setTimeout(function () { ripple.remove(); }, 550);
+      });
     }, { passive: true });
   }
 
-  // ══ 6. SMOOTH SCROLL ENHANCEMENT ═════════════════════════════════
+  /* ── 4. MOBILE CARD TAP SCALE ──────────────────────────────────── */
+  function initCardTap() {
+    if (reduced) return;
+    var sel = '.pdf-card, .ottlib-card, .card, .stat-card, .prm-plan-card';
+
+    document.addEventListener('touchstart', function (e) {
+      var card = e.target.closest(sel);
+      if (!card) return;
+      card.style.transition = 'transform 0.1s ease';
+      card.style.transform = 'scale(0.975)';
+    }, { passive: true });
+
+    document.addEventListener('touchend', function (e) {
+      var card = e.target.closest(sel);
+      if (!card) return;
+      card.style.transform = '';
+      setTimeout(function () { card.style.transition = ''; }, 250);
+    }, { passive: true });
+
+    document.addEventListener('touchcancel', function (e) {
+      var card = e.target.closest(sel);
+      if (card) { card.style.transform = ''; card.style.transition = ''; }
+    }, { passive: true });
+  }
+
+  /* ── 5. SPA PAGE CHANGE — re-run observers ─────────────────────── */
+  function initPageObserver() {
+    if (reduced) return;
+    var lastPage = null;
+
+    var mo = new MutationObserver(function () {
+      var active = document.querySelector('.page.active');
+      if (!active || active.id === lastPage) return;
+      lastPage = active.id;
+
+      /* tiny delay to let Alpine / existing JS render the page first */
+      setTimeout(function () {
+        initFadeIn();
+        initCounters();
+      }, 80);
+    });
+
+    mo.observe(document.body, { subtree: true, attributeFilter: ['class'] });
+  }
+
+  /* ── 6. SMOOTH SCROLL for hash links ──────────────────────────── */
   function initSmoothScroll() {
-    if (prefersReducedMotion) return;
-
-    // Enhance scrollIntoView calls
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-      link.addEventListener('click', function(e) {
-        const targetId = this.getAttribute('href');
-        if (targetId === '#' || targetId.length < 2) return;
-
-        const target = document.querySelector(targetId);
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-  }
-
-  // ══ 7. NAV LINK ACTIVE INDICATOR ════════════════════════════════
-  function initNavLinkIndicator() {
-    // The underline is handled by CSS, but we ensure active class persists
-    const navLinks = document.querySelectorAll('.nav-link[data-page]');
-    navLinks.forEach(link => {
-      link.addEventListener('mouseenter', function() {
-        this.style.zIndex = '2';
-      });
-      link.addEventListener('mouseleave', function() {
-        this.style.zIndex = '';
-      });
-    });
-  }
-
-  // ══ 8. PAGE TRANSITION ENHANCEMENT ═══════════════════════════════
-  function initPageTransitions() {
-    if (prefersReducedMotion) return;
-
-    // Watch for page visibility changes (SPA navigation)
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
-          const target = mutation.target;
-          if (target.classList && target.classList.contains('page') && target.classList.contains('active')) {
-            // Re-trigger entrance animation
-            target.style.animation = 'none';
-            void target.offsetWidth; // force reflow
-            target.style.animation = '';
-          }
-        }
-      });
-    });
-
-    document.querySelectorAll('.page').forEach(page => {
-      observer.observe(page, { attributes: true, attributeFilter: ['class', 'style'] });
-    });
-  }
-
-  // ══ 9. PREMIUM INPUT FOCUS GLOW ══════════════════════════════════
-  function initInputFocusGlow() {
-    // Dynamic glow that follows the input border color
-    document.addEventListener('focusin', function(e) {
-      if (e.target.matches('input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="number"], textarea')) {
-        e.target.dataset.ui2Focused = '1';
-      }
-    });
-
-    document.addEventListener('focusout', function(e) {
-      if (e.target.matches('input[type="text"], input[type="email"], input[type="password"], input[type="search"], input[type="number"], textarea')) {
-        delete e.target.dataset.ui2Focused;
+    if (reduced) return;
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      var id = a.getAttribute('href');
+      if (id.length < 2) return;
+      var target = document.querySelector(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   }
 
-  // ══ 10. PERFORMANCE: Debounce scroll handlers ═══════════════════
-  function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
-
-  // ══ INIT ALL ════════════════════════════════════════════════════
-  function init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initAll);
-    } else {
-      initAll();
-    }
-  }
-
-  function initAll() {
-    initRippleEffect();
-    initLazyImageFade();
-    initScrollFadeIn();
-    initAnimatedCounters();
-    initCardTouchFeedback();
+  /* ── BOOT ──────────────────────────────────────────────────────── */
+  function boot() {
+    initFadeIn();
+    initCounters();
+    initRipple();
+    initCardTap();
     initSmoothScroll();
-    initNavLinkIndicator();
-    initPageTransitions();
-    initInputFocusGlow();
-
-    // Re-init fade-in observer after SPA page changes
-    let lastPage = '';
-    setInterval(() => {
-      const activePage = document.querySelector('.page.active');
-      if (activePage && activePage.id !== lastPage) {
-        lastPage = activePage.id;
-        // Re-run fade-in for the new page
-        setTimeout(() => {
-          initScrollFadeIn();
-          initAnimatedCounters();
-        }, 100);
-      }
-    }, 300);
-
-    console.log('%c✨ Studyria UI/UX 2.0 loaded', 'color: #3d8ef8; font-weight: bold');
+    initPageObserver();
   }
 
-  init();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();
