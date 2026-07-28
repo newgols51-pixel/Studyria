@@ -154,98 +154,153 @@
 
     console.log('[V3] saveProfile: userId =', userId, '| data =', data);
 
-    /* Build clean payload — only safe columns */
-    var SAFE_COLUMNS = ['full_name','phone','dob','gender','address','district','state','country',
-                        'bio','occupation','exam_preparing','language','avatar_url',
-                        'profile_completed','verified','email','updated_at'];
+    /* ── Build payload: only include columns that exist in the profiles row ──
+       Strategy: first check what columns the existing profile row has.
+       If no row exists yet, use a minimal safe set. Then progressively
+       retry stripping unknown columns on each error. ── */
 
+    /* All potentially new columns we try to save */
+    var ALL_NEW_COLS = ['phone','dob','gender','address','district','state','country',
+                        'bio','occupation','exam_preparing','language'];
+    /* Core columns that MUST exist if profiles table exists at all */
+    var CORE_COLS    = ['id','full_name','avatar_url','profile_completed','verified','updated_at'];
+
+    /* Detect which new columns exist by checking the loaded profile row */
+    var existingRow  = V3.profile || {};
+    var knownCols    = Object.keys(existingRow); /* columns from a real SELECT * result */
+    console.log('[V3] saveProfile: known profile columns =', knownCols);
+
+    /* Build clean payload */
     var clean = {};
-    clean.id = userId;
-    clean.updated_at = new Date().toISOString();
+    clean.id          = userId;
+    clean.updated_at  = new Date().toISOString();
 
-    Object.keys(data).forEach(function(k) {
-      if (k === 'id' || k === 'updated_at') return; /* we set these above */
-      if (SAFE_COLUMNS.indexOf(k) === -1) {
-        console.warn('[V3] saveProfile: skipping unknown column:', k);
-        return;
+    /* Helper: safely add a value — empty string → null, trim strings */
+    function addCol(key, val) {
+      if (typeof val === 'string') {
+        val = val.trim().substring(0, 500);
+        val = val === '' ? null : val;
       }
-      var v = data[k];
-      if (typeof v === 'string') {
-        v = v.trim().substring(0, 500);
-        /* DATE columns: send null instead of empty string — Postgres rejects empty DATE */
-        if (k === 'dob') {
-          v = v === '' ? null : v;
+      clean[key] = val;
+    }
+
+    /* Core fields — always try */
+    if (data.full_name  !== undefined) addCol('full_name',  data.full_name);
+    if (data.avatar_url !== undefined) addCol('avatar_url', data.avatar_url);
+    if (data.email      !== undefined && (knownCols.indexOf('email') !== -1 || knownCols.length === 0)) {
+      addCol('email', data.email);
+    }
+
+    /* Extended fields — only add if the column was seen in the loaded profile row
+       OR if we have no profile yet (new user — try everything, strip on error) */
+    var isNewUser = knownCols.length === 0;
+    ALL_NEW_COLS.forEach(function(col) {
+      if (data[col] !== undefined) {
+        if (isNewUser || knownCols.indexOf(col) !== -1) {
+          addCol(col, data[col]);
         } else {
-          v = v === '' ? null : v;
+          console.log('[V3] saveProfile: column', col, 'not in profile row — skipping');
         }
       }
-      clean[k] = v;
     });
 
-    /* Calculate completion based on what we're saving merged with existing profile */
+    /* Completion/verified: based on merged state */
     var merged = Object.assign({}, V3.profile || {}, clean);
     clean.profile_completed = calcCompletion(merged) === 100;
     clean.verified           = clean.profile_completed;
 
-    console.log('[V3] saveProfile: clean payload =', JSON.stringify(clean));
+    console.log('[V3] saveProfile: payload =', JSON.stringify(clean));
 
-    try {
-      /* First try upsert (insert or update) */
-      var res = await client.from('profiles')
-        .upsert(clean, { onConflict: 'id', ignoreDuplicates: false })
+    /* ── Attempt 1: upsert ── */
+    var tryUpsert = async function(payload) {
+      return await client.from('profiles')
+        .upsert(payload, { onConflict: 'id', ignoreDuplicates: false })
         .select()
         .single();
+    };
 
-      if (res.error) {
-        console.error('[V3] saveProfile upsert error:', res.error.message,
-          '| code:', res.error.code,
-          '| details:', res.error.details,
-          '| hint:', res.error.hint);
+    /* ── Attempt 2: explicit update() for RLS edge cases ── */
+    var tryUpdate = async function(payload) {
+      var p2 = Object.assign({}, payload);
+      delete p2.id; /* update() uses eq('id') — don't include id in SET */
+      return await client.from('profiles').update(p2).eq('id', userId).select().single();
+    };
 
-        /* Specific fixes based on error */
+    /* ── Attempt 3: insert (for brand new rows) ── */
+    var tryInsert = async function(payload) {
+      return await client.from('profiles').insert(payload).select().single();
+    };
 
-        /* Error: column "email" does not exist */
-        if (res.error.message && res.error.message.indexOf('email') !== -1 && clean.email !== undefined) {
-          console.warn('[V3] saveProfile: email column issue, retrying without email');
-          delete clean.email;
-          var res2 = await client.from('profiles').upsert(clean, {onConflict:'id'}).select().single();
-          if (!res2.error && res2.data) {
-            V3.profile = res2.data;
-            V3.completion = calcCompletion(res2.data);
-            V3.verified   = res2.data.verified || V3.completion === 100;
-            return true;
-          }
-          console.error('[V3] saveProfile retry error:', res2.error);
-          return { errorMsg: res2.error ? (res2.error.message + ' [' + res2.error.code + ']') : 'Unknown error after retry' };
+    /* ── Strip a column that caused an error and retry ── */
+    var stripColFromError = function(errMsg, payload) {
+      if (!errMsg) return null;
+      /* Postgres error like: column "phone" of relation "profiles" does not exist */
+      var m = errMsg.match(/column "([^"]+)"/);
+      if (m && m[1] && payload[m[1]] !== undefined) {
+        console.warn('[V3] saveProfile: stripping unknown column:', m[1]);
+        var p2 = Object.assign({}, payload);
+        delete p2[m[1]];
+        return p2;
+      }
+      return null;
+    };
+
+    try {
+      var payload = clean;
+      var lastError = null;
+
+      /* Try up to 12 times, stripping one bad column each time */
+      for (var attempt = 0; attempt < 12; attempt++) {
+        var res = await tryUpsert(payload);
+
+        if (!res.error && res.data) {
+          console.log('[V3] saveProfile: upsert OK on attempt', attempt + 1, res.data);
+          V3.profile    = res.data;
+          V3.completion = calcCompletion(res.data);
+          V3.verified   = res.data.verified || V3.completion === 100;
+          return true;
         }
 
-        /* Error: RLS — try explicit update() instead of upsert */
-        if (res.error.code === '42501' || (res.error.message && res.error.message.toLowerCase().indexOf('policy') !== -1)) {
-          console.warn('[V3] saveProfile: RLS block on upsert, trying explicit update()');
-          var upd = await client.from('profiles').update(clean).eq('id', userId).select().single();
-          if (!upd.error && upd.data) {
-            V3.profile = upd.data;
-            V3.completion = calcCompletion(upd.data);
-            V3.verified   = upd.data.verified || V3.completion === 100;
-            return true;
-          }
-          console.error('[V3] saveProfile update() error:', upd.error);
-          return { errorMsg: upd.error ? (upd.error.message + ' [' + upd.error.code + ']') : 'RLS blocked' };
+        lastError = res.error;
+        console.error('[V3] saveProfile attempt', attempt + 1, 'error:',
+          lastError.message, '| code:', lastError.code,
+          '| details:', lastError.details, '| hint:', lastError.hint);
+
+        /* Unknown column → strip it and retry */
+        var stripped = stripColFromError(lastError.message, payload);
+        if (stripped && Object.keys(stripped).length > 2) { /* at least id + updated_at */
+          payload = stripped;
+          continue;
         }
 
-        return { errorMsg: res.error.message + ' [' + res.error.code + ']' };
+        /* RLS violation → try explicit update() */
+        if (lastError.code === '42501' || (lastError.message && lastError.message.toLowerCase().indexOf('policy') !== -1)) {
+          console.warn('[V3] saveProfile: RLS on upsert — trying update()');
+          var updRes = await tryUpdate(payload);
+          if (!updRes.error && updRes.data) {
+            V3.profile = updRes.data;
+            V3.completion = calcCompletion(updRes.data);
+            V3.verified   = updRes.data.verified || V3.completion === 100;
+            return true;
+          }
+          /* If update also failed — maybe row doesn't exist. Try insert. */
+          console.warn('[V3] saveProfile: update() also failed — trying insert()');
+          var insRes = await tryInsert(payload);
+          if (!insRes.error && insRes.data) {
+            V3.profile = insRes.data;
+            V3.completion = calcCompletion(insRes.data);
+            V3.verified   = insRes.data.verified || V3.completion === 100;
+            return true;
+          }
+          console.error('[V3] saveProfile insert error:', insRes.error);
+          return { errorMsg: (insRes.error ? insRes.error.message : 'RLS blocked') + ' [' + (insRes.error ? insRes.error.code : '42501') + ']' };
+        }
+
+        /* No column to strip and no other known fix — stop */
+        break;
       }
 
-      if (res.data) {
-        console.log('[V3] saveProfile: success', res.data);
-        V3.profile    = res.data;
-        V3.completion = calcCompletion(res.data);
-        V3.verified   = res.data.verified || V3.completion === 100;
-        return true;
-      }
-
-      console.warn('[V3] saveProfile: no data returned, no error — possibly empty result');
-      return { errorMsg: 'No data returned from Supabase' };
+      return { errorMsg: lastError ? (lastError.message + ' [' + lastError.code + ']') : 'Unknown error' };
 
     } catch(e) {
       console.error('[V3] saveProfile exception:', e.message, e);
