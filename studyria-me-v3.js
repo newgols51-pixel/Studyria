@@ -19,7 +19,21 @@
 
   /* ── Helpers ──────────────────────────────────────────────────── */
   function sb()   { return window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null); }
-  function uid()  { var u = window.currentUser || {}; return u.uid || u.id || null; }
+  /* uid(): always prefer live Supabase session over cached currentUser */
+  function uid() {
+    /* 1) Supabase session (most authoritative) */
+    var client = window.supabaseClient;
+    if (client && client.auth && typeof client.auth.getUser === 'function') {
+      /* synchronous _currentSession shortcut used by Supabase JS v2 */
+      try {
+        var sess = client.auth._session || (client.auth.storage && JSON.parse(client.auth.storage.getItem && client.auth.storage.getItem('sb-' + window.SUPABASE_URL_KEY + '-auth-token') || 'null'));
+        if (sess && sess.user && sess.user.id) return sess.user.id;
+      } catch(_) {}
+    }
+    /* 2) Fallback: window.currentUser built by supabase.js */
+    var u = window.currentUser || {};
+    return u.uid || u.id || null;
+  }
   function esc(s) {
     if (s == null) return '';
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -38,16 +52,29 @@
 
   /* ── Supabase: load profile ───────────────────────────────────── */
   V3.loadProfile = async function() {
-    var client = sb(), userId = uid();
-    if (!client || !userId) return null;
+    var client = sb();
+    /* Always get userId from live session first */
+    var userId = await V3.getAuthUserId();
+    if (!client || !userId) {
+      console.warn('[V3] loadProfile: no client or userId. currentUser=', window.currentUser);
+      return null;
+    }
+    console.log('[V3] loadProfile: userId =', userId);
     try {
       var res = await client.from('profiles').select('*').eq('id', userId).single();
       if (res.data) {
         V3.profile = res.data;
-      } else if (res.error && (res.error.code === 'PGRST116' || res.error.code === '406')) {
-        V3.profile = await V3.createProfile();
+        console.log('[V3] loadProfile: loaded existing row', res.data);
+      } else {
+        /* PGRST116 = no row found (PostgREST .single() returns error when 0 rows) */
+        var errCode = res.error ? res.error.code : 'unknown';
+        console.warn('[V3] loadProfile: no row or error. code=', errCode, res.error);
+        if (errCode === 'PGRST116' || errCode === '406' || errCode === '404') {
+          console.log('[V3] loadProfile: creating new profile row');
+          V3.profile = await V3.createProfile(userId);
+        }
       }
-    } catch(e) { console.warn('V3.loadProfile:', e); }
+    } catch(e) { console.warn('[V3] loadProfile exception:', e); }
     if (V3.profile) {
       V3.completion = calcCompletion(V3.profile);
       V3.verified   = V3.completion === 100;
@@ -55,41 +82,175 @@
     return V3.profile;
   };
 
-  /* ── Supabase: create profile row ────────────────────────────── */
-  V3.createProfile = async function() {
-    var client = sb(), userId = uid();
-    if (!client || !userId) return null;
+  /* ── Get authenticated user id from live session ─────────────── */
+  V3.getAuthUserId = async function() {
+    var client = sb();
+    if (client && client.auth) {
+      try {
+        var sessRes = await client.auth.getSession();
+        if (sessRes.data && sessRes.data.session && sessRes.data.session.user) {
+          var liveId = sessRes.data.session.user.id;
+          console.log('[V3] getAuthUserId: live session uid =', liveId);
+          return liveId;
+        }
+      } catch(e) { console.warn('[V3] getAuthUserId getSession error:', e); }
+    }
+    /* Fallback */
     var u = window.currentUser || {};
-    try {
-      var ins = await client.from('profiles').insert({
-        id: userId, email: u.email||'', full_name: u.name||'',
-        avatar_url: u.avatarUrl||'', profile_completed: false, verified: false,
-        updated_at: new Date().toISOString()
-      }).select().single();
-      return ins.data || null;
-    } catch(e) { return null; }
+    var fallback = u.uid || u.id || null;
+    console.log('[V3] getAuthUserId: fallback uid =', fallback);
+    return fallback;
   };
 
-  /* ── Supabase: save profile ───────────────────────────────────── */
-  V3.saveProfile = async function(data) {
-    var client = sb(), userId = uid();
-    if (!client || !userId) return false;
-    var clean = { id: userId, updated_at: new Date().toISOString() };
-    Object.keys(data).forEach(function(k) {
-      clean[k] = typeof data[k] === 'string' ? data[k].trim().substring(0,500) : data[k];
-    });
-    clean.profile_completed = calcCompletion(clean) === 100;
-    clean.verified           = clean.profile_completed;
+  /* ── Supabase: create profile row ────────────────────────────── */
+  V3.createProfile = async function(userId) {
+    var client = sb();
+    userId = userId || await V3.getAuthUserId();
+    if (!client || !userId) { console.warn('[V3] createProfile: missing client or userId'); return null; }
+    var u = window.currentUser || {};
+    /* Only send columns that definitely exist in profiles table */
+    var row = {
+      id:               userId,
+      full_name:        u.name  || '',
+      avatar_url:       u.avatarUrl || '',
+      profile_completed: false,
+      verified:         false,
+      updated_at:       new Date().toISOString()
+    };
+    /* Only add email if the column exists (will be caught by error if not) */
+    if (u.email) row.email = u.email;
+    console.log('[V3] createProfile: inserting', row);
     try {
-      var res = await client.from('profiles').upsert(clean, {onConflict:'id'}).select().single();
+      var ins = await client.from('profiles').insert(row).select().single();
+      if (ins.error) {
+        console.error('[V3] createProfile error:', ins.error.message, '| code:', ins.error.code, '| details:', ins.error.details, '| hint:', ins.error.hint);
+        /* If email column doesn't exist, retry without it */
+        if (ins.error.message && ins.error.message.indexOf('email') !== -1) {
+          delete row.email;
+          console.log('[V3] createProfile: retrying without email column');
+          var ins2 = await client.from('profiles').insert(row).select().single();
+          if (ins2.data) return ins2.data;
+          console.error('[V3] createProfile retry error:', ins2.error);
+        }
+        return null;
+      }
+      console.log('[V3] createProfile: success', ins.data);
+      return ins.data || null;
+    } catch(e) {
+      console.error('[V3] createProfile exception:', e.message);
+      return null;
+    }
+  };
+
+  /* ── Supabase: save profile ─────────────────────────────────────
+     FIXED: verbose error logging, safe type coercion, session-verified uid,
+            proper null/empty handling for DATE/TEXT columns, email safety.
+  ─────────────────────────────────────────────────────────────────── */
+  V3.saveProfile = async function(data) {
+    var client = sb();
+    var userId = await V3.getAuthUserId();
+    if (!client) { console.error('[V3] saveProfile: no Supabase client'); return false; }
+    if (!userId) { console.error('[V3] saveProfile: no userId — user not authenticated?'); return false; }
+
+    console.log('[V3] saveProfile: userId =', userId, '| data =', data);
+
+    /* Build clean payload — only safe columns */
+    var SAFE_COLUMNS = ['full_name','phone','dob','gender','address','district','state','country',
+                        'bio','occupation','exam_preparing','language','avatar_url',
+                        'profile_completed','verified','email','updated_at'];
+
+    var clean = {};
+    clean.id = userId;
+    clean.updated_at = new Date().toISOString();
+
+    Object.keys(data).forEach(function(k) {
+      if (k === 'id' || k === 'updated_at') return; /* we set these above */
+      if (SAFE_COLUMNS.indexOf(k) === -1) {
+        console.warn('[V3] saveProfile: skipping unknown column:', k);
+        return;
+      }
+      var v = data[k];
+      if (typeof v === 'string') {
+        v = v.trim().substring(0, 500);
+        /* DATE columns: send null instead of empty string — Postgres rejects empty DATE */
+        if (k === 'dob') {
+          v = v === '' ? null : v;
+        } else {
+          v = v === '' ? null : v;
+        }
+      }
+      clean[k] = v;
+    });
+
+    /* Calculate completion based on what we're saving merged with existing profile */
+    var merged = Object.assign({}, V3.profile || {}, clean);
+    clean.profile_completed = calcCompletion(merged) === 100;
+    clean.verified           = clean.profile_completed;
+
+    console.log('[V3] saveProfile: clean payload =', JSON.stringify(clean));
+
+    try {
+      /* First try upsert (insert or update) */
+      var res = await client.from('profiles')
+        .upsert(clean, { onConflict: 'id', ignoreDuplicates: false })
+        .select()
+        .single();
+
+      if (res.error) {
+        console.error('[V3] saveProfile upsert error:', res.error.message,
+          '| code:', res.error.code,
+          '| details:', res.error.details,
+          '| hint:', res.error.hint);
+
+        /* Specific fixes based on error */
+
+        /* Error: column "email" does not exist */
+        if (res.error.message && res.error.message.indexOf('email') !== -1 && clean.email !== undefined) {
+          console.warn('[V3] saveProfile: email column issue, retrying without email');
+          delete clean.email;
+          var res2 = await client.from('profiles').upsert(clean, {onConflict:'id'}).select().single();
+          if (!res2.error && res2.data) {
+            V3.profile = res2.data;
+            V3.completion = calcCompletion(res2.data);
+            V3.verified   = res2.data.verified || V3.completion === 100;
+            return true;
+          }
+          console.error('[V3] saveProfile retry error:', res2.error);
+          return { errorMsg: res2.error ? (res2.error.message + ' [' + res2.error.code + ']') : 'Unknown error after retry' };
+        }
+
+        /* Error: RLS — try explicit update() instead of upsert */
+        if (res.error.code === '42501' || (res.error.message && res.error.message.toLowerCase().indexOf('policy') !== -1)) {
+          console.warn('[V3] saveProfile: RLS block on upsert, trying explicit update()');
+          var upd = await client.from('profiles').update(clean).eq('id', userId).select().single();
+          if (!upd.error && upd.data) {
+            V3.profile = upd.data;
+            V3.completion = calcCompletion(upd.data);
+            V3.verified   = upd.data.verified || V3.completion === 100;
+            return true;
+          }
+          console.error('[V3] saveProfile update() error:', upd.error);
+          return { errorMsg: upd.error ? (upd.error.message + ' [' + upd.error.code + ']') : 'RLS blocked' };
+        }
+
+        return { errorMsg: res.error.message + ' [' + res.error.code + ']' };
+      }
+
       if (res.data) {
+        console.log('[V3] saveProfile: success', res.data);
         V3.profile    = res.data;
         V3.completion = calcCompletion(res.data);
         V3.verified   = res.data.verified || V3.completion === 100;
         return true;
       }
-    } catch(e) {}
-    return false;
+
+      console.warn('[V3] saveProfile: no data returned, no error — possibly empty result');
+      return { errorMsg: 'No data returned from Supabase' };
+
+    } catch(e) {
+      console.error('[V3] saveProfile exception:', e.message, e);
+      return { errorMsg: 'Exception: ' + e.message };
+    }
   };
 
   /* ── Supabase: upload photo ───────────────────────────────────── */
@@ -631,21 +792,45 @@
   V3.handleSave = async function() {
     var btn = el('veSaveBtn');
     if (btn) { btn.disabled = true; btn.innerHTML = 'Saving...'; }
+
     var g = function(id) { var e = el(id); return e ? e.value : ''; };
-    var ok = await V3.saveProfile({
-      full_name: g('veFullName'), phone: g('vePhone'), dob: g('veDob'),
-      gender: g('veGender'), occupation: g('veOccupation'),
-      district: g('veDistrict'), state: g('veState'), country: g('veCountry'),
-      address: g('veAddress'), exam_preparing: g('veExam'),
-      language: g('veLang'), bio: g('veBio'),
-      email: (window.currentUser||{}).email || ''
-    });
-    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Save Profile'; }
-    if (ok) {
+
+    /* Read all form fields */
+    var payload = {
+      full_name:      g('veFullName'),
+      phone:          g('vePhone'),
+      dob:            g('veDob'),           /* may be '' — saveProfile converts to null */
+      gender:         g('veGender'),
+      occupation:     g('veOccupation'),
+      district:       g('veDistrict'),
+      state:          g('veState'),
+      country:        g('veCountry'),
+      address:        g('veAddress'),
+      exam_preparing: g('veExam'),
+      language:       g('veLang'),
+      bio:            g('veBio')
+    };
+    /* Email: include only if profiles table has an email column */
+    var userEmail = (window.currentUser||{}).email || '';
+    if (userEmail) payload.email = userEmail;
+
+    console.log('[V3] handleSave: payload =', payload);
+
+    var result = await V3.saveProfile(payload);
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Save Profile';
+    }
+
+    if (result === true) {
       if (typeof showToast === 'function') showToast('Profile saved! ✅', 'success');
       setTimeout(function() { V3.backToOverview(); }, 800);
     } else {
-      if (typeof showToast === 'function') showToast('Save failed. Try again.', 'error');
+      /* result is either false or { errorMsg: '...' } */
+      var errMsg = (result && result.errorMsg) ? result.errorMsg : 'Unknown error';
+      console.error('[V3] handleSave FAILED:', errMsg);
+      if (typeof showToast === 'function') showToast('Save failed: ' + errMsg, 'error');
     }
   };
 
