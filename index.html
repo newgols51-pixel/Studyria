@@ -38187,16 +38187,8 @@ document.addEventListener('keydown', e => {
 });
 </script>
 
-<script>
-/**
- * ══════════════════════════════════════════════════════════════════════
- * PDF CLASSIFICATION SYSTEM — COMPLETE REFACTOR PATCH
- * ══════════════════════════════════════════════════════════════════════
- *
- * HOW TO USE:
- *   Paste this entire <script> block at the very END of index.html,
- *   just before 
 <!-- ══════════════════════════════════════════════════════════════════════
+     PDF CLASSIFICATION SYSTEM — COMPLETE REFACTOR PATCH
      STUDYRIA PHASE 1 — OMNI SEARCH + MULTI-LANGUAGE
      Injected just before </body> — fully backward compatible
   ══════════════════════════════════════════════════════════════════════ -->
@@ -38251,7 +38243,7 @@ window.I18N = {
     login: 'লগইন', logout: 'লগআউট', profile: 'প্ৰফাইল',
     wishlist: 'উইশলিষ্ট', my_pdfs: 'মোৰ PDF', categories: 'বিভাগসমূহ',
     trending: 'ট্ৰেণ্ডিং', new_arrivals: 'নতুন আগমন', bestsellers: 'বেষ্টচেলাৰ',
-    all_pdfs: 'সকলো PDF', no_results: 'কোনো ফলাফল পোৱা নগ'ল',
+    all_pdfs: 'সকলো PDF', no_results: "কোনো ফলাফল পোৱা নগ'ল",
     filter: 'ফিল্টাৰ', sort_by: 'ক্ৰমানুসাৰে', newest: 'নতুনতম',
     popular: 'জনপ্ৰিয়', az: 'A-Z', free_filter: 'বিনামূলীয়া',
     paid_filter: 'পেইড', loading: 'লোড হৈ আছে…', share: 'শ্বেয়াৰ কৰক',
@@ -38451,13 +38443,13 @@ function renderDropdown(q) {
       html += '<div class="omni-section-hd">' + i18nT('recent_searches') +
               ' <span onclick="window._omniClearRecent()" style="cursor:pointer;color:rgba(61,142,248,0.8);font-size:.65rem;font-weight:400;float:right;margin-right:2px">Clear</span></div>';
       recent.forEach(function(s){
-        html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect('' + esc(s) + '')">' +
+        html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect(\'' + esc(s) + '\')">' +
                   '<span class="omni-row-icon">🕐</span>' + esc(s) + '</div>';
       });
     }
     html += '<div class="omni-section-hd">' + i18nT('trending_searches') + '</div>';
     TRENDING.forEach(function(s){
-      html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect('' + esc(s) + '')">' +
+      html += '<div class="omni-row" role="option" data-query="' + esc(s) + '" onclick="omniSelect(\'' + esc(s) + '\')">' +
                 '<span class="omni-row-icon">🔥</span>' + esc(s) + '</div>';
     });
   } else {
@@ -38471,7 +38463,7 @@ function renderDropdown(q) {
         var price = p.free || parseFloat(p.selling_price||p.price||0) === 0
           ? '<span style="color:#10d98e;font-size:.72rem;margin-left:auto">Free</span>'
           : '<span style="color:var(--accent);font-size:.72rem;margin-left:auto">₹' + (p.selling_price||p.price) + '</span>';
-        html += '<div class="omni-row" role="option" data-query="' + title + '" onclick="omniSelect('' + title + '')">' +
+        html += '<div class="omni-row" role="option" data-query="' + title + '" onclick="omniSelect(\' + title + \')">' +
                   '<span class="omni-row-icon">📄</span>' +
                   '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + title + cat + '</span>' +
                   price + '</div>';
