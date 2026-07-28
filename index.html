@@ -11720,6 +11720,26 @@ body.light .me-xp-track { background:rgba(0,0,0,0.08); }
 }
 .me-hero-tabs::-webkit-scrollbar { display:none; }
 body.light .me-hero-tabs { border-top-color:rgba(0,0,0,0.08); }
+
+/* ── Standalone Tab Bar (replaces old me-profile-hero) ── */
+.me-tab-bar {
+  background: var(--bg2, #0d1a3a);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+body.light .me-tab-bar {
+  background: #fff;
+  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.me-tab-bar .me-hero-tabs {
+  border-top: none !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
 .me-htab {
   display:flex; align-items:center; gap:7px;
   padding:14px 20px; border:none; background:none;
@@ -12351,35 +12371,8 @@ body.light .me-stat-val { filter:none; }
 
 <div class="page" id="page-dashboard">
 
-  <div class="me-profile-hero" id="dashProfileHero" style="display:none">
-    <div class="me-hero-orb me-hero-orb-1"></div>
-    <div class="me-hero-orb me-hero-orb-2"></div>
-    <div class="me-hero-inner">
-      <div class="me-hero-top">
-
-        <div class="me-avatar-ring">
-          <div class="me-avatar" id="dashAvatar"></div>
-          <div class="me-avatar-online"></div>
-        </div>
-
-        <div class="me-hero-info">
-          <div class="me-welcome-tag"><span class="wt-dot"></span>👋 Welcome Back</div>
-          <div class="me-hero-name" id="dashName"></div>
-          <div class="me-hero-sub">
-            <span id="dashEmail"></span>
-            <span class="join-date" id="dashJoinDate"></span>
-          </div>
-          <div class="me-badge-row" id="dashBadgeRow" style="display:none">
-            <span class="me-member-badge mb-level" id="dashPlan"></span>
-          </div>
-          <div class="me-xp-wrap" id="dashXpWrap" style="display:none">
-            <div class="me-xp-label"><span id="dashXpLabel"></span></div>
-            <div class="me-xp-track"><div class="me-xp-fill" id="dashXpFill" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="me-hero-tabs">
+  <div class="me-tab-bar" id="dashTabBar" style="display:none">
+    <div class="me-hero-tabs">
         <button class="me-htab active" data-tab="overview" onclick="switchMeTab('overview')">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           Overview
@@ -12411,7 +12404,6 @@ body.light .me-stat-val { filter:none; }
           Sign Out
         </button>
       </div>
-    </div>
   </div>
 
   <div class="me-content" id="dashMain">
@@ -22167,9 +22159,9 @@ async function renderDashboard() {
   }
 
   if (!user) {
-    // Hide profile hero, show login prompt in main content area
-    const heroEl = document.getElementById('dashProfileHero');
-    if (heroEl) heroEl.style.display = 'none';
+    // Hide tab bar, show login prompt in main content area
+    const tabBarEl = document.getElementById('dashTabBar');
+    if (tabBarEl) tabBarEl.style.display = 'none';
     document.getElementById('dashMain').innerHTML = `
       <div style="text-align:center;padding:100px 20px;animation:dashFadeUp .4s ease both">
         <div style="font-size:3rem;margin-bottom:16px">🔒</div>
@@ -22183,59 +22175,24 @@ async function renderDashboard() {
     return;
   }
 
-  // Show profile hero and populate with real user data
-  const heroEl = document.getElementById('dashProfileHero');
-  if (heroEl) heroEl.style.display = '';
+  // Show tab bar (profile card is rendered by V3.renderOverview into dashMain)
+  const tabBarEl = document.getElementById('dashTabBar');
+  if (tabBarEl) tabBarEl.style.display = '';
 
-  const avatarEl    = document.getElementById('dashAvatar');
-  const nameEl      = document.getElementById('dashName');
-  const emailEl     = document.getElementById('dashEmail');
-  const planEl      = document.getElementById('dashPlan');
-  const joinEl      = document.getElementById('dashJoinDate');
-  const badgeRowEl  = document.getElementById('dashBadgeRow');
-  const xpWrapEl    = document.getElementById('dashXpWrap');
-
-  if (avatarEl) avatarEl.textContent = user.avatar || (user.name ? user.name[0].toUpperCase() : '?');
-  if (nameEl)   nameEl.textContent   = user.name || 'Studyria User';
-  if (emailEl)  emailEl.textContent  = user.email || '';
-  if (planEl) {
-    /* BADGE-FIX: Show placeholder immediately, then fetch real membership status */
-    planEl.textContent = 'FREE MEMBER';
-    planEl.className = planEl.className.replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
-    /* PassSync: also sync badge from membership_plans DB */
-    if (typeof window.PassSync !== 'undefined' && window.PassSync.syncDashboardBadge) {
-      window.PassSync.syncDashboardBadge();
-    }
-    if (badgeRowEl) badgeRowEl.style.display = '';
-    /* Async real-time badge update — SMCI is the source of truth */
-    (async function() {
-      try {
-        if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
-          var st = await window.SMCI.getStatus(true);
-          if (planEl) {
-            if (st.isPremium) {
-              planEl.innerHTML = '&#x1F451; PREMIUM MEMBER';
-              planEl.className = planEl.className.replace(/\bmb-level\b/g, '').trim() + ' mb-gold';
-            } else {
-              planEl.textContent = 'FREE MEMBER';
-              planEl.className = planEl.className.replace(/\bmb-gold\b/g, '').trim() + ' mb-level';
-            }
-          }
-        } else if (window.P5D && typeof window.P5D.refreshBadges === 'function') {
-          window.P5D.refreshBadges();
-        }
-      } catch(_) {}
-    })();
+  // Trigger PassSync badge sync (membership status)
+  if (typeof window.PassSync !== 'undefined' && window.PassSync.syncDashboardBadge) {
+    window.PassSync.syncDashboardBadge();
   }
-  if (joinEl) {
-    const created = user.created_at || user.createdAt;
-    if (created) {
-      const d = new Date(created);
-      joinEl.textContent = `· Member since ${d.toLocaleDateString('en-IN',{month:'short',year:'numeric'})}`;
-    }
-  }
-  // Hide XP / level — real data not available yet
-  if (xpWrapEl) xpWrapEl.style.display = 'none';
+  // Async: fetch real-time membership badge — SMCI is the source of truth
+  (async function() {
+    try {
+      if (window.SMCI && typeof window.SMCI.getStatus === 'function') {
+        await window.SMCI.getStatus(true);
+      } else if (window.P5D && typeof window.P5D.refreshBadges === 'function') {
+        window.P5D.refreshBadges();
+      }
+    } catch(_) {}
+  })();
 
   // Bust cache so switching tabs always fetches fresh data
   window._dashCache = null;

@@ -116,49 +116,7 @@
     V3.completion = comPct;
     V3.verified   = comPct === 100;
 
-    /* ── Build avatar HTML ── */
-    var avatarHtml = photoUrl
-      ? '<img src="' + esc(photoUrl) + '" alt="' + esc(name) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initials + '\';">'
-      : initials;
-
-    /* ── TOP HEADER: dashAvatar ── */
-    var dashAvatar = el('dashAvatar');
-    if (dashAvatar) {
-      if (photoUrl) {
-        dashAvatar.innerHTML = avatarHtml;
-      } else {
-        dashAvatar.textContent = initials;
-      }
-    }
-
-    /* ── TOP HEADER: dashName — show real name, NOT email ── */
-    var nameEl = el('dashName');
-    if (nameEl) nameEl.textContent = name;
-
-    /* ── TOP HEADER: dashEmail ── */
-    var emailEl = el('dashEmail');
-    if (emailEl) emailEl.textContent = email;
-
-    /* ── TOP HEADER: dashJoinDate ── */
-    var joinEl = el('dashJoinDate');
-    if (joinEl) {
-      var created = profile.created_at || authUser.created_at || authUser.createdAt;
-      if (created) {
-        try {
-          var d = new Date(created);
-          joinEl.textContent = '· Member since ' + d.toLocaleDateString('en-IN', {month:'short', year:'numeric'});
-        } catch(_) {}
-      }
-    }
-
-    /* ── TOP HEADER: welcome tag — update to show first name ── */
-    var welcomeTag = document.querySelector('.me-welcome-tag');
-    if (welcomeTag) {
-      var firstName = name.split(' ')[0];
-      welcomeTag.innerHTML = '<span class="wt-dot"></span>👋 Welcome Back, ' + esc(firstName) + '!';
-    }
-
-    /* ── NAV BAR: navUserArea avatar ── */
+    /* ── NAV BAR: navUserArea avatar (sync nav with profiles data) ── */
     var navArea = el('navUserArea');
     if (navArea) {
       var navBtn = navArea.querySelector('#navAvatarBtn');
@@ -181,7 +139,7 @@
       window.currentUser.avatar    = initials;
     }
 
-    console.log('[V3] updateProfileUI: done — both cards synced from profiles table');
+    console.log('[V3] updateProfileUI: done — profile synced from profiles table');
   };
 
   /* ── Get authenticated user id from live session ─────────────── */
