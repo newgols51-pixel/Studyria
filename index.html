@@ -25338,8 +25338,13 @@ function trackCommunityClick(id) {
 // data used by the Community Hub grid, then updates the hero buttons' href.
 // If a link is missing or disabled → hides that button.
 function _applyHeroSocialLinks(links) {
-  const platforms = { whatsapp: 'heroWaBtn', telegram: 'heroTgBtn', instagram: 'heroIgBtn', youtube: 'heroYtBtn' };
-  Object.entries(platforms).forEach(([platform, id]) => {
+  // Dynamic platforms — hidden if no DB entry found
+  const dynamicPlatforms = { whatsapp: 'heroWaBtn', telegram: 'heroTgBtn', instagram: 'heroIgBtn' };
+  // Static platforms — always visible with hardcoded fallback URL
+  const staticPlatforms = { youtube: 'heroYtBtn' };
+
+  // Handle dynamic platforms (show/hide based on DB)
+  Object.entries(dynamicPlatforms).forEach(([platform, id]) => {
     const el = document.getElementById(id);
     if (!el) return;
     const match = links.find(l => l.platform === platform && l.enabled !== false && l.url && l.url.trim() !== '' && l.url !== '#');
@@ -25352,6 +25357,19 @@ function _applyHeroSocialLinks(links) {
       el.setAttribute('data-hidden', '1');
       el.style.display = 'none';
     }
+  });
+
+  // Handle static platforms — always shown, override URL if DB has one
+  Object.entries(staticPlatforms).forEach(([platform, id]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const match = links.find(l => l.platform === platform && l.enabled !== false && l.url && l.url.trim() !== '' && l.url !== '#');
+    if (match) {
+      el.href = match.url; // override with DB URL if available
+    }
+    // Always keep visible regardless of DB
+    el.removeAttribute('data-hidden');
+    el.style.display = '';
   });
 }
 
