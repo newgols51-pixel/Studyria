@@ -82,6 +82,80 @@
     return V3.profile;
   };
 
+  /* ════════════════════════════════════════════════════════════════
+     SINGLE SOURCE OF TRUTH: updateProfileUI(profile)
+     Updates TOP header + NAV avatar + all UI from profiles table.
+     Called after: load, save, photo upload, realtime update.
+  ════════════════════════════════════════════════════════════════ */
+  V3.updateProfileUI = function(profile) {
+    if (!profile) profile = V3.profile;
+    if (!profile) return;
+
+    var authUser = window.currentUser || {};
+    var name     = profile.full_name  || authUser.name    || 'Studyria User';
+    var email    = profile.email      || authUser.email   || '';
+    var photoUrl = profile.avatar_url || authUser.avatarUrl || '';
+    var initials = (name.trim().charAt(0) || 'S').toUpperCase();
+
+    console.log('[V3] updateProfileUI: name=', name, '| email=', email, '| photo=', photoUrl ? 'yes' : 'no');
+
+    /* ── TOP HEADER: dashAvatar ── */
+    var dashAvatar = el('dashAvatar');
+    if (dashAvatar) {
+      if (photoUrl) {
+        dashAvatar.innerHTML = '<img src="' + esc(photoUrl) + '" alt="' + esc(name) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initials + '\';">';
+      } else {
+        dashAvatar.textContent = initials;
+      }
+    }
+
+    /* ── TOP HEADER: dashName ── */
+    txt('dashName', name);
+
+    /* ── TOP HEADER: dashEmail ── */
+    txt('dashEmail', email);
+
+    /* ── TOP HEADER: dashJoinDate ── */
+    var joinEl = el('dashJoinDate');
+    if (joinEl) {
+      var created = profile.created_at || authUser.created_at || authUser.createdAt;
+      if (created) {
+        var d = new Date(created);
+        joinEl.textContent = '· Member since ' + d.toLocaleDateString('en-IN', {month:'short', year:'numeric'});
+      }
+    }
+
+    /* ── TOP HEADER: verified badge in hero ── */
+    var comPct = calcCompletion(profile);
+    V3.completion = comPct;
+    V3.verified   = comPct === 100;
+
+    /* ── NAV BAR: navUserArea avatar ── */
+    var navArea = el('navUserArea');
+    if (navArea) {
+      var navBtn = navArea.querySelector('#navAvatarBtn');
+      if (navBtn) {
+        if (photoUrl) {
+          navBtn.innerHTML = '<img src="' + esc(photoUrl) + '" alt="' + esc(name) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initials + '\';">';
+        } else {
+          navBtn.textContent = initials;
+        }
+        navBtn.title = name;
+      }
+    }
+
+    /* ── SYNC window.currentUser with profiles data ── */
+    /* This ensures any other code that reads currentUser gets fresh data too */
+    if (window.currentUser) {
+      window.currentUser.name      = name;
+      window.currentUser.email     = email;
+      window.currentUser.avatarUrl = photoUrl;
+      window.currentUser.avatar    = initials;
+    }
+
+    console.log('[V3] updateProfileUI: done — both cards synced from profiles table');
+  };
+
   /* ── Get authenticated user id from live session ─────────────── */
   V3.getAuthUserId = async function() {
     var client = sb();
@@ -258,6 +332,8 @@
           V3.profile    = res.data;
           V3.completion = calcCompletion(res.data);
           V3.verified   = res.data.verified || V3.completion === 100;
+          /* Sync top header + nav from fresh profiles data */
+          V3.updateProfileUI(res.data);
           return true;
         }
 
@@ -281,6 +357,7 @@
             V3.profile = updRes.data;
             V3.completion = calcCompletion(updRes.data);
             V3.verified   = updRes.data.verified || V3.completion === 100;
+            V3.updateProfileUI(updRes.data);
             return true;
           }
           /* If update also failed — maybe row doesn't exist. Try insert. */
@@ -290,6 +367,7 @@
             V3.profile = insRes.data;
             V3.completion = calcCompletion(insRes.data);
             V3.verified   = insRes.data.verified || V3.completion === 100;
+            V3.updateProfileUI(insRes.data);
             return true;
           }
           console.error('[V3] saveProfile insert error:', insRes.error);
@@ -907,9 +985,8 @@
       /* Update edit page preview */
       var ep = el('v3EditAvatarImg') || el('v3EditAvatarInit');
       if (ep && ep.tagName === 'IMG') ep.src = res.url;
-      /* Update existing me-avatar in header */
-      var ha = el('dashAvatar');
-      if (ha) ha.style.backgroundImage = 'url(' + res.url + ')';
+      /* Reload profile from DB and sync ALL UI (top header + nav + bottom card) */
+      await V3.loadProfile();
     } else {
       if (typeof showToast === 'function') showToast((res && res.error) || 'Upload failed', 'error');
     }
@@ -1052,6 +1129,91 @@
       /* All other tabs — use original */
       return _origSwitch.apply(this, arguments);
     };
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     REALTIME: Subscribe to user's profile row changes
+     On UPDATE → reload profile → updateProfileUI → rerender overview
+  ════════════════════════════════════════════════════════════════ */
+  V3.initRealtime = async function() {
+    var client = sb();
+    var userId = await V3.getAuthUserId();
+    if (!client || !userId) return;
+    /* Avoid duplicate subscriptions */
+    if (V3._realtimeChannel) {
+      try { V3._realtimeChannel.unsubscribe(); } catch(_) {}
+    }
+    try {
+      var channel = client.channel('profile-changes-' + userId)
+        .on('postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'profiles', filter: 'id=eq.' + userId },
+          async function(payload) {
+            console.log('[V3] Realtime: profile updated', payload.new);
+            V3.profile    = payload.new;
+            V3.completion = calcCompletion(payload.new);
+            V3.verified   = payload.new.verified || V3.completion === 100;
+            V3.updateProfileUI(payload.new);
+            /* If overview tab is active, rerender it too */
+            if (window.dashTab === 'overview') {
+              var stats = window._dashCache;
+              await V3.renderOverview(stats);
+            }
+          }
+        )
+        .subscribe();
+      V3._realtimeChannel = channel;
+      console.log('[V3] Realtime subscribed for profile row:', userId);
+    } catch(e) {
+      console.warn('[V3] Realtime setup error:', e);
+    }
+  };
+
+  /* ════════════════════════════════════════════════════════════════
+     INIT: On page load, after auth is ready, load profile + realtime
+  ════════════════════════════════════════════════════════════════ */
+  V3.init = async function() {
+    if (V3._initialized) return;
+    var client = sb();
+    if (!client) return;
+    /* Wait for auth to be ready */
+    if (window._supabaseSessionReady) {
+      await window._supabaseSessionReady.catch(function(){});
+    }
+    var userId = await V3.getAuthUserId();
+    if (!userId) return;
+    await V3.loadProfile();
+    V3.updateProfileUI(V3.profile);
+    V3.initRealtime();
+    V3._initialized = true;
+    console.log('[V3] init complete — single source of truth active');
+  };
+
+  /* Run init when DOM is ready + auth is available */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(V3.init, 500);
+    });
+  } else {
+    setTimeout(V3.init, 500);
+  }
+
+  /* Also re-init when auth state changes (login/logout) */
+  if (window.supabaseClient && window.supabaseClient.auth) {
+    window.supabaseClient.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_IN' && session && session.user) {
+        V3._initialized = false;
+        setTimeout(V3.init, 300);
+      }
+      if (event === 'SIGNED_OUT') {
+        V3.profile = null;
+        V3.completion = 0;
+        V3.verified = false;
+        if (V3._realtimeChannel) {
+          try { V3._realtimeChannel.unsubscribe(); } catch(_) {}
+          V3._realtimeChannel = null;
+        }
+      }
+    });
   }
 
   console.log('%c✨ Studyria Me V3 (Reference Match) loaded', 'color:#3d8ef8;font-weight:bold');
