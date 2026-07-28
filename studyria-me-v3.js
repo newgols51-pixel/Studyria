@@ -92,43 +92,71 @@
     if (!profile) return;
 
     var authUser = window.currentUser || {};
-    var name     = profile.full_name  || authUser.name    || 'Studyria User';
-    var email    = profile.email      || authUser.email   || '';
+
+    /* ── Name: NEVER use email as name (Supabase sometimes stores email
+       in user_metadata.full_name for social/email logins). Always prefer
+       profiles.full_name first; fallback to currentUser.name only if it
+       doesn't look like an email address. ── */
+    var isEmailLike = function(s) { return s && s.indexOf('@') !== -1; };
+    var rawAuthName = authUser.name || '';
+    var safeName    = (!isEmailLike(rawAuthName)) ? rawAuthName : '';
+
+    var name     = (profile.full_name && !isEmailLike(profile.full_name))
+                     ? profile.full_name
+                     : (safeName || 'Studyria User');
+
+    var email    = profile.email    || authUser.email   || '';
     var photoUrl = profile.avatar_url || authUser.avatarUrl || '';
     var initials = (name.trim().charAt(0) || 'S').toUpperCase();
 
     console.log('[V3] updateProfileUI: name=', name, '| email=', email, '| photo=', photoUrl ? 'yes' : 'no');
 
+    /* ── Completion ── */
+    var comPct = calcCompletion(profile);
+    V3.completion = comPct;
+    V3.verified   = comPct === 100;
+
+    /* ── Build avatar HTML ── */
+    var avatarHtml = photoUrl
+      ? '<img src="' + esc(photoUrl) + '" alt="' + esc(name) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initials + '\';">'
+      : initials;
+
     /* ── TOP HEADER: dashAvatar ── */
     var dashAvatar = el('dashAvatar');
     if (dashAvatar) {
       if (photoUrl) {
-        dashAvatar.innerHTML = '<img src="' + esc(photoUrl) + '" alt="' + esc(name) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initials + '\';">';
+        dashAvatar.innerHTML = avatarHtml;
       } else {
         dashAvatar.textContent = initials;
       }
     }
 
-    /* ── TOP HEADER: dashName ── */
-    txt('dashName', name);
+    /* ── TOP HEADER: dashName — show real name, NOT email ── */
+    var nameEl = el('dashName');
+    if (nameEl) nameEl.textContent = name;
 
     /* ── TOP HEADER: dashEmail ── */
-    txt('dashEmail', email);
+    var emailEl = el('dashEmail');
+    if (emailEl) emailEl.textContent = email;
 
     /* ── TOP HEADER: dashJoinDate ── */
     var joinEl = el('dashJoinDate');
     if (joinEl) {
       var created = profile.created_at || authUser.created_at || authUser.createdAt;
       if (created) {
-        var d = new Date(created);
-        joinEl.textContent = '· Member since ' + d.toLocaleDateString('en-IN', {month:'short', year:'numeric'});
+        try {
+          var d = new Date(created);
+          joinEl.textContent = '· Member since ' + d.toLocaleDateString('en-IN', {month:'short', year:'numeric'});
+        } catch(_) {}
       }
     }
 
-    /* ── TOP HEADER: verified badge in hero ── */
-    var comPct = calcCompletion(profile);
-    V3.completion = comPct;
-    V3.verified   = comPct === 100;
+    /* ── TOP HEADER: welcome tag — update to show first name ── */
+    var welcomeTag = document.querySelector('.me-welcome-tag');
+    if (welcomeTag) {
+      var firstName = name.split(' ')[0];
+      welcomeTag.innerHTML = '<span class="wt-dot"></span>👋 Welcome Back, ' + esc(firstName) + '!';
+    }
 
     /* ── NAV BAR: navUserArea avatar ── */
     var navArea = el('navUserArea');
@@ -1073,29 +1101,40 @@
      HOOK INTO EXISTING renderDashboard + switchMeTab
   ════════════════════════════════════════════════════════════ */
 
-  /* Hook renderDashboard — runs after existing function */
+  /* ═══════════════════════════════════════════════════════════
+     Hook renderDashboard — FIXED:
+     After original renders (stale currentUser), we:
+     1. Load fresh profile from profiles table
+     2. Replace top hero with profiles data immediately (no race)
+     3. Render overview from profiles data
+  ═══════════════════════════════════════════════════════════ */
   var _origRender = window.renderDashboard;
   if (typeof _origRender === 'function') {
     window.renderDashboard = async function() {
+      /* Run original first (shows hero structure + badge logic) */
       await _origRender.apply(this, arguments);
-      /* After original renders, init V3 if user is logged in */
-      if (window.currentUser) {
-        setTimeout(async function() {
-          await V3.loadProfile();
-          /* Only patch the profile hero — don't touch tabs */
-          var hero = el('dashProfileHero');
-          if (hero) {
-            /* Check if overview is active */
-            var activeTab = window.dashTab || 'overview';
-            if (activeTab === 'overview') {
-              var stats = window._dashCache;
-              /* Inject the full V3 overview AFTER clearing dashMain */
-              await V3.renderOverview(stats);
-            }
-          }
-          V3._initialized = true;
-        }, 100);
+
+      /* Only proceed if user is authenticated */
+      if (!window.currentUser) return;
+
+      /* Load profile from DB — this is the single source of truth */
+      await V3.loadProfile();
+
+      if (!V3.profile) return;
+
+      /* ── Replace entire top hero inner content from profiles data ── */
+      V3.updateProfileUI(V3.profile);
+
+      /* ── Render overview tab content from profiles data ── */
+      var activeTab = window.dashTab || 'overview';
+      if (activeTab === 'overview') {
+        var stats = window._dashCache;
+        await V3.renderOverview(stats);
       }
+
+      V3._initialized = true;
+      /* Start realtime subscription */
+      V3.initRealtime();
     };
   }
 
