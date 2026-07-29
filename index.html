@@ -45766,16 +45766,15 @@ async function crpAutoLevelUpgrade(userId) {
 .srv-stars-row { color: #fbbf24; font-size: .8rem; letter-spacing: 1.5px; }
 .srv-count-txt { font-size: .65rem; color: rgba(255,255,255,0.4); font-family: var(--font-ui, sans-serif); margin-top: 1px; }
 .srv-outer {
-  overflow: hidden; position: relative;
+  overflow: hidden; position: relative; cursor: grab;
+  touch-action: pan-y; -webkit-user-select: none; user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 .srv-track {
   display: flex; gap: 14px; width: max-content;
-  animation: none;
-  will-change: transform; padding: 8px 20px 20px;
+  animation: none; will-change: transform; padding: 8px 20px 20px;
 }
-.srv-track:hover { /* no pause needed — manual swipe */ }
 @keyframes srvScroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -46019,14 +46018,30 @@ if(document.readyState==='loading'){
 
 <style>
 /* ── MANUAL SWIPE CAROUSEL ───────────────────────────────────────── */
-.srv-outer { overflow: hidden; position: relative; cursor: grab; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%); }
+.srv-outer {
+  overflow: hidden; position: relative; cursor: grab; width: 100%;
+  /* touch-action: pan-y alone is NOT enough on Chrome Android — we lock axis in JS */
+  touch-action: pan-y;
+  -webkit-user-select: none; user-select: none;
+  /* fade edges on desktop; hidden on mobile so partial next card is visible */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+}
+@media(max-width:640px){
+  .srv-outer {
+    /* on mobile: remove edge fade so the peeking next card is fully visible */
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    overflow: hidden;
+  }
+}
 .srv-outer.grabbing { cursor: grabbing; }
 .srv-track {
   display: flex; gap: 14px; width: max-content;
   padding: 8px 20px 20px;
-  transition: transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94);
   will-change: transform;
   animation: none !important;
+  /* transition controlled by JS goTo() */
 }
 .srv-arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
@@ -46113,475 +46128,437 @@ if(document.readyState==='loading'){
 </style>
 
 <script>
+/* ════════════════════════════════════════════════════════════════
+   STUDENT REVIEWS CAROUSEL — v4 Mobile-First Swipe Fix
+   ─ Axis-locked touch: horizontal swipe never triggers page scroll
+   ─ passive:false on touchstart so preventDefault works
+   ─ Momentum-feel snap-to-card (no library, ~60fps)
+   ─ Keyboard, mouse-drag, dots, arrows all work
+   ════════════════════════════════════════════════════════════════ */
 (function(){
 'use strict';
 
-/* kill old auto-scroll */
-(function(){ var s=document.createElement('style'); s.textContent='.srv-track{animation:none!important}'; document.head.appendChild(s); })();
+/* kill any legacy auto-scroll CSS */
+(function(){
+  var s = document.createElement('style');
+  s.textContent = '#srvTrack, .srv-track { animation: none !important; }';
+  document.head.appendChild(s);
+})();
 
-/* ── MANUAL SWIPE CAROUSEL ──────────────────────────────────────── */
-/* ── carousel handler refs for clean teardown on re-init ── */
-var _srvHandlers=null;
+/* ── references for teardown ── */
+var _srvHandlers = null;
 
+/* ════════════════════════════
+   CORE CAROUSEL
+   ════════════════════════════ */
 function _srvInitCarousel(){
-  var outer=document.getElementById('srvOuter');
-  var track=document.getElementById('srvTrack');
-  if(!outer||!track) return;
-  var cards=track.querySelectorAll('.srv-card');
-  if(!cards.length){ setTimeout(_srvInitCarousel,400); return; }
+  var outer = document.getElementById('srvOuter');
+  var track = document.getElementById('srvTrack');
+  if(!outer || !track) return;
 
-  /* ── Tear down previous listeners to prevent stacking ── */
+  var cards = track.querySelectorAll('.srv-card');
+  if(!cards.length){ setTimeout(_srvInitCarousel, 400); return; }
+
+  /* ── tear down previous listeners ── */
   if(_srvHandlers){
     try{
       outer.removeEventListener('touchstart', _srvHandlers.ts);
       outer.removeEventListener('touchmove',  _srvHandlers.tm);
       outer.removeEventListener('touchend',   _srvHandlers.te);
+      outer.removeEventListener('touchcancel',_srvHandlers.tc);
       outer.removeEventListener('mousedown',  _srvHandlers.md);
       outer.removeEventListener('keydown',    _srvHandlers.kd);
       window.removeEventListener('mousemove', _srvHandlers.mm);
       window.removeEventListener('mouseup',   _srvHandlers.mu);
       window.removeEventListener('resize',    _srvHandlers.rz);
-    }catch(e){}
-    _srvHandlers=null;
+    }catch(_){}
+    _srvHandlers = null;
   }
 
-  var cardCount=cards.length, currentIdx=0;
+  var cardCount  = cards.length;
+  var currentIdx = 0;
 
-  function visibleCount(){ var w=window.innerWidth; return w>=1024?3:w>=640?2:1; }
+  /* ── responsive: how many cards visible ── */
+  function visibleCount(){
+    var w = window.innerWidth;
+    return w >= 1024 ? 3 : w >= 640 ? 2 : 1;
+  }
+
+  /* ── card width + gap ── */
   function cardW(){
-    var w=cards[0]?cards[0].offsetWidth:0;
-    return (w>0?w:window.innerWidth*0.82)+14;
-  }
-  function clamp(i){ return Math.max(0,Math.min(i,cardCount-visibleCount())); }
-
-  function goTo(i,anim){
-    currentIdx=clamp(i);
-    track.style.transition=anim===false?'none':'transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
-    track.style.transform='translateX(-'+(currentIdx*cardW())+'px)';
-    updateDots(); updateArrows();
+    var c = cards[0];
+    if(!c) return window.innerWidth * 0.82 + 14;
+    var gap = 14; /* matches CSS gap */
+    return c.getBoundingClientRect().width + gap;
   }
 
-  var dotsEl=document.getElementById('srvDots');
+  /* ── clamp index ── */
+  function clamp(i){
+    return Math.max(0, Math.min(i, cardCount - visibleCount()));
+  }
+
+  /* ── animate to index ── */
+  function goTo(i, animated){
+    currentIdx = clamp(i);
+    track.style.transition = animated
+      ? 'transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      : 'none';
+    track.style.transform  = 'translateX(' + (-currentIdx * cardW()) + 'px)';
+    updateDots();
+    updateArrows();
+  }
+
+  /* ── dots ── */
+  var dotsEl = document.getElementById('srvDots');
   function updateDots(){
     if(!dotsEl) return;
-    var max=Math.max(1,cardCount-visibleCount()+1), html='';
-    for(var i=0;i<max;i++) html+='<div class="srv-dot'+(i===currentIdx?' active':'')+'" onclick="window._srvGoto('+i+')"></div>';
-    dotsEl.innerHTML=html;
-  }
-  window._srvGoto=function(i){ goTo(i,true); };
-
-  var arL=document.getElementById('srvArrowLeft');
-  var arR=document.getElementById('srvArrowRight');
-  function updateArrows(){
-    if(arL) arL.classList.toggle('hidden',currentIdx===0);
-    if(arR) arR.classList.toggle('hidden',currentIdx>=cardCount-visibleCount());
-  }
-  if(arL) arL.onclick=function(){ goTo(currentIdx-1,true); };
-  if(arR) arR.onclick=function(){ goTo(currentIdx+1,true); };
-
-  var startX=0,startTime=0,isDrag=false,hasMoved=false;
-  function onStart(x){ startX=x; startTime=Date.now(); isDrag=true; hasMoved=false; outer.classList.add('grabbing'); track.style.transition='none'; }
-  function onMove(x){
-    if(!isDrag) return;
-    var dx=x-startX;
-    if(Math.abs(dx)>5) hasMoved=true;
-    var cw=cardW(); if(cw<=14) return;
-    track.style.transform='translateX('+(-currentIdx*cw+dx)+'px)';
-  }
-  function onEnd(x){
-    if(!isDrag) return;
-    isDrag=false; outer.classList.remove('grabbing');
-    var dx=x-startX, dt=Date.now()-startTime;
-    if(Math.abs(dx)>50||(Math.abs(dx)>20&&dt<250)) goTo(dx<0?currentIdx+1:currentIdx-1,true);
-    else goTo(currentIdx,true);
-  }
-
-  /* Named handlers so we can remove them later */
-  _srvHandlers={
-    ts: function(e){ onStart(e.touches[0].clientX); },
-    tm: function(e){ if(isDrag&&hasMoved) e.preventDefault(); onMove(e.touches[0].clientX); },
-    te: function(e){ onEnd(e.changedTouches[0].clientX); },
-    md: function(e){ onStart(e.clientX); e.preventDefault(); },
-    mm: function(e){ if(isDrag) onMove(e.clientX); },
-    mu: function(e){ if(isDrag) onEnd(e.clientX); },
-    kd: function(e){ if(e.key==='ArrowLeft'){goTo(currentIdx-1,true);e.preventDefault();} if(e.key==='ArrowRight'){goTo(currentIdx+1,true);e.preventDefault();} },
-    rz: function(){ goTo(0,false); }
-  };
-
-  outer.addEventListener('touchstart', _srvHandlers.ts, {passive:true});
-  outer.addEventListener('touchmove',  _srvHandlers.tm, {passive:false});
-  outer.addEventListener('touchend',   _srvHandlers.te);
-  outer.addEventListener('mousedown',  _srvHandlers.md);
-  window.addEventListener('mousemove', _srvHandlers.mm);
-  window.addEventListener('mouseup',   _srvHandlers.mu);
-  outer.setAttribute('tabindex','0');
-  outer.addEventListener('keydown',    _srvHandlers.kd);
-  window.addEventListener('resize',    _srvHandlers.rz);
-  goTo(0,false);
-}
-
-/* ── ADD YOUR REVIEW FORM ───────────────────────────────────────── */
-var _starRating=0;
-window._srvSetStar=function(n){
-  _starRating=n;
-  document.querySelectorAll('.srv-star-btn').forEach(function(b,i){ b.classList.toggle('lit',i<n); });
-};
-
-window._srvToggleForm=function(){
-  var panel=document.getElementById('srvFormPanel');
-  var btn=document.getElementById('srvAddBtn');
-  if(!panel) return;
-  var isOpen=panel.classList.contains('open');
-  panel.classList.toggle('open',!isOpen);
-  var txt=btn?btn.querySelector('.srv-add-btn-txt'):null;
-  if(txt) txt.textContent=isOpen?'Add Your Review':'Cancel';
-  if(!isOpen){
-    var f=document.getElementById('srvReviewForm'); if(f) f.reset();
-    window._srvSetStar(0);
-    var m=document.getElementById('srvFormMsg'); if(m){m.style.display='none';}
-  }
-};
-
-window._srvSubmitReview=async function(e){
-  e.preventDefault();
-  var name=(document.getElementById('srvRevName').value||'').trim();
-  var loc =(document.getElementById('srvRevLoc').value||'').trim();
-  var text=(document.getElementById('srvRevText').value||'').trim();
-  var rating=_starRating;
-  var msg=document.getElementById('srvFormMsg');
-  var btn=document.getElementById('srvRevSubmit');
-  function showMsg(type,txt){ if(!msg) return; msg.className='srv-form-msg '+type; msg.textContent=txt; msg.style.display='block'; }
-  if(!name){ showMsg('error','Please enter your name.'); return; }
-  if(!rating){ showMsg('error','Please select a star rating.'); return; }
-  if(text.length<20){ showMsg('error','Review must be at least 20 characters.'); return; }
-  if(btn){ btn.disabled=true; btn.textContent='Submitting...'; }
-  try{
-    var client=window.supabaseClient;
-    if(client){
-      var payload={user_name:name,comment:text,rating:rating,verified:false,created_at:new Date().toISOString()};
-      if(loc) payload.location=loc;
-      await client.from('pdf_reviews').insert(payload);
+    var max  = Math.max(1, cardCount - visibleCount() + 1);
+    var html = '';
+    for(var i = 0; i < max; i++){
+      html += '<div class="srv-dot' + (i === currentIdx ? ' active' : '') + '"'
+           +  ' onclick="window._srvGoto(' + i + ')"'
+           +  ' role="button" aria-label="Go to review ' + (i+1) + '"></div>';
     }
-  }catch(err){
-    console.error('[SRV] Review submit error:', err);
-    showMsg('error','Network error. Please try again.');
-    if(btn){ btn.disabled=false; btn.textContent='Submit Review'; }
-    return;
+    dotsEl.innerHTML = html;
   }
-  if(btn){ btn.disabled=false; btn.textContent='Submit Review'; }
-  showMsg('success','✅ Review submitted! It will appear after admin approval.');
-  setTimeout(function(){ window._srvToggleForm(); },2500);
-};
+  window._srvGoto = function(i){ goTo(i, true); };
 
-/* ── ADMIN REVIEWS TAB ──────────────────────────────────────────── */
-window.renderAdminReviews=async function(container){
-  container.innerHTML='<div class="arv-loading">⏳ Loading pending reviews...</div>';
-  try{
-    var client=window.supabaseClient;
-    if(!client){ container.innerHTML='<div class="arv-empty">Supabase not connected.</div>'; return; }
-    var res=await client.from('pdf_reviews').select('*').eq('verified',false).order('created_at',{ascending:false});
-    var reviews=(res.data||[]).filter(function(r){ return r.comment; });
-    if(!reviews.length){ container.innerHTML='<div class="arv-empty">✅ No pending reviews! All caught up.</div>'; _arvBadge(0); return; }
-    _arvBadge(reviews.length);
-    var html='<h3 style="font-family:var(--font-display,sans-serif);font-weight:800;font-size:1.1rem;color:#e4e8f0;margin-bottom:20px">?? Pending Reviews ('+reviews.length+')</h3>';
-    reviews.forEach(function(r){
-      var stars='★'.repeat(Number(r.rating)||5);
-      var date=r.created_at?new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
-      html+='<div class="arv-card" id="arv-'+r.id+'"><div class="arv-card-header"><div><div class="arv-card-name">'+(r.user_name||'Anonymous')+(r.location?' • '+r.location:'')+'</div><div class="arv-card-meta">'+date+'</div></div><div class="arv-card-stars">'+stars+'</div></div><div class="arv-card-text">“'+r.comment+'”</div><div class="arv-card-actions"><button class="arv-btn-approve" data-id="'+r.id+'" onclick="window._arvApprove(this.dataset.id)">✅ Approve</button><button class="arv-btn-reject" data-id="'+r.id+'" onclick="window._arvReject(this.dataset.id)">❌ Reject</button></div></div>';
-    });
-    container.innerHTML=html;
-  }catch(err){ container.innerHTML='<div class="arv-empty">Error: '+err.message+'</div>'; }
-};
+  /* ── arrows ── */
+  var arL = document.getElementById('srvArrowLeft');
+  var arR = document.getElementById('srvArrowRight');
+  function updateArrows(){
+    if(arL) arL.classList.toggle('hidden', currentIdx === 0);
+    if(arR) arR.classList.toggle('hidden', currentIdx >= cardCount - visibleCount());
+  }
+  if(arL) arL.onclick = function(){ goTo(currentIdx - 1, true); };
+  if(arR) arR.onclick = function(){ goTo(currentIdx + 1, true); };
 
-function _arvBadge(n){ var b=document.getElementById('arvPendingBadge'); if(b){b.textContent=n;b.style.display=n>0?'inline-flex':'none';} }
+  /* ══════════════════════════════════════════════════════
+     SWIPE / DRAG STATE
+     direction lock: once we know the user is swiping
+     horizontally we prevent vertical page scroll.
+  ══════════════════════════════════════════════════════ */
+  var startX    = 0;
+  var startY    = 0;
+  var startTime = 0;
+  var isDrag    = false;
+  var lockAxis  = null;   /* 'h'=horizontal, 'v'=vertical, null=undecided */
+  var liveOffset= 0;      /* current live drag offset in px */
 
-window._arvApprove=async function(id){
-  var card=document.getElementById('arv-'+id);
-  if(card){card.style.opacity='.5';card.style.pointerEvents='none';}
-  try{ var c=window.supabaseClient; if(c) await c.from('pdf_reviews').update({verified:true}).eq('id',id); if(card) card.remove(); }
-  catch(e){ if(card){card.style.opacity='1';card.style.pointerEvents='';} }
-};
-window._arvReject=async function(id){
-  var card=document.getElementById('arv-'+id);
-  if(card){card.style.opacity='.5';card.style.pointerEvents='none';}
-  try{ var c=window.supabaseClient; if(c) await c.from('pdf_reviews').delete().eq('id',id); if(card) card.remove(); }
-  catch(e){ if(card){card.style.opacity='1';card.style.pointerEvents='';} }
-};
+  var AXIS_LOCK_PX  = 8;  /* px moved before we decide axis */
+  var SWIPE_PX      = 40; /* px needed to trigger a card change */
+  var SWIPE_MS      = 350;/* fast-swipe time window */
 
-
-/* ── ADMIN MEMBERSHIPS TAB ─────────────────────────────────── */
-(function(){
-'use strict';
-
-/* ── CSS injected via string (no template literals to avoid parse issues) ── */
-(function(){
-  var css = [
-    '.amem-wrap{padding:0 0 24px}',
-    '.amem-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}',
-    '.amem-stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px 18px}',
-    '.amem-stat-val{font-size:1.6rem;font-weight:900;color:#fbbf24;font-family:var(--font-display,sans-serif)}',
-    '.amem-stat-label{font-size:.7rem;color:rgba(255,255,255,0.45);margin-top:4px;font-family:var(--font-ui,sans-serif)}',
-    '.amem-table-wrap{overflow-x:auto;border-radius:14px;border:1px solid rgba(255,255,255,0.08)}',
-    '.amem-table{width:100%;border-collapse:collapse;font-size:.8rem}',
-    '.amem-table th{padding:11px 14px;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.06);font-family:var(--font-ui,sans-serif)}',
-    '.amem-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);vertical-align:middle}',
-    '.amem-table tr:last-child td{border-bottom:none}',
-    '.amem-table tr:hover td{background:rgba(61,142,248,0.03)}',
-    '.amem-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.04em}',
-    '.amem-badge-active{background:rgba(16,217,142,0.12);color:#10d98e;border:1px solid rgba(16,217,142,0.25)}',
-    '.amem-badge-expired{background:rgba(255,77,109,0.12);color:#ff4d6d;border:1px solid rgba(255,77,109,0.25)}',
-    '.amem-badge-trial{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.25)}',
-    '.amem-badge-none{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1)}',
-    '.amem-action-btn{padding:5px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);font-size:.7rem;cursor:pointer;font-family:var(--font-ui,sans-serif);transition:all .2s}',
-    '.amem-action-btn:hover{background:rgba(255,255,255,0.1)}',
-    '.amem-action-btn.approve{border-color:rgba(16,217,142,0.3);color:#10d98e;background:rgba(16,217,142,0.08)}',
-    '.amem-action-btn.deactivate{border-color:rgba(255,77,109,0.3);color:#ff4d6d;background:rgba(255,77,109,0.08)}',
-    '.amem-empty{text-align:center;padding:48px 20px;color:rgba(255,255,255,0.35);font-size:.85rem}',
-    '.amem-section-title{font-size:1.05rem;font-weight:800;color:#e4e8f0;font-family:var(--font-display,sans-serif);margin-bottom:14px;display:flex;align-items:center;gap:8px}',
-    '.amem-tx-wrap{margin-top:28px}'
-  ].join('\n');
-  var s = document.createElement('style');
-  s.id = 'amem-styles';
-  s.textContent = css;
-  document.head.appendChild(s);
-})();
-
-/* ── Plan name lookup ─────────────────────────────────────── */
-var AMEM_PLAN_NAMES = {
-  trial_1day:'1 Day Trial', trial_15day:'15 Day Trial',
-  monthly:'Monthly', quarterly:'Quarterly', half_year:'Half Year',
-  starter:'Starter', yearly:'Yearly', annual:'Annual', lifetime:'Lifetime'
-};
-
-function _amemFmtDate(iso){
-  if(!iso) return '\u2014';
-  try { return new Date(iso).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }
-  catch(e){ return iso.slice(0,10); }
-}
-function _amemDaysLeft(exp){
-  if(!exp) return 0;
-  var d = Math.ceil((new Date(exp) - Date.now()) / 86400000);
-  return d > 0 ? d : 0;
-}
-function _amemStatusBadge(status, exp){
-  var now = Date.now();
-  if(status==='active' && exp && new Date(exp).getTime() > now)
-    return '<span class="amem-badge amem-badge-active">Active</span>';
-  if((status==='active'||status==='expired') && exp && new Date(exp).getTime() <= now)
-    return '<span class="amem-badge amem-badge-expired">Expired</span>';
-  if(status==='trial')
-    return '<span class="amem-badge amem-badge-trial">Trial</span>';
-  return '<span class="amem-badge amem-badge-none">'+(status||'None')+'</span>';
-}
-function _amemEsc(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ── Main render function ─────────────────────────────────── */
-window.renderAdminMemberships = async function(container){
-  if(!container) return;
-  container.innerHTML = '<div style="padding:48px;text-align:center;color:rgba(255,255,255,0.4)">'
-    + '<div style="font-size:1.5rem;margin-bottom:10px">&#9203;</div>'
-    + '<div style="font-size:.9rem">Loading membership data\u2026</div></div>';
-
-  var client = window.supabaseClient;
-  if(!client){
-    container.innerHTML = '<div class="amem-empty">&#128683; Supabase client not connected.<br>'
-      + '<small style="opacity:.6">Refresh the page and try again.</small></div>';
-    return;
+  function onTouchStart(e){
+    if(e.touches.length !== 1) return;
+    var t      = e.touches[0];
+    startX     = t.clientX;
+    startY     = t.clientY;
+    startTime  = Date.now();
+    isDrag     = true;
+    lockAxis   = null;
+    liveOffset = 0;
+    outer.classList.add('grabbing');
+    track.style.transition = 'none';
   }
 
-  try {
-    /* Parallel fetch: memberships, transactions, plans */
-    var results = await Promise.allSettled([
-      client.from('user_memberships')
-            .select('id,user_id,plan_id,status,started_at,expires_at,created_at')
-            .order('created_at',{ascending:false}).limit(200),
-      client.from('membership_transactions')
-            .select('id,user_id,plan_id,provider_tx_id,amount_inr,status,created_at,notes')
-            .order('created_at',{ascending:false}).limit(100),
-      client.from('membership_plans')
-            .select('id,slug,name,price_inr')
-    ]);
+  function onTouchMove(e){
+    if(!isDrag || e.touches.length !== 1) return;
+    var t  = e.touches[0];
+    var dx = t.clientX - startX;
+    var dy = t.clientY - startY;
 
-    var memRes  = results[0].status==='fulfilled' ? results[0].value : {data:[],error:{message:results[0].reason}};
-    var txRes   = results[1].status==='fulfilled' ? results[1].value : {data:[],error:null};
-    var planRes = results[2].status==='fulfilled' ? results[2].value : {data:[],error:null};
+    /* ── axis detection ── */
+    if(lockAxis === null){
+      if(Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX){
+        lockAxis = (Math.abs(dx) >= Math.abs(dy)) ? 'h' : 'v';
+      } else {
+        return; /* not enough movement yet */
+      }
+    }
 
-    /* Surface Supabase errors */
-    if(memRes.error){
-      container.innerHTML = '<div class="amem-empty">&#9888; Error loading memberships:<br>'
-        + '<code style="font-size:.75rem;opacity:.7">'+_amemEsc(memRes.error.message)+'</code><br><br>'
-        + '<button class="amem-action-btn" onclick="window.renderAdminMemberships(document.getElementById(\'adminMain\'))">&#8635; Retry</button></div>';
+    if(lockAxis === 'v'){
+      /* vertical scroll — let browser handle, cancel drag */
+      isDrag = false;
+      outer.classList.remove('grabbing');
+      goTo(currentIdx, true); /* snap back */
       return;
     }
 
-    var memberships  = memRes.data  || [];
-    var transactions = txRes.data   || [];
-    var plans        = planRes.data || [];
+    /* horizontal — eat the event */
+    e.preventDefault();
 
-    /* Build plan lookup by id */
-    var planById = {};
-    plans.forEach(function(p){ planById[p.id] = p; });
+    liveOffset = dx;
+    var base   = -currentIdx * cardW();
+    track.style.transform = 'translateX(' + (base + dx) + 'px)';
+  }
 
-    /* Stats */
-    var now = Date.now();
-    var activeCount  = memberships.filter(function(m){ return m.status==='active' && m.expires_at && new Date(m.expires_at).getTime()>now; }).length;
-    var expiredCount = memberships.filter(function(m){ return (m.status==='active'||m.status==='expired') && m.expires_at && new Date(m.expires_at).getTime()<=now; }).length;
-    var totalRev     = transactions.filter(function(t){ return t.status==='completed'; }).reduce(function(s,t){ return s+(Number(t.amount_inr)||0); },0);
-
-    /* Update nav badge */
-    var badge = document.getElementById('adminMemBadge');
-    if(badge){ badge.textContent=activeCount; badge.style.display=activeCount>0?'inline-flex':'none'; }
-
-    /* ── Build HTML ── */
-    var h = '<div class="amem-wrap">';
-
-    /* Stats row */
-    h += '<div class="amem-stats">'
-      + '<div class="amem-stat"><div class="amem-stat-val">'+activeCount+'</div><div class="amem-stat-label">Active Members</div></div>'
-      + '<div class="amem-stat"><div class="amem-stat-val" style="color:#ff4d6d">'+expiredCount+'</div><div class="amem-stat-label">Expired</div></div>'
-      + '<div class="amem-stat"><div class="amem-stat-val" style="color:#10d98e">'+memberships.length+'</div><div class="amem-stat-label">Total Records</div></div>'
-      + '<div class="amem-stat"><div class="amem-stat-val" style="color:#60a5fa">\u20b9'+totalRev+'</div><div class="amem-stat-label">Total Revenue</div></div>'
-      + '</div>';
-
-    /* Memberships table */
-    h += '<div class="amem-section-title">\uD83D\uDC51 Membership Records ('+(memberships.length)+')</div>';
-    if(!memberships.length){
-      h += '<div class="amem-empty">No membership records found.</div>';
-    } else {
-      h += '<div class="amem-table-wrap"><table class="amem-table">'
-        + '<thead><tr><th>User ID</th><th>Plan</th><th>Status</th><th>Started</th><th>Expires</th><th>Days Left</th><th>Actions</th></tr></thead><tbody>';
-      memberships.forEach(function(m){
-        var plan = planById[m.plan_id] || {};
-        var planName = plan.name || AMEM_PLAN_NAMES[plan.slug] || 'Unknown Plan';
-        var daysLeft = _amemDaysLeft(m.expires_at);
-        var shortUid = _amemEsc((m.user_id||'').slice(0,8))+'&hellip;';
-        var isExpired = (m.status==='active') && m.expires_at && new Date(m.expires_at).getTime()<=now;
-        var actionBtn = isExpired
-          ? '<button class="amem-action-btn approve" onclick="window._amemActivate(\''+_amemEsc(m.id)+'\')">\u2705 Reactivate +30d</button>'
-          : (m.status==='active'
-            ? '<button class="amem-action-btn deactivate" onclick="window._amemDeactivate(\''+_amemEsc(m.id)+'\')">\uD83D\uDEAB Deactivate</button>'
-            : '<button class="amem-action-btn approve" onclick="window._amemActivate(\''+_amemEsc(m.id)+'\')">\u2705 Activate +30d</button>');
-        h += '<tr id="amem-row-'+_amemEsc(m.id)+'">'
-          + '<td><span title="'+_amemEsc(m.user_id)+'" style="cursor:help;font-family:monospace;font-size:.72rem">'+shortUid+'</span></td>'
-          + '<td>'+_amemEsc(planName)+'</td>'
-          + '<td>'+_amemStatusBadge(m.status, m.expires_at)+'</td>'
-          + '<td>'+_amemFmtDate(m.started_at)+'</td>'
-          + '<td>'+_amemFmtDate(m.expires_at)+'</td>'
-          + '<td>'+(daysLeft>0 ? '<span style="color:#10d98e;font-weight:700">'+daysLeft+'d</span>' : '<span style="color:#ff4d6d">0</span>')+'</td>'
-          + '<td style="white-space:nowrap">'+actionBtn+'</td>'
-          + '</tr>';
-      });
-      h += '</tbody></table></div>';
+  function onTouchEnd(e){
+    if(!isDrag) return;
+    isDrag = false;
+    outer.classList.remove('grabbing');
+    if(lockAxis !== 'h'){
+      /* was a vertical or undecided gesture — no card change */
+      goTo(currentIdx, true);
+      return;
     }
-
-    /* Transactions table */
-    h += '<div class="amem-tx-wrap"><div class="amem-section-title">\uD83D\uDCB3 Recent Transactions ('+(transactions.length)+')</div>';
-    if(!transactions.length){
-      h += '<div class="amem-empty">No transactions found.</div>';
+    var dx = e.changedTouches[0].clientX - startX;
+    var dt = Date.now() - startTime;
+    var fastSwipe = Math.abs(dx) > 20 && dt < SWIPE_MS;
+    if(Math.abs(dx) > SWIPE_PX || fastSwipe){
+      goTo(currentIdx + (dx < 0 ? 1 : -1), true);
     } else {
-      h += '<div class="amem-table-wrap"><table class="amem-table">'
-        + '<thead><tr><th>Date</th><th>User ID</th><th>Amount</th><th>Status</th><th>Provider Tx ID</th></tr></thead><tbody>';
-      transactions.forEach(function(t){
-        var shortUid = _amemEsc((t.user_id||'').slice(0,8))+'&hellip;';
-        var txFull = t.provider_tx_id||'';
-        var txShort = _amemEsc(txFull.length>18 ? txFull.slice(0,18)+'...' : txFull);
-        h += '<tr>'
-          + '<td>'+_amemFmtDate(t.created_at)+'</td>'
-          + '<td><span title="'+_amemEsc(t.user_id||'')+'" style="cursor:help;font-family:monospace;font-size:.72rem">'+shortUid+'</span></td>'
-          + '<td style="color:#10d98e;font-weight:700">\u20b9'+(t.amount_inr||'\u2014')+'</td>'
-          + '<td>'+(t.status==='completed'
-            ? '<span class="amem-badge amem-badge-active">Completed</span>'
-            : '<span class="amem-badge amem-badge-none">'+_amemEsc(t.status||'—')+'</span>')+'</td>'
-          + '<td><span style="font-family:monospace;font-size:.7rem;color:rgba(255,255,255,0.5)" title="'+_amemEsc(txFull)+'">'+txShort+'</span></td>'
-          + '</tr>';
-      });
-      h += '</tbody></table></div>';
+      goTo(currentIdx, true);
     }
+  }
 
-    /* ── Premium Categories sub-section ── */
-    h += '<div class="amem-section-title" style="margin-top:28px">⭐ Premium Category Management</div>';
-    h += '<div id="smci-admin-prem-cats-wrap" style="margin-top:0"></div>';
-    h += '</div></div>';
-    container.innerHTML = h;
-    /* Render premium categories panel into the reserved wrapper */
-    setTimeout(function(){
-      var wrap = document.getElementById('smci-admin-prem-cats-wrap');
-      if (wrap && typeof window.renderAdminPremiumCategories === 'function') {
-        window.renderAdminPremiumCategories(wrap);
-      }
-    }, 100);
+  function onTouchCancel(){
+    isDrag = false;
+    outer.classList.remove('grabbing');
+    goTo(currentIdx, true);
+  }
 
+  /* ── mouse drag (desktop) ── */
+  var mouseDrag = false;
+  var mouseStartX = 0;
+
+  function onMouseDown(e){
+    mouseDrag  = true;
+    mouseStartX= e.clientX;
+    startTime  = Date.now();
+    outer.classList.add('grabbing');
+    track.style.transition = 'none';
+    e.preventDefault();
+  }
+  function onMouseMove(e){
+    if(!mouseDrag) return;
+    var dx   = e.clientX - mouseStartX;
+    var base = -currentIdx * cardW();
+    track.style.transform = 'translateX(' + (base + dx) + 'px)';
+  }
+  function onMouseUp(e){
+    if(!mouseDrag) return;
+    mouseDrag = false;
+    outer.classList.remove('grabbing');
+    var dx = e.clientX - mouseStartX;
+    var dt = Date.now() - startTime;
+    var fastSwipe = Math.abs(dx) > 20 && dt < SWIPE_MS;
+    if(Math.abs(dx) > SWIPE_PX || fastSwipe){
+      goTo(currentIdx + (dx < 0 ? 1 : -1), true);
+    } else {
+      goTo(currentIdx, true);
+    }
+  }
+
+  /* ── keyboard ── */
+  function onKeyDown(e){
+    if(e.key === 'ArrowLeft'){ goTo(currentIdx - 1, true); e.preventDefault(); }
+    if(e.key === 'ArrowRight'){ goTo(currentIdx + 1, true); e.preventDefault(); }
+  }
+
+  /* ── resize: re-snap without animation ── */
+  var _rzTimer;
+  function onResize(){
+    clearTimeout(_rzTimer);
+    _rzTimer = setTimeout(function(){ goTo(currentIdx, false); }, 120);
+  }
+
+  /* ── register ── */
+  _srvHandlers = {
+    ts: onTouchStart,
+    tm: onTouchMove,
+    te: onTouchEnd,
+    tc: onTouchCancel,
+    md: onMouseDown,
+    mm: onMouseMove,
+    mu: onMouseUp,
+    kd: onKeyDown,
+    rz: onResize
+  };
+
+  /* NOTE: touchstart must be passive:FALSE so onTouchMove can e.preventDefault() */
+  outer.addEventListener('touchstart',  _srvHandlers.ts, { passive: false });
+  outer.addEventListener('touchmove',   _srvHandlers.tm, { passive: false });
+  outer.addEventListener('touchend',    _srvHandlers.te, { passive: true  });
+  outer.addEventListener('touchcancel', _srvHandlers.tc, { passive: true  });
+  outer.addEventListener('mousedown',   _srvHandlers.md);
+  window.addEventListener('mousemove',  _srvHandlers.mm);
+  window.addEventListener('mouseup',    _srvHandlers.mu);
+  outer.setAttribute('tabindex', '0');
+  outer.setAttribute('role', 'region');
+  outer.setAttribute('aria-label', 'Student Reviews Carousel');
+  outer.addEventListener('keydown',     _srvHandlers.kd);
+  window.addEventListener('resize',     _srvHandlers.rz);
+
+  goTo(0, false);
+}
+
+/* ══════════════════════════════════════════════════════
+   ADD YOUR REVIEW FORM
+══════════════════════════════════════════════════════ */
+var _starRating = 0;
+window._srvSetStar = function(n){
+  _starRating = n;
+  document.querySelectorAll('.srv-star-btn').forEach(function(b, i){
+    b.classList.toggle('lit', i < n);
+  });
+};
+
+window._srvToggleForm = function(){
+  var panel = document.getElementById('srvFormPanel');
+  var btn   = document.getElementById('srvAddBtn');
+  if(!panel) return;
+  var isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  var txt = btn ? btn.querySelector('.srv-add-btn-txt') : null;
+  if(txt) txt.textContent = isOpen ? 'Add Your Review' : 'Cancel';
+  if(!isOpen){
+    var f = document.getElementById('srvReviewForm');
+    if(f) f.reset();
+    window._srvSetStar(0);
+    var m = document.getElementById('srvFormMsg');
+    if(m){ m.style.display = 'none'; }
+  }
+};
+
+window._srvSubmitReview = async function(e){
+  e.preventDefault();
+  var name   = (document.getElementById('srvRevName').value  || '').trim();
+  var loc    = (document.getElementById('srvRevLoc').value   || '').trim();
+  var text   = (document.getElementById('srvRevText').value  || '').trim();
+  var rating = _starRating;
+  var msg    = document.getElementById('srvFormMsg');
+  var btn    = document.getElementById('srvRevSubmit');
+
+  function showMsg(type, txt){
+    if(!msg) return;
+    msg.className = 'srv-form-msg ' + type;
+    msg.textContent = txt;
+    msg.style.display = 'block';
+  }
+
+  if(!name){            showMsg('error', 'Please enter your name.');                  return; }
+  if(!rating){          showMsg('error', 'Please select a star rating.');             return; }
+  if(text.length < 20){ showMsg('error', 'Review must be at least 20 characters.');  return; }
+
+  if(btn){ btn.disabled = true; btn.textContent = 'Submitting...'; }
+
+  try{
+    var client = window.supabaseClient;
+    if(client){
+      var payload = {
+        user_name:  name,
+        comment:    text,
+        rating:     rating,
+        verified:   false,
+        created_at: new Date().toISOString()
+      };
+      if(loc) payload.location = loc;
+      await client.from('pdf_reviews').insert(payload);
+    }
   } catch(err){
-    console.error('[AdminMem] Unexpected error:', err);
-    container.innerHTML = '<div class="amem-empty">&#9888; Unexpected error:<br>'
-      + '<code style="font-size:.75rem;opacity:.7">'+_amemEsc(err.message||String(err))+'</code><br><br>'
-      + '<button class="amem-action-btn" onclick="window.renderAdminMemberships(document.getElementById(\'adminMain\'))">&#8635; Retry</button></div>';
+    console.error('[SRV] Review submit error:', err);
+    showMsg('error', 'Network error. Please try again.');
+    if(btn){ btn.disabled = false; btn.textContent = 'Submit Review'; }
+    return;
+  }
+
+  if(btn){ btn.disabled = false; btn.textContent = 'Submit Review'; }
+  showMsg('success', '\u2705 Review submitted! It will appear after admin approval.');
+  setTimeout(function(){ window._srvToggleForm(); }, 2500);
+};
+
+/* ══════════════════════════════════════════════════════
+   ADMIN REVIEWS TAB
+══════════════════════════════════════════════════════ */
+window.renderAdminReviews = async function(container){
+  container.innerHTML = '<div class="arv-loading">\u23f3 Loading pending reviews...</div>';
+  try{
+    var client = window.supabaseClient;
+    if(!client){ container.innerHTML = '<div class="arv-empty">Supabase not connected.</div>'; return; }
+    var res     = await client.from('pdf_reviews').select('*').eq('verified', false).order('created_at', {ascending: false});
+    var reviews = (res.data || []).filter(function(r){ return r.comment; });
+    if(!reviews.length){
+      container.innerHTML = '<div class="arv-empty">\u2705 No pending reviews! All caught up.</div>';
+      _arvBadge(0);
+      return;
+    }
+    _arvBadge(reviews.length);
+    var html = '<h3 style="font-family:var(--font-display,sans-serif);font-weight:800;font-size:1.1rem;color:#e4e8f0;margin-bottom:20px">\ud83d\udcc4 Pending Reviews (' + reviews.length + ')</h3>';
+    reviews.forEach(function(r){
+      var stars = '\u2605'.repeat(Number(r.rating) || 5);
+      var date  = r.created_at
+        ? new Date(r.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})
+        : '';
+      html += '<div class="arv-card" id="arv-' + r.id + '">'
+           +  '<div class="arv-card-header">'
+           +    '<div>'
+           +      '<div class="arv-card-name">' + (r.user_name || 'Anonymous') + (r.location ? ' \u2022 ' + r.location : '') + '</div>'
+           +      '<div class="arv-card-meta">' + date + '</div>'
+           +    '</div>'
+           +    '<div class="arv-card-stars">' + stars + '</div>'
+           +  '</div>'
+           +  '<div class="arv-card-text">\u201c' + r.comment + '\u201d</div>'
+           +  '<div class="arv-card-actions">'
+           +    '<button class="arv-btn-approve" data-id="' + r.id + '" onclick="window._arvApprove(this.dataset.id)">\u2705 Approve</button>'
+           +    '<button class="arv-btn-reject"  data-id="' + r.id + '" onclick="window._arvReject(this.dataset.id)">\u274c Reject</button>'
+           +  '</div>'
+           + '</div>';
+    });
+    container.innerHTML = html;
+  } catch(err){
+    container.innerHTML = '<div class="arv-empty">Error: ' + err.message + '</div>';
   }
 };
 
-/* ── Manual activate (+30 days) ─────────────────────────── */
-window._amemActivate = async function(id){
-  var client = window.supabaseClient;
-  if(!client) return;
-  try {
-    var newExpiry = new Date(Date.now() + 30*24*60*60*1000).toISOString();
-    var res = await client.from('user_memberships')
-      .update({status:'active', expires_at:newExpiry})
-      .eq('id', id);
-    if(res.error) throw new Error(res.error.message);
-    if(typeof window.showToast==='function') window.showToast('\u2705 Membership activated for 30 days.','success');
-    /* PassSync: invalidate cache + re-sync DOM badges */
-    if(typeof window.PassSync!=='undefined' && window.PassSync.onAdminSave) window.PassSync.onAdminSave();
-    var main = document.getElementById('adminMain');
-    if(main) window.renderAdminMemberships(main);
+function _arvBadge(n){
+  var b = document.getElementById('arvPendingBadge');
+  if(b){ b.textContent = n; b.style.display = n > 0 ? 'inline-flex' : 'none'; }
+}
+
+window._arvApprove = async function(id){
+  var card = document.getElementById('arv-' + id);
+  if(card){ card.style.opacity = '.5'; card.style.pointerEvents = 'none'; }
+  try{
+    var c = window.supabaseClient;
+    if(c) await c.from('pdf_reviews').update({verified: true}).eq('id', id);
+    if(card) card.remove();
   } catch(e){
-    console.error('[AdminMem] Activate error:', e);
-    if(typeof window.showToast==='function') window.showToast('Error: '+e.message,'error');
+    if(card){ card.style.opacity = '1'; card.style.pointerEvents = ''; }
   }
 };
 
-/* ── Manual deactivate ──────────────────────────────────── */
-window._amemDeactivate = async function(id){
-  if(!confirm('Deactivate this membership? The user will lose Premium access immediately.')) return;
-  var client = window.supabaseClient;
-  if(!client) return;
-  try {
-    var res = await client.from('user_memberships')
-      .update({status:'cancelled', expires_at:new Date().toISOString()})
-      .eq('id', id);
-    if(res.error) throw new Error(res.error.message);
-    if(typeof window.showToast==='function') window.showToast('\uD83D\uDEAB Membership deactivated.','info');
-    /* PassSync: invalidate cache + re-sync DOM badges */
-    if(typeof window.PassSync!=='undefined' && window.PassSync.onAdminSave) window.PassSync.onAdminSave();
-    var main = document.getElementById('adminMain');
-    if(main) window.renderAdminMemberships(main);
+window._arvReject = async function(id){
+  var card = document.getElementById('arv-' + id);
+  if(card){ card.style.opacity = '.5'; card.style.pointerEvents = 'none'; }
+  try{
+    var c = window.supabaseClient;
+    if(c) await c.from('pdf_reviews').delete().eq('id', id);
+    if(card) card.remove();
   } catch(e){
-    console.error('[AdminMem] Deactivate error:', e);
-    if(typeof window.showToast==='function') window.showToast('Error: '+e.message,'error');
+    if(card){ card.style.opacity = '1'; card.style.pointerEvents = ''; }
   }
 };
 
-})();
-
-/* ── BOOT ────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   BOOT: wait for cards to render, then init carousel
+══════════════════════════════════════════════════════ */
 function boot(){
-  var tries=0;
+  var tries = 0;
   function tryInit(){
-    var c=document.querySelectorAll('#srvTrack .srv-card');
-    if(c.length>0){
+    var c = document.querySelectorAll('#srvTrack .srv-card');
+    if(c.length > 0){
       if(!window._srvCarouselReady){
-        window._srvCarouselReady=true;
+        window._srvCarouselReady = true;
         _srvInitCarousel();
       }
-    } else if(tries++<30){
-      setTimeout(tryInit,300);
+    } else if(tries++ < 30){
+      setTimeout(tryInit, 300);
     }
   }
-  setTimeout(tryInit,800);
+  setTimeout(tryInit, 800);
 }
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 </script>
 
