@@ -1136,7 +1136,7 @@
       V3.updateProfileUI(V3.profile);
 
       /* ── Render overview tab content from profiles data ── */
-      var activeTab = window.dashTab || 'overview';
+      var activeTab = window.dashTab || (typeof dashTab !== 'undefined' ? dashTab : 'overview');
       if (activeTab === 'overview') {
         var stats = window._dashCache;
         await V3.renderOverview(stats);
@@ -1154,6 +1154,8 @@
     window.switchMeTab = async function(tab) {
       /* Update active tab state first */
       window.dashTab = tab;
+      /* Also update the let dashTab variable in inline script scope */
+      try { dashTab = tab; } catch(_) {}
       document.querySelectorAll('#page-dashboard .me-htab[data-tab]').forEach(function(b) {
         b.classList.toggle('active', b.dataset.tab === tab);
       });
@@ -1203,7 +1205,7 @@
             V3.verified   = payload.new.verified || V3.completion === 100;
             V3.updateProfileUI(payload.new);
             /* If overview tab is active, rerender it too */
-            if (window.dashTab === 'overview') {
+            if ((window.dashTab || (typeof dashTab !== 'undefined' ? dashTab : 'overview')) === 'overview') {
               var stats = window._dashCache;
               await V3.renderOverview(stats);
             }
