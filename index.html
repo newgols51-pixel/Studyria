@@ -17072,6 +17072,104 @@ body.light .sf-stats-live { background: rgba(240,244,251,0.97); }
 }
 .sf-stat-big:hover { transform: translateY(-2px); border-color: rgba(61,142,248,0.2); }
 .sf-stat-big:hover::after { opacity: 1; }
+/* ── 3-Card Premium Stats Grid ── */
+.sf-stat3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 0;
+}
+.sf-stat3-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 28px 16px 22px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: default;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.35s, border-color 0.35s;
+}
+.sf-stat3-card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+/* Per-card accent colours */
+.sf-stat3-students { border-top: 2px solid rgba(61,142,248,0.55); }
+.sf-stat3-students:hover { box-shadow: 0 12px 36px rgba(61,142,248,0.18), 0 0 0 1px rgba(61,142,248,0.15); border-color: rgba(61,142,248,0.3); }
+.sf-stat3-pass     { border-top: 2px solid rgba(250,179,40,0.55); }
+.sf-stat3-pass:hover { box-shadow: 0 12px 36px rgba(250,179,40,0.16), 0 0 0 1px rgba(250,179,40,0.15); border-color: rgba(250,179,40,0.3); }
+.sf-stat3-trust    { border-top: 2px solid rgba(52,211,153,0.55); }
+.sf-stat3-trust:hover { box-shadow: 0 12px 36px rgba(52,211,153,0.16), 0 0 0 1px rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); }
+
+/* Glow orb behind each card */
+.sf-stat3-glow {
+  position: absolute;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  top: -20px; left: 50%; transform: translateX(-50%);
+  pointer-events: none; z-index: 0;
+  filter: blur(28px); opacity: 0.28;
+  transition: opacity 0.35s;
+}
+.sf-stat3-students .sf-stat3-glow { background: #3d8ef8; }
+.sf-stat3-pass     .sf-stat3-glow { background: #fab328; }
+.sf-stat3-trust    .sf-stat3-glow { background: #34d399; }
+.sf-stat3-card:hover .sf-stat3-glow { opacity: 0.50; }
+
+.sf-stat3-icon {
+  position: relative; z-index: 1;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+  animation: sfStat3Bounce 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+.sf-stat3-card:nth-child(2) .sf-stat3-icon { animation-delay: .6s; }
+.sf-stat3-card:nth-child(3) .sf-stat3-icon { animation-delay: 1.2s; }
+@keyframes sfStat3Bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+.sf-stat3-num {
+  position: relative; z-index: 1;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-family: var(--font-editorial, 'Syne', sans-serif);
+  background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.6));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.sf-stat3-lbl {
+  position: relative; z-index: 1;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: var(--text2, rgba(255,255,255,0.75));
+  margin-bottom: 3px;
+}
+.sf-stat3-sub {
+  position: relative; z-index: 1;
+  font-size: .62rem;
+  color: var(--text3, rgba(255,255,255,0.38));
+  letter-spacing: .04em;
+}
+@media (max-width: 640px) {
+  .sf-stat3-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .sf-stat3-card { padding: 20px 8px 16px; border-radius: 16px; }
+  .sf-stat3-icon { font-size: 1.6rem; }
+  .sf-stat3-num  { font-size: 1.5rem; }
+  .sf-stat3-lbl  { font-size: .6rem; letter-spacing: .06em; }
+  .sf-stat3-sub  { display: none; }
+}
+@media (max-width: 360px) {
+  .sf-stat3-num { font-size: 1.3rem; }
+}
 .sf-stat-big-icon { font-size: 1.4rem; margin-bottom: 6px; }
 .sf-stat-big-num {
   font-size: 1.4rem;
@@ -17285,26 +17383,27 @@ body.light .sf-platform-info-badge { background: rgba(0,0,0,0.03); }
 <!-- ── Live Platform Stats ── -->
 <section class="sf-stats-live" id="sfStatsLive">
   <div class="container">
-    <div class="sf-trust-grid" style="padding-top:0;">
-      <div class="sf-stat-big sf-fade-in">
-        <div class="sf-stat-big-icon">📚</div>
-        <div class="sf-stat-big-num" data-count="558" data-suffix="+">0</div>
-        <div class="sf-stat-big-lbl">PDFs</div>
+    <div class="sf-stat3-grid">
+      <div class="sf-stat3-card sf-fade-in sf-stat3-students">
+        <div class="sf-stat3-glow"></div>
+        <div class="sf-stat3-icon">👨‍🎓</div>
+        <div class="sf-stat3-num" data-count="1500" data-suffix="+" data-format="k">0</div>
+        <div class="sf-stat3-lbl">Students</div>
+        <div class="sf-stat3-sub">Across Assam</div>
       </div>
-      <div class="sf-stat-big sf-fade-in">
-        <div class="sf-stat-big-icon">👨‍🎓</div>
-        <div class="sf-stat-big-num" data-count="1500" data-suffix="+" data-format="k">0</div>
-        <div class="sf-stat-big-lbl">Students</div>
+      <div class="sf-stat3-card sf-fade-in sf-stat3-pass">
+        <div class="sf-stat3-glow"></div>
+        <div class="sf-stat3-icon">👑</div>
+        <div class="sf-stat3-num" data-count="120" data-suffix="+">0</div>
+        <div class="sf-stat3-lbl">Pass Members</div>
+        <div class="sf-stat3-sub">Premium Access</div>
       </div>
-      <div class="sf-stat-big sf-fade-in">
-        <div class="sf-stat-big-icon">👑</div>
-        <div class="sf-stat-big-num" data-count="120" data-suffix="+">0</div>
-        <div class="sf-stat-big-lbl">Pass Members</div>
-      </div>
-      <div class="sf-stat-big sf-fade-in">
-        <div class="sf-stat-big-icon">⭐</div>
-        <div class="sf-stat-big-num" data-count="98" data-suffix="%">0</div>
-        <div class="sf-stat-big-lbl">Trusted Platform</div>
+      <div class="sf-stat3-card sf-fade-in sf-stat3-trust">
+        <div class="sf-stat3-glow"></div>
+        <div class="sf-stat3-icon">⭐</div>
+        <div class="sf-stat3-num" data-count="98" data-suffix="%">0</div>
+        <div class="sf-stat3-lbl">Trusted Platform</div>
+        <div class="sf-stat3-sub">Student Satisfaction</div>
       </div>
     </div>
   </div>
@@ -17689,7 +17788,7 @@ async function handleNewsletterSubscribe(btn) {
 
 /* ── Counter animation for live stats ── */
 (function() {
-  var counters = document.querySelectorAll('.sf-stat-big-num[data-count]');
+  var counters = document.querySelectorAll('.sf-stat-big-num[data-count], .sf-stat3-num[data-count]');
   if (!counters.length) return;
   var animated = false;
   function animateCounter(el) {
