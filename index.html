@@ -16970,7 +16970,347 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
   .sf-newsletter-inner { flex-direction: column; align-items: flex-start; }
   .sf-newsletter-form { max-width: 100%; width: 100%; }
 }
+
+/* ── Enterprise Footer Upgrade: Trust, Stats, Exams, App, Security ── */
+
+/* Trust & Credibility Section */
+.sf-trust {
+  position: relative;
+  padding: 36px 0 28px;
+  background: rgba(5, 8, 15, 0.97);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+body.light .sf-trust { background: rgba(240,244,251,0.97); border-top-color: rgba(0,0,0,0.08); }
+.sf-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.sf-trust-card {
+  position: relative;
+  padding: 18px 16px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  text-align: center;
+  overflow: hidden;
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+.sf-trust-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(61,142,248,0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.sf-trust-card:hover::before { opacity: 1; }
+.sf-trust-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(61,142,248,0.25);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25), 0 0 16px rgba(61,142,248,0.08);
+}
+.sf-trust-icon {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  display: inline-block;
+  animation: sfGlow 3s ease-in-out infinite;
+}
+.sf-trust-card:nth-child(2) .sf-trust-icon { animation-delay: .5s; }
+.sf-trust-card:nth-child(3) .sf-trust-icon { animation-delay: 1s; }
+.sf-trust-card:nth-child(4) .sf-trust-icon { animation-delay: 1.5s; }
+@keyframes sfGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(61,142,248,0)); }
+  50% { filter: drop-shadow(0 0 6px rgba(61,142,248,0.3)); }
+}
+.sf-trust-title {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.sf-trust-sub {
+  font-size: .65rem;
+  color: var(--text3);
+  line-height: 1.4;
+}
+@media (max-width: 768px) {
+  .sf-trust-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sf-trust { padding: 28px 0 20px; }
+  .sf-trust-card { padding: 14px 12px; }
+}
+@media (max-width: 400px) {
+  .sf-trust-grid { grid-template-columns: 1fr; }
+}
+
+/* Live Platform Stats */
+.sf-stats-live {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 0 0 32px;
+  background: rgba(5, 8, 15, 0.97);
+}
+body.light .sf-stats-live { background: rgba(240,244,251,0.97); }
+.sf-stat-big {
+  position: relative;
+  text-align: center;
+  padding: 20px 12px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  transition: all .25s;
+}
+.sf-stat-big::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--grad-primary);
+  opacity: 0;
+  transition: opacity .25s;
+}
+.sf-stat-big:hover { transform: translateY(-2px); border-color: rgba(61,142,248,0.2); }
+.sf-stat-big:hover::after { opacity: 1; }
+.sf-stat-big-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.sf-stat-big-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+  font-family: var(--font-display);
+  line-height: 1.1;
+}
+.sf-stat-big-lbl {
+  font-size: .65rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: 4px;
+}
+@media (max-width: 768px) {
+  .sf-stats-live { grid-template-columns: repeat(2, 1fr); gap: 8px; padding-bottom: 24px; }
+  .sf-stat-big { padding: 16px 10px; }
+  .sf-stat-big-num { font-size: 1.2rem; }
+}
+
+/* Exam Chips */
+.sf-exams {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 16px;
+}
+.sf-exam-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--text2);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  cursor: default;
+  transition: all .22s;
+  -webkit-tap-highlight-color: transparent;
+}
+.sf-exam-chip:hover {
+  color: var(--accent);
+  border-color: rgba(61,142,248,0.3);
+  background: rgba(61,142,248,0.08);
+  transform: translateY(-1px);
+}
+body.light .sf-exam-chip { background: rgba(255,255,255,0.6); }
+
+/* Upgraded App Card */
+.sf-app-card-v2 {
+  position: relative;
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(61,142,248,0.12), rgba(139,92,246,0.08));
+  border: 1px solid rgba(61,142,248,0.2);
+  overflow: hidden;
+  transition: all .25s;
+}
+.sf-app-card-v2:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(61,142,248,0.15);
+  border-color: rgba(61,142,248,0.35);
+}
+.sf-app-card-v2-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.sf-app-card-v2-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--grad-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(61,142,248,0.3);
+}
+.sf-app-card-v2-name {
+  font-size: .85rem; font-weight: 700; color: var(--text);
+}
+.sf-app-card-v2-sub {
+  font-size: .62rem; color: var(--text3);
+}
+.sf-app-card-v2-meta {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.sf-app-meta-item {
+  text-align: center; padding: 8px 4px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+}
+body.light .sf-app-meta-item { background: rgba(0,0,0,0.03); }
+.sf-app-meta-val { font-size: .7rem; font-weight: 700; color: var(--text); }
+.sf-app-meta-lbl { font-size: .55rem; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+.sf-app-card-v2-btn {
+  display: block; text-align: center;
+  margin-top: 12px; padding: 8px;
+  border-radius: 8px;
+  background: var(--grad-primary);
+  color: #fff; font-size: .72rem; font-weight: 700;
+  text-decoration: none; cursor: pointer;
+  transition: opacity .2s, transform .2s;
+}
+.sf-app-card-v2-btn:hover { opacity: .9; transform: translateY(-1px); }
+.sf-app-card-v2-btn:active { transform: scale(.97); }
+
+/* Upgraded Security Card */
+.sf-security-v2 {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  transition: all .25s;
+}
+.sf-security-v2:hover {
+  border-color: rgba(16,217,142,0.25);
+  box-shadow: 0 0 16px rgba(16,217,142,0.06);
+}
+.sf-security-v2-title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .72rem; font-weight: 700; color: var(--text);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 10px;
+}
+.sf-security-v2-title svg { flex-shrink: 0; }
+.sf-security-v2-list {
+  display: flex; flex-direction: column; gap: 7px;
+}
+.sf-security-v2-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .72rem; color: var(--text2);
+  transition: color .2s;
+}
+.sf-security-v2-item:hover { color: var(--text); }
+.sf-security-v2-check {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: rgba(16,217,142,0.15);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: .6rem; color: #10d98e;
+}
+
+/* Platform Info */
+.sf-platform-info {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 14px;
+  font-size: .65rem; color: var(--text3);
+}
+.sf-platform-info-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+}
+body.light .sf-platform-info-badge { background: rgba(0,0,0,0.03); }
+.sf-platform-info-badge svg { flex-shrink: 0; }
+
+/* Fade-in animation */
+@keyframes sfFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sf-fade-in {
+  opacity: 0;
+  animation: sfFadeIn .5s ease-out forwards;
+}
+.sf-fade-in:nth-child(1) { animation-delay: .05s; }
+.sf-fade-in:nth-child(2) { animation-delay: .1s; }
+.sf-fade-in:nth-child(3) { animation-delay: .15s; }
+.sf-fade-in:nth-child(4) { animation-delay: .2s; }
+@media (prefers-reduced-motion: reduce) {
+  .sf-fade-in { opacity: 1; animation: none; }
+  .sf-trust-icon { animation: none; }
+}
+
 </style>
+
+<!-- ── Enterprise Trust Section ── -->
+<section class="sf-trust" id="sfTrustSection">
+  <div class="container">
+    <h3 style="text-align:center;font-size:.82rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;">Why Students Trust Studyria</h3>
+    <div class="sf-trust-grid">
+      <div class="sf-trust-card sf-fade-in">
+        <div class="sf-trust-icon">🛡️</div>
+        <div class="sf-trust-title">Secure Payments</div>
+        <div class="sf-trust-sub">Razorpay-verified gateway</div>
+      </div>
+      <div class="sf-trust-card sf-fade-in">
+        <div class="sf-trust-icon">📚</div>
+        <div class="sf-trust-title">Verified Study Resources</div>
+        <div class="sf-trust-sub">Expert-curated PDFs</div>
+      </div>
+      <div class="sf-trust-card sf-fade-in">
+        <div class="sf-trust-icon">⚡</div>
+        <div class="sf-trust-title">Instant PDF Access</div>
+        <div class="sf-trust-sub">Download immediately</div>
+      </div>
+      <div class="sf-trust-card sf-fade-in">
+        <div class="sf-trust-icon">🇮🇳</div>
+        <div class="sf-trust-title">Built for Assam</div>
+        <div class="sf-trust-sub">ADRE, APSC & state exams</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Live Platform Stats ── -->
+<section class="sf-stats-live" id="sfStatsLive">
+  <div class="container">
+    <div class="sf-trust-grid" style="padding-top:0;">
+      <div class="sf-stat-big sf-fade-in">
+        <div class="sf-stat-big-icon">📚</div>
+        <div class="sf-stat-big-num" data-count="558" data-suffix="+">0</div>
+        <div class="sf-stat-big-lbl">PDFs</div>
+      </div>
+      <div class="sf-stat-big sf-fade-in">
+        <div class="sf-stat-big-icon">👨‍🎓</div>
+        <div class="sf-stat-big-num" data-count="1500" data-suffix="+" data-format="k">0</div>
+        <div class="sf-stat-big-lbl">Students</div>
+      </div>
+      <div class="sf-stat-big sf-fade-in">
+        <div class="sf-stat-big-icon">👑</div>
+        <div class="sf-stat-big-num" data-count="120" data-suffix="+">0</div>
+        <div class="sf-stat-big-lbl">Pass Members</div>
+      </div>
+      <div class="sf-stat-big sf-fade-in">
+        <div class="sf-stat-big-icon">⭐</div>
+        <div class="sf-stat-big-num" data-count="98" data-suffix="%">0</div>
+        <div class="sf-stat-big-lbl">Trusted Platform</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer class="studyria-footer" id="siteFooter">
 
@@ -17018,6 +17358,19 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
         <div class="sf-brand">
           <div class="sf-brand-logo">Studyria</div>
           <p class="sf-brand-tagline">Assam's #1 PDF Study Platform for ADRE, APSC, Assam Police & all Assam state exams. Built for students who study smarter.</p>
+
+          <!-- Exams Covered -->
+          <div class="sf-exams">
+            <span class="sf-exam-chip">APSC</span>
+            <span class="sf-exam-chip">ADRE</span>
+            <span class="sf-exam-chip">Assam Police</span>
+            <span class="sf-exam-chip">SSC</span>
+            <span class="sf-exam-chip">Railway</span>
+            <span class="sf-exam-chip">Banking</span>
+            <span class="sf-exam-chip">TET</span>
+            <span class="sf-exam-chip">Grade III</span>
+            <span class="sf-exam-chip">Grade IV</span>
+          </div>
 
           <!-- Quick stats -->
           <div class="sf-stats">
@@ -17138,15 +17491,42 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
           })();
           </script>
 
-          <!-- PWA install badge -->
-          <div class="sf-app-badge">
-            <a class="sf-app-badge-btn" onclick="navigate('pwa')" id="sfAppBadgeBtn">
-              <div class="sf-app-badge-icon">📱</div>
-              <div class="sf-app-badge-text">
-                <span class="sf-app-badge-sub">Install Free App</span>
-                <span class="sf-app-badge-name">Studyria PWA</span>
+          <!-- Upgraded PWA App Card -->
+          <div class="sf-app-card-v2">
+            <div class="sf-app-card-v2-header">
+              <div class="sf-app-card-v2-icon">📱</div>
+              <div>
+                <div class="sf-app-card-v2-name">Studyria PWA</div>
+                <div class="sf-app-card-v2-sub">Install Free App</div>
               </div>
+            </div>
+            <div class="sf-app-card-v2-meta">
+              <div class="sf-app-meta-item">
+                <div class="sf-app-meta-val">v2.0</div>
+                <div class="sf-app-meta-lbl">Version</div>
+              </div>
+              <div class="sf-app-meta-item">
+                <div class="sf-app-meta-val">Jul 2026</div>
+                <div class="sf-app-meta-lbl">Updated</div>
+              </div>
+              <div class="sf-app-meta-item">
+                <div class="sf-app-meta-val">✨</div>
+                <div class="sf-app-meta-lbl">Future Ready</div>
+              </div>
+            </div>
+            <a class="sf-app-card-v2-btn" onclick="if(typeof navigate==='function')navigate('pwa')" id="sfAppBadgeBtn">
+              Install Now — Free
             </a>
+          </div>
+
+          <!-- Platform Info -->
+          <div class="sf-platform-info">
+            <span class="sf-platform-info-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              Made in Assam 🇮🇳
+            </span>
+            <span class="sf-platform-info-badge">Serving Assam Students</span>
+            <span class="sf-platform-info-badge">Modern Education Platform</span>
           </div>
         </div>
 
@@ -17189,13 +17569,18 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
             <li><span onclick="if(typeof navigate==='function')navigate('privacy')">🍪 Cookie Policy <span class="sf-link-arrow">›</span></span></li>
           </ul>
 
-          <!-- Trust badge -->
-          <div style="margin-top:24px;padding:14px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);">
-            <div style="font-size:.7rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">🔐 Secured By</div>
-            <div style="display:flex;flex-direction:column;gap:5px;">
-              <div style="font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:6px;"><span style="color:#10d98e">✓</span> Supabase RLS</div>
-              <div style="font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:6px;"><span style="color:#10d98e">✓</span> Razorpay Payments</div>
-              <div style="font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:6px;"><span style="color:#10d98e">✓</span> SSL Encrypted</div>
+          <!-- Upgraded Security Card -->
+          <div class="sf-security-v2">
+            <div class="sf-security-v2-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10d98e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Enterprise Security
+            </div>
+            <div class="sf-security-v2-list">
+              <div class="sf-security-v2-item"><span class="sf-security-v2-check">✓</span> Supabase RLS</div>
+              <div class="sf-security-v2-item"><span class="sf-security-v2-check">✓</span> SSL Encrypted</div>
+              <div class="sf-security-v2-item"><span class="sf-security-v2-check">✓</span> Razorpay Verified</div>
+              <div class="sf-security-v2-item"><span class="sf-security-v2-check">✓</span> Secure Authentication</div>
+              <div class="sf-security-v2-item"><span class="sf-security-v2-check">✓</span> Privacy Protected</div>
             </div>
           </div>
         </div>
@@ -17302,6 +17687,65 @@ async function handleNewsletterSubscribe(btn) {
   document.addEventListener('studyria:navigate', updateFooter);
   window.addEventListener('popstate', function(){ setTimeout(updateFooter, 50); });
   setTimeout(updateFooter, 100);
+})();
+
+/* ── Counter animation for live stats ── */
+(function() {
+  var counters = document.querySelectorAll('.sf-stat-big-num[data-count]');
+  if (!counters.length) return;
+  var animated = false;
+  function animateCounter(el) {
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var format = el.getAttribute('data-format') || '';
+    var duration = 1400;
+    var start = performance.now();
+    function step(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var val = Math.floor(eased * target);
+      if (format === 'k' && val >= 1000) {
+        el.textContent = (val / 1000).toFixed(1).replace(/\.0$/, '') + 'K' + suffix;
+      } else {
+        el.textContent = val + suffix;
+      }
+      if (progress < 1) requestAnimationFrame(step);
+      else {
+        if (format === 'k' && target >= 1000) {
+          el.textContent = (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K' + suffix;
+        } else {
+          el.textContent = target + suffix;
+        }
+      }
+    }
+    requestAnimationFrame(step);
+  }
+  function checkVisible() {
+    if (animated) return;
+    var statsSection = document.getElementById('sfStatsLive');
+    if (!statsSection) return;
+    var rect = statsSection.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      animated = true;
+      counters.forEach(function(c) { animateCounter(c); });
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !animated) {
+          animated = true;
+          counters.forEach(function(c) { animateCounter(c); });
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    var statsSection = document.getElementById('sfStatsLive');
+    if (statsSection) io.observe(statsSection);
+  } else {
+    window.addEventListener('scroll', checkVisible, { passive: true });
+    setTimeout(checkVisible, 500);
+  }
 })();
 </script>
 
