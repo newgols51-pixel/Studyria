@@ -45767,7 +45767,7 @@ async function crpAutoLevelUpgrade(userId) {
 .srv-count-txt { font-size: .65rem; color: rgba(255,255,255,0.4); font-family: var(--font-ui, sans-serif); margin-top: 1px; }
 .srv-outer {
   overflow: hidden; position: relative; cursor: grab;
-  touch-action: pan-y; -webkit-user-select: none; user-select: none;
+  touch-action: none; -webkit-user-select: none; user-select: none;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
 }
@@ -45974,14 +45974,11 @@ function _srvRender(list){
   if(avgEl) avgEl.textContent=avg.toFixed(1);
   if(starsEl) starsEl.textContent=_srvStars(avg);
   if(countEl) countEl.textContent=list.length+' verified reviews';
-  /* Re-init carousel after render */
-  window._srvCarouselReady=false;
+  /* Re-init carousel after render — direct call, no flag race */
   setTimeout(function(){
-    if(!window._srvCarouselReady) {
-      window._srvCarouselReady=true;
-      _srvInitCarousel();
-    }
-  }, 100);
+    window._srvCarouselReady = true;
+    _srvInitCarousel();
+  }, 150);
 }
 
 async function _srvInit(){
@@ -46020,8 +46017,9 @@ if(document.readyState==='loading'){
 /* ── MANUAL SWIPE CAROUSEL ───────────────────────────────────────── */
 .srv-outer {
   overflow: hidden; position: relative; cursor: grab; width: 100%;
-  /* touch-action: pan-y alone is NOT enough on Chrome Android — we lock axis in JS */
-  touch-action: pan-y;
+  /* touch-action: none — we handle axis locking entirely in JS (pan-y lets browser
+     intercept horizontal swipes on Chrome Android before our touchmove fires) */
+  touch-action: none;
   -webkit-user-select: none; user-select: none;
   /* fade edges on desktop; hidden on mobile so partial next card is visible */
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
@@ -46267,29 +46265,35 @@ function _srvInitCarousel(){
     var t  = e.touches[0];
     var dx = t.clientX - startX;
     var dy = t.clientY - startY;
+    var adx = Math.abs(dx);
+    var ady = Math.abs(dy);
 
     /* ── axis detection ── */
     if(lockAxis === null){
-      if(Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX){
-        lockAxis = (Math.abs(dx) >= Math.abs(dy)) ? 'h' : 'v';
-      } else {
-        return; /* not enough movement yet */
+      if(adx > AXIS_LOCK_PX || ady > AXIS_LOCK_PX){
+        lockAxis = (adx >= ady) ? 'h' : 'v';
       }
-    }
-
-    if(lockAxis === 'v'){
-      /* vertical scroll — let browser handle, cancel drag */
-      isDrag = false;
-      outer.classList.remove('grabbing');
-      goTo(currentIdx, true); /* snap back */
+      /* Before axis is decided: always preventDefault so browser
+         doesn't claim the gesture during our detection window.
+         Once we decide it's vertical we immediately stop dragging. */
+      e.preventDefault();
       return;
     }
 
-    /* horizontal — eat the event */
-    e.preventDefault();
+    if(lockAxis === 'v'){
+      /* We decided it's vertical — release drag immediately.
+         We can't give scroll back to the browser once we've been
+         calling preventDefault, so we simulate a smooth release. */
+      isDrag = false;
+      outer.classList.remove('grabbing');
+      goTo(currentIdx, true);
+      return;
+    }
 
+    /* horizontal — prevent page scroll, move track */
+    e.preventDefault();
     liveOffset = dx;
-    var base   = -currentIdx * cardW();
+    var base = -currentIdx * cardW();
     track.style.transform = 'translateX(' + (base + dx) + 'px)';
   }
 
@@ -46298,7 +46302,6 @@ function _srvInitCarousel(){
     isDrag = false;
     outer.classList.remove('grabbing');
     if(lockAxis !== 'h'){
-      /* was a vertical or undecided gesture — no card change */
       goTo(currentIdx, true);
       return;
     }
