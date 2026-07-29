@@ -17728,6 +17728,21 @@ let dashTab = 'overview';
           window._ownedPdfIds = window._ownedPdfIds || new Set();
           window._ownedCacheReady = false;
           _loadOwnershipCache && _loadOwnershipCache().catch(() => {});
+          // ── AVATAR SYNC: After syncNavToAuth renders nav with auth
+          // metadata (initials), sync the nav avatar from the profiles
+          // table (single source of truth). This ensures #navAvatarBtn
+          // always shows the profile photo, not stale initials. ──
+          if (window.MeV3) {
+            if (window.MeV3.profile && typeof window.MeV3.updateProfileUI === 'function') {
+              // Profile already loaded — re-sync UI immediately
+              window.MeV3.updateProfileUI(window.MeV3.profile);
+            }
+            // Always also do a fresh async sync (catches profile changes
+            // that happened while nav was being re-rendered)
+            if (typeof window.MeV3.syncNavAvatar === 'function') {
+              window.MeV3.syncNavAvatar().catch(function(){});
+            }
+          }
         } else {
           // User logged out — clear ownership cache
           window._ownedPdfIds = new Set();

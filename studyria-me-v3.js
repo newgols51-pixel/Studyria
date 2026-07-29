@@ -142,6 +142,57 @@
     console.log('[V3] updateProfileUI: done — profile synced from profiles table');
   };
 
+  /* ════════════════════════════════════════════════════════════════
+     syncNavAvatar() — Lightweight nav avatar sync from profiles table
+     Called after every syncNavToAuth() call to ensure nav avatar
+     always reflects the profiles table (single source of truth).
+     Does NOT re-render the nav — just updates the existing #navAvatarBtn.
+  ════════════════════════════════════════════════════════════════ */
+  V3.syncNavAvatar = async function() {
+    var navBtn = document.querySelector('#navAvatarBtn');
+    if (!navBtn) return; /* nav not rendered yet — syncNavToAuth hasn't run */
+
+    var userId = await V3.getAuthUserId();
+    if (!userId) return;
+
+    /* Use cached profile if available and matches user, else fetch */
+    var profile = V3.profile;
+    if (!profile || profile.id !== userId) {
+      profile = await V3.loadProfile();
+    }
+    if (!profile) return;
+
+    var authUser = window.currentUser || {};
+    var isEmailLike = function(s) { return s && s.indexOf('@') !== -1; };
+    var rawAuthName = authUser.name || '';
+    var safeName    = (!isEmailLike(rawAuthName)) ? rawAuthName : '';
+    var name     = (profile.full_name && !isEmailLike(profile.full_name))
+                     ? profile.full_name
+                     : (safeName || 'Studyria User');
+    var photoUrl = profile.avatar_url || '';
+    var initials = (name.trim().charAt(0) || 'S').toUpperCase();
+
+    /* Update #navAvatarBtn with profile photo or initials */
+    if (photoUrl) {
+      navBtn.innerHTML = '<img src="' + esc(photoUrl) + '" alt="' + esc(name) +
+        '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;"' +
+        ' referrerpolicy="no-referrer" loading="lazy" decoding="async"' +
+        ' onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initials + '\';">';
+    } else {
+      navBtn.textContent = initials;
+    }
+    navBtn.title = name;
+
+    /* Sync window.currentUser with profiles data */
+    if (window.currentUser) {
+      window.currentUser.name      = name;
+      window.currentUser.avatarUrl = photoUrl;
+      window.currentUser.avatar    = initials;
+    }
+
+    console.log('[V3] syncNavAvatar: nav avatar synced from profiles table');
+  };
+
   /* ── Get authenticated user id from live session ─────────────── */
   V3.getAuthUserId = async function() {
     var client = sb();
@@ -393,6 +444,7 @@
         var url = pu.data.publicUrl + '?t=' + Date.now();
         await V3.saveProfile({avatar_url: url});
         if (window.currentUser) window.currentUser.avatarUrl = url;
+        V3.syncNavAvatar().catch(function(){});
         return {url: url};
       }
     } catch(e) { return {error: e.message}; }
@@ -1180,6 +1232,7 @@
     if (!userId) return;
     await V3.loadProfile();
     V3.updateProfileUI(V3.profile);
+    V3.syncNavAvatar().catch(function(){});
     V3.initRealtime();
     V3._initialized = true;
     console.log('[V3] init complete — single source of truth active');
