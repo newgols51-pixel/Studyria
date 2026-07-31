@@ -5963,6 +5963,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script src="campus.js?v=20260731a" defer></script>
 <script src="brainlab.js?v=20260731a" defer></script>
+<script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
 <script>
@@ -12920,13 +12921,63 @@ body.light .me-stat-val { filter:none; }
         <button class="admin-nav-item" data-atab="creator-manager" onclick="switchAdminTab('creator-manager')" style="background:linear-gradient(90deg,rgba(16,217,142,0.13),rgba(6,182,212,0.07));border-left:2px solid #10d98e">
           <span style="font-size:1rem">🎓</span>Creator Manager
           <span class="admin-nav-badge" style="background:rgba(16,217,142,.12);color:#10d98e;border-color:rgba(16,217,142,.2)">NEW</span>
+        </button
+        <button class="admin-nav-item" data-atab="campus-manager" onclick="switchAdminTab('campus-manager')" style="background:linear-gradient(90deg,rgba(61,142,248,0.13),rgba(99,102,241,0.06));border-left:2px solid #3d8ef8">
+          🏫 Campus Manager
         </button>
+        <button class="admin-nav-item" data-atab="brainlab-manager" onclick="switchAdminTab('brainlab-manager')" style="background:linear-gradient(90deg,rgba(139,92,246,0.13),rgba(251,191,36,0.06));border-left:2px solid #8b5cf6">
+          🧠 BrainLab Manager
+        </button>>
       </nav>
     </div>
 
     <div class="admin-main" id="adminMain">
 
+    
+    <!-- ═══ Campus Manager Panel ═══ -->
+    <div id="atab-campus-manager" class="admin-tab-content" style="display:none">
+      <div style="margin-bottom:20px">
+        <h2 style="font-size:1.3rem;font-weight:800;margin:0 0 4px">🏫 Campus Manager</h2>
+        <p style="font-size:0.82rem;color:var(--text-secondary,#94a3b8);margin:0">Manage campus feed, study plans, reminders & analytics</p>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px">
+        <button class="focus-btn focus-btn-primary" onclick="CampusAdmin.switchSection('feed')" style="padding:8px 14px;font-size:0.78rem">📋 Feed</button>
+        <button class="focus-btn focus-btn-secondary" onclick="CampusAdmin.switchSection('plans')" style="padding:8px 14px;font-size:0.78rem">📅 Study Plans</button>
+        <button class="focus-btn focus-btn-secondary" onclick="CampusAdmin.switchSection('reminders')" style="padding:8px 14px;font-size:0.78rem">🔔 Reminders</button>
+        <button class="focus-btn focus-btn-secondary" onclick="CampusAdmin.switchSection('notifications')" style="padding:8px 14px;font-size:0.78rem">📢 Notifications</button>
+        <button class="focus-btn focus-btn-secondary" onclick="CampusAdmin.switchSection('goals')" style="padding:8px 14px;font-size:0.78rem">🎯 Goals</button>
+        <button class="focus-btn focus-btn-secondary" onclick="CampusAdmin.switchSection('analytics')" style="padding:8px 14px;font-size:0.78rem">📊 Analytics</button>
+      </div>
+      <div id="campus-admin-content" style="min-height:300px">
+        <div style="text-align:center;padding:40px 20px;color:var(--text-secondary,#94a3b8)">
+          <div style="font-size:2rem;margin-bottom:8px">🏫</div>
+          <div style="font-size:0.85rem">Select a section above to manage campus content</div>
+        </div>
+      </div>
     </div>
+
+    <!-- ═══ BrainLab Manager Panel ═══ -->
+    <div id="atab-brainlab-manager" class="admin-tab-content" style="display:none">
+      <div style="margin-bottom:20px">
+        <h2 style="font-size:1.3rem;font-weight:800;margin:0 0 4px">🧠 BrainLab Manager</h2>
+        <p style="font-size:0.82rem;color:var(--text-secondary,#94a3b8);margin:0">Manage quiz bank, mock tests, flashcards & analytics</p>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px">
+        <button class="focus-btn focus-btn-primary" onclick="BrainLabAdmin.switchSection('quizzes')" style="padding:8px 14px;font-size:0.78rem">🧩 Quizzes</button>
+        <button class="focus-btn focus-btn-secondary" onclick="BrainLabAdmin.switchSection('mocks')" style="padding:8px 14px;font-size:0.78rem">📝 Mock Tests</button>
+        <button class="focus-btn focus-btn-secondary" onclick="BrainLabAdmin.switchSection('flashcards')" style="padding:8px 14px;font-size:0.78rem">🎴 Flashcards</button>
+        <button class="focus-btn focus-btn-secondary" onclick="BrainLabAdmin.switchSection('affairs')" style="padding:8px 14px;font-size:0.78rem">📰 Current Affairs</button>
+        <button class="focus-btn focus-btn-secondary" onclick="BrainLabAdmin.switchSection('leaderboard')" style="padding:8px 14px;font-size:0.78rem">🏆 Leaderboard</button>
+        <button class="focus-btn focus-btn-secondary" onclick="BrainLabAdmin.switchSection('analytics')" style="padding:8px 14px;font-size:0.78rem">📊 Analytics</button>
+      </div>
+      <div id="brainlab-admin-content" style="min-height:300px">
+        <div style="text-align:center;padding:40px 20px;color:var(--text-secondary,#94a3b8)">
+          <div style="font-size:2rem;margin-bottom:8px">🧠</div>
+          <div style="font-size:0.85rem">Select a section above to manage BrainLab content</div>
+        </div>
+      </div>
+    </div>
+</div>
   </div>
 </div>
 
@@ -24935,7 +24986,7 @@ function switchAdminTab(tab) {
     'pdf-manager-pro':'Advanced PDF Manager', 'category-manager-pro':'Advanced Category Manager', 'homepage-manager':'Homepage Manager', 'header-manager':'Header Manager', 'nav-manager':'Navigation Manager', 'customization':'Website Customization', 'users-pro':'User Management Pro',
     'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
     'seo-manager':'SEO Manager', 'live-analytics':'Live Analytics Center', 'ai-center':'AI Control Center', 'security':'Security Center', 'system-advanced':'Advanced System Settings',
-    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community', 'pass-management':'👑 Pass Management' };
+    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community', 'pass-management':'👑 Pass Management', 'campus-manager':'🏫 Campus Manager', 'brainlab-manager':'🧠 BrainLab Manager' };
   if (bc) bc.textContent = tabNames[tab] || tab;
 
   const main = document.getElementById('adminMain');
@@ -25010,6 +25061,8 @@ function switchAdminTab(tab) {
     case 'ai-center':             _safeRender(window.renderPCCAICenter,           'AI Center'); break;
     case 'security':              _safeRender(window.renderPCCSecurity,           'Security'); break;
     case 'system-advanced':       _safeRender(window.renderPCCSystemAdvanced,     'Advanced Settings'); break;
+    case 'campus-manager':    _safeRender(window.CampusAdminRender,   'Campus Manager'); break;
+    case 'brainlab-manager': _safeRender(window.BrainLabAdminRender,'BrainLab Manager'); break;
     default: main.innerHTML = `<p class="text-muted" style="padding:32px">Section coming soon.</p>`;
   }
 }
