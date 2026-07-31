@@ -5961,6 +5961,9 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 
 <!-- OneSignal Web SDK — loaded once, deferred. Init is handled in app.js. -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="campus.js?v=20260731a" defer></script>
+<script src="brainlab.js?v=20260731a" defer></script>
+
 <script src="wa-fab.js?v=20260730a"></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -6671,6 +6674,8 @@ crossorigin="anonymous"></script>
   }
 })();
 </script>
+<link rel="stylesheet" href="campus.css?v=20260731a">
+<link rel="stylesheet" href="brainlab.css?v=20260731a">
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -6819,7 +6824,19 @@ function studyriaApp() {
         <button class="nav-link active" data-page="home" onclick="navigate('home')"><svg width="15" height="15"><use href="#ic-home"/></svg>Home</button>
         <button class="nav-link" data-page="library" onclick="navigate('library')"><svg width="15" height="15"><use href="#ic-library"/></svg>Library</button>
         <button class="nav-link" data-page="blog" onclick="navigate('blog')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Blog</button>
-        <button class="nav-link" data-page="dashboard" onclick="navigate('dashboard')"><svg width="15" height="15"><use href="#ic-dashboard"/></svg>My Dashboard</button>
+        <button class="mobile-nav-item" data-page="campus" onclick="navigate('campus')">
+      <span class="mni-icon" style="font-size:1.1rem">🏫</span>
+      <span class="mni-label">Campus</span>
+    </button>
+
+    <button class="mobile-nav-item" data-page="brainlab" onclick="navigate('brainlab')">
+      <span class="mni-icon" style="font-size:1.1rem">🧠</span>
+      <span class="mni-label">BrainLab</span>
+    </button>
+
+    <button class="nav-link" data-page="dashboard" onclick="navigate('dashboard')"><svg width="15" height="15"><use href="#ic-dashboard"/></svg>My Dashboard</button>
+        <button class="nav-link" data-page="campus" onclick="navigate('campus')"><span style="font-size:13px">🏫</span> Campus</button>
+        <button class="nav-link" data-page="brainlab" onclick="navigate('brainlab')"><span style="font-size:13px">🧠</span> BrainLab</button>
         <button class="nav-link" data-page="premium" onclick="navigate('premium')" style="background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(139,92,246,.15));border:1.5px solid rgba(251,191,36,.45);border-radius:20px;color:#fbbf24;font-weight:800;padding:6px 14px">👑 Pass</button>
 
       </div>
@@ -16554,6 +16571,73 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     </div>
   </div>
 </div>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE: CAMPUS — Student's Personal Workspace (V5.0)
+═══════════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-campus">
+  <div class="campus-container">
+    <div class="campus-header">
+      <h1>🏫 Campus</h1>
+      <p>Your personal study workspace — plan, focus, and track your progress</p>
+    </div>
+
+    <div class="campus-tabs" id="campus-tabs">
+      <button class="campus-tab active" data-tab="dashboard" onclick="Campus.switchTab('dashboard')">🏠 Dashboard</button>
+      <button class="campus-tab" data-tab="feed" onclick="Campus.switchTab('feed')">📋 Feed</button>
+      <button class="campus-tab" data-tab="notes" onclick="Campus.switchTab('notes')">📝 Notes</button>
+      <button class="campus-tab" data-tab="timer" onclick="Campus.switchTab('timer')">⏱️ Timer</button>
+      <button class="campus-tab" data-tab="calendar" onclick="Campus.switchTab('calendar')">📅 Calendar</button>
+      <button class="campus-tab" data-tab="goals" onclick="Campus.switchTab('goals')">🎯 Goals</button>
+      <button class="campus-tab" data-tab="history" onclick="Campus.switchTab('history')">📖 History</button>
+      <button class="campus-tab" data-tab="exams" onclick="Campus.switchTab('exams')">⏳ Exams</button>
+      <button class="campus-tab" data-tab="vault" onclick="Campus.switchTab('vault')">🗄️ Vault</button>
+      <button class="campus-tab" data-tab="analytics" onclick="Campus.switchTab('analytics')">📊 Analytics</button>
+    </div>
+
+    <div class="campus-tab-content" data-tab="dashboard" id="campus-dashboard"></div>
+    <div class="campus-tab-content" data-tab="feed" id="campus-feed" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="notes" id="campus-notes" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="timer" id="campus-timer" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="calendar" id="campus-calendar" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="goals" id="campus-goals" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="history" id="campus-history" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="exams" id="campus-exams" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="vault" id="campus-vault" style="display:none"></div>
+    <div class="campus-tab-content" data-tab="analytics" id="campus-analytics" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE: BRAINLAB — Learning Engine (V5.0)
+═══════════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-brainlab">
+  <div class="bl-container">
+    <div class="bl-header">
+      <h1>🧠 BrainLab</h1>
+      <p>Quizzes, mock tests, flashcards & more — your learning engine</p>
+    </div>
+
+    <div class="bl-tabs" id="bl-tabs">
+      <button class="bl-tab active" data-tab="quiz" onclick="BrainLab.switchTab('quiz')">🧩 Quizzes</button>
+      <button class="bl-tab" data-tab="flashcards" onclick="BrainLab.switchTab('flashcards')">🎴 Flashcards</button>
+      <button class="bl-tab" data-tab="mock" onclick="BrainLab.switchTab('mock')">📝 Mock Tests</button>
+      <button class="bl-tab" data-tab="mistakes" onclick="BrainLab.switchTab('mistakes')">📓 Mistakes</button>
+      <button class="bl-tab" data-tab="affairs" onclick="BrainLab.switchTab('affairs')">📰 Current Affairs</button>
+      <button class="bl-tab" data-tab="leaderboard" onclick="BrainLab.switchTab('leaderboard')">🏆 Leaderboard</button>
+      <button class="bl-tab" data-tab="performance" onclick="BrainLab.switchTab('performance')">📊 Performance</button>
+    </div>
+
+    <div class="bl-tab-content" data-tab="quiz" id="bl-quiz"></div>
+    <div class="bl-tab-content" data-tab="flashcards" id="bl-flashcards" style="display:none"></div>
+    <div class="bl-tab-content" data-tab="mock" id="bl-mock" style="display:none"></div>
+    <div class="bl-tab-content" data-tab="mistakes" id="bl-mistakes" style="display:none"></div>
+    <div class="bl-tab-content" data-tab="affairs" id="bl-affairs" style="display:none"></div>
+    <div class="bl-tab-content" data-tab="leaderboard" id="bl-leaderboard" style="display:none"></div>
+    <div class="bl-tab-content" data-tab="performance" id="bl-performance" style="display:none"></div>
+  </div>
+</div>
+
+
 
 </main>
 
@@ -17894,6 +17978,16 @@ async function handleNewsletterSubscribe(btn) {
       <span class="mni-label">Career Hub</span>
     </button>
 
+    <button class="mobile-nav-item" data-page="campus" onclick="navigate('campus')">
+      <span class="mni-icon" style="font-size:1.1rem">🏫</span>
+      <span class="mni-label">Campus</span>
+    </button>
+
+    <button class="mobile-nav-item" data-page="brainlab" onclick="navigate('brainlab')">
+      <span class="mni-icon" style="font-size:1.1rem">🧠</span>
+      <span class="mni-label">BrainLab</span>
+    </button>
+
     <button class="mobile-nav-item" data-page="dashboard" onclick="navigate('dashboard')">
       <span class="mni-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -18758,6 +18852,9 @@ async function navigate(page) {
   pageEl.classList.add('active'); pageEl.style.removeProperty('display');
   currentPage = page;
   window.currentPage = page; // FIX: expose to supabase.js and all external scripts
+  // V5.0: Initialize Campus / BrainLab modules
+  if (page === 'campus' && window.Campus) Campus.init();
+  if (page === 'brainlab' && window.BrainLab) BrainLab.init();
   window.scrollTo(0, 0);
 
   // ── Hash-based SPA routing (public pages only) ────────────────
