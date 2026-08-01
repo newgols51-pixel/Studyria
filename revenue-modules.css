@@ -409,11 +409,15 @@ body.light .rm-tab.active { color: #fff; }
   border: 1px solid var(--rm-border);
   border-radius: var(--rm-radius-lg);
   padding: 24px;
-  max-width: 600px;
+  max-width: 520px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 88vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   box-shadow: var(--rm-shadow);
+  /* Ensure clicks/touches reach children */
+  pointer-events: auto;
 }
 
 .rm-modal-header {
@@ -510,12 +514,29 @@ body.light .rm-tab.active { color: #fff; }
   transition: all var(--rm-transition);
   text-align: center;
   backdrop-filter: blur(20px);
+  /* Mobile: ensure touch target works, no text selection on tap */
+  -webkit-tap-highlight-color: rgba(61,142,248,0.18);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Pointer events must be enabled */
+  pointer-events: auto;
+  /* Min touch target */
+  min-height: 80px;
+  position: relative;
 }
 
-.rm-module-card:hover {
+.rm-module-card:hover,
+.rm-module-card:focus {
   border-color: var(--rm-border-hover);
   transform: translateY(-3px);
   box-shadow: var(--rm-shadow-glow);
+  outline: none;
+}
+
+.rm-module-card:active {
+  transform: scale(0.96);
+  transition-duration: 0.08s;
 }
 
 .rm-module-icon {

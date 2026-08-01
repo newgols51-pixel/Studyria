@@ -210,26 +210,47 @@
 
   // ── Modal helpers ─────────────────────────────────────────────────────────
   function openModal(title, contentHTML, onClose) {
-    const overlay = document.createElement('div');
-    overlay.className = 'rm-modal-overlay';
-    overlay.innerHTML = `
-      <div class="rm-modal" onclick="event.stopPropagation()">
-        <div class="rm-modal-header">
-          <h2 style="font-size:1.1rem;font-weight:700;color:var(--rm-text);margin:0">${sanitize(title)}</h2>
-          <button class="rm-modal-close" id="rmModalClose">✕</button>
-        </div>
-        <div id="rmModalBody">${contentHTML}</div>
-      </div>`;
+    // Remove any existing modal first
+    document.querySelectorAll('.rm-modal-overlay').forEach(function(m) { m.remove(); });
 
-    overlay.addEventListener('click', (e) => {
+    var overlay = document.createElement('div');
+    overlay.className = 'rm-modal-overlay';
+
+    var modal = document.createElement('div');
+    modal.className = 'rm-modal';
+    modal.addEventListener('click', function(e) { e.stopPropagation(); });
+
+    var header = document.createElement('div');
+    header.className = 'rm-modal-header';
+    header.innerHTML = '<h2 style="font-size:1.1rem;font-weight:700;color:var(--rm-text);margin:0">' + sanitize(title) + '</h2>';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'rm-modal-close';
+    closeBtn.textContent = '\u00d7';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.addEventListener('click', function() { overlay.remove(); if (onClose) onClose(); });
+    header.appendChild(closeBtn);
+
+    var body = document.createElement('div');
+    body.id = 'rmModalBody';
+    body.innerHTML = contentHTML;
+
+    modal.appendChild(header);
+    modal.appendChild(body);
+    overlay.appendChild(modal);
+
+    overlay.addEventListener('click', function(e) {
       if (e.target === overlay) { overlay.remove(); if (onClose) onClose(); }
     });
 
-    document.getElementById('rmModalClose')?.addEventListener('click', () => {
-      overlay.remove(); if (onClose) onClose();
-    });
-
     document.body.appendChild(overlay);
+
+    // Trap focus: close on Escape key
+    var onKey = function(e) {
+      if (e.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', onKey); if (onClose) onClose(); }
+    };
+    document.addEventListener('keydown', onKey);
+
     return overlay;
   }
 
@@ -317,24 +338,162 @@
   // ── Export ────────────────────────────────────────────────────────────────
   
   // ── Module picker (bottom nav "More" button) ──────────────────────────────
+  // Route map: module id -> page id (must match id="page-xxx" in index.html)
+  var MODULE_ROUTES = {
+    'mock-test':      'mock-test',
+    'resume-builder': 'resume-builder',
+    'internship-hub': 'internship-hub',
+    'video-courses':  'video-courses',
+    'certificate-gen':'certificate-gen',
+    'study-planner':  'study-planner',
+    'interview-prep': 'interview-prep',
+    'digital-store':  'digital-store',
+  };
+
+  function _navigateToModule(id) {
+    // Close picker first
+    closeModal();
+
+    // Resolve route
+    var routeId = MODULE_ROUTES[id] || id;
+
+    // Verify page exists in DOM
+    var pageEl = document.getElementById('page-' + routeId);
+
+    if (!pageEl) {
+      // Graceful fallback — navigate to a coming-soon state
+      _showComingSoon(id);
+      return;
+    }
+
+    // Use existing navigate() if available
+    try {
+      if (typeof navigate === 'function') {
+        navigate(routeId);
+        return;
+      }
+      // Fallback: hash routing
+      if (typeof router !== 'undefined' && typeof router.push === 'function') {
+        router.push(routeId);
+        return;
+      }
+      // Last resort: manual page switch (mirrors what navigate() does)
+      _manualNavigate(routeId);
+    } catch (err) {
+      console.warn('[StudyriaRevenue] Navigation error:', err);
+      _showToast('Navigation failed. Please try again.', 'error');
+    }
+  }
+
+  function _manualNavigate(pageId) {
+    // Minimal fallback that mirrors Studyria's existing navigate() logic
+    try {
+      document.querySelectorAll('.page.active').forEach(function(p) { p.classList.remove('active'); });
+      var target = document.getElementById('page-' + pageId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+    } catch (e) {
+      _showToast('Could not open ' + pageId, 'error');
+    }
+  }
+
+  function _showComingSoon(moduleId) {
+    var names = {
+      'mock-test': 'Mock Tests', 'resume-builder': 'Resume Builder',
+      'internship-hub': 'Jobs & Internships', 'video-courses': 'Video Courses',
+      'certificate-gen': 'Certificates', 'study-planner': 'Study Planner',
+      'interview-prep': 'Interview Prep', 'digital-store': 'Digital Store',
+    };
+    var name = names[moduleId] || moduleId;
+    openModal('Coming Soon', [
+      '<div style="text-align:center;padding:32px 16px">',
+      '<div style="font-size:3rem;margin-bottom:16px">\u23f3</div>',
+      '<h2 style="color:var(--rm-text);margin-bottom:8px">' + sanitize(name) + '</h2>',
+      '<p style="color:var(--rm-text-muted)">This module is launching soon. Stay tuned!</p>',
+      '</div>'
+    ].join(''));
+  }
+
+  function _showToast(msg, type) {
+    try {
+      if (typeof toast === 'function') { toast(msg, type); return; }
+      // Fallback toast
+      var t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 20px;border-radius:8px;z-index:99999;font-size:0.9rem;pointer-events:none';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(function() { t.remove(); }, 3000);
+    } catch(e) {}
+  }
+
   function openModulePicker() {
-    const modules = [
-      { id: 'mock-test',      icon: '\u{1F4DD}', name: 'Mock Tests' },
-      { id: 'resume-builder',  icon: '\u{1F4C4}', name: 'Resume Builder' },
-      { id: 'internship-hub',  icon: '\u{1F4BC}', name: 'Jobs & Internships' },
-      { id: 'video-courses',   icon: '\u{1F393}', name: 'Video Courses' },
-      { id: 'certificate-gen', icon: '\u{1F4DC}', name: 'Certificates' },
-      { id: 'study-planner',   icon: '\u{1F4C5}', name: 'Study Planner' },
-      { id: 'interview-prep',  icon: '\u{1F3A4}', name: 'Interview Prep' },
-      { id: 'digital-store',   icon: '\u{1F6D2}', name: 'Digital Store' },
+    var modules = [
+      { id: 'mock-test',      icon: '\ud83d\udcdd', name: 'Mock Tests' },
+      { id: 'resume-builder',  icon: '\ud83d\udcc4', name: 'Resume Builder' },
+      { id: 'internship-hub',  icon: '\ud83d\udcbc', name: 'Jobs & Internships' },
+      { id: 'video-courses',   icon: '\ud83c\udf93', name: 'Video Courses' },
+      { id: 'certificate-gen', icon: '\ud83d\udcdc', name: 'Certificates' },
+      { id: 'study-planner',   icon: '\ud83d\udcc5', name: 'Study Planner' },
+      { id: 'interview-prep',  icon: '\ud83c\udfa4', name: 'Interview Prep' },
+      { id: 'digital-store',   icon: '\ud83d\uded2', name: 'Digital Store' },
     ];
-    const grid = modules.map(function(m) {
-      return '<div class="rm-module-card" onclick="navigate(\'' + m.id + '\'); StudyriaRevenue._closePicker()">' +
+
+    // Build grid using data attributes — NO inline onclick strings
+    var cards = modules.map(function(m) {
+      return '<div class="rm-module-card" data-module="' + m.id + '" role="button" tabindex="0" ' +
+        'aria-label="Open ' + m.name + '">' +
         '<div class="rm-module-icon">' + m.icon + '</div>' +
         '<div class="rm-module-name">' + m.name + '</div></div>';
     }).join('');
-    openModal('Studyria More', '<div class="rm-module-grid">' + grid + '</div>');
+
+    var overlay = openModal('Studyria More', '<div class="rm-module-grid" id="rmModuleGrid">' + cards + '</div>');
+
+    // Attach event listeners AFTER modal is in DOM — event delegation on grid
+    var grid = document.getElementById('rmModuleGrid');
+    if (!grid) return;
+
+    function handleModuleClick(e) {
+      // Walk up to find rm-module-card (handles click on child icon/text)
+      var card = e.target;
+      while (card && !card.classList.contains('rm-module-card')) {
+        card = card.parentElement;
+      }
+      if (!card) return;
+      var moduleId = card.getAttribute('data-module');
+      if (!moduleId) return;
+      _navigateToModule(moduleId);
+    }
+
+    // Click
+    grid.addEventListener('click', handleModuleClick);
+
+    // Touch (mobile tap — prevents ghost click issues)
+    grid.addEventListener('touchend', function(e) {
+      var card = e.target;
+      while (card && !card.classList.contains('rm-module-card')) {
+        card = card.parentElement;
+      }
+      if (!card) return;
+      e.preventDefault();
+      var moduleId = card.getAttribute('data-module');
+      if (moduleId) _navigateToModule(moduleId);
+    }, { passive: false });
+
+    // Keyboard accessibility (Enter/Space on focused card)
+    grid.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        var card = e.target;
+        if (card && card.classList.contains('rm-module-card')) {
+          e.preventDefault();
+          var moduleId = card.getAttribute('data-module');
+          if (moduleId) _navigateToModule(moduleId);
+        }
+      }
+    });
   }
+
   function _closePicker() { closeModal(); }
 
   root.StudyriaRevenue = Object.freeze({
@@ -360,6 +519,7 @@
     // Module registry
     register, getModule, initModule, initAll,
     openModulePicker, _closePicker,
+    _navigateToModule, _showComingSoon,
     _modules,
   });
 

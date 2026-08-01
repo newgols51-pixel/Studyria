@@ -46629,46 +46629,69 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 <script src="digital-store.js?v=20260801a" defer></script>
 <script src="revenue-admin.js?v=20260801a" defer></script>
 <script>
-// V5.1 Revenue module init on navigation
-(function(){
-  var _origNavigate = window._realNavigate || window.navigate;
-  if (!_origNavigate) { console.warn('[V5.1] navigate not found'); return; }
-  
-  // We hook into the existing navigate by wrapping the page-show logic
-  // The navigate function already sets currentPage and adds 'active' class
-  // We just need to init our modules when their pages become active
-  
-  // Use a MutationObserver on the page container to detect active page changes
-  var initDone = {};
-  function _initRevenueModule(pageName) {
-    if (initDone[pageName]) return;
-    initDone[pageName] = true;
-    try {
-      switch(pageName) {
-        case 'mock-test': if (window.MockTest) MockTest.render(document.querySelector('#page-mock-test #mtContent')); break;
-        case 'resume-builder': if (window.ResumeBuilder) ResumeBuilder.render(document.querySelector('#page-resume-builder #rbContent')); break;
-        case 'internship-hub': if (window.InternshipHub) InternshipHub.render(document.querySelector('#page-internship-hub #ihContent')); break;
-        case 'video-courses': if (window.VideoCourses) VideoCourses.render(document.querySelector('#page-video-courses #vcContent')); break;
-        case 'certificate-gen': if (window.CertificateGen) CertificateGen.render(document.querySelector('#page-certificate-gen #cgContent')); break;
-        case 'study-planner': if (window.StudyPlanner) StudyPlanner.render(document.querySelector('#page-study-planner #spContent')); break;
-        case 'interview-prep': if (window.InterviewPrep) InterviewPrep.render(document.querySelector('#page-interview-prep #ipContent')); break;
-        case 'digital-store': if (window.DigitalStore) DigitalStore.render(document.querySelector('#page-digital-store #dsContent')); break;
-        case 'revenue-admin': if (window.RevenueAdmin) RevenueAdmin.render(document.querySelector('#page-revenue-admin #raContent')); break;
-      }
-    } catch(e) { console.warn('[V5.1] Module init error:', e); }
-  }
-  
-  // Hook into navigate by wrapping it
-  window.navigate = function(page) {
-    var result = _origNavigate.apply(this, arguments);
-    // After navigation, init the revenue module if needed
-    setTimeout(function() { _initRevenueModule(page); }, 100);
-    return result;
+// V5.1 Revenue module navigation hook — robust async-safe version
+// All revenue module scripts are defer-loaded. We must wait for DOMContentLoaded
+// before navigate() exists. We also wrap navigate() to init modules on demand.
+(function() {
+  'use strict';
+
+  var REVENUE_MODULES = {
+    'mock-test':      function() { if (window.MockTest)      MockTest.render(document.querySelector('#page-mock-test #mtContent')); },
+    'resume-builder': function() { if (window.ResumeBuilder) ResumeBuilder.render(document.querySelector('#page-resume-builder #rbContent')); },
+    'internship-hub': function() { if (window.InternshipHub) InternshipHub.render(document.querySelector('#page-internship-hub #ihContent')); },
+    'video-courses':  function() { if (window.VideoCourses)  VideoCourses.render(document.querySelector('#page-video-courses #vcContent')); },
+    'certificate-gen':function() { if (window.CertificateGen)CertificateGen.render(document.querySelector('#page-certificate-gen #cgContent')); },
+    'study-planner':  function() { if (window.StudyPlanner)  StudyPlanner.render(document.querySelector('#page-study-planner #spContent')); },
+    'interview-prep': function() { if (window.InterviewPrep) InterviewPrep.render(document.querySelector('#page-interview-prep #ipContent')); },
+    'digital-store':  function() { if (window.DigitalStore)  DigitalStore.render(document.querySelector('#page-digital-store #dsContent')); },
+    'revenue-admin':  function() { if (window.RevenueAdmin)  RevenueAdmin.render(document.querySelector('#page-revenue-admin #raContent')); },
   };
-  // Restore the real navigate reference
-  window._realNavigate = _origNavigate;
-  
-  console.log('[V5.1] Revenue module navigation hook installed.');
+
+  var _initDone = {};
+
+  function _initModule(page) {
+    if (_initDone[page]) return;
+    _initDone[page] = true;
+    try {
+      if (REVENUE_MODULES[page]) REVENUE_MODULES[page]();
+    } catch(e) {
+      console.warn('[V5.1] Module init error for', page, e);
+    }
+  }
+
+  function _installHook() {
+    var _orig = window.navigate;
+    if (typeof _orig !== 'function') {
+      // navigate() not ready yet — try again shortly
+      setTimeout(_installHook, 50);
+      return;
+    }
+    if (window._v51HookInstalled) return; // prevent double-wrap
+    window._v51HookInstalled = true;
+
+    window.navigate = function(page) {
+      var result;
+      try { result = _orig.apply(this, arguments); } catch(e) { console.warn('[V5.1] navigate error', e); }
+      // Init the revenue module after navigate() has switched pages
+      if (REVENUE_MODULES[page]) {
+        setTimeout(function() { _initModule(page); }, 80);
+      }
+      return result;
+    };
+
+    // Preserve reference so StudyriaRevenue._navigateToModule can call it
+    window._realNavigate = _orig;
+
+    console.log('[V5.1] Navigation hook installed successfully.');
+  }
+
+  // Install as soon as the DOM is ready (defer scripts fire after DOMContentLoaded)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(_installHook, 0); });
+  } else {
+    setTimeout(_installHook, 0);
+  }
+
 })();
 </script>
 
