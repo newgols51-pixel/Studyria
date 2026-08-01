@@ -18039,6 +18039,11 @@ async function handleNewsletterSubscribe(btn) {
       <span class="mni-label">BrainLab</span>
     </button>
 
+    <button class="mobile-nav-item" data-page="more" onclick="StudyriaRevenue.openModulePicker()">
+      <span class="mni-icon" style="font-size:1.1rem">✨</span>
+      <span class="mni-label">More</span>
+    </button>
+    
     <button class="mobile-nav-item" data-page="dashboard" onclick="navigate('dashboard')">
       <span class="mni-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -18051,6 +18056,83 @@ async function handleNewsletterSubscribe(btn) {
 
   </div>
 </div>
+
+
+<!-- ═════════════════════════════════════════════════════════════════════════
+     V5.1 REVENUE MODULE PAGES
+     ═════════════════════════════════════════════════════════════════════════ -->
+
+<!-- MODULE 1: MOCK TEST -->
+<div class="page" id="page-mock-test">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>📝 Mock Tests</h1><p>Practice with full-length tests, quizzes & previous year papers</p></div></div>
+    <div id="mtContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 2: RESUME BUILDER -->
+<div class="page" id="page-resume-builder">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>📄 Resume Builder</h1><p>Create ATS-friendly resumes with live preview</p></div></div>
+    <div id="rbContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 3: INTERNSHIP & PLACEMENT HUB -->
+<div class="page" id="page-internship-hub">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>💼 Internship & Placement Hub</h1><p>Find internships, placements & campus drives</p></div></div>
+    <div id="ihContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 4: VIDEO COURSES -->
+<div class="page" id="page-video-courses">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>🎓 Video Courses</h1><p>Learn with structured video courses & track your progress</p></div></div>
+    <div id="vcContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 5: CERTIFICATE GENERATOR -->
+<div class="page" id="page-certificate-gen">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>📜 Certificates</h1><p>View, download & verify your certificates</p></div></div>
+    <div id="cgContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 6: STUDY PLANNER -->
+<div class="page" id="page-study-planner">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>📅 Study Planner</h1><p>Plan your study schedule with smart task management</p></div></div>
+    <div id="spContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 7: INTERVIEW PREPARATION -->
+<div class="page" id="page-interview-prep">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>🎤 Interview Prep</h1><p>Practice HR & technical interviews with confidence scoring</p></div></div>
+    <div id="ipContent"></div>
+  </div></div>
+</div>
+
+<!-- MODULE 8: DIGITAL STORE -->
+<div class="page" id="page-digital-store">
+  <div class="rm-page"><div class="rm-container">
+    <div class="rm-header"><div><h1>🛒 Digital Store</h1><p>Templates, e-books, question banks & premium resources</p></div></div>
+    <div id="dsContent"></div>
+  </div></div>
+</div>
+
+<!-- REVENUE ADMIN PANEL -->
+<div class="page" id="page-revenue-admin">
+  <div class="rm-page"><div class="rm-container">
+    <div id="raContent"></div>
+  </div></div>
+</div>
+
 
 <div class="toast-container" id="toastContainer"></div>
 
@@ -46533,5 +46615,62 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 <script src="pwa-admin-v32.js" defer></script>
 <script src="studyria-ui-2.0.js?v=20260730a" defer></script>
 <script src="studyria-me-v3.js" defer></script>
+
+<!-- ═══ V5.1 REVENUE MODULES ═══ -->
+<link rel="stylesheet" href="revenue-modules.css?v=20260801a">
+<script src="revenue-core.js?v=20260801a" defer></script>
+<script src="mock-test.js?v=20260801a" defer></script>
+<script src="resume-builder.js?v=20260801a" defer></script>
+<script src="internship-hub.js?v=20260801a" defer></script>
+<script src="video-courses.js?v=20260801a" defer></script>
+<script src="certificate-gen.js?v=20260801a" defer></script>
+<script src="study-planner.js?v=20260801a" defer></script>
+<script src="interview-prep.js?v=20260801a" defer></script>
+<script src="digital-store.js?v=20260801a" defer></script>
+<script src="revenue-admin.js?v=20260801a" defer></script>
+<script>
+// V5.1 Revenue module init on navigation
+(function(){
+  var _origNavigate = window._realNavigate || window.navigate;
+  if (!_origNavigate) { console.warn('[V5.1] navigate not found'); return; }
+  
+  // We hook into the existing navigate by wrapping the page-show logic
+  // The navigate function already sets currentPage and adds 'active' class
+  // We just need to init our modules when their pages become active
+  
+  // Use a MutationObserver on the page container to detect active page changes
+  var initDone = {};
+  function _initRevenueModule(pageName) {
+    if (initDone[pageName]) return;
+    initDone[pageName] = true;
+    try {
+      switch(pageName) {
+        case 'mock-test': if (window.MockTest) MockTest.render(document.querySelector('#page-mock-test #mtContent')); break;
+        case 'resume-builder': if (window.ResumeBuilder) ResumeBuilder.render(document.querySelector('#page-resume-builder #rbContent')); break;
+        case 'internship-hub': if (window.InternshipHub) InternshipHub.render(document.querySelector('#page-internship-hub #ihContent')); break;
+        case 'video-courses': if (window.VideoCourses) VideoCourses.render(document.querySelector('#page-video-courses #vcContent')); break;
+        case 'certificate-gen': if (window.CertificateGen) CertificateGen.render(document.querySelector('#page-certificate-gen #cgContent')); break;
+        case 'study-planner': if (window.StudyPlanner) StudyPlanner.render(document.querySelector('#page-study-planner #spContent')); break;
+        case 'interview-prep': if (window.InterviewPrep) InterviewPrep.render(document.querySelector('#page-interview-prep #ipContent')); break;
+        case 'digital-store': if (window.DigitalStore) DigitalStore.render(document.querySelector('#page-digital-store #dsContent')); break;
+        case 'revenue-admin': if (window.RevenueAdmin) RevenueAdmin.render(document.querySelector('#page-revenue-admin #raContent')); break;
+      }
+    } catch(e) { console.warn('[V5.1] Module init error:', e); }
+  }
+  
+  // Hook into navigate by wrapping it
+  window.navigate = function(page) {
+    var result = _origNavigate.apply(this, arguments);
+    // After navigation, init the revenue module if needed
+    setTimeout(function() { _initRevenueModule(page); }, 100);
+    return result;
+  };
+  // Restore the real navigate reference
+  window._realNavigate = _origNavigate;
+  
+  console.log('[V5.1] Revenue module navigation hook installed.');
+})();
+</script>
+
 </body>
 </html>
