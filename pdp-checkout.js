@@ -175,7 +175,7 @@ function _pdpMarketingData(pdfId) {
 
   // Fake download count — realistic for a new PDF (80 – 850)
   // Based on category/tag: bestseller gets more, new gets less
-  const pdf = selectedPdf || {};
+  const pdf = window.selectedPdf || {};
   const tag = ((pdf.tag || pdf.badge || '')).toLowerCase();
   let baseDownloads;
   if (tag.includes('bestseller'))       baseDownloads = 400 + Math.floor(s(3) * 450);
@@ -439,7 +439,7 @@ function _pdpApplyLiveStats({ dlCount, purchCount, revCount, avgRating, ratingDi
 /* ── _pdpRenderReviewForm + pdpSetReviewStar + pdpSubmitReview ── */
 async function _pdpRenderReviewForm(container) {
   if (!container) return;
-  const pdf     = selectedPdf;
+  const pdf     = window.selectedPdf;
   const pdfId   = pdf?.id;
   const user    = window.currentUser;
 
@@ -510,7 +510,7 @@ window.pdpSubmitReview = async function pdpSubmitReview() {
   const msgEl   = document.getElementById('pdpReviewFormMsg');
   const comment = (document.getElementById('pdpReviewComment')?.value || '').trim();
   const rating  = window._pdpCurrentReviewRating || 0;
-  const pdfId   = selectedPdf?.id;
+  const pdfId   = window.selectedPdf?.id;
 
   if (!rating) {
     if (msgEl) { msgEl.textContent = 'Please select a star rating.'; msgEl.style.color = 'var(--danger)'; msgEl.style.display = ''; }
@@ -572,7 +572,7 @@ function _pdpSubscribeRealtime(pdfId) {
 
 /* ── pdpHandleBuy ── */
 function pdpHandleBuy() {
-  const pdf = selectedPdf;
+  const pdf = window.selectedPdf;
   if (!pdf) return;
   normalizePdf(pdf);
   const price = Number(pdf.price ?? 0);
@@ -584,11 +584,11 @@ function pdpHandleBuy() {
 
 /* ── pdpToggleWish ── */
 async function pdpToggleWish() {
-  const pdf = selectedPdf;
+  const pdf = window.selectedPdf;
   if (!pdf) return;
   await toggleWish(pdf.id); // wait for the full toggle (incl. DB write/guest save) before reading state back
   {
-    const inWish = wishlist.includes(pdf.id) || wishlist.includes(String(pdf.id));
+    const inWish = window.wishlist.includes(pdf.id) || window.wishlist.includes(String(pdf.id));
     // Update all wish buttons on page
     ['pdpWishBtn','pdpCoverWishBtn','pdpStickyWish'].forEach(id => {
       const btn = document.getElementById(id);
@@ -618,7 +618,7 @@ function _pdfStaticUrl(pdf) {
 
 /* ── pdpSharePDF ── */
 function pdpSharePDF() {
-  const pdf = selectedPdf;
+  const pdf = window.selectedPdf;
   if (!pdf) return;
   const url = _pdfStaticUrl(pdf);
   const text = 'Check out "' + pdf.title + '" on Studyria! 📚';
@@ -638,7 +638,7 @@ function pdpSharePDF() {
 // ── WISHLIST ──────────────────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════════
 // WISHLIST SYSTEM — unified PDF + Job engine.
-// supabase.js owns all state (window.wishlist / window.jobWishlist /
+// supabase.js owns all state (wishlist / window.jobWishlist /
 // window._wishlistRaw) and all Supabase reads/writes. Everything below
 // is thin UI wiring: heart-button rendering + the Wishlist page.
 // ══════════════════════════════════════════════════════════════════
@@ -705,8 +705,8 @@ function _refreshAllWishButtons() {
   });
 
   // Product Details page buttons, if mounted right now
-  if (typeof selectedPdf !== 'undefined' && selectedPdf) {
-    const nowIn = inPdf(selectedPdf.id);
+  if (typeof window.selectedPdf !== 'undefined' && window.selectedPdf) {
+    const nowIn = inPdf(window.selectedPdf.id);
     ['pdpWishBtn', 'pdpCoverWishBtn', 'pdpStickyWish'].forEach(id => {
       const btn = document.getElementById(id);
       if (!btn) return;
@@ -915,7 +915,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
   // ── STEP 1: Login check ───────────────────────────────────────
   let user = null;
   try {
-    const { data: { user: u } } = await supabase.auth.getUser();
+    const { data: { user: u } } = await window.supabase.auth.getUser();
     user = u;
   } catch(e) {}
 

@@ -11,6 +11,13 @@
 (function() {
 'use strict';
 
+/* ── PDF.js Worker Configuration ── */
+/* Runs when pdp-v2.js executes (deferred, after pdf.min.js) */
+if (window.pdfjsLib) {
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    PDP ZOOM CONTROL V2
    • Resets browser zoom to 100% when PDP opens

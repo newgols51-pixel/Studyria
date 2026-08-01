@@ -18568,7 +18568,9 @@ const RECENT_SALES = [
 // ── STATE ─────────────────────────────────────────────────────────
 let currentPage = 'home';
 let selectedPdf = null;
+window.selectedPdf = null;
 let wishlist = []; // populated from Supabase user_wishlist table on login
+window.wishlist = wishlist;
 // NOTE: currentUser is managed exclusively by window.currentUser (set by
 // syncNavToAuth in supabase.js). Do NOT declare a local `let currentUser`
 // here — it would shadow window.currentUser and break auth state sync.
@@ -20129,6 +20131,7 @@ async function renderLibGrid() {
 // ── DETAIL ────────────────────────────────────────────────────────
 function openDetail(id) {
   selectedPdf = (window.PDFS || []).find(p => String(p.id) === String(id));
+  window.selectedPdf = selectedPdf;
   if (!selectedPdf) {
     showToast('PDF not found', 'info');
     return;
