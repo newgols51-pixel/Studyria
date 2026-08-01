@@ -1,45 +1,43 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   STUDYRIA — PDF PRODUCT DETAIL PAGE V3
-   Gallery-first design inspired by premium ebook stores.
-   V3 — 2026-08-01 (replaces pdp-v2.css gallery + zoom sections)
+   STUDYRIA — PDF PDP V3 GALLERY CSS
+   V3.1 — 2026-08-01
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* ── VIEWPORT LOCK (Android + iOS anti-zoom) ─────────────────────────── */
-#page-detail {
-  /* Prevent iOS rubber-band scroll from triggering zoom */
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
+/* ── GLOBAL: prevent OS-level zoom on PDP ───────────────────────────── */
+/* JS locks max-scale to 1.0 when PDP opens; this provides CSS fallback */
+#page-detail { touch-action: pan-y; }
 
-/* ═══ V3 GALLERY WRAPPER ═══ */
+/* ═══ GALLERY WRAPPER ═══ */
 .pdp-v3-gallery {
   position: relative;
   width: 100%;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
   border-radius: 20px;
   overflow: hidden;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
   box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
-  /* Critical: never transform/scale on scroll */
+  /* Critical: no transform, no compositing hint that triggers zoom */
   transform: none !important;
   will-change: auto !important;
-  contain: layout paint style;
 }
 
-/* ═══ MAIN STAGE — fixed aspect ratio, no zoom ever ═══ */
+/* ═══ MAIN STAGE ═══ */
 .pdp-v3-stage {
   position: relative;
   width: 100%;
+  /* Fixed aspect ratio — never changes size during scroll */
   aspect-ratio: 3 / 4;
-  background: var(--bg3);
   overflow: hidden;
-  /* This is the key — contain ALL transformations INSIDE the stage */
-  transform: translateZ(0);
-  will-change: auto;
-  touch-action: pan-y;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Isolate this element completely from page scroll repaints */
+  isolation: isolate;
 }
+@media (min-width: 768px) { .pdp-v3-stage { aspect-ratio: 3 / 4; max-height: 520px; } }
 
-/* Cover image — object-fit:contain, NEVER zooms on scroll */
+/* Cover image — ZERO transform on any axis */
 .pdp-v3-cover-img {
   position: absolute;
   inset: 0;
@@ -48,19 +46,30 @@
   object-fit: contain;
   object-position: center;
   display: block;
-  /* Absolutely zero transform effects */
+  /* Opacity-only transition — never scale, never translate */
+  transition: opacity 0.22s ease;
+  will-change: opacity;
+  /* Hard lock against any transform */
   transform: none !important;
-  transition: opacity 0.28s ease !important;
-  will-change: opacity !important;
+  backface-visibility: hidden;
   -webkit-user-drag: none;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
-  backface-visibility: hidden;
 }
-.pdp-v3-cover-img.fading { opacity: 0; }
 
-/* Preview image layer — sits above cover, shown when preview active */
+/* Fallback when cover image is missing */
+.pdp-v3-cover-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Preview image — fades in over dimmed cover */
 .pdp-v3-preview-img {
   position: absolute;
   inset: 0;
@@ -69,19 +78,19 @@
   object-fit: contain;
   object-position: center;
   display: block;
-  transform: none !important;
-  transition: opacity 0.28s ease !important;
-  will-change: opacity !important;
   opacity: 0;
-  pointer-events: none;
+  transition: opacity 0.25s ease;
+  will-change: opacity;
+  transform: none !important;
+  backface-visibility: hidden;
   -webkit-user-drag: none;
   -webkit-user-select: none;
   user-select: none;
-  backface-visibility: hidden;
+  pointer-events: none;
 }
-.pdp-v3-preview-img.visible { opacity: 1; }
+.pdp-v3-preview-img.pdp-v3-visible { opacity: 1; }
 
-/* Watermark overlay (always on top of preview, never on cover) */
+/* Watermark overlay */
 .pdp-v3-watermark {
   position: absolute;
   inset: 0;
@@ -90,22 +99,22 @@
   justify-content: center;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.28s ease;
-  z-index: 3;
+  transition: opacity 0.25s ease;
+  z-index: 4;
 }
-.pdp-v3-watermark.visible { opacity: 1; }
-.pdp-v3-watermark-text {
-  font-size: clamp(9px, 2.5vw, 13px);
+.pdp-v3-watermark.pdp-v3-visible { opacity: 1; }
+.pdp-v3-wm-text {
+  font-size: clamp(9px, 2.2vw, 12px);
   font-weight: 800;
-  color: rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.16);
   text-align: center;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  line-height: 1.5;
+  line-height: 1.6;
   transform: rotate(-25deg);
   pointer-events: none;
   user-select: none;
-  white-space: nowrap;
+  white-space: pre-line;
 }
 
 /* Loading spinner */
@@ -117,94 +126,80 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.5);
   z-index: 10;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s;
+  transition: opacity 0.18s;
 }
 .pdp-v3-loading.active { opacity: 1; pointer-events: auto; }
 .pdp-v3-spinner {
-  width: 32px; height: 32px;
-  border: 3px solid rgba(255,255,255,0.2);
-  border-top-color: var(--accent);
+  width: 30px; height: 30px;
+  border: 3px solid rgba(255,255,255,0.18);
+  border-top-color: var(--accent, #3d8ef8);
   border-radius: 50%;
-  animation: v3spin 0.75s linear infinite;
+  animation: v3spin 0.72s linear infinite;
 }
 @keyframes v3spin { to { transform: rotate(360deg); } }
-.pdp-v3-loading-text { font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 600; }
 
-/* Corner badges */
+/* Corner tag + discount badges */
 .pdp-v3-tag {
-  position: absolute; top: 12px; left: 12px;
+  position: absolute; top: 12px; left: 12px; z-index: 5;
   padding: 4px 10px; border-radius: 20px;
   font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
-  backdrop-filter: blur(8px); z-index: 5; pointer-events: none;
+  backdrop-filter: blur(8px); pointer-events: none;
 }
 .pdp-v3-discount-badge {
-  position: absolute; top: 12px; right: 12px;
+  position: absolute; top: 12px; right: 12px; z-index: 5;
   width: 48px; height: 48px; border-radius: 50%;
   background: linear-gradient(135deg,#ff4d6d,#f97316);
   display: flex; align-items: center; justify-content: center;
   font-size: 0.75rem; font-weight: 900; color: #fff;
   box-shadow: 0 4px 16px rgba(255,77,109,0.5);
-  z-index: 5; pointer-events: none;
-  animation: pdpDiscountPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  pointer-events: none;
 }
 
 /* ── NAV ARROWS ─────────────────────────────────────────────────────── */
 .pdp-v3-arrow {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 38px; height: 38px;
-  border-radius: 50%;
+  top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%;
   background: rgba(0,0,0,0.55);
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  z-index: 8;
-  font-size: 1.1rem;
-  transition: background 0.18s, transform 0.18s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  backdrop-filter: blur(8px);
-}
-.pdp-v3-arrow:hover { background: rgba(61,142,248,0.75); transform: translateY(-50%) scale(1.08); }
-.pdp-v3-arrow-prev { left: 10px; }
-.pdp-v3-arrow-next { right: 10px; }
-.pdp-v3-arrow svg { display: block; flex-shrink: 0; }
-.pdp-v3-arrow:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
-
-/* ── FULLSCREEN BUTTON ───────────────────────────────────────────────── */
-.pdp-v3-fullscreen-btn {
-  position: absolute;
-  bottom: 10px; right: 10px;
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 8;
+  cursor: pointer; z-index: 8; font-size: 1.1rem;
   transition: background 0.18s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(6px);
 }
-.pdp-v3-fullscreen-btn:hover { background: rgba(61,142,248,0.65); }
+.pdp-v3-arrow:hover { background: rgba(61,142,248,0.75); }
+.pdp-v3-arrow-prev { left: 10px; }
+.pdp-v3-arrow-next { right: 10px; }
+.pdp-v3-arrow:disabled { opacity: 0.22; cursor: default; pointer-events: none; }
 
-/* ── PAGE INDICATOR ─────────────────────────────────────────────────── */
-.pdp-v3-page-indicator {
-  position: absolute;
-  bottom: 10px; left: 50%; transform: translateX(-50%);
+/* Page indicator */
+.pdp-v3-indicator {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
   padding: 3px 10px; border-radius: 20px;
   background: rgba(0,0,0,0.55);
   font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.85);
-  z-index: 8; pointer-events: none;
-  backdrop-filter: blur(4px);
+  z-index: 8; pointer-events: none; backdrop-filter: blur(4px);
 }
+
+/* Fullscreen button */
+.pdp-v3-fs-btn {
+  position: absolute; bottom: 10px; right: 10px;
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 8; transition: background 0.18s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; backdrop-filter: blur(6px);
+}
+.pdp-v3-fs-btn:hover { background: rgba(61,142,248,0.65); }
 
 /* ═══ THUMBNAIL STRIP ═══ */
 .pdp-v3-thumb-strip {
@@ -217,7 +212,7 @@
   border-top: 1px solid var(--glass-border);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: var(--glass-border) transparent;
+  scrollbar-color: var(--glass-border, rgba(255,255,255,0.1)) transparent;
   scroll-behavior: smooth;
 }
 .pdp-v3-thumb-strip::-webkit-scrollbar { height: 3px; }
@@ -225,54 +220,49 @@
 
 .pdp-v3-thumb {
   flex-shrink: 0;
-  width: 60px; height: 80px;
-  border-radius: 8px;
-  border: 2px solid var(--glass-border);
+  width: 64px; height: 84px;
+  border-radius: 10px;
+  border: 2.5px solid var(--glass-border, rgba(255,255,255,0.1));
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
   background: var(--bg3);
+  position: relative;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  position: relative;
+  padding: 0;
 }
-.pdp-v3-thumb:hover { transform: scale(1.06); }
+.pdp-v3-thumb:hover { transform: scale(1.05); }
 .pdp-v3-thumb.active {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 4px 16px rgba(61,142,248,0.35);
-  transform: scale(1.06);
+  border-color: var(--accent, #3d8ef8);
+  box-shadow: 0 0 0 1px var(--accent, #3d8ef8), 0 4px 14px rgba(61,142,248,0.3);
 }
 .pdp-v3-thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  pointer-events: none;
-  -webkit-user-drag: none;
-  user-select: none;
+  width: 100%; height: calc(100% - 18px);
+  object-fit: cover; display: block;
+  pointer-events: none; -webkit-user-drag: none; user-select: none;
 }
-.pdp-v3-thumb-placeholder {
+.pdp-v3-thumb-ph {
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; font-weight: 700; color: var(--text2);
-  background: var(--bg3);
+  font-size: 0.62rem; font-weight: 700; color: var(--text2);
+  text-align: center; padding: 4px;
 }
-.pdp-v3-thumb-label {
-  position: absolute; bottom: 2px; left: 0; right: 0;
-  text-align: center;
-  font-size: 0.55rem; font-weight: 700; color: rgba(255,255,255,0.85);
-  background: rgba(0,0,0,0.55);
-  padding: 1px 0;
-  pointer-events: none;
+.pdp-v3-thumb-lbl {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  font-size: 0.55rem; font-weight: 700;
+  color: rgba(255,255,255,0.9); background: rgba(0,0,0,0.6);
+  text-align: center; padding: 2px 2px 3px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
 }
 @media (max-width: 480px) {
   .pdp-v3-thumb { width: 52px; height: 70px; }
-  .pdp-v3-stage { aspect-ratio: 3 / 4; }
+  .pdp-v3-thumb img { height: calc(100% - 16px); }
 }
 
-/* ═══ BOTTOM ACTION ROW (below gallery, in cover card) ═══ */
+/* ═══ ACTION ROW ═══ */
 .pdp-v3-action-row {
   display: flex;
-  gap: 0;
   border-top: 1px solid var(--glass-border);
 }
 .pdp-v3-action-btn {
@@ -280,7 +270,7 @@
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   font-size: 0.65rem; font-weight: 600; color: var(--text2);
   cursor: pointer; border: none; background: none;
-  font-family: var(--font-body); transition: background 0.2s;
+  font-family: var(--font-body, sans-serif); transition: background 0.2s;
   border-right: 1px solid var(--glass-border);
   -webkit-tap-highlight-color: transparent;
 }
@@ -288,105 +278,77 @@
 .pdp-v3-action-btn:hover { background: rgba(61,142,248,0.08); }
 
 /* ═══ FULLSCREEN OVERLAY ═══ */
-.pdp-v3-fullscreen-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
+.pdp-v3-fs-overlay {
+  position: fixed; inset: 0; z-index: 99999;
   background: rgba(0,0,0,0.97);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
   transition: opacity 0.25s ease;
 }
-.pdp-v3-fullscreen-overlay.open { opacity: 1; pointer-events: auto; }
-
+.pdp-v3-fs-overlay.open { opacity: 1; pointer-events: auto; }
 .pdp-v3-fs-close {
   position: absolute; top: 16px; right: 16px;
   width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);
   color: #fff; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 1.3rem; line-height: 1;
-  z-index: 2; transition: background 0.18s;
-  -webkit-tap-highlight-color: transparent;
+  cursor: pointer; font-size: 1.2rem; z-index: 2;
+  transition: background 0.18s; -webkit-tap-highlight-color: transparent;
 }
 .pdp-v3-fs-close:hover { background: rgba(255,255,255,0.22); }
-
-.pdp-v3-fs-img-wrap {
-  position: relative;
+.pdp-v3-fs-wrap {
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-  touch-action: none;
+  overflow: hidden; touch-action: none; position: relative;
 }
 .pdp-v3-fs-img {
   max-width: 95vw; max-height: 90vh;
-  object-fit: contain;
-  display: block;
-  transform-origin: center center;
-  will-change: transform;
-  -webkit-user-drag: none;
-  user-select: none;
-  pointer-events: none;
+  object-fit: contain; display: block;
+  transform-origin: center; will-change: transform;
+  -webkit-user-drag: none; user-select: none; pointer-events: none;
 }
 .pdp-v3-fs-wm {
-  position: absolute;
-  pointer-events: none;
-  font-size: 14px; font-weight: 800;
-  color: rgba(255,255,255,0.15); text-transform: uppercase;
+  position: absolute; pointer-events: none;
+  font-size: 13px; font-weight: 800;
+  color: rgba(255,255,255,0.13); text-transform: uppercase;
   letter-spacing: 0.08em; transform: rotate(-25deg);
   white-space: nowrap; user-select: none;
 }
-
 .pdp-v3-fs-nav {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 42px; height: 42px; border-radius: 50%;
   background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.22);
   color: #fff; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 1.2rem;
-  transition: background 0.18s;
-  z-index: 5;
-  -webkit-tap-highlight-color: transparent;
+  cursor: pointer; font-size: 1.4rem; z-index: 5;
+  transition: background 0.18s; -webkit-tap-highlight-color: transparent;
 }
 .pdp-v3-fs-nav:hover { background: rgba(61,142,248,0.6); }
 .pdp-v3-fs-prev { left: 12px; }
 .pdp-v3-fs-next { right: 12px; }
-.pdp-v3-fs-indicator {
+.pdp-v3-fs-ind {
   position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
   font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 600;
   background: rgba(0,0,0,0.5); padding: 4px 14px; border-radius: 20px;
   pointer-events: none;
 }
 
-/* ── Remove the old scroll-driven preview track ─────────────────────── */
-/* The v3 gallery replaces pdp-preview-track entirely */
-.pdp-preview-track { display: none !important; }
-.pdp-thumb-strip    { display: none !important; }
+/* ── Hide old V2 scroll-driven preview track everywhere ──────────────── */
+.pdp-preview-track,
+#pdpPreviewTrack,
+#pdpThumbStrip,
+.pdp-thumb-strip { display: none !important; }
 
-/* ─────────────────────────────────────────────────────────────────────
-   GLOBAL SCROLL ZOOM FIX
-   Prevents the OS/browser from triggering visual-viewport scale
-   changes on the detail page. Maximum-scale=1 is set via JS when
-   the page opens and restored on leave.
-   The key CSS trick: contain:strict on the gallery so iOS Safari
-   does NOT measure the image's intrinsic dimensions during scroll,
-   which can trigger layout-based zoom.
-   ───────────────────────────────────────────────────────────────────── */
+/* ── Cover card: hide when V3 gallery is present ────────────────────── */
+/* V3 JS replaces it via DOM; this ensures no flash of old layout */
+#pdpWrap .pdp-cover-card { display: none; }
+/* But if V3 gallery IS present (normal case), show everything */
+#pdpWrap .pdp-v3-gallery ~ * { display: block; }
+
+/* ── Prevent layout shift on scroll ─────────────────────────────────── */
 .pdp-v3-stage,
 .pdp-v3-cover-img,
 .pdp-v3-preview-img {
-  /* Absolutely no 3D context = no compositing bugs = no zoom trigger */
   -webkit-transform: none !important;
-  -moz-transform:    none !important;
   transform:         none !important;
-}
-/* Extra insurance: these elements should NEVER have transitions that
-   affect layout (width/height/position) — only opacity is allowed */
-.pdp-v3-cover-img,
-.pdp-v3-preview-img {
-  -webkit-transition: opacity 0.28s ease !important;
-  transition:         opacity 0.28s ease !important;
 }
