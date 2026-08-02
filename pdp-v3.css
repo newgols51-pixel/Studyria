@@ -1,11 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════════════
    STUDYRIA — PDF PDP V3 GALLERY CSS
-   V3.1 — 2026-08-01
+   V3.2 — 2026-08-02
+   Key: NO overflow on page containers, NO cover-card hiding (causes blank)
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* ── GLOBAL: prevent OS-level zoom on PDP ───────────────────────────── */
-/* JS locks max-scale to 1.0 when PDP opens; this provides CSS fallback */
-#page-detail { touch-action: pan-y; }
+/* Page must scroll freely — no touch-action restriction on the page itself */
+/* Only the gallery stage has touch-action:pan-y to allow vertical scroll past it */
 
 /* ═══ GALLERY WRAPPER ═══ */
 .pdp-v3-gallery {
@@ -16,28 +16,27 @@
   background: var(--glass);
   border: 1px solid var(--glass-border);
   box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
-  /* Critical: no transform, no compositing hint that triggers zoom */
   transform: none !important;
   will-change: auto !important;
 }
 
-/* ═══ MAIN STAGE ═══ */
+/* ═══ MAIN STAGE — fixed aspect ratio, no zoom ever ═══ */
 .pdp-v3-stage {
   position: relative;
   width: 100%;
-  /* Fixed aspect ratio — never changes size during scroll */
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--bg3);
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Isolate this element completely from page scroll repaints */
   isolation: isolate;
+  /* Allow vertical scroll to pass through, only capture horizontal for swipe */
+  touch-action: pan-y;
 }
-@media (min-width: 768px) { .pdp-v3-stage { aspect-ratio: 3 / 4; max-height: 520px; } }
+@media (min-width: 768px) { .pdp-v3-stage { max-height: 520px; } }
 
-/* Cover image — ZERO transform on any axis */
+/* Cover image — ZERO transform, opacity-only transitions */
 .pdp-v3-cover-img {
   position: absolute;
   inset: 0;
@@ -46,10 +45,8 @@
   object-fit: contain;
   object-position: center;
   display: block;
-  /* Opacity-only transition — never scale, never translate */
   transition: opacity 0.22s ease;
   will-change: opacity;
-  /* Hard lock against any transform */
   transform: none !important;
   backface-visibility: hidden;
   -webkit-user-drag: none;
@@ -58,7 +55,6 @@
   pointer-events: none;
 }
 
-/* Fallback when cover image is missing */
 .pdp-v3-cover-fallback {
   position: absolute;
   inset: 0;
@@ -142,7 +138,7 @@
 }
 @keyframes v3spin { to { transform: rotate(360deg); } }
 
-/* Corner tag + discount badges */
+/* Corner badges */
 .pdp-v3-tag {
   position: absolute; top: 12px; left: 12px; z-index: 5;
   padding: 4px 10px; border-radius: 20px;
@@ -159,7 +155,7 @@
   pointer-events: none;
 }
 
-/* ── NAV ARROWS ─────────────────────────────────────────────────────── */
+/* Nav arrows */
 .pdp-v3-arrow {
   position: absolute;
   top: 50%; transform: translateY(-50%);
@@ -168,7 +164,7 @@
   border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 8; font-size: 1.1rem;
+  cursor: pointer; z-index: 8;
   transition: background 0.18s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -252,8 +248,8 @@
   position: absolute; bottom: 0; left: 0; right: 0;
   font-size: 0.55rem; font-weight: 700;
   color: rgba(255,255,255,0.9); background: rgba(0,0,0,0.6);
-  text-align: center; padding: 2px 2px 3px; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
+  text-align: center; padding: 2px 2px 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 @media (max-width: 480px) {
   .pdp-v3-thumb { width: 52px; height: 70px; }
@@ -333,22 +329,21 @@
   pointer-events: none;
 }
 
-/* ── Hide old V2 scroll-driven preview track everywhere ──────────────── */
+/* ═══ HIDE OLD V2 PREVIEW TRACK (scroll-driven, no longer used) ═══ */
 .pdp-preview-track,
 #pdpPreviewTrack,
 #pdpThumbStrip,
 .pdp-thumb-strip { display: none !important; }
 
-/* ── Cover card: hide when V3 gallery is present ────────────────────── */
-/* V3 JS replaces it via DOM; this ensures no flash of old layout */
-#pdpWrap .pdp-cover-card { display: none; }
-/* But if V3 gallery IS present (normal case), show everything */
-#pdpWrap .pdp-v3-gallery ~ * { display: block; }
-
-/* ── Prevent layout shift on scroll ─────────────────────────────────── */
+/* ═══ NO transform on images ever ═══ */
 .pdp-v3-stage,
 .pdp-v3-cover-img,
 .pdp-v3-preview-img {
   -webkit-transform: none !important;
-  transform:         none !important;
+  transform: none !important;
 }
+
+/* NOTE: Do NOT hide .pdp-cover-card in CSS — the JS replaces it via
+   DOM swap. Hiding it in CSS would cause a blank page if JS fails
+   or runs late. The cover-card is only in DOM briefly during render
+   and is immediately replaced by the V3 gallery. */

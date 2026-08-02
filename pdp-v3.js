@@ -1,22 +1,21 @@
 /* ═══════════════════════════════════════════════════════════════════════
    STUDYRIA — PDF PRODUCT DETAIL PAGE V3 GALLERY ENGINE
-   V3.1 — 2026-08-01 — Fixed: gallery now injected SYNCHRONOUSLY into DOM
+   V3.2 — 2026-08-02 — Fixed: pdpInitPreview timing race + scroll fix
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ══════════════════════════════════════════════════════════════════
-     1. VIEWPORT ZOOM LOCK
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 1. VIEWPORT ZOOM LOCK ═════════════════════════════════════════ */
   var _origVp = null;
 
   function _lockVp() {
     var vp = document.querySelector('meta[name="viewport"]');
     if (!vp) return;
-    _origVp = vp.getAttribute('content');
+    if (!_origVp) _origVp = vp.getAttribute('content');
     vp.setAttribute('content',
       'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
   }
+
   function _unlockVp() {
     var vp = document.querySelector('meta[name="viewport"]');
     if (!vp) return;
@@ -27,67 +26,60 @@
 
   window._pdpInstallZoomControl = function () {
     _lockVp();
-    function onVpResize() {
+    var onResize = function () {
       if (window.visualViewport && window.visualViewport.scale > 1.02) _lockVp();
-    }
+    };
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', onVpResize, { passive: true });
+      window.visualViewport.addEventListener('resize', onResize, { passive: true });
     }
     window._pdpZoomCleanup = function () {
       _unlockVp();
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', onVpResize);
-      }
+      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize);
     };
   };
   window._pdpResetPageZoom = function () {};
 
-  /* ══════════════════════════════════════════════════════════════════
-     2. GALLERY STATE
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 2. GALLERY STATE ══════════════════════════════════════════════ */
   var G = {
-    items: [],
-    idx: 0,
+    items: [], idx: 0,
     pdfJsDoc: null,
-    renderCache: {},
-    thumbCache: {},
-    fsOpen: false,
-    fsScale: 1, fsOX: 0, fsOY: 0,
+    renderCache: {}, thumbCache: {},
+    fsOpen: false, fsScale: 1, fsOX: 0, fsOY: 0,
     swX: 0, swActive: false,
     fsSwX: 0, fsSwActive: false,
   };
 
-  /* ══════════════════════════════════════════════════════════════════
-     3. WATERMARK
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 3. WATERMARK ═════════════════════════════════════════════════ */
   function _wm() {
     var u = window.currentUser;
-    if (u && u.email) return 'STUDYRIA PREVIEW\nNOT FOR REDISTRIBUTION\n' + u.email.split('@')[0].slice(0,14);
+    if (u && u.email) return 'STUDYRIA PREVIEW\nNOT FOR REDISTRIBUTION\n' + u.email.split('@')[0].slice(0, 14);
     return 'STUDYRIA PREVIEW\nNOT FOR REDISTRIBUTION';
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     4. RENDER HELPERS
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 4. RENDER HELPERS ════════════════════════════════════════════ */
   function _renderPage(doc, pageNum, scale) {
     if (G.renderCache[pageNum]) return Promise.resolve(G.renderCache[pageNum]);
     return doc.getPage(pageNum).then(function (page) {
       var vp = page.getViewport({ scale: scale || 1.8 });
       var canvas = document.createElement('canvas');
-      canvas.width  = Math.ceil(vp.width);
+      canvas.width = Math.ceil(vp.width);
       canvas.height = Math.ceil(vp.height);
       var ctx = canvas.getContext('2d');
       return page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () {
+        // Burn watermark into canvas
         var wm = _wm();
         ctx.save();
         ctx.globalAlpha = 0.11;
-        ctx.fillStyle   = '#0d1220';
+        ctx.fillStyle = '#0d1220';
         ctx.font = 'bold ' + Math.max(12, Math.round(canvas.width * 0.038)) + 'px Arial,sans-serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         var step = canvas.width * 0.48;
         for (var x = -canvas.width; x < canvas.width * 2; x += step) {
           for (var y = -canvas.height; y < canvas.height * 2; y += step * 0.58) {
-            ctx.save(); ctx.translate(x, y); ctx.rotate(-Math.PI / 7);
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(-Math.PI / 7);
             wm.split('\n').forEach(function (line, li) {
               ctx.fillText(line, 0, li * Math.max(16, canvas.width * 0.045));
             });
@@ -110,31 +102,34 @@
     });
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     5. GALLERY HTML — injected SYNCHRONOUSLY before pdpInitPreview
-        Called from the overridden _pdpRenderShell
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 5. GALLERY HTML BUILDER ══════════════════════════════════════ */
+  function _esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function _galleryHTML(pdf) {
     var inWish = (window.wishlist || []).includes(pdf.id) ||
                  (window.wishlist || []).includes(String(pdf.id));
-    var price  = Number(pdf.price ?? 0);
-    var origPrice = Number(pdf.originalPrice ?? pdf.original_price ?? 0);
-    var discount  = (origPrice > 0 && price > 0 && origPrice > price)
-                    ? Math.round((1 - price/origPrice)*100) : 0;
-    var coverSrc  = (pdf.coverImage || pdf.cover_image || pdf.cover_url || '').trim();
+    var coverSrc = (pdf.coverImage || pdf.cover_image || pdf.cover_url || '').trim();
     var coverFrom = pdf.coverFrom || '#1d4ed8';
-    var coverTo   = pdf.coverTo   || '#3d8ef8';
-
-    var _esc = window._esc || function(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+    var coverTo = pdf.coverTo || '#3d8ef8';
+    var price = Number(pdf.price ?? 0);
+    var origPrice = Number(pdf.originalPrice ?? pdf.original_price ?? 0);
+    var discount = (origPrice > 0 && price > 0 && origPrice > price)
+      ? Math.round((1 - price / origPrice) * 100) : 0;
 
     var coverContent = coverSrc
-      ? '<img id="pdpV3CoverImg" class="pdp-v3-cover-img" src="' + _esc(coverSrc) + '" alt="' + _esc(pdf.title||'PDF Cover') + '" draggable="false">'
-      + '<div class="pdp-v3-cover-fallback" id="pdpV3CoverFallback" style="display:none;background:linear-gradient(135deg,' + coverFrom + ',' + coverTo + ')">📄</div>'
-      : '<img id="pdpV3CoverImg" class="pdp-v3-cover-img" style="display:none" alt="" draggable="false">'
-      + '<div class="pdp-v3-cover-fallback" style="background:linear-gradient(135deg,' + coverFrom + ',' + coverTo + ')">📄</div>';
+      ? '<img id="pdpV3CoverImg" class="pdp-v3-cover-img" src="' + _esc(coverSrc) +
+        '" alt="' + _esc(pdf.title || 'PDF Cover') + '" draggable="false">' +
+        '<div class="pdp-v3-cover-fallback" id="pdpV3CoverFallback" style="display:none;' +
+        'background:linear-gradient(135deg,' + coverFrom + ',' + coverTo + ')">📄</div>'
+      : '<div class="pdp-v3-cover-fallback" style="background:linear-gradient(135deg,' +
+        coverFrom + ',' + coverTo + ')">📄</div>';
 
-    var tagHTML     = pdf.tag ? '<div class="pdp-v3-tag tag-' + pdf.tag.toLowerCase().replace(/\s+/g,'') + '">' + _esc(pdf.tag) + '</div>' : '';
-    var discountHTML= discount > 0 ? '<div class="pdp-v3-discount-badge">-' + discount + '%</div>' : '';
+    var tagHTML = pdf.tag ? '<div class="pdp-v3-tag">' + _esc(pdf.tag) + '</div>' : '';
+    var discHTML = discount > 0 ? '<div class="pdp-v3-discount-badge">-' + discount + '%</div>' : '';
 
     return (
       '<div class="pdp-v3-gallery" id="pdpV3Gallery">' +
@@ -143,7 +138,7 @@
           '<img id="pdpV3PreviewImg" class="pdp-v3-preview-img" alt="Preview" draggable="false">' +
           '<div class="pdp-v3-watermark" id="pdpV3Watermark"><div class="pdp-v3-wm-text" id="pdpV3WmText"></div></div>' +
           '<div class="pdp-v3-loading" id="pdpV3Loading"><div class="pdp-v3-spinner"></div><span>Loading preview…</span></div>' +
-          tagHTML + discountHTML +
+          tagHTML + discHTML +
           '<button class="pdp-v3-arrow pdp-v3-arrow-prev" id="pdpV3Prev" style="display:none" onclick="window._v3Prev()" aria-label="Previous">' +
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>' +
           '</button>' +
@@ -158,7 +153,9 @@
         '<div class="pdp-v3-thumb-strip" id="pdpV3Strip"></div>' +
         '<div class="pdp-v3-action-row">' +
           '<button class="pdp-v3-action-btn" id="pdpCoverWishBtn" onclick="pdpToggleWish()">' +
-            '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (inWish ? 'var(--danger)' : 'none') + '" stroke="' + (inWish ? 'var(--danger)' : 'currentColor') + '" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (inWish ? 'var(--danger)' : 'none') +
+            '" stroke="' + (inWish ? 'var(--danger)' : 'currentColor') +
+            '" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
             (inWish ? 'Saved' : 'Wishlist') +
           '</button>' +
           '<button class="pdp-v3-action-btn" onclick="pdpSharePDF()">' +
@@ -170,36 +167,42 @@
     );
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     6. OVERRIDE _pdpRenderShell — swap cover-card for V3 gallery
-        This runs BEFORE pdpInitPreview is called, so pdpV3Gallery
-        is in the DOM when the gallery engine initialises.
+  /* ═══ 6. PATCH _pdpRenderShell ═════════════════════════════════════
+     KEY FIX: Suppress pdpInitPreview during orig call, then call it
+     AFTER the gallery DOM is in place.
      ══════════════════════════════════════════════════════════════════ */
   function _patchRenderShell() {
     var orig = window._pdpRenderShell;
-    if (!orig || orig._v3patched) return; // already patched or not ready yet
+    if (!orig || orig._v3patched) return;
 
     window._pdpRenderShell = function _pdpRenderShellV3(pdf) {
-      // 1. Run original — populates pdpWrap with .pdp-cover-card
+      // 1. Suppress pdpInitPreview so orig doesn't call it prematurely
+      var savedInit = window.pdpInitPreview;
+      window.pdpInitPreview = function () {}; // no-op
+
+      // 2. Run original — writes HTML, calls no-op pdpInitPreview
       orig.call(this, pdf);
 
-      // 2. Synchronously swap cover-card for V3 gallery BEFORE pdpInitPreview
+      // 3. Restore pdpInitPreview
+      window.pdpInitPreview = savedInit;
+
+      // 4. Swap cover-card for V3 gallery
       var coverCard = document.querySelector('#pdpWrap .pdp-cover-card');
       if (coverCard) {
-        var galleryNode = document.createElement('div');
-        galleryNode.innerHTML = _galleryHTML(pdf);
-        var galleryEl = galleryNode.firstElementChild;
+        var temp = document.createElement('div');
+        temp.innerHTML = _galleryHTML(pdf);
+        var galleryEl = temp.firstElementChild;
         coverCard.replaceWith(galleryEl);
       }
 
-      // 3. Hide old scroll-driven preview track (no longer used)
+      // 5. Hide old scroll-driven preview track
       var track = document.getElementById('pdpPreviewTrack');
       if (track) track.style.display = 'none';
 
-      // 4. Install swipe on stage (cover card didn't have it)
+      // 6. Install swipe on stage
       _installStageSwipe(document.getElementById('pdpV3Stage'));
 
-      // 5. Cover image error handler
+      // 7. Cover image protections
       var ci = document.getElementById('pdpV3CoverImg');
       if (ci) {
         ci.addEventListener('error', function () {
@@ -208,50 +211,47 @@
           if (fb) fb.style.display = 'flex';
         });
         ci.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-        ci.addEventListener('dragstart',   function (e) { e.preventDefault(); });
+        ci.addEventListener('dragstart', function (e) { e.preventDefault(); });
+      }
+
+      // 8. NOW call pdpInitPreview — gallery is in DOM!
+      if (typeof window.pdpInitPreview === 'function') {
+        window.pdpInitPreview(pdf);
       }
     };
     window._pdpRenderShell._v3patched = true;
   }
 
-  // Also wrap renderDetail so V3 gallery gets initialised after shell writes
   function _patchRenderDetail() {
     var orig = window.renderDetail;
     if (!orig || orig._v3patched) return;
-    window.renderDetail = function renderDetailV3() {
-      // Ensure shell is patched first
+    window.renderDetail = function () {
       _patchRenderShell();
       orig.call(this);
     };
     window.renderDetail._v3patched = true;
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     7. pdpInitPreview OVERRIDE — called by pdp-v2.js after shell rendered
-        At this point pdpV3Gallery IS in the DOM (patched in step 6)
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 7. pdpInitPreview OVERRIDE ═══════════════════════════════════ */
   window.pdpInitPreview = async function pdpInitPreview(pdf) {
-    // Clean up fullscreen if open
     _closeFs();
 
-    G.items       = [];
-    G.idx         = 0;
-    G.pdfJsDoc    = null;
+    G.items = [];
+    G.idx = 0;
+    G.pdfJsDoc = null;
     G.renderCache = {};
-    G.thumbCache  = {};
+    G.thumbCache = {};
 
     var galleryEl = document.getElementById('pdpV3Gallery');
     if (!galleryEl) {
-      console.warn('[PDP V3] pdpV3Gallery not in DOM — patch may not have run yet');
+      console.warn('[PDP V3] pdpV3Gallery not in DOM');
       return;
     }
 
     var coverSrc = (pdf.coverImage || pdf.cover_image || pdf.cover_url || '').trim();
-
-    // Item 0: cover
     G.items.push({ type: 'cover', label: 'Cover', src: coverSrc });
 
-    // Items 1-3: preview pages from PDF.js
+    // Load preview PDF pages
     var previewUrl = (pdf.previewPdfUrl || pdf.preview_pdf_url || '').trim();
     if (previewUrl && window.pdfjsLib) {
       _setLoading(true);
@@ -260,7 +260,7 @@
           url: previewUrl, withCredentials: false
         }).promise;
         G.pdfJsDoc = doc;
-        var total  = doc.numPages || 0;
+        var total = doc.numPages || 0;
 
         var spec = pdf.preview_pages || pdf.previewPages || null;
         var looksSpec = spec && /^\d/.test(String(spec).trim());
@@ -283,64 +283,71 @@
 
     // Show/hide arrows
     var hasMulti = G.items.length > 1;
-    var prevBtn  = document.getElementById('pdpV3Prev');
-    var nextBtn  = document.getElementById('pdpV3Next');
-    var ind      = document.getElementById('pdpV3Ind');
+    var prevBtn = document.getElementById('pdpV3Prev');
+    var nextBtn = document.getElementById('pdpV3Next');
+    var ind = document.getElementById('pdpV3Ind');
     if (prevBtn) prevBtn.style.display = hasMulti ? '' : 'none';
     if (nextBtn) nextBtn.style.display = hasMulti ? '' : 'none';
-    if (ind)     ind.style.display     = hasMulti ? '' : 'none';
+    if (ind) ind.style.display = hasMulti ? '' : 'none';
 
     _buildThumbStrip();
     _showItem(0, false);
   };
 
-  /* ══════════════════════════════════════════════════════════════════
-     8. SHOW ITEM
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 8. SHOW ITEM ═════════════════════════════════════════════════ */
   function _showItem(idx, animate) {
     if (idx < 0 || idx >= G.items.length) return;
     G.idx = idx;
 
-    var item       = G.items[idx];
-    var coverImg   = document.getElementById('pdpV3CoverImg');
+    var item = G.items[idx];
+    var coverImg = document.getElementById('pdpV3CoverImg');
     var previewImg = document.getElementById('pdpV3PreviewImg');
-    var wm         = document.getElementById('pdpV3Watermark');
-    var wmText     = document.getElementById('pdpV3WmText');
-    var fsBtn      = document.getElementById('pdpV3FsBtn');
-    var prevBtn    = document.getElementById('pdpV3Prev');
-    var nextBtn    = document.getElementById('pdpV3Next');
-    var ind        = document.getElementById('pdpV3Ind');
+    var wm = document.getElementById('pdpV3Watermark');
+    var wmText = document.getElementById('pdpV3WmText');
+    var fsBtn = document.getElementById('pdpV3FsBtn');
+    var prevBtn = document.getElementById('pdpV3Prev');
+    var nextBtn = document.getElementById('pdpV3Next');
+    var ind = document.getElementById('pdpV3Ind');
 
-    if (!coverImg) return;
+    if (!coverImg && !previewImg) return;
 
     if (prevBtn) prevBtn.disabled = (idx === 0);
     if (nextBtn) nextBtn.disabled = (idx === G.items.length - 1);
-    if (ind)     ind.textContent  = (idx + 1) + ' / ' + G.items.length;
+    if (ind) ind.textContent = (idx + 1) + ' / ' + G.items.length;
 
     _updateThumbHL(idx);
 
     if (item.type === 'cover') {
-      previewImg.classList.remove('pdp-v3-visible');
-      coverImg.style.opacity = '1';
-      if (wm)    wm.classList.remove('pdp-v3-visible');
+      if (previewImg) previewImg.classList.remove('pdp-v3-visible');
+      if (coverImg) coverImg.style.opacity = '1';
+      if (wm) wm.classList.remove('pdp-v3-visible');
       if (fsBtn) fsBtn.style.display = 'none';
     } else {
       if (fsBtn) fsBtn.style.display = '';
       _setLoading(true);
-      coverImg.style.opacity = '0.12';
+      if (coverImg) coverImg.style.opacity = '0.12';
+
       _renderPage(G.pdfJsDoc, item.pageNum, 1.8).then(function (url) {
         if (G.idx !== idx) return;
         if (!document.getElementById('pdpV3Gallery')) return;
-        previewImg.src = url;
-        previewImg.classList.add('pdp-v3-visible');
+        if (previewImg) {
+          previewImg.src = url;
+          previewImg.classList.add('pdp-v3-visible');
+        }
         _setLoading(false);
-        if (wm && wmText) { wmText.textContent = _wm(); wm.classList.add('pdp-v3-visible'); }
-        previewImg.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-        previewImg.addEventListener('dragstart',   function (e) { e.preventDefault(); });
-        // Pre-warm
-        var ni = G.items[idx + 1]; var pi = G.items[idx - 1];
-        if (ni && ni.type === 'preview') _renderPage(G.pdfJsDoc, ni.pageNum).catch(function(){});
-        if (pi && pi.type === 'preview') _renderPage(G.pdfJsDoc, pi.pageNum).catch(function(){});
+        if (wm && wmText) {
+          wmText.textContent = _wm();
+          wm.classList.add('pdp-v3-visible');
+        }
+        if (previewImg) {
+          previewImg.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+          previewImg.addEventListener('dragstart', function (e) { e.preventDefault(); });
+        }
+        // Pre-warm adjacent pages
+        var ni = G.items[idx + 1];
+        var pi = G.items[idx - 1];
+        if (ni && ni.type === 'preview') _renderPage(G.pdfJsDoc, ni.pageNum).catch(function () {});
+        if (pi && pi.type === 'preview') _renderPage(G.pdfJsDoc, pi.pageNum).catch(function () {});
       }).catch(function (e) {
         console.warn('[PDP V3] Render failed:', e);
         _setLoading(false);
@@ -348,9 +355,7 @@
     }
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     9. THUMBNAIL STRIP
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 9. THUMBNAIL STRIP ═══════════════════════════════════════════ */
   function _buildThumbStrip() {
     var strip = document.getElementById('pdpV3Strip');
     if (!strip) return;
@@ -358,29 +363,32 @@
 
     G.items.forEach(function (item, idx) {
       var btn = document.createElement('button');
-      btn.type      = 'button';
+      btn.type = 'button';
       btn.className = 'pdp-v3-thumb' + (idx === 0 ? ' active' : '');
       btn.setAttribute('aria-label', item.label);
-      btn.onclick   = function () { _showItem(idx, true); };
+      btn.onclick = function () { _showItem(idx, true); };
 
       var ph = document.createElement('div');
-      ph.className   = 'pdp-v3-thumb-ph';
+      ph.className = 'pdp-v3-thumb-ph';
       ph.textContent = item.label;
       btn.appendChild(ph);
 
       strip.appendChild(btn);
 
-      // Async load thumb image
+      // Async load thumb
       if (item.type === 'cover' && item.src) {
         var img = new Image();
         img.onload = function () {
           if (!document.getElementById('pdpV3Strip')) return;
           var im = document.createElement('img');
-          im.src = item.src; im.alt = item.label; im.draggable = false;
+          im.src = item.src;
+          im.alt = item.label;
+          im.draggable = false;
           btn.innerHTML = '';
           btn.appendChild(im);
           var lbl = document.createElement('div');
-          lbl.className = 'pdp-v3-thumb-lbl'; lbl.textContent = 'Cover';
+          lbl.className = 'pdp-v3-thumb-lbl';
+          lbl.textContent = 'Cover';
           btn.appendChild(lbl);
         };
         img.src = item.src;
@@ -388,14 +396,17 @@
         _renderThumb(G.pdfJsDoc, item.pageNum).then(function (url) {
           if (!document.getElementById('pdpV3Strip')) return;
           var im = document.createElement('img');
-          im.src = url; im.alt = item.label; im.draggable = false;
+          im.src = url;
+          im.alt = item.label;
+          im.draggable = false;
           im.addEventListener('contextmenu', function (e) { e.preventDefault(); });
           btn.innerHTML = '';
           btn.appendChild(im);
           var lbl = document.createElement('div');
-          lbl.className = 'pdp-v3-thumb-lbl'; lbl.textContent = item.label;
+          lbl.className = 'pdp-v3-thumb-lbl';
+          lbl.textContent = item.label;
           btn.appendChild(lbl);
-        }).catch(function(){});
+        }).catch(function () {});
       }
     });
   }
@@ -407,28 +418,26 @@
       el.classList.toggle('active', i === idx);
       el.setAttribute('aria-selected', i === idx ? 'true' : 'false');
     });
-    var activeThumb = strip.children[idx];
-    if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    var active = strip.children[idx];
+    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     10. LOADING STATE
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 10. LOADING ═════════════════════════════════════════════════ */
   function _setLoading(on) {
     var el = document.getElementById('pdpV3Loading');
     if (!el) return;
     el.classList.toggle('active', on);
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     11. SWIPE GESTURES
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 11. SWIPE ═══════════════════════════════════════════════════ */
   function _installStageSwipe(stage) {
     if (!stage) return;
     var sx = 0, sy = 0, moved = false;
     stage.addEventListener('touchstart', function (e) {
       if (e.touches.length !== 1) return;
-      sx = e.touches[0].clientX; sy = e.touches[0].clientY; moved = false;
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+      moved = false;
     }, { passive: true });
     stage.addEventListener('touchmove', function (e) {
       if (e.touches.length !== 1) return;
@@ -437,22 +446,21 @@
     stage.addEventListener('touchend', function (e) {
       if (!moved) return;
       var diff = sx - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 48) { if (diff > 0) _v3Next(); else _v3Prev(); }
+      if (Math.abs(diff) > 48) {
+        if (diff > 0) _v3Next();
+        else _v3Prev();
+      }
       moved = false;
     }, { passive: true });
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     12. NAV FUNCTIONS
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 12. NAV ════════════════════════════════════════════════════ */
   function _v3Prev() { if (G.idx > 0) _showItem(G.idx - 1, true); }
   function _v3Next() { if (G.idx < G.items.length - 1) _showItem(G.idx + 1, true); }
   window._v3Prev = _v3Prev;
   window._v3Next = _v3Next;
 
-  /* ══════════════════════════════════════════════════════════════════
-     13. FULLSCREEN
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 13. FULLSCREEN ══════════════════════════════════════════════ */
   function _openFs() {
     var item = G.items[G.idx];
     if (!item || item.type === 'cover') return;
@@ -462,7 +470,7 @@
 
   function _closeFs() {
     var ov = document.getElementById('pdpV3Overlay');
-    if (!ov) return;
+    if (!ov) { G.fsOpen = false; return; }
     ov.classList.remove('open');
     document.body.style.overflow = '';
     G.fsOpen = false;
@@ -470,7 +478,7 @@
     setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 280);
   }
 
-  window._v3OpenFs  = _openFs;
+  window._v3OpenFs = _openFs;
   window._v3CloseFs = _closeFs;
 
   function _buildFsOverlay() {
@@ -478,7 +486,7 @@
     if (old && old.parentNode) old.parentNode.removeChild(old);
 
     var ov = document.createElement('div');
-    ov.id        = 'pdpV3Overlay';
+    ov.id = 'pdpV3Overlay';
     ov.className = 'pdp-v3-fs-overlay';
     ov.innerHTML =
       '<button class="pdp-v3-fs-close" onclick="window._v3CloseFs()">✕</button>' +
@@ -506,47 +514,48 @@
     if (item.type === 'cover') {
       var nxt = G.items.findIndex(function (it, i) { return i > idx && it.type === 'preview'; });
       if (nxt > -1) { G.idx = nxt; _fsShowItem(nxt); return; }
-      _closeFs(); return;
+      _closeFs();
+      return;
     }
     G.idx = idx;
     var previews = G.items.filter(function (it) { return it.type === 'preview'; });
-    var rank     = previews.indexOf(item) + 1;
-    var ind      = document.getElementById('pdpV3FsInd');
-    var wm       = document.getElementById('pdpV3FsWm');
-    var img      = document.getElementById('pdpV3FsImg');
+    var rank = previews.indexOf(item) + 1;
+    var ind = document.getElementById('pdpV3FsInd');
+    var wm = document.getElementById('pdpV3FsWm');
     if (ind) ind.textContent = 'Preview ' + rank + ' / ' + previews.length;
-    if (wm)  wm.textContent  = _wm().split('\n')[0];
+    if (wm) wm.textContent = _wm().split('\n')[0];
     G.fsScale = 1; G.fsOX = 0; G.fsOY = 0;
+    var img = document.getElementById('pdpV3FsImg');
     if (img) img.style.transform = '';
     _renderPage(G.pdfJsDoc, item.pageNum, 2.5).then(function (url) {
       var fsImg = document.getElementById('pdpV3FsImg');
       if (fsImg) fsImg.src = url;
-    }).catch(function(){});
+    }).catch(function () {});
   }
 
   function _v3FsPrev() {
-    var pIndexes = G.items.map(function (it, i) { return it.type === 'preview' ? i : -1; }).filter(function (i) { return i >= 0; });
-    var cur = pIndexes.indexOf(G.idx);
-    if (cur > 0) _fsShowItem(pIndexes[cur - 1]);
+    var pIdx = G.items.map(function (it, i) { return it.type === 'preview' ? i : -1; }).filter(function (i) { return i >= 0; });
+    var cur = pIdx.indexOf(G.idx);
+    if (cur > 0) _fsShowItem(pIdx[cur - 1]);
   }
   function _v3FsNext() {
-    var pIndexes = G.items.map(function (it, i) { return it.type === 'preview' ? i : -1; }).filter(function (i) { return i >= 0; });
-    var cur = pIndexes.indexOf(G.idx);
-    if (cur < pIndexes.length - 1) _fsShowItem(pIndexes[cur + 1]);
+    var pIdx = G.items.map(function (it, i) { return it.type === 'preview' ? i : -1; }).filter(function (i) { return i >= 0; });
+    var cur = pIdx.indexOf(G.idx);
+    if (cur < pIdx.length - 1) _fsShowItem(pIdx[cur + 1]);
   }
   window._v3FsPrev = _v3FsPrev;
   window._v3FsNext = _v3FsNext;
 
   function _fsKey(e) {
     if (!G.fsOpen) return;
-    if (e.key === 'Escape')    _closeFs();
-    if (e.key === 'ArrowLeft') _v3FsPrev();
-    if (e.key === 'ArrowRight')_v3FsNext();
+    if (e.key === 'Escape') _closeFs();
+    else if (e.key === 'ArrowLeft') _v3FsPrev();
+    else if (e.key === 'ArrowRight') _v3FsNext();
   }
 
   function _installFsInteraction(ov) {
     var wrap = ov.querySelector('.pdp-v3-fs-wrap');
-    var img  = ov.querySelector('.pdp-v3-fs-img');
+    var img = ov.querySelector('.pdp-v3-fs-img');
     if (!wrap || !img) return;
     var startDist = 0, lastScale = 1, isPanning = false, psx = 0, psy = 0;
     var lastTap = 0, ltx = 0, lty = 0;
@@ -554,38 +563,41 @@
     function clamp(s) { return Math.min(4, Math.max(1, s)); }
     function applyT(anim) {
       img.style.transition = anim ? 'transform .2s ease' : 'none';
-      img.style.transform  = 'translate(' + G.fsOX + 'px,' + G.fsOY + 'px) scale(' + G.fsScale + ')';
+      img.style.transform = 'translate(' + G.fsOX + 'px,' + G.fsOY + 'px) scale(' + G.fsScale + ')';
     }
-    function resetT(anim) { G.fsScale=1; G.fsOX=0; G.fsOY=0; applyT(anim); }
+    function resetT(anim) { G.fsScale = 1; G.fsOX = 0; G.fsOY = 0; applyT(anim); }
     function zoomAt(cx, cy) {
       if (G.fsScale > 1) { resetT(true); return; }
       var r = img.getBoundingClientRect();
       G.fsScale = 2.5;
-      G.fsOX = (r.width/2-(cx-r.left))*(G.fsScale-1)/G.fsScale;
-      G.fsOY = (r.height/2-(cy-r.top))*(G.fsScale-1)/G.fsScale;
+      G.fsOX = (r.width / 2 - (cx - r.left)) * (G.fsScale - 1) / G.fsScale;
+      G.fsOY = (r.height / 2 - (cy - r.top)) * (G.fsScale - 1) / G.fsScale;
       applyT(true);
     }
-    function dist(t) { return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+    function dist(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
 
     wrap.addEventListener('touchstart', function (e) {
       if (e.touches.length === 2) { startDist = dist(e.touches); lastScale = G.fsScale; }
       else if (e.touches.length === 1) {
-        if (G.fsScale > 1) { isPanning = true; psx = e.touches[0].clientX-G.fsOX; psy = e.touches[0].clientY-G.fsOY; }
+        if (G.fsScale > 1) { isPanning = true; psx = e.touches[0].clientX - G.fsOX; psy = e.touches[0].clientY - G.fsOY; }
         else { G.fsSwX = e.touches[0].clientX; G.fsSwActive = true; }
         var now = Date.now();
-        var dx = Math.abs(e.touches[0].clientX-ltx), dy = Math.abs(e.touches[0].clientY-lty);
-        if (now-lastTap<300 && dx<30 && dy<30) { zoomAt(e.touches[0].clientX, e.touches[0].clientY); lastTap=0; }
-        else { lastTap=now; ltx=e.touches[0].clientX; lty=e.touches[0].clientY; }
+        var dx = Math.abs(e.touches[0].clientX - ltx), dy = Math.abs(e.touches[0].clientY - lty);
+        if (now - lastTap < 300 && dx < 30 && dy < 30) { zoomAt(e.touches[0].clientX, e.touches[0].clientY); lastTap = 0; }
+        else { lastTap = now; ltx = e.touches[0].clientX; lty = e.touches[0].clientY; }
       }
     }, { passive: true });
 
     wrap.addEventListener('touchmove', function (e) {
       if (e.touches.length === 2 && startDist) {
         e.preventDefault();
-        G.fsScale = clamp(lastScale*(dist(e.touches)/startDist)); applyT(false);
+        G.fsScale = clamp(lastScale * (dist(e.touches) / startDist));
+        applyT(false);
       } else if (e.touches.length === 1 && isPanning) {
         e.preventDefault();
-        G.fsOX = e.touches[0].clientX-psx; G.fsOY = e.touches[0].clientY-psy; applyT(false);
+        G.fsOX = e.touches[0].clientX - psx;
+        G.fsOY = e.touches[0].clientY - psy;
+        applyT(false);
       }
     }, { passive: false });
 
@@ -606,27 +618,23 @@
     wrap.addEventListener('wheel', function (e) {
       e.preventDefault();
       G.fsScale = clamp(G.fsScale + (e.deltaY < 0 ? 0.3 : -0.3));
-      if (G.fsScale <= 1) { G.fsOX=0; G.fsOY=0; }
+      if (G.fsScale <= 1) { G.fsOX = 0; G.fsOY = 0; }
       applyT(false);
     }, { passive: false });
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     14. BOOT — wait for pdp-v2.js to define its exports, then patch
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══ 14. BOOT ════════════════════════════════════════════════════ */
   function _boot() {
-    // pdp-v2.js is deferred, so it may not have executed yet.
-    // Use a tiny retry loop — usually resolves on first tick.
     var attempts = 0;
     function tryPatch() {
       attempts++;
       if (window._pdpRenderShell && !window._pdpRenderShell._v3patched) {
         _patchRenderShell();
         _patchRenderDetail();
-        console.log('[PDP V3] Patched ✅ (attempt ' + attempts + ')');
+        console.log('[PDP V3] Patched OK (attempt ' + attempts + ')');
       } else if (!window._pdpRenderShell && attempts < 40) {
-        setTimeout(tryPatch, 50); // retry every 50ms for up to 2s
-      } else {
+        setTimeout(tryPatch, 50);
+      } else if (!window._pdpRenderShell) {
         console.warn('[PDP V3] _pdpRenderShell not found after ' + attempts + ' attempts');
       }
     }
