@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    STUDYRIA — PDF PRODUCT DETAIL PAGE V3 GALLERY ENGINE
-   V3.2 — 2026-08-02 — Fixed: pdpInitPreview timing race + scroll fix
+   V3.3 — 2026-08-03 — Root cause fix: V2 no-op trick removed, V2 preview elements cleaned up
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -168,25 +168,22 @@
   }
 
   /* ═══ 6. PATCH _pdpRenderShell ═════════════════════════════════════
-     KEY FIX: Suppress pdpInitPreview during orig call, then call it
-     AFTER the gallery DOM is in place.
+     ROOT CAUSE FIX: V2 _pdpRenderShell no longer calls pdpInitPreview
+     (removed at source in pdp-v2.js). The V3 patch only needs to:
+     1. Call orig to write the base HTML
+     2. Swap cover-card for V3 gallery
+     3. Call pdpInitPreview (V3 version) after gallery is in DOM
      ══════════════════════════════════════════════════════════════════ */
   function _patchRenderShell() {
     var orig = window._pdpRenderShell;
     if (!orig || orig._v3patched) return;
 
     window._pdpRenderShell = function _pdpRenderShellV3(pdf) {
-      // 1. Suppress pdpInitPreview so orig doesn't call it prematurely
-      var savedInit = window.pdpInitPreview;
-      window.pdpInitPreview = function () {}; // no-op
-
-      // 2. Run original — writes HTML, calls no-op pdpInitPreview
+      // 1. Run original — writes base HTML (cover-card, meta, reviews, related)
+      //    No pdpInitPreview call anymore (removed at source)
       orig.call(this, pdf);
 
-      // 3. Restore pdpInitPreview
-      window.pdpInitPreview = savedInit;
-
-      // 4. Swap cover-card for V3 gallery
+      // 2. Swap cover-card for V3 gallery
       var coverCard = document.querySelector('#pdpWrap .pdp-cover-card');
       if (coverCard) {
         var temp = document.createElement('div');
@@ -195,14 +192,16 @@
         coverCard.replaceWith(galleryEl);
       }
 
-      // 5. Hide old scroll-driven preview track
+      // 3. Remove any leftover preview-track elements (belt-and-suspenders)
       var track = document.getElementById('pdpPreviewTrack');
-      if (track) track.style.display = 'none';
+      if (track) track.remove();
+      var oldStrip = document.getElementById('pdpThumbStrip');
+      if (oldStrip) oldStrip.remove();
 
-      // 6. Install swipe on stage
+      // 4. Install swipe on stage
       _installStageSwipe(document.getElementById('pdpV3Stage'));
 
-      // 7. Cover image protections
+      // 5. Cover image protections
       var ci = document.getElementById('pdpV3CoverImg');
       if (ci) {
         ci.addEventListener('error', function () {
@@ -214,7 +213,7 @@
         ci.addEventListener('dragstart', function (e) { e.preventDefault(); });
       }
 
-      // 8. NOW call pdpInitPreview — gallery is in DOM!
+      // 6. Call pdpInitPreview (V3 version) — gallery is in DOM
       if (typeof window.pdpInitPreview === 'function') {
         window.pdpInitPreview(pdf);
       }

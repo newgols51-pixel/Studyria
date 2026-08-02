@@ -347,3 +347,79 @@
    DOM swap. Hiding it in CSS would cause a blank page if JS fails
    or runs late. The cover-card is only in DOM briefly during render
    and is immediately replaced by the V3 gallery. */
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   V3.3 — PERMANENT ZOOM FIX
+   Root cause: V2 pdpInitPreview created a position:sticky preview element
+   that stayed fixed during scroll, creating a "zoom" perception.
+   Fix: Removed pdpInitPreview call from V2 _pdpRenderShell (line 474)
+   and removed preview-track HTML from V2 template.
+   CSS below ensures no V2 preview element can ever render.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Permanently neutralize ALL V2 preview elements */
+.pdp-preview-track,
+#pdpPreviewTrack,
+.pdp-preview-sticky,
+#pdpPreviewSticky,
+.pdp-preview-stage,
+#pdpPreviewStage,
+.pdp-preview-img,
+#pdpPreviewImg,
+#pdpThumbStrip,
+.pdp-thumb-strip {
+  display: none !important;
+  position: static !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  transform: none !important;
+  will-change: auto !important;
+  contain: none !important;
+}
+
+/* Ensure NO sticky positioning on any PDP element except buy-card */
+.pdp-preview-sticky {
+  position: static !important;
+  top: auto !important;
+}
+
+/* Cover image — absolute zero transform/scale, guaranteed */
+.pdp-cover-wrap,
+.pdp-cover-img,
+.pdp-cover-card {
+  transform: none !important;
+  scale: 1 !important;
+  zoom: 1 !important;
+  transition: none !important;
+  will-change: auto !important;
+  contain: layout paint !important;
+}
+
+/* V3 gallery stage — no transform ever */
+.pdp-v3-stage,
+.pdp-v3-cover-img,
+.pdp-v3-preview-img,
+.pdp-v3-gallery {
+  transform: none !important;
+  scale: 1 !important;
+  zoom: 1 !important;
+  will-change: auto !important;
+}
+
+/* Only the fullscreen overlay image may have transform */
+.pdp-v3-fs-img {
+  will-change: transform;
+}
+
+/* Prevent any iOS Safari zoom behavior on PDP */
+#page-detail {
+  touch-action: pan-y !important;
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+/* Sticky buy card is fine — it doesn't zoom, it just sticks */
+.pdp-buy-card { position: sticky; top: 88px; }
+.pdp-sticky-bar { position: fixed; bottom: 0; }

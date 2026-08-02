@@ -6,7 +6,7 @@
    All function signatures match the old ones so app.js, supabase.js,
    and all other modules keep working unchanged.
 
-   V2 — 2026-08-01
+   V2.1 — 2026-08-03 — Root cause fix: removed pdpInitPreview call + preview-track HTML
    ═══════════════════════════════════════════════════════════════════════ */
 (function() {
 'use strict';
@@ -242,20 +242,9 @@ function _pdpRenderShell(pdf) {
             </div>
           </div>
 
-          <!-- ═══ PDF PREVIEW (scroll-driven sticky) ═══ -->
-          <div class="pdp-preview-track" id="pdpPreviewTrack">
-            <div class="pdp-preview-sticky" id="pdpPreviewSticky">
-              <div class="pdp-preview-stage" id="pdpPreviewStage">
-                <img class="pdp-preview-img" id="pdpPreviewImg" alt="PDF page preview">
-                <div class="pdp-preview-watermark">STUDYRIA PREVIEW<br>NOT FOR REDISTRIBUTION</div>
-                <div class="pdp-preview-loading" id="pdpPreviewLoading">
-                  <div class="pdp-preview-spinner"></div>
-                  <span>Loading preview…</span>
-                </div>
-              </div>
-              <div class="pdp-preview-pageindicator" id="pdpPreviewPageIndicator"></div>
-            </div>
-          </div>
+          <!-- ═══ PDF PREVIEW — REMOVED: V3 gallery handles previews ═══ -->
+          <!-- The scroll-driven sticky preview was the root cause of the auto-zoom bug -->
+          <!-- V3 gallery (pdp-v3.js) replaces the cover-card with a click-driven gallery -->
 
           <!-- ═══ PREMIUM HEADER: Meta Block ═══ -->
           <div class="pdp-meta-block">
@@ -470,8 +459,9 @@ function _pdpRenderShell(pdf) {
 
   document.getElementById('pdpWrap').innerHTML = pdpHTML;
 
-  // Preview init
-  if (typeof pdpInitPreview === 'function') pdpInitPreview(pdf);
+  // Preview init — REMOVED: V3 gallery handles this via window.pdpInitPreview
+  // The V2 scroll-driven preview caused the auto-zoom bug (sticky element stayed fixed during scroll)
+  // V3 patch (_patchRenderShell in pdp-v3.js) calls window.pdpInitPreview after gallery swap
 
   // Zoom control
   _pdpInstallZoomControl();
@@ -787,6 +777,11 @@ async function _pdpRenderThumb(pdfDoc, pageNum) {
 
 
 async function pdpInitPreview(pdf) {
+  // V3 guard: if V3 gallery is active, this V2 function should not run
+  if (document.getElementById('pdpV3Gallery')) {
+    console.log('[PDP V2] Skipping V2 pdpInitPreview — V3 gallery is active');
+    return;
+  }
   const track     = document.getElementById('pdpPreviewTrack');
   const stickyEl  = document.getElementById('pdpPreviewSticky');
   const img       = document.getElementById('pdpPreviewImg');
