@@ -1,0 +1,599 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   STUDYRIA — PDF PDP V4 UI UPGRADE CSS
+   V4.0 — 2026-08-02
+   Review redesign, related card fix, badges, recently viewed, banners
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════
+   1. REVIEW SECTION — Modern Card UI, Glassmorphism, AMOLED
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Review summary block */
+.v4-rev-summary {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.v4-rev-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+}
+.v4-rev-score-num {
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.v4-rev-score-stars {
+  display: flex;
+  gap: 2px;
+  font-size: 1.1rem;
+  color: #f59e0b;
+}
+.v4-rev-score-total {
+  font-size: 0.72rem;
+  color: var(--text2);
+  font-weight: 600;
+}
+
+.v4-rev-breakdown {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.v4-rev-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+}
+.v4-rev-bar-lbl {
+  width: 28px;
+  color: var(--text2);
+  font-weight: 700;
+  text-align: right;
+}
+.v4-rev-bar-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg3);
+  overflow: hidden;
+}
+.v4-rev-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.v4-rev-bar-pct {
+  width: 36px;
+  color: var(--text3);
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Review filters */
+.v4-rev-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.v4-rev-filter {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text2);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-body, sans-serif);
+  -webkit-tap-highlight-color: transparent;
+}
+.v4-rev-filter:hover {
+  border-color: var(--accent, #3d8ef8);
+  color: var(--text);
+}
+.v4-rev-filter.active {
+  background: var(--accent, #3d8ef8);
+  color: #fff;
+  border-color: var(--accent, #3d8ef8);
+}
+
+/* Review cards */
+.v4-rev-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.v4-rev-card {
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.v4-rev-card:hover {
+  border-color: rgba(61,142,248,0.3);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.3), 0 0 0 1px rgba(61,142,248,0.08);
+}
+
+.v4-rev-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.v4-rev-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent, #3d8ef8), #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(61,142,248,0.3);
+}
+
+.v4-rev-info {
+  flex: 1;
+  min-width: 0;
+}
+.v4-rev-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.v4-rev-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.v4-rev-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--success, #10d98e);
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(16,217,142,0.1);
+  border: 1px solid rgba(16,217,142,0.25);
+}
+.v4-rev-date {
+  font-size: 0.66rem;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.v4-rev-city {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.66rem;
+  color: var(--text3);
+}
+
+.v4-rev-stars {
+  display: flex;
+  gap: 1px;
+  font-size: 0.85rem;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+.v4-rev-stars .empty { color: var(--text3); opacity: 0.4; }
+
+.v4-rev-body {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--text2);
+  margin-bottom: 10px;
+}
+
+.v4-rev-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--glass-border);
+}
+.v4-rev-helpful {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-body, sans-serif);
+  -webkit-tap-highlight-color: transparent;
+}
+.v4-rev-helpful:hover, .v4-rev-helpful.voted {
+  border-color: var(--accent, #3d8ef8);
+  color: var(--accent, #3d8ef8);
+  background: rgba(61,142,248,0.08);
+}
+.v4-rev-helpful svg { width: 12px; height: 12px; }
+
+.v4-rev-report {
+  font-size: 0.66rem;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  font-family: var(--font-body, sans-serif);
+  -webkit-tap-highlight-color: transparent;
+}
+.v4-rev-report:hover { color: var(--danger, #ef4444); }
+
+/* Review form */
+.v4-rev-form {
+  padding: 20px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  margin-top: 16px;
+}
+.v4-rev-form-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text);
+}
+.v4-star-sel {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.v4-star-sel button {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.v4-star-sel button:hover { transform: scale(1.15); }
+.v4-star-sel button.active { color: #f59e0b; }
+.v4-rev-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.v4-rev-textarea:focus { border-color: var(--accent, #3d8ef8); }
+.v4-rev-submit {
+  margin-top: 12px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent, #3d8ef8), #8b5cf6);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: var(--font-body, sans-serif);
+}
+.v4-rev-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+.v4-rev-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.v4-rev-login {
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text2);
+}
+.v4-rev-login a { color: var(--accent, #3d8ef8); cursor: pointer; font-weight: 700; }
+
+/* Skeleton loading for reviews */
+.v4-rev-skeleton {
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.v4-skel-circle {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(90deg, var(--bg3), var(--glass), var(--bg3));
+  background-size: 200% 100%;
+  animation: v4shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+.v4-skel-line {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--bg3), var(--glass), var(--bg3));
+  background-size: 200% 100%;
+  animation: v4shimmer 1.5s infinite;
+  margin-bottom: 6px;
+}
+.v4-skel-line.short { width: 40%; }
+.v4-skel-line.med { width: 70%; }
+.v4-skel-line.long { width: 100%; }
+@keyframes v4shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   2. RELATED PDF CARDS — Fixed sizing, equal height, carousel
+   ══════════════════════════════════════════════════════════════════ */
+.pdp-related-track {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border) transparent;
+  scroll-snap-type: x proximity;
+}
+
+/* Fix: every card in related track gets identical dimensions */
+.pdp-related-track .pdf-card {
+  flex: 0 0 200px;
+  width: 200px;
+  min-height: 320px;
+  max-height: 380px;
+  scroll-snap-align: start;
+}
+@media (max-width: 480px) {
+  .pdp-related-track .pdf-card {
+    flex: 0 0 160px;
+    width: 160px;
+    min-height: 280px;
+    max-height: 340px;
+  }
+}
+
+/* Fix: cover image always same ratio */
+.pdp-related-track .pdf-cover {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  height: auto;
+}
+.pdp-related-track .pdf-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fix: card body consistent height */
+.pdp-related-track .pdf-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+}
+.pdp-related-track .pdf-title {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  max-height: 2.2em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.pdp-related-track .pdf-card-actions {
+  margin-top: auto;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   3. BADGES — Premium, Best Seller, New, Trending, Safe Download
+   ══════════════════════════════════════════════════════════════════ */
+.v4-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.v4-badge-premium {
+  background: linear-gradient(135deg, rgba(139,92,246,0.18), rgba(99,102,241,0.12));
+  color: #a78bfa;
+  border: 1px solid rgba(139,92,246,0.3);
+}
+.v4-badge-bestseller {
+  background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(251,146,60,0.12));
+  color: #fbbf24;
+  border: 1px solid rgba(245,158,11,0.3);
+}
+.v4-badge-new {
+  background: linear-gradient(135deg, rgba(16,217,142,0.18), rgba(34,197,94,0.12));
+  color: var(--success, #10d98e);
+  border: 1px solid rgba(16,217,142,0.3);
+}
+.v4-badge-trending {
+  background: linear-gradient(135deg, rgba(239,68,68,0.18), rgba(248,113,113,0.12));
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,0.3);
+}
+.v4-badge-safe {
+  background: linear-gradient(135deg, rgba(61,142,248,0.18), rgba(0,200,232,0.12));
+  color: var(--accent, #3d8ef8);
+  border: 1px solid rgba(61,142,248,0.3);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   4. SECURE PURCHASE BANNER
+   ══════════════════════════════════════════════════════════════════ */
+.v4-secure-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(16,217,142,0.06), rgba(61,142,248,0.04));
+  border: 1px solid rgba(16,217,142,0.15);
+  margin-bottom: 16px;
+}
+.v4-secure-banner svg {
+  width: 20px; height: 20px;
+  color: var(--success, #10d98e);
+  flex-shrink: 0;
+}
+.v4-secure-banner-text {
+  font-size: 0.72rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.v4-secure-banner-text strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   5. RECENTLY VIEWED
+   ══════════════════════════════════════════════════════════════════ */
+.v4-recently-viewed {
+  margin-bottom: 16px;
+}
+.v4-recently-viewed-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.v4-recently-viewed-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.v4-recently-viewed-track .pdf-card {
+  flex: 0 0 140px;
+  width: 140px;
+  min-height: 240px;
+  scroll-snap-align: start;
+}
+.v4-recently-viewed-track .pdf-cover {
+  aspect-ratio: 3 / 4;
+}
+@media (max-width: 480px) {
+  .v4-recently-viewed-track .pdf-card {
+    flex: 0 0 120px;
+    width: 120px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   6. WISHLIST ANIMATION
+   ══════════════════════════════════════════════════════════════════ */
+@keyframes v4HeartPop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.35); }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.v4-wish-pop {
+  animation: v4HeartPop 0.4s ease;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   7. PRODUCT META BADGES ROW
+   ══════════════════════════════════════════════════════════════════ */
+.v4-meta-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   8. SKELETON FOR GALLERY + CONTENT
+   ══════════════════════════════════════════════════════════════════ */
+.v4-gallery-skeleton {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 520px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, var(--bg3), var(--glass), var(--bg3));
+  background-size: 200% 100%;
+  animation: v4shimmer 1.5s infinite;
+  border: 1px solid var(--glass-border);
+}
+.v4-content-skeleton {
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--bg3), var(--glass), var(--bg3));
+  background-size: 200% 100%;
+  animation: v4shimmer 1.5s infinite;
+  margin-bottom: 12px;
+}
+
+/* AMOLED enhancements for dark theme */
+@media (prefers-color-scheme: dark) {
+  .v4-rev-card {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .v4-rev-summary {
+    background: rgba(255,255,255,0.02);
+    border-color: rgba(255,255,255,0.06);
+  }
+}
