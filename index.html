@@ -29599,7 +29599,19 @@ async function savePreviewUrls(pdfId, previewUrls) {
   };
 
   var res = await sb.from('pdfs').update(payload).eq('id', pdfId);
-  if (res.error) throw new Error('Failed to save preview URLs: ' + res.error.message);
+  if (res.error) {
+    // Check if the error is due to missing columns
+    if (res.error.message && res.error.message.includes('does not exist')) {
+      console.error('❌ Preview columns missing! Run this SQL in Supabase SQL Editor:');
+      console.error('ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_page_1 TEXT;');
+      console.error('ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_page_2 TEXT;');
+      console.error('ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_page_3 TEXT;');
+      console.error('ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_generated BOOLEAN DEFAULT false;');
+      console.error('ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_generated_at TIMESTAMPTZ;');
+      throw new Error('Database columns missing! Run the SQL migration in Supabase SQL Editor. Check browser console for the SQL.');
+    }
+    throw new Error('Failed to save preview URLs: ' + res.error.message);
+  }
   return true;
 }
 
