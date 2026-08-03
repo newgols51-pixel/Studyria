@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════
    STUDYRIA — PDF PRODUCT DETAIL PAGE V3 GALLERY ENGINE
-   V3.3 — 2026-08-03 — Root cause fix: V2 no-op trick removed, V2 preview elements cleaned up
+   V3.4 — 2026-08-04 — Auto-generated preview images support — Root cause fix: V2 no-op trick removed, V2 preview elements cleaned up
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -250,33 +250,60 @@
     var coverSrc = (pdf.coverImage || pdf.cover_image || pdf.cover_url || '').trim();
     G.items.push({ type: 'cover', label: 'Cover', src: coverSrc });
 
-    // Load preview PDF pages
-    var previewUrl = (pdf.previewPdfUrl || pdf.preview_pdf_url || '').trim();
-    if (previewUrl && window.pdfjsLib) {
-      _setLoading(true);
-      try {
-        var doc = await window.pdfjsLib.getDocument({
-          url: previewUrl, withCredentials: false
-        }).promise;
-        G.pdfJsDoc = doc;
-        var total = doc.numPages || 0;
+    // ═══ PRIORITY 1: Use pre-generated preview images from database ═══
+    // These are stored as public URLs in the covers bucket, generated
+    // automatically when the admin uploads the PDF. Fast, no PDF.js needed.
+    var pp1 = (pdf.previewPage1 || pdf.preview_page_1 || '').trim();
+    var pp2 = (pdf.previewPage2 || pdf.preview_page_2 || '').trim();
+    var pp3 = (pdf.previewPage3 || pdf.preview_page_3 || '').trim();
 
-        var spec = pdf.preview_pages || pdf.previewPages || null;
-        var looksSpec = spec && /^\d/.test(String(spec).trim());
-        var pages;
-        if (looksSpec && typeof window._pdpParsePreviewPages === 'function') {
-          pages = window._pdpParsePreviewPages(spec, total).slice(0, 3);
-        } else {
-          pages = [];
-          for (var i = 1; i <= Math.min(total, 3); i++) pages.push(i);
+    if (pp1 || pp2 || pp3) {
+      console.log('[PDP V3] Using pre-generated preview images');
+      if (pp1) G.items.push({ type: 'preview', label: 'Page 1', src: pp1, pageNum: 1 });
+      if (pp2) G.items.push({ type: 'preview', label: 'Page 2', src: pp2, pageNum: 2 });
+      if (pp3) G.items.push({ type: 'preview', label: 'Page 3', src: pp3, pageNum: 3 });
+    }
+
+    // ═══ PRIORITY 2: Fall back to PDF.js rendering from preview PDF ═══
+    // Only used if pre-generated images don't exist AND a preview PDF URL exists
+    if (G.items.length <= 1) {
+      var previewUrl = (pdf.previewPdfUrl || pdf.preview_pdf_url || '').trim();
+      if (previewUrl && window.pdfjsLib) {
+        _setLoading(true);
+        try {
+          // Resolve signed URL if it's a storage path (pdfs bucket is private)
+          var docUrl = previewUrl;
+          if (!previewUrl.startsWith('http') && window.supabaseClient) {
+            try {
+              var sd = await window.supabaseClient.storage.from('pdfs')
+                .createSignedUrl(previewUrl, 3600);
+              if (sd?.signedUrl) docUrl = sd.signedUrl;
+            } catch(e) {}
+          }
+          var doc = await window.pdfjsLib.getDocument({
+            url: docUrl, withCredentials: false
+          }).promise;
+          G.pdfJsDoc = doc;
+          var total = doc.numPages || 0;
+
+          var spec = pdf.preview_pages || pdf.previewPages || null;
+          var looksSpec = spec && /^\d/.test(String(spec).trim());
+          var pages;
+          if (looksSpec && typeof window._pdpParsePreviewPages === 'function') {
+            pages = window._pdpParsePreviewPages(spec, total).slice(0, 3);
+          } else {
+            pages = [];
+            for (var i = 1; i <= Math.min(total, 3); i++) pages.push(i);
+          }
+          pages.forEach(function (pg) {
+            G.items.push({ type: 'preview_pdf', label: 'Page ' + pg, pageNum: pg });
+          });
+          console.log('[PDP V3] Using PDF.js fallback for', pages.length, 'pages');
+        } catch (e) {
+          console.warn('[PDP V3] Preview PDF load failed:', e);
+        } finally {
+          _setLoading(false);
         }
-        pages.forEach(function (pg) {
-          G.items.push({ type: 'preview', label: 'Page ' + pg, pageNum: pg });
-        });
-      } catch (e) {
-        console.warn('[PDP V3] Preview PDF load failed:', e);
-      } finally {
-        _setLoading(false);
       }
     }
 
@@ -317,11 +344,51 @@
     _updateThumbHL(idx);
 
     if (item.type === 'cover') {
+      // Show cover
       if (previewImg) previewImg.classList.remove('pdp-v3-visible');
       if (coverImg) coverImg.style.opacity = '1';
       if (wm) wm.classList.remove('pdp-v3-visible');
       if (fsBtn) fsBtn.style.display = 'none';
-    } else {
+
+    } else if (item.type === 'preview' && item.src) {
+      // ═══ Pre-generated preview image (direct URL, no PDF.js needed) ═══
+      if (fsBtn) fsBtn.style.display = '';
+      if (coverImg) coverImg.style.opacity = '0.12';
+      _setLoading(true);
+
+      // Use a cached Image to preload, then swap
+      var pre = new Image();
+      pre.onload = function () {
+        if (G.idx !== idx) return; // user already switched
+        if (!document.getElementById('pdpV3Gallery')) return;
+        if (previewImg) {
+          previewImg.src = item.src;
+          previewImg.classList.add('pdp-v3-visible');
+        }
+        _setLoading(false);
+        if (wm && wmText) {
+          wmText.textContent = _wm();
+          wm.classList.add('pdp-v3-visible');
+        }
+        if (previewImg) {
+          previewImg.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+          previewImg.addEventListener('dragstart', function (e) { e.preventDefault(); });
+        }
+      };
+      pre.onerror = function () {
+        console.warn('[PDP V3] Preview image failed to load:', item.src);
+        _setLoading(false);
+      };
+      pre.src = item.src;
+
+      // Pre-warm adjacent images
+      var ni = G.items[idx + 1];
+      var pi = G.items[idx - 1];
+      if (ni && ni.src) { var preN = new Image(); preN.src = ni.src; }
+      if (pi && pi.src) { var preP = new Image(); preP.src = pi.src; }
+
+    } else if (item.type === 'preview_pdf' && G.pdfJsDoc) {
+      // ═══ PDF.js fallback: render from preview PDF ═══
       if (fsBtn) fsBtn.style.display = '';
       _setLoading(true);
       if (coverImg) coverImg.style.opacity = '0.12';
@@ -345,8 +412,8 @@
         // Pre-warm adjacent pages
         var ni = G.items[idx + 1];
         var pi = G.items[idx - 1];
-        if (ni && ni.type === 'preview') _renderPage(G.pdfJsDoc, ni.pageNum).catch(function () {});
-        if (pi && pi.type === 'preview') _renderPage(G.pdfJsDoc, pi.pageNum).catch(function () {});
+        if (ni && ni.type === 'preview_pdf') _renderPage(G.pdfJsDoc, ni.pageNum).catch(function () {});
+        if (pi && pi.type === 'preview_pdf') _renderPage(G.pdfJsDoc, pi.pageNum).catch(function () {});
       }).catch(function (e) {
         console.warn('[PDP V3] Render failed:', e);
         _setLoading(false);
@@ -374,7 +441,7 @@
 
       strip.appendChild(btn);
 
-      // Async load thumb
+      // Async load thumb — cover or pre-generated preview
       if (item.type === 'cover' && item.src) {
         var img = new Image();
         img.onload = function () {
@@ -391,7 +458,26 @@
           btn.appendChild(lbl);
         };
         img.src = item.src;
-      } else if (item.type === 'preview' && G.pdfJsDoc) {
+      } else if (item.type === 'preview' && item.src) {
+        // Pre-generated preview image — use src directly
+        var img2 = new Image();
+        img2.onload = function () {
+          if (!document.getElementById('pdpV3Strip')) return;
+          var im = document.createElement('img');
+          im.src = item.src;
+          im.alt = item.label;
+          im.draggable = false;
+          im.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+          btn.innerHTML = '';
+          btn.appendChild(im);
+          var lbl = document.createElement('div');
+          lbl.className = 'pdp-v3-thumb-lbl';
+          lbl.textContent = item.label;
+          btn.appendChild(lbl);
+        };
+        img2.src = item.src;
+      } else if (item.type === 'preview_pdf' && G.pdfJsDoc) {
+        // PDF.js fallback — render thumbnail from PDF
         _renderThumb(G.pdfJsDoc, item.pageNum).then(function (url) {
           if (!document.getElementById('pdpV3Strip')) return;
           var im = document.createElement('img');
@@ -509,15 +595,15 @@
 
   function _fsShowItem(idx) {
     var item = G.items[idx];
-    if (!item || !G.pdfJsDoc) return;
+    if (!item) return;
     if (item.type === 'cover') {
-      var nxt = G.items.findIndex(function (it, i) { return i > idx && it.type === 'preview'; });
+      var nxt = G.items.findIndex(function (it, i) { return i > idx && (it.type === 'preview' || it.type === 'preview_pdf'); });
       if (nxt > -1) { G.idx = nxt; _fsShowItem(nxt); return; }
       _closeFs();
       return;
     }
     G.idx = idx;
-    var previews = G.items.filter(function (it) { return it.type === 'preview'; });
+    var previews = G.items.filter(function (it) { return it.type === 'preview' || it.type === 'preview_pdf'; });
     var rank = previews.indexOf(item) + 1;
     var ind = document.getElementById('pdpV3FsInd');
     var wm = document.getElementById('pdpV3FsWm');
@@ -526,19 +612,31 @@
     G.fsScale = 1; G.fsOX = 0; G.fsOY = 0;
     var img = document.getElementById('pdpV3FsImg');
     if (img) img.style.transform = '';
-    _renderPage(G.pdfJsDoc, item.pageNum, 2.5).then(function (url) {
-      var fsImg = document.getElementById('pdpV3FsImg');
-      if (fsImg) fsImg.src = url;
-    }).catch(function () {});
+
+    // Pre-generated preview image — use direct URL (fast, no PDF.js needed)
+    if (item.src) {
+      var pre = new Image();
+      pre.onload = function () {
+        var fsImg = document.getElementById('pdpV3FsImg');
+        if (fsImg) fsImg.src = item.src;
+      };
+      pre.src = item.src;
+    } else if (G.pdfJsDoc) {
+      // PDF.js fallback
+      _renderPage(G.pdfJsDoc, item.pageNum, 2.5).then(function (url) {
+        var fsImg = document.getElementById('pdpV3FsImg');
+        if (fsImg) fsImg.src = url;
+      }).catch(function () {});
+    }
   }
 
   function _v3FsPrev() {
-    var pIdx = G.items.map(function (it, i) { return it.type === 'preview' ? i : -1; }).filter(function (i) { return i >= 0; });
+    var pIdx = G.items.map(function (it, i) { return (it.type === 'preview' || it.type === 'preview_pdf') ? i : -1; }).filter(function (i) { return i >= 0; });
     var cur = pIdx.indexOf(G.idx);
     if (cur > 0) _fsShowItem(pIdx[cur - 1]);
   }
   function _v3FsNext() {
-    var pIdx = G.items.map(function (it, i) { return it.type === 'preview' ? i : -1; }).filter(function (i) { return i >= 0; });
+    var pIdx = G.items.map(function (it, i) { return (it.type === 'preview' || it.type === 'preview_pdf') ? i : -1; }).filter(function (i) { return i >= 0; });
     var cur = pIdx.indexOf(G.idx);
     if (cur < pIdx.length - 1) _fsShowItem(pIdx[cur + 1]);
   }

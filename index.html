@@ -6678,8 +6678,8 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="campus.css?v=20260731a">
 <link rel="stylesheet" href="brainlab.css?v=20260731a">
 <link rel="stylesheet" href="pdp-v2.css?v=20260801">
-  <link rel="stylesheet" href="pdp-v3.css?v=20260803">
-  <link rel="stylesheet" href="pdp-v4.css?v=20260803">
+  <link rel="stylesheet" href="pdp-v3.css?v=20260804">
+  <link rel="stylesheet" href="pdp-v4.css?v=20260804">
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -18684,6 +18684,12 @@ function normalizePdf(p) {
   p.previewPdfUrl = p.previewPdfUrl || p.preview_pdf_url || p.previewUrl || p.preview_url || '';
   if (!p.preview_pdf_url && p.previewPdfUrl) p.preview_pdf_url = p.previewPdfUrl;
 
+  // ── Auto-generated preview page images (stored as public URLs in covers bucket)
+  p.previewPage1 = p.previewPage1 || p.preview_page_1 || '';
+  p.previewPage2 = p.previewPage2 || p.preview_page_2 || '';
+  p.previewPage3 = p.previewPage3 || p.preview_page_3 || '';
+  p.previewGenerated = !!(p.preview_generated || p.previewGenerated || false);
+
   // ── Reviews & Sales — use DB values or generate realistic fallbacks
   const cached = _pdfFallbackCache[p.id] || {};
 
@@ -26660,6 +26666,9 @@ function renderAdminAddPDFLegacy(main) {
             </div>
           </div>
         </div>
+
+        <!-- Auto Preview Generation Status -->
+        <div id="adminPreviewProgress" style="display:none;margin-top:12px"></div>
       </div>
 
       <!-- ② BASIC INFORMATION -->
@@ -29409,18 +29418,46 @@ async function adminSavePDF() {
       } : {})
     };
 
+    let newPdfId = null;
     if (isEditing) {
       const { error: updateErr } = await window.supabaseClient
         .from('pdfs').update(payload).eq('id', window.adminEditingPDFId);
       if (updateErr) throw new Error(`Database update failed: ${updateErr.message}`);
+      newPdfId = window.adminEditingPDFId;
       logAdminActivity(`Updated PDF: "${title}" (id:${window.adminEditingPDFId})`, 'green');
       showToast(`✅ "${title}" updated successfully!`, 'success');
     } else {
       payload.created_at = new Date().toISOString();
-      const { error: insertErr } = await window.supabaseClient.from('pdfs').insert(payload);
+      const { data: insData, error: insertErr } = await window.supabaseClient
+        .from('pdfs').insert(payload).select('id').maybeSingle();
       if (insertErr) throw new Error(`Database insert failed: ${insertErr.message}`);
+      newPdfId = insData?.id || null;
       logAdminActivity(`Published PDF: "${title}" in ${category}`, 'green');
       showToast(`✅ "${title}" published instantly!`, 'success');
+    }
+
+    // ── AUTO PREVIEW GENERATION ──────────────────────────────────────
+    // After successful upload, automatically generate preview images from
+    // the first 3 pages of the PDF using PDF.js (client-side rendering).
+    if (pdfFile && newPdfId) {
+      btn.innerHTML = `<span class="auth-spinner"></span>Generating previews…`;
+      try {
+        await generateAndSavePreviews(pdfFile, newPdfId);
+        logAdminActivity(`Auto-generated preview images for id:${newPdfId}`, 'green');
+      } catch (previewErr) {
+        console.warn('Preview generation failed (non-fatal):', previewErr);
+        // Non-fatal — the PDF is still published, previews can be regenerated later
+        showToast('⚠ Preview generation failed — PDF still published. You can regenerate from Smart Publish Manager.', 'error');
+      }
+    } else if (isEditing && pdfFile && newPdfId) {
+      // Editing: if a new PDF file was uploaded, regenerate previews
+      btn.innerHTML = `<span class="auth-spinner"></span>Generating previews…`;
+      try {
+        await generateAndSavePreviews(pdfFile, newPdfId);
+        logAdminActivity(`Regenerated preview images for id:${newPdfId}`, 'green');
+      } catch (previewErr) {
+        console.warn('Preview regeneration failed (non-fatal):', previewErr);
+      }
     }
 
     window.adminEditingPDFId    = null;
@@ -29448,6 +29485,168 @@ async function adminSavePDF() {
       ? `${adminIcon('check',16)} Update PDF`
       : `${adminIcon('zap',16)} Publish to Website Instantly`;
     btn.disabled = false;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AUTO PREVIEW GENERATION — Client-side PDF.js rendering
+// Generates watermarked preview images from first 3 pages of uploaded PDF
+// ════════════════════════════════════════════════════════════════════
+
+async function generatePreviewImages(pdfFile, onProgress) {
+  if (!window.pdfjsLib) {
+    await new Promise(function(resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js';
+      s.onload = resolve;
+      s.onerror = function() { reject(new Error('Failed to load PDF.js')); };
+      document.head.appendChild(s);
+    });
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+    }
+  }
+  if (!window.pdfjsLib) throw new Error('PDF.js library not available');
+
+  var arrayBuffer = await pdfFile.arrayBuffer();
+  var pdfDoc = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  var numPages = Math.min(pdfDoc.numPages, 3);
+
+  if (onProgress) onProgress('loading', 0);
+  var sb = window.supabaseClient;
+  if (!sb) throw new Error('Supabase not connected');
+
+  var slug = (pdfFile.name || 'pdf').replace(/\.pdf$/i, '').replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30);
+  var ts = Date.now();
+  var results = {};
+
+  for (var i = 1; i <= numPages; i++) {
+    if (onProgress) onProgress('rendering', i);
+
+    var page = await pdfDoc.getPage(i);
+    var viewport = page.getViewport({ scale: 2.0 });
+    var canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+    var ctx = canvas.getContext('2d');
+
+    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+    // Burn watermark into the image
+    ctx.save();
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = '#0d1220';
+    var fontSize = Math.max(14, Math.round(canvas.width * 0.04));
+    ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    var stepX = canvas.width * 0.5;
+    var stepY = canvas.height * 0.35;
+    for (var x = -canvas.width; x < canvas.width * 2; x += stepX) {
+      for (var y = -canvas.height; y < canvas.height * 2; y += stepY) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(-Math.PI / 7);
+        ctx.fillText('STUDYRIA PREVIEW', 0, 0);
+        ctx.fillText('NOT FOR REDISTRIBUTION', 0, fontSize * 1.4);
+        ctx.fillText('PREVIEW ONLY', 0, fontSize * 2.8);
+        ctx.restore();
+      }
+    }
+    ctx.restore();
+
+    // Convert to JPEG blob (compressed)
+    var blob = await new Promise(function(resolve) {
+      canvas.toBlob(resolve, 'image/jpeg', 0.82);
+    });
+    if (!blob) throw new Error('Canvas to blob conversion failed for page ' + i);
+
+    // Upload to Supabase covers bucket (PUBLIC)
+    if (onProgress) onProgress('uploading', i);
+    var fileName = 'preview_' + ts + '_' + slug + '_p' + i + '.jpg';
+    var upRes = await sb.storage.from('covers')
+      .upload(fileName, blob, { upsert: true, contentType: 'image/jpeg' });
+    if (upRes.error) throw new Error('Preview upload failed (page ' + i + '): ' + upRes.error.message);
+
+    // Get public URL
+    var pubRes = sb.storage.from('covers').getPublicUrl(fileName);
+    if (!pubRes.data || !pubRes.data.publicUrl) throw new Error('Public URL failed for page ' + i);
+
+    results['page' + i] = pubRes.data.publicUrl;
+
+    if (onProgress) onProgress('done', i);
+  }
+
+  // Fill missing pages with empty string
+  for (var j = numPages + 1; j <= 3; j++) {
+    results['page' + j] = '';
+  }
+
+  return results;
+}
+
+async function savePreviewUrls(pdfId, previewUrls) {
+  var sb = window.supabaseClient;
+  if (!sb) throw new Error('Supabase not connected');
+
+  var payload = {
+    preview_page_1: previewUrls.page1 || null,
+    preview_page_2: previewUrls.page2 || null,
+    preview_page_3: previewUrls.page3 || null,
+    preview_generated: true,
+    preview_generated_at: new Date().toISOString(),
+  };
+
+  var res = await sb.from('pdfs').update(payload).eq('id', pdfId);
+  if (res.error) throw new Error('Failed to save preview URLs: ' + res.error.message);
+  return true;
+}
+
+async function generateAndSavePreviews(pdfFile, pdfId) {
+  var sb = window.supabaseClient;
+  if (!sb) throw new Error('Supabase not connected');
+  if (!pdfId) throw new Error('PDF ID required for preview generation');
+
+  var progressEl = document.getElementById('adminPreviewProgress');
+  function setProgress(text) {
+    if (progressEl) {
+      progressEl.style.display = '';
+      progressEl.innerHTML = text;
+    }
+  }
+
+  try {
+    setProgress('<div style="background:rgba(61,142,248,.07);border:1px solid rgba(61,142,248,.2);border-radius:10px;padding:12px 16px;font-size:.82rem"><span class="auth-spinner" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:8px"></span> Generating preview images...</div>');
+
+    var urls = await generatePreviewImages(pdfFile, function(status, pageIdx) {
+      var statusMap = {
+        loading: 'Loading PDF...',
+        rendering: 'Rendering page ' + pageIdx + '...',
+        uploading: 'Uploading page ' + pageIdx + '...',
+        done: 'Page ' + pageIdx + ' generated',
+      };
+      setProgress('<div style="background:rgba(61,142,248,.07);border:1px solid rgba(61,142,248,.2);border-radius:10px;padding:12px 16px;font-size:.82rem"><span class="auth-spinner" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:8px"></span> ' + (statusMap[status] || 'Processing...') + '</div>');
+    });
+
+    await savePreviewUrls(pdfId, urls);
+
+    setProgress('<div style="background:rgba(16,217,142,.07);border:1px solid rgba(16,217,142,.2);border-radius:10px;padding:12px 16px;font-size:.82rem;color:var(--success)">'
+      + '<div style="font-weight:700;margin-bottom:6px">Preview images generated successfully!</div>'
+      + '<div style="font-size:.76rem;opacity:.8">Cover from uploaded image</div>'
+      + (urls.page1 ? '<div style="font-size:.76rem;opacity:.8">Page 1 generated</div>' : '')
+      + (urls.page2 ? '<div style="font-size:.76rem;opacity:.8">Page 2 generated</div>' : '')
+      + (urls.page3 ? '<div style="font-size:.76rem;opacity:.8">Page 3 generated</div>' : '')
+      + '</div>');
+
+    return urls;
+  } catch (err) {
+    console.error('Preview generation error:', err);
+    setProgress('<div style="background:rgba(255,77,109,.07);border:1px solid rgba(255,77,109,.2);border-radius:10px;padding:12px 16px;font-size:.82rem;color:var(--danger)">'
+      + 'Preview generation failed: ' + err.message
+      + '<br><span style="font-size:.76rem;opacity:.7">You can retry from the Smart Publish Manager.</span>'
+      + '</div>');
+    throw err;
   }
 }
 
@@ -30388,6 +30587,11 @@ const APM_SQL = `-- Run once in Supabase SQL Editor
 ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'published';
 ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS schedule_publish_at TIMESTAMPTZ;
 ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_pdf_url TEXT;
+ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_page_1 TEXT;
+ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_page_2 TEXT;
+ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_page_3 TEXT;
+ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_generated BOOLEAN DEFAULT false;
+ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS preview_generated_at TIMESTAMPTZ;
 ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS seo_title TEXT;
 ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS seo_description TEXT;
 ALTER TABLE pdfs ADD COLUMN IF NOT EXISTS seo_keywords TEXT;
@@ -30662,31 +30866,48 @@ $$);</div>
       break;
     }
 
-    // ── 5. PREVIEW UPLOAD ──────────────────────────────────────────
+    // ── 5. PREVIEW UPLOAD & AUTO-GENERATION ────────────────────────
     case 'preview-upload': {
       const pdfs = await apmGetPDFs();
       container.innerHTML = `
       <div class="apm-card">
-        <div class="apm-card-title">👁 PDF Preview Upload <span style="font-size:.75rem;font-weight:400;color:var(--text2)">— sample pages shown before purchase</span></div>
-        <div class="admin-form-grid" style="margin-bottom:14px">
-          <div class="form-group">
-            <label class="form-label">Select PDF</label>
-            <select class="form-input" id="apmPrevPdfId" onchange="apmLoadPreviewInfo(this.value)">
-              <option value="">— Choose a PDF —</option>
-              ${pdfs.map(p=>`<option value="${p.id}">${p.title}</option>`).join('')}
-            </select>
+        <div class="apm-card-title">👁 PDF Preview System <span style="font-size:.75rem;font-weight:400;color:var(--text2)">— auto-generate preview images from uploaded PDFs</span></div>
+        
+        <!-- Auto-Generation section -->
+        <div style="background:rgba(61,142,248,.06);border:1px solid rgba(61,142,248,.15);border-radius:12px;padding:16px;margin-bottom:16px">
+          <div style="font-weight:700;font-size:.9rem;margin-bottom:8px">⚡ Auto-Generate Preview Images</div>
+          <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px">Select a PDF and generate watermarked preview images from its first 3 pages. Images are saved permanently — no manual upload needed.</div>
+          <div class="admin-form-grid" style="margin-bottom:12px">
+            <div class="form-group">
+              <label class="form-label">Select PDF</label>
+              <select class="form-input" id="apmPrevPdfId" onchange="apmLoadPreviewInfo(this.value)">
+                <option value="">— Choose a PDF —</option>
+                ${pdfs.map(p=>`<option value="${p.id}">${p.title}${p.preview_generated ? ' ✓' : ''}</option>`).join('')}
+              </select>
+            </div>
           </div>
+          <div id="apmCurrentPreviewInfo" style="margin-bottom:12px"></div>
+          <div id="apmAutoGenProgress" style="margin-bottom:12px;display:none"></div>
+          <button class="btn btn-primary btn-sm" onclick="apmAutoGeneratePreviews()" style="margin-right:8px">
+            ⚡ Auto-Generate Preview Images
+          </button>
         </div>
-        <div id="apmCurrentPreviewInfo" style="margin-bottom:12px"></div>
-        <div class="form-group" style="margin-bottom:12px">
-          <label class="form-label">Upload Preview PDF (sample pages)</label>
-          <div class="admin-upload-zone" style="cursor:pointer" onclick="document.getElementById('apmPrevFile').click()">
-            <input type="file" id="apmPrevFile" accept=".pdf" style="display:none" onchange="document.getElementById('apmPrevFileName').textContent=this.files[0]?.name||''"/>
-            <svg width="24" height="24" style="color:var(--text2)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <div id="apmPrevFileName" style="font-size:.8rem;margin-top:4px;color:var(--text2)">Click to select preview PDF</div>
+
+        <!-- Manual upload (legacy fallback) -->
+        <details style="margin-top:12px">
+          <summary style="cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text2);padding:8px 0">📤 Manual Preview PDF Upload (Advanced)</summary>
+          <div style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Upload Preview PDF (sample pages)</label>
+              <div class="admin-upload-zone" style="cursor:pointer" onclick="document.getElementById('apmPrevFile').click()">
+                <input type="file" id="apmPrevFile" accept=".pdf" style="display:none" onchange="document.getElementById('apmPrevFileName').textContent=this.files[0]?.name||''"/>
+                <svg width="24" height="24" style="color:var(--text2)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div id="apmPrevFileName" style="font-size:.8rem;margin-top:4px;color:var(--text2)">Click to select preview PDF</div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="apmUploadPreview()">📤 Upload Preview PDF</button>
           </div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="apmUploadPreview()">📤 Upload Preview PDF</button>
+        </details>
       </div>`;
       break;
     }
@@ -31201,21 +31422,107 @@ async function apmRestoreVersion(pdfId, pdfUrl, versionNum) {
   logAdminActivity(`Restored PDF id:${pdfId} to v${versionNum}`, 'blue');
 }
 
-// ── PREVIEW UPLOAD ───────────────────────────────────────────────
+// ── PREVIEW AUTO-GENERATION ─────────────────────────────────────
+async function apmAutoGeneratePreviews() {
+  const sb = window.supabaseClient;
+  const pdfId = document.getElementById('apmPrevPdfId')?.value;
+  if (!pdfId) { showToast('Select a PDF first.', 'error'); return; }
+  if (!sb) { showToast('Supabase not connected.', 'error'); return; }
+
+  const progressEl = document.getElementById('apmAutoGenProgress');
+  const setProgress = (text) => {
+    if (progressEl) { progressEl.style.display = ''; progressEl.innerHTML = text; }
+  };
+
+  try {
+    // Fetch the PDF record to get the storage path
+    const { data: pdfRow, error: fetchErr } = await sb.from('pdfs')
+      .select('id,title,pdf_url,cover_url,preview_page_1,preview_generated')
+      .eq('id', pdfId).single();
+    if (fetchErr) throw new Error('Failed to load PDF: ' + fetchErr.message);
+    if (!pdfRow) throw new Error('PDF not found');
+
+    // Resolve the PDF storage path to a signed URL
+    const pdfPath = pdfRow.pdf_url;
+    if (!pdfPath) throw new Error('No PDF file associated with this record');
+
+    setProgress('<div style="background:rgba(61,142,248,.07);border:1px solid rgba(61,142,248,.2);border-radius:10px;padding:12px 16px;font-size:.82rem"><span class="auth-spinner" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:8px"></span> Loading PDF...</div>');
+
+    // Get signed URL for the private PDF
+    let pdfSignedUrl;
+    if (pdfPath.startsWith('http')) {
+      pdfSignedUrl = pdfPath;
+    } else {
+      const { data: sd, error: se } = await sb.storage.from('pdfs').createSignedUrl(pdfPath, 3600);
+      if (se || !sd?.signedUrl) throw new Error('Failed to get signed URL: ' + (se?.message || 'unknown'));
+      pdfSignedUrl = sd.signedUrl;
+    }
+
+    // Fetch the PDF as a blob
+    setProgress('<div style="background:rgba(61,142,248,.07);border:1px solid rgba(61,142,248,.2);border-radius:10px;padding:12px 16px;font-size:.82rem"><span class="auth-spinner" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:8px"></span> Downloading PDF...</div>');
+    const response = await fetch(pdfSignedUrl);
+    if (!response.ok) throw new Error('Failed to download PDF: ' + response.status);
+    const pdfBlob = await response.blob();
+    const pdfFile = new File([pdfBlob], pdfRow.title + '.pdf', { type: 'application/pdf' });
+
+    // Generate preview images
+    const urls = await generatePreviewImages(pdfFile, (status, pageIdx) => {
+      const statusMap = {
+        loading: 'Loading PDF...',
+        rendering: 'Rendering page ' + pageIdx + '...',
+        uploading: 'Uploading page ' + pageIdx + '...',
+        done: '✓ Page ' + pageIdx + ' generated',
+      };
+      setProgress('<div style="background:rgba(61,142,248,.07);border:1px solid rgba(61,142,248,.2);border-radius:10px;padding:12px 16px;font-size:.82rem"><span class="auth-spinner" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:8px"></span> ' + (statusMap[status] || 'Processing...') + '</div>');
+    });
+
+    // Save to database
+    await savePreviewUrls(pdfId, urls);
+
+    setProgress('<div style="background:rgba(16,217,142,.07);border:1px solid rgba(16,217,142,.2);border-radius:10px;padding:12px 16px;font-size:.82rem;color:var(--success)">'
+      + '<div style="font-weight:700;margin-bottom:6px">✓ Preview images generated successfully!</div>'
+      + (urls.page1 ? '<div style="font-size:.76rem;opacity:.8">✓ Page 1: <a href="' + urls.page1 + '" target="_blank" style="color:var(--accent)">View</a></div>' : '')
+      + (urls.page2 ? '<div style="font-size:.76rem;opacity:.8">✓ Page 2: <a href="' + urls.page2 + '" target="_blank" style="color:var(--accent)">View</a></div>' : '')
+      + (urls.page3 ? '<div style="font-size:.76rem;opacity:.8">✓ Page 3: <a href="' + urls.page3 + '" target="_blank" style="color:var(--accent)">View</a></div>' : '')
+      + '</div>');
+    showToast('✅ Preview images generated!', 'success');
+    logAdminActivity('Auto-generated preview images for id:' + pdfId, 'green');
+    apmLoadPreviewInfo(pdfId);
+  } catch(e) {
+    console.error('Auto preview error:', e);
+    setProgress('<div style="background:rgba(255,77,109,.07);border:1px solid rgba(255,77,109,.2);border-radius:10px;padding:12px 16px;font-size:.82rem;color:var(--danger)">⚠ ' + e.message + '</div>');
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ── PREVIEW INFO LOADER ──────────────────────────────────────────
 async function apmLoadPreviewInfo(pdfId) {
   const el = document.getElementById('apmCurrentPreviewInfo');
   if (!el || !pdfId) return;
   const sb = window.supabaseClient;
   if (!sb) return;
   try {
-    const { data } = await sb.from('pdfs').select('title,preview_pdf_url').eq('id',pdfId).single();
-    if (data?.preview_pdf_url) {
-      el.innerHTML = `<div style="background:rgba(16,217,142,.07);border:1px solid rgba(16,217,142,.2);border-radius:10px;padding:10px 14px;font-size:.82rem;display:flex;align-items:center;gap:10px">
-        <span style="font-size:1.2rem">✅</span>
-        <div><div style="font-weight:700;color:var(--success)">Preview exists</div><a href="${data.preview_pdf_url}" target="_blank" style="color:var(--accent);font-size:.78rem">View current preview →</a></div>
+    const { data } = await sb.from('pdfs')
+      .select('title,preview_pdf_url,preview_page_1,preview_page_2,preview_page_3,preview_generated')
+      .eq('id',pdfId).single();
+
+    // Check for auto-generated preview images (PRIORITY)
+    if (data?.preview_page_1) {
+      let html = '<div style="background:rgba(16,217,142,.07);border:1px solid rgba(16,217,142,.2);border-radius:10px;padding:12px 16px;font-size:.82rem">'
+        + '<div style="font-weight:700;color:var(--success);margin-bottom:8px">✓ Auto-generated preview images</div>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      if (data.preview_page_1) html += '<a href="' + data.preview_page_1 + '" target="_blank" style="border:1px solid var(--glass-border);border-radius:6px;padding:4px 8px;font-size:.76rem;color:var(--accent)">Page 1 →</a>';
+      if (data.preview_page_2) html += '<a href="' + data.preview_page_2 + '" target="_blank" style="border:1px solid var(--glass-border);border-radius:6px;padding:4px 8px;font-size:.76rem;color:var(--accent)">Page 2 →</a>';
+      if (data.preview_page_3) html += '<a href="' + data.preview_page_3 + '" target="_blank" style="border:1px solid var(--glass-border);border-radius:6px;padding:4px 8px;font-size:.76rem;color:var(--accent)">Page 3 →</a>';
+      html += '</div></div>';
+      el.innerHTML = html;
+    } else if (data?.preview_pdf_url) {
+      el.innerHTML = `<div style="background:rgba(61,142,248,.07);border:1px solid rgba(61,142,248,.2);border-radius:10px;padding:10px 14px;font-size:.82rem;display:flex;align-items:center;gap:10px">
+        <span style="font-size:1.2rem">📄</span>
+        <div><div style="font-weight:700;color:var(--accent)">Manual preview PDF exists</div><a href="${data.preview_pdf_url}" target="_blank" style="color:var(--accent);font-size:.78rem">View current preview →</a></div>
       </div>`;
     } else {
-      el.innerHTML = `<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--gold)">⚠ No preview PDF uploaded yet.</div>`;
+      el.innerHTML = `<div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--gold)">⚠ No preview images generated yet. Click "Auto-Generate" to create them.</div>`;
     }
   } catch(e) {}
 }
@@ -38846,9 +39153,9 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="pdf-classification-refactor.js" defer></script>
 <script src="premium-edit-pdf-ui.js" defer></script>
 <script src="pdp-v2.js?v=20260801" defer></script>
-    <script src="pdp-v3.js?v=20260803" defer></script>
-    <script src="pdp-v4.js?v=20260803" defer></script>
-    <script src="pdp-checkout.js?v=20260801" defer></script>
+    <script src="pdp-v3.js?v=20260804" defer></script>
+    <script src="pdp-v4.js?v=20260804" defer></script>
+    <script src="pdp-checkout.js?v=20260804" defer></script>
 
 
 

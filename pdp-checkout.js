@@ -72,6 +72,11 @@ function normalizePdf(p) {
   // ── Preview PDF URL ─────────────────────────────────────────────────
   p.previewPdfUrl = p.previewPdfUrl || p.preview_pdf_url || p.previewUrl || p.preview_url || '';
   if (!p.preview_pdf_url && p.previewPdfUrl) p.preview_pdf_url = p.previewPdfUrl;
+  // Auto-generated preview images (stored as public URLs)
+  p.previewPage1 = p.previewPage1 || p.preview_page_1 || '';
+  p.previewPage2 = p.previewPage2 || p.preview_page_2 || '';
+  p.previewPage3 = p.previewPage3 || p.preview_page_3 || '';
+  p.previewGenerated = !!(p.preview_generated || p.previewGenerated || false);
 
   // ── Reviews & Sales — use DB values or generate realistic fallbacks
   const cached = _pdfFallbackCache[p.id] || {};
