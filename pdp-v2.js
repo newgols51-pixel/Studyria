@@ -92,7 +92,7 @@ function renderDetail() {
   const pdf = window.selectedPdf;
   if (!pdf) return;
   if (typeof normalizePdf === 'function') normalizePdf(pdf);
-  _pdpRenderShell(pdf);
+  window._pdpRenderShell(pdf);
   if (typeof _pdpLoadLiveStats === 'function') _pdpLoadLiveStats(pdf.id);
   if (typeof _pdpSubscribeRealtime === 'function') _pdpSubscribeRealtime(pdf.id);
   if (!window._ownedCacheReady && window.currentUser) {
