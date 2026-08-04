@@ -7446,6 +7446,27 @@ function studyriaApp() {
   background: var(--bg);
 }
 
+/* ── PROMO BACKGROUND (isolated, additive layer — does not affect layout) ──
+   Sits behind hero content, above ambient orbs. Pure visual replacement of
+   the hero background per the Studyria promo image request. Does not
+   modify hero height, content positions, or any other section. */
+.sh-hero-promo-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url('https://base44.app/api/apps/6a4e12fcaf75ad4d501c3886/files/mp/public/6a4e12fcaf75ad4d501c3886/e83355947_hero_bg_crop.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.sh-hero-promo-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 10, 20, 0.45); /* 45% dark overlay for text readability */
+}
+
 /* Layered ambient orbs */
 .sh-hero-orbs { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 .sh-orb {
@@ -8720,6 +8741,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 
 <!-- ── HERO ──────────────────────────────────────────────────── -->
 <section class="sh-hero" id="dynamicHero">
+  <div class="sh-hero-promo-bg" aria-hidden="true"></div>
   <div class="sh-hero-orbs" aria-hidden="true">
     <div class="sh-orb sh-orb-1"></div>
     <div class="sh-orb sh-orb-2"></div>
