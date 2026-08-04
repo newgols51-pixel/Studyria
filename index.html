@@ -7454,7 +7454,7 @@ function studyriaApp() {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-image: url('https://base44.app/api/apps/6a4e12fcaf75ad4d501c3886/files/mp/public/6a4e12fcaf75ad4d501c3886/e83355947_hero_bg_crop.jpg');
+  background-image: url('https://base44.app/api/apps/6a4ea1abbec2f4bed6f064a3/files/mp/public/6a4ea1abbec2f4bed6f064a3/f30787837_014e95998_file_00000000a9c08211a2e2062225abc994.png');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -7464,7 +7464,16 @@ function studyriaApp() {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(6, 10, 20, 0.45); /* 45% dark overlay for text readability */
+  /* Source promo graphic is a bright poster (~57% light pixels), so a
+     stronger overlay than a typical photo is needed to keep hero text
+     readable. Gradient is slightly lighter at the very top (where the
+     scenic backdrop is) and darker toward the text-heavy middle/bottom. */
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 10, 20, 0.62) 0%,
+    rgba(6, 10, 20, 0.72) 45%,
+    rgba(6, 10, 20, 0.78) 100%
+  );
 }
 
 /* Layered ambient orbs */
