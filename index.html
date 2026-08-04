@@ -39116,12 +39116,21 @@ document.addEventListener('DOMContentLoaded', function(){
     scheduleNext();
   }
 
-  // Run after DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inject);
-  } else {
-    inject();
-  }
+  // DISABLED (2026-08-04): this injected the old stock desk/lamp/books
+  // photo (/hero_assets/hero_mobile.jpg + hero_desktop.jpg) as a full-bleed
+  // hero background, behind the site's own hero text. After the hero was
+  // updated to show a custom branded promo image (.sh-hero-custom-img),
+  // having BOTH visible at once looked like two competing hero images
+  // stacked on the same page. Keeping the functions defined (harmless,
+  // inert) but no longer invoking inject() -- the hero now falls back to
+  // its configured solid/gradient background (hero_settings in Supabase)
+  // instead. Re-enable by restoring the call below if a photo background
+  // is wanted again.
+  // if (document.readyState === 'loading') {
+  //   document.addEventListener('DOMContentLoaded', inject);
+  // } else {
+  //   inject();
+  // }
 })();
 
 </script>
