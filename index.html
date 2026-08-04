@@ -697,8 +697,11 @@ body.light {
 .logo {
   font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;
   cursor: pointer; user-select: none;
-  display: inline-flex; align-items: baseline; gap: 0;
+  display: inline-flex; align-items: baseline; gap: 6px;
   position: relative;
+}
+.desktop-logo-img {
+  height: 34px; width: auto; flex-shrink: 0; align-self: center; display: inline-block;
 }
 .logo .logo-letter,
 span.logo-letter {
@@ -960,6 +963,9 @@ body.light .brand-credit { background: rgba(255,255,255,0.14); border-color: rgb
   .mh-center {
     display: flex; align-items: center; gap: 6px; cursor: pointer;
     flex-shrink: 0;
+  }
+  .mh-logo-img {
+    height: 26px; width: auto; flex-shrink: 0; display: block;
   }
   .mh-center .logo {
     font-size: 1.25rem;
@@ -7002,6 +7008,7 @@ function studyriaApp() {
       </div>
     </div>
     <div class="mh-center" onclick="navigate('home')" id="mhLogo">
+      <img src="https://media.base44.com/images/public/6a4e0acde27ec4df038c30f0/90d788763_file_000000005f547207afc8f7f886059902.png" alt="Studyria" class="mh-logo-img" />
       <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
     </div>
     <div class="mh-right">
@@ -7016,6 +7023,12 @@ function studyriaApp() {
   <!-- ── ROW 2: White bg + download + theme + avatar + signout + burger ── -->
   <div class="mh-row2">
     <div class="mh-row2-left">
+      <!-- Left Nav Menu Burger -->
+      <div style="position:relative" id="mhNavBurgerWrap">
+        <button class="mh-action-btn" onclick="mhToggleNavMenu(event)" aria-label="Navigation Menu" title="Navigation" id="mhNavBurgerBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
       <!-- Download App -->
       <button class="mh-action-btn" onclick="triggerPWAInstall()" aria-label="Download App" title="Download App" id="mhDownloadBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -7030,23 +7043,53 @@ function studyriaApp() {
       <div id="mhUserArea" style="display:flex;align-items:center;gap:4px;">
         <button class="mh-signin-btn" onclick="navigate('login')">Sign In</button>
       </div>
-      <!-- Hamburger Menu -->
+      <!-- Control Center Menu (RIGHT) -->
       <div style="position:relative" id="mhBurgerWrap">
-        <button class="mh-burger-btn" onclick="mhToggleBurger(event)" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <button class="mh-burger-btn" onclick="mhToggleBurger(event)" aria-label="Control Center" title="Control Center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         </button>
-        <!-- Reuse existing hamburger dropdown by repositioning it -->
       </div>
     </div>
   </div>
-  <!-- Mobile burger menu (separate from desktop) -->
+
+  <!-- ═══ LEFT MENU: Navigation (independent) ═══ -->
+  <div id="mhNavMenu" class="hamburger-dropdown" style="display:none;position:fixed;top:auto;bottom:0;left:0;right:0;max-height:70vh;overflow-y:auto;border-radius:20px 20px 0 0;z-index:9999;transform:translateY(100%);transition:transform .25s cubic-bezier(0.25,0.46,0.45,0.94);">
+    <div class="hm-top-shine"></div>
+    <div class="hm-scroll" id="mhNavScroll">
+      <div style="padding:6px 12px 4px;font-size:.68rem;font-weight:700;color:var(--text-dim,rgba(128,145,180,0.8));letter-spacing:.08em;text-transform:uppercase">🧭 Navigation</div>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('home')">
+        <span class="hm-icon">🏠</span><span class="hm-item-label">Home</span>
+      </button>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)">
+        <span class="hm-icon">🎯</span><span class="hm-item-label">APSC</span>
+      </button>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)">
+        <span class="hm-icon">🎯</span><span class="hm-item-label">ADRE</span>
+      </button>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)">
+        <span class="hm-icon">📚</span><span class="hm-item-label">Free Materials</span>
+      </button>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('career-hub')">
+        <span class="hm-icon">📝</span><span class="hm-item-label">Free Mock Tests</span>
+      </button>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library')">
+        <span class="hm-icon">📚</span><span class="hm-item-label">Browse All</span>
+      </button>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var c=document.querySelector('.lib-cat-section, [data-section=categories]');if(c)c.scrollIntoView({behavior:'smooth',block:'start'});},300)">
+        <span class="hm-icon">📂</span><span class="hm-item-label">Categories</span>
+      </button>
+    </div>
+  </div>
+  <!-- Backdrop for LEFT nav menu -->
+  <div id="mhNavBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;backdrop-filter:blur(2px)" onclick="mhCloseNavMenu()"></div>
+
+  <!-- ═══ RIGHT MENU: Control Center (independent) ═══ -->
   <div id="mhBurgerMenu" class="hamburger-dropdown" style="display:none;position:fixed;top:auto;bottom:0;left:0;right:0;max-height:70vh;overflow-y:auto;border-radius:20px 20px 0 0;z-index:9999;transform:translateY(100%);transition:transform .25s cubic-bezier(0.25,0.46,0.45,0.94);">
     <div class="hm-top-shine"></div>
     <div class="hm-scroll" id="mhScroll">
-      <div id="mhDynamicMenuItems"></div>
+      <div style="padding:6px 12px 4px;font-size:.68rem;font-weight:700;color:var(--text-dim,rgba(128,145,180,0.8));letter-spacing:.08em;text-transform:uppercase">⚙️ Control Center</div>
       <div style="padding:4px 0 6px">
         <div class="hm-admin-section">
-          <div class="hm-admin-label">⚙️ CONTROL CENTER</div>
           <button class="hm-admin-btn" onclick="mhCloseBurger(); openAdminEntry()">
             <span class="hm-admin-crown">👑</span>
             <span class="hm-admin-text"><span class="hm-admin-title">Administration</span></span>
@@ -7054,17 +7097,8 @@ function studyriaApp() {
           </button>
         </div>
       </div>
-      <div id="hmCreatorRegSection2" style="padding:4px 0 8px">
-        <div style="padding:0 12px 8px">
-          <button onclick="mhCloseBurger();navigate('creator-register')" style="width:100%;padding:11px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(16,217,142,0.1),rgba(6,182,212,0.06));border:1px solid rgba(16,217,142,0.25);color:#10d98e;font-family:var(--font-body);font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s">
-            <span>🎓</span><span>Become a Creator</span>
-            <span style="margin-left:auto;font-size:.65rem;padding:2px 7px;border-radius:6px;background:rgba(16,217,142,0.15);color:#10d98e;border:1px solid rgba(16,217,142,0.3)">EARN</span>
-          </button>
-        </div>
-      </div>
       <div style="padding:4px 0 6px">
         <div class="hm-admin-section">
-          <div class="hm-admin-label" style="color:#fbbf24">🔔 NOTIFICATIONS</div>
           <button class="hm-admin-btn" onclick="mhCloseBurger();toggleNotificationCenter()">
             <span class="hm-admin-crown" style="animation:none">🔔</span>
             <span class="hm-admin-text"><span class="hm-admin-title">Notifications</span></span>
@@ -7072,9 +7106,22 @@ function studyriaApp() {
           </button>
         </div>
       </div>
+      <div id="hmCreatorRegSection2" style="padding:4px 0 8px">
+        <div style="padding:0 12px 8px">
+          <button onclick="mhCloseBurger();navigate('creator-register')" style="width:100%;padding:11px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(16,217,142,0.1),rgba(6,182,212,0.06));border:1px solid rgba(16,217,142,0.25);color:#10d98e;font-family:var(--font-body);font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s">
+            <span>🎓</span><span>Creator Program</span>
+            <span style="margin-left:auto;font-size:.65rem;padding:2px 7px;border-radius:6px;background:rgba(16,217,142,0.15);color:#10d98e;border:1px solid rgba(16,217,142,0.3)">EARN</span>
+          </button>
+        </div>
+      </div>
+      <div style="padding:0 12px 10px">
+        <button onclick="mhCloseBurger();navigate('pwa')" style="width:100%;padding:11px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(6,182,212,0.06));border:1px solid rgba(37,99,235,0.25);color:#2563EB;font-family:var(--font-body);font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s">
+          <span>📱</span><span>Install Studyria App</span>
+        </button>
+      </div>
     </div>
   </div>
-  <!-- Backdrop for mobile burger -->
+  <!-- Backdrop for RIGHT control center menu -->
   <div id="mhBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;backdrop-filter:blur(2px)" onclick="mhCloseBurger()"></div>
 </div>
 
@@ -7095,6 +7142,7 @@ function studyriaApp() {
   <div class="container">
     <div class="nav-inner">
       <div class="logo" onclick="navigate('home')" id="animLogo">
+  <img src="https://media.base44.com/images/public/6a4e0acde27ec4df038c30f0/90d788763_file_000000005f547207afc8f7f886059902.png" alt="Studyria" class="desktop-logo-img" />
   <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
 </div>
       <div class="nav-links">
@@ -45446,7 +45494,7 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
     }, 150);
   };
 
-  // ── Burger menu toggle ──
+  // ── RIGHT MENU: Control Center toggle (independent) ──
   window.mhToggleBurger = function(e) {
     if (e) e.stopPropagation();
     var menu = document.getElementById('mhBurgerMenu');
@@ -45456,11 +45504,12 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
     if (isOpen) {
       mhCloseBurger();
     } else {
+      // close the other menu if open, so they operate independently
+      if (typeof mhCloseNavMenu === 'function') mhCloseNavMenu();
       menu.style.display = 'block';
       menu.style.transform = 'translateY(0%)';
       backdrop.style.display = 'block';
       document.body.style.overflow = 'hidden';
-      mhLoadMenuItems();
     }
   };
   window.mhCloseBurger = function() {
@@ -45474,34 +45523,34 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
     document.body.style.overflow = '';
   };
 
-  // ── Load burger menu items ──
-  var mhMenuLoaded = false;
-  function mhLoadMenuItems() {
-    if (mhMenuLoaded) return;
-    mhMenuLoaded = true;
-    var container = document.getElementById('mhDynamicMenuItems');
-    if (!container) return;
-
-    var items = [
-      { icon: '🏠', label: 'Home', action: "navigate('home')" },
-      { icon: '🎯', label: 'APSC', action: "navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)" },
-      { icon: '🎯', label: 'ADRE', action: "navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)" },
-      { icon: '📚', label: 'Free Materials', action: "navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)" },
-      { icon: '📋', label: 'Free Mock Tests', action: "navigate('career-hub')" },
-      { icon: '📚', label: 'Browse All', action: "navigate('library')" },
-      { icon: '📚', label: 'Categories', action: "navigate('library');setTimeout(function(){var c=document.querySelector('.lib-cat-section, [data-section=categories]');if(c)c.scrollIntoView({behavior:'smooth',block:'start'});},300)" },
-    ];
-
-    var html = '';
-    items.forEach(function(item, idx) {
-      var delay = (idx * 0.04).toFixed(2);
-      html += '<button class="hamburger-item" style="animation-delay:' + delay + 's" onclick="mhCloseBurger();' + item.action + '">' +
-        '<span class="hm-icon">' + item.icon + '</span>' +
-        '<span class="hm-item-label">' + item.label + '</span>' +
-        '</button>';
-    });
-    container.innerHTML = html;
-  }
+  // ── LEFT MENU: Navigation toggle (independent) ──
+  window.mhToggleNavMenu = function(e) {
+    if (e) e.stopPropagation();
+    var menu = document.getElementById('mhNavMenu');
+    var backdrop = document.getElementById('mhNavBackdrop');
+    if (!menu || !backdrop) return;
+    var isOpen = menu.style.transform === 'translateY(0%)';
+    if (isOpen) {
+      mhCloseNavMenu();
+    } else {
+      // close the other menu if open, so they operate independently
+      if (typeof mhCloseBurger === 'function') mhCloseBurger();
+      menu.style.display = 'block';
+      menu.style.transform = 'translateY(0%)';
+      backdrop.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+  };
+  window.mhCloseNavMenu = function() {
+    var menu = document.getElementById('mhNavMenu');
+    var backdrop = document.getElementById('mhNavBackdrop');
+    if (menu) {
+      menu.style.transform = 'translateY(100%)';
+      setTimeout(function() { if (menu.style.transform === 'translateY(100%)') menu.style.display = 'none'; }, 250);
+    }
+    if (backdrop) backdrop.style.display = 'none';
+    document.body.style.overflow = '';
+  };
 
   // ── Sync auth state to mobile header ──
   window.mhSyncAuth = function(user) {
