@@ -31,11 +31,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v33';
+const CACHE_VERSION = 'v34';
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.07.18-pwa-v3.2';
+const SW_BUILD      = '2026.08.04-pwa-v3.3';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🚀 PWA V3.2 — Intelligent PWA Platform: auto release notes, download manager, notification V2.0, offline engine, admin control center, route prefetch, secure cache.';
