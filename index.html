@@ -7497,7 +7497,14 @@ body.light .sh-hero-search input {
 .sh-hero-right {
   position: relative; display: flex; justify-content: center; align-items: center;
 }
-@media (max-width: 900px) { .sh-hero-right { display: none; } }
+/* Previously hidden below 900px (the old CSS-drawn device mockup looked
+   cluttered on narrow screens). Now that this holds a single clean
+   branded image (.sh-hero-custom-img), show it on mobile too -- the
+   1-column grid (.sh-hero-inner .container at max-width:900px) already
+   stacks it cleanly below the text/CTA/stats block. */
+@media (max-width: 900px) {
+  .sh-hero-right { display: flex; margin-top: 8px; }
+}
 
 /* ── Custom uploaded hero visual (replaces CSS mockup) ─────── */
 .sh-hero-custom-visual {
