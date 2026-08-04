@@ -7495,9 +7495,36 @@ body.light .sh-hero-search input {
 
 /* Right: device mockup */
 .sh-hero-right {
-  position: relative; display: flex; justify-content: center;
+  position: relative; display: flex; justify-content: center; align-items: center;
 }
 @media (max-width: 900px) { .sh-hero-right { display: none; } }
+
+/* ── Custom uploaded hero visual (replaces CSS mockup) ─────── */
+.sh-hero-custom-visual {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+}
+.sh-hero-custom-img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 22px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  animation: shHeroImgFloat 6s ease-in-out infinite;
+}
+@keyframes shHeroImgFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@media (max-width: 1100px) {
+  .sh-hero-custom-visual { max-width: 340px; }
+}
+@media (max-width: 900px) {
+  .sh-hero-custom-visual { max-width: 300px; }
+}
 
 .sh-mockup-wrap {
   position: relative; width: 320px; height: 360px;
@@ -8471,69 +8498,20 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 
       <!-- Right: mockup -->
       <div class="sh-hero-right" aria-hidden="true">
-        <div class="sh-mockup-wrap">
+        <div class="sh-hero-custom-visual">
           <div class="sh-mockup-glow"></div>
-          <div class="sh-mockup-screen">
-            <div class="sh-mockup-bar">
-              <div class="sh-mockup-dot"></div>
-              <div class="sh-mockup-dot"></div>
-              <div class="sh-mockup-dot"></div>
-              <span class="sh-mockup-logo">✦ Studyria</span>
-            </div>
-            <div class="sh-mockup-cards">
-              <div class="sh-mockup-card">
-                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#3d8ef8,#00c8e8)"></div>
-                <div class="sh-mockup-lines">
-                  <div class="sh-mockup-line"></div>
-                  <div class="sh-mockup-line sh-mockup-line-short"></div>
-                </div>
-                <div class="sh-mockup-badge">FREE</div>
-              </div>
-              <div class="sh-mockup-card">
-                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#8b5cf6,#3d8ef8)"></div>
-                <div class="sh-mockup-lines">
-                  <div class="sh-mockup-line"></div>
-                  <div class="sh-mockup-line sh-mockup-line-short"></div>
-                </div>
-                <div class="sh-mockup-badge">₹39</div>
-              </div>
-              <div class="sh-mockup-card">
-                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"></div>
-                <div class="sh-mockup-lines">
-                  <div class="sh-mockup-line"></div>
-                  <div class="sh-mockup-line sh-mockup-line-short"></div>
-                </div>
-                <div class="sh-mockup-badge">HOT</div>
-              </div>
-              <div class="sh-mockup-card">
-                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#10d98e,#06b6d4)"></div>
-                <div class="sh-mockup-lines">
-                  <div class="sh-mockup-line"></div>
-                  <div class="sh-mockup-line sh-mockup-line-short"></div>
-                </div>
-                <div class="sh-mockup-badge">NEW</div>
-              </div>
-            </div>
-          </div>
-          <!-- Floating chips -->
-          <div class="sh-mockup-chip sh-chip-1">
-            <span class="sh-mockup-chip-dot" style="background:#3d8ef8;box-shadow:0 0 5px #3d8ef8"></span>
-            Govt Exams
-          </div>
-          <div class="sh-mockup-chip sh-chip-2">
-            <span class="sh-mockup-chip-dot" style="background:#10d98e;box-shadow:0 0 5px #10d98e"></span>
-            PDF Library
-          </div>
-          <div class="sh-mockup-chip sh-chip-3">
-            <span class="sh-mockup-chip-dot" style="background:#f59e0b;box-shadow:0 0 5px #f59e0b"></span>
-            Career Hub
-          </div>
-          <div class="sh-mockup-chip sh-chip-4">
-            <span class="sh-mockup-chip-dot" style="background:#8b5cf6;box-shadow:0 0 5px #8b5cf6"></span>
-            AI Picks
-          </div>
+          <img
+            src="https://base44.app/api/apps/6a4ea1abbec2f4bed6f064a3/files/mp/public/6a4ea1abbec2f4bed6f064a3/f30787837_014e95998_file_00000000a9c08211a2e2062225abc994.png"
+            alt="Studyria — Your Preparation, Our Commitment, Your Success. Premium notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police, TET, Grade III & IV."
+            class="sh-hero-custom-img"
+            loading="eager"
+            decoding="async"
+            width="900"
+            height="1330"
+          />
         </div>
       </div>
+
 
     </div>
   </div>
