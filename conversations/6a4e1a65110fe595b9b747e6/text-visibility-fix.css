@@ -432,3 +432,153 @@ body.light .arv-card-name {
   font-family: 'Georgia', serif !important;
   letter-spacing: -0.01em !important;
 }
+
+/* ── Additional fixes found during library page inspection ──── */
+body.light .ottlib-cat-row-see-all {
+  color: #6b6358 !important;
+}
+
+body.light .ottlib-cat-row-see-all:hover {
+  color: #a6192e !important;
+}
+
+/* ottlib-see-all default (non-inline) uses #3d8ef8 - needs brand color */
+body.light .ottlib-see-all {
+  color: #a6192e !important;
+  background: rgba(166,25,46,0.06) !important;
+  border-color: rgba(166,25,46,0.15) !important;
+}
+
+body.light .ottlib-see-all:hover {
+  background: rgba(166,25,46,0.12) !important;
+  border-color: rgba(166,25,46,0.3) !important;
+}
+
+/* OTTLIB hero badge (inside dark hero - keep visible) */
+body.light .ottlib-hero-badge {
+  background: rgba(61,142,248,0.12) !important;
+  border-color: rgba(61,142,248,0.25) !important;
+}
+
+/* OTTLIB section dots (visible on cream) */
+body.light .ottlib-section-dot {
+  box-shadow: 0 0 8px currentColor !important;
+}
+
+/* Inline section badges (on cream, not in hero) */
+body.light .ottlib-section-badge[style*="color:#c4b5fd"] {
+  color: #6d28d9 !important;
+  background: rgba(124,58,237,0.1) !important;
+  border-color: rgba(124,58,237,0.25) !important;
+}
+
+body.light .ottlib-section-badge[style*="color:#ff8fa8"] {
+  color: #a6192e !important;
+  background: rgba(166,25,46,0.08) !important;
+  border-color: rgba(166,25,46,0.2) !important;
+}
+
+body.light .ottlib-section-badge[style*="color:#34d399"] {
+  color: #059669 !important;
+  background: rgba(5,150,105,0.08) !important;
+  border-color: rgba(5,150,105,0.2) !important;
+}
+
+/* Sort/filter buttons (below hero, on cream) */
+body.light .ottlib-sort-btn {
+  background: rgba(28,27,26,0.05) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+  color: #6b6358 !important;
+}
+
+body.light .ottlib-sort-btn:hover,
+body.light .ottlib-sort-btn.active {
+  background: rgba(166,25,46,0.08) !important;
+  border-color: rgba(166,25,46,0.2) !important;
+  color: #a6192e !important;
+}
+
+/* Achievement lock text */
+body.light .ottlib-ach-lock {
+  color: rgba(28,27,26,0.3) !important;
+}
+
+/* Empty state text */
+body.light .ottlib-empty-text,
+body.light .ottlib-empty {
+  color: #6b6358 !important;
+}
+
+/* Wishlist text on library */
+body.light .ottlib-wish-count {
+  color: #6b6358 !important;
+}
+
+/* AI banner section header (on cream) */
+body.light .ottlib-ai-banner {
+  background: transparent !important;
+}
+
+/* Trust badges section (below library cards, on cream) */
+body.light .trust-badge {
+  color: #6b6358 !important;
+}
+
+body.light .trust-title {
+  color: #1c1b1a !important;
+}
+
+/* Newsletter/subscribe section (on cream) */
+body.light .subscribe-text,
+body.light .subscribe-sub {
+  color: #6b6358 !important;
+}
+
+body.light .subscribe-title {
+  color: #1c1b1a !important;
+}
+
+/* ── Cat pill hover color fix ── */
+body.light .ottlib-cat-pill:hover {
+  color: #a6192e !important;
+}
+
+/* ── Sort dropdown wrapper ── */
+body.light .ottlib-sort-wrap {
+  background: transparent !important;
+}
+
+/* ── Achievement lock icon ── */
+body.light .ottlib-ach-lock svg,
+body.light .ottlib-ach-lock {
+  opacity: 0.4 !important;
+}
+
+/* ── Browse grid heading ── */
+body.light .ottlib-browse-title {
+  color: #1c1b1a !important;
+  font-family: 'Georgia', serif !important;
+  letter-spacing: -0.01em !important;
+}
+
+body.light .ottlib-browse-count {
+  color: #6b6358 !important;
+}
+
+/* ── Achievement description (on cream) ── */
+body.light .ottlib-ach-desc {
+  color: #6b6358 !important;
+}
+
+/* ── Cover fallback (has its own dark bg, keep as-is) ── */
+/* ottlib-cover-fallback: dark bg + faint white = fine */
+
+/* ── Card meta row (on cream) ── */
+body.light .ottlib-card-meta-row {
+  color: #6b6358 !important;
+}
+
+/* ── Inline mini preview label (admin dashboard) ── */
+body.light [style*="color:rgba(255,255,255,0.3)"] {
+  color: rgba(28,27,26,0.3) !important;
+}

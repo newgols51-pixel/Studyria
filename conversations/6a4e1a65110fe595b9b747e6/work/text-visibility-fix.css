@@ -537,3 +537,48 @@ body.light .subscribe-sub {
 body.light .subscribe-title {
   color: #1c1b1a !important;
 }
+
+/* ── Cat pill hover color fix ── */
+body.light .ottlib-cat-pill:hover {
+  color: #a6192e !important;
+}
+
+/* ── Sort dropdown wrapper ── */
+body.light .ottlib-sort-wrap {
+  background: transparent !important;
+}
+
+/* ── Achievement lock icon ── */
+body.light .ottlib-ach-lock svg,
+body.light .ottlib-ach-lock {
+  opacity: 0.4 !important;
+}
+
+/* ── Browse grid heading ── */
+body.light .ottlib-browse-title {
+  color: #1c1b1a !important;
+  font-family: 'Georgia', serif !important;
+  letter-spacing: -0.01em !important;
+}
+
+body.light .ottlib-browse-count {
+  color: #6b6358 !important;
+}
+
+/* ── Achievement description (on cream) ── */
+body.light .ottlib-ach-desc {
+  color: #6b6358 !important;
+}
+
+/* ── Cover fallback (has its own dark bg, keep as-is) ── */
+/* ottlib-cover-fallback: dark bg + faint white = fine */
+
+/* ── Card meta row (on cream) ── */
+body.light .ottlib-card-meta-row {
+  color: #6b6358 !important;
+}
+
+/* ── Inline mini preview label (admin dashboard) ── */
+body.light [style*="color:rgba(255,255,255,0.3)"] {
+  color: rgba(28,27,26,0.3) !important;
+}
