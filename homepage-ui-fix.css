@@ -1,14 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════
-   STUDYRIA — HOMEPAGE UI FIX
+   STUDYRIA — HOMEPAGE UI FIX v2
    Isolated overrides using hui- namespace
-   Header, Hero, Menu, General UI improvements
+   Focus: Light theme fixes, Header polish, Menu overlay, General UI
    ═══════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════
-   1. HEADER REDESIGN — Clean premium mobile header
+   1. HEADER — Clean premium header with light theme support
    ═══════════════════════════════════════════════════════════════ */
 
-/* Premium glass nav with refined spacing */
 .nav.hui-nav {
   position: sticky;
   top: 0;
@@ -21,19 +20,17 @@
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 body.light .nav.hui-nav {
-  background: rgba(245, 248, 252, 0.85) !important;
-  border-bottom-color: rgba(61, 142, 248, 0.08) !important;
+  background: rgba(245, 248, 252, 0.88) !important;
+  border-bottom-color: rgba(61, 142, 248, 0.1) !important;
   box-shadow: 0 1px 0 rgba(61, 142, 248, 0.04), 0 2px 16px rgba(10, 16, 34, 0.06) !important;
 }
 
-/* Better nav inner spacing */
 .nav.hui-nav .nav-inner {
   height: 64px;
   gap: 20px;
   padding: 0 4px;
 }
 
-/* Consistent icon button sizing */
 .nav.hui-nav .icon-btn {
   width: 38px !important;
   height: 38px !important;
@@ -53,14 +50,12 @@ body.light .nav.hui-nav {
   height: 18px;
 }
 
-/* Refined logo spacing */
 .nav.hui-nav .logo {
   cursor: pointer;
   flex-shrink: 0;
   padding-right: 8px;
 }
 
-/* Nav links refined */
 .nav.hui-nav .nav-links {
   gap: 6px;
 }
@@ -76,13 +71,11 @@ body.light .nav.hui-nav {
   color: var(--accent);
 }
 
-/* Nav actions refined spacing */
 .nav.hui-nav .nav-actions {
   gap: 8px;
   align-items: center;
 }
 
-/* Sign In button refinement */
 .nav.hui-nav .btn-primary.btn-sm {
   padding: 8px 18px;
   border-radius: 10px;
@@ -97,7 +90,6 @@ body.light .nav.hui-nav {
   box-shadow: 0 4px 20px rgba(61, 142, 248, 0.4);
 }
 
-/* Avatar button refinement */
 .nav.hui-nav .avatar-btn {
   width: 38px !important;
   height: 38px !important;
@@ -105,7 +97,6 @@ body.light .nav.hui-nav {
   font-size: 0.82rem;
 }
 
-/* Language switcher button alignment */
 .nav.hui-nav #langBtn {
   width: 38px !important;
   height: 38px !important;
@@ -117,239 +108,145 @@ body.light .nav.hui-nav {
   padding: 0 !important;
 }
 
-/* Mobile responsive header */
 @media (max-width: 640px) {
-  .nav.hui-nav .nav-inner {
-    height: 58px;
-    gap: 10px;
-  }
-  .nav.hui-nav .icon-btn {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .nav.hui-nav .btn-primary.btn-sm {
-    padding: 7px 14px;
-    font-size: 0.78rem;
-  }
-  .nav.hui-nav .avatar-btn {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .nav.hui-nav #langBtn {
-    width: 36px !important;
-    height: 36px !important;
-  }
+  .nav.hui-nav .nav-inner { height: 58px; gap: 10px; }
+  .nav.hui-nav .icon-btn { width: 36px !important; height: 36px !important; }
+  .nav.hui-nav .btn-primary.btn-sm { padding: 7px 14px; font-size: 0.78rem; }
+  .nav.hui-nav .avatar-btn { width: 36px !important; height: 36px !important; }
+  .nav.hui-nav #langBtn { width: 36px !important; height: 36px !important; }
 }
-
 @media (max-width: 380px) {
-  .nav.hui-nav .nav-inner {
-    gap: 6px;
-  }
-  .nav.hui-nav .icon-btn {
-    width: 34px !important;
-    height: 34px !important;
-  }
+  .nav.hui-nav .nav-inner { gap: 6px; }
+  .nav.hui-nav .icon-btn { width: 34px !important; height: 34px !important; }
 }
 
 
 /* ═══════════════════════════════════════════════════════════════
-   2. HERO SECTION — Typography & contrast improvements
+   2. HERO LIGHT THEME — Professional white theme for hr- classes
    ═══════════════════════════════════════════════════════════════ */
 
-/* Hero section spacing */
-.sh-hero.hui-hero {
-  min-height: clamp(460px, 68vh, 680px) !important;
+/* Light hero background — soft gradient, not stark white */
+body.light .hr-hero {
+  background: linear-gradient(135deg, #f0f6ff 0%, #e8f0fc 35%, #f5f8fd 70%, #eaf2ff 100%) !important;
 }
 
-/* Hero inner padding */
-.sh-hero.hui-hero .sh-hero-inner {
-  padding: 56px 0 48px !important;
+/* Light theme orbs — subtle, pastel */
+body.light .hr-orb-1 { background: radial-gradient(circle, rgba(61,142,248,0.25), transparent) !important; opacity: 0.3 !important; }
+body.light .hr-orb-2 { background: radial-gradient(circle, rgba(139,92,246,0.18), transparent) !important; opacity: 0.25 !important; }
+body.light .hr-orb-3 { background: radial-gradient(circle, rgba(0,200,232,0.2), transparent) !important; opacity: 0.2 !important; }
+
+/* Light theme mesh grid — darker lines for visibility */
+body.light .hr-hero::before {
+  background-image:
+    linear-gradient(rgba(10,16,34,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,16,34,0.04) 1px, transparent 1px) !important;
 }
 
-/* Eyebrow badge refinement */
-.sh-hero.hui-hero .sh-hero-eyebrow {
-  padding: 6px 16px;
-  border-radius: 100px;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  margin-bottom: 22px;
-  background: rgba(61, 142, 248, 0.1);
-  border: 1px solid rgba(61, 142, 248, 0.25);
+/* Light theme eyebrow badge */
+body.light .hr-hero-eyebrow {
+  background: rgba(61, 142, 248, 0.1) !important;
+  border-color: rgba(61, 142, 248, 0.25) !important;
+  color: #2563eb !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-/* Wordmark — big, bold, eye-catching */
-.sh-hero.hui-hero .sh-hero-wordmark {
-  font-size: clamp(2.6rem, 6vw, 3.8rem) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.03em !important;
-  margin-bottom: 14px !important;
-  line-height: 1.0 !important;
-  filter: drop-shadow(0 0 24px rgba(61, 142, 248, 0.2));
+/* Light theme wordmark — dark gradient text for contrast */
+body.light .hr-hero-wordmark {
+  background: linear-gradient(135deg, #0a1022 0%, #1e3a5f 50%, #2563eb 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  filter: drop-shadow(0 0 20px rgba(61,142,248,0.12)) !important;
 }
 
-/* Hero title — clear hierarchy */
-.sh-hero.hui-hero .sh-hero-title {
-  font-size: clamp(1.3rem, 3.2vw, 1.85rem) !important;
-  font-weight: 700 !important;
-  line-height: 1.35 !important;
-  letter-spacing: -0.015em !important;
-  margin: 0 0 18px !important;
-  color: var(--text) !important;
+/* Light theme title */
+body.light .hr-hero-title {
+  color: #0a1022 !important;
 }
 
-/* Hero subtitle — readable, good spacing */
-.sh-hero.hui-hero .sh-hero-sub {
-  font-size: clamp(0.9rem, 1.7vw, 1.02rem) !important;
-  line-height: 1.7 !important;
-  margin: 0 0 32px !important;
-  max-width: 540px !important;
-  color: var(--text2) !important;
+/* Light theme subtitle */
+body.light .hr-hero-sub {
+  color: #4a5f80 !important;
+}
+body.light .hr-hero-sub strong {
+  color: #2563eb !important;
 }
 
-/* CTA buttons — better spacing */
-.sh-hero.hui-hero .sh-hero-btns {
-  gap: 12px !important;
-  margin-bottom: 32px !important;
+/* Light theme primary CTA */
+body.light .hr-btn-primary {
+  background: linear-gradient(135deg, #3d8ef8 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(61, 142, 248, 0.3) !important;
 }
-.sh-hero.hui-hero .sh-btn {
-  padding: 14px 26px !important;
-  border-radius: 13px !important;
-  font-size: 0.92rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.01em;
-}
-.sh-hero.hui-hero .sh-btn-primary {
-  box-shadow: 0 4px 24px rgba(61, 142, 248, 0.35) !important;
-}
-.sh-hero.hui-hero .sh-btn-primary:hover {
-  box-shadow: 0 8px 36px rgba(61, 142, 248, 0.5) !important;
+body.light .hr-btn-primary:hover {
+  box-shadow: 0 8px 30px rgba(61, 142, 248, 0.4) !important;
 }
 
-/* Search bar — premium feel */
-.sh-hero.hui-hero .sh-hero-search {
-  margin-top: 24px !important;
+/* Light theme secondary CTA — white glass */
+body.light .hr-btn-secondary {
+  background: rgba(255, 255, 255, 0.8) !important;
+  color: #1e3a5f !important;
+  border-color: rgba(61, 142, 248, 0.2) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
-.sh-hero.hui-hero .sh-hero-search input {
-  padding: 16px 22px 16px 50px !important;
-  border-radius: 16px !important;
-  font-size: 0.95rem !important;
-  border-width: 1.5px !important;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
+body.light .hr-btn-secondary:hover {
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: rgba(61, 142, 248, 0.4) !important;
 }
-.sh-hero.hui-hero .sh-hero-search input:focus {
-  border-color: rgba(61, 142, 248, 0.55) !important;
+
+/* Light theme search bar */
+body.light .hr-hero-search input {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(61, 142, 248, 0.15) !important;
+  color: #0a1022 !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+body.light .hr-hero-search input::placeholder {
+  color: rgba(74, 95, 128, 0.5) !important;
+}
+body.light .hr-hero-search input:focus {
+  border-color: rgba(61, 142, 248, 0.5) !important;
+  background: rgba(255, 255, 255, 1) !important;
   box-shadow: 0 0 0 4px rgba(61, 142, 248, 0.1) !important;
 }
-.sh-hero.hui-hero .sh-hero-search-icon {
-  left: 18px !important;
-}
-.sh-hero.hui-hero .sh-hero-search-icon svg {
-  width: 19px;
-  height: 19px;
+body.light .hr-hero-search-icon {
+  color: rgba(74, 95, 128, 0.5) !important;
 }
 
-/* Stats — premium card style */
-.sh-hero.hui-hero .sh-hero-stats {
-  gap: 28px !important;
-  margin-top: 28px !important;
-  flex-wrap: wrap;
-  padding: 20px 24px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+/* Light theme stats */
+body.light .hr-hero-stat-num {
+  color: #0a1022 !important;
 }
-body.light .sh-hero.hui-hero .sh-hero-stats {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.06);
-}
-.sh-hero.hui-hero .sh-hero-stat-num {
-  font-size: 1.35rem !important;
-  font-weight: 800 !important;
-  line-height: 1 !important;
-  margin-bottom: 4px;
-}
-.sh-hero.hui-hero .sh-hero-stat-label {
-  font-size: 0.66rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.08em !important;
+body.light .hr-hero-stat-label {
+  color: #4a5f80 !important;
 }
 
-/* Hero responsive */
-@media (max-width: 900px) {
-  .sh-hero.hui-hero .sh-hero-inner .container {
-    gap: 36px !important;
-  }
+/* Light theme social links */
+body.light .hr-hero-social {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+body.light .hr-hero-social:hover {
+  background: rgba(255, 255, 255, 1) !important;
 }
 
-@media (max-width: 640px) {
-  .sh-hero.hui-hero {
-    min-height: clamp(440px, 65vh, 580px) !important;
-  }
-  .sh-hero.hui-hero .sh-hero-inner {
-    padding: 40px 0 36px !important;
-  }
-  .sh-hero.hui-hero .sh-hero-eyebrow {
-    margin-bottom: 18px;
-    font-size: 0.62rem;
-    padding: 5px 14px;
-  }
-  .sh-hero.hui-hero .sh-hero-wordmark {
-    font-size: clamp(2.2rem, 8vw, 3rem) !important;
-  }
-  .sh-hero.hui-hero .sh-hero-title {
-    font-size: clamp(1.15rem, 4vw, 1.45rem) !important;
-    margin-bottom: 14px !important;
-  }
-  .sh-hero.hui-hero .sh-hero-sub {
-    font-size: 0.88rem !important;
-    line-height: 1.6 !important;
-    margin-bottom: 24px !important;
-  }
-  .sh-hero.hui-hero .sh-btn {
-    padding: 12px 20px !important;
-    font-size: 0.88rem !important;
-  }
-  .sh-hero.hui-hero .sh-hero-search input {
-    padding: 14px 18px 14px 46px !important;
-    font-size: 0.9rem !important;
-    border-radius: 14px !important;
-  }
-  .sh-hero.hui-hero .sh-hero-stats {
-    gap: 22px !important;
-    margin-top: 24px !important;
-    padding: 16px 18px;
-    border-radius: 14px;
-  }
-  .sh-hero.hui-hero .sh-hero-stat-num {
-    font-size: 1.2rem !important;
-  }
-}
-
-@media (max-width: 380px) {
-  .sh-hero.hui-hero .sh-hero-btns {
-    gap: 10px !important;
-  }
-  .sh-hero.hui-hero .sh-btn {
-    padding: 11px 16px !important;
-    font-size: 0.84rem !important;
-  }
-  .sh-hero.hui-hero .sh-hero-stats {
-    gap: 16px !important;
-    padding: 14px 14px;
-  }
+/* Light theme feature strip */
+body.light .hr-feature-icon {
+  background: rgba(61, 142, 248, 0.08) !important;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════
-   3. HAMBURGER MENU — Full-height scrollable panel from the right
+   3. HAMBURGER MENU — Slide-in panel with overlay + light theme
    ═══════════════════════════════════════════════════════════════ */
 
-/* Overlay backdrop for menu */
 .hui-menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   z-index: 9998;
@@ -361,193 +258,189 @@ body.light .sh-hero.hui-hero .sh-hero-stats {
   opacity: 1;
   pointer-events: auto;
 }
+body.light .hui-menu-overlay {
+  background: rgba(10, 16, 34, 0.3);
+}
 
-/* Hamburger dropdown — full height panel from the right */
 .nav.hui-nav .hamburger-dropdown {
   position: fixed !important;
   top: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  max-width: 340px;
-  width: 85vw;
-  z-index: 9999 !important;
+  left: auto !important;
+  width: 85vw !important;
+  max-width: 340px !important;
+  max-height: 100vh !important;
   border-radius: 0 !important;
-  border-left: 1px solid rgba(61, 142, 248, 0.15) !important;
-  border-top: none !important;
-  border-right: none !important;
-  border-bottom: none !important;
-  box-shadow: -12px 0 60px rgba(0, 0, 0, 0.6) !important;
-  animation: huiSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both !important;
-  display: flex;
-  flex-direction: column;
+  transform: translateX(100%) !important;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  z-index: 9999 !important;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.3) !important;
+  padding-top: 60px !important;
+  overflow-y: auto !important;
+}
+.nav.hui-nav .hamburger-dropdown[style*="display: block"],
+.nav.hui-nav .hamburger-dropdown[style*="display:block"] {
+  transform: translateX(0) !important;
 }
 body.light .nav.hui-nav .hamburger-dropdown {
-  border-left-color: rgba(61, 142, 248, 0.1) !important;
-  box-shadow: -12px 0 48px rgba(10, 16, 34, 0.12) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: -8px 0 40px rgba(10, 16, 34, 0.12) !important;
 }
 
-@keyframes huiSlideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0.5;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-/* Top shine — reposition for full height */
-.nav.hui-nav .hm-top-shine {
-  position: relative !important;
-  height: 3px;
-  flex-shrink: 0;
-  border-radius: 0;
-}
-
-/* Scroll area — full height with safe area */
-.nav.hui-nav .hm-scroll {
-  flex: 1;
-  max-height: none !important;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 12px 0 calc(20px + env(safe-area-inset-bottom)) !important;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(61, 142, 248, 0.25) transparent;
-  -webkit-overflow-scrolling: touch;
-}
-.nav.hui-nav .hm-scroll::-webkit-scrollbar {
-  width: 3px;
-}
-.nav.hui-nav .hm-scroll::-webkit-scrollbar-thumb {
-  background: rgba(61, 142, 248, 0.25);
-  border-radius: 3px;
-}
-
-/* Close button for the panel */
 .hui-menu-close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  font-size: 1.1rem;
   transition: all 0.2s ease;
+  z-index: 10;
 }
 .hui-menu-close:hover {
-  background: rgba(61, 142, 248, 0.1);
-  border-color: rgba(61, 142, 248, 0.3);
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(61, 142, 248, 0.4);
 }
 body.light .hui-menu-close {
-  border-color: rgba(0, 0, 0, 0.08);
   background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
 }
-
-/* Mobile bottom nav — safe area + refined */
-.mobile-nav-bar.hui-bottom-nav {
-  padding: 6px 8px calc(8px + env(safe-area-inset-bottom)) !important;
-}
-.mobile-nav-bar.hui-bottom-nav .mobile-nav-item {
-  padding: 8px 4px 6px;
-}
-.mobile-nav-bar.hui-bottom-nav .mni-icon {
-  width: 36px !important;
-  height: 36px !important;
-}
-.mobile-nav-bar.hui-bottom-nav .mni-label {
-  font-size: 0.58rem !important;
-}
-
-@media (max-width: 380px) {
-  .mobile-nav-bar.hui-bottom-nav .mni-icon {
-    width: 34px !important;
-    height: 34px !important;
-  }
-  .mobile-nav-bar.hui-bottom-nav .mni-label {
-    font-size: 0.55rem !important;
-  }
+body.light .hui-menu-close:hover {
+  background: rgba(61, 142, 248, 0.1);
+  border-color: rgba(61, 142, 248, 0.3);
 }
 
 
 /* ═══════════════════════════════════════════════════════════════
-   4. GENERAL UI — Cards, sections, typography
+   4. BOTTOM NAV — Polish + light theme
    ═══════════════════════════════════════════════════════════════ */
 
-/* Section spacing */
-.sh-row-section.hui-section {
-  padding: 48px 0;
+.hui-bottom-nav {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
-@media (max-width: 640px) {
-  .sh-row-section.hui-section {
-    padding: 36px 0;
-  }
-}
-
-/* Section heads — better spacing */
-.hui-section .sh-section-head {
-  margin-bottom: 24px;
-}
-.hui-section .sh-section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-.hui-section .sh-section-label {
-  gap: 10px;
+body.light .hui-bottom-nav {
+  background: rgba(245, 248, 252, 0.92) !important;
+  border-top-color: rgba(0, 0, 0, 0.06) !important;
 }
 
-/* See All button refinement */
-.hui-section .sh-see-all {
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+
+/* ═══════════════════════════════════════════════════════════════
+   5. GENERAL UI — Section spacing, FAQ, light theme fixes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Better section spacing */
+.hui-section {
+  padding: 28px 0 20px;
 }
-.hui-section .sh-see-all:hover {
+
+/* Section heads — light theme refinement */
+body.light .sh-section-title {
+  color: #0a1022 !important;
+}
+body.light .sh-section-badge {
   background: rgba(61, 142, 248, 0.08);
-  color: var(--accent);
+  border-color: rgba(61, 142, 248, 0.2);
+}
+body.light .sh-see-all {
+  background: rgba(61, 142, 248, 0.06);
+  border-color: rgba(61, 142, 248, 0.15);
+  color: #2563eb;
+}
+body.light .sh-see-all:hover {
+  background: rgba(61, 142, 248, 0.12);
+  border-color: rgba(61, 142, 248, 0.3);
 }
 
-/* Section badge refinement */
-.hui-section .sh-section-badge {
-  font-size: 0.6rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.04em;
+/* FAQ light theme */
+body.light .sh-faq-q {
+  color: #0a1022 !important;
+}
+body.light .sh-faq-a {
+  color: #4a5f80 !important;
+}
+body.light .sh-faq-item {
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
 }
 
-/* FAQ section refinement */
-.hui-section .sh-faq-q {
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 18px 22px;
-  border-radius: 14px;
+/* Why cards light theme (sh- namespace) */
+body.light .sh-why-card {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.06);
 }
-.hui-section .sh-faq-a {
-  font-size: 0.88rem;
-  line-height: 1.65;
-  padding: 0 22px 18px;
-  color: var(--text2);
+body.light .sh-why-card:hover {
+  border-color: rgba(61, 142, 248, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+}
+body.light .sh-why-title {
+  color: #0a1022;
 }
 
-/* Responsive section spacing */
-@media (max-width: 640px) {
-  .hui-section .sh-section-head {
-    margin-bottom: 18px;
-  }
-  .hui-section .sh-section-title {
-    font-size: 1rem;
-  }
+/* Light theme for PDF cards */
+body.light .pdf-card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 2px 12px rgba(10, 16, 34, 0.04) !important;
+}
+body.light .pdf-card:hover {
+  border-color: rgba(61, 142, 248, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(10, 16, 34, 0.08) !important;
+}
+
+/* Light theme for glass elements */
+body.light .glass-card,
+body.light .sh-glass {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Light theme announcement bar */
+body.light .announce-bar {
+  background: linear-gradient(135deg, #e8f4ff 0%, #d4ecff 100%) !important;
+  color: #1e3a5f !important;
+}
+
+/* Light theme sub-nav (category bar) */
+body.light .sub-nav {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+body.light .sub-nav-item {
+  color: #4a5f80 !important;
+}
+body.light .sub-nav-item.active {
+  background: rgba(61, 142, 248, 0.1) !important;
+  color: #2563eb !important;
+}
+
+/* Light theme review cards */
+body.light .review-card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Light theme premium banner */
+body.light .hr-premium-banner {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(245, 158, 11, 0.04) 100%) !important;
+  border-color: rgba(251, 191, 36, 0.2) !important;
+}
+
+/* Light theme trust strip */
+body.light .hr-trust-item {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #4a5f80 !important;
+}
+
+/* Smooth theme transition */
+body, .nav, .hr-hero, .sh-row-section, .pdf-card, .glass-card {
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
