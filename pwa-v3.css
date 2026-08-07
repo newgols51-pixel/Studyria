@@ -1,0 +1,682 @@
+/* ══════════════════════════════════════════════════════════════════
+   pwa-v3.css — Studyria PWA V3 UI (2026)
+   GPU-accelerated, 60fps animations, no layout shift
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── SPLASH SCREEN ────────────────────────────────────────────────
+   Fullscreen overlay shown on install launch / first session visit.
+   Uses transform + opacity only — no layout recalculation, 60fps.  */
+#pwaV3Splash {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #080c14;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  will-change: opacity;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Logo container */
+.pwa-splash-logo-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  animation: splashLogoIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  animation-delay: 0.15s;
+}
+
+/* App icon */
+.pwa-splash-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #1a2744 0%, #0d1829 100%);
+  border: 1.5px solid rgba(61,142,248,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 40px rgba(61,142,248,0.2),
+    0 20px 60px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: splashIconPulse 2s ease-in-out infinite;
+}
+
+.pwa-splash-icon img {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+/* Brand name */
+.pwa-splash-brand {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #e4e8f0;
+  line-height: 1;
+}
+
+.pwa-splash-brand span {
+  background: linear-gradient(135deg, #3d8ef8, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tagline */
+.pwa-splash-tagline {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.5px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Loading ring */
+.pwa-splash-ring-wrap {
+  position: absolute;
+  bottom: -80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pwa-splash-ring {
+  width: 32px;
+  height: 32px;
+  border: 2.5px solid rgba(61,142,248,0.15);
+  border-top-color: #3d8ef8;
+  border-radius: 50%;
+  animation: splashSpin 0.8s linear infinite;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.pwa-splash-ring.pwa-splash-ring--done {
+  border-color: #10b981;
+  border-top-color: #10b981;
+  animation: splashCheck 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.pwa-splash-dot-row {
+  display: flex;
+  gap: 6px;
+  animation: splashDotsIn 0.4s ease both;
+  animation-delay: 0.4s;
+}
+
+.pwa-splash-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(61,142,248,0.4);
+  animation: splashDotPulse 1.2s ease-in-out infinite;
+}
+
+.pwa-splash-dot:nth-child(2) { animation-delay: 0.2s; }
+.pwa-splash-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── SPLASH KEYFRAMES ─────────────────────────────────────────── */
+@keyframes splashLogoIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes splashIconPulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(61,142,248,0.2), 0 20px 60px rgba(0,0,0,0.6); }
+  50%       { box-shadow: 0 0 60px rgba(61,142,248,0.35), 0 20px 60px rgba(0,0,0,0.6); }
+}
+
+@keyframes splashSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes splashCheck {
+  0%   { transform: rotate(0deg) scale(0.8); opacity: 0.5; }
+  50%  { transform: rotate(360deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+
+@keyframes splashDotsIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes splashDotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.4); }
+}
+
+/* ── UPDATE BANNER ─────────────────────────────────────────────── */
+.pwa-update-banner {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9998;
+  min-width: min(92vw, 420px);
+  max-width: 480px;
+  background: linear-gradient(135deg, #1a2744 0%, #0d1829 100%);
+  border: 1px solid rgba(61,142,248,0.35);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(61,142,248,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: bottom 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  will-change: bottom;
+}
+
+.pwa-update-banner--visible {
+  bottom: max(16px, env(safe-area-inset-bottom, 16px));
+}
+
+/* Adjust for mobile nav bar */
+@media (max-width: 600px) {
+  .pwa-update-banner--visible {
+    bottom: calc(max(16px, env(safe-area-inset-bottom, 16px)) + 62px);
+  }
+}
+
+.pwa-update-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pwa-update-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(61,142,248,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3d8ef8;
+}
+
+.pwa-update-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pwa-update-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e4e8f0;
+  white-space: nowrap;
+}
+
+.pwa-update-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+
+.pwa-update-btn {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  background: #3d8ef8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.pwa-update-btn:hover  { background: #2b7de0; }
+.pwa-update-btn:active { transform: scale(0.96); }
+.pwa-update-btn:disabled { opacity: 0.6; cursor: default; }
+
+.pwa-update-dismiss {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.pwa-update-dismiss:hover {
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ── NETWORK STATUS BAR ────────────────────────────────────────── */
+.pwa-net-bar {
+  position: fixed;
+  top: -44px;
+  left: 0;
+  right: 0;
+  z-index: 9997;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: top 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  will-change: top;
+}
+
+.pwa-net-bar--visible {
+  top: 0;
+}
+
+.pwa-net-bar--offline {
+  background: #92400e;
+  color: #fef3c7;
+}
+
+.pwa-net-bar--online {
+  background: #065f46;
+  color: #d1fae5;
+}
+
+/* Adjust for standalone mode status bar inset */
+@media all and (display-mode: standalone) {
+  .pwa-net-bar {
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(40px + env(safe-area-inset-top, 0px));
+  }
+}
+
+/* ── INSTALL CARD UPGRADE ──────────────────────────────────────── */
+.pwa-install-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.pwa-install-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3d8ef8, #93c5fd);
+  border-radius: 2px;
+  transition: width 1.5s ease;
+}
+
+/* ── ANIMATIONS ────────────────────────────────────────────────── */
+@keyframes pwaFadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pwaShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* Skeleton loader base */
+.pwa-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: pwaShimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .pwa-update-title { font-size: 12px; }
+  .pwa-update-btn   { font-size: 11px; padding: 6px 10px; }
+}
+
+/* ── REDUCED MOTION ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pwa-splash-logo-wrap,
+  .pwa-splash-icon,
+  .pwa-splash-ring,
+  .pwa-splash-dot,
+  .pwa-update-banner,
+  .pwa-net-bar { animation: none !important; transition-duration: 0.01ms !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PWA Smart Update System — pwa-update.js styles  (v3.1)
+   All classes prefixed pwa-ub / pwa-upd / pwa-wn / pwa-force / pwa-version
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── UPDATE BANNER (slide-up from bottom) ───────────────────────── */
+.pwa-ub {
+  position: fixed;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9996;
+  min-width: min(94vw, 440px);
+  max-width: 500px;
+  background: linear-gradient(135deg, #101c35 0%, #0b1426 100%);
+  border: 1px solid rgba(61,142,248,0.4);
+  border-radius: 18px;
+  padding: 13px 15px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(61,142,248,0.1);
+  transition: bottom 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: bottom;
+}
+.pwa-ub--visible {
+  bottom: max(18px, env(safe-area-inset-bottom, 18px));
+}
+@media (max-width: 600px) {
+  .pwa-ub--visible { bottom: calc(max(18px, env(safe-area-inset-bottom,18px)) + 62px); }
+}
+.pwa-ub-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.pwa-ub-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3d8ef8;
+  box-shadow: 0 0 10px rgba(61,142,248,0.7);
+  animation: pwaUbPulse 1.4s ease-in-out infinite;
+}
+@keyframes pwaUbPulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.6; transform:scale(1.3); }
+}
+.pwa-ub-text { flex: 1; min-width: 0; }
+.pwa-ub-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e4e8f0;
+  line-height: 1.3;
+}
+.pwa-ub-sub {
+  display: block;
+  font-size: 11px;
+  color: rgba(255,255,255,0.42);
+  margin-top: 2px;
+}
+.pwa-ub-actions { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.pwa-ub-btn {
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.1s, opacity 0.15s;
+  white-space: nowrap;
+}
+.pwa-ub-btn:active { transform: scale(0.95); }
+.pwa-ub-btn--now {
+  padding: 8px 15px;
+  background: #3d8ef8;
+  color: #fff;
+}
+.pwa-ub-btn--now:hover { background: #2b7de0; }
+.pwa-ub-btn--later {
+  padding: 8px 11px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+.pwa-ub-btn--later:hover { background: rgba(255,255,255,0.1); }
+.pwa-ub-btn--details {
+  padding: 8px 11px;
+  background: rgba(61,142,248,0.12);
+  color: #3d8ef8;
+  border: 1px solid rgba(61,142,248,0.25) !important;
+}
+.pwa-ub-btn--details:hover { background: rgba(61,142,248,0.2); }
+.pwa-ub-btn--x {
+  padding: 6px 9px;
+  background: none;
+  color: rgba(255,255,255,0.3);
+  font-size: 13px;
+}
+.pwa-ub-btn--x:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.06); }
+
+/* ── UPDATE PROGRESS DIALOG ─────────────────────────────────────── */
+.pwa-upd {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5,9,18,0.88);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.pwa-upd--visible { opacity: 1; }
+.pwa-upd-card {
+  background: linear-gradient(135deg, #101c35, #0b1426);
+  border: 1px solid rgba(61,142,248,0.3);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  width: min(320px, 88vw);
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(61,142,248,0.08);
+  animation: pwaUpdCardIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes pwaUpdCardIn {
+  from { transform: translateY(30px) scale(0.95); opacity:0; }
+  to   { transform: translateY(0) scale(1); opacity:1; }
+}
+.pwa-upd-icon {
+  width: 56px; height: 56px;
+  background: rgba(61,142,248,0.12);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.pwa-upd-title { font-size: 17px; font-weight: 800; color: #e4e8f0; margin-bottom: 6px; }
+.pwa-upd-step  { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 18px; min-height: 18px; }
+.pwa-upd-track {
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.pwa-upd-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3d8ef8, #06b6d4);
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.pwa-upd-pct { font-size: 12px; color: rgba(255,255,255,0.35); font-variant-numeric: tabular-nums; }
+
+/* ── WHAT'S NEW DIALOG ──────────────────────────────────────────── */
+.pwa-wn {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.pwa-wn--visible { opacity: 1; pointer-events: auto; }
+.pwa-wn-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5,9,18,0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+.pwa-wn-card {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(160deg, #111e38 0%, #0c1527 100%);
+  border: 1px solid rgba(61,142,248,0.25);
+  border-radius: 24px 24px 0 0;
+  width: min(480px, 100vw);
+  padding: 24px 22px max(28px, env(safe-area-inset-bottom,28px));
+  box-shadow: 0 -12px 50px rgba(0,0,0,0.5);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.pwa-wn--visible .pwa-wn-card { transform: translateY(0); }
+.pwa-wn-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.pwa-wn-rocket { font-size: 32px; line-height: 1; }
+.pwa-wn-htitle { font-size: 20px; font-weight: 800; color: #e4e8f0; }
+.pwa-wn-version { font-size: 12px; color: rgba(255,255,255,0.38); margin-top: 2px; }
+.pwa-wn-list { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 10px; }
+.pwa-wn-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(228,232,240,0.85);
+  line-height: 1.4;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.pwa-wn-item--new  { border-color: rgba(61,142,248,0.2);  background: rgba(61,142,248,0.05); }
+.pwa-wn-item--fix  { border-color: rgba(16,185,129,0.2);  background: rgba(16,185,129,0.05); }
+.pwa-wn-item--perf { border-color: rgba(251,191,36,0.2);  background: rgba(251,191,36,0.05); }
+.pwa-wn-ico { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.pwa-wn-close {
+  width: 100%;
+  padding: 13px;
+  background: #3d8ef8;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.pwa-wn-close:hover  { background: #2b7de0; }
+.pwa-wn-close:active { transform: scale(0.98); }
+
+/* ── FORCE UPDATE SCREEN ────────────────────────────────────────── */
+.pwa-force {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #070b14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.pwa-force-card {
+  text-align: center;
+  max-width: 360px;
+  width: 100%;
+}
+.pwa-force-icon   { font-size: 52px; margin-bottom: 20px; }
+.pwa-force-title  { font-size: 22px; font-weight: 800; color: #e4e8f0; margin-bottom: 12px; }
+.pwa-force-body   { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.6; margin-bottom: 12px; }
+.pwa-force-version{ font-size: 11px; color: rgba(255,255,255,0.25); margin-bottom: 28px; }
+.pwa-force-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #3d8ef8, #06b6d4);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.pwa-force-btn:hover  { opacity: 0.9; }
+.pwa-force-btn:active { transform: scale(0.98); }
+
+/* ── VERSION DISPLAY IN SETTINGS ───────────────────────────────── */
+.pwa-version-block {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--glass-border, rgba(255,255,255,0.08));
+}
+.pwa-version-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.pwa-version-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 13px;
+}
+.pwa-version-label { color: rgba(255,255,255,0.45); }
+.pwa-version-val   { color: #e4e8f0; font-weight: 600; }
+.pwa-version-installed { color: #10b981 !important; }
+.pwa-version-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.pwa-version-check-btn,
+.pwa-version-wn-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1px solid rgba(61,142,248,0.3);
+  border-radius: 10px;
+  background: rgba(61,142,248,0.08);
+  color: #3d8ef8;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  text-align: center;
+}
+.pwa-version-check-btn:hover,
+.pwa-version-wn-btn:hover { background: rgba(61,142,248,0.16); }
+.pwa-version-check-btn:active,
+.pwa-version-wn-btn:active { transform: scale(0.97); }
+.pwa-version-wn-btn {
+  border-color: rgba(251,191,36,0.3);
+  background: rgba(251,191,36,0.07);
+  color: #fbbf24;
+}
+.pwa-version-wn-btn:hover { background: rgba(251,191,36,0.14); }
+
+/* ── REDUCED MOTION ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pwa-ub, .pwa-upd, .pwa-wn-card, .pwa-upd-card,
+  .pwa-ub-dot, .pwa-upd-bar { animation: none !important; transition-duration: 0.01ms !important; }
+}

@@ -1,0 +1,644 @@
+/*
+ * premium-p1.css — Studyria Premium Membership Phase 1 (Pure UI)
+ *
+ * SCOPE RULES:
+ *   ALL selectors MUST be prefixed with #page-premium OR .prm-home-banner
+ *   NO global overrides — no :root, no body, no .container, no .page
+ *   NO modifications to shared components
+ */
+
+/* ── Page wrapper ─────────────────────────────────────────────────── */
+#page-premium {
+  --prm-gold:     #fbbf24;
+  --prm-gold-d:   #d97706;
+  --prm-violet:   #a78bfa;
+  --prm-violet-d: #7c3aed;
+  --prm-blue:     #3d8ef8;
+  --prm-green:    #10d98e;
+  padding-bottom: 100px;
+  min-height: 100vh;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   HERO
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-hero {
+  position: relative;
+  padding: 48px 0 56px;
+  overflow: hidden;
+  text-align: center;
+}
+
+#page-premium .prm-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%,  rgba(251,191,36,.22) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 10%  50%,  rgba(139,92,246,.14) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90%  50%,  rgba(61,142,248,.14) 0%, transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Orbs */
+#page-premium .prm-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .55;
+  pointer-events: none;
+}
+#page-premium .prm-orb-1 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(251,191,36,.35), transparent 70%);
+  top: -80px; left: 50%; transform: translateX(-50%);
+  animation: prmOrb1 6s ease-in-out infinite alternate;
+}
+#page-premium .prm-orb-2 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(139,92,246,.40), transparent 70%);
+  top: 20px; left: -60px;
+  animation: prmOrbFloat 6s ease-in-out 2s infinite alternate;
+}
+#page-premium .prm-orb-3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(61,142,248,.40), transparent 70%);
+  top: 30px; right: -60px;
+  animation: prmOrbFloat 6s ease-in-out 4s infinite alternate;
+}
+
+@keyframes prmOrb1 {
+  from { transform: translateX(-50%) translateY(0);   }
+  to   { transform: translateX(-50%) translateY(-20px); }
+}
+@keyframes prmOrbFloat {
+  from { transform: translateY(0) scale(1);    }
+  to   { transform: translateY(-20px) scale(1.08); }
+}
+
+/* Crown ring */
+#page-premium .prm-hero-inner { position: relative; z-index: 1; }
+
+#page-premium .prm-crown-ring {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(251,191,36,.25), rgba(245,158,11,.15));
+  border: 1.5px solid rgba(251,191,36,.50);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 0 12px rgba(251,191,36,.08), 0 0 40px rgba(251,191,36,.25);
+  animation: prmCrownPulse 3s ease-in-out infinite;
+}
+@keyframes prmCrownPulse {
+  0%,100% { box-shadow: 0 0 0 12px rgba(251,191,36,.08), 0 0 40px rgba(251,191,36,.25); }
+  50%     { box-shadow: 0 0 0 18px rgba(251,191,36,.05), 0 0 60px rgba(251,191,36,.35); }
+}
+
+/* Premium badge */
+#page-premium .prm-hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .70rem; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(251,191,36,.20), rgba(139,92,246,.15));
+  border: 1px solid rgba(251,191,36,.40);
+  color: #fbbf24;
+  margin-bottom: 16px;
+}
+
+#page-premium .prm-hero-title {
+  font-family: var(--font-display, 'Playfair Display', serif);
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #a78bfa 70%, #3d8ef8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 14px;
+}
+
+#page-premium .prm-hero-sub {
+  font-size: clamp(.88rem, 2.5vw, 1.05rem);
+  color: var(--text2, #a0aec0);
+  max-width: 520px;
+  margin: 0 auto 28px;
+  line-height: 1.6;
+}
+
+#page-premium .prm-hero-trust {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; flex-wrap: wrap;
+}
+#page-premium .prm-trust-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .74rem; font-weight: 600; color: var(--text2, #a0aec0);
+  padding: 5px 12px; border-radius: 20px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION HELPERS
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-section { padding: 16px 0 28px; }
+
+#page-premium .prm-section-title {
+  text-align: center;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+  font-weight: 800;
+  color: var(--text, #e2e8f0);
+  margin-bottom: 6px;
+}
+#page-premium .prm-section-sub {
+  text-align: center;
+  font-size: .84rem;
+  color: var(--text2, #a0aec0);
+  margin-bottom: 20px;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PRICING CARDS — REDESIGNED (glass + gold)
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  #page-premium .prm-plans-grid { grid-template-columns: repeat(5, 1fr); gap: 14px; }
+}
+@media (max-width: 359px) {
+  #page-premium .prm-plans-grid { grid-template-columns: 1fr; }
+}
+
+#page-premium .prm-plan-card {
+  position: relative;
+  border-radius: 24px;
+  padding: 28px 16px 22px;
+  /* Glass morphism */
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255,255,255,.11);
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; overflow: hidden;
+  transition: transform .32s cubic-bezier(.34,1.3,.64,1), box-shadow .32s ease, border-color .25s;
+  box-shadow: 0 4px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.08);
+}
+/* Top-edge glass highlight */
+#page-premium .prm-plan-card::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+  pointer-events: none;
+}
+/* Ambient glow behind card */
+#page-premium .prm-plan-card::after {
+  content: '';
+  position: absolute; inset: -2px;
+  border-radius: 26px;
+  background: transparent;
+  transition: background .32s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+#page-premium .prm-plan-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 24px 56px rgba(0,0,0,.50);
+  border-color: rgba(255,255,255,.20);
+}
+
+/* Trial card — electric blue glow */
+#page-premium .prm-plan-card.prm-trial {
+  border-color: rgba(61,142,248,.35);
+  background: linear-gradient(160deg, rgba(61,142,248,.10) 0%, rgba(255,255,255,.04) 60%);
+}
+#page-premium .prm-plan-card.prm-trial:hover::after {
+  background: radial-gradient(ellipse 100% 50% at 50% 110%, rgba(61,142,248,.18), transparent 70%);
+}
+
+/* Popular variant — violet glow */
+#page-premium .prm-plan-card.prm-popular {
+  border-color: rgba(139,92,246,.55);
+  background: linear-gradient(160deg, rgba(139,92,246,.12) 0%, rgba(255,255,255,.04) 60%);
+}
+#page-premium .prm-plan-card.prm-popular:hover::after {
+  background: radial-gradient(ellipse 100% 50% at 50% 110%, rgba(139,92,246,.22), transparent 70%);
+}
+
+/* Best value — gold glow */
+#page-premium .prm-plan-card.prm-best {
+  border-color: rgba(251,191,36,.55);
+  background: linear-gradient(160deg, rgba(251,191,36,.10) 0%, rgba(255,255,255,.04) 60%);
+  box-shadow: 0 4px 32px rgba(251,191,36,.12), 0 0 0 1px rgba(251,191,36,.20), inset 0 1px 0 rgba(255,255,255,.08);
+}
+#page-premium .prm-plan-card.prm-best:hover::after {
+  background: radial-gradient(ellipse 100% 50% at 50% 110%, rgba(251,191,36,.22), transparent 70%);
+}
+
+/* ── Top badge ──────────────────────────────────────────────────── */
+#page-premium .prm-plan-badge {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  font-size: .60rem; font-weight: 900; letter-spacing: .08em;
+  padding: 5px 16px; border-radius: 0 0 14px 14px; white-space: nowrap;
+  text-transform: uppercase; box-shadow: 0 2px 12px rgba(0,0,0,.20);
+}
+#page-premium .prm-trial .prm-plan-badge {
+  background: linear-gradient(90deg, #1e66e5, #3d8ef8); color: #fff;
+}
+#page-premium .prm-popular .prm-plan-badge {
+  background: linear-gradient(90deg, #7c3aed, #a78bfa); color: #fff;
+}
+#page-premium .prm-best .prm-plan-badge {
+  background: linear-gradient(90deg, #d97706, #fbbf24, #f59e0b); color: #1a0e00;
+  box-shadow: 0 2px 16px rgba(251,191,36,.30);
+}
+
+/* ── Plan emoji (replaced with icon ring) ─────────────────────── */
+#page-premium .prm-plan-emoji {
+  font-size: 1.6rem;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 14px auto 12px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+}
+#page-premium .prm-trial  .prm-plan-emoji { background: rgba(61,142,248,.12);  border-color: rgba(61,142,248,.25);  }
+#page-premium .prm-popular .prm-plan-emoji { background: rgba(139,92,246,.12); border-color: rgba(139,92,246,.25); }
+#page-premium .prm-best    .prm-plan-emoji { background: rgba(251,191,36,.14); border-color: rgba(251,191,36,.30); box-shadow: 0 0 20px rgba(251,191,36,.20); }
+
+/* ── Plan name ─────────────────────────────────────────────────── */
+#page-premium .prm-plan-name {
+  font-size: .70rem; font-weight: 800; letter-spacing: .10em;
+  text-transform: uppercase; color: var(--text2, #a0aec0); margin-bottom: 8px;
+}
+
+/* ── Price ─────────────────────────────────────────────────────── */
+#page-premium .prm-plan-price {
+  font-family: var(--font-display, serif);
+  font-size: 2.4rem; font-weight: 900; letter-spacing: -.04em; line-height: 1;
+  margin-bottom: 2px;
+}
+#page-premium .prm-plan-card:not(.prm-popular):not(.prm-best):not(.prm-trial) .prm-plan-price {
+  color: #3d8ef8;
+}
+#page-premium .prm-trial   .prm-plan-price { color: #3d8ef8; }
+#page-premium .prm-popular .prm-plan-price {
+  background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+#page-premium .prm-best    .prm-plan-price {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #fcd34d);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(251,191,36,.30));
+}
+
+#page-premium .prm-plan-only {
+  font-size: .65rem; color: var(--text3, #718096); font-weight: 600; margin-bottom: 6px;
+}
+#page-premium .prm-plan-duration {
+  font-size: .75rem; font-weight: 700; color: var(--text2, #a0aec0);
+  padding: 4px 12px; border-radius: 20px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 16px;
+}
+
+/* ── Feature list ──────────────────────────────────────────────── */
+#page-premium .prm-plan-features {
+  list-style: none; padding: 0; margin: 0 0 18px; width: 100%;
+  display: flex; flex-direction: column; gap: 6px; text-align: left;
+}
+#page-premium .prm-plan-features li {
+  font-size: .72rem; color: var(--text2, #a0aec0);
+  display: flex; align-items: flex-start; gap: 6px; line-height: 1.4;
+}
+#page-premium .prm-plan-features li::before {
+  content: '✓'; color: #10d98e; font-weight: 900; flex-shrink: 0; margin-top: 1px;
+  font-size: .78rem;
+}
+
+/* ── CTA Button ─────────────────────────────────────────────────── */
+#page-premium .prm-plan-btn {
+  width: 100%; padding: 13px 10px; border-radius: 16px; border: none;
+  font-family: var(--font-ui, system-ui); font-size: .82rem; font-weight: 900;
+  letter-spacing: .02em;
+  cursor: pointer; margin-top: auto; position: relative; overflow: hidden;
+  transition: opacity .18s ease, transform .18s cubic-bezier(.34,1.3,.64,1), box-shadow .18s ease;
+  -webkit-appearance: none; appearance: none;
+}
+/* Sheen */
+#page-premium .prm-plan-btn::after {
+  content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+  transform: skewX(-20deg);
+  transition: left .45s ease;
+  pointer-events: none;
+}
+#page-premium .prm-plan-btn:hover::after { left: 120%; }
+#page-premium .prm-plan-btn:hover  { opacity: .92; transform: translateY(-2px); }
+#page-premium .prm-plan-btn:active { opacity: .80; transform: scale(.97); }
+
+/* Default button */
+#page-premium .prm-plan-card:not(.prm-popular):not(.prm-best) .prm-plan-btn {
+  background: linear-gradient(135deg, #1e66e5 0%, #2080f0 55%, #00c8e8 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(61,142,248,.30);
+}
+/* Popular button */
+#page-premium .prm-popular .prm-plan-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 55%, #818cf8 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(139,92,246,.35);
+}
+/* Best value button */
+#page-premium .prm-best .prm-plan-btn {
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 50%, #f59e0b 100%);
+  color: #1a0e00;
+  box-shadow: 0 4px 20px rgba(251,191,36,.35);
+  font-weight: 900;
+}
+
+/* "Coming soon" note */
+#page-premium .prm-plan-coming {
+  font-size: .62rem; color: var(--text3, #718096); margin-top: 8px;
+  font-style: italic;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   BENEFITS GRID
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+#page-premium .prm-benefit-card {
+  border-radius: 16px;
+  padding: 16px 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 8px;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+#page-premium .prm-benefit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.20);
+}
+#page-premium .prm-benefit-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+#page-premium .prm-benefit-name {
+  font-size: .74rem; font-weight: 700; color: var(--text1, #e2e8f0);
+  line-height: 1.3;
+}
+#page-premium .prm-soon {
+  opacity: .55;
+}
+#page-premium .prm-soon .prm-benefit-name::after {
+  content: ' (Soon)';
+  color: var(--text3, #718096); font-weight: 400; font-style: italic;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FREE vs PREMIUM TABLE
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-table-wrap {
+  overflow-x: auto; border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.03);
+}
+#page-premium .prm-table {
+  width: 100%; border-collapse: collapse; min-width: 320px;
+}
+#page-premium .prm-table th {
+  padding: 12px 18px; font-size: .72rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em;
+  background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(139,92,246,.08));
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+#page-premium .prm-table th:nth-child(3) { color: #fbbf24; }
+#page-premium .prm-table td {
+  padding: 11px 18px; font-size: .82rem;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+#page-premium .prm-table tr:last-child td { border-bottom: none; }
+#page-premium .prm-table tr:nth-child(even) td {
+  background: rgba(255,255,255,.02);
+}
+#page-premium .prm-check-y { color: #a0aec0; font-weight: 700; font-size: 1rem; }
+#page-premium .prm-check-g { color: #10d98e; font-weight: 800; font-size: 1rem; }
+#page-premium .prm-check-n { color: #4a5568; font-weight: 700; font-size: 1rem; }
+
+/* ════════════════════════════════════════════════════════════════════
+   BOTTOM CTA
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-bottom-cta { padding: 32px 0 48px; text-align: center; }
+#page-premium .prm-bottom-cta-title {
+  font-family: var(--font-display, serif);
+  font-size: clamp(1rem, 3vw, 1.3rem); font-weight: 800;
+  color: var(--text, #e2e8f0); margin-bottom: 6px;
+}
+#page-premium .prm-bottom-cta-sub {
+  font-size: .84rem; color: var(--text2, #a0aec0); margin-bottom: 18px;
+}
+#page-premium .prm-bottom-cta-btn {
+  padding: 15px 36px; border-radius: 20px; border: none; cursor: pointer;
+  font-size: .92rem; font-weight: 900; letter-spacing: .01em;
+  transition: transform .20s cubic-bezier(.34,1.3,.64,1), box-shadow .20s ease;
+}
+#page-premium .prm-bottom-cta-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(251,191,36,.40);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FAQ
+   ════════════════════════════════════════════════════════════════════ */
+#page-premium .prm-faq-wrap { display: flex; flex-direction: column; gap: 10px; }
+#page-premium .prm-faq-item {
+  border-radius: 14px; overflow: hidden;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+}
+#page-premium .prm-faq-q {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 15px 18px; background: transparent; border: none; cursor: pointer;
+  font-size: .84rem; font-weight: 700; color: var(--text1, #e2e8f0);
+  text-align: left; gap: 10px;
+}
+#page-premium .prm-faq-chevron {
+  font-size: 1rem; color: var(--text2, #a0aec0);
+  transition: transform .28s ease; flex-shrink: 0;
+}
+#page-premium .prm-faq-item.open .prm-faq-chevron { transform: rotate(180deg); }
+#page-premium .prm-faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height .35s ease, padding .25s ease;
+  font-size: .82rem; color: var(--text2, #a0aec0);
+  padding: 0 18px; line-height: 1.65;
+}
+#page-premium .prm-faq-item.open .prm-faq-a {
+  max-height: 400px; padding: 0 18px 16px;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   HOME BANNER
+   ════════════════════════════════════════════════════════════════════ */
+.prm-home-banner {
+  position: relative; overflow: hidden;
+  border-radius: 20px; padding: 24px 20px; text-align: center;
+  background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(139,92,246,.10) 50%, rgba(61,142,248,.08));
+  border: 1px solid rgba(251,191,36,.25);
+  margin: 12px 16px;
+}
+.prm-home-banner-emoji { font-size: 2rem; margin-bottom: 8px; }
+.prm-home-banner-title {
+  font-size: 1.05rem; font-weight: 800;
+  background: linear-gradient(135deg, #fbbf24, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 4px;
+}
+.prm-home-banner-sub {
+  font-size: .80rem; color: var(--text2, #a0aec0); margin-bottom: 14px;
+}
+.prm-home-banner-btn {
+  padding: 11px 28px; border-radius: 20px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, #d97706, #fbbf24, #f59e0b);
+  color: #1a0e00; font-weight: 900; font-size: .85rem;
+  box-shadow: 0 4px 18px rgba(251,191,36,.30);
+  transition: transform .20s cubic-bezier(.34,1.3,.64,1);
+}
+.prm-home-banner-btn:hover { transform: translateY(-2px) scale(1.02); }
+
+/* ════════════════════════════════════════════════════════════════════
+   PLANS CAROUSEL — Member Dashboard (§ 8)
+   Only activates when .prm-plans-carousel class is added by _clonePlans()
+   Does NOT affect the original #prmPlans grid in prmFreeMarketing
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Hide the section title from the cloned section (member dashboard has its own header) */
+#prmPlansSection .prm-section-title,
+#prmPlansSection .prm-section-sub {
+  display: none;
+}
+
+/* Carousel track — horizontal scroll with snap */
+#prmPlansSection .prm-plans-carousel {
+  display: flex !important;
+  flex-direction: row !important;
+  grid-template-columns: unset !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE/Edge */
+  gap: 12px !important;
+  padding: 8px 16px 20px;
+  /* Fade edges for depth */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+#prmPlansSection .prm-plans-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each card in the carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card {
+  flex: 0 0 200px;                /* fixed card width */
+  min-width: 0;
+  scroll-snap-align: start;
+  border-radius: 22px !important;
+  /* Enhanced glass for carousel */
+  background: rgba(255,255,255,.05) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1.5px solid rgba(255,255,255,.12) !important;
+  box-shadow: 0 4px 28px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.09) !important;
+  transition: transform .25s cubic-bezier(.34,1.3,.64,1), box-shadow .25s ease !important;
+  padding: 26px 14px 18px !important;
+}
+#prmPlansSection .prm-plans-carousel .prm-plan-card:hover,
+#prmPlansSection .prm-plans-carousel .prm-plan-card:focus-within {
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.45) !important;
+}
+
+/* Popular card in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card.prm-popular {
+  border-color: rgba(139,92,246,.60) !important;
+  background: linear-gradient(160deg, rgba(139,92,246,.12) 0%, rgba(255,255,255,.04) 60%) !important;
+  box-shadow: 0 4px 28px rgba(139,92,246,.18), inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+
+/* Best value card in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card.prm-best {
+  border-color: rgba(251,191,36,.55) !important;
+  background: linear-gradient(160deg, rgba(251,191,36,.10) 0%, rgba(255,255,255,.04) 60%) !important;
+  box-shadow: 0 4px 28px rgba(251,191,36,.16), 0 0 0 1px rgba(251,191,36,.18), inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+
+/* Trial card in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-card.prm-trial {
+  border-color: rgba(61,142,248,.40) !important;
+  background: linear-gradient(160deg, rgba(61,142,248,.10) 0%, rgba(255,255,255,.04) 60%) !important;
+}
+
+/* Price typography in carousel */
+#prmPlansSection .prm-plans-carousel .prm-plan-price {
+  font-size: 2.2rem !important;
+}
+
+/* Full-width button inside each carousel card */
+#prmPlansSection .prm-plans-carousel .prm-plan-btn {
+  padding: 11px 8px !important;
+  font-size: .78rem !important;
+}
+
+/* Swipe hint dot indicators */
+#prmPlansSection .prm-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 0 8px;
+}
+#prmPlansSection .prm-carousel-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  transition: background .2s, width .2s;
+}
+#prmPlansSection .prm-carousel-dot.active {
+  width: 18px; border-radius: 3px;
+  background: #fbbf24;
+}
+
+/* Responsive: narrower cards on very small screens */
+@media (max-width: 359px) {
+  #prmPlansSection .prm-plans-carousel .prm-plan-card {
+    flex: 0 0 170px !important;
+  }
+}
+/* Wider cards on tablet+ */
+@media (min-width: 540px) {
+  #prmPlansSection .prm-plans-carousel .prm-plan-card {
+    flex: 0 0 220px !important;
+  }
+}
+
+/* Container wrapper for carousel + dots */
+#prmPlansSection .prm-section {
+  padding: 0 !important;
+}
+#prmPlansSection .container {
+  max-width: none !important;
+  padding: 0 !important;
+}

@@ -166,7 +166,9 @@ async function generatePdfPages() {
   for (const pdf of rows || []) {
     const title = clean(pdf.title);
     const category = clean(pdf.category || '');
-    const slug = `${slugify(title)}-${pdf.id}`;
+    // ── Always derive slug from title (clean, SEO-friendly, no UUID/junk suffix).
+    //    DB slug column is ignored — titles are the canonical source of truth.
+    const slug = slugify(title);
     const price = Number(pdf.price ?? 0);
     const filler = category
       ? `${category} study material — free & premium Assam govt exam PDF notes on Studyria.`
@@ -175,7 +177,7 @@ async function generatePdfPages() {
       pdf.description || `Download ${title} — study material on Studyria.`,
       filler
     );
-    const cover = pdf.cover_image || pdf.coverImage || `${SITE_ORIGIN}/og-cover.png`;
+    const cover = pdf.cover_url || pdf.cover_image || pdf.coverImage || `${SITE_ORIGIN}/og-cover.png`;
     const canonical = `${SITE_ORIGIN}/pdf/${slug}.html`;
     const agg = reviewAgg.get(pdf.id);
 
@@ -257,7 +259,7 @@ async function generateJobPages() {
     const title = clean(job.title);
     const org = clean(job.org || '');
     const location = clean(job.location || '');
-    const slug = `${slugify(title)}-${job.id}`;
+    const slug = slugify(title);
     // Prefer a clean job.description, but reject it if it's leftover ad/CSS
     // junk from scraping — fall back to a clean excerpt from the full
     // article body, then to a generic (but accurate) template line.

@@ -1,0 +1,114 @@
+# Studyria
+
+> Studyria is Assam's #1 PDF study-material and career platform. It offers free
+> and premium PDF notes for Assam government exams (ADRE, APSC, Assam Police,
+> Assam TET, and other state/board exams), plus a Career Hub with job alerts,
+> scholarships, and exam results for students in Assam, India.
+
+Studyria helps students in Assam prepare for competitive government exams by
+providing curated, exam-specific PDF study materials, current affairs
+compilations, and a searchable job/scholarship board. Content is written in
+English and Assamese for Assam-based learners.
+
+## Core offerings
+
+- Free & premium PDF study notes for ADRE 3.0, APSC, Assam Police, Assam TET,
+  and other Assam state/board competitive exams
+- Monthly Assam Current Affairs PDF compilations
+- Career Hub: live job alerts, recruitment notifications, and scholarship
+  listings for Assam government and private-sector openings
+- Verified creator program for educators to publish and sell their own PDFs
+- Student reviews and ratings on each PDF, based on verified purchases only
+- Progressive Web App (PWA) — installable on Android/iOS for offline study
+
+## Key pages
+
+- [Homepage](https://studyria.qzz.io/): overview, live stats, and search
+- [Library](https://studyria.qzz.io/?page=library): full searchable PDF catalog by category — ADRE, APSC, Assam Police, Assam TET, SSC, HSLC, HS, Current Affairs
+- [Discover](https://studyria.qzz.io/?page=discover): advanced search and discovery across all PDFs
+- [Career Hub](https://studyria.qzz.io/?page=career-hub): Assam job alerts, recruitment notifications, results & scholarships
+- [About](https://studyria.qzz.io/?page=about): mission, story, and background
+- [Contact](https://studyria.qzz.io/?page=contact): support contact details and channels
+- [Privacy Policy](https://studyria.qzz.io/?page=privacy): data handling policy
+- [Terms of Service](https://studyria.qzz.io/?page=terms): platform terms
+- [Refund Policy](https://studyria.qzz.io/?page=refund): refund and cancellation policy
+
+## Exam taxonomy
+
+Studyria organizes content by Assam competitive exam categories:
+
+- **ADRE** (Assam Direct Recruitment Exam) — Grade III & Grade IV posts, previous year papers, syllabus guides, model papers
+- **APSC** (Assam Public Service Commission) — CCE preliminary & mains, optional subjects, general studies
+- **Assam Police** — SI, AB/UB Constable, commando battalion recruitment exam materials
+- **Assam TET** — Paper I & Paper II, pedagogy, subject-specific study guides for both LP & UP TET
+- **SSC** (Staff Selection Commission) — CGL, CHSL, MTS, GD Constable — Assam-region relevant content
+- **HSLC** (High School Leaving Certificate) — Assam SEBA board Class 10 exam notes & guides
+- **HS** (Higher Secondary) — Assam AHSEC board Class 12 exam notes & guides (Arts, Science, Commerce)
+- **Current Affairs** — Monthly Assam & national current affairs compilations
+
+## Premium membership
+
+Studyria offers a Premium Membership for access to exclusive premium PDF notes:
+
+- ₹9 / 1 Day Trial — full access to all premium PDFs for 24 hours
+- ₹49 / 15 Days — full access for 15 days
+- ₹99 / 30 Days (Monthly) — full access for 30 days, includes reading progress & premium badge
+- All plans unlock every Premium Handwritten Note, ad-free experience, and unlimited wishlist
+- Payment via Razorpay (UPI, cards, net banking, wallets)
+- Refund policy available at https://studyria.qzz.io/?page=refund
+
+## Entity relationships
+
+- **Studyria** (EducationalOrganization, founded 2024, based in Nalbari, Assam)
+  - operates → **Studyria Web Platform** (WebApplication, PWA)
+  - publishes → **PDF Library** (CollectionPage) containing LearningResource items
+  - maintains → **Career Hub** containing JobPosting items
+  - offers → **Premium Membership** (Product, pricing in INR)
+  - runs → **Creator Program** (ProfilePage, KYC-verified educators)
+  - serves → Students in Assam, India (geographic: IN-AS, lat 26.2006, lon 92.9376)
+
+## Structured data
+
+Studyria provides the following Schema.org JSON-LD structured data for search
+engines and AI answer engines:
+
+- EducationalOrganization (entity graph root, @id: /#organization)
+- WebSite with SearchAction (sitelinks search box)
+- WebApplication (PWA metadata, features, pricing)
+- WebPage (homepage with breadcrumb)
+- ItemList (site navigation)
+- FAQPage (5 questions about free access, exams, downloads, ADRE, Career Hub)
+- CollectionPage (PDF Library with exam category taxonomy)
+- JobPosting + BreadcrumbList (on each static job page)
+- Dynamic BlogPosting (injected per-article on blog pages)
+
+## Notes for AI assistants / answer engines
+
+- Prices are in Indian Rupees (INR). Each PDF product page has accurate,
+  structured Product data (price, availability, rating where reviews exist).
+- Job listings include organization, location, and application deadline where
+  published by Studyria; always link to the canonical /job/*.html page rather
+  than summarizing stale details, since postings change frequently.
+- Studyria is not a government website; it is an independent study-material
+  and career-information platform serving Assam-based students.
+- The platform is a Progressive Web App (PWA) — installable on mobile devices
+  for offline access to downloaded PDFs.
+- Content covers Assam state exams specifically — ADRE, APSC, Assam Police,
+  Assam TET — not pan-India exams unless categorized under SSC.
+- The Career Hub is updated daily with new job postings, scholarship
+  notifications, admit card releases, and exam result announcements.
+- The creator program allows verified educators to publish and sell PDFs on
+  Studyria; all creators undergo KYC verification before publishing.
+
+## Contact
+
+For partnership, licensing, or data-accuracy questions, use the Contact page
+at https://studyria.qzz.io/?page=contact.
+
+## Social
+
+- Instagram: https://instagram.com/studyria
+- Facebook: https://facebook.com/studyria
+- YouTube: https://youtube.com/@studyria
+- Telegram: https://t.me/studyria
+- Twitter/X: https://twitter.com/studyria

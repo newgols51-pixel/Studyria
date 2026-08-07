@@ -1,0 +1,239 @@
+-- ============================================================================
+-- Studyria Creator Program 2.0 — Phase 1 schema
+-- Run this in Supabase SQL editor. Safe to run multiple times (IF NOT EXISTS
+-- guards everywhere). Does NOT touch the existing `creators`,
+-- `creator_pdf_submissions`, `creator_ledger`, `creator_withdrawals` tables —
+-- purely additive.
+-- ============================================================================
+
+-- 1. Creator KYC documents (formalizes what's currently only in Storage)
+CREATE TABLE IF NOT EXISTS public.creator_documents (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  creator_id    uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  doc_type      text NOT NULL CHECK (doc_type IN ('government_id','selfie','address_proof')),
+  storage_path  text NOT NULL,
+  status        text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','verified','rejected')),
+  rejection_reason text,
+  reviewed_by   uuid,
+  reviewed_at   timestamptz,
+  created_at    timestamptz DEFAULT now()
+);
+ALTER TABLE public.creator_documents ENABLE ROW LEVEL SECURITY;
+CREATE POLICY IF NOT EXISTS "creator_documents: owner read" ON public.creator_documents
+  FOR SELECT USING (creator_id IN (SELECT id FROM public.creators WHERE user_id = auth.uid()));
+CREATE POLICY IF NOT EXISTS "creator_documents: owner insert" ON public.creator_documents
+  FOR INSERT TO authenticated WITH CHECK (creator_id IN (SELECT id FROM public.creators WHERE user_id = auth.uid()));
+CREATE INDEX IF NOT EXISTS idx_creator_documents_creator ON public.creator_documents(creator_id);
+
+-- 2. Creator public store profile (Step 3 — Store Setup)
+CREATE TABLE IF NOT EXISTS public.creator_stores (
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  creator_id      uuid NOT NULL UNIQUE REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  store_name      text NOT NULL,
+  store_url       text NOT NULL UNIQUE,   -- slug, e.g. /creator/store_url
+  store_logo_url  text,
+  store_banner_url text,
+  description     text,
+  specialization  text,
+  categories      text[] DEFAULT '{}',
+  support_email   text,
+  social_links    jsonb DEFAULT '{}',     -- {instagram, facebook, youtube, whatsapp, telegram}
+  follower_count  integer NOT NULL DEFAULT 0,
+  is_verified     boolean NOT NULL DEFAULT false,
+  created_at      timestamptz DEFAULT now(),
+  updated_at      timestamptz DEFAULT now()
+);
+ALTER TABLE public.creator_stores ENABLE ROW LEVEL SECURITY;
+CREATE POLICY IF NOT EXISTS "creator_stores: public read" ON public.creator_stores
+  FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "creator_stores: owner write" ON public.creator_stores
+  FOR ALL TO authenticated USING (creator_id IN (SELECT id FROM public.creators WHERE user_id = auth.uid()))
+  WITH CHECK (creator_id IN (SELECT id FROM public.creators WHERE user_id = auth.uid()));
+CREATE INDEX IF NOT EXISTS idx_creator_stores_url ON public.creator_stores(store_url);
+
+-- 3. Follow system
+CREATE TABLE IF NOT EXISTS public.creator_follows (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  creator_id  uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  user_id     uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at  timestamptz DEFAULT now(),
+  UNIQUE (creator_id, user_id)
+);
+ALTER TABLE public.creator_follows ENABLE ROW LEVEL SECURITY;
+CREATE POLICY IF NOT EXISTS "creator_follows: public read" ON public.creator_follows
+  FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "creator_follows: users manage own" ON public.creator_follows
+  FOR ALL TO authenticated USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+CREATE INDEX IF NOT EXISTS idx_creator_follows_creator ON public.creator_follows(creator_id);
+CREATE INDEX IF NOT EXISTS idx_creator_follows_user ON public.creator_follows(user_id);
+
+-- 4. Badge assignments (system-computed, e.g. Verified Creator / Top Rated / Featured)
+CREATE TABLE IF NOT EXISTS public.creator_badges (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  creator_id  uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  badge       text NOT NULL,
+  awarded_at  timestamptz DEFAULT now(),
+  UNIQUE (creator_id, badge)
+);
+ALTER TABLE public.creator_badges ENABLE ROW LEVEL SECURITY;
+CREATE POLICY IF NOT EXISTS "creator_badges: public read" ON public.creator_badges
+  FOR SELECT USING (true);
+
+-- 5. AI Promotion Engine output (assets generated per published PDF)
+CREATE TABLE IF NOT EXISTS public.promotion_assets (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  pdf_id       uuid NOT NULL REFERENCES public.pdfs(id) ON DELETE CASCADE,
+  creator_id   uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  asset_type   text NOT NULL CHECK (asset_type IN
+    ('instagram_post','facebook_post','whatsapp_poster','telegram_banner','linkedin_post',
+     'seo_title','seo_description','keywords','hashtags','qr_code','short_link','email_campaign','blog_draft')),
+  content      text,            -- generated text/caption
+  image_url    text,            -- generated poster/banner image, if applicable
+  created_at   timestamptz DEFAULT now()
+);
+ALTER TABLE public.promotion_assets ENABLE ROW LEVEL SECURITY;
+CREATE POLICY IF NOT EXISTS "promotion_assets: owner read" ON public.promotion_assets
+  FOR SELECT USING (creator_id IN (SELECT id FROM public.creators WHERE user_id = auth.uid()));
+CREATE INDEX IF NOT EXISTS idx_promotion_assets_pdf ON public.promotion_assets(pdf_id);
+
+-- 6. Extend `creators` with fields the new wizard/level system needs.
+--    IMPORTANT: the app already has `level` (starter/rising/pro) and
+--    `revenue_share` (60/65/70) columns live and in active use across
+--    the admin panel + ledger — we build ON those, not new duplicates.
+ALTER TABLE public.creators
+  ADD COLUMN IF NOT EXISTS display_name       text,
+  ADD COLUMN IF NOT EXISTS country             text,
+  ADD COLUMN IF NOT EXISTS state               text,
+  ADD COLUMN IF NOT EXISTS category_expertise  text[] DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS social_links        jsonb DEFAULT '{}',  -- new multi-platform links; existing `social_link` (singular) stays untouched for backward compat
+  ADD COLUMN IF NOT EXISTS commission_override boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS is_blocked          boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS strike_count        integer NOT NULL DEFAULT 0;
+
+CREATE INDEX IF NOT EXISTS idx_creators_level ON public.creators(level);
+
+-- 7. Automatic level → commission sync trigger (Starter 60/40, Rising 65/35, Pro 70/30)
+--    Operates on the EXISTING `level` / `revenue_share` columns.
+CREATE OR REPLACE FUNCTION public.sync_creator_commission()
+RETURNS trigger AS $$
+BEGIN
+  IF NEW.commission_override THEN
+    RETURN NEW; -- admin has set a custom commission, don't overwrite
+  END IF;
+  NEW.revenue_share := CASE NEW.level
+    WHEN 'starter' THEN 60
+    WHEN 'rising'  THEN 65
+    WHEN 'pro'     THEN 70
+    ELSE COALESCE(NEW.revenue_share, 60)
+  END;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_sync_creator_commission ON public.creators;
+CREATE TRIGGER trg_sync_creator_commission
+  BEFORE INSERT OR UPDATE OF level, commission_override ON public.creators
+  FOR EACH ROW EXECUTE FUNCTION public.sync_creator_commission();
+
+-- 8. Follower-count sync trigger on creator_stores
+CREATE OR REPLACE FUNCTION public.sync_store_follower_count()
+RETURNS trigger AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    UPDATE public.creator_stores SET follower_count = follower_count + 1 WHERE creator_id = NEW.creator_id;
+  ELSIF TG_OP = 'DELETE' THEN
+    UPDATE public.creator_stores SET follower_count = GREATEST(0, follower_count - 1) WHERE creator_id = OLD.creator_id;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_sync_store_follower_count ON public.creator_follows;
+CREATE TRIGGER trg_sync_store_follower_count
+  AFTER INSERT OR DELETE ON public.creator_follows
+  FOR EACH ROW EXECUTE FUNCTION public.sync_store_follower_count();
+
+-- ============================================================================
+-- Phase 2 addition: link creator submissions to the live pdfs catalog.
+-- CRITICAL FIX: cm2ApprovePdf() previously only flipped a status flag on
+-- creator_pdf_submissions — it never actually published anything into the
+-- `pdfs` table, so approved creator content never appeared on the live site.
+-- These columns let the fixed approval flow create the real pdfs row and
+-- track it back, and let creator analytics later query pdfs by creator_id
+-- directly instead of joining through submissions.
+-- ============================================================================
+
+ALTER TABLE public.pdfs
+  ADD COLUMN IF NOT EXISTS creator_id uuid REFERENCES public.creators(user_id);
+CREATE INDEX IF NOT EXISTS idx_pdfs_creator ON public.pdfs(creator_id);
+
+ALTER TABLE public.creator_pdf_submissions
+  ADD COLUMN IF NOT EXISTS published_pdf_id uuid REFERENCES public.pdfs(id),
+  ADD COLUMN IF NOT EXISTS reviewed_at timestamptz,
+  ADD COLUMN IF NOT EXISTS reviewed_by uuid;
+
+-- ============================================================================
+-- Phase 2 addition #2: creator_pdf_submissions is missing the rich Step-3
+-- metadata columns that crpSubmitApplication() actually inserts (title,
+-- description, price, thumbnail, SEO, tags, AI quality score/checks).
+-- Confirmed via live schema read (Supabase connector) — real table currently
+-- only has: id, user_id, pdf_name, category, exam, storage_path,
+-- preview_path, file_size, page_count, status, admin_notes, created_at,
+-- updated_at. Without these columns, the FIRST real creator registration
+-- submission would fail outright with a "column does not exist" error.
+-- Purely additive/nullable — safe, no existing data affected.
+-- ============================================================================
+
+ALTER TABLE public.creator_pdf_submissions
+  ADD COLUMN IF NOT EXISTS title text,
+  ADD COLUMN IF NOT EXISTS description text,
+  ADD COLUMN IF NOT EXISTS language text,
+  ADD COLUMN IF NOT EXISTS product_type text,
+  ADD COLUMN IF NOT EXISTS access_type text,
+  ADD COLUMN IF NOT EXISTS price numeric,
+  ADD COLUMN IF NOT EXISTS mrp numeric,
+  ADD COLUMN IF NOT EXISTS tags text,
+  ADD COLUMN IF NOT EXISTS thumbnail_url text,
+  ADD COLUMN IF NOT EXISTS seo_title text,
+  ADD COLUMN IF NOT EXISTS seo_description text,
+  ADD COLUMN IF NOT EXISTS ai_quality_score numeric,
+  ADD COLUMN IF NOT EXISTS ai_checks text;
+
+-- ============================================================================
+-- Phase 3 addition: Creator Dashboard's Wallet tab (crdRenderWallet /
+-- crdRequestWithdrawal) already has real, working code — but creator_ledger
+-- and creator_withdrawals tables don't exist yet, so the entire Wallet
+-- feature currently fails every time (wrapped safely in try/catch, degrades
+-- to "No transactions yet" / a failed-withdrawal toast, no crash — but zero
+-- real functionality). Confirmed via live schema read. Column names match
+-- exactly what the existing JS already sends.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS public.creator_ledger (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  type        text NOT NULL CHECK (type IN ('credit','debit')),
+  amount      numeric NOT NULL DEFAULT 0,
+  description text,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_creator_ledger_user ON public.creator_ledger(user_id, created_at DESC);
+ALTER TABLE public.creator_ledger ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "creators view own ledger" ON public.creator_ledger;
+CREATE POLICY "creators view own ledger" ON public.creator_ledger FOR SELECT USING (auth.uid() = user_id);
+
+CREATE TABLE IF NOT EXISTS public.creator_withdrawals (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      uuid NOT NULL REFERENCES public.creators(user_id) ON DELETE CASCADE,
+  amount       numeric NOT NULL,
+  upi_id       text NOT NULL,
+  status       text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','processing','paid','rejected')),
+  requested_at timestamptz NOT NULL DEFAULT now(),
+  processed_at timestamptz
+);
+CREATE INDEX IF NOT EXISTS idx_creator_withdrawals_user ON public.creator_withdrawals(user_id, requested_at DESC);
+ALTER TABLE public.creator_withdrawals ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "creators view own withdrawals" ON public.creator_withdrawals;
+CREATE POLICY "creators view own withdrawals" ON public.creator_withdrawals FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "creators insert own withdrawals" ON public.creator_withdrawals;
+CREATE POLICY "creators insert own withdrawals" ON public.creator_withdrawals FOR INSERT WITH CHECK (auth.uid() = user_id);

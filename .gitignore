@@ -4,3 +4,6 @@ node_modules/
 __pycache__/
 .cache/
 blobs/
+package.json
+package-lock.json
+premium-content.js.bak

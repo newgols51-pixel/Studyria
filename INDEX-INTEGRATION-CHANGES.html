@@ -1,0 +1,416 @@
+<!-- 
+  ═══════════════════════════════════════════════════════════════════════════
+  STUDYRIA INDEX.HTML — MINIMAL PWA INTEGRATION CHANGES
+  ═══════════════════════════════════════════════════════════════════════════
+  
+  INTEGRATION INSTRUCTIONS:
+  
+  1. In your existing <head> section, ADD ONLY these 3 lines:
+     (Keep all your existing <meta>, <link>, and <script> tags as they are)
+  
+  2. In your existing <body>, ADD ONLY one line near the end before </body>:
+  
+  ─────────────────────────────────────────────────────────────────────────
+  WHERE TO ADD IN HEAD (around your manifest.json link):
+  
+  Existing:
+  ────────────────────────────────────────────────────────────────────────
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+  
+  
+  ADD AFTER manifest.json line:
+  ────────────────────────────────────────────────────────────────────────
+  <!-- PWA Offline Page Registration -->
+  <link rel="alternate" href="/offline.html" hreflang="x-default">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  
+  WHERE TO ADD IN BODY (near the closing </body> tag):
+  
+  Existing:
+  ────────────────────────────────────────────────────────────────────────
+  <!-- Your existing scripts and content -->
+  </body>
+  
+  
+  ADD BEFORE </body>:
+  ────────────────────────────────────────────────────────────────────────
+  <!-- PWA Application Layer -->
+  <script src="/app.js"></script>
+  
+  
+  ═════════════════════════════════════════════════════════════════════════
+  THAT'S IT! The PWA is now fully integrated without breaking any existing code.
+  ═════════════════════════════════════════════════════════════════════════
+-->
+
+<!-- ═════════════════════════════════════════════════════════════════════ -->
+<!-- MINIMAL CODE CHANGES SECTION — Copy only what's in <head> and <body> -->
+<!-- ═════════════════════════════════════════════════════════════════════ -->
+
+<!-- In your <head> section, after the existing manifest.json line, add: -->
+
+<!-- PWA Offline Page Registration -->
+<link rel="alternate" href="/offline.html" hreflang="x-default">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
+<!-- In your <body> section, right before the closing </body> tag, add: -->
+
+<!-- PWA Application Layer -->
+<script src="/app.js"></script>
+
+
+<!-- ═════════════════════════════════════════════════════════════════════ -->
+<!-- OPTIONAL ENHANCEMENTS (add as needed) -->
+<!-- ═════════════════════════════════════════════════════════════════════ -->
+
+<!-- Add custom CSS for PWA UI elements (banners, notifications, indicators) -->
+<style id="pwaStyles">
+  /* ─── Update Banner Styles ─────────────────────────────────────────── */
+  .pwa-update-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(135deg, #1e40af 0%, #0369a1 100%);
+    color: white;
+    padding: 1rem;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .pwa-update-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 640px) {
+    .pwa-update-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .pwa-update-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .pwa-update-text {
+    flex: 1;
+  }
+
+  .pwa-update-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .pwa-update-message {
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+
+  .pwa-update-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .pwa-update-actions {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+
+  .pwa-update-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .pwa-update-dismiss {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .pwa-update-dismiss:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .pwa-update-install {
+    background: #10b981;
+    color: white;
+  }
+
+  .pwa-update-install:hover {
+    background: #059669;
+  }
+
+  /* ─── Install Banner Styles ────────────────────────────────────────── */
+  .pwa-install-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9998;
+    background: linear-gradient(135deg, #080c14 0%, #0f1a2e 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 1rem;
+    animation: slideUp 0.3s ease-out;
+    backdrop-filter: blur(10px);
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .pwa-install-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 640px) {
+    .pwa-install-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .pwa-install-icon {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+
+  .pwa-install-text {
+    flex: 1;
+  }
+
+  .pwa-install-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .pwa-install-message {
+    font-size: 0.85rem;
+    color: #9ca3af;
+  }
+
+  .pwa-install-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .pwa-install-actions {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  }
+
+  .pwa-install-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .pwa-install-dismiss {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .pwa-install-dismiss:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .pwa-install-confirm {
+    background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
+    color: white;
+  }
+
+  .pwa-install-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(61, 142, 248, 0.3);
+  }
+
+  /* ─── Offline Indicator Styles ─────────────────────────────────────── */
+  .pwa-offline-indicator {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9997;
+    background: #ef4444;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    animation: slideDown 0.3s ease-out;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+
+  .pwa-offline-icon {
+    font-size: 1.25rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* ─── Data Attribute Utilities ─────────────────────────────────────── */
+  /* Hide UI for offline users */
+  html[data-online="false"] .online-only {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Show offline-friendly UI */
+  html[data-online="true"] .offline-only {
+    display: none;
+  }
+
+  /* PWA installed state */
+  html[data-pwa-installed="true"] .pwa-install-banner {
+    display: none !important;
+  }
+
+  /* ─── Responsive Design ────────────────────────────────────────────── */
+  @media (max-width: 480px) {
+    .pwa-update-banner,
+    .pwa-install-banner {
+      padding: 0.75rem;
+    }
+
+    .pwa-update-btn,
+    .pwa-install-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .pwa-offline-indicator {
+      width: calc(100% - 2rem);
+      margin: 0 1rem;
+    }
+  }
+
+  /* ─── Accessibility ────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .pwa-update-banner,
+    .pwa-install-banner,
+    .pwa-offline-indicator {
+      animation: none;
+    }
+
+    .pwa-install-confirm:hover {
+      transform: none;
+    }
+
+    .pwa-offline-icon {
+      animation: none;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    .pwa-install-banner {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5fb 100%);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: #1e293b;
+    }
+
+    .pwa-install-message {
+      color: #64748b;
+    }
+
+    .pwa-install-dismiss {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: #1e293b;
+    }
+
+    .pwa-install-dismiss:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+  }
+</style>
+
+
+<!-- ═════════════════════════════════════════════════════════════════════ -->
+<!-- OPTIONAL: PWA Diagnostics Console Access -->
+<!-- ═════════════════════════════════════════════════════════════════════ -->
+
+<!--
+  After app.js loads, you can use these in the browser console:
+
+  // Check PWA diagnostics
+  window.PWA.getDiagnostics()
+
+  // Check online status
+  window.PWA.isOnline()
+
+  // Check if installed
+  window.PWA.isInstalled()
+
+  // Check for pending updates
+  window.PWA.hasPendingUpdate()
+
+  // Manually trigger update check
+  window.PWA.checkForUpdates()
+
+  // Get performance metrics
+  window.PWA.getPerformanceMetrics()
+
+  // View all available PWA commands
+  console.log(window.PWA)
+-->

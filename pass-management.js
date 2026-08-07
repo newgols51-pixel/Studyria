@@ -1,0 +1,405 @@
+/* PASS MANAGEMENT SYSTEM - Studyria Admin Panel v1.0 */
+(function(){'use strict';var STORAGE_KEY='studyria_pass_config';var _config=null;var _activeSubTab='plans';
+var DEFAULT_CONFIG={plans:[{id:'p1',passId:'trial_1day',name:'1 Day Trial',shortDesc:'Try Studyria Pass for a day',duration:'1',durationUnit:'days',originalPrice:0,offerPrice:9,discount:0,currency:'INR',badge:'',badgeType:'gold',buttonText:'Try Now',gradient:'linear-gradient(135deg,#3d8ef8,#00c8e8)',bgColor:'rgba(61,142,248,0.08)',icon:'\uF0AA',order:1,active:true},{id:'p15',passId:'trial_7day',name:'7 Day Trial',shortDesc:'Try Studyria Pass for a week',duration:'7',durationUnit:'days',originalPrice:49,offerPrice:29,discount:41,currency:'INR',badge:'POPULAR',badgeType:'green',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#10d98e,#3d8ef8)',bgColor:'rgba(16,217,142,0.08)',icon:'\uF0AB',order:2,active:true},{id:'p2',passId:'trial_15day',name:'15 Day Trial',shortDesc:'Two weeks of unlimited access',duration:'15',durationUnit:'days',originalPrice:99,offerPrice:49,discount:51,currency:'INR',badge:'POPULAR',badgeType:'green',buttonText:'Get Started',gradient:'linear-gradient(135deg,#10d98e,#06b6d4)',bgColor:'rgba(16,217,142,0.08)',icon:'\uF0AB',order:2,active:true},{id:'p3',passId:'monthly',name:'Monthly',shortDesc:'Full month of premium learning',duration:'30',durationUnit:'days',originalPrice:149,offerPrice:69,discount:34,currency:'INR',badge:'',badgeType:'blue',buttonText:'Subscribe',gradient:'linear-gradient(135deg,#3d8ef8,#8b5cf6)',bgColor:'rgba(61,142,248,0.06)',icon:'\uF0AA',order:3,active:true},{id:'p4',passId:'quarterly',name:'Quarterly',shortDesc:'3 months best value',duration:'90',durationUnit:'days',originalPrice:449,offerPrice:249,discount:45,currency:'INR',badge:'MOST POPULAR',badgeType:'purple',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#8b5cf6,#a855f7)',bgColor:'rgba(139,92,246,0.08)',icon:'\uF0AC',order:4,active:true},{id:'p5',passId:'half_year',name:'Half Year',shortDesc:'6 months maximum savings',duration:'180',durationUnit:'days',originalPrice:899,offerPrice:449,discount:50,currency:'INR',badge:'BEST VALUE',badgeType:'gold',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#f59e0b,#fbbf24)',bgColor:'rgba(245,158,11,0.08)',icon:'\uF0A9',order:5,active:true},{id:'p7',passId:'yearly',name:'Yearly',shortDesc:'12 months maximum savings',duration:'365',durationUnit:'days',originalPrice:1499,offerPrice:599,discount:60,currency:'INR',badge:'BEST VALUE',badgeType:'gold',buttonText:'Get Pass',gradient:'linear-gradient(135deg,#f59e0b,#fbbf24)',bgColor:'rgba(245,158,11,0.08)',icon:'\uF0AD',order:5,active:true},{id:'p8',passId:'lifetime',name:'Lifetime',shortDesc:'Lifetime access never expires',duration:'0',durationUnit:'lifetime',originalPrice:2999,offerPrice:999,discount:67,currency:'INR',badge:'LIFETIME',badgeType:'gold',buttonText:'Get Lifetime',gradient:'linear-gradient(135deg,#fbbf24,#f59e0b)',bgColor:'rgba(251,191,36,0.1)',icon:'\uF0A9',order:6,active:true}],features:[{id:'f1',name:'Pass Notes',icon:'\uF0A7',order:1,active:true},{id:'f2',name:'Handwritten Notes',icon:'\u270F',order:2,active:true},{id:'f3',name:'MCQs & PYQs',icon:'\uF044',order:3,active:true},{id:'f4',name:'Career Hub Benefits',icon:'\uF0BC',order:4,active:true},{id:'f5',name:'AI Study Tools',icon:'\uF0AD',order:5,active:true},{id:'f6',name:'Unlimited Downloads',icon:'\u2B07',order:6,active:true},{id:'f7',name:'Priority Updates',icon:'\u26A1',order:7,active:true},{id:'f8',name:'Future Pass Features',icon:'\uF0AE',order:8,active:true}],benefits:{sectionTitle:'Why Studyria Pass?',sectionSubtitle:'Everything you need to study smarter',sectionDescription:'Pass notes MCQs PYQs AI tools and unlimited downloads all in one pass.',cta:'Get Studyria Pass Today',cards:[{id:'b1',icon:'\uF0A7',title:'Unlimited Pass Notes',desc:'Access all premium handwritten notes',color:'#3d8ef8'},{id:'b2',icon:'\uF0A8',title:'New Notes Included',desc:'New notes added automatically',color:'#10d98e'},{id:'b3',icon:'\uF0A9',title:'Pass Reading Experience',desc:'Dark reader progress tracking',color:'#fbbf24'},{id:'b4',icon:'\uF0A9',title:'Pass Badge',desc:'Exclusive badge on your profile',color:'#fbbf24'},{id:'b5',icon:'\uF0AE',title:'Future Features',desc:'All future features included',color:'#8b5cf6'}]},hero:{headline:'Studyria Pass',subheadline:'Everything you need to study smarter.',description:'Pass notes MCQs PYQs AI tools and unlimited downloads all in one pass.',ctaButton:'Get Studyria Pass',bgGradient:'linear-gradient(135deg,rgba(251,191,36,.08),rgba(139,92,246,.05))',bgImage:'',heroBadge:'Studyria Pass'},pricing:{showOffers:true,showStrikePrice:true,showDiscountBadge:true,showCountdown:false,showLimitedOffer:false,showPopularBadge:true,countdownEnd:'',limitedOfferText:'Limited Time Offer'},coupons:[{id:'c1',code:'STUDY20',type:'percentage',value:20,maxDiscount:100,minPurchase:0,maxUses:100,usedCount:0,expiry:'2026-12-31',active:true},{id:'c2',code:'FIRST50',type:'fixed',value:50,maxDiscount:0,minPurchase:99,maxUses:500,usedCount:0,expiry:'2026-12-31',active:true}],badges:[{id:'bd1',emoji:'\uF0AB',label:'Hot',active:true},{id:'bd2',emoji:'\u2B50',label:'Best Seller',active:true},{id:'bd3',emoji:'\uF0A9',label:'Premium',active:true},{id:'bd4',emoji:'\uF0AC',label:'Elite',active:true},{id:'bd5',emoji:'\uF0AD',label:'New',active:true},{id:'bd6',emoji:'\uF0AE',label:'Student Favorite',active:true}],buttons:{getPass:'Get Studyria Pass',unlockPass:'Unlock Studyria Pass',activatePass:'Activate Pass',joinNow:'Join Now',upgradeNow:'Upgrade Now',continue:'Continue',renewPass:'Renew Pass',managePass:'Manage Pass',cancelPass:'Cancel Pass',passActive:'Pass Active',passMember:"You're a Pass Member",passEnabled:'Pass Enabled',learningUnlocked:'Learning Unlocked',passExclusive:'Pass Exclusive',unlockWithPass:'Unlock with Studyria Pass',requiresPass:'Requires Studyria Pass',membersOnly:'Members Only'},landingPage:{title:'Studyria Pass',subtitle:"Assam's #1 PDF Study Platform",seoTitle:'Studyria Pass Premium Notes MCQs PYQs AI Study Tools',seoDescription:'Unlock premium notes MCQs PYQs AI study tools and unlimited downloads with Studyria Pass.',ogImage:'',metaKeywords:'studyria pass premium notes ADRE APSC Assam Police Assam TET competitive exam preparation',faq:[{q:'What is Studyria Pass?',a:'Studyria Pass gives you unlimited access to all premium notes MCQs PYQs AI tools and more for the duration of your plan.'},{q:'How much does it cost?',a:'Pass plans start at Rs 9 for a 1-day trial and go up to Rs 999 for lifetime access.'},{q:'Can I cancel anytime?',a:'Yes. There is no auto-renewal. Your pass simply expires at the end of the period.'}]},notifications:{welcome:'Welcome to Studyria Pass! Your premium learning experience is now active.',purchaseSuccess:'Congratulations! Studyria Pass has been activated successfully.',renewReminder:'Your Studyria Pass expires in {days} days. Renew now to keep learning.',expiryReminder:'Your Studyria Pass has expired. Renew to restore access.',offerReminder:'Special offer on Studyria Pass! Limited time only.',pushEnabled:true,emailEnabled:false,whatsappEnabled:false,emailTemplate:'Welcome to Studyria Pass!\n\nYour premium learning experience is now active.\n\nEnjoy unlimited access to all premium notes MCQs and AI tools.',whatsappTemplate:'Welcome to Studyria Pass! Your premium learning is now active. Enjoy unlimited notes MCQs AI tools!'},design:{primaryColor:'#fbbf24',secondaryColor:'#f59e0b',gradient:'linear-gradient(135deg,#fbbf24,#f59e0b)',borderRadius:'16px',shadow:'0 4px 20px rgba(251,191,36,0.15)',glassEffect:true,darkMode:true,lightMode:false,cardStyle:'glassmorphism',buttonStyle:'pill',animation:'smooth'},aiFeatures:[{id:'ai1',name:'AI Notes',icon:'\uF044',passRequired:true,enabled:true},{id:'ai2',name:'AI Summary',icon:'\uF0CB',passRequired:true,enabled:true},{id:'ai3',name:'Flashcards',icon:'\uF0C8',passRequired:true,enabled:true},{id:'ai4',name:'Quiz Generator',icon:'\u2753',passRequired:true,enabled:true},{id:'ai5',name:'Mind Maps',icon:'\uF0AD',passRequired:true,enabled:false},{id:'ai6',name:'Audio Overview',icon:'\uF0D7',passRequired:true,enabled:false},{id:'ai7',name:'AI Chat',icon:'\uF0AC',passRequired:false,enabled:true}]};
+var _loadingFromSupabase=false;
+function loadConfig(){if(_config)return _config;
+  // Try localStorage first for instant load
+  try{var raw=localStorage.getItem(STORAGE_KEY);if(raw){_config=JSON.parse(raw);for(var k in DEFAULT_CONFIG){if(_config[k]===undefined)_config[k]=DEFAULT_CONFIG[k]}}}catch(e){}
+  if(!_config){_config=JSON.parse(JSON.stringify(DEFAULT_CONFIG))}
+  // Async-load from Supabase (non-blocking)
+  _loadFromSupabase();
+  return _config}
+function _loadFromSupabase(){if(_loadingFromSupabase)return;_loadingFromSupabase=true;
+  var client=window.supabaseClient;if(!client){_loadingFromSupabase=false;return}
+  client.from('site_config').select('value').eq('key','pass_management_config').maybeSingle().then(function(res){
+    _loadingFromSupabase=false;
+    if(res.error||!res.data||!res.data.value){return}
+    try{var sbConfig=JSON.parse(res.data.value);
+      // Deep merge: Supabase wins, but keep defaults for missing keys
+      _config=JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+      for(var k in sbConfig){_config[k]=sbConfig[k]}
+      // Update localStorage cache
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(_config))}catch(e){}
+      // Re-render current tab if visible
+      var el=document.getElementById('spmContent');
+      if(el&&_activeSubTab){SPM.renderSubTab(_activeSubTab)}
+    }catch(e){console.warn('[SPM] Supabase config parse error:',e)}
+  }).catch(function(e){_loadingFromSupabase=false;console.warn('[SPM] Supabase load error:',e)})}
+function saveConfig(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(_config))}catch(e){}
+  // Broadcast config update event so frontend auto-refreshes
+  try{window.dispatchEvent(new CustomEvent('studyria:passConfigUpdated',{detail:{plans:_config.plans?_config.plans.length:0}}))}catch(e){}
+  // Also save to Supabase (fire-and-forget)
+  _saveToSupabase()}
+var _saveTimer=null;var _savingToastShown=false;
+function _saveToSupabase(){var client=window.supabaseClient;if(!client){console.warn('[SPM] No Supabase client — localStorage only');return}
+  if(_saveTimer)clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(function(){
+    if(typeof showToast==='function'){showToast(' Saving...','info')}
+    client.from('site_config').upsert({key:'pass_management_config',value:JSON.stringify(_config)},{onConflict:'key'}).then(function(res){
+      if(res.error){
+        console.warn('[SPM] site_config save error:',res.error.message);
+        if(typeof showToast==='function')showToast('❌ Save failed: '+res.error.message,'error');
+      }else{
+        console.log('[SPM] ✅ site_config saved');
+        // CRITICAL: Also sync prices to membership_plans table (used by Razorpay)
+        _syncPricesToMembershipPlans(client);
+      }
+    }).catch(function(e){
+      console.warn('[SPM] site_config save failed:',e);
+      if(typeof showToast==='function')showToast('❌ Save error: '+(e.message||e),'error');
+    })
+  },500)}
+
+// Sync Pass Management prices → membership_plans table (used by PPAY/Razorpay)
+function _syncPricesToMembershipPlans(client){
+  if(!_config||!_config.plans||!_config.plans.length)return;
+  var slugMap={'7 Day Trial':'trial_7day','1 Day Trial':'trial_1day','15 Day Trial':'trial_15day','Monthly':'monthly',
+    'Quarterly':'quarterly','Half Year':'half_year','Yearly':'yearly','Lifetime':'lifetime'};
+  var cycleMap={'trial_7day':'trial_7day','trial_1day':'trial_1day','trial_15day':'trial_15day','monthly':'monthly',
+    'quarterly':'quarterly','half_year':'half_year','yearly':'yearly','lifetime':'lifetime'};
+  var allPlans=_config.plans;
+  if(!allPlans.length)return;
+  /* ROBUST SYNC: Use upsert with onConflict:'slug' — atomic, no race conditions. */
+  var ops=[];
+  allPlans.forEach(function(p){
+    var slug=p.passId||slugMap[p.name]||p.name.toLowerCase().replace(/\s+/g,'_');
+    if(!slug)return;
+    var price=p.offerPrice||0;
+    var billingCycle=cycleMap[slug]||slug;
+    var isActive=!!p.active;
+    var trialDays=0;
+    if(slug==='trial_1day')trialDays=1;
+    else if(slug==='trial_15day')trialDays=15;
+    else if(slug==='trial_7day')trialDays=7;
+    var features={};
+    if(_config.features){_config.features.filter(function(f){return f.active}).forEach(function(f){features[f.name]=true})}
+    ops.push(client.from('membership_plans').upsert({
+      slug:slug,name:p.name,price_inr:price,billing_cycle:billingCycle,
+      is_active:isActive,badge_label:p.badge||'',trial_days:trialDays||null,features:features
+    },{onConflict:'slug'}).then(function(r){return{slug:slug,ok:!r.error,err:r.error}}));
+  });
+  Promise.all(ops).then(function(results){
+    var errors=results.filter(function(r){return!r.ok});
+    if(errors.length){
+      console.warn('[SPM] Some plan syncs failed:',errors.map(function(r){return r.slug+': '+(r.err?r.err.message:'unknown')}));
+      if(typeof showToast==='function')showToast('\u26A0 Saved but '+errors.length+' plan(s) failed to sync','error');
+    }else{
+      console.log('[SPM] All '+results.length+' plans synced to membership_plans via upsert');
+      if(typeof showToast==='function')showToast('Saved - '+results.length+' plans synced!','success');
+    }
+    _broadcastRefresh();
+  }).catch(function(e){
+    console.warn('[SPM] sync error:',e);
+    if(typeof showToast==='function')showToast('Saved but sync failed: '+(e.message||e),'error');
+    _broadcastRefresh();
+  })
+}
+
+function _broadcastRefresh(){
+  // FIX 3 + FIX 10: Broadcast refresh event + clear caches after save
+  try{window.dispatchEvent(new CustomEvent('studyria:passConfigUpdated',{detail:{source:'sync'}}))}catch(e){}
+  if(window.PassRenderer&&typeof window.PassRenderer.refresh==='function')setTimeout(function(){window.PassRenderer.refresh()},100);
+  // Also clear PPAY cache if it exists
+  if(window.PPAY&&typeof window.PPAY._clearCache==='function'){try{window.PPAY._clearCache()}catch(e){}}
+}
+function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function _uid(){return'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+var SUB_TABS=[{id:'plans',label:'Pass Plans',icon:'\uF0CB'},{id:'features',label:'Features',icon:'\u2728'},{id:'benefits',label:'Benefits',icon:'\uF0CE'},{id:'hero',label:'Hero Section',icon:'\uF0F1'},{id:'pricing',label:'Pricing',icon:'\uF0B2'},{id:'coupons',label:'Coupons',icon:'\uF0CF'},{id:'badges',label:'Badges',icon:'\uF0C6'},{id:'buttons',label:'Buttons',icon:'\uF0AD'},{id:'landing',label:'Landing Page',icon:'\uF0C4'},{id:'analytics',label:'Analytics',icon:'\uF0CA'},{id:'members',label:'Members',icon:'\uF0C1'},{id:'notifications',label:'Notifications',icon:'\uF0CE'},{id:'design',label:'Design',icon:'\uF0C8'},{id:'ai',label:'AI Features',icon:'\uF0AD'}];
+window.renderPassManagement=function(container){if(!container)return;loadConfig();var h='<div class="spm-wrap"><div class="spm-header"><div class="spm-header-icon">\uF0A9</div><div><div class="spm-header-title">Pass Management</div><div class="spm-header-sub">Manage every aspect of Studyria Pass</div></div><div class="spm-header-actions"><button class="spm-btn spm-btn-sm" onclick="SPM.exportConfig()">Export</button><button class="spm-btn spm-btn-sm" onclick="SPM.importConfig()">Import</button><button class="spm-btn spm-btn-sm spm-btn-danger" onclick="SPM.resetConfig()">Reset</button></div></div><div class="spm-subnav">';SUB_TABS.forEach(function(t){h+='<button class="spm-subtab'+(t.id===_activeSubTab?' active':'')+'" onclick="SPM.switchSubTab(\''+t.id+'\')"><span class="spm-subtab-icon">'+t.icon+'</span><span>'+t.label+'</span></button>'});h+='</div><div class="spm-content" id="spmContent"></div></div>';container.innerHTML=h;SPM.renderSubTab(_activeSubTab)};
+var SPM=window.SPM=window.SPM||{};
+SPM.switchSubTab=function(tabId){_activeSubTab=tabId;document.querySelectorAll('.spm-subtab').forEach(function(b,i){b.classList.toggle('active',SUB_TABS[i].id===tabId)});SPM.renderSubTab(tabId)};
+SPM.renderSubTab=function(tabId){var el=document.getElementById('spmContent');if(!el)return;switch(tabId){case'plans':SPM.renderPlans(el);break;case'features':SPM.renderFeatures(el);break;case'benefits':SPM.renderBenefits(el);break;case'hero':SPM.renderHero(el);break;case'pricing':SPM.renderPricing(el);break;case'coupons':SPM.renderCoupons(el);break;case'badges':SPM.renderBadges(el);break;case'buttons':SPM.renderButtons(el);break;case'landing':SPM.renderLanding(el);break;case'analytics':SPM.renderAnalytics(el);break;case'members':SPM.renderMembers(el);break;case'notifications':SPM.renderNotifications(el);break;case'design':SPM.renderDesign(el);break;case'ai':SPM.renderAI(el);break;default:el.innerHTML='<p>Module loading...</p>'}};
+SPM._field=function(label,type,id,value,placeholder){if(type==='textarea')return'<div class="spm-form-group"><label class="spm-label">'+label+'</label><textarea class="spm-input" id="'+id+'" placeholder="'+_esc(placeholder||'')+'" rows="3">'+_esc(value||'')+'</textarea></div>';return'<div class="spm-form-group"><label class="spm-label">'+label+'</label><input class="spm-input" type="'+type+'" id="'+id+'" value="'+_esc(value||'')+'" placeholder="'+_esc(placeholder||'')+'"></div>'};
+SPM._toggle=function(label,id,checked){return'<div class="spm-toggle-row"><label class="spm-label">'+label+'</label><label class="spm-switch"><input type="checkbox" id="'+id+'"'+(checked?' checked':'')+'><span class="spm-slider"></span></label></div>'};
+SPM._val=function(id){var el=document.getElementById(id);return el?el.value:''};
+SPM._chk=function(id){var el=document.getElementById(id);return el?el.checked:false};
+// 1.PLANS
+SPM.renderPlans=function(el){
+  var cfg=loadConfig();var plans=cfg.plans.sort(function(a,b){return(a.order||0)-(b.order||0)});
+  // Smart overview stats
+  var activePlans=plans.filter(function(p){return p.active}).length;
+  var avgPrice=plans.length>0?Math.round(plans.reduce(function(s,p){return s+(p.offerPrice||0)},0)/plans.length):0;
+  var maxDisc=0;plans.forEach(function(p){maxDisc=Math.max(maxDisc,p.discount||0)});
+  var h='<div class="spm-section-header"><h3 class="spm-section-title">Pass Plans</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addPlan()">+ Create Pass</button></div>';
+  // Smart stats bar
+  h+='<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">';
+  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:120px"><div style="font-size:1.3rem;font-weight:900;color:#fbbf24">'+activePlans+'</div><div style="font-size:.68rem;color:var(--text2)">Active Plans</div></div>';
+  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:120px"><div style="font-size:1.3rem;font-weight:900;color:#10d98e">\u20B9'+avgPrice+'</div><div style="font-size:.68rem;color:var(--text2)">Avg Price</div></div>';
+  h+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 16px;flex:1;min-width:120px"><div style="font-size:1.3rem;font-weight:900;color:#ff4d6d">'+maxDisc+'%</div><div style="font-size:.68rem;color:var(--text2)">Max Discount</div></div>';
+  h+='</div>';
+  // CRITICAL sync warning banner
+  h+='<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">';
+  h+='<div style="font-size:.75rem;color:#fbbf24"><strong>\u26A0 Price Sync:</strong> Saving a plan auto-syncs prices to Razorpay. Use \u201CSync Now\u201D if Razorpay still shows old price.</div>';
+  h+='<button class="spm-btn spm-btn-primary" style="font-size:.72rem;padding:6px 12px" onclick="SPM.forceSyncPrices()">\u1F5C2 Sync to Razorpay</button>';
+  h+='</div>';
+  h+='<div class="spm-grid spm-grid-3">';
+  plans.forEach(function(p){
+    // Smart: calculate per-day cost
+    var days=p.durationUnit==='lifetime'?36500:p.durationUnit==='months'?(parseInt(p.duration)||1)*30:parseInt(p.duration)||30;
+    var perDay=days>0&&p.offerPrice>0?(p.offerPrice/days).toFixed(2):'0';
+    var savings=p.originalPrice>p.offerPrice?p.originalPrice-p.offerPrice:0;
+    h+='<div class="spm-card'+(p.active?'':' spm-card-inactive')+'"><div class="spm-card-top"><span class="spm-card-icon">'+(p.icon||'\uF0A4')+'</span><div class="spm-card-info"><div class="spm-card-name">'+_esc(p.name)+'</div><div class="spm-card-desc">'+_esc(p.shortDesc||'')+'</div></div>'+(p.badge?'<span class="spm-card-badge spm-badge-'+(p.badgeType||'gold')+'">'+_esc(p.badge)+'</span>':'')+'</div><div class="spm-card-prices">'+(p.originalPrice>p.offerPrice?'<span class="spm-price-strike">\u20B9'+p.originalPrice+'</span>':'')+'<span class="spm-price-now">\u20B9'+p.offerPrice+'</span>'+(p.discount>0?'<span class="spm-discount">'+p.discount+'% OFF</span>':'')+'</div>';
+    // Smart savings info
+    if(savings>0){h+='<div style="font-size:.68rem;color:#10d98e;margin-bottom:4px">\uF0B2 Save \u20B9'+savings+' | \uF0C5 \u20B9'+perDay+'/day</div>'}else{h+='<div style="font-size:.68rem;color:var(--text2);margin-bottom:4px">\uF0C5 \u20B9'+perDay+'/day</div>'}
+    h+='<div class="spm-card-meta"><span>\uF0C5 '+(p.durationUnit==='lifetime'?'Lifetime':p.duration+' '+p.durationUnit)+'</span><span>'+_esc(p.buttonText)+'</span></div><div class="spm-card-actions"><button class="spm-btn-sm" onclick="SPM.editPlan(\''+p.id+'\')">Edit</button><button class="spm-btn-sm" onclick="SPM.duplicatePlan(\''+p.id+'\')">Copy</button><button class="spm-btn-sm" onclick="SPM.togglePlan(\''+p.id+'\')">'+(p.active?'Off':'On')+'</button><button class="spm-btn-sm" onclick="SPM.movePlan(\''+p.id+'\',-1)">Up</button><button class="spm-btn-sm" onclick="SPM.movePlan(\''+p.id+'\',1)">Dn</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deletePlan(\''+p.id+'\')">Del</button></div></div>'
+  });
+  h+='</div>';el.innerHTML=h
+};
+SPM.addPlan=function(){SPM._editPlanModal(null)};
+SPM.forceSyncPrices=function(){
+  var client=window.supabaseClient;
+  if(!client){if(typeof showToast==='function')showToast('\u274C Supabase not connected','error');return}
+  if(typeof showToast==='function')showToast('\u231B Syncing prices to Razorpay...','info');
+  _syncPricesToMembershipPlans(client)
+};
+SPM.editPlan=function(id){var cfg=loadConfig();var plan=cfg.plans.find(function(p){return p.id===id});if(plan)SPM._editPlanModal(plan)};
+SPM._editPlanModal=function(plan){
+  var cfg=loadConfig();var isEdit=!!plan;
+  var p=plan||{id:_uid(),name:'',shortDesc:'',longDesc:'',duration:'30',durationUnit:'days',originalPrice:0,offerPrice:0,discount:0,currency:'INR',badge:'',badgeType:'gold',buttonText:'Get Pass',gradient:'',bgColor:'',icon:'\uF0A4',order:cfg.plans.length+1,active:true};
+  var o=document.createElement('div');o.className='spm-modal-overlay';
+  o.innerHTML='<div class="spm-modal"><div class="spm-modal-header"><h3>'+(isEdit?'Edit Pass':'Create Pass')+'</h3><button class="spm-modal-close" onclick="this.closest(\'.spm-modal-overlay\').remove()">X</button></div><div class="spm-modal-body">'
+  +SPM._field('Name','text','plan-name',p.name,'e.g. Monthly')
+  +SPM._field('Short Description','text','plan-short',p.shortDesc,'Brief description')
+  +SPM._field('Long Description','textarea','plan-long',p.longDesc,'Detailed')
+  +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Duration','number','plan-duration',p.duration,'30')+'</div><div class="spm-form-group"><label class="spm-label">Unit</label><select class="spm-input" id="plan-unit"><option value="days"'+(p.durationUnit==='days'?' selected':'')+'>Days</option><option value="months"'+(p.durationUnit==='months'?' selected':'')+'>Months</option><option value="lifetime"'+(p.durationUnit==='lifetime'?' selected':'')+'>Lifetime</option></select></div><div class="spm-form-group"><label class="spm-label">Smart Badge</label><select class="spm-input" id="plan-smart-badge"><option value="">Auto (none)</option><option value="NEW">New</option><option value="POPULAR">Popular</option><option value="MOST POPULAR">Most Popular</option><option value="BEST VALUE">Best Value</option><option value="LIMITED OFFER">Limited Offer</option><option value="RECOMMENDED">Recommended</option><option value="PREMIUM">Premium</option></select></div></div>'
+  // Smart pricing section with auto-calc
+  +'<div class="spm-smart-pricing-wrap" style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:16px;margin-bottom:14px">'
+  +'<div class="spm-label" style="margin-bottom:10px;color:#fbbf24;font-size:.75rem">\uF0B2 Smart Pricing — Auto Discount Calculator</div>'
+  +'<div class="spm-form-row"><div class="spm-form-group"><label class="spm-label">Original Price (\u20B9)</label><input class="spm-input" type="number" id="plan-oprice" value="'+_esc(p.originalPrice)+'" placeholder="149" oninput="SPM._calcDiscount()"></div><div class="spm-form-group"><label class="spm-label">Offer Price (\u20B9)</label><input class="spm-input" type="number" id="plan-oprice2" value="'+_esc(p.offerPrice)+'" placeholder="99" oninput="SPM._calcDiscount()"></div></div>'
+  +'<div id="spm-discount-display" style="display:none;padding:10px 12px;border-radius:10px;background:rgba(16,217,142,0.08);border:1px solid rgba(16,217,142,0.2);margin-bottom:8px"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span id="spm-disc-pct" style="font-size:1.3rem;font-weight:900;color:#10d98e"></span><span id="spm-disc-savings" style="font-size:.78rem;color:#10d98e"></span><span id="spm-disc-perday" style="font-size:.7rem;color:var(--text2);margin-left:auto"></span></div><div id="spm-smart-tips" style="margin-top:4px;font-size:.7rem;color:var(--text2)"></div></div>'
+  +'<div id="spm-price-error" style="display:none;padding:8px 12px;border-radius:8px;background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);color:#ff4d6d;font-size:.75rem;margin-bottom:8px"></div>'
+  +'<input type="hidden" id="plan-discount" value="'+_esc(p.discount)+'">'  +'</div>'
+  +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Badge Text','text','plan-badge',p.badge,'POPULAR')+'</div><div class="spm-form-group"><label class="spm-label">Badge Color</label><select class="spm-input" id="plan-btype"><option value="gold"'+(p.badgeType==='gold'?' selected':'')+'>Gold</option><option value="green"'+(p.badgeType==='green'?' selected':'')+'>Green</option><option value="purple"'+(p.badgeType==='purple'?' selected':'')+'>Purple</option><option value="blue"'+(p.badgeType==='blue'?' selected':'')+'>Blue</option><option value="red"'+(p.badgeType==='red'?' selected':'')+'>Red</option><option value="rainbow"'+(p.badgeType==='rainbow'?' selected':'')+'>Rainbow</option></select></div></div>'
+  +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Button Text','text','plan-btn',p.buttonText,'Get Pass')+'</div><div class="spm-form-group">'+SPM._field('Icon (emoji)','text','plan-icon',p.icon,'\uF0A4')+'</div></div>'
+  +'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Gradient (CSS)','text','plan-gradient',p.gradient,'linear-gradient(135deg,#fbbf24,#f59e0b)')+'</div><div class="spm-form-group">'+SPM._field('Card BG (CSS)','text','plan-bg',p.bgColor,'rgba(251,191,36,0.08)')+'</div></div>'
+  // Live preview card
+  +'<div class="spm-label" style="margin-top:10px">\uF0A7 Live Preview</div>'
+  +'<div id="spm-live-preview" class="spm-live-preview" style="border-radius:14px;padding:16px;margin-bottom:10px;max-width:320px"></div>'
+  +'</div><div class="spm-modal-footer"><button class="spm-btn" onclick="this.closest(\'.spm-modal-overlay\').remove()">Cancel</button><button class="spm-btn spm-btn-primary" onclick="SPM.savePlan('+(isEdit?"'"+p.id+"'":'null')+')">'+(isEdit?'Save Changes':'Create Pass')+'</button></div></div>';
+  document.body.appendChild(o);
+  // Set smart badge value if exists
+  var sb=document.getElementById('plan-smart-badge');if(sb&&p.badge){sb.value=p.badge}
+  // Add event listeners for auto-calc
+  SPM._initSmartPricing();
+  // Trigger initial calc
+  SPM._calcDiscount();
+  SPM._updatePreview();
+};
+
+// Smart discount auto-calc
+SPM._initSmartPricing=function(){
+  // oninput for price fields is now inline in HTML — no need to add here
+  // Handle smart badge dropdown
+  var sb=document.getElementById('plan-smart-badge');
+  if(sb)sb.addEventListener('change',function(){
+    var bt=document.getElementById('plan-badge');
+    if(bt&&sb.value)bt.value=sb.value;
+    SPM._updatePreview()
+  });
+  // Update preview on other field changes
+  ['plan-name','plan-icon','plan-badge','plan-btn','plan-gradient','plan-bg'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.addEventListener('input',SPM._updatePreview)
+  })
+};
+
+SPM._calcDiscount=function(){
+  var op=parseFloat(SPM._val('plan-oprice'))||0;
+  var of=parseFloat(SPM._val('plan-oprice2'))||0;
+  var hiddenDisc=document.getElementById('plan-discount');
+  var displayWrap=document.getElementById('spm-discount-display');
+  var discPct=document.getElementById('spm-disc-pct');
+  var discSav=document.getElementById('spm-disc-savings');
+  var discPerDay=document.getElementById('spm-disc-perday');
+  var tipsEl=document.getElementById('spm-smart-tips');
+  var errEl=document.getElementById('spm-price-error');
+
+  if(errEl)errEl.style.display='none';
+  if(displayWrap)displayWrap.style.display='none';
+
+  if(op<=0||of<=0){if(hiddenDisc)hiddenDisc.value='0';SPM._updatePreview();return}
+
+  if(of>=op){
+    if(errEl){errEl.style.display='block';errEl.textContent='\u26A0 Offer price must be less than original price'}
+    if(hiddenDisc)hiddenDisc.value='0';
+    SPM._updatePreview();return
+  }
+
+  var disc=Math.round(((op-of)/op)*100);
+  var savings=op-of;
+  if(hiddenDisc)hiddenDisc.value=disc;
+
+  if(displayWrap)displayWrap.style.display='block';
+  if(discPct)discPct.textContent=disc+'% OFF';
+  if(discSav)discSav.textContent='\u2665 Save \u20B9'+savings+' \u2014 Effective price: \u20B9'+of;
+
+  var dur=parseInt(SPM._val('plan-duration'))||30;
+  var unitEl=document.getElementById('plan-unit');
+  var unit=unitEl?unitEl.value:'days';
+  if(unit==='months')dur=dur*30;
+  if(unit==='lifetime')dur=36500;
+  if(dur>0&&of>0){
+    var perDay=(of/dur).toFixed(2);
+    if(discPerDay)discPerDay.textContent='\u20B9'+perDay+'/day'+(parseFloat(perDay)<1?' \u2014 Under \u20B91/day!':'')
+  }
+
+  var tips='';
+  if(disc>=60)tips='\uD83D\uDD25 Great deal \u2014 very attractive for conversions';
+  else if(disc>=40)tips='\u2705 Solid discount \u2014 good balance of value and revenue';
+  else if(disc>=20)tips='\uD83D\uDCA1 Moderate \u2014 consider a bigger discount for conversions';
+  else if(disc>0)tips='\u26A0 Small discount \u2014 may not excite customers much';
+  if(tipsEl)tipsEl.textContent=tips;
+
+  SPM._updatePreview()
+};
+SPM._updatePreview=function(){
+  var name=SPM._val('plan-name')||'Plan Name';
+  var op=parseFloat(SPM._val('plan-oprice'))||0;
+  var of=parseFloat(SPM._val('plan-oprice2'))||0;
+  var discEl=document.getElementById('plan-discount');var disc=discEl?parseInt(discEl.value)||0:0;
+  var badge=SPM._val('plan-badge')||'';
+  var icon=SPM._val('plan-icon')||'\uF0A4';
+  var btn=SPM._val('plan-btn')||'Get Pass';
+  var grad=SPM._val('plan-gradient')||'linear-gradient(135deg,#fbbf24,#f59e0b)';
+  var bg=SPM._val('plan-bg')||'rgba(251,191,36,0.08)';
+  var prev=document.getElementById('spm-live-preview');
+  if(!prev)return;
+  prev.style.background=bg;
+  prev.style.border='1px solid rgba(255,255,255,0.08)';
+  var h='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">';
+  h+='<span style="font-size:1.5rem">'+_esc(icon)+'</span>';
+  h+='<div><div style="font-size:.9rem;font-weight:700;color:#fbbf24">'+_esc(name)+'</div>';
+  if(badge)h+='<span style="font-size:.6rem;font-weight:800;padding:2px 6px;border-radius:4px;background:rgba(251,191,36,0.15);color:#fbbf24">'+_esc(badge)+'</span>';
+  h+='</div></div>';
+  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+  if(op>of)h+='<span style="text-decoration:line-through;font-size:.78rem;opacity:.5">\u20B9'+op+'</span>';
+  h+='<span style="font-size:1.4rem;font-weight:900;color:#fbbf24">\u20B9'+of+'</span>';
+  if(disc>0)h+='<span style="font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(16,217,142,0.12);color:#10d98e">'+disc+'% OFF</span>';
+  h+='</div>';
+  h+='<button style="width:100%;padding:8px;border-radius:10px;background:'+grad+';color:#000;font-weight:700;border:none;cursor:pointer;font-size:.8rem">'+_esc(btn)+' \u2192</button>';
+  prev.innerHTML=h
+};
+SPM.savePlan=function(id){
+  var cfg=loadConfig();
+  SPM._calcDiscount();
+  var op=parseInt(SPM._val('plan-oprice'))||0;
+  var of=parseInt(SPM._val('plan-oprice2'))||0;
+  var disc=op>of?Math.round(((op-of)/op)*100):0;
+
+  /* FIX 11: Data Validation — prevent invalid plans */
+  var planName=SPM._val('plan-name');
+  if(!planName||!planName.trim()){if(typeof showToast==='function')showToast('\u274C Plan name cannot be empty','error');return}
+  if(op<0){if(typeof showToast==='function')showToast('\u274C Original price cannot be negative','error');return}
+  if(of<0){if(typeof showToast==='function')showToast('\u274C Offer price cannot be negative','error');return}
+  if(op>0&&of>0&&of>=op){if(typeof showToast==='function')showToast('\u274C Offer price must be less than original price','error');return}
+  var durVal=parseInt(SPM._val('plan-duration'))||0;
+  var unitVal=document.getElementById('plan-unit').value;
+  if(unitVal!=='lifetime'&&durVal<=0){if(typeof showToast==='function')showToast('\u274C Duration must be greater than 0','error');return}
+  /* Check duplicate passId for new plans */
+  if(!id){
+    var newPassId=planName.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+    var dupId=cfg.plans.find(function(p){return p.passId===newPassId});
+    if(dupId){if(typeof showToast==='function')showToast('\u274C A plan with ID "'+newPassId+'" already exists','error');return}
+  }
+
+  var d={name:planName,shortDesc:SPM._val('plan-short'),longDesc:SPM._val('plan-long'),duration:SPM._val('plan-duration'),durationUnit:document.getElementById('plan-unit').value,originalPrice:op,offerPrice:of,discount:disc,badge:SPM._val('plan-badge'),badgeType:document.getElementById('plan-btype').value,buttonText:SPM._val('plan-btn'),icon:SPM._val('plan-icon'),gradient:SPM._val('plan-gradient'),bgColor:SPM._val('plan-bg')};
+  if(!d.shortDesc&&d.name){var dur2=d.durationUnit==='lifetime'?'Lifetime':d.duration+' '+d.durationUnit;d.shortDesc=d.name+' \u2014 '+dur2+' plan'}
+  var sb=document.getElementById('plan-smart-badge');
+  if(sb&&sb.value&&!d.badge)d.badge=sb.value;
+  if(!d.badgeType||d.badgeType==='gold'){
+    if(disc>=60)d.badgeType='gold';else if(disc>=40)d.badgeType='purple';else if(disc>=20)d.badgeType='green';else d.badgeType='blue'
+  }
+  /* FIX 1: Preserve passId on edit, generate on create */
+  if(id){
+    var idx=cfg.plans.findIndex(function(p){return p.id===id});
+    if(idx>=0){
+      d.passId=cfg.plans[idx].passId||cfg.plans[idx].id;
+      Object.assign(cfg.plans[idx],d)
+    }
+  }else{
+    d.id=_uid();
+    d.passId=d.name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+    d.order=cfg.plans.length+1;d.active=true;d.currency='INR';cfg.plans.push(d)
+  }
+  saveConfig();document.querySelector('.spm-modal-overlay').remove();
+  if(typeof showToast==='function')showToast('\u2705 Pass saved \u2014 '+disc+'% discount applied','success');
+  SPM.renderPlans(document.getElementById('spmContent'))
+};
+SPM.duplicatePlan=function(id){var cfg=loadConfig();var p=cfg.plans.find(function(x){return x.id===id});if(!p)return;var c=JSON.parse(JSON.stringify(p));c.id=_uid();c.name=p.name+' (Copy)';c.passId=(p.passId||p.id)+'_copy_'+Date.now().toString(36);c.order=cfg.plans.length+1;c.active=false;cfg.plans.push(c);saveConfig();if(typeof showToast==='function')showToast('Duplicated','success');SPM.renderPlans(document.getElementById('spmContent'))};
+SPM.togglePlan=function(id){var cfg=loadConfig();var p=cfg.plans.find(function(x){return x.id===id});if(p){p.active=!p.active;saveConfig();SPM.renderPlans(document.getElementById('spmContent'))}};
+SPM.movePlan=function(id,dir){var cfg=loadConfig();var pl=cfg.plans.sort(function(a,b){return(a.order||0)-(b.order||0)});var i=pl.findIndex(function(p){return p.id===id});var n=i+dir;if(n<0||n>=pl.length)return;var t=pl[i].order;pl[i].order=pl[n].order;pl[n].order=t;saveConfig();SPM.renderPlans(document.getElementById('spmContent'))};
+SPM.deletePlan=function(id){if(!confirm('Delete this pass plan?'))return;var cfg=loadConfig();cfg.plans=cfg.plans.filter(function(p){return p.id!==id});saveConfig();if(typeof showToast==='function')showToast('Deleted','info');SPM.renderPlans(document.getElementById('spmContent'))};
+// 2.FEATURES
+SPM.renderFeatures=function(el){var cfg=loadConfig();var f=cfg.features.sort(function(a,b){return(a.order||0)-(b.order||0)});var h='<div class="spm-section-header"><h3 class="spm-section-title">Features</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addFeature()">+ Add</button></div><div class="spm-feature-list">';f.forEach(function(ft){h+='<div class="spm-feature-item'+(ft.active?'':' inactive')+'"><div class="spm-feature-info"><span class="spm-feature-icon">'+(ft.icon||'\u2B50')+'</span><div><div class="spm-feature-name">'+_esc(ft.name)+'</div><div class="spm-feature-state">'+(ft.active?'Active':'Inactive')+'</div></div></div><div class="spm-feature-actions"><button class="spm-btn-sm" onclick="SPM.editFeature(\''+ft.id+'\')">Edit</button><button class="spm-btn-sm" onclick="SPM.toggleFeature(\''+ft.id+'\')">'+(ft.active?'Off':'On')+'</button><button class="spm-btn-sm" onclick="SPM.moveFeature(\''+ft.id+'\',-1)">Up</button><button class="spm-btn-sm" onclick="SPM.moveFeature(\''+ft.id+'\',1)">Dn</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deleteFeature(\''+ft.id+'\')">Del</button></div></div>'});h+='</div>';el.innerHTML=h};
+SPM.addFeature=function(){var cfg=loadConfig();var n=prompt('Feature name:');if(!n)return;var ic=prompt('Icon (emoji):','\u2B50')||'\u2B50';cfg.features.push({id:_uid(),name:n,icon:ic,order:cfg.features.length+1,active:true});saveConfig();SPM.renderFeatures(document.getElementById('spmContent'))};
+SPM.editFeature=function(id){var cfg=loadConfig();var f=cfg.features.find(function(x){return x.id===id});if(!f)return;var n=prompt('Feature name:',f.name);if(!n)return;var ic=prompt('Icon (emoji):',f.icon)||f.icon;f.name=n;f.icon=ic;saveConfig();SPM.renderFeatures(document.getElementById('spmContent'))};
+SPM.toggleFeature=function(id){var cfg=loadConfig();var f=cfg.features.find(function(x){return x.id===id});if(f){f.active=!f.active;saveConfig();SPM.renderFeatures(document.getElementById('spmContent'))}};
+SPM.moveFeature=function(id,dir){var cfg=loadConfig();var f=cfg.features.sort(function(a,b){return(a.order||0)-(b.order||0)});var i=f.findIndex(function(x){return x.id===id});var n=i+dir;if(n<0||n>=f.length)return;var t=f[i].order;f[i].order=f[n].order;f[n].order=t;saveConfig();SPM.renderFeatures(document.getElementById('spmContent'))};
+SPM.deleteFeature=function(id){if(!confirm('Delete this feature?'))return;var cfg=loadConfig();cfg.features=cfg.features.filter(function(f){return f.id!==id});saveConfig();SPM.renderFeatures(document.getElementById('spmContent'))};
+// 3.BENEFITS
+SPM.renderBenefits=function(el){var cfg=loadConfig();var b=cfg.benefits;var h='<div class="spm-section-header"><h3 class="spm-section-title">Benefits</h3></div><div class="spm-form-card">';h+=SPM._field('Section Title','text','ben-title',b.sectionTitle,'Why Studyria Pass?');h+=SPM._field('Subtitle','text','ben-sub',b.sectionSubtitle,'Subtitle');h+=SPM._field('Description','textarea','ben-desc',b.sectionDescription,'Description');h+=SPM._field('CTA','text','ben-cta',b.cta,'CTA');h+='<button class="spm-btn spm-btn-primary" onclick="SPM.saveBenefits()">Save</button></div><div class="spm-section-header" style="margin-top:24px"><h3 class="spm-section-title">Benefit Cards</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addBenefitCard()">+ Add</button></div><div class="spm-grid spm-grid-3">';(b.cards||[]).forEach(function(c){h+='<div class="spm-card"><div class="spm-card-top"><span class="spm-card-icon" style="background:'+(c.color||'#fbbf24')+'20">'+(c.icon||'\uF0CE')+'</span><div class="spm-card-info"><div class="spm-card-name">'+_esc(c.title)+'</div><div class="spm-card-desc">'+_esc(c.desc)+'</div></div></div><div class="spm-card-actions"><button class="spm-btn-sm" onclick="SPM.editBenefitCard(\''+c.id+'\')">Edit</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deleteBenefitCard(\''+c.id+'\')">Del</button></div></div>'});h+='</div>';el.innerHTML=h};
+SPM.saveBenefits=function(){var cfg=loadConfig();cfg.benefits.sectionTitle=SPM._val('ben-title');cfg.benefits.sectionSubtitle=SPM._val('ben-sub');cfg.benefits.sectionDescription=SPM._val('ben-desc');cfg.benefits.cta=SPM._val('ben-cta');saveConfig();if(typeof showToast==='function')showToast('Benefits saved','success')};
+SPM.addBenefitCard=function(){var cfg=loadConfig();var t=prompt('Card title:');if(!t)return;var d=prompt('Card description:','')||'';var ic=prompt('Icon (emoji):','\uF0CE')||'\uF0CE';var c=prompt('Color (hex):','#fbbf24')||'#fbbf24';cfg.benefits.cards.push({id:_uid(),icon:ic,title:t,desc:d,color:c});saveConfig();SPM.renderBenefits(document.getElementById('spmContent'))};
+SPM.editBenefitCard=function(id){var cfg=loadConfig();var c=cfg.benefits.cards.find(function(x){return x.id===id});if(!c)return;var t=prompt('Card title:',c.title);if(!t)return;var d=prompt('Card description:',c.desc)||'';var ic=prompt('Icon (emoji):',c.icon)||c.icon;var col=prompt('Color (hex):',c.color)||c.color;c.title=t;c.desc=d;c.icon=ic;c.color=col;saveConfig();SPM.renderBenefits(document.getElementById('spmContent'))};
+SPM.deleteBenefitCard=function(id){if(!confirm('Delete this card?'))return;var cfg=loadConfig();cfg.benefits.cards=cfg.benefits.cards.filter(function(c){return c.id!==id});saveConfig();SPM.renderBenefits(document.getElementById('spmContent'))};
+// 4.HERO
+SPM.renderHero=function(el){var cfg=loadConfig();var h2=cfg.hero;var h='<div class="spm-section-header"><h3 class="spm-section-title">Hero Section</h3></div><div class="spm-form-card">';h+=SPM._field('Headline','text','hero-headline',h2.headline,'Studyria Pass');h+=SPM._field('Subheadline','text','hero-sub',h2.subheadline,'Subtitle');h+=SPM._field('Description','textarea','hero-desc',h2.description,'Description');h+=SPM._field('CTA Button','text','hero-cta',h2.ctaButton,'Get Studyria Pass');h+=SPM._field('Hero Badge','text','hero-badge',h2.heroBadge,'Studyria Pass');h+=SPM._field('Background Gradient','text','hero-bg',h2.bgGradient,'linear-gradient(...)');h+=SPM._field('Background Image URL','text','hero-img',h2.bgImage,'https://...');h+='<button class="spm-btn spm-btn-primary" onclick="SPM.saveHero()">Save</button></div>';el.innerHTML=h};
+SPM.saveHero=function(){var cfg=loadConfig();cfg.hero.headline=SPM._val('hero-headline');cfg.hero.subheadline=SPM._val('hero-sub');cfg.hero.description=SPM._val('hero-desc');cfg.hero.ctaButton=SPM._val('hero-cta');cfg.hero.heroBadge=SPM._val('hero-badge');cfg.hero.bgGradient=SPM._val('hero-bg');cfg.hero.bgImage=SPM._val('hero-img');saveConfig();if(typeof showToast==='function')showToast('Hero saved','success')};
+// 5.PRICING
+SPM.renderPricing=function(el){var cfg=loadConfig();var p=cfg.pricing;var h='<div class="spm-section-header"><h3 class="spm-section-title">Pricing Settings</h3></div><div class="spm-form-card">';h+=SPM._toggle('Show Offers','pr-offers',p.showOffers);h+=SPM._toggle('Show Strike Price','pr-strike',p.showStrikePrice);h+=SPM._toggle('Show Discount Badge','pr-discount',p.showDiscountBadge);h+=SPM._toggle('Show Countdown','pr-countdown',p.showCountdown);h+=SPM._toggle('Show Limited Offer','pr-limited',p.showLimitedOffer);h+=SPM._toggle('Show Popular Badge','pr-popular',p.showPopularBadge);h+=SPM._field('Countdown End Date','date','pr-countdown-end',p.countdownEnd,'');h+=SPM._field('Limited Offer Text','text','pr-limited-text',p.limitedOfferText,'Limited Time Offer');h+='<button class="spm-btn spm-btn-primary" onclick="SPM.savePricing()">Save</button></div>';el.innerHTML=h};
+SPM.savePricing=function(){var cfg=loadConfig();cfg.pricing.showOffers=SPM._chk('pr-offers');cfg.pricing.showStrikePrice=SPM._chk('pr-strike');cfg.pricing.showDiscountBadge=SPM._chk('pr-discount');cfg.pricing.showCountdown=SPM._chk('pr-countdown');cfg.pricing.showLimitedOffer=SPM._chk('pr-limited');cfg.pricing.showPopularBadge=SPM._chk('pr-popular');cfg.pricing.countdownEnd=SPM._val('pr-countdown-end');cfg.pricing.limitedOfferText=SPM._val('pr-limited-text');saveConfig();if(typeof showToast==='function')showToast('Pricing saved','success')};
+// 6.COUPONS
+SPM.renderCoupons=function(el){var cfg=loadConfig();var h='<div class="spm-section-header"><h3 class="spm-section-title">Coupons</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addCoupon()">+ Create</button></div><div class="spm-table-wrap"><table class="spm-table"><thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Max Disc</th><th>Min Purch</th><th>Max Uses</th><th>Used</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead><tbody>';cfg.coupons.forEach(function(c){h+='<tr><td><span class="spm-coupon-code">'+_esc(c.code)+'</span></td><td>'+(c.type==='percentage'?'% Off':'Rs Off')+'</td><td>'+(c.type==='percentage'?c.value+'%':'Rs'+c.value)+'</td><td>Rs'+(c.maxDiscount||0)+'</td><td>Rs'+(c.minPurchase||0)+'</td><td>'+(c.maxUses||'\u221E')+'</td><td>'+(c.usedCount||0)+'</td><td>'+_esc(c.expiry||'\u2014')+'</td><td>'+(c.active?'<span class="spm-badge spm-badge-active">Active</span>':'<span class="spm-badge spm-badge-none">Inactive</span>')+'</td><td><button class="spm-btn-sm" onclick="SPM.editCoupon(\''+c.id+'\')">Edit</button><button class="spm-btn-sm" onclick="SPM.toggleCoupon(\''+c.id+'\')">'+(c.active?'Off':'On')+'</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deleteCoupon(\''+c.id+'\')">Del</button></td></tr>'});h+='</tbody></table></div>';el.innerHTML=h};
+SPM.addCoupon=function(){SPM._editCouponModal(null)};
+SPM.editCoupon=function(id){var cfg=loadConfig();var c=cfg.coupons.find(function(x){return x.id===id});if(c)SPM._editCouponModal(c)};
+SPM._editCouponModal=function(coupon){var cfg=loadConfig();var isEdit=!!coupon;var c=coupon||{id:_uid(),code:'',type:'percentage',value:10,maxDiscount:0,minPurchase:0,maxUses:100,usedCount:0,expiry:'2026-12-31',active:true};var o=document.createElement('div');o.className='spm-modal-overlay';o.innerHTML='<div class="spm-modal"><div class="spm-modal-header"><h3>'+(isEdit?'Edit Coupon':'Create Coupon')+'</h3><button class="spm-modal-close" onclick="this.closest(\'.spm-modal-overlay\').remove()">X</button></div><div class="spm-modal-body">'+SPM._field('Code','text','cp-code',c.code,'STUDY20')+'<div class="spm-form-group"><label class="spm-label">Type</label><select class="spm-input" id="cp-type"><option value="percentage"'+(c.type==='percentage'?' selected':'')+'>Percentage</option><option value="fixed"'+(c.type==='fixed'?' selected':'')+'>Fixed</option></select></div>'+SPM._field('Value','number','cp-value',c.value,'20')+'<div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Max Discount','number','cp-maxd',c.maxDiscount,'100')+'</div><div class="spm-form-group">'+SPM._field('Min Purchase','number','cp-minp',c.minPurchase,'0')+'</div></div><div class="spm-form-row"><div class="spm-form-group">'+SPM._field('Max Uses','number','cp-maxu',c.maxUses,'100')+'</div><div class="spm-form-group">'+SPM._field('Expiry','date','cp-exp',c.expiry,'2026-12-31')+'</div></div></div><div class="spm-modal-footer"><button class="spm-btn" onclick="this.closest(\'.spm-modal-overlay\').remove()">Cancel</button><button class="spm-btn spm-btn-primary" onclick="SPM.saveCoupon('+(isEdit?"'"+c.id+"'":'null')+')">'+(isEdit?'Save':'Create')+'</button></div></div>';document.body.appendChild(o)};
+SPM.saveCoupon=function(id){var cfg=loadConfig();var d={code:SPM._val('cp-code').toUpperCase(),type:document.getElementById('cp-type').value,value:parseInt(SPM._val('cp-value'))||0,maxDiscount:parseInt(SPM._val('cp-maxd'))||0,minPurchase:parseInt(SPM._val('cp-minp'))||0,maxUses:parseInt(SPM._val('cp-maxu'))||0,expiry:SPM._val('cp-exp')};if(id){var i=cfg.coupons.findIndex(function(c){return c.id===id});if(i>=0)Object.assign(cfg.coupons[i],d)}else{d.id=_uid();d.usedCount=0;d.active=true;cfg.coupons.push(d)}saveConfig();document.querySelector('.spm-modal-overlay').remove();if(typeof showToast==='function')showToast('Coupon saved','success');SPM.renderCoupons(document.getElementById('spmContent'))};
+SPM.toggleCoupon=function(id){var cfg=loadConfig();var c=cfg.coupons.find(function(x){return x.id===id});if(c){c.active=!c.active;saveConfig();SPM.renderCoupons(document.getElementById('spmContent'))}};
+SPM.deleteCoupon=function(id){if(!confirm('Delete this coupon?'))return;var cfg=loadConfig();cfg.coupons=cfg.coupons.filter(function(c){return c.id!==id});saveConfig();SPM.renderCoupons(document.getElementById('spmContent'))};
+// 7.BADGES
+SPM.renderBadges=function(el){var cfg=loadConfig();var h='<div class="spm-section-header"><h3 class="spm-section-title">Badges</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addBadge()">+ Add</button></div><div class="spm-grid spm-grid-4">';cfg.badges.forEach(function(b){h+='<div class="spm-badge-item'+(b.active?'':' inactive')+'"><div class="spm-badge-emoji">'+(b.emoji||'\uF0C6')+'</div><div class="spm-badge-label">'+_esc(b.label)+'</div><div class="spm-badge-actions"><button class="spm-btn-sm" onclick="SPM.editBadge(\''+b.id+'\')">Edit</button><button class="spm-btn-sm" onclick="SPM.toggleBadge(\''+b.id+'\')">'+(b.active?'Off':'On')+'</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deleteBadge(\''+b.id+'\')">Del</button></div></div>'});h+='</div>';el.innerHTML=h};
+SPM.addBadge=function(){var cfg=loadConfig();var e=prompt('Badge emoji:','\uF0AB')||'\uF0AB';var l=prompt('Badge label:','Hot')||'Badge';cfg.badges.push({id:_uid(),emoji:e,label:l,active:true});saveConfig();SPM.renderBadges(document.getElementById('spmContent'))};
+SPM.editBadge=function(id){var cfg=loadConfig();var b=cfg.badges.find(function(x){return x.id===id});if(!b)return;var e=prompt('Badge emoji:',b.emoji)||b.emoji;var l=prompt('Badge label:',b.label)||b.label;b.emoji=e;b.label=l;saveConfig();SPM.renderBadges(document.getElementById('spmContent'))};
+SPM.toggleBadge=function(id){var cfg=loadConfig();var b=cfg.badges.find(function(x){return x.id===id});if(b){b.active=!b.active;saveConfig();SPM.renderBadges(document.getElementById('spmContent'))}};
+SPM.deleteBadge=function(id){if(!confirm('Delete this badge?'))return;var cfg=loadConfig();cfg.badges=cfg.badges.filter(function(b){return b.id!==id});saveConfig();SPM.renderBadges(document.getElementById('spmContent'))};
+// 8.BUTTONS
+SPM.renderButtons=function(el){var cfg=loadConfig();var btns=cfg.buttons;var h='<div class="spm-section-header"><h3 class="spm-section-title">Button Management</h3></div><div class="spm-form-card">';Object.keys(btns).forEach(function(key){h+='<div class="spm-form-row"><div class="spm-form-group" style="flex:0 0 200px"><label class="spm-label">'+key.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase()})+'</label></div><div class="spm-form-group" style="flex:1"><input class="spm-input" id="btn-'+key+'" value="'+_esc(btns[key])+'"></div></div>'});h+='<button class="spm-btn spm-btn-primary" onclick="SPM.saveButtons()">Save</button></div>';el.innerHTML=h};
+SPM.saveButtons=function(){var cfg=loadConfig();Object.keys(cfg.buttons).forEach(function(key){var el=document.getElementById('btn-'+key);if(el)cfg.buttons[key]=el.value});saveConfig();if(typeof showToast==='function')showToast('Buttons saved','success')};
+// 9.LANDING
+SPM.renderLanding=function(el){var cfg=loadConfig();var lp=cfg.landingPage;var h='<div class="spm-section-header"><h3 class="spm-section-title">Landing Page</h3></div><div class="spm-form-card">';h+=SPM._field('Title','text','lp-title',lp.title,'Studyria Pass');h+=SPM._field('Subtitle','text','lp-sub',lp.subtitle,'Subtitle');h+=SPM._field('SEO Title','text','lp-seo-title',lp.seoTitle,'SEO Title');h+=SPM._field('SEO Description','textarea','lp-seo-desc',lp.seoDescription,'Meta description');h+=SPM._field('OG Image URL','text','lp-og',lp.ogImage,'https://...');h+=SPM._field('Meta Keywords','text','lp-keywords',lp.metaKeywords,'keywords');h+='<button class="spm-btn spm-btn-primary" onclick="SPM.saveLanding()">Save</button></div><div class="spm-section-header" style="margin-top:24px"><h3 class="spm-section-title">FAQ</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addFAQ()">+ Add</button></div><div class="spm-faq-list">';(lp.faq||[]).forEach(function(f,i){h+='<div class="spm-faq-item"><div class="spm-faq-q">'+_esc(f.q)+'</div><div class="spm-faq-a">'+_esc(f.a)+'</div><div class="spm-faq-actions"><button class="spm-btn-sm" onclick="SPM.editFAQ('+i+')">Edit</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deleteFAQ('+i+')">Del</button></div></div>'});h+='</div>';el.innerHTML=h};
+SPM.saveLanding=function(){var cfg=loadConfig();cfg.landingPage.title=SPM._val('lp-title');cfg.landingPage.subtitle=SPM._val('lp-sub');cfg.landingPage.seoTitle=SPM._val('lp-seo-title');cfg.landingPage.seoDescription=SPM._val('lp-seo-desc');cfg.landingPage.ogImage=SPM._val('lp-og');cfg.landingPage.metaKeywords=SPM._val('lp-keywords');saveConfig();if(typeof showToast==='function')showToast('Landing saved','success')};
+SPM.addFAQ=function(){var q=prompt('Question:');if(!q)return;var a=prompt('Answer:','')||'';var cfg=loadConfig();cfg.landingPage.faq.push({q:q,a:a});saveConfig();SPM.renderLanding(document.getElementById('spmContent'))};
+SPM.editFAQ=function(idx){var cfg=loadConfig();var f=cfg.landingPage.faq[idx];if(!f)return;var q=prompt('Question:',f.q);if(!q)return;var a=prompt('Answer:',f.a)||'';f.q=q;f.a=a;saveConfig();SPM.renderLanding(document.getElementById('spmContent'))};
+SPM.deleteFAQ=function(idx){if(!confirm('Delete this FAQ?'))return;var cfg=loadConfig();cfg.landingPage.faq.splice(idx,1);saveConfig();SPM.renderLanding(document.getElementById('spmContent'))};
+// 10.ANALYTICS
+SPM.renderAnalytics=async function(el){el.innerHTML='<div style="padding:40px;text-align:center;opacity:.6">Loading analytics...</div>';var cfg=loadConfig();var client=window.supabaseClient;var s={totalRevenue:0,todayRevenue:0,monthRevenue:0,yearRevenue:0,totalMembers:0,activeMembers:0,expiredMembers:0,renewedMembers:0,pendingPayments:0};if(client){try{var r=await Promise.allSettled([client.from('user_memberships').select('id,status,started_at,expires_at,created_at').order('created_at',{ascending:false}).limit(500),client.from('membership_transactions').select('id,amount_inr,status,created_at').order('created_at',{ascending:false}).limit(500)]);var m=(r[0].status==='fulfilled'?r[0].value:{data:[]}).data||[];var t=(r[1].status==='fulfilled'?r[1].value:{data:[]}).data||[];var now=Date.now(),td=new Date();td.setHours(0,0,0,0);var ms=new Date(td.getFullYear(),td.getMonth(),1),ys=new Date(td.getFullYear(),0,1);s.totalMembers=m.length;s.activeMembers=m.filter(function(x){return x.status==='active'&&x.expires_at&&new Date(x.expires_at).getTime()>now}).length;s.expiredMembers=m.filter(function(x){return x.expires_at&&new Date(x.expires_at).getTime()<=now}).length;var c=t.filter(function(x){return x.status==='completed'});s.totalRevenue=c.reduce(function(a,x){return a+(Number(x.amount_inr)||0)},0);s.todayRevenue=c.filter(function(x){return new Date(x.created_at)>=td}).reduce(function(a,x){return a+(Number(x.amount_inr)||0)},0);s.monthRevenue=c.filter(function(x){return new Date(x.created_at)>=ms}).reduce(function(a,x){return a+(Number(x.amount_inr)||0)},0);s.yearRevenue=c.filter(function(x){return new Date(x.created_at)>=ys}).reduce(function(a,x){return a+(Number(x.amount_inr)||0)},0);s.pendingPayments=t.filter(function(x){return x.status==='pending'||x.status==='failed'}).length}catch(e){}}var pp=cfg.plans.length>0?cfg.plans[3].name:'Quarterly';var h='<div class="spm-section-header"><h3 class="spm-section-title">Analytics</h3></div><div class="spm-stats-grid">';[[ 'Total Revenue','Rs'+s.totalRevenue,'#10d98e','\uF0B2'],['Today Revenue','Rs'+s.todayRevenue,'#3d8ef8','\uF0C5'],['Monthly Revenue','Rs'+s.monthRevenue,'#8b5cf6','\uF0CB'],['Yearly Revenue','Rs'+s.yearRevenue,'#fbbf24','\uF0C6'],['Total Members',s.totalMembers,'#60a5fa','\uF0C1'],['Active Members',s.activeMembers,'#10d98e','\u2705'],['Expired',s.expiredMembers,'#ff4d6d','\u23F0'],['Renewed',s.renewedMembers,'#a855f7','\uF0FE'],['Pending',s.pendingPayments,'#f59e0b','\u23F3'],['Popular Plan',pp,'#fbbf24','\u2B50']].forEach(function(c){h+='<div class="spm-stat-card" style="border-left:3px solid '+c[2]+'"><div class="spm-stat-icon">'+c[3]+'</div><div class="spm-stat-val">'+c[1]+'</div><div class="spm-stat-label">'+c[0]+'</div></div>'});h+='</div>';el.innerHTML=h};
+// 11.MEMBERS
+SPM.renderMembers=async function(el){el.innerHTML='<div style="padding:40px;text-align:center;opacity:.6">Loading members...</div>';var client=window.supabaseClient;if(!client){el.innerHTML='<div class="spm-empty">Supabase not connected. Refresh the page.</div>';return}try{var mr=await client.from('user_memberships').select('id,user_id,plan_id,status,started_at,expires_at,created_at').order('created_at',{ascending:false}).limit(200);var pr=await client.from('membership_plans').select('id,slug,name,price_inr');var mems=mr.data||[],plans=pr.data||[],pb={};plans.forEach(function(p){pb[p.id]=p});var now=Date.now();var h='<div class="spm-section-header"><h3 class="spm-section-title">Members</h3><button class="spm-btn spm-btn-primary" onclick="SPM.grantManualPass()">+ Grant Manual Pass</button></div><div class="spm-search-bar"><input class="spm-input" placeholder="Search members..." onkeyup="SPM.filterMembers(this.value)"></div><div class="spm-table-wrap"><table class="spm-table" id="spmMemberTable"><thead><tr><th>User ID</th><th>Plan</th><th>Status</th><th>Started</th><th>Expires</th><th>Days Left</th><th>Actions</th></tr></thead><tbody>';mems.forEach(function(m){var p=pb[m.plan_id]||{},pn=p.name||'Unknown',dl=m.expires_at?Math.ceil((new Date(m.expires_at).getTime()-now)/86400000):0,ia=m.status==='active'&&dl>0,uid=(m.user_id||'').slice(0,8);h+='<tr data-uid="'+_esc(m.user_id||'')+'" data-plan="'+_esc(pn)+'"><td><span style="font-family:monospace;font-size:.72rem">'+_esc(uid)+'...</span></td><td>'+_esc(pn)+'</td><td>'+(ia?'<span class="spm-badge spm-badge-active">Active</span>':'<span class="spm-badge spm-badge-none">'+_esc(m.status||'\u2014')+'</span>')+'</td><td>'+(m.started_at?new Date(m.started_at).toLocaleDateString('en-IN'):'\u2014')+'</td><td>'+(m.expires_at?new Date(m.expires_at).toLocaleDateString('en-IN'):'\u2014')+'</td><td>'+(dl>0?'<span style="color:#10d98e;font-weight:700">'+dl+'d</span>':'<span style="color:#ff4d6d">0</span>')+'</td><td><button class="spm-btn-sm" onclick="SPM.extendPass(\''+_esc(m.id)+'\')">Extend</button><button class="spm-btn-sm" onclick="SPM.renewPass(\''+_esc(m.id)+'\')">Renew</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.cancelPass(\''+_esc(m.id)+'\')">Cancel</button></td></tr>'});h+='</tbody></table></div><div style="margin-top:16px"><button class="spm-btn" onclick="SPM.downloadMemberList()">Download CSV</button></div>';el.innerHTML=h}catch(e){el.innerHTML='<div class="spm-empty">Error: '+_esc(e.message)+'</div>'}};
+SPM.filterMembers=function(q){var r=document.querySelectorAll('#spmMemberTable tbody tr');q=q.toLowerCase();r.forEach(function(r){var u=(r.dataset.uid||'').toLowerCase(),p=(r.dataset.plan||'').toLowerCase();r.style.display=(u.includes(q)||p.includes(q))?'':'none'})};
+SPM.extendPass=async function(id){var c=window.supabaseClient;if(!c)return;try{var r=await c.from('user_memberships').select('expires_at').eq('id',id).single();if(r.error)throw r.error;var b=r.data.expires_at?new Date(r.data.expires_at):new Date();if(b<new Date())b=new Date();var ne=new Date(b.getTime()+30*86400000).toISOString();await c.from('user_memberships').update({status:'active',expires_at:ne}).eq('id',id);if(typeof showToast==='function')showToast('Pass extended 30 days','success');SPM.renderMembers(document.getElementById('spmContent'))}catch(e){if(typeof showToast==='function')showToast('Error: '+e.message,'error')}};
+SPM.renewPass=async function(id){var c=window.supabaseClient;if(!c)return;try{var ne=new Date(Date.now()+30*86400000).toISOString();await c.from('user_memberships').update({status:'active',expires_at:ne,started_at:new Date().toISOString()}).eq('id',id);if(typeof showToast==='function')showToast('Pass renewed','success');SPM.renderMembers(document.getElementById('spmContent'))}catch(e){if(typeof showToast==='function')showToast('Error: '+e.message,'error')}};
+SPM.cancelPass=async function(id){if(!confirm('Cancel this pass?'))return;var c=window.supabaseClient;if(!c)return;try{await c.from('user_memberships').update({status:'cancelled',expires_at:new Date().toISOString()}).eq('id',id);if(typeof showToast==='function')showToast('Pass cancelled','info');SPM.renderMembers(document.getElementById('spmContent'))}catch(e){if(typeof showToast==='function')showToast('Error: '+e.message,'error')}};
+SPM.grantManualPass=async function(){var uid=prompt('Enter user UUID:');if(!uid)return;var c=window.supabaseClient;if(!c)return;try{var d=parseInt(prompt('Duration (days):','30'))||30;var n=new Date(),e=new Date(n.getTime()+d*86400000);await c.from('user_memberships').insert({user_id:uid,plan_id:null,status:'active',started_at:n.toISOString(),expires_at:e.toISOString()});if(typeof showToast==='function')showToast('Manual pass granted','success');SPM.renderMembers(document.getElementById('spmContent'))}catch(e){if(typeof showToast==='function')showToast('Error: '+e.message,'error')}};
+SPM.downloadMemberList=function(){var r=document.querySelectorAll('#spmMemberTable tbody tr');var csv='User ID,Plan,Status,Started,Expires,Days Left\n';r.forEach(function(r){var c=r.querySelectorAll('td'),l=[];for(var i=0;i<c.length-1;i++)l.push('"'+(c[i].textContent||'').trim().replace(/"/g,'""')+'"');csv+=l.join(',')+'\n'});var b=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='studyria-pass-members.csv';a.click()};
+// 12.NOTIFICATIONS
+SPM.renderNotifications=function(el){var cfg=loadConfig();var n=cfg.notifications;var h='<div class="spm-section-header"><h3 class="spm-section-title">Notifications</h3></div><div class="spm-form-card">';h+=SPM._field('Welcome Message','textarea','nt-welcome',n.welcome,'Welcome');h+=SPM._field('Purchase Success','textarea','nt-purchase',n.purchaseSuccess,'Success');h+=SPM._field('Renew Reminder','text','nt-renew',n.renewReminder,'Use {days}');h+=SPM._field('Expiry Reminder','textarea','nt-expiry',n.expiryReminder,'Expiry');h+=SPM._field('Offer Reminder','textarea','nt-offer',n.offerReminder,'Offer');h+=SPM._toggle('Push Enabled','nt-push',n.pushEnabled);h+=SPM._toggle('Email Enabled','nt-email',n.emailEnabled);h+=SPM._toggle('WhatsApp Enabled','nt-wa',n.whatsappEnabled);h+=SPM._field('Email Template','textarea','nt-email-tpl',n.emailTemplate,'Email body');h+=SPM._field('WhatsApp Template','textarea','nt-wa-tpl',n.whatsappTemplate,'WhatsApp message');h+='<button class="spm-btn spm-btn-primary" onclick="SPM.saveNotifications()">Save</button></div>';el.innerHTML=h};
+SPM.saveNotifications=function(){var cfg=loadConfig();var n=cfg.notifications;n.welcome=SPM._val('nt-welcome');n.purchaseSuccess=SPM._val('nt-purchase');n.renewReminder=SPM._val('nt-renew');n.expiryReminder=SPM._val('nt-expiry');n.offerReminder=SPM._val('nt-offer');n.pushEnabled=SPM._chk('nt-push');n.emailEnabled=SPM._chk('nt-email');n.whatsappEnabled=SPM._chk('nt-wa');n.emailTemplate=SPM._val('nt-email-tpl');n.whatsappTemplate=SPM._val('nt-wa-tpl');saveConfig();if(typeof showToast==='function')showToast('Notifications saved','success')};
+// 13.DESIGN
+SPM.renderDesign=function(el){var cfg=loadConfig();var d=cfg.design;var h='<div class="spm-section-header"><h3 class="spm-section-title">Design</h3></div><div class="spm-form-card">';h+=SPM._field('Primary Color','text','ds-primary',d.primaryColor,'#fbbf24');h+=SPM._field('Secondary Color','text','ds-secondary',d.secondaryColor,'#f59e0b');h+=SPM._field('Gradient','text','ds-gradient',d.gradient,'linear-gradient(...)');h+=SPM._field('Border Radius','text','ds-radius',d.borderRadius,'16px');h+=SPM._field('Shadow','text','ds-shadow',d.shadow,'0 4px...');h+=SPM._toggle('Glass Effect','ds-glass',d.glassEffect);h+=SPM._toggle('Dark Mode','ds-dark',d.darkMode);h+=SPM._toggle('Light Mode','ds-light',d.lightMode);h+='<div class="spm-form-group"><label class="spm-label">Card Style</label><select class="spm-input" id="ds-cardstyle"><option value="glassmorphism"'+(d.cardStyle==='glassmorphism'?' selected':'')+'>Glassmorphism</option><option value="flat"'+(d.cardStyle==='flat'?' selected':'')+'>Flat</option><option value="bordered"'+(d.cardStyle==='bordered'?' selected':'')+'>Bordered</option></select></div><div class="spm-form-group"><label class="spm-label">Button Style</label><select class="spm-input" id="ds-btnstyle"><option value="pill"'+(d.buttonStyle==='pill'?' selected':'')+'>Pill</option><option value="rounded"'+(d.buttonStyle==='rounded'?' selected':'')+'>Rounded</option><option value="square"'+(d.buttonStyle==='square'?' selected':'')+'>Square</option></select></div><div class="spm-form-group"><label class="spm-label">Animation</label><select class="spm-input" id="ds-anim"><option value="smooth"'+(d.animation==='smooth'?' selected':'')+'>Smooth</option><option value="bounce"'+(d.animation==='bounce'?' selected':'')+'>Bounce</option><option value="fade"'+(d.animation==='fade'?' selected':'')+'>Fade</option><option value="none"'+(d.animation==='none'?' selected':'')+'>None</option></select></div><button class="spm-btn spm-btn-primary" onclick="SPM.saveDesign()">Save</button></div>';el.innerHTML=h};
+SPM.saveDesign=function(){var cfg=loadConfig();var d=cfg.design;d.primaryColor=SPM._val('ds-primary');d.secondaryColor=SPM._val('ds-secondary');d.gradient=SPM._val('ds-gradient');d.borderRadius=SPM._val('ds-radius');d.shadow=SPM._val('ds-shadow');d.glassEffect=SPM._chk('ds-glass');d.darkMode=SPM._chk('ds-dark');d.lightMode=SPM._chk('ds-light');d.cardStyle=document.getElementById('ds-cardstyle').value;d.buttonStyle=document.getElementById('ds-btnstyle').value;d.animation=document.getElementById('ds-anim').value;saveConfig();if(typeof showToast==='function')showToast('Design saved','success')};
+// 14.AI
+SPM.renderAI=function(el){var cfg=loadConfig();var h='<div class="spm-section-header"><h3 class="spm-section-title">AI Features</h3><button class="spm-btn spm-btn-primary" onclick="SPM.addAIFeature()">+ Add</button></div><div class="spm-grid spm-grid-2">';cfg.aiFeatures.forEach(function(a){h+='<div class="spm-card'+(a.enabled?'':' spm-card-inactive')+'"><div class="spm-card-top"><span class="spm-card-icon">'+(a.icon||'\uF0AD')+'</span><div class="spm-card-info"><div class="spm-card-name">'+_esc(a.name)+'</div><div class="spm-card-desc">'+(a.passRequired?'Pass Required':'Free')+' - '+(a.enabled?'Enabled':'Disabled')+'</div></div></div><div class="spm-card-actions"><button class="spm-btn-sm" onclick="SPM.toggleAIFeature(\''+a.id+'\')">'+(a.enabled?'Disable':'Enable')+'</button><button class="spm-btn-sm" onclick="SPM.toggleAIRequired(\''+a.id+'\')">'+(a.passRequired?'Make Free':'Require Pass')+'</button><button class="spm-btn-sm spm-btn-danger" onclick="SPM.deleteAIFeature(\''+a.id+'\')">Del</button></div></div>'});h+='</div>';el.innerHTML=h};
+SPM.addAIFeature=function(){var cfg=loadConfig();var n=prompt('AI Feature name:');if(!n)return;var ic=prompt('Icon (emoji):','\uF0AD')||'\uF0AD';cfg.aiFeatures.push({id:_uid(),name:n,icon:ic,passRequired:true,enabled:true});saveConfig();SPM.renderAI(document.getElementById('spmContent'))};
+SPM.toggleAIFeature=function(id){var cfg=loadConfig();var a=cfg.aiFeatures.find(function(x){return x.id===id});if(a){a.enabled=!a.enabled;saveConfig();SPM.renderAI(document.getElementById('spmContent'))}};
+SPM.toggleAIRequired=function(id){var cfg=loadConfig();var a=cfg.aiFeatures.find(function(x){return x.id===id});if(a){a.passRequired=!a.passRequired;saveConfig();SPM.renderAI(document.getElementById('spmContent'))}};
+SPM.deleteAIFeature=function(id){if(!confirm('Delete?'))return;var cfg=loadConfig();cfg.aiFeatures=cfg.aiFeatures.filter(function(a){return a.id!==id});saveConfig();SPM.renderAI(document.getElementById('spmContent'))};
+// EXPORT/IMPORT/RESET
+SPM.exportConfig=function(){var cfg=loadConfig();var b=new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='studyria-pass-config.json';a.click();if(typeof showToast==='function')showToast('Config exported','success')};
+SPM.importConfig=function(){var i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{_config=JSON.parse(ev.target.result);saveConfig();if(typeof showToast==='function')showToast('Config imported & saved to Supabase','success');window.renderPassManagement(document.getElementById('adminMain'))}catch(err){if(typeof showToast==='function')showToast('Import error','error')}};r.readAsText(f)};i.click()};
+SPM.resetConfig=function(){if(!confirm('Reset all settings to defaults? This will also reset Supabase.'))return;_config=JSON.parse(JSON.stringify(DEFAULT_CONFIG));saveConfig();if(typeof showToast==='function')showToast('Reset to defaults','info');window.renderPassManagement(document.getElementById('adminMain'))};
+// CSS
+var css=document.createElement('style');
+css.textContent='.spm-wrap{padding:0 0 32px;font-family:var(--font-ui,system-ui,sans-serif)}.spm-header{display:flex;align-items:center;gap:16px;padding:8px 0 20px}.spm-header-icon{font-size:2.2rem}.spm-header-title{font-size:1.5rem;font-weight:800;color:var(--text,#e4e8f0);font-family:var(--font-display,sans-serif)}.spm-header-sub{font-size:.78rem;color:var(--text2,rgba(255,255,255,0.5));margin-top:2px}.spm-header-actions{margin-left:auto;display:flex;gap:8px}.spm-subnav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;padding:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px}.spm-subtab{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:none;background:transparent;color:var(--text2,rgba(255,255,255,0.5));font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}.spm-subtab:hover{background:rgba(255,255,255,0.06);color:var(--text,#e4e8f0)}.spm-subtab.active{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(245,158,11,.1));color:#fbbf24;border:1px solid rgba(251,191,36,.2)}.spm-subtab-icon{font-size:.9rem}.spm-content{min-height:200px}.spm-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.spm-section-title{font-size:1.1rem;font-weight:800;color:var(--text,#e4e8f0);margin:0;font-family:var(--font-display,sans-serif)}.spm-btn{padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:var(--text,#e4e8f0);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}.spm-btn:hover{background:rgba(255,255,255,0.1)}.spm-btn-primary{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;border:none;font-weight:700}.spm-btn-primary:hover{box-shadow:0 2px 12px rgba(251,191,36,0.3)}.spm-btn-danger{color:#ff4d6d;border-color:rgba(255,77,109,0.2);background:rgba(255,77,109,0.06)}.spm-btn-danger:hover{background:rgba(255,77,109,0.12)}.spm-btn-sm{padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:var(--text2,rgba(255,255,255,0.6));font-size:.7rem;cursor:pointer;transition:all .2s;font-family:inherit;margin:2px}.spm-btn-sm:hover{background:rgba(255,255,255,0.1)}.spm-grid{display:grid;gap:14px}.spm-grid-3{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}.spm-grid-2{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}.spm-grid-4{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}.spm-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;transition:all .2s}.spm-card:hover{border-color:rgba(255,255,255,0.15)}.spm-card-inactive{opacity:.5}.spm-card-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.spm-card-icon{font-size:1.5rem;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,0.06);flex-shrink:0}.spm-card-info{flex:1;min-width:0}.spm-card-name{font-size:.88rem;font-weight:700;color:var(--text,#e4e8f0);margin-bottom:2px}.spm-card-desc{font-size:.72rem;color:var(--text2,rgba(255,255,255,0.45))}.spm-card-badge{font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:6px}.spm-badge-gold{background:rgba(251,191,36,0.15);color:#fbbf24}.spm-badge-green{background:rgba(16,217,142,0.15);color:#10d98e}.spm-badge-purple{background:rgba(139,92,246,0.15);color:#a855f7}.spm-badge-blue{background:rgba(61,142,248,0.15);color:#60a5fa}.spm-badge-red{background:rgba(255,77,109,0.15);color:#ff4d6d}.spm-badge-rainbow{background:linear-gradient(135deg,rgba(255,77,109,0.15),rgba(251,191,36,0.15),rgba(16,217,142,0.15),rgba(61,142,248,0.15));color:#fbbf24}.spm-savings-preview{transition:all .2s}.spm-live-preview{transition:all .2s}.spm-badge-red{background:rgba(255,77,109,0.15);color:#ff4d6d}.spm-badge-rainbow{background:linear-gradient(135deg,rgba(255,77,109,0.15),rgba(251,191,36,0.15),rgba(16,217,142,0.15),rgba(61,142,248,0.15));color:#fbbf24}.spm-card-prices{display:flex;align-items:center;gap:8px;margin-bottom:8px}.spm-price-strike{text-decoration:line-through;font-size:.78rem;color:rgba(255,255,255,0.35)}.spm-price-now{font-size:1.3rem;font-weight:900;color:#fbbf24}.spm-discount{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(16,217,142,0.12);color:#10d98e}.spm-card-meta{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;font-size:.72rem;color:rgba(255,255,255,0.45)}.spm-card-actions{display:flex;flex-wrap:wrap;gap:4px}.spm-form-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px}.spm-form-group{margin-bottom:14px}.spm-form-row{display:flex;gap:12px}.spm-form-row>.spm-form-group{flex:1}.spm-label{display:block;font-size:.72rem;font-weight:600;color:var(--text2,rgba(255,255,255,0.5));margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}.spm-input{width:100%;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:var(--text,#e4e8f0);font-size:.82rem;font-family:inherit;box-sizing:border-box}.spm-input:focus{outline:none;border-color:rgba(251,191,36,0.4)}textarea.spm-input{resize:vertical;min-height:60px}.spm-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.spm-switch{position:relative;width:44px;height:24px}.spm-switch input{opacity:0;width:0;height:0}.spm-slider{position:absolute;inset:0;border-radius:12px;background:rgba(255,255,255,0.12);cursor:pointer;transition:.3s}.spm-slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:rgba(255,255,255,0.6);transition:.3s}.spm-switch input:checked+.spm-slider{background:linear-gradient(135deg,#fbbf24,#f59e0b)}.spm-switch input:checked+.spm-slider:before{transform:translateX(20px);background:#000}.spm-table-wrap{overflow-x:auto;border-radius:14px;border:1px solid rgba(255,255,255,0.08)}.spm-table{width:100%;border-collapse:collapse;font-size:.78rem}.spm-table th{padding:11px 14px;text-align:left;font-size:.65rem;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.06)}.spm-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.75);vertical-align:middle}.spm-table tr:last-child td{border-bottom:none}.spm-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:.62rem;font-weight:700}.spm-badge-active{background:rgba(16,217,142,0.12);color:#10d98e;border:1px solid rgba(16,217,142,0.2)}.spm-badge-none{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1)}.spm-coupon-code{font-family:monospace;font-weight:700;color:#fbbf24;background:rgba(251,191,36,0.08);padding:2px 8px;border-radius:6px}.spm-feature-list{display:flex;flex-direction:column;gap:8px}.spm-feature-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px}.spm-feature-item.inactive{opacity:.5}.spm-feature-info{display:flex;align-items:center;gap:12px}.spm-feature-icon{font-size:1.3rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,255,255,0.06)}.spm-badge-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;text-align:center}.spm-badge-item.inactive{opacity:.5}.spm-badge-emoji{font-size:2rem;margin-bottom:8px}.spm-badge-label{font-size:.8rem;font-weight:700;color:var(--text,#e4e8f0);margin-bottom:8px}.spm-badge-actions{display:flex;justify-content:center;gap:4px}.spm-faq-list{display:flex;flex-direction:column;gap:10px}.spm-faq-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px}.spm-faq-q{font-size:.85rem;font-weight:700;color:var(--text,#e4e8f0);margin-bottom:6px}.spm-faq-a{font-size:.78rem;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:8px}.spm-faq-actions{display:flex;gap:4px}.spm-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}.spm-stat-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px}.spm-stat-icon{font-size:1.3rem;margin-bottom:8px}.spm-stat-val{font-size:1.5rem;font-weight:900;color:#fbbf24}.spm-stat-label{font-size:.68rem;color:rgba(255,255,255,0.45);margin-top:4px}.spm-search-bar{margin-bottom:16px}.spm-empty{text-align:center;padding:48px 20px;color:rgba(255,255,255,0.35);font-size:.85rem}.spm-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}.spm-modal{background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.5)}.spm-modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid rgba(255,255,255,0.08)}.spm-modal-header h3{font-size:1.1rem;font-weight:800;color:#e4e8f0;margin:0}.spm-modal-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.2rem;cursor:pointer}.spm-modal-body{padding:20px}.spm-modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08)}body.light .spm-modal{background:#fff;border-color:rgba(0,0,0,0.08)}body.light .spm-modal-header h3{color:#1a1a2e}body.light .spm-input{background:rgba(0,0,0,0.04);color:#1a1a2e;border-color:rgba(0,0,0,0.1)}@media(max-width:768px){.spm-form-row{flex-direction:column;gap:0}.spm-header{flex-wrap:wrap}.spm-header-actions{width:100%;justify-content:flex-end}}';
+document.head.appendChild(css);
+})();
