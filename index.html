@@ -7746,6 +7746,37 @@ crossorigin="anonymous"></script>
   }
   @media (max-width: 520px) {
     .sh-hero-title, .hr-hero-title { font-size: clamp(32px, 8vw, 48px) !important; }
+
+    /* ── Exact 4-line title wrap to match approved reference design ──
+       "Turn your / Assam govt job / dream into / reality" — hardcoded
+       via block-level segments so it never depends on font-metric
+       reflow guesswork. Desktop (>520px) is untouched: segments stay
+       inline there, reproducing the original 2-line layout. ── */
+    .hr-title-seg { display: block !important; }
+    .hr-title-br { display: none !important; }
+
+    /* ── Stack CTA buttons full-width, matching reference proportions ── */
+    .hr-hero-ctas {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 14px !important;
+    }
+    .hr-btn-primary, .hr-btn-secondary, #heroCta1, #heroCta2 {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+
+    /* ── Trust-stats row: force "2 + 1 + 1" grouping like reference ──
+       (Instant PDF Access + Secure Payment share row 1; the longer
+       Assam-Focused Content and 4.9/5 lines each get their own row) ── */
+    .hr-hero-stats {
+      row-gap: 10px !important;
+      column-gap: 24px !important;
+    }
+    .hr-hero-stat:nth-child(3), .hr-hero-stat:nth-child(4) {
+      flex-basis: 100% !important;
+      justify-content: center !important;
+    }
   }
 
   /* ── Narrow-phone header fit: shrink logo + action buttons so ──
@@ -9593,9 +9624,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
       </div>
 
       <!-- Title (matches homepage.html — centered, with italic red 'reality') -->
-      <h1 class="hr-hero-title" id="heroTitle">
-        Turn your Assam govt job<br>dream into <em>reality</em>
-      </h1>
+      <h1 class="hr-hero-title" id="heroTitle"><span class="hr-title-seg">Turn your</span> <span class="hr-title-seg">Assam govt job</span><br class="hr-title-br"><span class="hr-title-seg">dream into</span> <span class="hr-title-seg hr-title-em"><em>reality</em></span></h1>
 
       <!-- Subtitle -->
       <p class="hr-hero-sub" id="heroSubtitle">
@@ -36524,7 +36553,7 @@ function _hpForceHero() {
   if(bt) bt.textContent = "Assam's #1 Study Platform";
   const t1 = document.getElementById('heroTitle');
   if(t1) {
-    t1.innerHTML = 'Turn your Assam govt job<br>dream into <em>reality</em>';
+    t1.innerHTML = '<span class="hr-title-seg">Turn your</span> <span class="hr-title-seg">Assam govt job</span><br class="hr-title-br"><span class="hr-title-seg">dream into</span> <span class="hr-title-seg hr-title-em"><em>reality</em></span>';
     t1.style.color = '#1c1b1a';
     t1.style.fontFamily = "Georgia, 'Iowan Old Style', serif";
     t1.style.fontSize = 'clamp(38px,6.4vw,72px)';
