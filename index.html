@@ -7640,13 +7640,20 @@ crossorigin="anonymous"></script>
 
 
   /* ── Premium Social Media Bar (above CTA buttons) ──────────── */
+  /* width:100% forces the row's own box to size from the parent, not
+     from its own content — without this, a flex-wrap child inside an
+     align-items:center parent is sized by min-content (= widest single
+     item), which forces every icon onto its own line (vertical stack). */
   .hr-hero-social {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto 28px !important;
+    gap: 14px;
   }
   .hr-hero-social-label {
     width: 100%;
@@ -7658,26 +7665,20 @@ crossorigin="anonymous"></script>
     letter-spacing: .14em;
     text-transform: uppercase;
     opacity: .65;
-    margin-bottom: 2px;
-  }
-  /* Premium cream theme enhancement */
-  .hr-hero-social-item {
-    background: rgba(255,255,255,0.92) !important;
-    border-color: rgba(201,154,60,0.15) !important;
-  }
-  .hr-hero-social-item:hover {
-    background: #ffffff !important;
+    margin-bottom: 8px;
+    white-space: nowrap;
   }
   .hr-hero-social-item {
-    display: inline-flex;
+    display: inline-flex !important;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     width: 48px;
     height: 48px;
     border-radius: 14px;
-    background: rgba(255,255,255,0.6);
-    border: 1px solid rgba(28,27,26,0.08);
-    color: var(--hp-red);
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(201,154,60,0.15);
+    color: #1c1b1a;
     box-shadow: 0 2px 12px rgba(28,27,26,0.06);
     transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease, background .3s ease, border-color .3s ease, color .3s ease;
     -webkit-tap-highlight-color: transparent;
@@ -7694,9 +7695,9 @@ crossorigin="anonymous"></script>
   }
   .hr-hero-social-item:hover {
     transform: translateY(-4px) scale(1.08);
-    box-shadow: 0 8px 24px rgba(166,25,46,0.18);
-    border-color: rgba(166,25,46,0.25);
-    background: rgba(255,255,255,0.95);
+    box-shadow: 0 8px 24px rgba(28,27,26,0.18);
+    border-color: rgba(28,27,26,0.2);
+    background: #ffffff;
   }
   .hr-hero-social-item:hover svg {
     transform: scale(1.1);
@@ -7704,21 +7705,39 @@ crossorigin="anonymous"></script>
   .hr-hero-social-item:active {
     transform: translateY(-2px) scale(1.04);
   }
-  /* Brand colors on hover */
-  .hr-hero-social-item[data-brand="instagram"]:hover { color: #C13584; box-shadow: 0 8px 24px rgba(193,53,132,0.2); }
-  .hr-hero-social-item[data-brand="youtube"]:hover { color: #FF0000; box-shadow: 0 8px 24px rgba(255,0,0,0.15); }
-  .hr-hero-social-item[data-brand="pinterest"]:hover { color: #E60023; box-shadow: 0 8px 24px rgba(230,0,35,0.18); }
-  .hr-hero-social-item[data-brand="whatsapp"]:hover { color: #25D366; box-shadow: 0 8px 24px rgba(37,211,102,0.18); }
-  .hr-hero-social-item[data-brand="telegram"]:hover { color: #229ED9; box-shadow: 0 8px 24px rgba(34,158,217,0.18); }
-  /* Instagram gradient icon */
+  /* Instagram keeps its real, official multicolor gradient icon */
   .hr-hero-social-item[data-brand="instagram"] svg {
-    fill: url(#hrIgGrad);
+    fill: url(#hrIgGrad) !important;
   }
-  /* Responsive: slightly smaller on mobile, maintain 44px min */
+  .hr-hero-social-item[data-brand="instagram"]:hover {
+    box-shadow: 0 8px 24px rgba(193,53,132,0.2);
+    border-color: rgba(193,53,132,0.25);
+  }
+  /* YouTube, Pinterest, WhatsApp, Telegram: official icon shapes, solid black */
+  .hr-hero-social-item[data-brand="youtube"],
+  .hr-hero-social-item[data-brand="pinterest"],
+  .hr-hero-social-item[data-brand="whatsapp"],
+  .hr-hero-social-item[data-brand="telegram"] {
+    color: #1c1b1a !important;
+  }
+  .hr-hero-social-item[data-brand="youtube"]:hover,
+  .hr-hero-social-item[data-brand="pinterest"]:hover,
+  .hr-hero-social-item[data-brand="whatsapp"]:hover,
+  .hr-hero-social-item[data-brand="telegram"]:hover {
+    color: #000 !important;
+    box-shadow: 0 8px 24px rgba(28,27,26,0.22);
+    border-color: rgba(28,27,26,0.28);
+  }
+  /* Responsive: shrink to fit any phone width in one row, never wrap */
   @media (max-width: 600px) {
-    .hr-hero-social { gap: 14px; margin-bottom: 22px; }
+    .hr-hero-social { gap: 10px; margin-bottom: 22px; max-width: 340px !important; }
     .hr-hero-social-item { width: 44px; height: 44px; border-radius: 12px; }
     .hr-hero-social-item svg { width: 20px; height: 20px; }
+  }
+  @media (max-width: 360px) {
+    .hr-hero-social { gap: 8px; max-width: 300px !important; }
+    .hr-hero-social-item { width: 40px; height: 40px; border-radius: 11px; }
+    .hr-hero-social-item svg { width: 18px; height: 18px; }
   }
   /* Respect reduced motion */
   body.cc-reduced-motion .hr-hero-social-item,
