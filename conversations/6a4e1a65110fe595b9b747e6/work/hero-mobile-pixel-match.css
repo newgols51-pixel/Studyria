@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════════════════
+   STUDYRIA — HERO MOBILE PIXEL MATCH
+   File: hero-mobile-pixel-match.css
+
+   Purpose: bring the mobile hero (≤480px) into close visual alignment
+   with the supplied reference screenshot. CSS ONLY — no HTML structure
+   changes, no JS, no routing/auth/business logic touched. All existing
+   .hr-hero-* elements and IDs are untouched; only spacing/typography
+   is adjusted, scoped strictly to the ≤480px breakpoint so tablet and
+   desktop layouts are unaffected.
+
+   Measurements were derived by pixel-analyzing the reference screenshot
+   (461×1024) and converting to an assumed ~420px CSS viewport.
+
+   Safety: zero Supabase, Razorpay, Auth, DB, route, or JS changes.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+
+  /* ── Hero top padding: reference shows badge sitting much closer
+     to the nav than the current 96px top padding allows ── */
+  .hr-hero {
+    padding: 44px 24px 0 !important;
+  }
+
+  /* ── Eyebrow / badge: unchanged size, just tighten space below it ── */
+  .hr-hero-eyebrow {
+    margin-bottom: 38px !important;
+  }
+
+  /* ── Title: reference has noticeably looser line-height (~1.28)
+     vs. current 1.06, and a narrower wrap width so "Turn your Assam
+     govt job" naturally breaks into "Turn your" / "Assam govt job"
+     instead of fitting more words per line ── */
+  .hr-hero-title {
+    line-height: 1.28 !important;
+    max-width: 72vw !important;
+    margin: 0 auto 28px !important;
+  }
+
+  /* ── Subtitle: same narrower wrap width as title, with matching
+     line pitch and larger gap before the CTA buttons ── */
+  .hr-hero-sub {
+    max-width: 72vw !important;
+    line-height: 1.5 !important;
+    margin: 0 auto 44px !important;
+  }
+
+  /* ── CTA buttons: reference stacks them vertically at equal width,
+     not side-by-side auto-width ── */
+  .hr-hero-ctas {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 58px !important;
+  }
+  .hr-btn-primary,
+  .hr-btn-secondary,
+  #heroCta1,
+  #heroCta2 {
+    width: 59vw !important;
+    max-width: 280px !important;
+    min-width: 210px !important;
+    justify-content: center !important;
+    padding: 16px 24px !important;
+  }
+
+  /* ── Trust/feature stats row: slightly bigger row-gap so it wraps
+     with the same rhythm as the reference (2 items / 1 / 1) ── */
+  .hr-hero-stats {
+    row-gap: 26px !important;
+    column-gap: 34px !important;
+    margin-bottom: 40px !important;
+  }
+}
