@@ -667,7 +667,7 @@ body.cc-no-anim * { animation: none !important; transition: none !important; }
   html, body {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
     margin: 0;
     padding: 0;
   }
@@ -695,7 +695,7 @@ body {
   font-family: var(--font-body);
   background: var(--bg); color: var(--text);
   transition: background .35s, color .35s;
-  overflow-x: hidden;
+  overflow-x: clip;
   /* PERF: background-attachment:fixed removed — causes layer repaint on every scroll pixel on mobile */
   background-image: radial-gradient(ellipse at 20% 50%, rgba(61,142,248,0.05) 0%, transparent 60%),
                     radial-gradient(ellipse at 80% 10%, rgba(0,200,232,0.04) 0%, transparent 55%);
@@ -6084,7 +6084,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   [x-cloak] { display: none !important; }
 
   html, body {
-    width: 100%; max-width: 100%; overflow-x: hidden;
+    width: 100%; max-width: 100%; overflow-x: clip;
     margin: 0; padding: 0;
     background: #080c14; color: #eef2ff;
   }
@@ -7154,7 +7154,7 @@ crossorigin="anonymous"></script>
   .icon-btn:hover { background: rgba(28,27,26,0.04) !important; }
 
   /* Sign In / Get Pass buttons */
-  #navLoginBtn, .btn-primary.btn-sm {
+  .btn-primary.btn-sm {
     background: var(--hp-red) !important;
     border-color: var(--hp-red) !important;
     color: var(--hp-paper) !important;
@@ -7166,7 +7166,7 @@ crossorigin="anonymous"></script>
     text-transform: none !important;
     letter-spacing: normal !important;
   }
-  #navLoginBtn:hover, .btn-primary.btn-sm:hover {
+  .btn-primary.btn-sm:hover {
     background: var(--hp-red-deep) !important;
     border-color: var(--hp-red-deep) !important;
   }
