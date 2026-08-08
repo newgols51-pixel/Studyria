@@ -31,11 +31,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v41'; // v40: CRITICAL FIX — v39 had a syntax error (unterminated comment) that broke SW parsing, preventing ALL updates from installing on existing devices since it landed. Also ships: header compact-size fix verification + theme-aware message system.
+const CACHE_VERSION = 'v42'; // v40: CRITICAL FIX — v39 had a syntax error (unterminated comment) that broke SW parsing, preventing ALL updates from installing on existing devices since it landed. Also ships: header compact-size fix verification + theme-aware message system.
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.08-pwa-v3.7';
+const SW_BUILD      = '2026.08.08-footer-cream-maroon-gold';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🔧 Header size fix: compact nav bar, smaller buttons & logo. Auto-activates without manual refresh.';
