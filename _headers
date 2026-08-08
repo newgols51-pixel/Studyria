@@ -5,6 +5,11 @@
 # is picked up automatically on the next deploy — no other setup needed.
 # ══════════════════════════════════════════════════════════════════
 
+/sw.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, no-store, must-revalidate
+  Service-Worker-Allowed: /
+
 /*
   # ── Safe, zero-risk hardening (enforced) ──────────────────────────
   X-Content-Type-Options: nosniff
