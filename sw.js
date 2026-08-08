@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v42'; // v40: CRITICAL FIX — v39 had a syntax error (unterminated comment) that broke SW parsing, preventing ALL updates from installing on existing devices since it landed. Also ships: header compact-size fix verification + theme-aware message system.
+const CACHE_VERSION = 'v43'; // v43: Fix Premium Library PDF handoff — _smciPdfStore persistent store + pdfjsLib lazy loader
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
