@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v39'; (Theme-aware dynamic message system: centralized --theme-* tokens, fixed toast readability (cream/maroon/gold), themed network bar, offline/online banners, update/restart dialogs, alert classes. SW v39.)
+const CACHE_VERSION = 'v40'; // v40: CRITICAL FIX — v39 had a syntax error (unterminated comment) that broke SW parsing, preventing ALL updates from installing on existing devices since it landed. Also ships: header compact-size fix verification + theme-aware message system.
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
