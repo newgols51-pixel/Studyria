@@ -31,11 +31,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v35';
+const CACHE_VERSION = 'v36';
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.04-pwa-v3.3';
+const SW_BUILD      = '2026.08.08-pwa-v3.4';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🚀 PWA V3.2 — Intelligent PWA Platform: auto release notes, download manager, notification V2.0, offline engine, admin control center, route prefetch, secure cache.';
@@ -96,7 +96,7 @@ self.addEventListener('install', event => {
           )
         )
       )
-      .then(() => console.log('[SW] v32 installed ✅'))
+      .then(() => console.log('[SW] v36 installed ✅'))
   );
   // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
 });
