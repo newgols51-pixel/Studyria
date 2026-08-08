@@ -2713,8 +2713,10 @@ textarea.form-input { resize: vertical; }
 
 /* ── ALERT ───────────────────────────────────────────────────── */
 .alert { padding: 14px 18px; border-radius: var(--radius-sm); font-size: .875rem; border: 1px solid; display: flex; align-items: center; gap: 10px; }
-.alert-info { background: rgba(61,142,248,.1); border-color: rgba(61,142,248,.3); color: var(--accent); }
-.alert-success { background: rgba(34,197,94,.1); border-color: rgba(34,197,94,.3); color: var(--success); }
+.alert-info { background: var(--theme-info-bg); border-color: var(--theme-info-border); color: var(--theme-info); }
+.alert-success { background: var(--theme-success-bg); border-color: var(--theme-success-border); color: var(--theme-success); }
+.alert-error { background: var(--theme-error-bg); border-color: var(--theme-error-border); color: var(--theme-error); }
+.alert-warning { background: var(--theme-warning-bg); border-color: var(--theme-warning-border); color: var(--theme-warning); }
 
 /* ── UPLOAD ZONE ─────────────────────────────────────────────── */
 .upload-zone { border: 2px dashed rgba(61,142,248,0.25); border-radius: var(--radius); padding: 52px 24px; text-align: center; cursor: pointer; transition: all .25s; background: rgba(61,142,248,0.02); }
@@ -2725,19 +2727,55 @@ textarea.form-input { resize: vertical; }
 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; animation: pulse 2s infinite; box-shadow: 0 0 6px var(--success); }
 @keyframes pulse { 0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(16,217,142,.5); } 50% { opacity:.85; box-shadow: 0 0 0 6px rgba(16,217,142,0); } }
 
-/* ── TOAST ───────────────────────────────────────────────────── */
-.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 300; display: flex; flex-direction: column; gap: 10px; }
+/* ── TOAST — theme-aware, follows --theme-* tokens ─────────────
+   Works for every message type (success/error/warning/info) and
+   automatically matches whichever theme is active (see the
+   centralized theme tokens defined earlier in this file). ────── */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 300;
+  display: flex; flex-direction: column; gap: 10px;
+  max-width: min(92vw, 340px);
+}
 .toast {
-  padding: 14px 20px; border-radius: var(--radius-sm);
-  background: rgba(13,18,32,0.95);
-  border: 1px solid rgba(61,142,248,0.2);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
-  backdrop-filter: blur(10px);
-  font-size: .875rem; max-width: 320px;
-  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px; border-radius: var(--radius-sm);
+  background: var(--theme-surface-elevated);
+  border: 1px solid var(--theme-border);
+  border-left: 3px solid var(--theme-primary);
+  box-shadow: var(--theme-shadow);
+  font-size: .875rem; max-width: 100%;
+  display: flex; align-items: flex-start; gap: 10px;
+  color: var(--theme-text);
   animation: slideIn .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+.toast .toast-icon-wrap {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+  background: var(--theme-info-bg); color: var(--theme-info);
+}
+.toast .toast-msg {
+  flex: 1; min-width: 0; color: var(--theme-text);
+  line-height: 1.4; word-wrap: break-word; padding-top: 3px;
+}
+.toast .toast-close {
+  flex-shrink: 0; border: none; background: none; cursor: pointer;
+  color: var(--theme-text-muted); font-size: 15px; line-height: 1;
+  padding: 2px 4px; border-radius: 6px; margin: -2px -4px 0 0;
+}
+.toast .toast-close:hover { color: var(--theme-text); background: var(--theme-surface); }
+.toast--success { border-left-color: var(--theme-success); }
+.toast--success .toast-icon-wrap { background: var(--theme-success-bg); color: var(--theme-success); }
+.toast--error   { border-left-color: var(--theme-error); }
+.toast--error   .toast-icon-wrap { background: var(--theme-error-bg); color: var(--theme-error); }
+.toast--warning { border-left-color: var(--theme-warning); }
+.toast--warning .toast-icon-wrap { background: var(--theme-warning-bg); color: var(--theme-warning); }
+.toast--info    { border-left-color: var(--theme-info); }
+.toast--info    .toast-icon-wrap { background: var(--theme-info-bg); color: var(--theme-info); }
 @keyframes slideIn { from { opacity:0; transform: translateX(110%) scale(0.95); } to { opacity:1; transform: translateX(0) scale(1); } }
+@media (max-width: 480px) {
+  .toast-container { left: 12px; right: 12px; bottom: 16px; max-width: none; align-items: stretch; }
+  .toast { max-width: none; }
+}
 
 /* ── FEATURES ────────────────────────────────────────────────── */
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
@@ -6921,6 +6959,71 @@ crossorigin="anonymous"></script>
     --hp-line: rgba(28,27,26,0.12);
     --hp-font-display: 'Georgia', 'Iowan Old Style', serif;
     --hp-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     CENTRALIZED THEME TOKENS — for all dynamic UI: toasts,
+     notifications, banners, modals, alerts, Supabase/API-driven
+     messages. Every dynamic message component should reference
+     ONLY these tokens (never hardcode dark-navy/black colors) so
+     it automatically follows whichever theme is active.
+     Default = Warm Cream + Maroon + Gold (current site identity).
+     A dark-mode fallback is included so this keeps working if the
+     dark theme is ever re-enabled.
+     ══════════════════════════════════════════════════════════════ */
+  :root {
+    --theme-bg:               var(--hp-paper);
+    --theme-surface:          var(--hp-paper-dim);
+    --theme-surface-elevated: #ffffff;
+    --theme-primary:          var(--hp-red);
+    --theme-secondary:        var(--hp-gold);
+    --theme-accent:           var(--hp-gold);
+    --theme-text:             var(--hp-ink);
+    --theme-text-muted:       rgba(28,27,26,0.55);
+    --theme-text-secondary:   #6b6358;
+    --theme-border:           var(--hp-line);
+    --theme-shadow:           0 10px 36px rgba(28,27,26,0.16);
+    --theme-success:          #2f6f4f;
+    --theme-success-bg:       rgba(47,111,79,0.10);
+    --theme-success-border:   rgba(47,111,79,0.28);
+    --theme-warning:          #96701a;
+    --theme-warning-bg:       rgba(201,154,60,0.16);
+    --theme-warning-border:   rgba(201,154,60,0.38);
+    --theme-error:            var(--hp-red);
+    --theme-error-bg:         rgba(166,25,46,0.10);
+    --theme-error-border:     rgba(166,25,46,0.28);
+    --theme-info:             #2f6a8a;
+    --theme-info-bg:          rgba(47,106,138,0.10);
+    --theme-info-border:      rgba(47,106,138,0.28);
+  }
+  /* Dark-theme fallback (kept in sync in case dark mode is ever
+     re-enabled — the toggle button is currently hidden/unreachable,
+     so this branch is inert today but keeps messages readable if
+     that changes). */
+  body:not(.light) {
+    --theme-bg:               var(--bg2, #0d1220);
+    --theme-surface:          var(--bg3, #121929);
+    --theme-surface-elevated: #182238;
+    --theme-primary:          var(--color-accent, #3d8ef8);
+    --theme-secondary:        var(--color-gold, #f59e0b);
+    --theme-accent:           var(--color-accent2, #00c8e8);
+    --theme-text:             var(--text, #eef2ff);
+    --theme-text-muted:       rgba(238,242,255,0.55);
+    --theme-text-secondary:   var(--text2, #7a8caa);
+    --theme-border:           var(--glass-border, rgba(255,255,255,0.09));
+    --theme-shadow:           0 10px 36px rgba(0,0,0,0.55);
+    --theme-success:          #10d98e;
+    --theme-success-bg:       rgba(16,217,142,0.14);
+    --theme-success-border:   rgba(16,217,142,0.32);
+    --theme-warning:          #fbbf24;
+    --theme-warning-bg:       rgba(251,191,36,0.14);
+    --theme-warning-border:   rgba(251,191,36,0.32);
+    --theme-error:            #ff4d6d;
+    --theme-error-bg:         rgba(255,77,109,0.14);
+    --theme-error-border:     rgba(255,77,109,0.32);
+    --theme-info:             #3d8ef8;
+    --theme-info-bg:          rgba(61,142,248,0.14);
+    --theme-info-border:      rgba(61,142,248,0.32);
   }
 
   /* ── Force light theme globally ───────────────────────────── */
@@ -20786,16 +20889,27 @@ function triggerPWAInstall() {
   }
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────
+// ── TOAST — theme-aware (see .toast / --theme-* tokens) ─────────────
 let toastId = 0;
 function showToast(msg, type = 'info') {
   const id = ++toastId;
-  const icon = type === 'success' ? '#ic-check' : '#ic-zap';
+  const validTypes = ['success', 'error', 'warning', 'info'];
+  const safeType = validTypes.includes(type) ? type : 'info';
+  const iconMap = { success: '#ic-check', error: '#ic-zap', warning: '#ic-zap', info: '#ic-zap' };
+  const icon = iconMap[safeType];
   const el = document.createElement('div');
-  el.className = 'toast card';
-  el.innerHTML = `<svg width="16" height="16" style="color:var(--accent);flex-shrink:0"><use href="${icon}"/></svg><span>${msg}</span>`;
+  el.className = `toast toast--${safeType}`;
+  el.setAttribute('role', 'status');
+  el.innerHTML = `
+    <span class="toast-icon-wrap"><svg width="14" height="14"><use href="${icon}"/></svg></span>
+    <span class="toast-msg"></span>
+    <button class="toast-close" aria-label="Dismiss" onclick="this.closest('.toast').remove()">&times;</button>
+  `;
+  // Set message via textContent (not innerHTML) so Supabase/API-driven
+  // text is always displayed safely, never executed as markup.
+  el.querySelector('.toast-msg').textContent = msg;
   document.getElementById('toastContainer').appendChild(el);
-  setTimeout(() => el.remove(), 3000);
+  setTimeout(() => el.remove(), 3800);
 }
 
 // ── SVG ICON HELPER ───────────────────────────────────────────────

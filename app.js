@@ -754,16 +754,17 @@ function _onOffline() {
     bar.setAttribute('role', 'status');
     bar.style.cssText = [
       'position:fixed', 'top:0', 'left:0', 'right:0', 'z-index:99999',
-      'background:linear-gradient(135deg,#7f1d1d,#991b1b)',
+      'background:var(--theme-error-bg, #7f1d1d)',
+      'border-bottom:1px solid var(--theme-error-border, transparent)',
       'padding:10px 16px', 'display:flex', 'align-items:center', 'gap:8px',
-      'font-family:system-ui,sans-serif',
-      'font-size:.85rem', 'color:#fecaca',
-      'box-shadow:0 2px 12px rgba(0,0,0,0.5)',
+      'font-family:var(--hp-font-body, system-ui, sans-serif)',
+      'font-size:.85rem', 'color:var(--theme-error, #fecaca)',
+      'box-shadow:var(--theme-shadow, 0 2px 12px rgba(0,0,0,0.5))',
     ].join(';');
     bar.innerHTML = `
-      <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;flex-shrink:0;animation:_pwaPulse 2s ease-in-out infinite"></span>
+      <span style="width:8px;height:8px;background:var(--theme-error, #ef4444);border-radius:50%;flex-shrink:0;animation:_pwaPulse 2s ease-in-out infinite"></span>
       <span style="flex:1">📡 You're offline${cachedCount > 0 ? ` — ${cachedCount} PDFs cached` : ' — some features may be unavailable'}</span>
-      <button onclick="window.location.reload()" style="padding:4px 10px;background:rgba(255,255,255,0.12);color:#fecaca;border:1px solid rgba(255,255,255,0.2);border-radius:6px;font-size:.75rem;cursor:pointer;flex-shrink:0">Retry</button>
+      <button onclick="window.location.reload()" style="padding:4px 10px;background:var(--theme-surface-elevated);color:var(--theme-error);border:1px solid var(--theme-error-border);border-radius:6px;font-size:.75rem;cursor:pointer;flex-shrink:0">Retry</button>
     `;
 
     if (!document.getElementById('_pwaAnimStyles')) {

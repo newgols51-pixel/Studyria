@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v37';
+const CACHE_VERSION = 'v39'; (Theme-aware dynamic message system: centralized --theme-* tokens, fixed toast readability (cream/maroon/gold), themed network bar, offline/online banners, update/restart dialogs, alert classes. SW v39.)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
