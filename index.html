@@ -722,7 +722,7 @@ body.light {
   position: relative;
 }
 .desktop-logo-img {
-  height: 34px; width: auto; flex-shrink: 0; align-self: center; display: inline-block;
+  height: 44px; width: auto; flex-shrink: 0; align-self: center; display: inline-block;
   vertical-align: middle;
 }
 .logo {
@@ -992,9 +992,9 @@ body.light .brand-credit { background: rgba(255,255,255,0.14); border-color: rgb
     flex-shrink: 0;
   }
   .mh-logo-img {
-    height: 26px; width: auto; flex-shrink: 0; display: inline-block;
+    height: 36px; width: auto; flex-shrink: 0; display: inline-block;
     vertical-align: middle;
-    margin-right: 5px;
+    margin-right: 0;
   }
   .mh-center {
     display: flex !important;
@@ -7110,8 +7110,8 @@ crossorigin="anonymous"></script>
     animation: none !important;
   }
   .desktop-logo-img {
-    display: inline-block !important; height: 30px !important; width: auto !important;
-    flex-shrink: 0 !important; vertical-align: middle !important; margin-right: 6px !important;
+    display: inline-block !important; height: 38px !important; width: auto !important;
+    flex-shrink: 0 !important; vertical-align: middle !important; margin-right: 0 !important;
   }
   .logo::before { content: none !important; }
   .logo .logo-letter { display: inline-block !important; }
@@ -7933,7 +7933,7 @@ crossorigin="anonymous"></script>
     .container { padding-left: 12px !important; padding-right: 12px !important; }
     .nav-inner { gap: 6px !important; }
     .logo { font-size: 20px !important; gap: 1px !important; }
-    .desktop-logo-img { height: 22px !important; margin-right: 4px !important; }
+    .desktop-logo-img { height: 32px !important; margin-right: 0 !important; }
     .nav-actions { gap: 6px !important; }
     .hp-signin-btn, .hp-get-pass-btn {
       padding: 9px 16px !important;
@@ -7945,7 +7945,7 @@ crossorigin="anonymous"></script>
   }
   @media (max-width: 380px) {
     .logo { font-size: 18px !important; }
-    .desktop-logo-img { height: 20px !important; margin-right: 3px !important; }
+    .desktop-logo-img { height: 28px !important; margin-right: 0 !important; }
     .hp-signin-btn, .hp-get-pass-btn {
       padding: 8px 14px !important;
       font-size: 12.5px !important;
@@ -8098,7 +8098,6 @@ function studyriaApp() {
     </div>
     <div class="mh-center" onclick="navigate('home')" id="mhLogo">
       <img src="/logo-header.png" alt="Studyria" class="mh-logo-img" />
-      <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
     </div>
     <div class="mh-right">
       <button class="mh-icon-btn" onclick="mhOpenSearch()" aria-label="Search" title="Search">
@@ -8234,7 +8233,6 @@ function studyriaApp() {
       <!-- Logo (CSS overrides show "Studyria" via ::before/::after) -->
       <div class="logo" onclick="navigate('home')" id="animLogo">
         <img src="/logo-header.png" alt="Studyria" class="desktop-logo-img" />
-        <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
       </div>
 
       <!-- Nav links (matches homepage.html) -->
