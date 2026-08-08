@@ -23,8 +23,8 @@
 
   // ── APP VERSION ──────────────────────────────────────────────────
   const APP = {
-    VERSION:       '3.2.0',
-    BUILD:         '2026.07.18',
+    VERSION:       '3.3.0',
+    BUILD:         '2026.08.08',
     NAME:          'Studyria',
     WHATS_NEW: [
       { type: 'new',  text: 'Intelligent PWA Platform with self-managing updates' },

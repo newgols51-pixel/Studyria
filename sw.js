@@ -31,14 +31,14 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v40'; // v40: CRITICAL FIX — v39 had a syntax error (unterminated comment) that broke SW parsing, preventing ALL updates from installing on existing devices since it landed. Also ships: header compact-size fix verification + theme-aware message system.
+const CACHE_VERSION = 'v41'; // v40: CRITICAL FIX — v39 had a syntax error (unterminated comment) that broke SW parsing, preventing ALL updates from installing on existing devices since it landed. Also ships: header compact-size fix verification + theme-aware message system.
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.08-pwa-v3.6';
+const SW_BUILD      = '2026.08.08-pwa-v3.7';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🔧 Critical update: Fixed service worker syntax error that was blocking all updates. Header compact-size fix and payment system improvements are now live.';
+const WHATS_NEW = '🔧 Header size fix: compact nav bar, smaller buttons & logo. Auto-activates without manual refresh.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -98,7 +98,9 @@ self.addEventListener('install', event => {
       )
       .then(() => console.log('[SW] v37 installed ✅'))
   );
-  // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
+  // CRITICAL: auto-skipWaiting for v41 — fixes must reach devices NOW, not on user click
+  self.skipWaiting();
+  // Normal mode: update UX owns SKIP_WAITING — re-enable after this deploy
 });
 
 // ── ACTIVATE ─────────────────────────────────────────────────────
