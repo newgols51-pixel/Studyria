@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v45'; // v45: Full transparent logo (emblem + Studyria text + tagline) replaces emblem-only crop
+const CACHE_VERSION = 'v46'; // v46: Increase full logo height for readability
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
