@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v43'; // v43: Fix Premium Library PDF handoff — _smciPdfStore persistent store + pdfjsLib lazy loader
+const CACHE_VERSION = 'v44'; // v44: New transparent-background header logo emblem — force image cache purge
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
