@@ -35,10 +35,10 @@ const CACHE_VERSION = 'v40'; // v40: CRITICAL FIX — v39 had a syntax error (un
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.08-pwa-v3.5';
+const SW_BUILD      = '2026.08.08-pwa-v3.6';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🚀 PWA V3.2 — Intelligent PWA Platform: auto release notes, download manager, notification V2.0, offline engine, admin control center, route prefetch, secure cache.';
+const WHATS_NEW = '🔧 Critical update: Fixed service worker syntax error that was blocking all updates. Header compact-size fix and payment system improvements are now live.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
