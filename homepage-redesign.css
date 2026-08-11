@@ -83,8 +83,8 @@
 .hr-hero-eyebrow-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: #3d8ef8;
-  box-shadow: 0 0 8px #3d8ef8;
+  background: #930205;
+  box-shadow: 0 0 8px #930205;
   animation: hrPulse 2s ease-in-out infinite;
 }
 @keyframes hrPulse {
@@ -323,7 +323,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--accent, #3d8ef8), transparent);
+  background: linear-gradient(90deg, transparent, #930205, transparent);
   opacity: 0;
   transition: opacity .3s ease;
 }
@@ -471,5 +471,5 @@ body.light .hr-feature-item { border-color: rgba(0,0,0,0.06); }
 body.light .hr-feature-item:hover { background: rgba(0,0,0,0.02); }
 body.light .hr-trust-item { border-color: rgba(0,0,0,0.06); }
 body.light .hr-see-all { border-color: rgba(0,0,0,0.1); }
-body.light .hr-see-all:hover { border-color: #3d8ef8; }
+body.light .hr-see-all:hover { border-color: #930205; }
 body.light .hr-premium-banner { background: linear-gradient(135deg, rgba(251,191,36,0.06) 0%, rgba(245,158,11,0.04) 100%); border-color: rgba(251,191,36,0.25); }
