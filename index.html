@@ -8319,6 +8319,7 @@ function studyriaApp() {
           <!-- ═══ NAVIGATION SECTION ═══ -->
           <div class="hp-menu-section-label">Navigation</div>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('home')"><span class="hp-menu-icon">🏠</span> Home</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)"><span class="hp-menu-icon">📚</span> My Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library')"><span class="hp-menu-icon">📚</span> Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> ADRE</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> APSC</a>
