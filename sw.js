@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v53'; // v53: Library page (ottlib-) converted from dark navy to cream/maroon/gold
+const CACHE_VERSION = 'v54'; // v54: fix - moved ottlib overrides to linked homepage-redesign.css (was in orphaned homepage-ui-fix.css)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
