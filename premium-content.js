@@ -20,7 +20,7 @@
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.4') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.5') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
@@ -41,6 +41,12 @@
   /* Category config cache */
   var _catCache    = { cats: null, fetchedAt: 0 };
   var _premPdfCache = { pdfs: null, fetchedAt: 0, ttlMs: 90000 }; /* 90s TTL */
+
+  /* PERSISTENT PDF STORE — survives window.PDFS replacement by pdf-list.js.
+   * When _getPremiumCategoryPdfs returns PDFs, they are stored here.
+   * When _openReadingRoomById can't find a PDF in window.PDFS, it checks
+   * this store before falling back to Supabase. */
+  var _smciPdfStore = {}; /* { id: pdfObject } */
 
   /* ── Utilities ─────────────────────────────────────────────────── */
   function _sb()    { return window.supabaseClient || null; }
@@ -290,6 +296,7 @@
 
     if (localPdfs.length > 0) {
       _premPdfCache.pdfs = localPdfs; _premPdfCache.fetchedAt = Date.now();
+      localPdfs.forEach(function(p) { _smciPdfStore[String(p.id)] = p; });
       return localPdfs;
     }
 
@@ -318,6 +325,7 @@
       if (matched.length > 0) {
         _premPdfCache.pdfs = matched; _premPdfCache.fetchedAt = Date.now();
         matched.forEach(function(p) {
+          _smciPdfStore[String(p.id)] = p;
           if (!window.PDFS) window.PDFS = [];
           if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
             window.PDFS.push(p);
@@ -469,9 +477,45 @@
     if (nextBtn) nextBtn.style.opacity = pageNum >= _rrTotalPages ? '0.3' : '1';
   }
 
+  /* LAZY-LOAD pdf.js on demand — fixes "PDF reader not loaded" error.
+   * pdf.js is loaded with defer in index.html, but CDN failures or timing
+   * issues can leave window.pdfjsLib undefined. This loader fetches it
+   * dynamically before giving up. */
+  var _pdfjsLoading = null;
+  function _ensurePdfjs() {
+    if (window.pdfjsLib) return Promise.resolve(true);
+    if (_pdfjsLoading) return _pdfjsLoading;
+    var src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js';
+    var worker = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+    _pdfjsLoading = new Promise(function(resolve) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function() {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
+          resolve(true);
+        } else {
+          _warn('pdf.js script loaded but window.pdfjsLib still undefined');
+          resolve(false);
+        }
+      };
+      s.onerror = function() {
+        _warn('pdf.js CDN script failed to load');
+        _pdfjsLoading = null; /* allow retry */
+        resolve(false);
+      };
+      document.head.appendChild(s);
+    });
+    return _pdfjsLoading;
+  }
+
   async function _openReadingRoom(pdf, signedUrl) {
     if (!signedUrl) { _toast('PDF URL not available.', 'error'); return; }
-    if (!window.pdfjsLib) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
+    if (!window.pdfjsLib) {
+      _log('pdfjsLib not loaded — lazy loading...');
+      var loaded = await _ensurePdfjs();
+      if (!loaded) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
+    }
 
     _rrPdfId = String(pdf.id);
 
@@ -701,7 +745,7 @@
     /* BUG-FIX: Use quoted string concatenation that avoids inner single-quote breaks */
     var coverHtml = cover
       ? "<img src=\"" + cover + "\" alt=\"" + title + "\" style=\"width:100%;height:100%;object-fit:cover\" loading=\"lazy\" decoding=\"async\">"
-      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(147,2,5,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
     /* BUG-FIX (BUG-2): Open Free calls openReadingRoom directly — never goes to checkout */
     var onclickCard = "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom('" + id + "');else if(typeof openDetail===\'function\')openDetail('" + id + "')";
     var onclickBtn  = "event.stopPropagation();" + onclickCard;
@@ -809,7 +853,7 @@
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
       + '<button onclick="navigate(\'premium-library\')" style="font-size:.75rem;color:var(--accent);'
-      + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
+      + 'background:none;border:1px solid rgba(147,2,5,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
       + sectionsHtml
@@ -1214,8 +1258,8 @@
         h += '</div>';
       }
 
-      h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(61,142,248,.08);'
-        + 'border:1px solid rgba(61,142,248,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
+      h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(147,2,5,.08);'
+        + 'border:1px solid rgba(147,2,5,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
         + 'ℹ Config stored in <strong>site_config</strong> (key: <code>premium_categories_config</code>). '
         + 'Individual PDF purchases always work regardless of toggle. '
         + 'Toggling OFF only removes membership access — purchased content is never affected.'
@@ -1339,7 +1383,7 @@
       }
       setTimeout(_waitAuth, 1200);
     }
-    _log('Init complete — SMCI pci-2.4 (reading room, try-catch library page)');
+    _log('Init complete — SMCI pci-2.5 (reading room, try-catch library page)');
   }
 
 
@@ -1366,7 +1410,7 @@
       container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
         + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
         + '<div style="font-size:.9rem;margin-bottom:16px">Loading timed out. Please retry.</div>'
-        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#930205,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
         + '</div>';
     }, 5000);
 
@@ -1488,7 +1532,7 @@
         container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
           + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
           + '<div style="font-size:.9rem;margin-bottom:16px">Could not load Premium Library.</div>'
-          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#930205,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
           + '</div>';
       }
     }
@@ -1497,21 +1541,44 @@
 
 
   async function _openReadingRoomById(pdfId) {
-    var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
+    console.log('[SMCI] openReadingRoom called with pdfId:', pdfId, 'type:', typeof pdfId);
+    if (!pdfId || pdfId === 'undefined' || pdfId === 'null') {
+      _toast('Invalid PDF ID. Please refresh and try again.', 'error');
+      return;
+    }
+    var pdfIdStr = String(pdfId);
+
+    // STEP 1: Check window.PDFS
+    var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === pdfIdStr; });
     if (pdf && typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-    // FIX (BUG-2): If pdf not in local cache, fetch it directly from Supabase by ID
+    console.log('[SMCI] window.PDFS lookup:', pdf ? 'FOUND' : 'NOT FOUND', '| window.PDFS length:', (window.PDFS||[]).length);
+
+    // STEP 2: Check persistent _smciPdfStore (survives window.PDFS replacement)
+    if (!pdf && _smciPdfStore[pdfIdStr]) {
+      pdf = _smciPdfStore[pdfIdStr];
+      if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
+      console.log('[SMCI] _smciPdfStore lookup: FOUND');
+    }
+
+    // STEP 3: Fetch from Supabase by ID
     if (!pdf) {
-      _log('openReadingRoom: pdf ' + pdfId + ' not in window.PDFS, fetching from DB...');
+      _log('openReadingRoom: pdf ' + pdfIdStr + ' not in window.PDFS or _smciPdfStore, fetching from DB...');
       var sbClient = _sb();
       if (sbClient) {
         try {
-          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', pdfId).single();
+          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', pdfIdStr).single();
+          console.log('[SMCI] Supabase fetch result:', { error: fetchRes.error, hasData: !!fetchRes.data });
           if (!fetchRes.error && fetchRes.data) {
             pdf = fetchRes.data;
             if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-            // Also push into window.PDFS cache for future use
-            if (pdf && !window.PDFS) window.PDFS = [];
-            if (pdf && window.PDFS) window.PDFS.push(pdf);
+            // Store in persistent store AND window.PDFS
+            if (pdf) {
+              _smciPdfStore[pdfIdStr] = pdf;
+              if (!window.PDFS) window.PDFS = [];
+              if (!window.PDFS.some(function(x) { return String(x.id) === pdfIdStr; })) {
+                window.PDFS.push(pdf);
+              }
+            }
           }
         } catch(e) { _warn('openReadingRoom: DB fetch failed', e); }
       }
@@ -1551,7 +1618,7 @@
   }
 
   window.SMCI = {
-    _version:               'pci-2.4',
+    _version:               'pci-2.5',
     openReadingRoom:        function(pdfId) { return _openReadingRoomById(pdfId); },
     _injectStatus:          function(status) { _injectStatus(status); },
     _getState:              function() { return Object.assign({}, _state); },

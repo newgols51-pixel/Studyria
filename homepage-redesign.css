@@ -26,7 +26,7 @@
   opacity: 0.35;
   animation: hrOrbFloat 20s ease-in-out infinite;
 }
-.hr-orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #3d8ef8, transparent); top: -10%; left: -5%; }
+.hr-orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #930205, transparent); top: -10%; left: -5%; }
 .hr-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #8b5cf6, transparent); bottom: -10%; right: -5%; animation-delay: -7s; }
 .hr-orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #00d4ff, transparent); top: 40%; left: 50%; animation-delay: -14s; opacity: 0.2; }
 @keyframes hrOrbFloat {
@@ -69,8 +69,8 @@
   gap: 8px;
   padding: 7px 16px;
   border-radius: 100px;
-  background: rgba(61, 142, 248, 0.12);
-  border: 1px solid rgba(61, 142, 248, 0.3);
+  background: rgba(147, 2, 5, 0.12);
+  border: 1px solid rgba(147, 2, 5, 0.3);
   font-size: .72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -83,8 +83,8 @@
 .hr-hero-eyebrow-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: #3d8ef8;
-  box-shadow: 0 0 8px #3d8ef8;
+  background: #930205;
+  box-shadow: 0 0 8px #930205;
   animation: hrPulse 2s ease-in-out infinite;
 }
 @keyframes hrPulse {
@@ -146,13 +146,13 @@
   border: none;
   cursor: pointer;
   transition: all .3s cubic-bezier(.4, 0, .2, 1);
-  background: linear-gradient(135deg, #3d8ef8 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #930205 0%, #930205 100%);
   color: #ffffff;
-  box-shadow: 0 4px 20px rgba(61, 142, 248, 0.4);
+  box-shadow: 0 4px 20px rgba(147, 2, 5, 0.4);
 }
 .hr-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(61, 142, 248, 0.55);
+  box-shadow: 0 8px 30px rgba(147, 2, 5, 0.55);
 }
 .hr-btn-primary:active { transform: translateY(0); }
 
@@ -201,9 +201,9 @@
 }
 .hr-hero-search input::placeholder { color: rgba(255, 255, 255, 0.4); }
 .hr-hero-search input:focus {
-  border-color: rgba(61, 142, 248, 0.5);
+  border-color: rgba(147, 2, 5, 0.5);
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 0 4px rgba(61, 142, 248, 0.1);
+  box-shadow: 0 0 0 4px rgba(147, 2, 5, 0.1);
 }
 .hr-hero-search-icon {
   position: absolute;
@@ -295,7 +295,7 @@
   justify-content: center;
   font-size: 1.2rem;
   flex-shrink: 0;
-  background: rgba(61,142,248,0.1);
+  background: rgba(147,2,5,0.1);
 }
 .hr-feature-text { display: flex; flex-direction: column; gap: 2px; }
 .hr-feature-name { font-size: .85rem; font-weight: 700; color: var(--text); }
@@ -323,13 +323,13 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--accent, #3d8ef8), transparent);
+  background: linear-gradient(90deg, transparent, #930205, transparent);
   opacity: 0;
   transition: opacity .3s ease;
 }
 .hr-why-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(61,142,248,0.3);
+  border-color: rgba(147,2,5,0.3);
   box-shadow: 0 12px 40px rgba(0,0,0,0.2);
 }
 .hr-why-card:hover::before { opacity: 1; }
@@ -341,7 +341,7 @@
   justify-content: center;
   font-size: 1.5rem;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, rgba(61,142,248,0.15), rgba(139,92,246,0.1));
+  background: linear-gradient(135deg, rgba(147,2,5,0.15), rgba(139,92,246,0.1));
 }
 .hr-why-title { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .hr-why-desc { font-size: .78rem; line-height: 1.6; color: var(--text2); }
@@ -465,11 +465,119 @@
 
 /* ── DARK/LIGHT MODE ADAPTATION ────────────────────────────────── */
 body.light .hr-why-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.06); }
-body.light .hr-why-card:hover { border-color: rgba(61,142,248,0.25); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+body.light .hr-why-card:hover { border-color: rgba(147,2,5,0.25); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
 body.light .hr-feature-strip { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.06); }
 body.light .hr-feature-item { border-color: rgba(0,0,0,0.06); }
 body.light .hr-feature-item:hover { background: rgba(0,0,0,0.02); }
 body.light .hr-trust-item { border-color: rgba(0,0,0,0.06); }
 body.light .hr-see-all { border-color: rgba(0,0,0,0.1); }
-body.light .hr-see-all:hover { border-color: #3d8ef8; }
+body.light .hr-see-all:hover { border-color: #930205; }
 body.light .hr-premium-banner { background: linear-gradient(135deg, rgba(251,191,36,0.06) 0%, rgba(245,158,11,0.04) 100%); border-color: rgba(251,191,36,0.25); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   4. LIBRARY PAGE (ottlib-) — Cream/maroon/gold light theme
+   Converts the dark-navy Studyria Library hero to match site paper theme
+   ═══════════════════════════════════════════════════════════════ */
+
+body.light .ottlib-hero {
+  background: linear-gradient(145deg, #faf7f2 0%, #f1ece3 40%, #f5f0e6 100%) !important;
+}
+body.light .ottlib-orb-1 { background: radial-gradient(circle, rgba(147,2,5,0.14) 0%, transparent 68%) !important; }
+body.light .ottlib-orb-2 { background: radial-gradient(circle, rgba(201,154,60,0.16) 0%, transparent 68%) !important; }
+body.light .ottlib-orb-3 { background: radial-gradient(circle, rgba(147,2,5,0.08) 0%, transparent 68%) !important; }
+
+body.light .ottlib-hero-badge {
+  background: rgba(147,2,5,0.08) !important;
+  border-color: rgba(147,2,5,0.25) !important;
+  color: #930205 !important;
+}
+body.light .ottlib-hero-badge-dot {
+  background: #930205 !important;
+  box-shadow: 0 0 8px rgba(147,2,5,0.6) !important;
+}
+
+body.light .ottlib-hero-title {
+  background: linear-gradient(135deg, #1c1b1a 0%, #930205 50%, #c99a3c 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+body.light .ottlib-hero-sub { color: #6b6358 !important; }
+
+body.light .ottlib-search-icon { color: rgba(28,27,26,0.4) !important; }
+body.light .ottlib-search-input {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(28,27,26,0.14) !important;
+  color: #1c1b1a !important;
+}
+body.light .ottlib-search-input::placeholder { color: rgba(28,27,26,0.4) !important; }
+body.light .ottlib-search-input:focus {
+  border-color: rgba(147,2,5,0.45) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(147,2,5,0.12), 0 8px 24px rgba(147,2,5,0.1) !important;
+}
+body.light .ottlib-sort-select {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(28,27,26,0.14) !important;
+  color: #1c1b1a !important;
+}
+body.light .ottlib-sort-select option { background: #ffffff !important; color: #1c1b1a !important; }
+body.light .ottlib-free-btn {
+  background: rgba(16,150,105,0.1) !important;
+  border-color: rgba(16,150,105,0.3) !important;
+  color: #0d9668 !important;
+}
+body.light .ottlib-free-btn:hover, body.light .ottlib-free-btn.active {
+  background: rgba(16,150,105,0.2) !important;
+  border-color: rgba(16,150,105,0.5) !important;
+}
+
+body.light .ottlib-stat {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+}
+body.light .ottlib-stat:hover { border-color: rgba(147,2,5,0.3) !important; }
+body.light .ottlib-stat-num { color: #1c1b1a !important; }
+body.light .ottlib-stat-label { color: rgba(28,27,26,0.5) !important; }
+
+body.light .ottlib-streak-sub { color: rgba(28,27,26,0.55) !important; }
+body.light .ottlib-ai-sub { color: rgba(28,27,26,0.5) !important; }
+
+body.light .ottlib-cat-pill {
+  background: rgba(28,27,26,0.05) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+  color: rgba(28,27,26,0.65) !important;
+}
+body.light .ottlib-cat-pill:hover {
+  background: rgba(147,2,5,0.08) !important;
+  border-color: rgba(147,2,5,0.25) !important;
+  color: #930205 !important;
+}
+
+body.light .ottlib-section-text { color: #1c1b1a !important; }
+body.light .ottlib-divider { background: rgba(28,27,26,0.08) !important; }
+
+body.light .ottlib-card {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+}
+body.light .ottlib-card:hover {
+  box-shadow: 0 16px 40px rgba(28,27,26,0.12), 0 0 0 1px rgba(147,2,5,0.25) !important;
+  border-color: rgba(147,2,5,0.3) !important;
+}
+body.light .ottlib-cover-fallback { color: rgba(28,27,26,0.15) !important; }
+
+body.light .ottlib-card-info { background: rgba(255,255,255,0.4) !important; }
+body.light .ottlib-card-title { color: #1c1b1a !important; }
+body.light .ottlib-card-meta {
+  color: rgba(28,27,26,0.5) !important;
+  background: rgba(28,27,26,0.05) !important;
+}
+body.light .ottlib-card-price { color: #930205 !important; }
+body.light .ottlib-card-price-orig { color: rgba(28,27,26,0.35) !important; }
+body.light .ottlib-progress-bar { background: rgba(28,27,26,0.08) !important; }
+body.light .ottlib-dl-badge {
+  background: rgba(255,255,255,0.7) !important;
+  color: rgba(28,27,26,0.65) !important;
+}

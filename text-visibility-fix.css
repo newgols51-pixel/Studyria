@@ -442,7 +442,7 @@ body.light .ottlib-cat-row-see-all:hover {
   color: #a6192e !important;
 }
 
-/* ottlib-see-all default (non-inline) uses #3d8ef8 - needs brand color */
+/* ottlib-see-all default (non-inline) uses #930205 - needs brand color */
 body.light .ottlib-see-all {
   color: #a6192e !important;
   background: rgba(166,25,46,0.06) !important;
@@ -456,8 +456,8 @@ body.light .ottlib-see-all:hover {
 
 /* OTTLIB hero badge (inside dark hero - keep visible) */
 body.light .ottlib-hero-badge {
-  background: rgba(61,142,248,0.12) !important;
-  border-color: rgba(61,142,248,0.25) !important;
+  background: rgba(147,2,5,0.12) !important;
+  border-color: rgba(147,2,5,0.25) !important;
 }
 
 /* OTTLIB section dots (visible on cream) */

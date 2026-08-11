@@ -31,14 +31,14 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v34';
+const CACHE_VERSION = 'v54'; // v54: fix - moved ottlib overrides to linked homepage-redesign.css (was in orphaned homepage-ui-fix.css)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.04-pwa-v3.3';
+const SW_BUILD      = '2026.08.08-footer-cream-maroon-gold';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🚀 PWA V3.2 — Intelligent PWA Platform: auto release notes, download manager, notification V2.0, offline engine, admin control center, route prefetch, secure cache.';
+const WHATS_NEW = '🔧 Header size fix: compact nav bar, smaller buttons & logo. Auto-activates without manual refresh.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -96,9 +96,11 @@ self.addEventListener('install', event => {
           )
         )
       )
-      .then(() => console.log('[SW] v32 installed ✅'))
+      .then(() => console.log('[SW] v37 installed ✅'))
   );
-  // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
+  // CRITICAL: auto-skipWaiting for v41 — fixes must reach devices NOW, not on user click
+  self.skipWaiting();
+  // Normal mode: update UX owns SKIP_WAITING — re-enable after this deploy
 });
 
 // ── ACTIVATE ─────────────────────────────────────────────────────

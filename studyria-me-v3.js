@@ -806,7 +806,7 @@
   V3.buildAchievements = function(dl, wl, buy, streak) {
     var items = [
       {e:'🌱',lbl:'Early Starter',bg:'rgba(16,217,142,.15)',locked:false},
-      {e:'📚',lbl:'Bookworm',bg:'rgba(61,142,248,.15)',locked:buy<10},
+      {e:'📚',lbl:'Bookworm',bg:'rgba(147,2,5,.15)',locked:buy<10},
       {e:'🔥',lbl:'Consistent\nLearner',bg:'rgba(245,158,11,.15)',locked:streak<7},
       {e:'🔍',lbl:'Knowledge\nSeeker',bg:'rgba(139,92,246,.15)',locked:buy<25},
       {e:'👑',lbl:'Premium\nMember',bg:'rgba(251,191,36,.15)',locked:true},
@@ -830,12 +830,12 @@
   /* ── Settings ────────────────────────────────────────────────── */
   V3.buildSettings = function() {
     var items = [
-      {e:'👤',lbl:'Account Settings',desc:'Personal info & security',bg:'rgba(61,142,248,.12)',action:'switchMeTab(\'profile\')'},
+      {e:'👤',lbl:'Account Settings',desc:'Personal info & security',bg:'rgba(147,2,5,.12)',action:'switchMeTab(\'profile\')'},
       {e:'🔔',lbl:'Notification Settings',desc:'Manage your alerts',bg:'rgba(245,158,11,.12)',action:'toggleNotificationCenter&&toggleNotificationCenter()'},
       {e:'🔒',lbl:'Privacy Settings',desc:'Control your privacy',bg:'rgba(139,92,246,.12)',action:'showToast(\'Privacy settings coming soon\',\'info\')'},
       {e:'⬇️',lbl:'Download Settings',desc:'Manage downloads',bg:'rgba(16,217,142,.12)',action:'switchMeTab(\'purchased\')'},
       {e:'🎨',lbl:'Appearance',desc:'Dark Mode',bg:'rgba(239,68,68,.12)',action:'toggleTheme&&toggleTheme()'},
-      {e:'🌐',lbl:'Language',desc:'English (India)',bg:'rgba(0,200,232,.12)',action:'showToast(\'Language settings coming soon\',\'info\')'},
+      {e:'🌐',lbl:'Language',desc:'English (India)',bg:'rgba(201,154,60,.12)',action:'showToast(\'Language settings coming soon\',\'info\')'},
     ];
     var html = items.map(function(a) {
       return '<div class="v3-settings-item" onclick="' + a.action + '">'
@@ -1057,7 +1057,7 @@
       {
         head: 'Account',
         items: [
-          {e:'👤',lbl:'Edit Profile',desc:'Update personal info',action:'MeV3.openEditProfile()',bg:'rgba(61,142,248,.12)'},
+          {e:'👤',lbl:'Edit Profile',desc:'Update personal info',action:'MeV3.openEditProfile()',bg:'rgba(147,2,5,.12)'},
           {e:'🔐',lbl:'Change Password',desc:'Update your password',action:'showToast(\'Use password reset email\',\'info\')',bg:'rgba(139,92,246,.12)'},
           {e:'📧',lbl:'Email',desc:(window.currentUser&&window.currentUser.email)||'—',action:'',bg:'rgba(16,217,142,.12)'},
         ]
@@ -1066,7 +1066,7 @@
         head: 'Preferences',
         items: [
           {e:'🎨',lbl:'Appearance',desc:'Dark / Light mode',action:'typeof toggleTheme!==\'undefined\'&&toggleTheme()',bg:'rgba(239,68,68,.12)'},
-          {e:'🌐',lbl:'Language',desc:'English (India)',action:'showToast(\'Language settings coming soon\',\'info\')',bg:'rgba(0,200,232,.12)'},
+          {e:'🌐',lbl:'Language',desc:'English (India)',action:'showToast(\'Language settings coming soon\',\'info\')',bg:'rgba(201,154,60,.12)'},
           {e:'🔔',lbl:'Notifications',desc:'Manage alerts',action:'typeof toggleNotificationCenter!==\'undefined\'&&toggleNotificationCenter()',bg:'rgba(245,158,11,.12)'},
         ]
       },
@@ -1084,7 +1084,7 @@
       html += '<div style="margin-bottom:22px"><div style="font-size:.75rem;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">' + g.head + '</div>'
         + '<div style="border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)">';
       g.items.forEach(function(item, idx) {
-        html += '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:' + (idx<g.items.length-1?'1px solid rgba(255,255,255,.04)':'none') + ';cursor:pointer;transition:background .2s" onclick="' + item.action + '" onmouseover="this.style.background=\'rgba(61,142,248,.05)\'" onmouseout="this.style.background=\'\'">'
+        html += '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:' + (idx<g.items.length-1?'1px solid rgba(255,255,255,.04)':'none') + ';cursor:pointer;transition:background .2s" onclick="' + item.action + '" onmouseover="this.style.background=\'rgba(147,2,5,.05)\'" onmouseout="this.style.background=\'\'">'
           + '<div style="width:36px;height:36px;border-radius:10px;background:' + item.bg + ';display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0">' + item.e + '</div>'
           + '<div style="flex:1;min-width:0"><div style="font-size:.85rem;font-weight:700">' + esc(item.lbl) + '</div><div style="font-size:.7rem;color:var(--text2);margin-top:1px">' + esc(item.desc) + '</div></div>'
           + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>'
@@ -1268,5 +1268,5 @@
     });
   }
 
-  console.log('%c✨ Studyria Me V3 (Reference Match) loaded', 'color:#3d8ef8;font-weight:bold');
+  console.log('%c✨ Studyria Me V3 (Reference Match) loaded', 'color:#930205;font-weight:bold');
 })();

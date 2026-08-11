@@ -1137,7 +1137,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
       email: user.email,
       name: user.user_metadata?.full_name || ""
     },
-    theme: { color: "#3d8ef8" },
+    theme: { color: "#930205" },
 
     handler: async function (response) {
       const paymentId = response.razorpay_payment_id;
@@ -1419,7 +1419,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
       email: buyUser.email,
       name: buyUser.user_metadata?.full_name || ""
     },
-    theme: { color: "#3d8ef8" },
+    theme: { color: "#930205" },
 
     handler: async function (response) {
       const paymentId = response.razorpay_payment_id;

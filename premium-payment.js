@@ -163,7 +163,7 @@
     if (!btn) return;
     btn.disabled         = false;
     btn.textContent      = '✅ Premium Active';
-    btn.style.background = 'linear-gradient(135deg,#10d98e,#00c8e8)';
+    btn.style.background = 'linear-gradient(135deg,#10d98e,#c99a3c)';
     btn.style.color      = '#0a2a1a';
     btn.style.cursor     = 'default';
     btn.style.opacity    = '1';
