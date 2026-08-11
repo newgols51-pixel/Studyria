@@ -8100,7 +8100,7 @@ function studyriaApp() {
     </div>
     <div class="mh-center" onclick="navigate('home')" id="mhLogo">
       <img src="/logo-header.png" alt="Studyria" class="mh-logo-img" />
-      <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
+      <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter logo-light" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
     </div>
     <div class="mh-right">
       <button class="mh-icon-btn" onclick="mhOpenSearch()" aria-label="Search" title="Search">
@@ -8235,7 +8235,7 @@ function studyriaApp() {
     <div class="nav-inner">
       <div class="logo" onclick="navigate('home')" id="animLogo">
         <img src="/logo-header.png" alt="Studyria" class="desktop-logo-img" />
-        <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
+        <span class="logo-letter" style="--i:0">S</span><span class="logo-letter" style="--i:1">t</span><span class="logo-letter" style="--i:2">u</span><span class="logo-letter" style="--i:3">d</span><span class="logo-letter logo-light" style="--i:4">y</span><span class="logo-letter logo-light" style="--i:5">r</span><span class="logo-letter logo-light" style="--i:6">i</span><span class="logo-letter logo-light" style="--i:7">a</span>
       </div>
 
       <!-- Nav links (matches homepage.html) -->
@@ -18320,10 +18320,12 @@ body:not(.light) .sf-newsletter-btn:hover {
   font-family: var(--hp-font-display, Georgia, serif);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--hp-ink, #1c1b1a);
   letter-spacing: -.02em;
 }
-body:not(.light) .sf-brand-logo { color: #f0e4d0; }
+.sf-brand-stud { color: var(--hp-ink, #1c1b1a); }
+.sf-brand-yria { color: var(--hp-red, #930205); }
+body:not(.light) .sf-brand-stud { color: #f0e4d0; }
+body:not(.light) .sf-brand-yria { color: #f0e4d0; }
 .sf-brand-tagline {
   font-size: .85rem;
   line-height: 1.65;
@@ -18799,7 +18801,7 @@ body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
 
         <!-- Brand col -->
         <div class="sf-brand">
-          <div class="sf-brand-logo">Studyria</div>
+          <div class="sf-brand-logo"><span class="sf-brand-stud">Stud</span><span class="sf-brand-yria">yria</span></div>
           <p class="sf-brand-tagline">Assam's #1 PDF Study Platform for ADRE, APSC, Assam Police & all Assam state exams. Built for students who study smarter.</p>
 
           <!-- Exams Covered -->
