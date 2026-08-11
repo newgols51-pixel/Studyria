@@ -46448,6 +46448,23 @@ function _srvInitCarousel(){
   var pages = track.querySelectorAll('.srv-page');
   if(!pages.length){ setTimeout(_srvInitCarousel, 400); return; }
 
+  /* ── Set page widths to exactly match outer's content width ── */
+  /* This fixes the scrollbar-offset issue where CSS calc(min(100vw,...))
+     includes scrollbar width but the outer's visible area doesn't */
+  function setPageWidths(){
+    var cs = getComputedStyle(outer);
+    var padL = parseFloat(cs.paddingLeft) || 0;
+    var padR = parseFloat(cs.paddingRight) || 0;
+    var w = outer.clientWidth - padL - padR;
+    if(w < 50) w = outer.clientWidth;  /* fallback */
+    for(var i = 0; i < pages.length; i++){
+      pages[i].style.flexBasis = w + 'px';
+      pages[i].style.width = w + 'px';
+    }
+    return w;
+  }
+  var _pageWidth = setPageWidths();
+
   /* tear down old handlers */
   if(_srvHandlers){
     try{
@@ -46463,10 +46480,10 @@ function _srvInitCarousel(){
 
   var pageCount = pages.length;
 
-  /* ── page width = visible content width of outer ── */
+  /* ── page width = exact outer content width (set by JS) ── */
   function pageW(){
-    var pw = pages[0] ? pages[0].getBoundingClientRect().width : 0;
-    if(pw < 10) pw = outer.clientWidth - 40;  /* fallback */
+    var pw = pages[0] ? pages[0].offsetWidth : 0;
+    if(pw < 10){ pw = _pageWidth || (outer.clientWidth - 40); }
     return pw;
   }
 
@@ -46514,7 +46531,10 @@ function _srvInitCarousel(){
   var rzTimer;
   function onResize(){
     clearTimeout(rzTimer);
-    rzTimer = setTimeout(updateDots, 150);
+    rzTimer = setTimeout(function(){
+      _pageWidth = setPageWidths();
+      updateDots();
+    }, 150);
   }
 
   /* ── mouse drag (desktop): snap to nearest PAGE ── */
