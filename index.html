@@ -18720,11 +18720,12 @@ body:not(.light) .sf-stories-count { color:rgba(240,228,208,0.4); }
 
 /* ── Page container: groups of 3 cards, snap target ── */
 .sf-stories .srv-page {
-  flex:0 0 calc(min(100vw,1280px) - 40px) !important;
+  flex:0 0 calc(min(100vw,1280px)) !important;
   display:flex !important;
   gap:14px !important;
   scroll-snap-align:start !important;
-  padding:0 !important;
+  padding:0 20px !important;
+  box-sizing:border-box !important;
 }
 }
 body:not(.light) .sf-stories .srv-card {
@@ -18769,7 +18770,7 @@ body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important
 .sf-stories .srv-outer {
   -webkit-mask-image:none !important; mask-image:none !important;
   max-width:1280px !important; margin:0 auto !important;
-  padding:0 20px !important;
+  padding:0 !important;
 }
 .sf-stories .srv-track { gap:0 !important; padding:8px 0 20px !important; }
 .sf-stories .srv-dot { background:rgba(28,27,26,0.15) !important; }
@@ -18859,8 +18860,9 @@ body:not(.light) .sf-stories .srv-star-btn { color:rgba(255,255,255,0.2) !import
   .sf-stories .srv-outer { padding:0 12px !important; }
   .sf-stories .srv-track { padding:8px 0 16px !important; }
   .sf-stories .srv-page {
-    flex:0 0 calc(100vw - 24px) !important;
+    flex:0 0 calc(100vw) !important;
     gap:8px !important;
+    padding:0 12px !important;
   }
   .sf-stories .srv-card {
     padding:14px 10px !important;
@@ -46455,7 +46457,7 @@ function _srvInitCarousel(){
     var cs = getComputedStyle(outer);
     var padL = parseFloat(cs.paddingLeft) || 0;
     var padR = parseFloat(cs.paddingRight) || 0;
-    var w = outer.clientWidth - padL - padR - 1;  /* -1px prevents subpixel peek */
+    var w = outer.clientWidth;  /* no padding on outer — pages carry their own */
     if(w < 50) w = outer.clientWidth;  /* fallback */
     for(var i = 0; i < pages.length; i++){
       pages[i].style.flexBasis = w + 'px';
