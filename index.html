@@ -18713,7 +18713,11 @@ body:not(.light) .sf-stories-count { color:rgba(240,228,208,0.4); }
   border:1px solid var(--hp-line,rgba(28,27,26,0.12)) !important;
   border-radius:10px !important; padding:26px 24px !important;
   backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
-  flex:0 0 clamp(280px,82vw,340px) !important;
+  flex:0 0 calc((min(100vw,1280px) - 68px) / 3) !important;
+  scroll-snap-align:none !important;
+}
+.sf-stories .srv-card:nth-child(3n+1) {
+  scroll-snap-align:start !important;
 }
 body:not(.light) .sf-stories .srv-card {
   background:rgba(255,255,255,0.03) !important;
@@ -18754,7 +18758,12 @@ body:not(.light) .sf-stories .srv-author-loc { color:rgba(240,228,208,0.4) !impo
 body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important; }
 
 /* ── Carousel overrides ── */
-.sf-stories .srv-outer { -webkit-mask-image:none !important; mask-image:none !important; }
+.sf-stories .srv-outer {
+  -webkit-mask-image:none !important; mask-image:none !important;
+  max-width:1280px !important; margin:0 auto !important;
+  padding:0 20px !important;
+}
+.sf-stories .srv-track { gap:14px !important; }
 .sf-stories .srv-dot { background:rgba(28,27,26,0.15) !important; }
 body:not(.light) .sf-stories .srv-dot { background:rgba(255,255,255,0.2) !important; }
 .sf-stories .srv-dot.active {
@@ -18839,8 +18848,22 @@ body:not(.light) .sf-stories .srv-star-btn { color:rgba(255,255,255,0.2) !import
 
 @media(max-width:640px){
   .sf-stories { padding:40px 0; }
-  .sf-stories .srv-card { flex:0 0 82vw !important; padding:22px 20px !important; }
-  .sf-stories-rating { margin-left:20px; }
+  .sf-stories .srv-outer { padding:0 12px !important; }
+  .sf-stories .srv-track { gap:8px !important; }
+  .sf-stories .srv-card {
+    flex:0 0 calc((100vw - 40px) / 3) !important;
+    padding:14px 10px !important;
+  }
+  .sf-stories .srv-card-text { font-size:.68rem !important; -webkit-line-clamp:3 !important; line-height:1.45 !important; }
+  .sf-stories .srv-author-name { font-size:.72rem !important; }
+  .sf-stories .srv-author-loc { font-size:.56rem !important; }
+  .sf-stories .srv-verified { font-size:.5rem !important; padding:1px 5px !important; }
+  .sf-stories .srv-avatar { width:28px !important; height:28px !important; font-size:.72rem !important; }
+  .sf-stories .srv-card-stars-str { font-size:.72rem !important; letter-spacing:1px !important; }
+  .sf-stories .srv-card-stars-num { font-size:.56rem !important; }
+  .sf-stories .srv-date { font-size:.48rem !important; }
+  .sf-stories .srv-quote-icon { font-size:1.6rem !important; }
+  .sf-stories-rating { margin-left:12px; }
 }
 </style>
 
@@ -46407,7 +46430,7 @@ function _srvInitCarousel(){
   var cards = track.querySelectorAll('.srv-card');
   if(!cards.length){ setTimeout(_srvInitCarousel, 400); return; }
 
-  /* tear down */
+  /* tear down old handlers */
   if(_srvHandlers){
     try{
       outer.removeEventListener('scroll',   _srvHandlers.sc);
@@ -46421,56 +46444,68 @@ function _srvInitCarousel(){
   }
 
   var cardCount = cards.length;
+  var PER_PAGE = 3;  /* ── GROUP OF 3 ── */
 
-  function visibleCount(){
-    var w = window.innerWidth;
-    return w >= 1024 ? 3 : w >= 640 ? 2 : 1;
+  /* ── dynamic gap (CSS may change on mobile) ── */
+  function gap(){
+    var g = parseFloat(getComputedStyle(track).gap) || 14;
+    return g;
   }
 
+  /* ── one card width + gap ── */
   function cardW(){
     var c = cards[0];
-    if(!c) return window.innerWidth * 0.82 + 14;
-    return c.getBoundingClientRect().width + 14;
+    if(!c) return 300;
+    return c.getBoundingClientRect().width + gap();
   }
 
-  /* ── scroll to a specific card index ── */
-  function scrollToIdx(i, animated){
-    var max = Math.max(0, cardCount - visibleCount());
-    i = Math.max(0, Math.min(i, max));
-    var target = i * cardW();
-    outer.style.scrollBehavior = animated ? 'smooth' : 'auto';
+  /* ── one page = 3 cards ── */
+  function pageW(){
+    return PER_PAGE * cardW();
+  }
+
+  /* ── total pages ── */
+  function totalPages(){
+    return Math.ceil(cardCount / PER_PAGE);
+  }
+
+  /* ── scroll to a specific PAGE (0-indexed) ── */
+  function scrollToPage(p, animated){
+    var max = totalPages() - 1;
+    p = Math.max(0, Math.min(p, max));
+    var target = p * pageW();
     outer.scrollTo({ left: target, behavior: animated ? 'smooth' : 'auto' });
   }
-  window._srvGoto = function(i){ scrollToIdx(i, true); };
+  window._srvGoto = function(p){ scrollToPage(p, true); };
 
-  /* ── dots ── */
+  /* ── dots: one per page ── */
   var dotsEl = document.getElementById('srvDots');
   function updateDots(){
     if(!dotsEl) return;
-    var max = Math.max(1, cardCount - visibleCount() + 1);
-    var current = Math.round(outer.scrollLeft / cardW());
-    current = Math.max(0, Math.min(current, max - 1));
+    var pages = totalPages();
+    var currentPage = Math.round(outer.scrollLeft / pageW());
+    currentPage = Math.max(0, Math.min(currentPage, pages - 1));
     var html = '';
-    for(var i = 0; i < max; i++){
-      html += '<div class="srv-dot' + (i === current ? ' active' : '') + '"'
+    for(var i = 0; i < pages; i++){
+      html += '<div class="srv-dot' + (i === currentPage ? ' active' : '') + '"'
            +  ' onclick="window._srvGoto(' + i + ')"'
-           +  ' role="button" aria-label="Go to review ' + (i+1) + '"></div>';
+           +  ' role="button" aria-label="Go to review group ' + (i+1) + '"></div>';
     }
     dotsEl.innerHTML = html;
   }
 
-  /* ── debounced scroll handler for dots ── */
+  /* ── debounced scroll handler ── */
   var scrollTimer;
   function onScroll(){
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(updateDots, 80);
   }
 
-  /* ── keyboard nav ── */
+  /* ── keyboard nav: advance by 1 page (3 cards) ── */
   function onKeyDown(e){
-    var current = Math.round(outer.scrollLeft / cardW());
-    if(e.key === 'ArrowLeft'){ scrollToIdx(current - 1, true); e.preventDefault(); }
-    if(e.key === 'ArrowRight'){ scrollToIdx(current + 1, true); e.preventDefault(); }
+    var current = Math.round(outer.scrollLeft / pageW());
+    if(e.key === 'ArrowLeft'){ scrollToPage(current - 1, true); e.preventDefault(); }
+    if(e.key === 'ArrowRight'){ scrollToPage(current + 1, true); e.preventDefault(); }
   }
 
   /* ── resize ── */
@@ -46480,7 +46515,7 @@ function _srvInitCarousel(){
     rzTimer = setTimeout(updateDots, 150);
   }
 
-  /* ── mouse drag (desktop) ── */
+  /* ── mouse drag (desktop): snap to nearest PAGE ── */
   var isDown = false, startX = 0, startScroll = 0;
   function onMouseDown(e){
     isDown = true;
@@ -46497,19 +46532,15 @@ function _srvInitCarousel(){
     if(!isDown) return;
     isDown = false;
     outer.classList.remove('grabbing');
-    /* snap to nearest card */
-    var nearest = Math.round(outer.scrollLeft / cardW());
-    scrollToIdx(nearest, true);
+    /* snap to nearest page */
+    var nearest = Math.round(outer.scrollLeft / pageW());
+    scrollToPage(nearest, true);
   }
 
   /* ── register ── */
   _srvHandlers = {
-    sc: onScroll,
-    kd: onKeyDown,
-    rz: onResize,
-    md: onMouseDown,
-    mu: onMouseUp,
-    mm: onMouseMove
+    sc: onScroll, kd: onKeyDown, rz: onResize,
+    md: onMouseDown, mu: onMouseUp, mm: onMouseMove
   };
 
   outer.addEventListener('scroll',    _srvHandlers.sc, { passive: true });
