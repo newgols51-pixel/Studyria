@@ -18190,10 +18190,16 @@ body:not(.light) .studyria-footer {
 /* ── Hide ambient orbs — not part of editorial design ── */
 .sf-orb { display: none !important; }
 
-/* ── Gamosa Stripe — signature decorative element ── */
+/* ── Gamosa Stripe — signature decorative element ──
+   BUG FIX: now wrapped in .container (see HTML below) so it renders as a
+   narrower, centered bar with natural side margins on all breakpoints
+   instead of a full-bleed edge-to-edge stripe. margin-top adds the small
+   clean gap below the Pass CTA section (matches homepage.html reference,
+   which nests the same .stripe element inside its .wrap container). ── */
 .sf-top-bar {
   height: 8px;
   width: 100%;
+  margin-top: 32px;
   background: repeating-linear-gradient(
     90deg,
     var(--hp-red, #930205) 0px, var(--hp-red, #930205) 22px,
@@ -18791,8 +18797,12 @@ body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
   <div class="sf-orb sf-orb-2"></div>
   <div class="sf-orb sf-orb-3"></div>
 
-  <!-- Maroon-gold accent divider -->
-  <div class="sf-top-bar"></div>
+  <!-- Maroon-gold accent divider — BUG FIX: wrapped in .container so it
+       matches the narrower, centered, responsive divider shown in the
+       homepage.html reference instead of a full-width edge-to-edge bar -->
+  <div class="container">
+    <div class="sf-top-bar"></div>
+  </div>
 
   <!-- Main link grid -->
   <div class="sf-main">
