@@ -11529,7 +11529,7 @@ window.addEventListener('resize', function() {
 <!-- ══════════════════════════════════════════════════════════════
      OTTLIB — Library Page Premium CSS
      Hero + Category Chips + PDF Cards
-     AMOLED Dark + Glassmorphism
+     Warm Paper Cream + Royal Maroon + Gold
      ══════════════════════════════════════════════════════════════ -->
 <style>
 
@@ -11538,9 +11538,9 @@ window.addEventListener('resize', function() {
   position: relative;
   overflow: hidden;
   background: linear-gradient(145deg,
-    rgba(8,12,20,0.98) 0%,
-    rgba(13,20,38,0.98) 40%,
-    rgba(8,16,32,0.98) 100%);
+    var(--hp-paper, #faf7f2) 0%,
+    var(--hp-paper-dim, #f1ece3) 40%,
+    var(--hp-paper, #faf7f2) 100%);
   padding: 0 0 32px;
   min-height: 360px;
 }
@@ -11553,19 +11553,19 @@ window.addEventListener('resize', function() {
 }
 .ottlib-orb-1 {
   width: 420px; height: 420px; top: -160px; left: -100px;
-  background: radial-gradient(circle, rgba(147,2,5,0.22) 0%, transparent 68%);
+  background: radial-gradient(circle, rgba(147,2,5,0.10) 0%, transparent 68%);
   filter: blur(40px);
   animation-duration: 12s;
 }
 .ottlib-orb-2 {
   width: 360px; height: 360px; top: -80px; right: -80px;
-  background: radial-gradient(circle, rgba(201,154,60,0.18) 0%, transparent 68%);
+  background: radial-gradient(circle, rgba(201,154,60,0.14) 0%, transparent 68%);
   filter: blur(50px);
   animation-duration: 9s; animation-direction: alternate-reverse;
 }
 .ottlib-orb-3 {
   width: 260px; height: 260px; bottom: -80px; left: 40%;
-  background: radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 68%);
+  background: radial-gradient(circle, rgba(201,154,60,0.08) 0%, transparent 68%);
   filter: blur(40px);
   animation-duration: 15s;
 }
@@ -11590,7 +11590,7 @@ window.addEventListener('resize', function() {
   background: rgba(147,2,5,0.12);
   border: 1px solid rgba(147,2,5,0.3);
   font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  color: #93c5fd; font-family: var(--font-ui, sans-serif);
+  color: var(--hp-red, #930205); font-family: var(--font-ui, sans-serif);
   margin-bottom: 18px;
 }
 .ottlib-hero-badge-dot {
@@ -11608,12 +11608,12 @@ window.addEventListener('resize', function() {
 .ottlib-hero-title {
   font-family: var(--font-display, sans-serif); font-weight: 900;
   font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.05; letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #e4e8f0 0%, #93c5fd 50%, #c99a3c 100%);
+  background: linear-gradient(135deg, var(--hp-red, #930205) 0%, var(--hp-red-deep, #7d1122) 55%, var(--hp-gold, #c99a3c) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 14px;
 }
 .ottlib-hero-sub {
-  font-size: clamp(.88rem, 2.2vw, 1rem); color: rgba(255,255,255,0.55);
+  font-size: clamp(.88rem, 2.2vw, 1rem); color: rgba(28,27,26,0.65);
   max-width: 540px; line-height: 1.7; margin-bottom: 28px;
   font-family: var(--font-body, sans-serif);
 }
@@ -11628,30 +11628,30 @@ window.addEventListener('resize', function() {
 }
 .ottlib-search-icon {
   position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-  color: rgba(255,255,255,0.4); pointer-events: none;
+  color: rgba(28,27,26,0.45); pointer-events: none;
 }
 .ottlib-search-input {
   width: 100%; padding: 13px 16px 13px 44px; border-radius: 16px;
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  background: var(--hp-paper, #faf7f2); border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  color: #e4e8f0; font-size: .95rem; font-family: var(--font-body, sans-serif);
+  color: var(--hp-ink, #1c1b1a); font-size: .95rem; font-family: var(--font-body, sans-serif);
   outline: none; transition: all .25s;
 }
-.ottlib-search-input::placeholder { color: rgba(255,255,255,0.35); }
+.ottlib-search-input::placeholder { color: rgba(28,27,26,0.4); }
 .ottlib-search-input:focus {
   border-color: rgba(147,2,5,0.5); background: rgba(147,2,5,0.06);
   box-shadow: 0 0 0 3px rgba(147,2,5,0.15), 0 8px 24px rgba(147,2,5,0.12);
 }
 .ottlib-sort-select {
   padding: 13px 14px; border-radius: 14px;
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  background: var(--hp-paper, #faf7f2); border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
   backdrop-filter: blur(14px);
-  color: #e4e8f0; font-size: .82rem; font-family: var(--font-body, sans-serif);
+  color: var(--hp-ink, #1c1b1a); font-size: .82rem; font-family: var(--font-body, sans-serif);
   cursor: pointer; outline: none;
   appearance: none; -webkit-appearance: none;
   min-width: 140px;
 }
-.ottlib-sort-select option { background: #0d1830; color: #e4e8f0; }
+.ottlib-sort-select option { background: var(--hp-paper, #faf7f2); color: var(--hp-ink, #1c1b1a); }
 .ottlib-free-btn {
   padding: 13px 18px; border-radius: 14px;
   background: rgba(16,217,142,0.1); border: 1px solid rgba(16,217,142,0.3);
@@ -11669,8 +11669,8 @@ window.addEventListener('resize', function() {
 }
 .ottlib-stat {
   display: flex; align-items: center; gap: 10px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px; padding: 12px 18px;
+  background: #fff; border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  border-radius: 16px; padding: 12px 18px; box-shadow: 0 2px 8px rgba(28,27,26,0.05);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   flex: 1 1 120px; min-width: 100px;
   transition: border-color .2s, transform .2s;
@@ -11679,10 +11679,10 @@ window.addEventListener('resize', function() {
 .ottlib-stat-icon { font-size: 1.4rem; flex-shrink: 0; }
 .ottlib-stat-num {
   font-family: var(--font-display, sans-serif); font-weight: 800;
-  font-size: 1.2rem; color: #e4e8f0; line-height: 1;
+  font-size: 1.2rem; color: var(--hp-ink, #1c1b1a); line-height: 1;
 }
 .ottlib-stat-label {
-  font-size: .65rem; color: rgba(255,255,255,0.45); text-transform: uppercase;
+  font-size: .65rem; color: rgba(28,27,26,0.55); text-transform: uppercase;
   letter-spacing: .05em; margin-top: 2px; font-family: var(--font-ui, sans-serif);
 }
 @media (max-width: 480px) {
@@ -11700,29 +11700,29 @@ window.addEventListener('resize', function() {
 .ottlib-streak-inner { display: flex; align-items: center; gap: 14px; }
 .ottlib-streak-icon { font-size: 1.8rem; flex-shrink: 0; }
 .ottlib-streak-label { font-weight: 700; color: #fbbf24; font-size: .95rem; }
-.ottlib-streak-sub { font-size: .78rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+.ottlib-streak-sub { font-size: .78rem; color: rgba(28,27,26,0.6); margin-top: 2px; }
 
 .ottlib-ai-banner {
   max-width: 1280px; margin: 0 auto 0; padding: 0 20px 20px;
 }
 .ottlib-ai-banner-inner {
   display: flex; align-items: center; gap: 14px; cursor: pointer;
-  background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(147,2,5,0.06));
-  border: 1px solid rgba(139,92,246,0.3); border-radius: 18px; padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(147,2,5,0.08), rgba(201,154,60,0.08));
+  border: 1px solid rgba(147,2,5,0.25); border-radius: 18px; padding: 16px 20px;
   transition: all .25s;
 }
-.ottlib-ai-banner-inner:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-2px); }
+.ottlib-ai-banner-inner:hover { border-color: rgba(147,2,5,0.45); transform: translateY(-2px); }
 .ottlib-ai-icon { font-size: 1.6rem; flex-shrink: 0; }
-.ottlib-ai-title { font-weight: 700; color: #c4b5fd; font-size: .92rem; }
-.ottlib-ai-sub { font-size: .75rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.ottlib-ai-title { font-weight: 700; color: var(--hp-red-deep, #7d1122); font-size: .92rem; }
+.ottlib-ai-sub { font-size: .75rem; color: rgba(28,27,26,0.55); margin-top: 2px; }
 .ottlib-ai-cta {
   margin-left: auto; white-space: nowrap; padding: 8px 16px; border-radius: 10px;
-  background: rgba(139,92,246,0.18); border: 1px solid rgba(139,92,246,0.35);
-  color: #c4b5fd; font-size: .78rem; font-weight: 700;
+  background: rgba(201,154,60,0.16); border: 1px solid rgba(201,154,60,0.4);
+  color: var(--hp-red-deep, #7d1122); font-size: .78rem; font-weight: 700;
   cursor: pointer; font-family: var(--font-ui, sans-serif);
   transition: all .2s;
 }
-.ottlib-ai-cta:hover { background: rgba(139,92,246,0.3); }
+.ottlib-ai-cta:hover { background: rgba(201,154,60,0.28); }
 
 /* ── OTTLIB CATEGORY PILLS ────────────────────────────────────── */
 .ottlib-cats {
@@ -11735,16 +11735,16 @@ window.addEventListener('resize', function() {
 .ottlib-cat-pill {
   flex: 0 0 auto; white-space: nowrap;
   padding: 9px 18px; border-radius: 999px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.65); font-size: .8rem; font-weight: 600;
+  background: var(--hp-paper-dim, #f1ece3);
+  border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  color: rgba(28,27,26,0.7); font-size: .8rem; font-weight: 600;
   font-family: var(--font-ui, sans-serif); cursor: pointer;
   transition: all .22s; backdrop-filter: blur(10px);
   -webkit-tap-highlight-color: transparent;
 }
 .ottlib-cat-pill:hover {
-  background: rgba(147,2,5,0.12); border-color: rgba(147,2,5,0.3);
-  color: #93c5fd;
+  background: rgba(147,2,5,0.1); border-color: rgba(147,2,5,0.3);
+  color: var(--hp-red, #930205);
 }
 .ottlib-cat-pill.active {
   background: linear-gradient(135deg, #930205, #c99a3c);
@@ -11768,7 +11768,7 @@ window.addEventListener('resize', function() {
 }
 .ottlib-section-text {
   font-family: var(--font-display, sans-serif); font-weight: 800;
-  font-size: clamp(.95rem, 2vw, 1.15rem); color: #e4e8f0;
+  font-size: clamp(.95rem, 2vw, 1.15rem); color: var(--hp-ink, #1c1b1a);
 }
 .ottlib-section-badge {
   font-size: .6rem; font-weight: 700; letter-spacing: .07em;
@@ -11795,7 +11795,7 @@ window.addEventListener('resize', function() {
   width: max-content;
 }
 .ottlib-divider {
-  height: 1px; background: rgba(255,255,255,0.06);
+  height: 1px; background: var(--hp-line, rgba(28,27,26,0.12));
   margin: 8px 20px;
 }
 
@@ -11803,9 +11803,9 @@ window.addEventListener('resize', function() {
 .ottlib-card {
   flex: 0 0 clamp(148px, 40vw, 172px);
   border-radius: 16px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.09);
-  overflow: visible;
+  background: #fff;
+  border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  overflow: visible; box-shadow: 0 2px 10px rgba(28,27,26,0.06);
   cursor: pointer;
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
   -webkit-tap-highlight-color: transparent;
@@ -11825,7 +11825,7 @@ window.addEventListener('resize', function() {
 .ottlib-cover {
   position: relative; overflow: hidden;
   height: 200px; flex-shrink: 0;
-  background: linear-gradient(135deg, #1a2540, #0d1830);
+  background: linear-gradient(135deg, var(--hp-paper-dim, #f1ece3), #e8ddc9);
 }
 @media (min-width: 480px) { .ottlib-cover { height: 210px; } }
 @media (min-width: 768px) { .ottlib-cover { height: 220px; } }
@@ -11839,9 +11839,9 @@ window.addEventListener('resize', function() {
 .ottlib-cover-fallback {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 2.4rem; font-weight: 900; color: rgba(255,255,255,0.15);
+  font-size: 2.4rem; font-weight: 900; color: rgba(28,27,26,0.18);
   font-family: var(--font-display, sans-serif);
-  background: linear-gradient(135deg, #1a2540, #0d1830);
+  background: linear-gradient(135deg, var(--hp-paper-dim, #f1ece3), #e8ddc9);
 }
 
 /* Cover overlay */
@@ -11863,7 +11863,7 @@ window.addEventListener('resize', function() {
 .ottlib-badge-new      { background: rgba(16,217,142,0.2); border: 1px solid rgba(16,217,142,0.4); color: #34d399; }
 .ottlib-badge-trending { background: rgba(255,77,109,0.18); border: 1px solid rgba(255,77,109,0.4); color: #ff8fa8; }
 .ottlib-badge-free     { background: rgba(16,217,142,0.18); border: 1px solid rgba(16,217,142,0.35); color: #34d399; }
-.ottlib-badge-reading  { background: rgba(139,92,246,0.18); border: 1px solid rgba(139,92,246,0.4); color: #c4b5fd; }
+.ottlib-badge-reading  { background: rgba(201,154,60,0.2); border: 1px solid rgba(201,154,60,0.45); color: var(--hp-red-deep, #7d1122); }
 
 .ottlib-discount-badge {
   position: absolute; top: 10px; right: 10px; z-index: 3;
@@ -11892,11 +11892,11 @@ window.addEventListener('resize', function() {
 /* Progress bar */
 .ottlib-progress-bar {
   position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(28,27,26,0.1);
 }
 .ottlib-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #8b5cf6, #930205);
+  background: linear-gradient(90deg, var(--hp-gold, #c99a3c), var(--hp-red, #930205));
   border-radius: 2px; transition: width .5s ease;
 }
 
@@ -11904,11 +11904,11 @@ window.addEventListener('resize', function() {
 .ottlib-card-info {
   padding: 10px 12px 6px; flex: 1;
   display: flex; flex-direction: column; gap: 4px;
-  background: rgba(255,255,255,0.02);
+  background: #fff;
 }
 .ottlib-card-title {
   font-family: var(--font-display, sans-serif); font-weight: 700;
-  font-size: .82rem; color: #e4e8f0; line-height: 1.3;
+  font-size: .82rem; color: var(--hp-ink, #1c1b1a); line-height: 1.3;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -11916,8 +11916,8 @@ window.addEventListener('resize', function() {
   display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
 }
 .ottlib-card-meta {
-  font-size: .65rem; color: rgba(255,255,255,0.45);
-  background: rgba(255,255,255,0.05); border-radius: 6px;
+  font-size: .65rem; color: rgba(28,27,26,0.6);
+  background: rgba(28,27,26,0.05); border-radius: 6px;
   padding: 2px 7px; font-family: var(--font-ui, sans-serif);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px;
 }
@@ -11932,11 +11932,11 @@ window.addEventListener('resize', function() {
 }
 .ottlib-card-price {
   font-family: var(--font-display, sans-serif); font-weight: 800;
-  font-size: .88rem; color: #93c5fd;
+  font-size: .88rem; color: var(--hp-red, #930205);
 }
 .ottlib-card-price.is-free { color: #34d399; }
 .ottlib-card-price-orig {
-  font-size: .7rem; color: rgba(255,255,255,0.3);
+  font-size: .7rem; color: rgba(28,27,26,0.4);
   text-decoration: line-through; font-family: var(--font-ui, sans-serif);
 }
 
@@ -11944,14 +11944,14 @@ window.addEventListener('resize', function() {
 .ottlib-card-open {
   width: calc(100% - 24px); margin: 0 12px 12px;
   padding: 10px 12px; border-radius: 12px; border: none; cursor: pointer;
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, var(--hp-red, #930205), var(--hp-red-deep, #7d1122));
   color: #fff; font-size: .78rem; font-weight: 700;
   font-family: var(--font-ui, sans-serif); letter-spacing: .02em;
   transition: all .2s; text-align: center;
   box-shadow: 0 4px 12px rgba(147,2,5,0.35);
 }
 .ottlib-card-open:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(147,2,5,0.45); }
-.ottlib-card.is-continue .ottlib-card-open { background: linear-gradient(135deg, #8b5cf6, #3d8ef8); }
+.ottlib-card.is-continue .ottlib-card-open { background: linear-gradient(135deg, var(--hp-gold, #c99a3c), var(--hp-red, #930205)); }
 
 /* Rank badge */
 .pdl-ott-rank-num {
@@ -11963,12 +11963,12 @@ window.addEventListener('resize', function() {
 .rank-1 { color: #fbbf24; }
 .rank-2 { color: #94a3b8; }
 .rank-3 { color: #f97316; }
-.rank-other { color: rgba(255,255,255,0.35); font-size: 1.4rem; }
+.rank-other { color: rgba(28,27,26,0.4); font-size: 1.4rem; }
 
 /* Skeleton */
 .ottlib-skeleton {
   flex: 0 0 clamp(148px, 40vw, 172px); height: 290px; border-radius: 16px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background: linear-gradient(90deg, rgba(28,27,26,0.05) 25%, rgba(28,27,26,0.1) 50%, rgba(28,27,26,0.05) 75%);
   background-size: 200% 100%;
   animation: ottlibSkeleton 1.4s ease-in-out infinite;
 }
@@ -11985,11 +11985,11 @@ window.addEventListener('resize', function() {
 }
 .ottlib-cat-row-title {
   font-family: var(--font-display, sans-serif); font-weight: 800;
-  font-size: clamp(.9rem, 2vw, 1.1rem); color: #e4e8f0;
+  font-size: clamp(.9rem, 2vw, 1.1rem); color: var(--hp-ink, #1c1b1a);
   display: flex; align-items: center; gap: 8px;
 }
 .ottlib-cat-row-see-all {
-  font-size: .75rem; color: rgba(255,255,255,0.45); cursor: pointer;
+  font-size: .75rem; color: rgba(28,27,26,0.55); cursor: pointer;
   background: none; border: none; font-family: var(--font-body, sans-serif);
   transition: color .2s;
 }
@@ -12018,15 +12018,15 @@ window.addEventListener('resize', function() {
 .ottlib-achievement-strip::-webkit-scrollbar { display: none; }
 .ottlib-ach {
   flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  background: #fff; border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
   border-radius: 14px; padding: 10px 14px; min-width: 180px;
   transition: all .2s;
 }
 .ottlib-ach.unlocked { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.06); }
 .ottlib-ach-icon { font-size: 1.6rem; flex-shrink: 0; }
-.ottlib-ach-name { font-weight: 700; font-size: .82rem; color: #e4e8f0; }
-.ottlib-ach-desc { font-size: .68rem; color: rgba(255,255,255,0.4); margin-top: 1px; }
-.ottlib-ach-bar { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 6px; }
+.ottlib-ach-name { font-weight: 700; font-size: .82rem; color: var(--hp-ink, #1c1b1a); }
+.ottlib-ach-desc { font-size: .68rem; color: rgba(28,27,26,0.5); margin-top: 1px; }
+.ottlib-ach-bar { height: 3px; background: rgba(28,27,26,0.1); border-radius: 2px; margin-top: 6px; }
 .ottlib-ach-bar-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); border-radius: 2px; }
 
 </style>
