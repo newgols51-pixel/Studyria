@@ -18714,6 +18714,76 @@ body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════════════════
+     UNLOCK STUDYRIA PASS — Premium pre-footer CTA
+     Visual reference: homepage.html (dark editorial contrast panel)
+     Reuses the EXACT existing Premium Pass route (navigate('premium'))
+     already used by the header "Get Pass" button and the mid-page
+     hr-premium-btn banner — no new payment/routing logic added.
+     ══════════════════════════════════════════════════════════════ -->
+<style>
+.hp-pass-cta {
+  position: relative;
+  background: #1a0f0e;
+  padding: 72px 20px;
+  text-align: center;
+  overflow: hidden;
+}
+.hp-pass-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(201,154,60,0.1), transparent 60%);
+  pointer-events: none;
+}
+.hp-pass-cta-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+.hp-pass-cta-title {
+  font-family: var(--hp-font-display, 'Georgia', serif);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.15;
+  color: #f7f0e6;
+  margin: 0 0 18px;
+}
+.hp-pass-cta-sub {
+  font-family: var(--hp-font-body, sans-serif);
+  font-size: clamp(.92rem, 2vw, 1.05rem);
+  color: rgba(240,228,208,0.65);
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+.hp-pass-cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 16px 36px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--hp-red, #930205), var(--hp-red-deep, #7d1122));
+  color: #fff;
+  font-family: var(--hp-font-body, sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(147,2,5,0.35);
+  transition: transform .2s ease, box-shadow .2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.hp-pass-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(147,2,5,0.45); }
+.hp-pass-cta-btn:active { transform: translateY(0); }
+@media (max-width: 480px) {
+  .hp-pass-cta { padding: 48px 20px; }
+  .hp-pass-cta-btn { width: 100%; justify-content: center; }
+}
+</style>
+<section class="hp-pass-cta" id="hpPassCta">
+  <div class="hp-pass-cta-inner">
+    <div class="hp-pass-cta-title">Unlock Studyria Pass</div>
+    <div class="hp-pass-cta-sub">Unlimited notes · Ad-free · Early access · AI study tools — plans from ₹9</div>
+    <button class="hp-pass-cta-btn" onclick="if(typeof navigate==='function')navigate('premium')">Get Studyria Pass →</button>
+  </div>
+</section>
+
+<!-- Decorative Maroon + Gold divider — reused Gamosa stripe motif (same class used elsewhere on homepage, e.g. line ~8232) -->
+<div class="hp-stripe" aria-hidden="true"></div>
+
 
 <footer class="studyria-footer" id="siteFooter">
 
