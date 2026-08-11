@@ -476,3 +476,110 @@ body.light .sh-section-dot {
 body, .nav, .hr-hero, .sh-row-section, .pdf-card, .glass-card {
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   4. LIBRARY PAGE (ottlib-) — Cream/maroon/gold light theme
+   Converts the dark-navy Studyria Library hero to match site paper theme
+   ═══════════════════════════════════════════════════════════════ */
+
+body.light .ottlib-hero {
+  background: linear-gradient(145deg, #faf7f2 0%, #f1ece3 40%, #f5f0e6 100%) !important;
+}
+body.light .ottlib-orb-1 { background: radial-gradient(circle, rgba(147,2,5,0.14) 0%, transparent 68%) !important; }
+body.light .ottlib-orb-2 { background: radial-gradient(circle, rgba(201,154,60,0.16) 0%, transparent 68%) !important; }
+body.light .ottlib-orb-3 { background: radial-gradient(circle, rgba(147,2,5,0.08) 0%, transparent 68%) !important; }
+
+body.light .ottlib-hero-badge {
+  background: rgba(147,2,5,0.08) !important;
+  border-color: rgba(147,2,5,0.25) !important;
+  color: #930205 !important;
+}
+body.light .ottlib-hero-badge-dot {
+  background: #930205 !important;
+  box-shadow: 0 0 8px rgba(147,2,5,0.6) !important;
+}
+
+body.light .ottlib-hero-title {
+  background: linear-gradient(135deg, #1c1b1a 0%, #930205 50%, #c99a3c 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+body.light .ottlib-hero-sub { color: #6b6358 !important; }
+
+body.light .ottlib-search-icon { color: rgba(28,27,26,0.4) !important; }
+body.light .ottlib-search-input {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(28,27,26,0.14) !important;
+  color: #1c1b1a !important;
+}
+body.light .ottlib-search-input::placeholder { color: rgba(28,27,26,0.4) !important; }
+body.light .ottlib-search-input:focus {
+  border-color: rgba(147,2,5,0.45) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(147,2,5,0.12), 0 8px 24px rgba(147,2,5,0.1) !important;
+}
+body.light .ottlib-sort-select {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(28,27,26,0.14) !important;
+  color: #1c1b1a !important;
+}
+body.light .ottlib-sort-select option { background: #ffffff !important; color: #1c1b1a !important; }
+body.light .ottlib-free-btn {
+  background: rgba(16,150,105,0.1) !important;
+  border-color: rgba(16,150,105,0.3) !important;
+  color: #0d9668 !important;
+}
+body.light .ottlib-free-btn:hover, body.light .ottlib-free-btn.active {
+  background: rgba(16,150,105,0.2) !important;
+  border-color: rgba(16,150,105,0.5) !important;
+}
+
+body.light .ottlib-stat {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+}
+body.light .ottlib-stat:hover { border-color: rgba(147,2,5,0.3) !important; }
+body.light .ottlib-stat-num { color: #1c1b1a !important; }
+body.light .ottlib-stat-label { color: rgba(28,27,26,0.5) !important; }
+
+body.light .ottlib-streak-sub { color: rgba(28,27,26,0.55) !important; }
+body.light .ottlib-ai-sub { color: rgba(28,27,26,0.5) !important; }
+
+body.light .ottlib-cat-pill {
+  background: rgba(28,27,26,0.05) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+  color: rgba(28,27,26,0.65) !important;
+}
+body.light .ottlib-cat-pill:hover {
+  background: rgba(147,2,5,0.08) !important;
+  border-color: rgba(147,2,5,0.25) !important;
+  color: #930205 !important;
+}
+
+body.light .ottlib-section-text { color: #1c1b1a !important; }
+body.light .ottlib-divider { background: rgba(28,27,26,0.08) !important; }
+
+body.light .ottlib-card {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(28,27,26,0.1) !important;
+}
+body.light .ottlib-card:hover {
+  box-shadow: 0 16px 40px rgba(28,27,26,0.12), 0 0 0 1px rgba(147,2,5,0.25) !important;
+  border-color: rgba(147,2,5,0.3) !important;
+}
+body.light .ottlib-cover-fallback { color: rgba(28,27,26,0.15) !important; }
+
+body.light .ottlib-card-info { background: rgba(255,255,255,0.4) !important; }
+body.light .ottlib-card-title { color: #1c1b1a !important; }
+body.light .ottlib-card-meta {
+  color: rgba(28,27,26,0.5) !important;
+  background: rgba(28,27,26,0.05) !important;
+}
+body.light .ottlib-card-price { color: #930205 !important; }
+body.light .ottlib-card-price-orig { color: rgba(28,27,26,0.35) !important; }
+body.light .ottlib-progress-bar { background: rgba(28,27,26,0.08) !important; }
+body.light .ottlib-dl-badge {
+  background: rgba(255,255,255,0.7) !important;
+  color: rgba(28,27,26,0.65) !important;
+}
