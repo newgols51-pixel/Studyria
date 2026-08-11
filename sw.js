@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v49'; // v49: Fix blue Studyria logo -> maroon/gold on 234 job pages, 12 PDF pages, 404, offline, footer
+const CACHE_VERSION = 'v50'; // v50: Homepage logo letters + hero orbs + grad-hero -> maroon/gold
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;

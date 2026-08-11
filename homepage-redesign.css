@@ -26,7 +26,7 @@
   opacity: 0.35;
   animation: hrOrbFloat 20s ease-in-out infinite;
 }
-.hr-orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #3d8ef8, transparent); top: -10%; left: -5%; }
+.hr-orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #930205, transparent); top: -10%; left: -5%; }
 .hr-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #8b5cf6, transparent); bottom: -10%; right: -5%; animation-delay: -7s; }
 .hr-orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #00d4ff, transparent); top: 40%; left: 50%; animation-delay: -14s; opacity: 0.2; }
 @keyframes hrOrbFloat {
