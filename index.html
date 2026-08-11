@@ -18713,11 +18713,19 @@ body:not(.light) .sf-stories-count { color:rgba(240,228,208,0.4); }
   border:1px solid var(--hp-line,rgba(28,27,26,0.12)) !important;
   border-radius:10px !important; padding:26px 24px !important;
   backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
-  flex:0 0 calc((min(100vw,1280px) - 68px) / 3) !important;
+  flex:1 1 0 !important;
+  min-width:0 !important;
   scroll-snap-align:none !important;
 }
-.sf-stories .srv-card:nth-child(3n+1) {
+
+/* ── Page container: groups of 3 cards, snap target ── */
+.sf-stories .srv-page {
+  flex:0 0 calc(min(100vw,1280px) - 40px) !important;
+  display:flex !important;
+  gap:14px !important;
   scroll-snap-align:start !important;
+  padding:0 !important;
+}
 }
 body:not(.light) .sf-stories .srv-card {
   background:rgba(255,255,255,0.03) !important;
@@ -18763,7 +18771,7 @@ body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important
   max-width:1280px !important; margin:0 auto !important;
   padding:0 20px !important;
 }
-.sf-stories .srv-track { gap:14px !important; }
+.sf-stories .srv-track { gap:0 !important; padding:8px 0 20px !important; }
 .sf-stories .srv-dot { background:rgba(28,27,26,0.15) !important; }
 body:not(.light) .sf-stories .srv-dot { background:rgba(255,255,255,0.2) !important; }
 .sf-stories .srv-dot.active {
@@ -18849,9 +18857,12 @@ body:not(.light) .sf-stories .srv-star-btn { color:rgba(255,255,255,0.2) !import
 @media(max-width:640px){
   .sf-stories { padding:40px 0; }
   .sf-stories .srv-outer { padding:0 12px !important; }
-  .sf-stories .srv-track { gap:8px !important; }
+  .sf-stories .srv-track { padding:8px 0 16px !important; }
+  .sf-stories .srv-page {
+    flex:0 0 calc(100vw - 24px) !important;
+    gap:8px !important;
+  }
   .sf-stories .srv-card {
-    flex:0 0 calc((100vw - 40px) / 3) !important;
     padding:14px 10px !important;
   }
   .sf-stories .srv-card-text { font-size:.68rem !important; -webkit-line-clamp:3 !important; line-height:1.45 !important; }
@@ -46264,9 +46275,16 @@ function _srvAvg(list){
 function _srvRender(list){
   var track=document.getElementById('srvTrack');
   if(!track||!list||!list.length) return;
-  /* No duplication — manual swipe carousel, not auto-scroll */
+  /* Group cards into pages of 3 — each page is one carousel slide */
+  var PER_PAGE=3;
   var html='';
-  for(var i=0;i<list.length;i++) html+=_srvCard(list[i],i);
+  for(var i=0;i<list.length;i+=PER_PAGE){
+    html+='<div class="srv-page">';
+    for(var j=i;j<Math.min(i+PER_PAGE,list.length);j++){
+      html+=_srvCard(list[j],j);
+    }
+    html+='</div>';
+  }
   track.innerHTML=html;
   track.style.animation='none';
   track.style.transform='translateX(0)';
@@ -46427,51 +46445,34 @@ function _srvInitCarousel(){
   var track = document.getElementById('srvTrack');
   if(!outer || !track) return;
 
-  var cards = track.querySelectorAll('.srv-card');
-  if(!cards.length){ setTimeout(_srvInitCarousel, 400); return; }
+  var pages = track.querySelectorAll('.srv-page');
+  if(!pages.length){ setTimeout(_srvInitCarousel, 400); return; }
 
   /* tear down old handlers */
   if(_srvHandlers){
     try{
       outer.removeEventListener('scroll',   _srvHandlers.sc);
-      outer.removeEventListener('keydown',    _srvHandlers.kd);
-      window.removeEventListener('resize',   _srvHandlers.rz);
-      outer.removeEventListener('mousedown', _srvHandlers.md);
+      outer.removeEventListener('keydown',  _srvHandlers.kd);
+      window.removeEventListener('resize',  _srvHandlers.rz);
+      outer.removeEventListener('mousedown',_srvHandlers.md);
       window.removeEventListener('mouseup',  _srvHandlers.mu);
       window.removeEventListener('mousemove',_srvHandlers.mm);
     }catch(_){}
     _srvHandlers = null;
   }
 
-  var cardCount = cards.length;
-  var PER_PAGE = 3;  /* ── GROUP OF 3 ── */
+  var pageCount = pages.length;
 
-  /* ── dynamic gap (CSS may change on mobile) ── */
-  function gap(){
-    var g = parseFloat(getComputedStyle(track).gap) || 14;
-    return g;
-  }
-
-  /* ── one card width + gap ── */
-  function cardW(){
-    var c = cards[0];
-    if(!c) return 300;
-    return c.getBoundingClientRect().width + gap();
-  }
-
-  /* ── one page = 3 cards ── */
+  /* ── page width = visible content width of outer ── */
   function pageW(){
-    return PER_PAGE * cardW();
-  }
-
-  /* ── total pages ── */
-  function totalPages(){
-    return Math.ceil(cardCount / PER_PAGE);
+    var pw = pages[0] ? pages[0].getBoundingClientRect().width : 0;
+    if(pw < 10) pw = outer.clientWidth - 40;  /* fallback */
+    return pw;
   }
 
   /* ── scroll to a specific PAGE (0-indexed) ── */
   function scrollToPage(p, animated){
-    var max = totalPages() - 1;
+    var max = pageCount - 1;
     p = Math.max(0, Math.min(p, max));
     var target = p * pageW();
     outer.scrollTo({ left: target, behavior: animated ? 'smooth' : 'auto' });
@@ -46482,11 +46483,11 @@ function _srvInitCarousel(){
   var dotsEl = document.getElementById('srvDots');
   function updateDots(){
     if(!dotsEl) return;
-    var pages = totalPages();
-    var currentPage = Math.round(outer.scrollLeft / pageW());
-    currentPage = Math.max(0, Math.min(currentPage, pages - 1));
+    var pw = pageW();
+    var currentPage = pw > 0 ? Math.round(outer.scrollLeft / pw) : 0;
+    currentPage = Math.max(0, Math.min(currentPage, pageCount - 1));
     var html = '';
-    for(var i = 0; i < pages; i++){
+    for(var i = 0; i < pageCount; i++){
       html += '<div class="srv-dot' + (i === currentPage ? ' active' : '') + '"'
            +  ' onclick="window._srvGoto(' + i + ')"'
            +  ' role="button" aria-label="Go to review group ' + (i+1) + '"></div>';
@@ -46503,7 +46504,8 @@ function _srvInitCarousel(){
 
   /* ── keyboard nav: advance by 1 page (3 cards) ── */
   function onKeyDown(e){
-    var current = Math.round(outer.scrollLeft / pageW());
+    var pw = pageW();
+    var current = pw > 0 ? Math.round(outer.scrollLeft / pw) : 0;
     if(e.key === 'ArrowLeft'){ scrollToPage(current - 1, true); e.preventDefault(); }
     if(e.key === 'ArrowRight'){ scrollToPage(current + 1, true); e.preventDefault(); }
   }
@@ -46533,7 +46535,8 @@ function _srvInitCarousel(){
     isDown = false;
     outer.classList.remove('grabbing');
     /* snap to nearest page */
-    var nearest = Math.round(outer.scrollLeft / pageW());
+    var pw = pageW();
+    var nearest = pw > 0 ? Math.round(outer.scrollLeft / pw) : 0;
     scrollToPage(nearest, true);
   }
 
