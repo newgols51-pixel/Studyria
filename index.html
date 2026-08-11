@@ -46455,7 +46455,7 @@ function _srvInitCarousel(){
     var cs = getComputedStyle(outer);
     var padL = parseFloat(cs.paddingLeft) || 0;
     var padR = parseFloat(cs.paddingRight) || 0;
-    var w = outer.clientWidth - padL - padR;
+    var w = outer.clientWidth - padL - padR - 1;  /* -1px prevents subpixel peek */
     if(w < 50) w = outer.clientWidth;  /* fallback */
     for(var i = 0; i < pages.length; i++){
       pages[i].style.flexBasis = w + 'px';
