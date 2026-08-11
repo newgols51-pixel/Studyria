@@ -908,7 +908,7 @@
           var h = Math.max(2, (mins / maxMin) * 100);
           html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">' +
             '<div style="font-size:0.6rem;color:var(--text-secondary,#94a3b8)">' + Math.round(mins) + '</div>' +
-            '<div style="width:100%;height:' + h + '%;border-radius:6px 6px 0 0;background:' + (i === todayIdx ? 'linear-gradient(180deg,#3d8ef8,#8b5cf6)' : 'rgba(61,142,248,0.3)') + '"></div>' +
+            '<div style="width:100%;height:' + h + '%;border-radius:6px 6px 0 0;background:' + (i === todayIdx ? 'linear-gradient(180deg,#930205,#8b5cf6)' : 'rgba(147,2,5,0.3)') + '"></div>' +
             '<div style="font-size:0.6rem;color:var(--text-secondary,#94a3b8)">' + dayNames[i] + '</div>' +
           '</div>';
         });

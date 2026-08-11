@@ -324,7 +324,7 @@ export function buildCheckoutOptions({
     },
 
     theme: {
-      color:        '#3d8ef8',
+      color:        '#930205',
       backdrop_blur: 5,
     },
 

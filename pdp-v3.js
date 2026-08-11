@@ -113,8 +113,8 @@
     var inWish = (window.wishlist || []).includes(pdf.id) ||
                  (window.wishlist || []).includes(String(pdf.id));
     var coverSrc = (pdf.coverImage || pdf.cover_image || pdf.cover_url || '').trim();
-    var coverFrom = pdf.coverFrom || '#1d4ed8';
-    var coverTo = pdf.coverTo || '#3d8ef8';
+    var coverFrom = pdf.coverFrom || '#930205';
+    var coverTo = pdf.coverTo || '#930205';
     var price = Number(pdf.price ?? 0);
     var origPrice = Number(pdf.originalPrice ?? pdf.original_price ?? 0);
     var discount = (origPrice > 0 && price > 0 && origPrice > price)

@@ -192,7 +192,7 @@
     _progressEl.innerHTML = `
       <div class="pwa-upd-card">
         <div class="pwa-upd-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3d8ef8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#930205" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
             <polyline points="17 8 12 3 7 8"/>
             <line x1="12" y1="3" x2="12" y2="15"/>
@@ -495,7 +495,7 @@
       return;
     }
     const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2744;color:#e4e8f0;padding:10px 18px;border-radius:10px;font-size:13px;z-index:99998;box-shadow:0 4px 20px rgba(0,0,0,0.5);border:1px solid rgba(61,142,248,0.3)';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2744;color:#e4e8f0;padding:10px 18px;border-radius:10px;font-size:13px;z-index:99998;box-shadow:0 4px 20px rgba(0,0,0,0.5);border:1px solid rgba(147,2,5,0.3)';
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3500);

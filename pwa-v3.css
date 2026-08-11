@@ -39,12 +39,12 @@
   height: 96px;
   border-radius: 22px;
   background: linear-gradient(135deg, #1a2744 0%, #0d1829 100%);
-  border: 1.5px solid rgba(61,142,248,0.25);
+  border: 1.5px solid rgba(147,2,5,0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 0 40px rgba(61,142,248,0.2),
+    0 0 40px rgba(147,2,5,0.2),
     0 20px 60px rgba(0,0,0,0.6),
     inset 0 1px 0 rgba(255,255,255,0.06);
   animation: splashIconPulse 2s ease-in-out infinite;
@@ -68,7 +68,7 @@
 }
 
 .pwa-splash-brand span {
-  background: linear-gradient(135deg, #3d8ef8, #93c5fd);
+  background: linear-gradient(135deg, #930205, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -96,8 +96,8 @@
 .pwa-splash-ring {
   width: 32px;
   height: 32px;
-  border: 2.5px solid rgba(61,142,248,0.15);
-  border-top-color: #3d8ef8;
+  border: 2.5px solid rgba(147,2,5,0.15);
+  border-top-color: #930205;
   border-radius: 50%;
   animation: splashSpin 0.8s linear infinite;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -120,7 +120,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(61,142,248,0.4);
+  background: rgba(147,2,5,0.4);
   animation: splashDotPulse 1.2s ease-in-out infinite;
 }
 
@@ -134,8 +134,8 @@
 }
 
 @keyframes splashIconPulse {
-  0%, 100% { box-shadow: 0 0 40px rgba(61,142,248,0.2), 0 20px 60px rgba(0,0,0,0.6); }
-  50%       { box-shadow: 0 0 60px rgba(61,142,248,0.35), 0 20px 60px rgba(0,0,0,0.6); }
+  0%, 100% { box-shadow: 0 0 40px rgba(147,2,5,0.2), 0 20px 60px rgba(0,0,0,0.6); }
+  50%       { box-shadow: 0 0 60px rgba(147,2,5,0.35), 0 20px 60px rgba(0,0,0,0.6); }
 }
 
 @keyframes splashSpin {

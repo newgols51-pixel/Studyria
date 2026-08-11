@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v51'; // v51: hsn-letter + hero badges + homepage-redesign accents -> maroon/gold
+const CACHE_VERSION = 'v52'; // v52: Full brand migration — all blue -> maroon/gold site-wide
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;

@@ -132,7 +132,7 @@
   const PLAN_UI = Object.freeze({
     trial_1day:  { label: '1 Day Trial',  priceLabel: '', savings: null, color: '#10d98e', icon: '⚡' },
     trial_15day: { label: '15 Day Trial', priceLabel: '', savings: null, color: '#f59e0b', icon: '🟢' },
-    monthly:     { label: 'Monthly',      priceLabel: '', savings: null, color: '#3d8ef8', icon: '📅' },
+    monthly:     { label: 'Monthly',      priceLabel: '', savings: null, color: '#930205', icon: '📅' },
     quarterly:   { label: 'Quarterly',    priceLabel: '', savings: 'Save 16%', color: '#8b5cf6', icon: '📆' },
     half_year:   { label: 'Half Year',    priceLabel: '', savings: 'Best Value', color: '#8b5cf6', icon: '👑' },
   });

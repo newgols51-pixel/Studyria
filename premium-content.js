@@ -745,7 +745,7 @@
     /* BUG-FIX: Use quoted string concatenation that avoids inner single-quote breaks */
     var coverHtml = cover
       ? "<img src=\"" + cover + "\" alt=\"" + title + "\" style=\"width:100%;height:100%;object-fit:cover\" loading=\"lazy\" decoding=\"async\">"
-      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(147,2,5,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
     /* BUG-FIX (BUG-2): Open Free calls openReadingRoom directly — never goes to checkout */
     var onclickCard = "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom('" + id + "');else if(typeof openDetail===\'function\')openDetail('" + id + "')";
     var onclickBtn  = "event.stopPropagation();" + onclickCard;
@@ -853,7 +853,7 @@
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
       + '<button onclick="navigate(\'premium-library\')" style="font-size:.75rem;color:var(--accent);'
-      + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
+      + 'background:none;border:1px solid rgba(147,2,5,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
       + sectionsHtml
@@ -1258,8 +1258,8 @@
         h += '</div>';
       }
 
-      h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(61,142,248,.08);'
-        + 'border:1px solid rgba(61,142,248,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
+      h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(147,2,5,.08);'
+        + 'border:1px solid rgba(147,2,5,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
         + 'ℹ Config stored in <strong>site_config</strong> (key: <code>premium_categories_config</code>). '
         + 'Individual PDF purchases always work regardless of toggle. '
         + 'Toggling OFF only removes membership access — purchased content is never affected.'
@@ -1410,7 +1410,7 @@
       container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
         + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
         + '<div style="font-size:.9rem;margin-bottom:16px">Loading timed out. Please retry.</div>'
-        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#930205,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
         + '</div>';
     }, 5000);
 
@@ -1532,7 +1532,7 @@
         container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
           + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
           + '<div style="font-size:.9rem;margin-bottom:16px">Could not load Premium Library.</div>'
-          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#930205,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
           + '</div>';
       }
     }

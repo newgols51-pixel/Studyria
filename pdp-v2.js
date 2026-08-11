@@ -125,8 +125,8 @@ function _pdpRenderShell(pdf) {
   const origPrice = Number(pdf.originalPrice ?? 0);
   const discount  = (origPrice > 0 && price > 0 && origPrice > price)
                       ? Math.round((1 - price / origPrice) * 100) : 0;
-  const coverFrom = pdf.coverFrom || '#1d4ed8';
-  const coverTo   = pdf.coverTo   || '#3d8ef8';
+  const coverFrom = pdf.coverFrom || '#930205';
+  const coverTo   = pdf.coverTo   || '#930205';
 
   // Cover — real image or gradient fallback (no placeholder text)
   const coverSrc = (pdf.cover_image || pdf.coverImage || '').trim();
