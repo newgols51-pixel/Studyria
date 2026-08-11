@@ -18607,66 +18607,103 @@ body:not(.light) .sf-legal span[onclick]:hover {
 body:not(.light) .sf-legal-sep { color: rgba(240,228,208,0.25); }
 
 /* ═══════════════════════════════════════════════════════════════
-   ENTERPRISE TRUST SECTION — matching editorial design
+   FAQ SECTION — replaces "Why Students Trust Studyria"
+   Visual reference: homepage.html (.faq-section, kicker+h2 head,
+   .faq-item single-open accordion). Reuses existing --hp-* design
+   tokens + .container only — no new colors, no new libraries.
    ═══════════════════════════════════════════════════════════════ */
-.sf-trust {
+.sf-faq {
   position: relative;
-  padding: 28px 0 16px;
+  padding: 56px 0;
   background: var(--hp-paper-dim, #f1ece3);
   border-top: 1px solid var(--hp-line, rgba(28,27,26,0.12));
 }
-body:not(.light) .sf-trust {
+body:not(.light) .sf-faq {
   background: #1f1410;
   border-top-color: rgba(212,180,140,0.10);
 }
-.sf-trust-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+.sf-faq-head { text-align: center; margin-bottom: 32px; }
+.sf-faq-kicker {
+  display: block;
+  font-size: .78rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--hp-red, #930205);
+  font-weight: 700;
+  margin-bottom: 8px;
 }
-.sf-trust-card {
-  position: relative;
-  padding: 18px 16px;
-  border-radius: 8px;
+body:not(.light) .sf-faq-kicker { color: #d4506a; }
+.sf-faq-title {
+  font-family: var(--hp-font-display, 'Georgia', serif);
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--hp-ink, #1c1b1a);
+  margin: 0;
+}
+body:not(.light) .sf-faq-title { color: #f7f0e6; }
+.sf-faq-list { max-width: 760px; margin: 0 auto; }
+.sf-faq-item {
   background: #ffffff;
-  border: 1px solid var(--hp-line, rgba(28,27,26,0.10));
-  text-align: center;
-  transition: all .3s cubic-bezier(.4,0,.2,1);
+  border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
 }
-body:not(.light) .sf-trust-card {
+body:not(.light) .sf-faq-item {
   background: rgba(255,255,255,0.03);
   border-color: rgba(212,180,140,0.10);
 }
-.sf-trust-card::before { display: none; }
-.sf-trust-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--hp-red, #930205);
-  box-shadow: 0 8px 24px rgba(28,27,26,0.10);
-}
-body:not(.light) .sf-trust-card:hover {
-  border-color: #b83348;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-}
-.sf-trust-icon {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-  display: inline-block;
-  animation: none;
-}
-.sf-trust-title {
-  font-size: .78rem;
+.sf-faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--hp-font-body, sans-serif);
   font-weight: 700;
-  color: var(--hp-ink, #1c1b1a);
-  margin-bottom: 3px;
-}
-body:not(.light) .sf-trust-title { color: #f0e4d0; }
-.sf-trust-sub {
-  font-size: .65rem;
-  color: rgba(28,27,26,0.50);
+  font-size: .92rem;
   line-height: 1.4;
+  color: var(--hp-ink, #1c1b1a);
+  -webkit-tap-highlight-color: transparent;
 }
-body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
-.sf-fade-in { opacity: 1; animation: none; }
+body:not(.light) .sf-faq-q { color: #f0e4d0; }
+.sf-faq-q:focus-visible {
+  outline: 2px solid var(--hp-red, #930205);
+  outline-offset: -2px;
+}
+.sf-faq-icon {
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--hp-red, #930205);
+  transition: transform .2s ease;
+  line-height: 1;
+}
+body:not(.light) .sf-faq-icon { color: #d4506a; }
+.sf-faq-item.open .sf-faq-icon { transform: rotate(45deg); }
+.sf-faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease;
+  padding: 0 20px;
+}
+.sf-faq-item.open .sf-faq-a { max-height: 320px; padding-bottom: 18px; }
+.sf-faq-a p {
+  margin: 0;
+  font-size: .84rem;
+  line-height: 1.6;
+  color: rgba(28,27,26,0.65);
+}
+body:not(.light) .sf-faq-a p { color: rgba(240,228,208,0.55); }
+@media (max-width: 480px) {
+  .sf-faq { padding: 40px 0; }
+  .sf-faq-q { padding: 16px; font-size: .86rem; }
+}
 
 /* ── Responsive ── */
 @media (max-width: 960px) {
@@ -18694,34 +18731,92 @@ body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
 </style>
 
 
-<!-- ── Enterprise Trust Section ── -->
-<section class="sf-trust" id="sfTrustSection">
+<!-- ── FAQ Section — replaces "Why Students Trust Studyria" ──
+     Visual reference: homepage.html (.faq-section). Single-open
+     accordion, native <button> semantics for keyboard/screen-reader
+     accessibility. No new JS libraries. ── -->
+<section class="sf-faq" id="sfFaqSection">
   <div class="container">
-    <h3 style="text-align:center;font-size:.82rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;">Why Students Trust Studyria</h3>
-    <div class="sf-trust-grid">
-      <div class="sf-trust-card sf-fade-in">
-        <div class="sf-trust-icon">🛡️</div>
-        <div class="sf-trust-title">Secure Payments</div>
-        <div class="sf-trust-sub">Razorpay-verified gateway</div>
+    <div class="sf-faq-head">
+      <span class="sf-faq-kicker">Questions</span>
+      <h2 class="sf-faq-title">Frequently asked</h2>
+    </div>
+    <div class="sf-faq-list">
+
+      <div class="sf-faq-item">
+        <button class="sf-faq-q" type="button" aria-expanded="false" aria-controls="sfFaqA1" id="sfFaqQ1">
+          <span>How fast do I get access after payment?</span>
+          <span class="sf-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sf-faq-a" id="sfFaqA1" role="region" aria-labelledby="sfFaqQ1">
+          <p>Access is provided after your payment is successfully verified. If your access does not appear shortly after payment, please contact Studyria support so the team can check your account.</p>
+        </div>
       </div>
-      <div class="sf-trust-card sf-fade-in">
-        <div class="sf-trust-icon">📚</div>
-        <div class="sf-trust-title">Verified Study Resources</div>
-        <div class="sf-trust-sub">Expert-curated PDFs</div>
+
+      <div class="sf-faq-item">
+        <button class="sf-faq-q" type="button" aria-expanded="false" aria-controls="sfFaqA2" id="sfFaqQ2">
+          <span>Is the free content actually useful, or just a teaser?</span>
+          <span class="sf-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sf-faq-a" id="sfFaqA2" role="region" aria-labelledby="sfFaqQ2">
+          <p>Studyria includes useful free study materials so students can explore the platform and start preparing before choosing premium content.</p>
+        </div>
       </div>
-      <div class="sf-trust-card sf-fade-in">
-        <div class="sf-trust-icon">⚡</div>
-        <div class="sf-trust-title">Instant PDF Access</div>
-        <div class="sf-trust-sub">Download immediately</div>
+
+      <div class="sf-faq-item">
+        <button class="sf-faq-q" type="button" aria-expanded="false" aria-controls="sfFaqA3" id="sfFaqQ3">
+          <span>Can I access notes on mobile?</span>
+          <span class="sf-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sf-faq-a" id="sfFaqA3" role="region" aria-labelledby="sfFaqQ3">
+          <p>Yes. Studyria is designed to work across mobile phones, tablets and desktop browsers, so you can access your study materials from your preferred device.</p>
+        </div>
       </div>
-      <div class="sf-trust-card sf-fade-in">
-        <div class="sf-trust-icon">🇮🇳</div>
-        <div class="sf-trust-title">Built for Assam</div>
-        <div class="sf-trust-sub">ADRE, APSC & state exams</div>
+
+      <div class="sf-faq-item">
+        <button class="sf-faq-q" type="button" aria-expanded="false" aria-controls="sfFaqA4" id="sfFaqQ4">
+          <span>What if I'm not satisfied with a purchase?</span>
+          <span class="sf-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sf-faq-a" id="sfFaqA4" role="region" aria-labelledby="sfFaqQ4">
+          <p>Please review the applicable Refund Policy and contact Studyria Support with your purchase details. The support team can guide you according to the applicable policy.</p>
+        </div>
       </div>
+
+      <div class="sf-faq-item">
+        <button class="sf-faq-q" type="button" aria-expanded="false" aria-controls="sfFaqA5" id="sfFaqQ5">
+          <span>Do I need a subscription to start studying?</span>
+          <span class="sf-faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="sf-faq-a" id="sfFaqA5" role="region" aria-labelledby="sfFaqQ5">
+          <p>No. You can start with the available free study materials. Premium content and additional benefits are available through Studyria Pass or individual purchases where applicable.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
+<script>
+(function(){
+  var items = document.querySelectorAll('#sfFaqSection .sf-faq-item');
+  items.forEach(function(item){
+    var btn = item.querySelector('.sf-faq-q');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      items.forEach(function(i){
+        i.classList.remove('open');
+        var b = i.querySelector('.sf-faq-q');
+        if (b) b.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+})();
+</script>
 
 <!-- ══════════════════════════════════════════════════════════════
      UNLOCK STUDYRIA PASS — Premium pre-footer CTA
