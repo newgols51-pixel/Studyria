@@ -10502,68 +10502,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
   </div>
 </section>
 
-<!-- ── TESTIMONIALS ──────────────────────────────────────────── -->
-<section class="sh-testim-section" id="testimonialsSection">
-  <div id="testimTrack" style="display:none"></div>
-  <div class="container">
-    <div class="sh-section-head" style="padding-bottom:0">
-      <div class="sh-section-label">
-        <span class="sh-section-dot" style="background:#fbbf24"></span>
-        <span class="sh-section-title">&#11088; Student Reviews</span>
-        <span class="sh-section-badge" style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">Verified</span>
-      </div>
-    </div>
-  </div>
-  <div class="srv-header">
-    <div class="srv-header-left">
-      <div class="srv-sub">Real verified reviews from Assam students</div>
-    </div>
-    <div class="srv-rating-pill">
-      <div class="srv-avg-num" id="srvAvgNum">4.9</div>
-      <div>
-        <div class="srv-stars-row" id="srvStarsRow">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <div class="srv-count-txt" id="srvCountTxt">69 verified reviews</div>
-      </div>
-    </div>
-  </div>
-  <div class="srv-outer" id="srvOuter" style="position:relative">
-    <div class="srv-track" id="srvTrack"></div>
-  </div>
-  <div class="srv-dots" id="srvDots"></div>
-  <div class="srv-add-wrap">
-    <button class="srv-add-btn" id="srvAddBtn" onclick="_srvToggleForm()">
-      <span class="srv-add-btn-icon">&#9998;</span>
-      <span class="srv-add-btn-txt">Add Your Review</span>
-    </button>
-    <div class="srv-form-panel" id="srvFormPanel">
-      <div class="srv-form-title">Share Your Experience</div>
-      <form id="srvReviewForm" onsubmit="_srvSubmitReview(event)">
-        <div class="srv-form-row">
-          <div>
-            <label class="srv-form-label">Your Name *</label>
-            <input class="srv-form-input" id="srvRevName" type="text" placeholder="e.g. Priyanka Bora" required>
-          </div>
-          <div>
-            <label class="srv-form-label">Location</label>
-            <input class="srv-form-input" id="srvRevLoc" type="text" placeholder="e.g. Guwahati">
-          </div>
-        </div>
-        <label class="srv-form-label">Rating *</label>
-        <div class="srv-star-row">
-          <button type="button" class="srv-star-btn" onclick="_srvSetStar(1)">&#9733;</button>
-          <button type="button" class="srv-star-btn" onclick="_srvSetStar(2)">&#9733;</button>
-          <button type="button" class="srv-star-btn" onclick="_srvSetStar(3)">&#9733;</button>
-          <button type="button" class="srv-star-btn" onclick="_srvSetStar(4)">&#9733;</button>
-          <button type="button" class="srv-star-btn" onclick="_srvSetStar(5)">&#9733;</button>
-        </div>
-        <label class="srv-form-label">Your Review *</label>
-        <textarea class="srv-form-textarea" id="srvRevText" placeholder="Share your experience with Studyria PDFs... (min. 20 characters)" rows="4"></textarea>
-        <button class="srv-form-submit" id="srvRevSubmit" type="submit">Submit Review</button>
-        <div class="srv-form-msg" id="srvFormMsg"></div>
-      </form>
-    </div>
-  </div>
-</section>
+<!-- ── SUCCESS STORIES moved to before FAQ section ──>
 
 <!-- ── FAQ ──────────────────────────────────────────────────── -->
 <section class="sh-faq-section">
@@ -18730,6 +18669,233 @@ body:not(.light) .sf-faq-a p { color: rgba(240,228,208,0.55); }
 }
 </style>
 
+
+<style>
+/* ── SUCCESS STORIES section — cream/maroon (matches sf-faq) ── */
+.sf-stories {
+  position: relative; padding: 56px 0;
+  background: var(--hp-paper, #faf7f2);
+  border-top: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+}
+body:not(.light) .sf-stories {
+  background: #1f1410; border-top-color: rgba(212,180,140,0.10);
+}
+.sf-stories-head { max-width:1280px; margin:0 auto 16px; padding:0 20px; }
+.sf-stories-kicker {
+  display:block; font-size:.78rem; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--hp-red,#930205);
+  font-weight:700; margin-bottom:8px;
+}
+body:not(.light) .sf-stories-kicker { color:#d4506a; }
+.sf-stories-title {
+  font-family:var(--hp-font-display,'Georgia',serif);
+  font-size:clamp(1.6rem,4vw,2rem); font-weight:700;
+  color:var(--hp-ink,#1c1b1a); margin:0; line-height:1.2;
+}
+body:not(.light) .sf-stories-title { color:#f7f0e6; }
+.sf-stories-rating {
+  display:inline-flex; align-items:center; gap:10px;
+  background:rgba(201,154,60,0.1); border:1px solid rgba(201,154,60,0.28);
+  border-radius:999px; padding:8px 16px;
+  max-width:max-content; margin:16px auto 0;
+}
+.sf-stories-avg {
+  font-family:var(--hp-font-display,'Georgia',serif); font-weight:900;
+  font-size:1.4rem; color:var(--hp-gold,#c99a3c); line-height:1;
+}
+.sf-stories-stars { color:var(--hp-gold,#c99a3c); font-size:.8rem; letter-spacing:1.5px; }
+.sf-stories-count { font-size:.65rem; color:var(--hp-ink,#1c1b1a); opacity:.5; }
+body:not(.light) .sf-stories-count { color:rgba(240,228,208,0.4); }
+
+/* ── Review cards — override old dark theme ── */
+.sf-stories .srv-card {
+  background:#fff !important;
+  border:1px solid var(--hp-line,rgba(28,27,26,0.12)) !important;
+  border-radius:10px !important; padding:26px 24px !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  flex:0 0 clamp(280px,82vw,340px) !important;
+}
+body:not(.light) .sf-stories .srv-card {
+  background:rgba(255,255,255,0.03) !important;
+  border-color:rgba(212,180,140,0.10) !important;
+}
+.sf-stories .srv-card:hover {
+  border-color:rgba(201,154,60,0.3) !important;
+  box-shadow:0 12px 36px rgba(0,0,0,0.08) !important;
+  transform:translateY(-3px) !important;
+}
+body:not(.light) .sf-stories .srv-card:hover {
+  box-shadow:0 12px 36px rgba(0,0,0,0.4) !important;
+}
+.sf-stories .srv-card-stars-str { color:var(--hp-gold,#c99a3c) !important; }
+.sf-stories .srv-card-stars-num { color:var(--hp-ink,#1c1b1a) !important; opacity:.5 !important; }
+body:not(.light) .sf-stories .srv-card-stars-num { color:rgba(240,228,208,0.5) !important; }
+.sf-stories .srv-card-text {
+  color:var(--hp-ink,#1c1b1a) !important; opacity:.8 !important; font-style:italic !important;
+}
+body:not(.light) .sf-stories .srv-card-text { color:rgba(240,228,208,0.75) !important; }
+.sf-stories .srv-author-name {
+  color:var(--hp-ink,#1c1b1a) !important;
+  font-family:var(--hp-font-display,'Georgia',serif) !important;
+}
+body:not(.light) .sf-stories .srv-author-name { color:#f0e4d0 !important; }
+.sf-stories .srv-author-loc { color:var(--hp-ink,#1c1b1a) !important; opacity:.55 !important; }
+body:not(.light) .sf-stories .srv-author-loc { color:rgba(240,228,208,0.4) !important; }
+.sf-stories .srv-avatar {
+  background:var(--hp-red,#930205) !important; color:#fff !important; border:none !important;
+}
+.sf-stories .srv-verified {
+  color:var(--hp-gold,#c99a3c) !important;
+  background:rgba(201,154,60,0.08) !important;
+  border-color:rgba(201,154,60,0.2) !important;
+}
+.sf-stories .srv-quote-icon { color:rgba(201,154,60,0.1) !important; }
+.sf-stories .srv-date { color:var(--hp-ink,#1c1b1a) !important; opacity:.3 !important; }
+body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important; }
+
+/* ── Carousel overrides ── */
+.sf-stories .srv-outer { -webkit-mask-image:none !important; mask-image:none !important; }
+.sf-stories .srv-dot { background:rgba(28,27,26,0.15) !important; }
+body:not(.light) .sf-stories .srv-dot { background:rgba(255,255,255,0.2) !important; }
+.sf-stories .srv-dot.active {
+  background:var(--hp-red,#930205) !important; width:20px !important; border-radius:3px !important;
+}
+body:not(.light) .sf-stories .srv-dot.active { background:#d4506a !important; }
+.sf-stories .srv-arrow {
+  background:rgba(255,255,255,0.9) !important;
+  border-color:var(--hp-line,rgba(28,27,26,0.12)) !important;
+  color:var(--hp-ink,#1c1b1a) !important; backdrop-filter:none !important;
+}
+body:not(.light) .sf-stories .srv-arrow {
+  background:rgba(0,0,0,0.65) !important; color:#e4e8f0 !important;
+  border-color:rgba(255,255,255,0.18) !important;
+}
+.sf-stories .srv-arrow:hover {
+  background:var(--hp-red,#930205) !important; color:#fff !important;
+  border-color:var(--hp-red,#930205) !important;
+}
+body:not(.light) .sf-stories .srv-arrow:hover {
+  background:rgba(147,2,5,0.4) !important; color:#e4e8f0 !important;
+}
+
+/* ── Add Review button & form ── */
+.sf-stories .srv-add-btn {
+  background:rgba(147,2,5,0.08) !important;
+  border-color:rgba(147,2,5,0.25) !important;
+  color:var(--hp-red,#930205) !important;
+  font-family:var(--hp-font-body,sans-serif) !important;
+}
+body:not(.light) .sf-stories .srv-add-btn {
+  background:rgba(212,180,140,0.06) !important;
+  border-color:rgba(212,180,140,0.2) !important; color:#d4506a !important;
+}
+.sf-stories .srv-add-btn:hover {
+  background:var(--hp-red,#930205) !important; color:#fff !important;
+  border-color:var(--hp-red,#930205) !important;
+}
+body:not(.light) .sf-stories .srv-add-btn:hover {
+  background:rgba(147,2,5,0.3) !important; color:#f0e4d0 !important;
+}
+.sf-stories .srv-form-panel {
+  background:#fff !important;
+  border:1px solid var(--hp-line,rgba(28,27,26,0.12)) !important;
+  backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+  border-radius:10px !important;
+}
+body:not(.light) .sf-stories .srv-form-panel {
+  background:rgba(255,255,255,0.03) !important;
+  border-color:rgba(212,180,140,0.10) !important;
+  backdrop-filter:blur(18px) !important; -webkit-backdrop-filter:blur(18px) !important;
+}
+.sf-stories .srv-form-title {
+  color:var(--hp-ink,#1c1b1a) !important;
+  font-family:var(--hp-font-display,'Georgia',serif) !important;
+}
+body:not(.light) .sf-stories .srv-form-title { color:#f0e4d0 !important; }
+.sf-stories .srv-form-label { color:var(--hp-ink,#1c1b1a) !important; opacity:.6 !important; }
+body:not(.light) .sf-stories .srv-form-label { color:rgba(240,228,208,0.45) !important; }
+.sf-stories .srv-form-input, .sf-stories .srv-form-textarea {
+  background:rgba(28,27,26,0.03) !important;
+  border-color:var(--hp-line,rgba(28,27,26,0.12)) !important;
+  color:var(--hp-ink,#1c1b1a) !important;
+}
+body:not(.light) .sf-stories .srv-form-input, body:not(.light) .sf-stories .srv-form-textarea {
+  background:rgba(255,255,255,0.05) !important;
+  border-color:rgba(255,255,255,0.12) !important; color:#e4e8f0 !important;
+}
+.sf-stories .srv-form-input:focus, .sf-stories .srv-form-textarea:focus {
+  border-color:var(--hp-red,#930205) !important; background:rgba(147,2,5,0.03) !important;
+}
+body:not(.light) .sf-stories .srv-form-input:focus, body:not(.light) .sf-stories .srv-form-textarea:focus {
+  border-color:rgba(147,2,5,0.5) !important; background:rgba(147,2,5,0.06) !important;
+}
+.sf-stories .srv-form-submit {
+  background:var(--hp-red,#930205) !important; font-family:var(--hp-font-body,sans-serif) !important;
+}
+.sf-stories .srv-form-submit:hover { background:var(--hp-red-deep,#7d1122) !important; }
+.sf-stories .srv-star-btn { color:rgba(28,27,26,0.2) !important; }
+body:not(.light) .sf-stories .srv-star-btn { color:rgba(255,255,255,0.2) !important; }
+.sf-stories .srv-star-btn.lit { color:var(--hp-gold,#c99a3c) !important; }
+
+@media(max-width:640px){
+  .sf-stories { padding:40px 0; }
+  .sf-stories .srv-card { flex:0 0 82vw !important; padding:22px 20px !important; }
+  .sf-stories-rating { margin-left:20px; }
+}
+</style>
+
+<!-- ── SUCCESS STORIES (Reviews) — matches homepage.html reference ── -->
+<section class="sf-stories" id="testimonialsSection">
+  <div id="testimTrack" style="display:none"></div>
+  <div class="container">
+    <div class="sf-stories-head">
+      <span class="sf-stories-kicker">Success Stories</span>
+      <h2 class="sf-stories-title">Trusted by Assam&#8217;s<br>aspirants</h2>
+    </div>
+  </div>
+  <div class="sf-stories-rating">
+    <span class="sf-stories-avg" id="srvAvgNum">4.9</span>
+    <span class="sf-stories-stars" id="srvStarsRow">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    <span class="sf-stories-count" id="srvCountTxt">69 verified reviews</span>
+  </div>
+  <div class="srv-outer" id="srvOuter" style="position:relative">
+    <div class="srv-track" id="srvTrack"></div>
+  </div>
+  <div class="srv-dots" id="srvDots"></div>
+  <div class="srv-add-wrap">
+    <button class="srv-add-btn" id="srvAddBtn" onclick="_srvToggleForm()">
+      <span class="srv-add-btn-icon">&#9998;</span>
+      <span class="srv-add-btn-txt">Add Your Review</span>
+    </button>
+    <div class="srv-form-panel" id="srvFormPanel">
+      <div class="srv-form-title">Share Your Experience</div>
+      <form id="srvReviewForm" onsubmit="_srvSubmitReview(event)">
+        <div class="srv-form-row">
+          <div>
+            <label class="srv-form-label">Your Name *</label>
+            <input class="srv-form-input" id="srvRevName" type="text" placeholder="e.g. Priyanka Bora" required>
+          </div>
+          <div>
+            <label class="srv-form-label">Location</label>
+            <input class="srv-form-input" id="srvRevLoc" type="text" placeholder="e.g. Guwahati">
+          </div>
+        </div>
+        <label class="srv-form-label">Rating *</label>
+        <div class="srv-star-row">
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(1)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(2)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(3)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(4)">&#9733;</button>
+          <button type="button" class="srv-star-btn" onclick="_srvSetStar(5)">&#9733;</button>
+        </div>
+        <label class="srv-form-label">Your Review *</label>
+        <textarea class="srv-form-textarea" id="srvRevText" placeholder="Share your experience with Studyria PDFs... (min. 20 characters)" rows="4"></textarea>
+        <button class="srv-form-submit" id="srvRevSubmit" type="submit">Submit Review</button>
+        <div class="srv-form-msg" id="srvFormMsg"></div>
+      </form>
+    </div>
+  </div>
+</section>
 
 <!-- ── FAQ Section — replaces "Why Students Trust Studyria" ──
      Visual reference: homepage.html (.faq-section). Single-open
