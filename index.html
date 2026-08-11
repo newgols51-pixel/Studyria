@@ -18216,10 +18216,12 @@ body:not(.light) .sf-top-bar {
 /* ── Newsletter Section ── */
 .sf-newsletter {
   position: relative;
-  padding: 0 0 16px;
+  padding: 24px 0;
+  border-top: 1px solid var(--hp-line, rgba(28,27,26,0.12));
   border-bottom: 1px solid var(--hp-line, rgba(28,27,26,0.12));
 }
 body:not(.light) .sf-newsletter {
+  border-top-color: rgba(212,180,140,0.10);
   border-bottom-color: rgba(212,180,140,0.10);
 }
 .sf-newsletter-inner {
@@ -18790,33 +18792,6 @@ body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
   <!-- Maroon-gold accent divider -->
   <div class="sf-top-bar"></div>
 
-  <!-- Newsletter strip -->
-  <div class="sf-newsletter">
-    <div class="container">
-      <div class="sf-newsletter-inner">
-        <div class="sf-newsletter-text">
-          <h3>📬 Get New PDF Alerts</h3>
-          <p>Be the first to know when a new PDF drops — by Email &amp; WhatsApp.</p>
-        </div>
-        <div class="sf-newsletter-form" style="flex-direction:column;gap:8px;align-items:stretch;">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <input class="sf-newsletter-input" id="sfSubEmail" type="email" placeholder="your@email.com" aria-label="Email for PDF alerts" style="flex:1;min-width:0;" />
-            <input class="sf-newsletter-input" id="sfSubWhatsApp" type="tel" placeholder="WhatsApp (optional, e.g. +91…)" aria-label="WhatsApp number (optional)" style="flex:1;min-width:0;" />
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:rgba(28,27,26,0.55);cursor:pointer;">
-              <input type="checkbox" id="sfSubEmail_chk" checked style="accent-color:var(--hp-red, #930205);" /> Email alerts
-            </label>
-            <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:rgba(28,27,26,0.55);cursor:pointer;">
-              <input type="checkbox" id="sfSubWa_chk" style="accent-color:#25d366;" /> WhatsApp alerts
-            </label>
-            <button class="sf-newsletter-btn" onclick="handleNewsletterSubscribe(this)" style="margin-left:auto;">Subscribe</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Main link grid -->
   <div class="sf-main">
     <div class="container">
@@ -19053,6 +19028,33 @@ body:not(.light) .sf-trust-sub { color: rgba(240,228,208,0.45); }
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- Newsletter strip -->
+  <div class="sf-newsletter">
+    <div class="container">
+      <div class="sf-newsletter-inner">
+        <div class="sf-newsletter-text">
+          <h3>📬 Get New PDF Alerts</h3>
+          <p>Be the first to know when a new PDF drops — by Email &amp; WhatsApp.</p>
+        </div>
+        <div class="sf-newsletter-form" style="flex-direction:column;gap:8px;align-items:stretch;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input class="sf-newsletter-input" id="sfSubEmail" type="email" placeholder="your@email.com" aria-label="Email for PDF alerts" style="flex:1;min-width:0;" />
+            <input class="sf-newsletter-input" id="sfSubWhatsApp" type="tel" placeholder="WhatsApp (optional, e.g. +91…)" aria-label="WhatsApp number (optional)" style="flex:1;min-width:0;" />
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:rgba(28,27,26,0.55);cursor:pointer;">
+              <input type="checkbox" id="sfSubEmail_chk" checked style="accent-color:var(--hp-red, #930205);" /> Email alerts
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:rgba(28,27,26,0.55);cursor:pointer;">
+              <input type="checkbox" id="sfSubWa_chk" style="accent-color:#25d366;" /> WhatsApp alerts
+            </label>
+            <button class="sf-newsletter-btn" onclick="handleNewsletterSubscribe(this)" style="margin-left:auto;">Subscribe</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
