@@ -46305,10 +46305,11 @@ function _srvRender(list){
   if(avgEl) avgEl.textContent=avg.toFixed(1);
   if(starsEl) starsEl.textContent=_srvStars(avg);
   if(countEl) countEl.textContent=list.length+' verified reviews';
-  /* Re-init carousel after render — direct call, no flag race */
+  /* Re-init carousel after render — let the carousel IIFE's
+     boot() handle initialization (it owns _srvInitCarousel). */
+  window._srvCarouselReady = false;
   setTimeout(function(){
-    window._srvCarouselReady = true;
-    _srvInitCarousel();
+    if(window._srvInitCarousel){ window._srvInitCarousel(); window._srvCarouselReady = true; }
   }, 150);
 }
 
@@ -46754,6 +46755,9 @@ function boot(){
   }
   setTimeout(tryInit, 800);
 }
+/* Expose init so the render IIFE can call it directly */
+window._srvInitCarousel = _srvInitCarousel;
+
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 </script>
