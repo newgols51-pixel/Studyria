@@ -18779,6 +18779,7 @@ body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important
   -webkit-mask-image:none !important; mask-image:none !important;
   max-width:760px !important; margin:0 auto !important;
   padding:0 !important;
+  touch-action: pan-x pan-y !important;
 }
 .sf-stories .srv-track { gap:0 !important; padding:8px 0 20px !important; }
 .sf-stories .srv-dot { background:rgba(28,27,26,0.15) !important; }
@@ -46065,7 +46066,7 @@ async function crpAutoLevelUpgrade(userId) {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;  /* iOS momentum */
   scroll-snap-type: x mandatory;
-  touch-action: pan-x;               /* browser handles horizontal, we get smooth native swipe */
+  touch-action: pan-x pan-y;           /* allow both horizontal carousel swipe AND vertical page scroll */
   -webkit-user-select: none;
   user-select: none;
   scrollbar-width: none;             /* Firefox: hide scrollbar */
