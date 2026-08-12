@@ -18711,18 +18711,20 @@ body:not(.light) .sf-stories-count { color:rgba(240,228,208,0.4); }
 .sf-stories .srv-card {
   background:#fff !important;
   border:1px solid var(--hp-line,rgba(28,27,26,0.12)) !important;
-  border-radius:10px !important; padding:26px 24px !important;
+  border-radius:14px !important; padding:32px 30px !important;
   backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
-  flex:1 1 0 !important;
+  flex:0 0 auto !important;
+  width:100% !important;
   min-width:0 !important;
+  position:relative !important;
   scroll-snap-align:none !important;
+  box-sizing:border-box !important;
 }
-
-/* ── Page container: groups of 3 cards, snap target ── */
 .sf-stories .srv-page {
-  flex:0 0 calc(min(100vw,1280px)) !important;
+  flex:0 0 calc(min(100vw,760px)) !important;
   display:flex !important;
-  gap:14px !important;
+  flex-direction:column !important;
+  gap:20px !important;
   scroll-snap-align:start !important;
   padding:0 20px !important;
   box-sizing:border-box !important;
@@ -18739,36 +18741,43 @@ body:not(.light) .sf-stories .srv-card {
 body:not(.light) .sf-stories .srv-card:hover {
   box-shadow:0 12px 36px rgba(0,0,0,0.4) !important;
 }
-.sf-stories .srv-card-stars-str { color:var(--hp-gold,#c99a3c) !important; }
-.sf-stories .srv-card-stars-num { color:var(--hp-ink,#1c1b1a) !important; opacity:.5 !important; }
+.sf-stories .srv-card-stars { margin-bottom:14px !important; }
+.sf-stories .srv-card-stars-str { color:var(--hp-gold,#c99a3c) !important; font-size:1.05rem !important; letter-spacing:2px !important; }
+.sf-stories .srv-card-stars-num { color:var(--hp-ink,#1c1b1a) !important; opacity:.5 !important; font-size:.78rem !important; }
 body:not(.light) .sf-stories .srv-card-stars-num { color:rgba(240,228,208,0.5) !important; }
 .sf-stories .srv-card-text {
-  color:var(--hp-ink,#1c1b1a) !important; opacity:.8 !important; font-style:italic !important;
+  color:var(--hp-ink,#1c1b1a) !important; opacity:.85 !important; font-style:italic !important;
+  font-size:1rem !important; line-height:1.75 !important; margin-bottom:20px !important;
+  display:block !important; overflow:visible !important;
+  -webkit-line-clamp:unset !important; -webkit-box-orient:unset !important;
 }
 body:not(.light) .sf-stories .srv-card-text { color:rgba(240,228,208,0.75) !important; }
 .sf-stories .srv-author-name {
   color:var(--hp-ink,#1c1b1a) !important;
   font-family:var(--hp-font-display,'Georgia',serif) !important;
+  font-size:1rem !important;
 }
 body:not(.light) .sf-stories .srv-author-name { color:#f0e4d0 !important; }
-.sf-stories .srv-author-loc { color:var(--hp-ink,#1c1b1a) !important; opacity:.55 !important; }
+.sf-stories .srv-author-loc { color:var(--hp-ink,#1c1b1a) !important; opacity:.55 !important; font-size:.8rem !important; }
 body:not(.light) .sf-stories .srv-author-loc { color:rgba(240,228,208,0.4) !important; }
 .sf-stories .srv-avatar {
   background:var(--hp-red,#930205) !important; color:#fff !important; border:none !important;
+  width:46px !important; height:46px !important; font-size:1.05rem !important;
 }
 .sf-stories .srv-verified {
   color:var(--hp-gold,#c99a3c) !important;
   background:rgba(201,154,60,0.08) !important;
   border-color:rgba(201,154,60,0.2) !important;
+  font-size:.66rem !important; padding:3px 9px !important;
 }
-.sf-stories .srv-quote-icon { color:rgba(201,154,60,0.1) !important; }
-.sf-stories .srv-date { color:var(--hp-ink,#1c1b1a) !important; opacity:.3 !important; }
+.sf-stories .srv-quote-icon { color:rgba(201,154,60,0.12) !important; font-size:3.4rem !important; }
+.sf-stories .srv-date { color:var(--hp-ink,#1c1b1a) !important; opacity:.3 !important; font-size:.68rem !important; }
 body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important; }
 
 /* ── Carousel overrides ── */
 .sf-stories .srv-outer {
   -webkit-mask-image:none !important; mask-image:none !important;
-  max-width:1280px !important; margin:0 auto !important;
+  max-width:760px !important; margin:0 auto !important;
   padding:0 !important;
 }
 .sf-stories .srv-track { gap:0 !important; padding:8px 0 20px !important; }
@@ -18856,25 +18865,25 @@ body:not(.light) .sf-stories .srv-star-btn { color:rgba(255,255,255,0.2) !import
 
 @media(max-width:640px){
   .sf-stories { padding:40px 0; }
-  .sf-stories .srv-outer { padding:0 !important; }
+  .sf-stories .srv-outer { padding:0 !important; max-width:100% !important; }
   .sf-stories .srv-track { padding:8px 0 16px !important; }
   .sf-stories .srv-page {
-    flex:0 0 calc(100vw) !important;
-    gap:8px !important;
-    padding:0 12px !important;
+    flex:0 0 100vw !important;
+    gap:16px !important;
+    padding:0 16px !important;
   }
   .sf-stories .srv-card {
-    padding:14px 10px !important;
+    padding:24px 20px !important; border-radius:12px !important;
   }
-  .sf-stories .srv-card-text { font-size:.68rem !important; -webkit-line-clamp:3 !important; line-height:1.45 !important; }
-  .sf-stories .srv-author-name { font-size:.72rem !important; }
-  .sf-stories .srv-author-loc { font-size:.56rem !important; }
-  .sf-stories .srv-verified { font-size:.5rem !important; padding:1px 5px !important; }
-  .sf-stories .srv-avatar { width:28px !important; height:28px !important; font-size:.72rem !important; }
-  .sf-stories .srv-card-stars-str { font-size:.72rem !important; letter-spacing:1px !important; }
-  .sf-stories .srv-card-stars-num { font-size:.56rem !important; }
-  .sf-stories .srv-date { font-size:.48rem !important; }
-  .sf-stories .srv-quote-icon { font-size:1.6rem !important; }
+  .sf-stories .srv-card-text { font-size:.92rem !important; line-height:1.65 !important; margin-bottom:16px !important; }
+  .sf-stories .srv-author-name { font-size:.9rem !important; }
+  .sf-stories .srv-author-loc { font-size:.72rem !important; }
+  .sf-stories .srv-verified { font-size:.6rem !important; padding:2px 7px !important; }
+  .sf-stories .srv-avatar { width:40px !important; height:40px !important; font-size:.92rem !important; }
+  .sf-stories .srv-card-stars-str { font-size:.95rem !important; letter-spacing:1.5px !important; }
+  .sf-stories .srv-card-stars-num { font-size:.68rem !important; }
+  .sf-stories .srv-date { font-size:.6rem !important; }
+  .sf-stories .srv-quote-icon { font-size:2.6rem !important; }
   .sf-stories-rating { margin-left:12px; }
 }
 </style>
