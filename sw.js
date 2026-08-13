@@ -38,7 +38,7 @@ const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
 const SW_BUILD      = '2026.08.13-new-logo-icon-cache-bust';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🔄 New Studyria logo icons — old blue logo cache cleared.';
+const WHATS_NEW = '🧠 BrainLab expanded: 12 learning sections with quizzes, mock tests, flashcards, PYQ practice, study streak, and more. Complete learning hub redesign.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [

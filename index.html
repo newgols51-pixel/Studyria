@@ -6225,7 +6225,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <!-- OneSignal Web SDK — loaded once, deferred. Init is handled in app.js. -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script src="campus.js?v=20260731a" defer></script>
-<script src="brainlab.js?v=20260731a" defer></script>
+<script src="brainlab.js?v=20260813a" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -6939,7 +6939,7 @@ crossorigin="anonymous"></script>
 })();
 </script>
 <link rel="stylesheet" href="campus.css?v=20260731a">
-<link rel="stylesheet" href="brainlab.css?v=20260731a">
+<link rel="stylesheet" href="brainlab.css?v=20260813a">
 <link rel="stylesheet" href="pdp-v2.css?v=20260801">
   <link rel="stylesheet" href="pdp-v3.css?v=20260803a">
   <link rel="stylesheet" href="pdp-v4.css?v=20260803a">
@@ -18325,28 +18325,147 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 ═══════════════════════════════════════════════════════════════════════ -->
 <div class="page" id="page-brainlab">
   <div class="bl-container">
-    <div class="bl-header">
-      <h1>🧠 BrainLab</h1>
-      <p>Quizzes, mock tests, flashcards & more — your learning engine</p>
+
+    <!-- ── BrainLab Hero Header ── -->
+    <div class="bl-hero">
+      <span class="bl-hero-icon">🧠</span>
+      <h1>BrainLab</h1>
+      <p>Your personal learning engine — quizzes, mock tests, flashcards & more</p>
+      <div class="bl-hero-tags">
+        <span class="bl-hero-tag">Quizzes</span>
+        <span class="bl-hero-tag">Mock Tests</span>
+        <span class="bl-hero-tag">Flashcards</span>
+        <span class="bl-hero-tag">Practice</span>
+        <span class="bl-hero-tag">Performance</span>
+      </div>
     </div>
 
-    <div class="bl-tabs" id="bl-tabs">
-      <button class="bl-tab active" data-tab="quiz" onclick="BrainLab.switchTab('quiz')">🧩 Quizzes</button>
-      <button class="bl-tab" data-tab="flashcards" onclick="BrainLab.switchTab('flashcards')">🎴 Flashcards</button>
-      <button class="bl-tab" data-tab="mock" onclick="BrainLab.switchTab('mock')">📝 Mock Tests</button>
-      <button class="bl-tab" data-tab="mistakes" onclick="BrainLab.switchTab('mistakes')">📓 Mistakes</button>
-      <button class="bl-tab" data-tab="affairs" onclick="BrainLab.switchTab('affairs')">📰 Current Affairs</button>
-      <button class="bl-tab" data-tab="leaderboard" onclick="BrainLab.switchTab('leaderboard')">🏆 Leaderboard</button>
-      <button class="bl-tab" data-tab="performance" onclick="BrainLab.switchTab('performance')">📊 Performance</button>
+    <!-- ── Quick Stats ── -->
+    <div class="bl-stats" id="bl-stats"></div>
+
+    <!-- ── Horizontal Section Navigation ── -->
+    <div class="bl-nav-wrap">
+      <div class="bl-nav">
+        <a class="bl-nav-item active" data-target="bl-sec-challenge">⚡ Daily</a>
+        <a class="bl-nav-item" data-target="bl-sec-continue">📚 Continue</a>
+        <a class="bl-nav-item" data-target="bl-sec-quizzes">🧩 Quizzes</a>
+        <a class="bl-nav-item" data-target="bl-sec-mocks">📝 Mock Tests</a>
+        <a class="bl-nav-item" data-target="bl-sec-flashcards">🎴 Flashcards</a>
+        <a class="bl-nav-item" data-target="bl-sec-affairs">📰 Affairs</a>
+        <a class="bl-nav-item" data-target="bl-sec-pyq">📚 PYQ</a>
+        <a class="bl-nav-item" data-target="bl-sec-arena">⚔ Arena</a>
+        <a class="bl-nav-item" data-target="bl-sec-mistakes">🎯 Mistakes</a>
+        <a class="bl-nav-item" data-target="bl-sec-performance">📊 Performance</a>
+        <a class="bl-nav-item" data-target="bl-sec-leaderboard">🏆 Leaderboard</a>
+        <a class="bl-nav-item" data-target="bl-sec-streak">🔥 Streak</a>
+        <a class="bl-nav-item" data-target="bl-sec-tools">🛠 Tools</a>
+      </div>
     </div>
 
-    <div class="bl-tab-content" data-tab="quiz" id="bl-quiz"></div>
-    <div class="bl-tab-content" data-tab="flashcards" id="bl-flashcards" style="display:none"></div>
-    <div class="bl-tab-content" data-tab="mock" id="bl-mock" style="display:none"></div>
-    <div class="bl-tab-content" data-tab="mistakes" id="bl-mistakes" style="display:none"></div>
-    <div class="bl-tab-content" data-tab="affairs" id="bl-affairs" style="display:none"></div>
-    <div class="bl-tab-content" data-tab="leaderboard" id="bl-leaderboard" style="display:none"></div>
-    <div class="bl-tab-content" data-tab="performance" id="bl-performance" style="display:none"></div>
+    <!-- ── Quiz Player Area (shared, hidden until needed) ── -->
+    <div id="bl-quiz-player-area" style="display:none"></div>
+
+    <!-- 01. Daily Challenge -->
+    <div class="bl-section" id="bl-sec-challenge">
+      <div id="bl-daily-challenge"></div>
+    </div>
+
+    <!-- Continue Learning -->
+    <div class="bl-section" id="bl-sec-continue">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">📚</span> Continue Learning</h3>
+      </div>
+      <div id="bl-continue-learning"></div>
+    </div>
+
+    <!-- 02. Quizzes -->
+    <div class="bl-section" id="bl-sec-quizzes">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">🧩</span> Quizzes</h3>
+      </div>
+      <div id="bl-quizzes"></div>
+    </div>
+
+    <!-- 03. Mock Tests -->
+    <div class="bl-section" id="bl-sec-mocks">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">📝</span> Mock Tests</h3>
+      </div>
+      <div id="bl-mocks"></div>
+    </div>
+
+    <!-- 04. Flashcards -->
+    <div class="bl-section" id="bl-sec-flashcards">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">🎴</span> Flashcards</h3>
+      </div>
+      <div id="bl-flashcard-decks"></div>
+    </div>
+
+    <!-- 05. Current Affairs -->
+    <div class="bl-section" id="bl-sec-affairs">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">📰</span> Current Affairs</h3>
+      </div>
+      <div id="bl-affairs"></div>
+    </div>
+
+    <!-- 06. PYQ Practice -->
+    <div class="bl-section" id="bl-sec-pyq">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">📚</span> PYQ Practice</h3>
+      </div>
+      <div id="bl-pyq"></div>
+    </div>
+
+    <!-- 07. Practice Arena -->
+    <div class="bl-section" id="bl-sec-arena">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">⚔️</span> Practice Arena</h3>
+      </div>
+      <div id="bl-arena"></div>
+    </div>
+
+    <!-- 08. Mistake Review -->
+    <div class="bl-section" id="bl-sec-mistakes">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">🎯</span> Mistake Review</h3>
+      </div>
+      <div id="bl-mistakes"></div>
+    </div>
+
+    <!-- 09. Performance -->
+    <div class="bl-section" id="bl-sec-performance">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">📊</span> Performance</h3>
+      </div>
+      <div id="bl-performance"></div>
+    </div>
+
+    <!-- 10. Leaderboard -->
+    <div class="bl-section" id="bl-sec-leaderboard">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">🏆</span> Leaderboard</h3>
+      </div>
+      <div id="bl-leaderboard"></div>
+    </div>
+
+    <!-- 11. Study Streak -->
+    <div class="bl-section" id="bl-sec-streak">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">🔥</span> Study Streak</h3>
+      </div>
+      <div id="bl-streak"></div>
+    </div>
+
+    <!-- 12. Study Tools -->
+    <div class="bl-section" id="bl-sec-tools">
+      <div class="bl-section-header">
+        <h3 class="bl-section-title"><span class="bl-section-emoji">🛠️</span> Study Tools</h3>
+      </div>
+      <div id="bl-tools"></div>
+    </div>
+
   </div>
 </div>
 
