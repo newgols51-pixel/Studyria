@@ -31,14 +31,14 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v54'; // v54: fix - moved ottlib overrides to linked homepage-redesign.css (was in orphaned homepage-ui-fix.css)
+const CACHE_VERSION = 'v55'; // v55: new Studyria logo icons — regenerated all favicons/PWA icons, cache-bust old blue logo
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.08-footer-cream-maroon-gold';
+const SW_BUILD      = '2026.08.13-new-logo-icon-cache-bust';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🔧 Header size fix: compact nav bar, smaller buttons & logo. Auto-activates without manual refresh.';
+const WHATS_NEW = '🔄 New Studyria logo icons — old blue logo cache cleared.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
