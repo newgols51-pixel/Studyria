@@ -7830,6 +7830,12 @@ crossorigin="anonymous"></script>
     z-index: 10000 !important;
   }
 
+  /* Header must stay visible ABOVE the dropdown + backdrop while menu is open
+     (matches homepage.html: logo/Sign In/Get Pass/close-X remain on screen) */
+  .nav.dh-nav-elevated {
+    z-index: 10010 !important;
+  }
+
   /* Hide scrollbar for clean look */
   #hamburgerMenu.dh-drawer::-webkit-scrollbar { width: 0; }
   #hamburgerMenu.dh-drawer { scrollbar-width: none; }
@@ -25561,6 +25567,9 @@ window.dhToggleHamburger = function(e) {
     if (backdrop) backdrop.style.display = 'block';
     document.body.style.overflow = 'hidden';
     window.dhHamburgerOpen = true;
+    // Keep the sticky header (logo + close button) visible above the dropdown
+    var navBar = document.querySelector('.nav');
+    if (navBar) navBar.classList.add('dh-nav-elevated');
     // Keep Alpine state in sync
     if (window._alpine) window._alpine.sidebarOpen = true;
   }
@@ -25580,6 +25589,9 @@ window.dhCloseHamburger = function() {
   if (backdrop) backdrop.style.display = 'none';
   document.body.style.overflow = '';
   window.dhHamburgerOpen = false;
+  // Restore normal header stacking
+  var navBar = document.querySelector('.nav');
+  if (navBar) navBar.classList.remove('dh-nav-elevated');
   // Keep Alpine state in sync
   if (window._alpine) window._alpine.sidebarOpen = false;
 };
