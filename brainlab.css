@@ -1056,3 +1056,212 @@
   .bl-custom-quiz-banner{flex-direction:column;text-align:center;gap:8px}
   .bl-custom-btn{width:100%}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ANSWER FEEDBACK SYSTEM — Quiz Player
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Locked options (after answer selected) */
+.bl-qp-option.bl-qp-locked {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Correct answer highlight */
+.bl-qp-option.bl-qp-correct {
+  background: #dcfce7 !important;
+  border-color: #16a34a !important;
+  border-width: 2px;
+  opacity: 1 !important;
+}
+.bl-qp-option.bl-qp-correct .bl-qp-opt-label {
+  background: #16a34a;
+  color: #fff;
+}
+.bl-qp-option.bl-qp-correct::after {
+  content: '✓';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* Wrong selected answer */
+.bl-qp-option.bl-qp-wrong {
+  background: #fef2f2 !important;
+  border-color: #dc2626 !important;
+  border-width: 2px;
+  opacity: 1 !important;
+}
+.bl-qp-option.bl-qp-wrong .bl-qp-opt-label {
+  background: #dc2626;
+  color: #fff;
+}
+.bl-qp-option.bl-qp-wrong::after {
+  content: '✕';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+/* Ensure option has position relative for the check/cross */
+.bl-qp-option {
+  position: relative;
+}
+
+/* Feedback container */
+.bl-qp-feedback {
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Feedback: Correct */
+.bl-qp-fb-correct {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+/* Feedback: Wrong */
+.bl-qp-fb-wrong {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+/* Feedback: Correct answer display */
+.bl-qp-fb-answer {
+  padding: 10px 16px;
+  background: #f0fdf4;
+  color: #15803d;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+}
+
+/* Feedback: Explanation card */
+.bl-qp-fb-why {
+  padding: 14px 16px;
+  background: rgba(147, 2, 5, 0.04);
+  border-left: 3px solid #930205;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #3e2723;
+}
+.bl-qp-fb-label {
+  font-weight: 700;
+  color: #930205;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LANGUAGE SELECTOR
+   ═══════════════════════════════════════════════════════════════ */
+.bl-lang-toggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.bl-lang-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #e0d6c8;
+  border-radius: 10px;
+  background: #faf6f0;
+  color: #6b5d4f;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.bl-lang-btn.active {
+  border-color: #930205;
+  background: #930205;
+  color: #fff;
+}
+.bl-lang-btn:hover:not(.active) {
+  border-color: #b8860b;
+  background: #fdf8ee;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   QUESTION COUNT GRID
+   ═══════════════════════════════════════════════════════════════ */
+.bl-count-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.bl-count-btn {
+  padding: 10px 4px;
+  border: 2px solid #e0d6c8;
+  border-radius: 10px;
+  background: #faf6f0;
+  color: #3e2723;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.bl-count-btn:hover:not(:disabled) {
+  border-color: #b8860b;
+  background: #fdf8ee;
+}
+.bl-count-btn.bl-count-selected {
+  border-color: #930205;
+  background: #930205;
+  color: #fff;
+}
+.bl-count-btn.bl-count-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   QUESTION TYPE BADGE
+   ═══════════════════════════════════════════════════════════════ */
+.bl-qp-type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.bl-qp-type-pyq {
+  background: #fef3c7;
+  color: #92400e;
+}
+.bl-qp-type-mcq {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.bl-qp-type-practice {
+  background: #d1fae5;
+  color: #065f46;
+}
+.bl-qp-type-mock {
+  background: #fce7f3;
+  color: #9f1239;
+}
