@@ -7443,16 +7443,7 @@ crossorigin="anonymous"></script>
     animation: none !important;
     z-index: 10001 !important;
   }
-  /* Ensure the drawer starts hidden and slides via JS transform */
-  #hamburgerMenu.dh-drawer {
-    animation: none !important;
-    transform: translateX(100%);
-    transition: transform .3s cubic-bezier(0.22,1,0.36,1);
-  }
-  #hamburgerMenu.dh-drawer[style*="translateX(0)"],
-  #hamburgerMenu.dh-drawer[style*="translateX(0%)"] {
-    transform: translateX(0) !important;
-  }
+  /* (old right-drawer transform rules removed — now uses max-height dropdown) */
   body.light .hamburger-dropdown {
     background: var(--hp-paper) !important;
     border-color: var(--hp-line) !important;
@@ -7721,6 +7712,127 @@ crossorigin="anonymous"></script>
     min-width: 20px; height: 20px; border-radius: 50%;
     padding: 0 5px;
   }
+
+
+  /* ═══ HOMEPAGE-STYLE MENU: Full-width dropdown ══════════════
+     Replicates homepage.html accordion dropdown behaviour:
+     — full width, drops from below the header
+     — max-height transition (0 → viewport)
+     — internal scroll, no body scroll
+     — light backdrop (tap to close)
+     — burger→X animation on the button
+     All existing items, handlers, and sections are preserved. */
+
+  /* Burger button — CSS span animation (matches homepage.html) */
+  .burger-btn.burger-btn {
+    width: 38px; height: 38px;
+    border: 1px solid var(--hp-line);
+    border-radius: 4px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 5px;
+    cursor: pointer;
+  }
+  .burger-btn .burger-line {
+    display: block; width: 18px; height: 2px;
+    background: var(--hp-ink);
+    transition: transform .2s ease, opacity .2s ease;
+    border-radius: 1px;
+  }
+  body:not(.light) .burger-btn .burger-line { background: #f0ebe4; }
+  .burger-btn.dh-open .burger-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger-btn.dh-open .burger-line:nth-child(2) { opacity: 0; }
+  .burger-btn.dh-open .burger-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Menu panel — full-width dropdown (overrides right-drawer) */
+  #hamburgerMenu.dh-drawer {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    background: var(--hp-paper) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--hp-line) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 10px 40px rgba(28,27,26,0.12) !important;
+    transform: none !important;
+    transition: max-height .3s ease !important;
+    z-index: 10001 !important;
+    padding: 0 !important;
+    padding-top: 52px !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  #hamburgerMenu.dh-drawer.dh-open {
+    max-height: calc(100vh - 52px) !important;
+    overflow-y: auto !important;
+  }
+  @media (min-width: 861px) {
+    #hamburgerMenu.dh-drawer { padding-top: 62px !important; }
+    #hamburgerMenu.dh-drawer.dh-open { max-height: calc(100vh - 62px) !important; }
+  }
+  body:not(.light) #hamburgerMenu.dh-drawer {
+    background: #14100e !important;
+    border-bottom-color: rgba(255,255,255,0.08) !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
+  }
+
+  /* Items — match homepage.html exactly */
+  #hamburgerMenu .hp-menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px !important;
+    font-size: 15.5px !important; font-weight: 600 !important;
+    color: var(--hp-ink) !important;
+    border-bottom: 1px solid var(--hp-line) !important;
+    cursor: pointer; transition: all .15s ease;
+    text-decoration: none;
+    width: 100%;
+  }
+  body:not(.light) #hamburgerMenu .hp-menu-item { color: #f0ebe4 !important; border-bottom-color: rgba(255,255,255,0.06) !important; }
+  #hamburgerMenu .hp-menu-item:hover { background: rgba(166,25,46,0.04); color: var(--hp-red) !important; }
+  #hamburgerMenu .hp-menu-item:last-of-type { border-bottom: none; }
+  #hamburgerMenu .hp-menu-icon { font-size: 18px; width: 24px; text-align: center; }
+  #hamburgerMenu .hp-menu-section-label {
+    padding: 14px 24px 6px !important;
+    font-size: 11px !important; letter-spacing: 1.5px !important; text-transform: uppercase;
+    color: var(--hp-red) !important; font-weight: 700;
+    background: var(--hp-paper-dim) !important;
+  }
+  body:not(.light) #hamburgerMenu .hp-menu-section-label { background: rgba(255,255,255,0.04) !important; }
+
+  /* Mobile search in dropdown */
+  #hamburgerMenu .hp-mobile-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--hp-paper-dim);
+    border: 1px solid var(--hp-line);
+    border-radius: 20px;
+    padding: 10px 16px;
+    margin: 12px 24px !important;
+    margin-bottom: 14px;
+  }
+  body:not(.light) #hamburgerMenu .hp-mobile-search { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08); }
+
+  /* CTA buttons */
+  #hamburgerMenu .hp-menu-cta { padding: 16px 24px; }
+  #hamburgerMenu .hp-menu-cta button { flex: 1; text-align: center; }
+
+  /* Backdrop — lighter, no blur (matches homepage style) */
+  #dhHamburgerBackdrop {
+    background: rgba(0,0,0,0.25) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    z-index: 10000 !important;
+  }
+
+  /* Hide scrollbar for clean look */
+  #hamburgerMenu.dh-drawer::-webkit-scrollbar { width: 0; }
+  #hamburgerMenu.dh-drawer { scrollbar-width: none; }
 
   /* Hero search hidden (moved to header) */
   .hr-hero-search, .sh-hero-search { display: none !important; }
@@ -8297,8 +8409,8 @@ function studyriaApp() {
 
         <!-- Hamburger button (visible on mobile ≤860px) -->
         <div style="position:relative" id="hamburgerWrap">
-          <button class="icon-btn" id="hamburgerBtn" onclick="dhToggleHamburger(event)" aria-label="Menu">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" id="hamburgerIcon"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <button class="icon-btn burger-btn" id="hamburgerBtn" onclick="dhToggleHamburger(event)" aria-label="Menu" aria-expanded="false">
+            <span class="burger-line"></span><span class="burger-line"></span><span class="burger-line"></span>
           </button>
         </div>
 
@@ -8306,7 +8418,7 @@ function studyriaApp() {
         <div id="dhHamburgerBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;backdrop-filter:blur(2px)" onclick="dhCloseHamburger()"></div>
 
         <!-- Hamburger menu (right drawer) — vanilla JS controlled -->
-        <div id="hamburgerMenu" class="hamburger-dropdown dh-drawer" style="display:none;transform:translateX(100%);transition:transform .3s cubic-bezier(0.22,1,0.36,1)">
+        <div id="hamburgerMenu" class="hamburger-dropdown dh-drawer" style="display:none">
 
           <!-- Mobile search (existing production search, untouched) -->
           <div class="hp-mobile-search">
@@ -25439,11 +25551,13 @@ window.dhToggleHamburger = function(e) {
   } else {
     var menu = document.getElementById('hamburgerMenu');
     var backdrop = document.getElementById('dhHamburgerBackdrop');
+    var btn = document.getElementById('hamburgerBtn');
     if (!menu) return;
     menu.style.display = 'block';
-    // Force reflow then slide in
+    // Force reflow then open via class (max-height transition)
     void menu.offsetHeight;
-    menu.style.transform = 'translateX(0)';
+    menu.classList.add('dh-open');
+    if (btn) { btn.classList.add('dh-open'); btn.setAttribute('aria-expanded','true'); }
     if (backdrop) backdrop.style.display = 'block';
     document.body.style.overflow = 'hidden';
     window.dhHamburgerOpen = true;
@@ -25455,11 +25569,13 @@ window.dhToggleHamburger = function(e) {
 window.dhCloseHamburger = function() {
   var menu = document.getElementById('hamburgerMenu');
   var backdrop = document.getElementById('dhHamburgerBackdrop');
+  var btn = document.getElementById('hamburgerBtn');
   if (menu) {
-    menu.style.transform = 'translateX(100%)';
+    menu.classList.remove('dh-open');
+    if (btn) { btn.classList.remove('dh-open'); btn.setAttribute('aria-expanded','false'); }
     setTimeout(function() {
       if (!window.dhHamburgerOpen) menu.style.display = 'none';
-    }, 300);
+    }, 320);
   }
   if (backdrop) backdrop.style.display = 'none';
   document.body.style.overflow = '';
