@@ -34,7 +34,8 @@
     '/career-hub':'career-hub',
     '/upload':    'upload',
     '/creator-register': 'creator-register',
-    '/creator-dashboard':'creator-dashboard'
+    '/creator-dashboard':'creator-dashboard',
+    '/free-materials':'free-materials'
   };
   var p = window.location.pathname.replace(/\/+$/, '') || '/';
   var route = SPA_PATHS[p];
@@ -8157,7 +8158,7 @@ function studyriaApp() {
       <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)">
         <span class="hm-icon">🎯</span><span class="hm-item-label">ADRE</span>
       </button>
-      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)">
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('free-materials')">
         <span class="hm-icon">📚</span><span class="hm-item-label">Free Materials</span>
       </button>
       <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('career-hub')">
@@ -8243,7 +8244,7 @@ function studyriaApp() {
         <button class="nav-link active" data-page="home" onclick="navigate('home')">Home</button>
         <button class="nav-link" data-page="library" onclick="navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)">APSC</button>
         <button class="nav-link" data-page="library" onclick="navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)">ADRE</button>
-        <button class="nav-link" data-page="library" onclick="navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)">Free Materials</button>
+        <button class="nav-link" data-page="free-materials" onclick="navigate('free-materials')">Free Materials</button>
         <button class="nav-link" data-page="library" onclick="navigate('library')">Categories</button>
       </div>
 
@@ -8323,6 +8324,7 @@ function studyriaApp() {
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library')"><span class="hp-menu-icon">📚</span> Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> ADRE</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> APSC</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('free-materials')"><span class="hp-menu-icon">📚</span> Free Materials</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">📄</span> Free PDFs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)"><span class="hp-menu-icon">📝</span> Mock Tests</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)"><span class="hp-menu-icon">📰</span> Current Affairs</a>
@@ -17241,6 +17243,146 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
   </script>
 </div>
 
+
+<!-- ═══ FREE MATERIALS PAGE ════════════════════════════════════════ -->
+<div class="page" id="page-free-materials">
+  <style>
+    /* ── Free Materials page styles ── */
+    .fm-wrap { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+    .fm-back { margin-bottom: 24px; display: inline-flex; align-items: center; gap: 6px; color: var(--text2); font-size: .85rem; font-weight: 600; cursor: pointer; background: none; border: none; font-family: var(--font-body); transition: color .2s; }
+    .fm-back:hover { color: var(--accent); }
+    .fm-header { margin-bottom: 28px; }
+    .fm-title { font-family: var(--font-editorial); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 800; background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 8px; }
+    .fm-subtitle { color: var(--text2); font-size: .95rem; margin: 0; line-height: 1.6; }
+    
+    /* Search bar */
+    .fm-search-wrap { position: relative; margin-bottom: 16px; }
+    .fm-search { width: 100%; padding: 13px 16px 13px 44px; border-radius: var(--radius); border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-family: var(--font-body); font-size: .9rem; outline: none; transition: border-color .2s, box-shadow .2s; box-sizing: border-box; }
+    .fm-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(147,2,5,0.12); }
+    .fm-search::placeholder { color: var(--text2); }
+    .fm-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text2); pointer-events: none; }
+
+    /* Filters */
+    .fm-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .fm-filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+    .fm-filter-label { font-size: .72rem; font-weight: 700; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; padding-left: 2px; }
+    .fm-filter-select { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-family: var(--font-body); font-size: .85rem; cursor: pointer; outline: none; transition: border-color .2s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8caa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; }
+    .fm-filter-select:focus { border-color: var(--accent); }
+    .fm-filter-select option { background: var(--bg2); color: var(--text); }
+
+    /* Category cards */
+    .fm-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .fm-cat-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 18px 16px; cursor: pointer; transition: border-color .2s, transform .2s, box-shadow .2s; text-align: center; }
+    .fm-cat-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(147,2,5,0.1); }
+    .fm-cat-card.active { border-color: var(--accent); background: rgba(147,2,5,0.06); box-shadow: 0 0 0 2px rgba(147,2,5,0.18); }
+    .fm-cat-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .fm-cat-name { font-size: .85rem; font-weight: 700; color: var(--text); }
+    .fm-cat-count { font-size: .72rem; color: var(--text2); margin-top: 2px; }
+
+    /* Material cards */
+    .fm-materials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .fm-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s, box-shadow .2s; }
+    .fm-card:hover { border-color: var(--accent); box-shadow: 0 6px 28px rgba(0,0,0,0.12); }
+    .fm-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .fm-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; background: rgba(16,217,142,0.12); color: #10d98e; border: 1px solid rgba(16,217,142,0.25); white-space: nowrap; }
+    .fm-card-type { font-size: .68rem; font-weight: 600; color: var(--text2); padding: 3px 8px; border-radius: 6px; background: var(--surface); white-space: nowrap; }
+    .fm-card-title { font-size: .95rem; font-weight: 700; color: var(--text); line-height: 1.4; margin: 0; }
+    .fm-card-desc { font-size: .82rem; color: var(--text2); line-height: 1.55; margin: 0; }
+    .fm-card-meta { display: flex; align-items: center; gap: 8px; font-size: .75rem; color: var(--text2); flex-wrap: wrap; }
+    .fm-card-meta span { display: inline-flex; align-items: center; gap: 3px; }
+    .fm-card-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; }
+    .fm-btn { padding: 9px 18px; border-radius: var(--radius-sm); font-size: .82rem; font-weight: 700; cursor: pointer; border: none; font-family: var(--font-body); transition: all .2s; display: inline-flex; align-items: center; gap: 5px; }
+    .fm-btn-primary { background: var(--accent); color: #fff; }
+    .fm-btn-primary:hover { background: var(--hp-red-deep, #7d1122); }
+    .fm-btn-ghost { background: var(--surface); color: var(--text2); border: 1px solid var(--glass-border); }
+    .fm-btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
+    .fm-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    /* Coming Soon tag */
+    .fm-coming-soon { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .68rem; font-weight: 700; background: rgba(201,154,60,0.12); color: var(--hp-gold, #c99a3c); border: 1px solid rgba(201,154,60,0.25); }
+
+    /* Empty state */
+    .fm-empty { text-align: center; padding: 60px 20px; color: var(--text2); font-size: .9rem; }
+    .fm-empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
+
+    /* Loading skeleton */
+    .fm-skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--glass) 50%, var(--surface) 75%); background-size: 200% 100%; animation: fmShimmer 1.5s infinite; border-radius: var(--radius); height: 160px; }
+    @keyframes fmShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .fm-wrap { padding: 30px 16px 60px; }
+      .fm-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .fm-cat-card { padding: 14px 10px; }
+      .fm-cat-icon { font-size: 1.3rem; }
+      .fm-cat-name { font-size: .78rem; }
+      .fm-materials-grid { grid-template-columns: 1fr; gap: 12px; }
+      .fm-filter-group { min-width: 100%; }
+      .fm-filters { gap: 8px; }
+    }
+  </style>
+
+  <div class="fm-wrap">
+    <!-- Back button -->
+    <button class="fm-back" onclick="navigate('home')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Home
+    </button>
+
+    <!-- Header -->
+    <div class="fm-header">
+      <h1 class="fm-title">Free Study Materials</h1>
+      <p class="fm-subtitle">Free study resources for Assam competitive exam aspirants.</p>
+    </div>
+
+    <!-- Search -->
+    <div class="fm-search-wrap">
+      <svg class="fm-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" class="fm-search" id="fmSearch" placeholder="Search free materials..." oninput="fmFilter()" autocomplete="off" />
+    </div>
+
+    <!-- Filters -->
+    <div class="fm-filters">
+      <div class="fm-filter-group">
+        <label class="fm-filter-label">Exam</label>
+        <select class="fm-filter-select" id="fmExamFilter" onchange="fmFilter()">
+          <option value="">All Exams</option>
+          <option value="APSC">APSC</option>
+          <option value="ADRE">ADRE</option>
+          <option value="Assam Police">Assam Police</option>
+          <option value="Assam TET">Assam TET</option>
+          <option value="Grade III & IV">Grade III &amp; IV</option>
+        </select>
+      </div>
+      <div class="fm-filter-group">
+        <label class="fm-filter-label">Material Type</label>
+        <select class="fm-filter-select" id="fmTypeFilter" onchange="fmFilter()">
+          <option value="">All</option>
+          <option value="PYQ">PYQ</option>
+          <option value="Notes">Notes</option>
+          <option value="MCQ">MCQ</option>
+          <option value="Current Affairs">Current Affairs</option>
+          <option value="Syllabus">Syllabus</option>
+          <option value="Exam Pattern">Exam Pattern</option>
+          <option value="Practice Set">Practice Set</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Category cards -->
+    <div class="fm-cat-grid" id="fmCatGrid"></div>
+
+    <!-- Materials grid -->
+    <div class="fm-materials-grid" id="fmGrid"></div>
+
+    <!-- Empty state -->
+    <div class="fm-empty" id="fmEmpty" style="display:none;">
+      <div class="fm-empty-icon">📭</div>
+      <div>No free materials found.</div>
+    </div>
+  </div>
+</div>
+
 <div class="page" id="page-blog">
   <style>
     .blog-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 70px; }
@@ -20378,7 +20520,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload',
-  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab'
+  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab','free-materials'
 ]);
 
 // ── SPA page canonical handling ─────────────────────────────────────
@@ -20401,6 +20543,7 @@ const _PAGE_CANONICAL_MAP = {
   'privacy':    'https://studyria.qzz.io/?page=privacy',
   'terms':      'https://studyria.qzz.io/?page=terms',
   'refund':     'https://studyria.qzz.io/?page=refund',
+  'free-materials': 'https://studyria.qzz.io/?page=free-materials',
 };
 window._pageDefaultCanonical = null;
 function _setPageCanonical(page) {
@@ -47120,6 +47263,254 @@ window.addEventListener('load', function() {
     if (window._alpine) window._alpine.annBarVisible = false;
   }, 500);
 });
+
+// ════════════════════════════════════════════════════════════════
+// FREE MATERIALS PAGE — search, filter, render from real Supabase data
+// ════════════════════════════════════════════════════════════════
+(function() {
+  'use strict';
+
+  // ── Category definitions ──
+  var FM_CATEGORIES = [
+    { name: 'APSC',                 icon: '🏛️', keywords: ['APSC', 'Assam Public Service'] },
+    { name: 'ADRE',                  icon: '🎯', keywords: ['ADRE', 'Assam Direct Recruitment'] },
+    { name: 'Assam Police',          icon: '👮', keywords: ['Assam Police', 'Police'] },
+    { name: 'Assam TET',             icon: '📚', keywords: ['Assam TET', 'TET', 'Teacher Eligibility'] },
+    { name: 'Grade III & IV',        icon: '📝', keywords: ['Grade III', 'Grade IV', 'Grade 3', 'Grade 4', 'Grade III & IV'] },
+    { name: 'Current Affairs',       icon: '📰', keywords: ['Current Affairs', 'Current', 'Affairs', 'News'] },
+    { name: 'Assam GK',               icon: '🧠', keywords: ['Assam GK', 'Assam General Knowledge', 'GK', 'General Knowledge'] },
+    { name: 'General Study Materials', icon: '📖', keywords: ['General', 'Study', 'Materials', 'Notes'] }
+  ];
+
+  // Material type detection keywords
+  var FM_TYPE_KEYWORDS = {
+    'PYQ': ['previous year', 'pyq', 'question paper', 'old question', 'solved paper'],
+    'Notes': ['notes', 'study notes', 'material', 'handwritten'],
+    'MCQ': ['mcq', 'multiple choice', 'practice question'],
+    'Current Affairs': ['current affairs', 'current', 'affairs', 'news'],
+    'Syllabus': ['syllabus', 'exam pattern', 'pattern'],
+    'Exam Pattern': ['exam pattern', 'pattern', 'marks distribution'],
+    'Practice Set': ['practice set', 'practice', 'model', 'mock']
+  };
+
+  var fmState = { loaded: false, materials: [], filtered: [] };
+
+  // ── Detect material type from title/description ──
+  function fmDetectType(item) {
+    var text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.category || '')).toLowerCase();
+    for (var type in FM_TYPE_KEYWORDS) {
+      var kws = FM_TYPE_KEYWORDS[type];
+      for (var i = 0; i < kws.length; i++) {
+        if (text.indexOf(kws[i]) !== -1) return type;
+      }
+    }
+    return 'Notes'; // default
+  }
+
+  // ── Detect exam category from title/category/description ──
+  function fmDetectExam(item) {
+    var text = ((item.title || '') + ' ' + (item.category || '') + ' ' + (item.description || '')).toLowerCase();
+    if (text.indexOf('apsc') !== -1) return 'APSC';
+    if (text.indexOf('adre') !== -1) return 'ADRE';
+    if (text.indexOf('police') !== -1) return 'Assam Police';
+    if (text.indexOf('tet') !== -1) return 'Assam TET';
+    if (text.indexOf('grade iii') !== -1 || text.indexOf('grade iv') !== -1 || text.indexOf('grade 3') !== -1 || text.indexOf('grade 4') !== -1) return 'Grade III & IV';
+    if (text.indexOf('current affairs') !== -1 || text.indexOf('affairs') !== -1) return 'Current Affairs';
+    if (text.indexOf('gk') !== -1 || text.indexOf('general knowledge') !== -1) return 'Assam GK';
+    return 'General Study Materials';
+  }
+
+  // ── Load free materials from Supabase ──
+  async function fmLoadMaterials() {
+    if (fmState.loaded) return fmState.materials;
+    var grid = document.getElementById('fmGrid');
+    if (grid) grid.innerHTML = Array(6).fill('<div class="fm-skeleton"></div>').join('');
+
+    var materials = [];
+
+    // Try Supabase first — fetch free PDFs (price = 0 or free = true)
+    if (window.supabaseClient) {
+      try {
+        var q = window.supabaseClient.from('pdfs').select('*').eq('status', 'published');
+        var res = await q.order('created_at', { ascending: false }).limit(200);
+        if (!res.error && res.data) {
+          materials = res.data.filter(function(p) {
+            var isFree = (p.free === true) || (Number(p.price) === 0) || (p.price === '0') || (p.price === null);
+            return isFree;
+          });
+        }
+      } catch(e) { console.warn('Free Materials Supabase fetch:', e); }
+    }
+
+    // Fallback: check window.PDFS for free items
+    if (materials.length === 0 && window.PDFS && window.PDFS.length) {
+      materials = window.PDFS.filter(function(p) {
+        var isFree = (p.free === true) || (Number(p.price) === 0) || (p.price === '0') || (!p.price);
+        return isFree && p.status !== 'draft' && p.status !== 'archived';
+      });
+    }
+
+    // Enrich each material with detected type and exam
+    materials = materials.map(function(m) {
+      if (typeof normalizePdf === 'function') normalizePdf(m);
+      m._fmType = fmDetectType(m);
+      m._fmExam = fmDetectExam(m);
+      return m;
+    });
+
+    fmState.materials = materials;
+    fmState.loaded = true;
+    return materials;
+  }
+
+  // ── Render category cards ──
+  function fmRenderCategories() {
+    var grid = document.getElementById('fmCatGrid');
+    if (!grid) return;
+    var counts = {};
+    FM_CATEGORIES.forEach(function(c) { counts[c.name] = 0; });
+    fmState.materials.forEach(function(m) {
+      if (counts[m._fmExam] !== undefined) counts[m._fmExam]++;
+    });
+
+    grid.innerHTML = FM_CATEGORIES.map(function(c) {
+      var count = counts[c.name] || 0;
+      var countLabel = count > 0 ? count + ' free' : 'Coming Soon';
+      var countClass = count > 0 ? '' : ' style="color:var(--hp-gold,#c99a3c)"';
+      return '<div class="fm-cat-card" data-fm-cat="' + c.name + '" onclick="fmSelectCategory(\'' + c.name.replace(/'/g, "\\'") + '\')">' +
+        '<div class="fm-cat-icon">' + c.icon + '</div>' +
+        '<div class="fm-cat-name">' + c.name + '</div>' +
+        '<div class="fm-cat-count"' + countClass + '>' + countLabel + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ── Filter and render materials ──
+  window.fmFilter = function fmFilter() {
+    var search = (document.getElementById('fmSearch')?.value || '').trim().toLowerCase();
+    var examFilter = document.getElementById('fmExamFilter')?.value || '';
+    var typeFilter = document.getElementById('fmTypeFilter')?.value || '';
+
+    var filtered = fmState.materials.filter(function(m) {
+      // Search filter
+      if (search) {
+        var haystack = ((m.title || '') + ' ' + (m.description || '') + ' ' + (m.category || '') + ' ' + (m._fmExam || '') + ' ' + (m._fmType || '')).toLowerCase();
+        if (haystack.indexOf(search) === -1) return false;
+      }
+      // Exam filter
+      if (examFilter && m._fmExam !== examFilter) return false;
+      // Type filter
+      if (typeFilter && m._fmType !== typeFilter) return false;
+      return true;
+    });
+
+    fmState.filtered = filtered;
+    fmRenderGrid(filtered);
+  };
+
+  // ── Render material cards ──
+  function fmRenderGrid(items) {
+    var grid = document.getElementById('fmGrid');
+    var empty = document.getElementById('fmEmpty');
+    if (!grid) return;
+
+    if (!items || items.length === 0) {
+      grid.innerHTML = '';
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+
+    grid.innerHTML = items.map(function(m) {
+      var title = (m.title || 'Untitled').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var desc = (m.description || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      if (desc.length > 120) desc = desc.substring(0, 117) + '...';
+      var exam = m._fmExam || 'General';
+      var type = m._fmType || 'Notes';
+      var dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      var id = m.id || '';
+
+      return '<div class="fm-card">' +
+        '<div class="fm-card-top">' +
+          '<span class="fm-badge">FREE</span>' +
+          '<span class="fm-card-type">' + type + '</span>' +
+        '</div>' +
+        '<h3 class="fm-card-title">' + title + '</h3>' +
+        (desc ? '<p class="fm-card-desc">' + desc + '</p>' : '') +
+        '<div class="fm-card-meta">' +
+          '<span>📌 ' + exam + '</span>' +
+          (dateStr ? '<span>🗓 ' + dateStr + '</span>' : '') +
+        '</div>' +
+        '<div class="fm-card-actions">' +
+          (id ? '<button class="fm-btn fm-btn-primary" data-fm-id="' + id + '" onclick="fmViewMaterial(this)">View Material</button>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── View material (opens existing PDF detail) ──
+  window.fmViewMaterial = function fmViewMaterial(btn) {
+    var id = btn.getAttribute('data-fm-id');
+    if (id && typeof openDetail === 'function') {
+      openDetail(id);
+    }
+  };
+
+  // ── Category selection ──
+  window.fmSelectCategory = function fmSelectCategory(catName) {
+    var examSelect = document.getElementById('fmExamFilter');
+    if (examSelect) {
+      // Map category name to exam filter value
+      var examMap = {
+        'APSC': 'APSC',
+        'ADRE': 'ADRE',
+        'Assam Police': 'Assam Police',
+        'Assam TET': 'Assam TET',
+        'Grade III & IV': 'Grade III & IV',
+        'Current Affairs': 'Current Affairs',
+        'Assam GK': 'Assam GK',
+        'General Study Materials': ''
+      };
+      examSelect.value = examMap[catName] || '';
+      fmFilter();
+    }
+    // Highlight active card
+    document.querySelectorAll('.fm-cat-card').forEach(function(c) {
+      c.classList.toggle('active', c.getAttribute('data-fm-cat') === catName);
+    });
+  };
+
+  // ── Init on page load ──
+  window.fmInit = async function fmInit() {
+    await fmLoadMaterials();
+    fmRenderCategories();
+    fmFilter();
+  };
+
+  // ── Hook into navigate() to init when landing on free-materials ──
+  // Patch the existing navigate to trigger fmInit
+  var _origNavigate = window._realNavigate || window.navigate;
+  if (typeof _origNavigate === 'function') {
+    var _patchedNav = function(page) {
+      var result = _origNavigate.call(this, page);
+      if (page === 'free-materials') {
+        // Small delay to ensure page DOM is visible
+        setTimeout(function() { window.fmInit(); }, 100);
+      }
+      return result;
+    };
+    // Only patch if not already patched
+    if (!window._fmNavPatched) {
+      window.navigate = _patchedNav;
+      window._fmNavPatched = true;
+    }
+  }
+
+  // ── Also init on hash load ──
+  if (location.hash === '#free-materials' || location.pathname === '/free-materials') {
+    setTimeout(function() { window.fmInit(); }, 300);
+  }
+})();
 </script>
 </body>
 </html>
