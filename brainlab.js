@@ -1,885 +1,361 @@
 /* ═══════════════════════════════════════════════════════════════════════
    STUDYRIA BRAINLAB — Complete Learning Hub (brainlab.js)
-   12 sections. Seed/demo fallback. Supabase integration preserved.
+   12 sections. Real question bank. Supabase integration preserved.
    Design: Warm Paper Cream + Royal Maroon + Premium Gold
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ── Seed Data (clearly marked DEMO) ── */
-  var SEED_QUIZZES = [
-    { id:'demo-q1', title:'Daily GK Challenge', category:'General Knowledge', questions:20, duration:10, difficulty:'medium', xp:100, icon:'🧠' },
-    { id:'demo-q2', title:'Assam History Quiz', category:'Assam GK', questions:15, duration:8, difficulty:'easy', xp:75, icon:'🏛️' },
-    { id:'demo-q3', title:'Indian Polity Basics', category:'Polity', questions:25, duration:15, difficulty:'medium', xp:120, icon:'⚖️' },
-    { id:'demo-q4', title:'Geography of India', category:'Geography', questions:20, duration:12, difficulty:'medium', xp:100, icon:'🗺️' },
-    { id:'demo-q5', title:'Current Affairs Monthly', category:'Current Affairs', questions:30, duration:20, difficulty:'hard', xp:150, icon:'📰' },
-    { id:'demo-q6', title:'Science & Tech Fundamentals', category:'Science', questions:20, duration:12, difficulty:'medium', xp:100, icon:'🔬' },
-    { id:'demo-q7', title:'Indian Economy Quiz', category:'Economy', questions:18, duration:10, difficulty:'hard', xp:110, icon:'💰' },
-    { id:'demo-q8', title:'English Grammar Test', category:'English', questions:25, duration:15, difficulty:'easy', xp:90, icon:'✍️' },
-    { id:'demo-q9', title:'Reasoning & Logic', category:'Reasoning', questions:20, duration:15, difficulty:'hard', xp:130, icon:'🧩' },
-    { id:'demo-q10', title:'Mathematics Basics', category:'Mathematics', questions:20, duration:15, difficulty:'medium', xp:100, icon:'🔢' },
-    { id:'demo-q11', title:'Computer Awareness', category:'Computer', questions:15, duration:10, difficulty:'easy', xp:80, icon:'💻' },
-    { id:'demo-q12', title:'Assam Geography Special', category:'Assam GK', questions:18, duration:10, difficulty:'medium', xp:95, icon:'🏔️' }
+  /* ═══ QUESTION BANK — 80+ real competitive exam questions ═══ */
+  var QB = [
+    {q:'Who was the first Chief Minister of Assam?',a:'Gopinath Bordoloi',b:'Bishnuram Medhi',c:'Sarat Chandra Sinha',d:'Hiteswar Saikia',ans:'a',exp:'Gopinath Bordoloi was the first CM of Assam (1946-1957).',topic:'Assam GK',diff:'easy'},
+    {q:'Which dynasty ruled Assam for nearly 600 years?',a:'Koch',b:'Ahom',c:'Kachari',d:'Chutiya',ans:'b',exp:'The Ahom Dynasty ruled Assam 1228-1826, repelling Mughal invasions.',topic:'Assam GK',diff:'easy'},
+    {q:'What is the state animal of Assam?',a:'One-horned Rhinoceros',b:'Royal Bengal Tiger',c:'Asian Elephant',d:'Hoolock Gibbon',ans:'a',exp:'The Indian one-horned rhinoceros is the state animal of Assam.',topic:'Assam GK',diff:'easy'},
+    {q:'The Battle of Saraighat was fought in which year?',a:'1665',b:'1671',c:'1682',d:'1695',ans:'b',exp:'Battle of Saraighat (1671) — Ahoms under Lachit Borphukan defeated the Mughals.',topic:'Assam GK',diff:'medium'},
+    {q:'Who is known as "Ahom Bir Lachit"?',a:'Pralad Baruah',b:'Lachit Borphukan',c:'Chao Lung Sukapha',d:'Rudra Singha',ans:'b',exp:'Lachit Borphukan won the Battle of Saraighat in 1671.',topic:'Assam GK',diff:'easy'},
+    {q:'Kaziranga National Park is famous for?',a:'Bengal Tiger',b:'One-horned Rhinoceros',c:'Asiatic Lion',d:'Snow Leopard',ans:'b',exp:'Kaziranga hosts 2/3 of world population of one-horned rhinos.',topic:'Assam GK',diff:'easy'},
+    {q:'Which river is the lifeline of Assam?',a:'Barak',b:'Brahmaputra',c:'Subansiri',d:'Dhubri',ans:'b',exp:'The Brahmaputra flows through the entire length of Assam.',topic:'Assam GK',diff:'easy'},
+    {q:'The Assam Movement (1979-1985) was about?',a:'Language',b:'Foreign nationals deportation',c:'Border dispute',d:'Autonomy',ans:'b',exp:'AASU led the movement demanding detection/deportation of foreign nationals.',topic:'Assam GK',diff:'medium'},
+    {q:'Which is the most important Bihu festival?',a:'Magh Bihu',b:'Rongali Bihu',c:'Kati Bihu',d:'Bhogali Bihu',ans:'b',exp:'Rongali Bihu (April) marks the Assamese New Year.',topic:'Assam GK',diff:'easy'},
+    {q:'Who founded the Ahom kingdom?',a:'Sukapha',b:'Suhungmung',c:'Praudh Singha',d:'Rudra Singha',ans:'a',exp:'Chao Lung Sukapha founded the Ahom kingdom in 1228 CE.',topic:'Assam GK',diff:'medium'},
+    {q:'Majuli is known as the world\'s largest what?',a:'Mountain',b:'River island',c:'Desert',d:'Lake',ans:'b',exp:'Majuli in the Brahmaputra is the world\'s largest river island.',topic:'Assam GK',diff:'easy'},
+    {q:'Srimanta Sankardeva was a 15th-16th century?',a:'King',b:'Saint-scholar and reformer',c:'Warrior',d:'Poet only',ans:'b',exp:'Sankardeva (1449-1568) founded Ekasarana Dharma in Assam.',topic:'Assam GK',diff:'medium'},
+    {q:'The Assam Accord was signed in which year?',a:'1983',b:'1985',c:'1987',d:'1990',ans:'b',exp:'Assam Accord signed August 15, 1985, ending the Assam Agitation.',topic:'Assam GK',diff:'medium'},
+    {q:'Which is the largest district in Assam by area?',a:'Dibrugarh',b:'Tinsukia',c:'Karbi Anglong',d:'Sonitpur',ans:'c',exp:'Karbi Anglong is the largest district in Assam by area.',topic:'Assam GK',diff:'medium'},
+    {q:'Guwahati is situated on the banks of which river?',a:'Barak',b:'Brahmaputra',c:'Kapili',d:'Dhansiri',ans:'b',exp:'Guwahati lies on the south bank of the Brahmaputra river.',topic:'Assam GK',diff:'easy'},
+    {q:'Who is the head of the Indian state?',a:'Prime Minister',b:'President',c:'Chief Justice',d:'Speaker',ans:'b',exp:'The President is the constitutional head of the Indian state.',topic:'Polity',diff:'easy'},
+    {q:'How many fundamental rights are in the Indian Constitution?',a:'5',b:'6',c:'7',d:'8',ans:'b',exp:'Originally 7, now 6 after Right to Property was removed.',topic:'Polity',diff:'medium'},
+    {q:'Directive Principles are in which part of the Constitution?',a:'Part III',b:'Part IV',c:'Part V',d:'Part VI',ans:'b',exp:'DPSP are in Part IV (Articles 36-51).',topic:'Polity',diff:'medium'},
+    {q:'Who appoints the Chief Justice of India?',a:'PM',b:'Law Minister',c:'President',d:'Parliament',ans:'c',exp:'CJI is appointed by the President under Article 124.',topic:'Polity',diff:'easy'},
+    {q:'Minimum age to become President of India?',a:'25',b:'30',c:'35',d:'40',ans:'c',exp:'Article 58 requires minimum 35 years of age.',topic:'Polity',diff:'easy'},
+    {q:'Which article deals with Right to Equality?',a:'Article 14',b:'Article 19',c:'Article 21',d:'Article 32',ans:'a',exp:'Article 14 guarantees equality before law.',topic:'Polity',diff:'medium'},
+    {q:'How many members nominated to Rajya Sabha by President?',a:'10',b:'12',c:'14',d:'16',ans:'b',exp:'12 members are nominated for special knowledge/experience.',topic:'Polity',diff:'medium'},
+    {q:'Indian Constitution was adopted on?',a:'15 Aug 1947',b:'26 Jan 1950',c:'26 Nov 1949',d:'1 Jan 1950',ans:'c',exp:'Adopted Nov 26, 1949; came into effect Jan 26, 1950.',topic:'Polity',diff:'medium'},
+    {q:'Who is the guardian of the Indian Constitution?',a:'President',b:'Supreme Court',c:'Parliament',d:'PM',ans:'b',exp:'Supreme Court has power of judicial review.',topic:'Polity',diff:'easy'},
+    {q:'Maximum strength of the Lok Sabha?',a:'545',b:'550',c:'552',d:'500',ans:'b',exp:'Max 550 — 530 from states, 20 from UTs.',topic:'Polity',diff:'medium'},
+    {q:'Financial emergency is under which article?',a:'352',b:'356',c:'360',d:'365',ans:'c',exp:'Article 360 — never imposed in India.',topic:'Polity',diff:'hard'},
+    {q:'Single Citizenship concept borrowed from?',a:'USA',b:'UK',c:'Canada',d:'Australia',ans:'b',exp:'Borrowed from the British Constitution.',topic:'Polity',diff:'medium'},
+    {q:'Who founded the Mauryan Empire?',a:'Ashoka',b:'Chandragupta Maurya',c:'Bindusara',d:'Bimbisara',ans:'b',exp:'Chandragupta Maurya founded it in 322 BCE with Chanakya.',topic:'History',diff:'easy'},
+    {q:'Battle of Plassey was fought in?',a:'1757',b:'1761',c:'1764',d:'1857',ans:'a',exp:'1757 — Clive defeated Siraj-ud-Daula, beginning British rule.',topic:'History',diff:'easy'},
+    {q:'Who started the Non-Cooperation Movement?',a:'Subhas Bose',b:'Mahatma Gandhi',c:'Nehru',d:'Tilak',ans:'b',exp:'Gandhi started it in 1920 against British rule.',topic:'History',diff:'easy'},
+    {q:'Quit India Movement launched in?',a:'1940',b:'1942',c:'1945',d:'1947',ans:'b',exp:'Aug 8, 1942 — "Do or Die" slogan by Gandhi.',topic:'History',diff:'easy'},
+    {q:'Who was the last Mughal Emperor?',a:'Akbar II',b:'Bahadur Shah Zafar',c:'Aurangzeb',d:'Shah Alam II',ans:'b',exp:'Exiled to Rangoon after the 1857 revolt.',topic:'History',diff:'easy'},
+    {q:'Dandi March was part of which movement?',a:'Non-Cooperation',b:'Civil Disobedience',c:'Quit India',d:'Khilafat',ans:'b',exp:'1930 Dandi March protested the salt tax.',topic:'History',diff:'medium'},
+    {q:'Who started construction of Qutub Minar?',a:'Qutb-ud-din Aibak',b:'Akbar',c:'Shah Jahan',d:'Babur',ans:'a',exp:'Started 1192 by Aibak, completed by Iltutmish.',topic:'History',diff:'medium'},
+    {q:'Indian National Congress founded in?',a:'1875',b:'1885',c:'1895',d:'1905',ans:'b',exp:'Founded 1885 by A.O. Hume, first session in Bombay.',topic:'History',diff:'easy'},
+    {q:'Who said "Give me blood and I shall give you freedom"?',a:'Gandhi',b:'Subhas Bose',c:'Bhagat Singh',d:'Nehru',ans:'b',exp:'Subhas Chandra Bose leading the Indian National Army.',topic:'History',diff:'easy'},
+    {q:'Partition of Bengal took place in?',a:'1903',b:'1905',c:'1911',d:'1947',ans:'b',exp:'Lord Curzon partitioned Bengal in 1905, annulled in 1911.',topic:'History',diff:'medium'},
+    {q:'Which is the longest river in India?',a:'Yamuna',b:'Ganga',c:'Godavari',d:'Brahmaputra',ans:'b',exp:'Ganga flows about 2,525 km from Gangotri.',topic:'Geography',diff:'easy'},
+    {q:'Highest mountain peak entirely in India?',a:'Everest',b:'K2',c:'Kanchenjunga',d:'Nanda Devi',ans:'c',exp:'Kanchenjunga (8,586m) in Sikkim.',topic:'Geography',diff:'medium'},
+    {q:'Tropic of Cancer passes through how many Indian states?',a:'6',b:'7',c:'8',d:'9',ans:'c',exp:'8 states: Gujarat, Rajasthan, MP, Chhattisgarh, Jharkhand, WB, Tripura, Mizoram.',topic:'Geography',diff:'hard'},
+    {q:'Largest state in India by area?',a:'UP',b:'Maharashtra',c:'Rajasthan',d:'MP',ans:'c',exp:'Rajasthan covers ~342,239 sq km.',topic:'Geography',diff:'easy'},
+    {q:'Which strait separates India from Sri Lanka?',a:'Palk',b:'Bering',c:'Hormuz',d:'Malacca',ans:'a',exp:'Palk Strait connects Bay of Bengal and Gulf of Mannar.',topic:'Geography',diff:'medium'},
+    {q:'Western Ghats are also known as?',a:'Eastern Ghats',b:'Sahyadri',c:'Aravalli',d:'Vindhya',ans:'b',exp:'Sahyadri range — UNESCO World Heritage Site.',topic:'Geography',diff:'medium'},
+    {q:'Largest saltwater lake in India?',a:'Dal Lake',b:'Chilika Lake',c:'Vembanad',d:'Sambhar',ans:'b',exp:'Chilika Lake in Odisha — largest brackish water lake.',topic:'Geography',diff:'medium'},
+    {q:'Smallest continent?',a:'Europe',b:'Australia',c:'Antarctica',d:'South America',ans:'b',exp:'Australia ~7.6 million sq km.',topic:'Geography',diff:'easy'},
+    {q:'Deepest ocean in the world?',a:'Atlantic',b:'Indian',c:'Pacific',d:'Arctic',ans:'c',exp:'Pacific with Mariana Trench (11,034m).',topic:'Geography',diff:'easy'},
+    {q:'Monsoon winds caused by?',a:'El Nino',b:'Differential heating of land and water',c:'Jet streams',d:'Cyclones',ans:'b',exp:'Pressure differences from differential heating.',topic:'Geography',diff:'medium'},
+    {q:'Architects of India\'s 1991 economic liberalization?',a:'Indira Gandhi',b:'P.V. Narasimha Rao',c:'Manmohan Singh',d:'Both b and c',ans:'d',exp:'Rao as PM, Singh as FM drove the 1991 reforms.',topic:'Economy',diff:'medium'},
+    {q:'Full form of NITI Aayog?',a:'National Institution for Transforming India',b:'National Institute of Tech',c:'National Indian Trade',d:'National Integration',ans:'a',exp:'Replaced Planning Commission in 2015.',topic:'Economy',diff:'medium'},
+    {q:'Which sector contributes most to India\'s GDP?',a:'Agriculture',b:'Industry',c:'Services',d:'Manufacturing',ans:'c',exp:'Services sector >50% of GDP.',topic:'Economy',diff:'medium'},
+    {q:'GST rate slabs in India?',a:'Single rate',b:'5%, 12%, 18%, 28%',c:'State-only',d:'Central-only',ans:'b',exp:'Four main slabs: 5%, 12%, 18%, 28%.',topic:'Economy',diff:'easy'},
+    {q:'RBI was established in?',a:'1935',b:'1947',c:'1950',d:'1969',ans:'a',exp:'Established April 1, 1935 under RBI Act 1934.',topic:'Economy',diff:'medium'},
+    {q:'MSP is meant for?',a:'Industrial goods',b:'Agricultural produce',c:'Services',d:'Imports',ans:'b',exp:'Insures farmers against price falls.',topic:'Economy',diff:'easy'},
+    {q:'Full form of FDI?',a:'Foreign Direct Investment',b:'Financial Development Index',c:'Fiscal Deficit',d:'Foreign Department',ans:'a',exp:'Investment by foreign company/individual in domestic enterprise.',topic:'Economy',diff:'easy'},
+    {q:'Chemical formula for water?',a:'H2O',b:'CO2',c:'O2',d:'NaCl',ans:'a',exp:'Two hydrogen, one oxygen atom.',topic:'Science',diff:'easy'},
+    {q:'Most abundant gas in Earth\'s atmosphere?',a:'Oxygen',b:'CO2',c:'Nitrogen',d:'Hydrogen',ans:'c',exp:'Nitrogen ~78% of atmosphere.',topic:'Science',diff:'easy'},
+    {q:'Who discovered penicillin?',a:'Alexander Fleming',b:'Pasteur',c:'Koch',d:'Jenner',ans:'a',exp:'Discovered in 1928 from Penicillium mold.',topic:'Science',diff:'easy'},
+    {q:'Unit of electrical resistance?',a:'Ampere',b:'Volt',c:'Ohm',d:'Watt',ans:'c',exp:'Ohm (Ω) named after Georg Simon Ohm.',topic:'Science',diff:'easy'},
+    {q:'Which vitamin is produced by sunlight?',a:'Vit A',b:'Vit B',c:'Vit C',d:'Vit D',ans:'d',exp:'UVB radiation synthesizes Vitamin D in skin.',topic:'Science',diff:'easy'},
+    {q:'Powerhouse of the cell?',a:'Nucleus',b:'Mitochondria',c:'Ribosome',d:'Golgi',ans:'b',exp:'Mitochondria produce ATP via cellular respiration.',topic:'Science',diff:'easy'},
+    {q:'Which planet is the Red Planet?',a:'Venus',b:'Mars',c:'Jupiter',d:'Saturn',ans:'b',exp:'Iron oxide gives Mars its reddish color.',topic:'Science',diff:'easy'},
+    {q:'Speed of light in vacuum?',a:'3x10^8 m/s',b:'3x10^6 m/s',c:'3x10^5 m/s',d:'3x10^7 m/s',ans:'a',exp:'~299,792,458 m/s.',topic:'Science',diff:'medium'},
+    {q:'Largest organ of the human body?',a:'Liver',b:'Brain',c:'Skin',d:'Lungs',ans:'c',exp:'Skin is the protective barrier.',topic:'Science',diff:'medium'},
+    {q:'What causes the greenhouse effect?',a:'Oxygen',b:'CO2 and methane',c:'Nitrogen',d:'Ozone',ans:'b',exp:'CO2, methane trap heat in atmosphere.',topic:'Science',diff:'medium'},
+    {q:'Current President of India (2026)?',a:'Droupadi Murmu',b:'Ram Nath Kovind',c:'Pranab Mukherjee',d:'Venkaiah Naidu',ans:'a',exp:'Droupadi Murmu became President in July 2022.',topic:'Current Affairs',diff:'easy'},
+    {q:'ISRO stands for?',a:'Indian Space Research Organisation',b:'International Space',c:'Indian Satellite',d:'Indian Space Office',ans:'a',exp:'India\'s national space agency.',topic:'Current Affairs',diff:'easy'},
+    {q:'Which city hosted G20 Summit 2023?',a:'Mumbai',b:'New Delhi',c:'Bangalore',d:'Chennai',ans:'b',exp:'New Delhi, September 2023.',topic:'Current Affairs',diff:'medium'},
+    {q:'India\'s Moon mission that landed in 2023?',a:'Chandrayaan-2',b:'Chandrayaan-3',c:'Mangalyaan',d:'Gaganyaan',ans:'b',exp:'Landed on Moon\'s south pole Aug 23, 2023.',topic:'Current Affairs',diff:'easy'},
+    {q:'Ayushman Bharat scheme is about?',a:'Education',b:'Health insurance',c:'Employment',d:'Housing',ans:'b',exp:'Up to 5 lakh per family per year health coverage.',topic:'Current Affairs',diff:'easy'},
+    {q:'Currency of Japan?',a:'Won',b:'Yuan',c:'Yen',d:'Rupee',ans:'c',exp:'Japanese Yen (¥).',topic:'Current Affairs',diff:'easy'},
+    {q:'India became world\'s most populous country in?',a:'2021',b:'2022',c:'2023',d:'2024',ans:'c',exp:'India surpassed China in 2023 with 1.4B+ people.',topic:'Current Affairs',diff:'medium'},
+    {q:'Skill India mission was launched in?',a:'2014',b:'2015',c:'2016',d:'2017',ans:'b',exp:'Launched 2015 to train 40 crore+ people.',topic:'Current Affairs',diff:'medium'},
+    {q:'Complete: 2, 6, 12, 20, 30, ?',a:'40',b:'42',c:'44',d:'36',ans:'b',exp:'Differences: 4,6,8,10,12 — so 30+12=42.',topic:'Reasoning',diff:'medium'},
+    {q:'Odd one out: 3, 5, 7, 9, 11, 13',a:'3',b:'5',c:'9',d:'11',ans:'c',exp:'9=3x3 is not prime; others are prime.',topic:'Reasoning',diff:'easy'},
+    {q:'Walk 3km north, 4km east — distance from start?',a:'5 km',b:'7 km',c:'1 km',d:'12 km',ans:'a',exp:'Pythagorean: sqrt(9+16)=5 km.',topic:'Reasoning',diff:'medium'},
+    {q:'Synonym of "benevolent"?',a:'Cruel',b:'Kind',c:'Selfish',d:'Hostile',ans:'b',exp:'Benevolent = kind, generous.',topic:'English',diff:'easy'},
+    {q:'Antonym of "verbose"?',a:'Concise',b:'Wordy',c:'Talkative',d:'Lengthy',ans:'a',exp:'Verbose = wordy; antonym = concise.',topic:'English',diff:'medium'},
+    {q:'Correct spelling?',a:'Necesary',b:'Neccessary',c:'Necessary',d:'Neccessary',ans:'c',exp:'One c, two s.',topic:'English',diff:'easy'},
+    {q:'Past tense of "go"?',a:'Goed',b:'Went',c:'Gone',d:'Going',ans:'b',exp:'Went is past tense; gone is past participle.',topic:'English',diff:'easy'},
+    {q:'15% of 200?',a:'15',b:'25',c:'30',d:'35',ans:'c',exp:'(15/100)x200=30.',topic:'Mathematics',diff:'easy'},
+    {q:'Square root of 144?',a:'10',b:'12',c:'14',d:'16',ans:'b',exp:'12x12=144.',topic:'Mathematics',diff:'easy'},
+    {q:'If x+5=12, x=?',a:'5',b:'7',c:'12',d:'17',ans:'b',exp:'x=12-5=7.',topic:'Mathematics',diff:'easy'},
+    {q:'Area of circle with radius 7 (pi=22/7)?',a:'144',b:'154',c:'164',d:'174',ans:'b',exp:'pi*r^2=(22/7)*49=154.',topic:'Mathematics',diff:'medium'},
+    {q:'CPU stands for?',a:'Central Processing Unit',b:'Computer Personal Unit',c:'Central Program',d:'Computer Processing',ans:'a',exp:'CPU is the brain of the computer.',topic:'Computer',diff:'easy'},
+    {q:'Android OS developed by?',a:'Apple',b:'Microsoft',c:'Google',d:'Samsung',ans:'c',exp:'Google develops Android on Linux kernel.',topic:'Computer',diff:'easy'},
+    {q:'URL stands for?',a:'Universal Resource Locator',b:'Uniform Resource Locator',c:'United Resource Link',d:'Universal Reference',ans:'b',exp:'Address of a web resource.',topic:'Computer',diff:'easy'},
+    {q:'Which is NOT a programming language?',a:'Python',b:'Java',c:'HTTP',d:'C++',ans:'c',exp:'HTTP is a protocol, not a language.',topic:'Computer',diff:'medium'},
+    {q:'RAM stands for?',a:'Read Access Memory',b:'Random Access Memory',c:'Rapid Access Module',d:'Read Available',ans:'b',exp:'Volatile memory in computers.',topic:'Computer',diff:'easy'}
   ];
 
-  var SEED_MOCKS = [
-    { id:'demo-m1', title:'APSC Prelims Mock Test', exam:'APSC', questions:100, marks:200, duration:120, difficulty:'hard', icon:'📝' },
-    { id:'demo-m2', title:'ADRE Grade III Mock', exam:'ADRE', questions:80, marks:160, duration:90, difficulty:'medium', icon:'📋' },
-    { id:'demo-m3', title:'Assam Police SI Mock', exam:'Assam Police', questions:60, marks:120, duration:60, difficulty:'medium', icon:'🚔' },
-    { id:'demo-m4', title:'Assam TET Mock Test', exam:'Assam TET', questions:100, marks:100, duration:120, difficulty:'medium', icon:'📚' },
-    { id:'demo-m5', title:'SSC CGL Tier I Mock', exam:'SSC', questions:100, marks:200, duration:60, difficulty:'hard', icon:'📊' },
-    { id:'demo-m6', title:'Railway NTPC Mock', exam:'Railway', questions:100, marks:100, duration:90, difficulty:'medium', icon:'🚂' },
-    { id:'demo-m7', title:'Banking PO Prelims', exam:'Banking', questions:100, marks:100, duration:60, difficulty:'hard', icon:'🏦' },
-    { id:'demo-m8', title:'General Competitive Mock', exam:'General', questions:50, marks:100, duration:60, difficulty:'medium', icon:'🎯' },
-    { id:'demo-m9', title:'ADRE Grade IV Mock', exam:'ADRE', questions:60, marks:120, duration:60, difficulty:'easy', icon:'📄' },
-    { id:'demo-m10', title:'APSC Mains Mock Test', exam:'APSC', questions:50, marks:250, duration:180, difficulty:'hard', icon:'✒️' },
-    { id:'demo-m11', title:'Assam Police Constable', exam:'Assam Police', questions:50, marks:50, duration:60, difficulty:'easy', icon:'👮' },
-    { id:'demo-m12', title:'SSC CHSL Mock Test', exam:'SSC', questions:100, marks:200, duration:60, difficulty:'medium', icon:'📃' }
+  /* ═══ Current Affairs Content (educational, factually correct) ═══ */
+  var CA = [
+    {cat:'Government Schemes',title:'PM-Kisan Samman Nidhi',content:'Provides Rs 6,000/year to landholding farmer families in 3 installments. Launched Feb 2019, 11 crore+ farmers benefited.',icon:'🏛️'},
+    {cat:'Government Schemes',title:'Ayushman Bharat (PM-JAY)',content:'World\'s largest govt-funded health insurance — up to Rs 5 lakh/family/year. 10 crore+ beneficiary families.',icon:'🏥'},
+    {cat:'Government Schemes',title:'National Education Policy 2020',content:'Replaced 34-year-old policy. 5+3+3+4 structure, multidisciplinary education, mother tongue till class 5.',icon:'📚'},
+    {cat:'Government Schemes',title:'Skill India Mission',content:'Launched 2015 to train 40 crore+ people. Includes PMKVY providing short-term skill training.',icon:'🎯'},
+    {cat:'Government Schemes',title:'Digital India',content:'Govt services electronically. Aadhaar 130 crore+, UPI revolution, BharatNet connecting rural India.',icon:'💻'},
+    {cat:'Assam',title:'ADRE Recruitment',content:'Assam Direct Recruitment Examination for Grade III & IV posts. One of the state\'s largest recruitment drives.',icon:'🏔️'},
+    {cat:'Assam',title:'Assam Tea Industry',content:'Assam produces 50%+ of India\'s tea — world\'s largest tea-growing region. 10 lakh+ workers employed.',icon:'🍃'},
+    {cat:'Assam',title:'Majuli — World\'s Largest River Island',content:'Guinness-recognized largest river island. Home to 22 Vaishnavite Satras established by Sankardeva.',icon:'🛶'},
+    {cat:'Assam',title:'Assam State Museum',content:'Established 1940 in Guwahati. Houses Ahom-era artifacts, sculptures, ethnographic collections.',icon:'🏛️'},
+    {cat:'Science & Technology',title:'Chandrayaan-3',content:'Aug 23, 2023 — India became 1st country to soft-land on Moon\'s south pole. 4th to achieve lunar landing.',icon:'🚀'},
+    {cat:'Science & Technology',title:'Aditya-L1 Mission',content:'India\'s first solar mission, launched Sep 2, 2023. In halo orbit at Lagrange point L1 studying the Sun.',icon:'☀️'},
+    {cat:'Science & Technology',title:'5G in India',content:'Launched Oct 2022. Covers major cities by 2024. Speeds up to 100x faster than 4G.',icon:'📶'},
+    {cat:'Awards & Honours',title:'Bharat Ratna 2024',content:'Five recipients: Karpoori Thakur, L.K. Advani, P.V. Narasimha Rao, Charan Singh, M.S. Swaminathan.',icon:'🏆'},
+    {cat:'Awards & Honours',title:'Padma Awards 2024',content:'110 Padma Awards announced — 5 Padma Vibhushan, 17 Padma Bhushan, rest Padma Shri. Several from Northeast.',icon:'🎖️'},
+    {cat:'Sports',title:'India at Asian Games 2023',content:'Record 107 medals (28 gold, 38 silver, 41 bronze) — India\'s best-ever, 4th in medal tally.',icon:'🏅'},
+    {cat:'Sports',title:'Cricket World Cup 2023',content:'Hosted by India. Australia won, defeating India by 6 wickets in final at Ahmedabad, Nov 19, 2023.',icon:'🏏'},
+    {cat:'National',title:'India — 5th Largest Economy',content:'Surpassed UK in 2022. Projected to become 3rd largest by 2027, surpassing Japan and Germany.',icon:'📈'},
+    {cat:'National',title:'New Parliament Building',content:'Inaugurated May 28, 2023. Triangular design, 888 Lok Sabha seats. Part of Central Vista project.',icon:'🏛️'},
+    {cat:'International',title:'BRICS Expansion 2024',content:'New members: Egypt, Ethiopia, Iran, UAE. Original: Brazil, Russia, India, China, South Africa.',icon:'🌍'},
+    {cat:'International',title:'India at G20 2023',content:'Hosted G20 Summit in New Delhi, Sep 2023. Delhi Declaration on inclusive growth, digital transformation.',icon:'🇮🇳'}
   ];
 
-  var SEED_DECKS = [
-    { id:'demo-f1', title:'Indian Polity', topic:'Polity', cards:50, difficulty:'medium', icon:'⚖️' },
-    { id:'demo-f2', title:'Assam History', topic:'Assam GK', cards:40, difficulty:'easy', icon:'🏛️' },
-    { id:'demo-f3', title:'Indian History', topic:'History', cards:60, difficulty:'medium', icon:'📜' },
-    { id:'demo-f4', title:'Geography Basics', topic:'Geography', cards:45, difficulty:'easy', icon:'🗺️' },
-    { id:'demo-f5', title:'Indian Economy', topic:'Economy', cards:35, difficulty:'hard', icon:'💰' },
-    { id:'demo-f6', title:'General Science', topic:'Science', cards:50, difficulty:'medium', icon:'🔬' },
-    { id:'demo-f7', title:'Current Affairs Quick Cards', topic:'Current Affairs', cards:30, difficulty:'medium', icon:'📰' },
-    { id:'demo-f8', title:'Important Acts', topic:'Polity', cards:25, difficulty:'hard', icon:'📖' },
-    { id:'demo-f9', title:'Constitutional Articles', topic:'Polity', cards:40, difficulty:'hard', icon:'📜' },
-    { id:'demo-f10', title:'Assam GK Special', topic:'Assam GK', cards:35, difficulty:'easy', icon:'🏔️' },
-    { id:'demo-f11', title:'English Vocabulary', topic:'English', cards:60, difficulty:'easy', icon:'✍️' },
-    { id:'demo-f12', title:'Computer Awareness', topic:'Computer', cards:30, difficulty:'medium', icon:'💻' }
+  /* ═══ Study Tools Data ═══ */
+  var FORMULAS = [
+    {topic:'Mathematics',name:'Area of Circle',formula:'A = pi*r^2'},
+    {topic:'Mathematics',name:'Circumference',formula:'C = 2*pi*r'},
+    {topic:'Mathematics',name:'Area of Triangle',formula:'A = (1/2)*b*h'},
+    {topic:'Mathematics',name:'Pythagorean Theorem',formula:'a^2 + b^2 = c^2'},
+    {topic:'Mathematics',name:'Area of Rectangle',formula:'A = l * w'},
+    {topic:'Mathematics',name:'Volume of Sphere',formula:'V = (4/3)*pi*r^3'},
+    {topic:'Mathematics',name:'Simple Interest',formula:'SI = (P*R*T)/100'},
+    {topic:'Mathematics',name:'Compound Interest',formula:'A = P(1+r/n)^(nt)'},
+    {topic:'Mathematics',name:'Percentage',formula:'% = (Value/Total)*100'},
+    {topic:'Mathematics',name:'Speed-Distance-Time',formula:'Speed = Distance/Time'},
+    {topic:'Physics',name:'Newton\'s Second Law',formula:'F = m*a'},
+    {topic:'Physics',name:'Kinetic Energy',formula:'KE = (1/2)*m*v^2'},
+    {topic:'Physics',name:'Ohm\'s Law',formula:'V = I*R'},
+    {topic:'Physics',name:'Power',formula:'P = V*I = I^2*R'},
+    {topic:'Physics',name:'Gravitational Force',formula:'F = G*(m1*m2)/r^2'}
   ];
 
-  var SEED_PYQS = [
-    { id:'demo-p1', title:'APSC PYQ Practice', exam:'APSC', questions:50, icon:'📝' },
-    { id:'demo-p2', title:'ADRE PYQ Practice', exam:'ADRE', questions:50, icon:'📋' },
-    { id:'demo-p3', title:'Assam Police PYQ', exam:'Assam Police', questions:40, icon:'🚔' },
-    { id:'demo-p4', title:'Assam TET PYQ', exam:'Assam TET', questions:45, icon:'📚' },
-    { id:'demo-p5', title:'SSC PYQ Practice', exam:'SSC', questions:50, icon:'📊' },
-    { id:'demo-p6', title:'Railway PYQ', exam:'Railway', questions:50, icon:'🚂' },
-    { id:'demo-p7', title:'Banking PYQ', exam:'Banking', questions:40, icon:'🏦' },
-    { id:'demo-p8', title:'Grade III PYQ', exam:'ADRE', questions:40, icon:'📄' },
-    { id:'demo-p9', title:'Grade IV PYQ', exam:'ADRE', questions:35, icon:'📃' },
-    { id:'demo-p10', title:'APSC Prelims PYQ', exam:'APSC', questions:100, icon:'✒️' },
-    { id:'demo-p11', title:'Assam Police Constable PYQ', exam:'Assam Police', questions:50, icon:'👮' },
-    { id:'demo-p12', title:'General Competitive PYQ', exam:'General', questions:30, icon:'🎯' }
+  var FACTS = [
+    {cat:'Polity',fact:'India is the world\'s largest democracy by population.'},
+    {cat:'Polity',fact:'The Indian Constitution is the longest written constitution in the world.'},
+    {cat:'Polity',fact:'Dr. B.R. Ambedkar is the "Father of the Indian Constitution".'},
+    {cat:'Geography',fact:'India has 28 states and 8 Union Territories.'},
+    {cat:'Geography',fact:'The Brahmaputra is one of the few male-named rivers in India.'},
+    {cat:'Assam GK',fact:'Assam has 35 districts as of 2023.'},
+    {cat:'Assam GK',fact:'Guwahati is the largest city in Northeast India.'},
+    {cat:'Assam GK',fact:'Assam shares international borders with Bangladesh and Bhutan.'},
+    {cat:'History',fact:'The Ahom kingdom lasted nearly 600 years (1228-1826).'},
+    {cat:'Science',fact:'ISRO was founded on August 15, 1969.'},
+    {cat:'Economy',fact:'India\'s financial year runs April 1 to March 31.'},
+    {cat:'Economy',fact:'Mumbai is the financial capital of India.'}
   ];
 
-  var SEED_AFFAIRS_CATS = [
-    { id:'daily', title:'Daily Current Affairs', period:'Daily', icon:'📅' },
-    { id:'weekly', title:'Weekly Current Affairs', period:'Weekly', icon:'🗓️' },
-    { id:'monthly', title:'Monthly Current Affairs', period:'Monthly', icon:'📆' },
-    { id:'assam', title:'Assam Current Affairs', period:'Assam', icon:'🏔️' },
-    { id:'national', title:'National Current Affairs', period:'National', icon:'🇮🇳' },
-    { id:'international', title:'International Current Affairs', period:'International', icon:'🌍' },
-    { id:'schemes', title:'Government Schemes', period:'Schemes', icon:'🏛️' },
-    { id:'awards', title:'Awards & Honours', period:'Awards', icon:'🏆' },
-    { id:'sports', title:'Sports Current Affairs', period:'Sports', icon:'🏅' },
-    { id:'sci-tech', title:'Science & Technology', period:'Sci-Tech', icon:'🔬' }
+  var VOCAB = [
+    {word:'Benevolent',meaning:'Kind and generous'},
+    {word:'Ubiquitous',meaning:'Present everywhere'},
+    {word:'Pragmatic',meaning:'Practical, realistic'},
+    {word:'Ephemeral',meaning:'Short-lived, transient'},
+    {word:'Resilient',meaning:'Able to recover quickly from difficulties'},
+    {word:'Meticulous',meaning:'Very careful about details'},
+    {word:'Ambiguous',meaning:'Having more than one meaning'},
+    {word:'Comprehensive',meaning:'Complete, including all elements'},
+    {word:'Diligent',meaning:'Hardworking and careful'},
+    {word:'Verbose',meaning:'Using more words than needed'}
   ];
 
-  var SEED_ARENA = [
-    { mode:'quick10', title:'Quick 10', sub:'10 Questions · 5 min', icon:'⚡' },
-    { mode:'quick25', title:'Quick 25', sub:'25 Questions · 12 min', icon:'🔥' },
-    { mode:'quick50', title:'Quick 50', sub:'50 Questions · 25 min', icon:'💪' },
-    { mode:'timed', title:'Timed Practice', sub:'Race against the clock', icon:'⏱️' },
-    { mode:'topic', title:'Topic Practice', sub:'Pick a subject', icon:'🎯' },
-    { mode:'difficulty', title:'Difficulty Practice', sub:'Easy → Hard', icon:'📈' },
-    { mode:'random', title:'Random Practice', sub:'Surprise questions', icon:'🎲' }
+  /* ═══ SEED UI DATA ═══ */
+  var SQ = [
+    {id:'demo-q1',title:'Daily GK Challenge',category:'General Knowledge',questions:20,duration:10,difficulty:'medium',xp:100,icon:'🧠'},
+    {id:'demo-q2',title:'Assam History Quiz',category:'Assam GK',questions:15,duration:8,difficulty:'easy',xp:75,icon:'🏛️'},
+    {id:'demo-q3',title:'Indian Polity Basics',category:'Polity',questions:25,duration:15,difficulty:'medium',xp:120,icon:'⚖️'},
+    {id:'demo-q4',title:'Geography of India',category:'Geography',questions:20,duration:12,difficulty:'medium',xp:100,icon:'🗺️'},
+    {id:'demo-q5',title:'Current Affairs Monthly',category:'Current Affairs',questions:30,duration:20,difficulty:'hard',xp:150,icon:'📰'},
+    {id:'demo-q6',title:'Science & Tech Fundamentals',category:'Science',questions:20,duration:12,difficulty:'medium',xp:100,icon:'🔬'},
+    {id:'demo-q7',title:'Indian Economy Quiz',category:'Economy',questions:18,duration:10,difficulty:'hard',xp:110,icon:'💰'},
+    {id:'demo-q8',title:'English Grammar Test',category:'English',questions:25,duration:15,difficulty:'easy',xp:90,icon:'✍️'},
+    {id:'demo-q9',title:'Reasoning & Logic',category:'Reasoning',questions:20,duration:15,difficulty:'hard',xp:130,icon:'🧩'},
+    {id:'demo-q10',title:'Mathematics Basics',category:'Mathematics',questions:20,duration:15,difficulty:'medium',xp:100,icon:'🔢'},
+    {id:'demo-q11',title:'Computer Awareness',category:'Computer',questions:15,duration:10,difficulty:'easy',xp:80,icon:'💻'},
+    {id:'demo-q12',title:'Assam Geography Special',category:'Assam GK',questions:18,duration:10,difficulty:'medium',xp:95,icon:'🏔️'}
+  ];
+  var SM = [
+    {id:'demo-m1',title:'APSC Prelims Mock',exam:'APSC',questions:100,marks:200,duration:120,difficulty:'hard',icon:'📝'},
+    {id:'demo-m2',title:'ADRE Grade III Mock',exam:'ADRE',questions:80,marks:160,duration:90,difficulty:'medium',icon:'📋'},
+    {id:'demo-m3',title:'Assam Police SI Mock',exam:'Assam Police',questions:60,marks:120,duration:60,difficulty:'medium',icon:'🚔'},
+    {id:'demo-m4',title:'Assam TET Mock',exam:'Assam TET',questions:100,marks:100,duration:120,difficulty:'medium',icon:'📚'},
+    {id:'demo-m5',title:'SSC CGL Tier I Mock',exam:'SSC',questions:100,marks:200,duration:60,difficulty:'hard',icon:'📊'},
+    {id:'demo-m6',title:'Railway NTPC Mock',exam:'Railway',questions:100,marks:100,duration:90,difficulty:'medium',icon:'🚂'},
+    {id:'demo-m7',title:'Banking PO Prelims',exam:'Banking',questions:100,marks:100,duration:60,difficulty:'hard',icon:'🏦'},
+    {id:'demo-m8',title:'General Competitive Mock',exam:'General',questions:50,marks:100,duration:60,difficulty:'medium',icon:'🎯'},
+    {id:'demo-m9',title:'ADRE Grade IV Mock',exam:'ADRE',questions:60,marks:120,duration:60,difficulty:'easy',icon:'📄'},
+    {id:'demo-m10',title:'APSC Mains Mock',exam:'APSC',questions:50,marks:250,duration:180,difficulty:'hard',icon:'✒️'},
+    {id:'demo-m11',title:'Police Constable Mock',exam:'Assam Police',questions:50,marks:50,duration:60,difficulty:'easy',icon:'👮'},
+    {id:'demo-m12',title:'SSC CHSL Mock',exam:'SSC',questions:100,marks:200,duration:60,difficulty:'medium',icon:'📃'}
+  ];
+  var SD = [
+    {id:'demo-f1',title:'Indian Polity',topic:'Polity',cards:50,difficulty:'medium',icon:'⚖️'},
+    {id:'demo-f2',title:'Assam History',topic:'Assam GK',cards:40,difficulty:'easy',icon:'🏛️'},
+    {id:'demo-f3',title:'Indian History',topic:'History',cards:60,difficulty:'medium',icon:'📜'},
+    {id:'demo-f4',title:'Geography Basics',topic:'Geography',cards:45,difficulty:'easy',icon:'🗺️'},
+    {id:'demo-f5',title:'Indian Economy',topic:'Economy',cards:35,difficulty:'hard',icon:'💰'},
+    {id:'demo-f6',title:'General Science',topic:'Science',cards:50,difficulty:'medium',icon:'🔬'},
+    {id:'demo-f7',title:'Current Affairs Cards',topic:'Current Affairs',cards:30,difficulty:'medium',icon:'📰'},
+    {id:'demo-f8',title:'Important Acts',topic:'Polity',cards:25,difficulty:'hard',icon:'📖'},
+    {id:'demo-f9',title:'Constitutional Articles',topic:'Polity',cards:40,difficulty:'hard',icon:'📜'},
+    {id:'demo-f10',title:'Assam GK Special',topic:'Assam GK',cards:35,difficulty:'easy',icon:'🏔️'},
+    {id:'demo-f11',title:'English Vocabulary',topic:'English',cards:60,difficulty:'easy',icon:'✍️'},
+    {id:'demo-f12',title:'Computer Awareness',topic:'Computer',cards:30,difficulty:'medium',icon:'💻'}
+  ];
+  var SP = [
+    {id:'pyq-apsc-pre',title:'APSC PYQ Practice',exam:'APSC',icon:'📝'},
+    {id:'pyq-adre-3',title:'ADRE Grade III PYQ',exam:'ADRE',icon:'📋'},
+    {id:'pyq-police-si',title:'Assam Police SI PYQ',exam:'Assam Police',icon:'🚔'},
+    {id:'pyq-tet',title:'Assam TET PYQ',exam:'Assam TET',icon:'📚'},
+    {id:'pyq-ssc-cgl',title:'SSC CGL PYQ',exam:'SSC',icon:'📊'},
+    {id:'pyq-railway',title:'Railway NTPC PYQ',exam:'Railway',icon:'🚂'},
+    {id:'pyq-banking',title:'Banking PO PYQ',exam:'Banking',icon:'🏦'},
+    {id:'pyq-adre-4',title:'ADRE Grade IV PYQ',exam:'ADRE',icon:'📄'},
+    {id:'pyq-apsc-mains',title:'APSC Mains PYQ',exam:'APSC',icon:'✒️'},
+    {id:'pyq-police-const',title:'Police Constable PYQ',exam:'Assam Police',icon:'👮'},
+    {id:'pyq-general',title:'General Competitive PYQ',exam:'General',icon:'🎯'},
+    {id:'pyq-assam-gk',title:'Assam GK PYQ',exam:'Assam',icon:'🏔️'}
+  ];
+  var SA = [
+    {mode:'quick10',title:'Quick 10',sub:'10 Questions · 5 min',icon:'⚡',count:10},
+    {mode:'quick25',title:'Quick 25',sub:'25 Questions · 12 min',icon:'🔥',count:25},
+    {mode:'quick50',title:'Quick 50',sub:'50 Questions · 25 min',icon:'💪',count:50},
+    {mode:'timed',title:'Timed Practice',sub:'Race the clock',icon:'⏱️',count:20},
+    {mode:'topic',title:'Topic Practice',sub:'Pick a subject',icon:'🎯',count:0},
+    {mode:'difficulty',title:'Difficulty Practice',sub:'Easy to Hard',icon:'📈',count:0},
+    {mode:'random',title:'Random Practice',sub:'Surprise questions',icon:'🎲',count:15}
+  ];
+  var ST = [
+    {name:'Focus Timer',desc:'Pomodoro study timer',icon:'⏰',action:'timer'},
+    {name:'Study Planner',desc:'Plan your schedule',icon:'📅',action:'planner'},
+    {name:'Revision Timer',desc:'Revision countdown',icon:'🎯',action:'revise'},
+    {name:'Saved Questions',desc:'Bookmark important Qs',icon:'🔖',action:'bookmarks'},
+    {name:'Formula Sheet',desc:'Quick reference',icon:'📐',action:'formulas'},
+    {name:'Important Facts',desc:'Key facts for exams',icon:'💡',action:'facts'},
+    {name:'Vocabulary Builder',desc:'Build vocabulary',icon:'📚',action:'vocab'},
+    {name:'Exam Countdown',desc:'Track exam dates',icon:'⏳',action:'countdown'}
   ];
 
-  var SEED_TOOLS = [
-    { name:'Revision Timer', desc:'Pomodoro study timer', icon:'⏰', action:'timer' },
-    { name:'Study Planner', desc:'Plan your study schedule', icon:'📅', action:'planner' },
-    { name:'Focus Timer', desc:'Deep focus sessions', icon:'🎯', action:'focus' },
-    { name:'Saved Questions', desc:'Bookmark important Qs', icon:'🔖', action:'bookmarks' },
-    { name:'Formula Sheet', desc:'Quick reference formulas', icon:'📐', action:'formulas' },
-    { name:'Important Facts', desc:'Key facts for exams', icon:'💡', action:'facts' },
-    { name:'Vocabulary Builder', desc:'Build your vocabulary', icon:'📚', action:'vocab' },
-    { name:'Exam Countdown', desc:'Track exam dates', icon:'⏳', action:'countdown' }
-  ];
-
-  /* ── BrainLab Module ── */
+  /* ═══ BRAINLAB MODULE ═══ */
   window.BrainLab = {
-    initialized: false,
-    _currentQuiz: null,
-    _currentQIdx: 0,
-    _questions: [],
-    _answers: [],
-    _startTime: null,
-    _flashcardIdx: 0,
-    _flashcards: [],
-    _leaderFilter: 'all-time',
-    _searchQuery: '',
-    _filterExam: '',
+    initialized:false,_currentQuiz:null,_currentQIdx:0,_questions:[],_answers:[],_startTime:null,
+    _flashcardIdx:0,_flashcards:[],_leaderFilter:'all-time',_timerInterval:null,_vocabIdx:0,_isDaily:false,
 
-    /* ── Supabase client ── */
-    client: function () {
-      return window.supabase || (window.Supabase && window.Supabase.getClient());
-    },
+    client:function(){return window.supabase||(window.Supabase&&window.Supabase.getClient());},
+    user:function(){return window.currentUser||null;},
+    switchTab:function(tab){var m={quiz:'bl-sec-quizzes',flashcards:'bl-sec-flashcards',mock:'bl-sec-mocks',mistakes:'bl-sec-mistakes',affairs:'bl-sec-affairs',leaderboard:'bl-sec-leaderboard',performance:'bl-sec-performance'};if(m[tab])this.scrollToSection(m[tab]);},
+    escape:function(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');},
+    toast:function(m){if(window._showToast){window._showToast(m);return;}var t=document.createElement('div');t.textContent=m;t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(28,27,26,0.95);color:#fff;padding:10px 20px;border-radius:12px;font-size:0.82rem;z-index:9999;transition:opacity 0.3s';document.body.appendChild(t);setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove();},300);},2500);},
+    shuffle:function(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;},
+    getByTopic:function(t){return QB.filter(function(q){return q.topic===t;});},
+    getRandom:function(n){return this.shuffle(QB).slice(0,Math.min(n,QB.length));},
+    getByDiff:function(d){return QB.filter(function(q){return q.diff===d;});},
+    toQuiz:function(items){return items.map(function(item,i){return{id:'qb'+i,question_text:item.q,option_a:item.a,option_b:item.b,option_c:item.c,option_d:item.d,correct_answer:item.ans,explanation:item.exp,topic:item.topic};});},
+    cardHTML:function(icon,title,sub,tags,cta,action,demo){var h='<div class="bl-card bl-fade-in" onclick="'+action+'">';if(demo)h+='<span class="bl-demo-badge">DEMO</span>';h+='<div class="bl-card-icon">'+icon+'</div><div class="bl-card-title">'+this.escape(title)+'</div>';if(sub)h+='<div class="bl-card-subtitle">'+this.escape(sub)+'</div>';if(tags&&tags.length){h+='<div class="bl-card-meta">';tags.forEach(function(t){if(t)h+='<span class="bl-card-tag '+(t.cls||'')+'">'+t.text+'</span>';});h+='</div>';}h+='<button class="bl-card-cta" onclick="event.stopPropagation();'+action+'">'+cta+'</button></div>';return h;},
+    showPlayer:function(){var a=document.getElementById('bl-quiz-player-area');if(a){a.style.display='block';a.innerHTML='';}},
+    hidePlayer:function(){var a=document.getElementById('bl-quiz-player-area');if(a){a.style.display='none';a.innerHTML='';}},
 
-    /* ── Current user ── */
-    user: function () {
-      return window.currentUser || null;
-    },
-    /* ── Backward-compatible switchTab (maps old tab names to new sections) ── */
-    switchTab: function (tab) {
-      var map = {
-        quiz: 'bl-sec-quizzes',
-        flashcards: 'bl-sec-flashcards',
-        mock: 'bl-sec-mocks',
-        mistakes: 'bl-sec-mistakes',
-        affairs: 'bl-sec-affairs',
-        leaderboard: 'bl-sec-leaderboard',
-        performance: 'bl-sec-performance'
-      };
-      if (map[tab]) this.scrollToSection(map[tab]);
-    },
+    init:function(){if(this.initialized)return;this.initialized=true;this.renderStats();this.renderAll();this.setupNav();},
 
-    /* ── Escape HTML ── */
-    escape: function (str) {
-      if (!str) return '';
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    },
+    renderStats:function(){var c=document.getElementById('bl-stats');if(!c)return;var u=this.user();if(!u){c.innerHTML='<div class="bl-stats-signin">Sign in to track your progress · <a onclick="navigate(\'login\')">Sign In</a></div>';return;}var s=this,cl=this.client();if(cl){cl.from('quiz_attempts').select('*').eq('user_id',u.id).eq('is_deleted',false).limit(100).then(function(r){var a=r.data||[],t=a.length,acc=0;if(t>0){var tp=0;a.forEach(function(x){if(x.total_marks)tp+=(x.score/x.total_marks)*100;});acc=Math.round(tp/t);}c.innerHTML='<div class="bl-stat"><div class="bl-stat-icon">📝</div><div class="bl-stat-num">'+t+'</div><div class="bl-stat-label">Tests</div></div><div class="bl-stat"><div class="bl-stat-icon">🎯</div><div class="bl-stat-num">'+acc+'%</div><div class="bl-stat-label">Accuracy</div></div><div class="bl-stat"><div class="bl-stat-icon">🔥</div><div class="bl-stat-num">'+s.dayStreak()+'</div><div class="bl-stat-label">Streak</div></div>';}).catch(function(){c.innerHTML='<div class="bl-stats-signin">Unable to load stats.</div>';});}else{c.innerHTML='<div class="bl-stat"><div class="bl-stat-icon">📝</div><div class="bl-stat-num">0</div><div class="bl-stat-label">Tests</div></div><div class="bl-stat"><div class="bl-stat-icon">🎯</div><div class="bl-stat-num">0%</div><div class="bl-stat-label">Accuracy</div></div><div class="bl-stat"><div class="bl-stat-icon">🔥</div><div class="bl-stat-num">0</div><div class="bl-stat-label">Streak</div></div>';}},
 
-    /* ── Toast ── */
-    toast: function (msg) {
-      if (window._showToast) { window._showToast(msg); return; }
-      var t = document.createElement('div');
-      t.textContent = msg;
-      t.className = 'bl-toast';
-      t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(28,27,26,0.95);color:#fff;padding:10px 20px;border-radius:12px;font-size:0.82rem;z-index:9999;transition:opacity 0.3s';
-      document.body.appendChild(t);
-      setTimeout(function () { t.style.opacity = '0'; setTimeout(function () { t.remove(); }, 300); }, 2500);
-    },
+    renderAll:function(){this.renderDailyChallenge();this.renderContinueLearning();this.renderQuizzes();this.renderMockTests();this.renderFlashcardDecks();this.renderCurrentAffairs();this.renderPYQ();this.renderPracticeArena();this.renderMistakes();this.renderPerformance();this.renderLeaderboard();this.renderStudyStreak();this.renderStudyTools();},
 
-    /* ── Card HTML Helper ── */
-    cardHTML: function (icon, title, subtitle, tags, ctaText, ctaAction, isDemo) {
-      var html = '<div class="bl-card bl-fade-in" onclick="' + ctaAction + '">';
-      if (isDemo) html += '<span class="bl-demo-badge">DEMO</span>';
-      html += '<div class="bl-card-icon">' + icon + '</div>';
-      html += '<div class="bl-card-title">' + this.escape(title) + '</div>';
-      if (subtitle) html += '<div class="bl-card-subtitle">' + this.escape(subtitle) + '</div>';
-      if (tags && tags.length) {
-        html += '<div class="bl-card-meta">';
-        tags.forEach(function (t) { html += '<span class="bl-card-tag ' + (t.cls || '') + '">' + t.text + '</span>'; });
-        html += '</div>';
-      }
-      html += '<button class="bl-card-cta" onclick="event.stopPropagation();' + ctaAction + '">' + ctaText + '</button>';
-      html += '</div>';
-      return html;
-    },
+    setupNav:function(){var s=this,n=document.querySelectorAll('.bl-nav-item');n.forEach(function(i){i.addEventListener('click',function(){var t=this.getAttribute('data-target'),e=document.getElementById(t);if(e){n.forEach(function(x){x.classList.remove('active');});this.classList.add('active');e.scrollIntoView({behavior:'smooth',block:'start'});}});});window.addEventListener('scroll',function(){var y=window.scrollY+140,id=null;document.querySelectorAll('.bl-section').forEach(function(s){if(s.offsetTop<=y)id=s.id;});if(id){n.forEach(function(x){x.classList.toggle('active',x.getAttribute('data-target')===id);});}},{passive:true});},
+    scrollToSection:function(id){var e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'});},
 
-    /* ── Init ── */
-    init: function () {
-      if (this.initialized) return;
-      this.initialized = true;
-      this.renderStats();
-      this.renderAllSections();
-      this.setupNav();
-    },
+    /* ══ 01 Daily Challenge ══ */
+    renderDailyChallenge:function(){var c=document.getElementById('bl-daily-challenge');if(!c)return;var k='bl_daily_'+new Date().toISOString().slice(0,10),d=false;try{d=!!localStorage.getItem(k);}catch(_){}if(d){c.innerHTML='<div class="bl-challenge bl-fade-in"><div class="bl-challenge-header"><span class="bl-challenge-icon">⚡</span><span class="bl-challenge-title">Challenge Complete!</span></div><div class="bl-challenge-meta"><span>✅ 10 Q</span><span>⏱️ 5 min</span><span>⭐ +50 XP</span></div><div class="bl-challenge-done">✅ Come back tomorrow!</div></div>';}else{c.innerHTML='<div class="bl-challenge bl-fade-in"><div class="bl-challenge-header"><span class="bl-challenge-icon">⚡</span><span class="bl-challenge-title">Today\'s Challenge</span></div><div class="bl-challenge-meta"><span>📋 10 Q</span><span>⏱️ 5 min</span><span>⭐ +50 XP</span></div><button class="bl-challenge-btn" onclick="BrainLab.startDailyChallenge()">Start Challenge →</button></div>';}},
+    startDailyChallenge:function(){var k='bl_daily_'+new Date().toISOString().slice(0,10),qs=this.getRandom(10);this._currentQuiz={id:'daily',title:'Daily Challenge',total_marks:50};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=true;this.showPlayer();this.renderQuestion();},
 
-    /* ── Quick Stats ── */
-    renderStats: function () {
-      var container = document.getElementById('bl-stats');
-      if (!container) return;
-      var user = this.user();
-      if (!user) {
-        container.innerHTML = '<div class="bl-stats-signin">Sign in to track your progress · <a onclick="navigate(\'login\')">Sign In</a></div>';
-        return;
-      }
-      // Try real data
-      var self = this;
-      var client = this.client();
-      if (client) {
-        client.from('quiz_attempts').select('*').eq('user_id', user.id).eq('is_deleted', false).limit(100)
-          .then(function (res) {
-            var attempts = res.data || [];
-            var tests = attempts.length;
-            var totalQ = 0, correctQ = 0;
-            attempts.forEach(function (a) {
-              if (a.answers) { totalQ += a.answers.length; var qs = self._questions || []; }
-              if (a.total_marks) { correctQ += Math.round((a.score / a.total_marks) * (a.answers ? a.answers.length : 20)); }
-            });
-            var accuracy = tests > 0 && totalQ > 0 ? Math.round((correctQ / totalQ) * 100) : 0;
-            var streak = self.dayStreak();
-            container.innerHTML =
-              '<div class="bl-stat"><div class="bl-stat-icon">📝</div><div class="bl-stat-num">' + tests + '</div><div class="bl-stat-label">Tests</div></div>' +
-              '<div class="bl-stat"><div class="bl-stat-icon">🎯</div><div class="bl-stat-num">' + accuracy + '%</div><div class="bl-stat-label">Accuracy</div></div>' +
-              '<div class="bl-stat"><div class="bl-stat-icon">🔥</div><div class="bl-stat-num">' + streak + '</div><div class="bl-stat-label">Streak</div></div>';
-          }).catch(function () {
-            container.innerHTML = '<div class="bl-stats-signin">Unable to load stats. Please refresh.</div>';
-          });
-      } else {
-        container.innerHTML =
-          '<div class="bl-stat"><div class="bl-stat-icon">📝</div><div class="bl-stat-num">0</div><div class="bl-stat-label">Tests</div></div>' +
-          '<div class="bl-stat"><div class="bl-stat-icon">🎯</div><div class="bl-stat-num">0%</div><div class="bl-stat-label">Accuracy</div></div>' +
-          '<div class="bl-stat"><div class="bl-stat-icon">🔥</div><div class="bl-stat-num">0</div><div class="bl-stat-label">Streak</div></div>';
-      }
-    },
+    /* ══ Continue Learning ══ */
+    renderContinueLearning:function(){var c=document.getElementById('bl-continue-learning');if(!c)return;var u=this.user();if(!u){c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🚀</div><div class="bl-empty-text">Start your BrainLab journey. Choose a quiz, test, or deck below.</div></div>';return;}var s=this,cl=this.client();if(cl){cl.from('quiz_attempts').select('*,brainlab_quizzes(title)').eq('user_id',u.id).order('created_at',{ascending:false}).limit(1).then(function(r){if(r.data&&r.data.length){var a=r.data[0],t=(a.brainlab_quizzes&&a.brainlab_quizzes.title)||'Last Quiz',p=a.total_marks?Math.round((a.score/a.total_marks)*100):0;c.innerHTML='<div class="bl-continue bl-fade-in" onclick="BrainLab.scrollToSection(\'bl-sec-quizzes\')"><div class="bl-continue-icon">📚</div><div class="bl-continue-body"><div class="bl-continue-title">Continue: '+s.escape(t)+'</div><div class="bl-continue-progress"><div class="bl-continue-progress-fill" style="width:'+p+'%"></div></div><div class="bl-continue-text">Score: '+p+'% — Keep going!</div></div><span style="font-size:1.2rem">→</span></div>';}else{c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🚀</div><div class="bl-empty-text">Start your BrainLab journey. Choose a quiz below.</div></div>';}}).catch(function(){c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-text">Unable to load.</div></div>';});}else{c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🚀</div><div class="bl-empty-text">Start your BrainLab journey. Choose a quiz below.</div></div>';}},
 
-    /* ── Render All Sections ── */
-    renderAllSections: function () {
-      this.renderDailyChallenge();
-      this.renderContinueLearning();
-      this.renderQuizzes();
-      this.renderMockTests();
-      this.renderFlashcardDecks();
-      this.renderCurrentAffairs();
-      this.renderPYQ();
-      this.renderPracticeArena();
-      this.renderMistakes();
-      this.renderPerformance();
-      this.renderLeaderboard();
-      this.renderStudyStreak();
-      this.renderStudyTools();
-    },
+    /* ══ 02 Quizzes ══ */
+    renderQuizzes:async function(){var c=document.getElementById('bl-quizzes');if(!c)return;var s=this;c.innerHTML='<div class="bl-carousel"><div class="bl-skeleton" style="height:160px;width:240px"></div></div>';var cl=this.client(),qz=[];try{if(cl){var r=await cl.from('brainlab_quizzes').select('*').eq('status','published').eq('is_deleted',false).order('created_at',{ascending:false}).limit(50);qz=r.data||[];}}catch(_){}var h;if(qz.length){h='<div class="bl-carousel">'+qz.map(function(q){return s.cardHTML('🧩',q.title,q.description||'',[{cls:(q.difficulty||'medium'),text:q.difficulty||'medium'},{text:(q.duration_mins||30)+' min'},{text:(q.total_marks||100)+' marks'}],'Start Quiz',"BrainLab.startQuiz('"+q.id+"')",false);}).join('')+'</div>';}else{h='<div class="bl-carousel">'+SQ.map(function(q){return s.cardHTML(q.icon,q.title,q.category+' · '+q.questions+' Q',[{cls:q.difficulty,text:q.difficulty},{text:q.duration+' min'},{cls:'gold',text:'+'+q.xp+' XP'}],'Start Quiz',"BrainLab.startSeedQuiz('"+q.id+"')",true);}).join('')+'</div>';}c.innerHTML=h;},
+    startSeedQuiz:function(id){var sq=SQ.filter(function(q){return q.id===id;})[0];if(!sq)return;var tm={'General Knowledge':null,'Assam GK':'Assam GK','Polity':'Polity','Geography':'Geography','Current Affairs':'Current Affairs','Science':'Science','Economy':'Economy','English':'English','Reasoning':'Reasoning','Mathematics':'Mathematics','Computer':'Computer'};var tp=tm[sq.category],qs;if(tp){qs=this.getByTopic(tp);if(qs.length<5)qs=this.getRandom(Math.min(sq.questions,QB.length));}else{qs=this.getRandom(Math.min(sq.questions,QB.length));}this._currentQuiz={id:id,title:sq.title,total_marks:sq.xp};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;this.showPlayer();this.renderQuestion();},
 
-    /* ── Section Navigation (scroll to) ── */
-    setupNav: function () {
-      var self = this;
-      var navItems = document.querySelectorAll('.bl-nav-item');
-      navItems.forEach(function (item) {
-        item.addEventListener('click', function () {
-          var target = this.getAttribute('data-target');
-          var section = document.getElementById(target);
-          if (section) {
-            navItems.forEach(function (n) { n.classList.remove('active'); });
-            this.classList.add('active');
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-      });
-      // Auto-highlight on scroll
-      window.addEventListener('scroll', function () {
-        var scrollY = window.scrollY + 140;
-        var activeId = null;
-        document.querySelectorAll('.bl-section').forEach(function (s) {
-          if (s.offsetTop <= scrollY) activeId = s.id;
-        });
-        if (activeId) {
-          navItems.forEach(function (n) {
-            n.classList.toggle('active', n.getAttribute('data-target') === activeId);
-          });
-        }
-      }, { passive: true });
-    },
+    /* ── Quiz Player ── */
+    startQuiz:async function(id){var cl=this.client();if(!cl){this.toast('Unable to connect');return;}try{var qr=await cl.from('brainlab_quizzes').select('*').eq('id',id).single();var qq=await cl.from('quiz_questions').select('*').eq('quiz_id',id).eq('is_deleted',false);this._currentQuiz=qr.data;this._questions=qq.data||[];this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;if(!this._questions.length){this.toast('No questions yet.');return;}this.showPlayer();this.renderQuestion();}catch(e){this.toast('Error starting quiz');}},
+    renderQuestion:function(){var c=document.getElementById('bl-quiz-player-area');if(!c||!this._questions.length)return;var s=this,q=this._questions[this._currentQIdx],tot=this._questions.length,pr=(this._currentQIdx/tot)*100;var h='<div class="bl-quiz-player bl-fade-in"><div class="bl-quiz-progress"><div class="bl-quiz-progress-bar"><div class="bl-quiz-progress-fill" style="width:'+pr+'%"></div></div><div class="bl-quiz-counter">Q '+(this._currentQIdx+1)+'/'+tot+'</div></div><div class="bl-quiz-q">'+this.escape(q.question_text)+'</div><div class="bl-quiz-options">';var ops=[{l:'a',t:q.option_a},{l:'b',t:q.option_b},{l:'c',t:q.option_c},{l:'d',t:q.option_d}].filter(function(o){return o.t;});ops.forEach(function(o){h+='<div class="bl-quiz-option" data-answer="'+o.l+'" onclick="BrainLab.selectAnswer(\''+o.l+'\')"><div class="bl-quiz-option-letter">'+o.l.toUpperCase()+'</div><div>'+s.escape(o.t)+'</div></div>';});h+='</div><div id="quiz-explanation" style="display:none;margin-top:12px;padding:12px;border-radius:10px;background:rgba(147,2,5,0.04);font-size:0.78rem;line-height:1.5;color:var(--hp-muted,#8a8178)">'+this.escape(q.explanation||'No explanation.')+'</div><div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">';if(this._currentQIdx<tot-1)h+='<button class="bl-card-cta" id="quiz-next-btn" onclick="BrainLab.nextQuestion()" style="display:none">Next →</button>';else h+='<button class="bl-card-cta" id="quiz-next-btn" onclick="BrainLab.finishQuiz()" style="display:none">Finish</button>';h+='<button class="bl-card-cta secondary" onclick="BrainLab.quitQuiz()">Quit</button></div></div>';c.innerHTML=h;c.scrollIntoView({behavior:'smooth',block:'center'});},
+    selectAnswer:function(l){if(this._answers[this._currentQIdx])return;var q=this._questions[this._currentQIdx];this._answers[this._currentQIdx]=l;document.querySelectorAll('.bl-quiz-option').forEach(function(o){var a=o.dataset.answer;o.style.pointerEvents='none';if(a===q.correct_answer)o.classList.add('correct');else if(a===l)o.classList.add('wrong');});var e=document.getElementById('quiz-explanation');if(e)e.style.display='block';var b=document.getElementById('quiz-next-btn');if(b)b.style.display='inline-flex';if(l!==q.correct_answer)this.saveMistake(q,l);},
+    nextQuestion:function(){this._currentQIdx++;this.renderQuestion();},
+    quitQuiz:function(){this._currentQuiz=null;this._questions=[];this._currentQIdx=0;this._answers=[];this.hidePlayer();this.scrollToSection('bl-sec-quizzes');},
+    finishQuiz:async function(){var cl=this.client(),u=this.user(),tot=this._questions.length,cor=0,s=this;this._questions.forEach(function(q,i){if(s._answers[i]===q.correct_answer)cor++;});var tm=this._currentQuiz.total_marks||(tot*5),sc=Math.round((cor/tot)*tm),tt=Math.round((Date.now()-this._startTime)/1000);if(cl&&u){try{await cl.from('quiz_attempts').insert({user_id:u.id,quiz_id:this._currentQuiz.id,score:sc,total_marks:tm,answers:this._answers,time_taken:tt,completed_at:new Date().toISOString()});await this.updateLeaderboard(cor,tot);}catch(e){console.warn('Save:',e);}}if(this._isDaily){try{localStorage.setItem('bl_daily_'+new Date().toISOString().slice(0,10),'1');var days=JSON.parse(localStorage.getItem('campus_study_days')||'[]'),td=new Date().toISOString().slice(0,10);if(days.indexOf(td)===-1){days.push(td);localStorage.setItem('campus_study_days',JSON.stringify(days));}}catch(_){}this.renderDailyChallenge();this.renderStudyStreak();}var c=document.getElementById('bl-quiz-player-area');if(!c)return;var pct=Math.round((cor/tot)*100),em=pct>=80?'🎉':pct>=60?'👍':pct>=40?'💪':'📚';c.innerHTML='<div class="bl-quiz-player bl-fade-in" style="text-align:center"><div style="font-size:3rem;margin-bottom:8px">'+em+'</div><div style="font-size:1.5rem;font-weight:800;margin-bottom:8px;color:var(--hp-ink,#1c1b1a)">'+cor+'/'+tot+' Correct ('+pct+'%)</div><div style="font-size:0.85rem;color:var(--hp-muted,#8a8178);margin-bottom:8px">Score: '+sc+'/'+tm+'</div><div style="font-size:0.75rem;color:var(--hp-muted,#8a8178);margin-bottom:20px">Time: '+Math.floor(tt/60)+'m '+(tt%60)+'s · ⭐ +'+(cor*10)+' XP</div><div style="display:flex;gap:8px;justify-content:center"><button class="bl-card-cta" onclick="BrainLab.hidePlayer();BrainLab.scrollToSection(\'bl-sec-quizzes\')">Back</button><button class="bl-card-cta secondary" onclick="BrainLab.hidePlayer()">Close</button></div></div>';this._currentQuiz=null;this._questions=[];this._currentQIdx=0;this._answers=[];this.renderStats();},
 
-    scrollToSection: function (id) {
-      var el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    },
+    /* ══ 03 Mock Tests ══ */
+    renderMockTests:async function(){var c=document.getElementById('bl-mocks');if(!c)return;var s=this;c.innerHTML='<div class="bl-carousel"><div class="bl-skeleton" style="height:160px;width:240px"></div></div>';var cl=this.client(),mk=[];try{if(cl){var r=await cl.from('mock_tests').select('*').eq('status','published').eq('is_deleted',false).order('created_at',{ascending:false}).limit(50);mk=r.data||[];}}catch(_){}var h;if(mk.length){h='<div class="bl-carousel">'+mk.map(function(m){return s.cardHTML('📝',m.title,m.description||'',[m.exam_type?{text:m.exam_type}:null,{text:(m.duration_mins||180)+' min'},{text:(m.total_marks||100)+' marks'}].filter(Boolean),'Start Test',"BrainLab.startMock('"+m.id+"')",false);}).join('')+'</div>';}else{h='<div class="bl-carousel">'+SM.map(function(m){return s.cardHTML(m.icon,m.title,m.exam+' · '+m.questions+' Q',[{cls:m.difficulty,text:m.difficulty},{text:m.duration+' min'},{text:m.marks+' marks'}],'Start Test',"BrainLab.startSeedMock('"+m.id+"')",true);}).join('')+'</div>';}c.innerHTML=h;},
+    startSeedMock:function(id){var m=SM.filter(function(x){return x.id===id;})[0];if(!m)return;var qs=this.getRandom(Math.min(20,QB.length));this._currentQuiz={id:id,title:m.title,total_marks:m.marks};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;this.showPlayer();this.renderQuestion();},
+    startMock:async function(id){var cl=this.client();if(!cl){this.toast('Unable to connect');return;}try{var mr=await cl.from('mock_tests').select('*').eq('id',id).single();var qr=await cl.from('mock_questions').select('*').eq('mock_id',id).eq('is_deleted',false);this._currentQuiz=mr.data;this._questions=qr.data||[];this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;if(!this._questions.length){this.toast('No questions.');return;}this.showPlayer();this.renderQuestion();}catch(e){this.toast('Error');}},
 
-    /* ── 01. Daily Challenge ── */
-    renderDailyChallenge: function () {
-      var container = document.getElementById('bl-daily-challenge');
-      if (!container) return;
-      var self = this;
-      var user = this.user();
-      var todayKey = 'bl_daily_' + new Date().toISOString().slice(0, 10);
-      var done = false;
-      try { done = !!localStorage.getItem(todayKey); } catch (_) {}
+    /* ══ 04 Flashcards ══ */
+    renderFlashcardDecks:async function(){var c=document.getElementById('bl-flashcard-decks');if(!c)return;var s=this;c.innerHTML='<div class="bl-carousel"><div class="bl-skeleton" style="height:160px;width:240px"></div></div>';var cl=this.client(),dk=[];try{if(cl){var r=await cl.from('flashcards').select('*').eq('status','published').eq('is_deleted',false).limit(200);var cd=r.data||[];if(cd.length){var bt={};cd.forEach(function(c){var t=c.topic||'General';if(!bt[t])bt[t]={title:t,topic:t,cards:0,items:[]};bt[t].cards++;bt[t].items.push(c);});dk=Object.values(bt).slice(0,20);}}}catch(_){}var h;if(dk.length){h='<div class="bl-carousel">'+dk.map(function(d){return s.cardHTML('🎴',d.title,d.topic+' · '+d.cards+' Cards',[{text:d.cards+' cards'}],'Review',undefined,false);}).join('')+'</div>';}else{h='<div class="bl-carousel">'+SD.map(function(d){return s.cardHTML(d.icon,d.title,d.topic+' · '+d.cards+' Cards',[{cls:d.difficulty,text:d.difficulty},{text:d.cards+' cards'}],'Review',"BrainLab.startSeedFlashcards('"+d.topic+"')",true);}).join('')+'</div>';}c.innerHTML=h;},
+    startSeedFlashcards:function(topic){var qs=this.getByTopic(topic);if(!qs.length)qs=this.getRandom(10);var cards=qs.map(function(q){return{front:q.q,back:q.a,topic:q.topic};});this.startFlashcards(cards);},
+    startFlashcards:function(cards){this._flashcards=cards;this._flashcardIdx=0;this.showPlayer();this.renderFlashcard();},
+    renderFlashcard:function(){var c=document.getElementById('bl-quiz-player-area');if(!c||!this._flashcards.length)return;var cd=this._flashcards[this._flashcardIdx],tot=this._flashcards.length,s=this;var h='<div style="text-align:center;margin-bottom:12px;font-size:0.75rem;color:var(--hp-muted,#8a8178)">Card '+(this._flashcardIdx+1)+' of '+tot+' · '+this.escape(cd.topic||'')+'</div>';h+='<div class="bl-flashcard bl-fade-in" id="flashcard-el" onclick="BrainLab.flipFlashcard()"><div class="bl-flashcard-inner"><div class="bl-flashcard-front"><div class="bl-flashcard-label">Question</div><div class="bl-flashcard-text">'+this.escape(cd.front)+'</div><div class="bl-flashcard-hint">Tap to flip</div></div><div class="bl-flashcard-back"><div class="bl-flashcard-label">Answer</div><div class="bl-flashcard-text">'+this.escape(cd.back)+'</div><div class="bl-flashcard-hint">Tap to flip</div></div></div></div>';h+='<div style="display:flex;gap:8px;justify-content:center;margin-top:16px">';if(this._flashcardIdx>0)h+='<button class="bl-card-cta secondary" onclick="BrainLab.prevFlashcard()">← Prev</button>';h+='<button class="bl-card-cta" onclick="BrainLab.rateFlashcard(1)">Easy</button><button class="bl-card-cta secondary" onclick="BrainLab.rateFlashcard(3)">Medium</button><button class="bl-card-cta secondary" onclick="BrainLab.rateFlashcard(5)">Hard</button>';if(this._flashcardIdx<tot-1)h+='<button class="bl-card-cta" onclick="BrainLab.nextFlashcard()">Next →</button>';h+='<button class="bl-card-cta secondary" onclick="BrainLab.hidePlayer()">Close</button></div>';c.innerHTML=h;c.scrollIntoView({behavior:'smooth',block:'center'});},
+    flipFlashcard:function(){var e=document.getElementById('flashcard-el');if(e)e.classList.toggle('flipped');},
+    nextFlashcard:function(){if(this._flashcardIdx<this._flashcards.length-1){this._flashcardIdx++;this.renderFlashcard();}},
+    prevFlashcard:function(){if(this._flashcardIdx>0){this._flashcardIdx--;this.renderFlashcard();}},
+    rateFlashcard:async function(bl){var cl=this.client(),u=this.user(),cd=this._flashcards[this._flashcardIdx];if(!cd)return;if(cl&&u&&cd.id){try{var d=[1,2,4,7,15][bl-1]||1,nr=new Date(Date.now()+d*86400000).toISOString();var ex=await cl.from('flashcard_progress').select('*').eq('user_id',u.id).eq('flashcard_id',cd.id).maybeSingle();if(ex.data){await cl.from('flashcard_progress').update({box_level:bl,next_review_at:nr,review_count:(ex.data.review_count||0)+1,last_reviewed:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',ex.data.id);}else{await cl.from('flashcard_progress').insert({user_id:u.id,flashcard_id:cd.id,box_level:bl,next_review_at:nr,review_count:1,last_reviewed:new Date().toISOString()});}}catch(e){console.warn('FC:',e);}}if(this._flashcardIdx<this._flashcards.length-1){this.nextFlashcard();}else{this.toast('All reviewed! 🎉');this.hidePlayer();}},
 
-      if (done) {
-        container.innerHTML = '<div class="bl-challenge bl-fade-in">' +
-          '<div class="bl-challenge-header"><span class="bl-challenge-icon">⚡</span><span class="bl-challenge-title">Today\'s Challenge Complete!</span></div>' +
-          '<div class="bl-challenge-meta"><span>✅ 10 Questions</span><span>⏱️ 5 min</span><span>⭐ +50 XP earned</span></div>' +
-          '<div class="bl-challenge-done">✅ Completed — Come back tomorrow!</div>' +
-        '</div>';
-      } else {
-        container.innerHTML = '<div class="bl-challenge bl-fade-in">' +
-          '<div class="bl-challenge-header"><span class="bl-challenge-icon">⚡</span><span class="bl-challenge-title">Today\'s Challenge</span></div>' +
-          '<div class="bl-challenge-meta"><span>📋 10 Questions</span><span>⏱️ 5 min</span><span>⭐ +50 XP</span></div>' +
-          '<button class="bl-challenge-btn" onclick="BrainLab.startDailyChallenge()">Start Challenge →</button>' +
-        '</div>';
-      }
-    },
+    /* ══ 05 Current Affairs ══ */
+    renderCurrentAffairs:async function(){var c=document.getElementById('bl-affairs');if(!c)return;var s=this;c.innerHTML='<div class="bl-skeleton" style="height:60px;margin-bottom:8px"></div>';var cl=this.client(),nw=[];try{if(cl){var r=await cl.from('current_affairs').select('*').eq('status','published').eq('is_deleted',false).order('published_date',{ascending:false}).limit(20);nw=r.data||[];}}catch(_){}var h;if(nw.length){h=nw.map(function(n){return'<div class="bl-news-item bl-fade-in"><div class="bl-news-date">'+new Date(n.published_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+'</div><div class="bl-news-title">'+s.escape(n.title)+'</div><div class="bl-news-preview">'+s.escape((n.content||'').slice(0,150))+'...</div><span class="bl-news-category">'+s.escape(n.category||'general')+'</span></div>';}).join('');}else{h=CA.map(function(c,i){return'<div class="bl-news-item bl-fade-in" onclick="BrainLab.showCADetail('+i+')"><span class="bl-demo-badge">EDU</span><div class="bl-news-date">'+s.escape(c.cat)+'</div><div class="bl-news-title">'+c.icon+' '+s.escape(c.title)+'</div><div class="bl-news-preview">'+s.escape(c.content.slice(0,120))+'...</div><span class="bl-news-category">Tap to read →</span></div>';}).join('');}c.innerHTML=h;},
+    showCADetail:function(i){var c=CA[i];if(!c)return;var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';a.innerHTML='<div class="bl-quiz-player bl-fade-in" style="max-width:600px;margin:0 auto"><div style="font-size:2rem;margin-bottom:8px">'+c.icon+'</div><div style="font-size:0.7rem;font-weight:600;color:var(--hp-gold,#c99a3c);text-transform:uppercase;margin-bottom:6px">'+this.escape(c.cat)+'</div><div style="font-size:1.1rem;font-weight:800;color:var(--hp-ink,#1c1b1a);margin-bottom:12px">'+this.escape(c.title)+'</div><div style="font-size:0.85rem;line-height:1.6;color:var(--hp-ink,#1c1b1a);margin-bottom:20px">'+this.escape(c.content)+'</div><button class="bl-card-cta secondary" onclick="BrainLab.hidePlayer()">← Back</button></div>';a.scrollIntoView({behavior:'smooth',block:'center'});},
 
-    startDailyChallenge: function () {
-      this.toast('Daily challenge starting soon! Connect to backend to enable.');
-    },
+    /* ══ 06 PYQ Practice ══ */
+    renderPYQ:function(){var c=document.getElementById('bl-pyq');if(!c)return;var s=this;c.innerHTML='<div class="bl-carousel">'+SP.map(function(p){return s.cardHTML(p.icon,p.title,p.exam+' · PYQ',[{text:'Practice Set'},{cls:'gold',text:'PYQ'}],'Practice Now',"BrainLab.startPYQ('"+p.id+"','"+p.exam+"')",true);}).join('')+'</div>';},
+    startPYQ:function(id,exam){var et={'APSC':['Assam GK','Polity','History','Geography','Economy','Current Affairs'],'ADRE':['Assam GK','Current Affairs','Reasoning'],'Assam Police':['Assam GK','Reasoning','Mathematics'],'Assam TET':['English','Mathematics','Science'],'SSC':['Reasoning','Mathematics','English'],'Railway':['Science','Mathematics','Reasoning'],'Banking':['Reasoning','Mathematics','English','Economy'],'General':null,'Assam':['Assam GK','Geography','History']};var tp=et[exam],qs;if(tp){var pool=[];tp.forEach(function(t){pool=pool.concat(QB.filter(function(q){return q.topic===t;}));});qs=this.shuffle(pool).slice(0,Math.min(15,pool.length));if(qs.length<5)qs=this.getRandom(15);}else{qs=this.getRandom(15);}this._currentQuiz={id:id,title:exam+' PYQ Practice',total_marks:qs.length*5};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;this.showPlayer();this.renderQuestion();},
 
-    /* ── Continue Learning ── */
-    renderContinueLearning: function () {
-      var container = document.getElementById('bl-continue-learning');
-      if (!container) return;
-      var user = this.user();
-      if (!user) {
-        container.innerHTML = '<div class="bl-empty bl-fade-in">' +
-          '<div class="bl-empty-icon">🚀</div>' +
-          '<div class="bl-empty-text">Start your BrainLab journey. Choose a quiz, test, or flashcard deck below to begin.</div>' +
-        '</div>';
-        return;
-      }
-      // Try to get last attempt
-      var self = this;
-      var client = this.client();
-      if (client) {
-        client.from('quiz_attempts').select('*, brainlab_quizzes(title)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1)
-          .then(function (res) {
-            if (res.data && res.data.length) {
-              var a = res.data[0];
-              var title = (a.brainlab_quizzes && a.brainlab_quizzes.title) || 'Last Quiz';
-              var pct = a.total_marks ? Math.round((a.score / a.total_marks) * 100) : 0;
-              container.innerHTML = '<div class="bl-continue bl-fade-in" onclick="BrainLab.scrollToSection(\'bl-sec-quizzes\')">' +
-                '<div class="bl-continue-icon">📚</div>' +
-                '<div class="bl-continue-body">' +
-                  '<div class="bl-continue-title">Continue: ' + self.escape(title) + '</div>' +
-                  '<div class="bl-continue-progress"><div class="bl-continue-progress-fill" style="width:' + pct + '%"></div></div>' +
-                  '<div class="bl-continue-text">Score: ' + pct + '% — Keep going!</div>' +
-                '</div>' +
-                '<span style="font-size:1.2rem">→</span>' +
-              '</div>';
-            } else {
-              container.innerHTML = '<div class="bl-empty bl-fade-in">' +
-                '<div class="bl-empty-icon">🚀</div>' +
-                '<div class="bl-empty-text">Start your BrainLab journey. Choose a quiz, test, or flashcard deck below to begin.</div>' +
-              '</div>';
-            }
-          }).catch(function () {
-            container.innerHTML = '<div class="bl-empty bl-fade-in"><div class="bl-empty-text">Unable to load. Please refresh.</div></div>';
-          });
-      } else {
-        container.innerHTML = '<div class="bl-empty bl-fade-in">' +
-          '<div class="bl-empty-icon">🚀</div>' +
-          '<div class="bl-empty-text">Start your BrainLab journey. Choose a quiz, test, or flashcard deck below to begin.</div>' +
-        '</div>';
-      }
-    },
+    /* ══ 07 Practice Arena ══ */
+    renderPracticeArena:function(){var c=document.getElementById('bl-arena');if(!c)return;c.innerHTML='<div class="bl-arena">'+SA.map(function(a){return'<div class="bl-arena-card bl-fade-in" onclick="BrainLab.startPractice(\''+a.mode+'\')"><div class="bl-arena-icon">'+a.icon+'</div><div class="bl-arena-title">'+a.title+'</div><div class="bl-arena-sub">'+a.sub+'</div></div>';}).join('')+'</div>';},
+    startPractice:function(mode){var ai=SA.filter(function(a){return a.mode===mode;})[0];if(!ai)return;if(mode==='topic'){this.showTopicPicker();return;}if(mode==='difficulty'){this.showDifficultyPicker();return;}var cnt=ai.count||10,qs=this.getRandom(Math.min(cnt,QB.length));this._currentQuiz={id:'practice-'+mode,title:ai.title,total_marks:cnt*5};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;this.showPlayer();this.renderQuestion();},
+    showTopicPicker:function(){var tp=[];QB.forEach(function(q){if(tp.indexOf(q.topic)===-1)tp.push(q.topic);});var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';a.innerHTML='<div class="bl-quiz-player bl-fade-in" style="max-width:500px;margin:0 auto"><h3 style="font-size:1rem;font-weight:800;margin:0 0 16px;color:var(--hp-ink,#1c1b1a)">🎯 Choose a Topic</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">'+tp.map(function(t){var c=QB.filter(function(q){return q.topic===t;}).length;return'<div class="bl-arena-card" style="padding:14px" onclick="BrainLab.startTopicPractice(\''+t+'\')"><div class="bl-arena-title" style="font-size:0.78rem">'+t+'</div><div class="bl-arena-sub">'+c+' Q</div></div>';}).join('')+'</div><button class="bl-card-cta secondary" style="margin-top:16px" onclick="BrainLab.hidePlayer()">Cancel</button></div>';a.scrollIntoView({behavior:'smooth',block:'center'});},
+    startTopicPractice:function(topic){var qs=this.getByTopic(topic);if(qs.length<3)qs=this.getRandom(10);this._currentQuiz={id:'practice-topic',title:topic+' Practice',total_marks:qs.length*5};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;this.showPlayer();this.renderQuestion();},
+    showDifficultyPicker:function(){var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';a.innerHTML='<div class="bl-quiz-player bl-fade-in" style="max-width:400px;margin:0 auto"><h3 style="font-size:1rem;font-weight:800;margin:0 0 16px;color:var(--hp-ink,#1c1b1a)">📈 Choose Difficulty</h3><div style="display:flex;flex-direction:column;gap:8px"><div class="bl-arena-card" onclick="BrainLab.startDiffPractice(\'easy\')" style="text-align:left;padding:14px 18px;cursor:pointer"><div style="font-weight:700;color:#16a34a">🟢 Easy</div><div style="font-size:0.72rem;color:var(--hp-muted,#8a8178)">Basic questions</div></div><div class="bl-arena-card" onclick="BrainLab.startDiffPractice(\'medium\')" style="text-align:left;padding:14px 18px;cursor:pointer"><div style="font-weight:700;color:#b8860b">🟡 Medium</div><div style="font-size:0.72rem;color:var(--hp-muted,#8a8178)">Exam-level questions</div></div><div class="bl-arena-card" onclick="BrainLab.startDiffPractice(\'hard\')" style="text-align:left;padding:14px 18px;cursor:pointer"><div style="font-weight:700;color:#dc2626">🔴 Hard</div><div style="font-size:0.72rem;color:var(--hp-muted,#8a8178)">Challenging questions</div></div></div><button class="bl-card-cta secondary" style="margin-top:16px" onclick="BrainLab.hidePlayer()">Cancel</button></div>';a.scrollIntoView({behavior:'smooth',block:'center'});},
+    startDiffPractice:function(d){var qs=this.getByDiff(d);if(qs.length<3)qs=this.getRandom(10);this._currentQuiz={id:'practice-'+d,title:d.charAt(0).toUpperCase()+d.slice(1)+' Practice',total_marks:qs.length*5};this._questions=this.toQuiz(qs);this._currentQIdx=0;this._answers=[];this._startTime=Date.now();this._isDaily=false;this.showPlayer();this.renderQuestion();},
 
-    /* ── 02. Quizzes ── */
-    renderQuizzes: async function () {
-      var container = document.getElementById('bl-quizzes');
-      if (!container) return;
-      var self = this;
-      container.innerHTML = '<div class="bl-carousel"><div class="bl-skeleton" style="height:160px;width:240px"></div><div class="bl-skeleton" style="height:160px;width:240px"></div></div>';
-      var client = this.client();
-      var quizzes = [];
-      try {
-        if (client) {
-          var res = await client.from('brainlab_quizzes').select('*').eq('status', 'published').eq('is_deleted', false).order('created_at', { ascending: false }).limit(50);
-          quizzes = res.data || [];
-        }
-      } catch (_) {}
-      var html = '';
-      if (quizzes.length) {
-        html = '<div class="bl-carousel">' + quizzes.map(function (q) {
-          return self.cardHTML('🧩', q.title, q.description || '', [
-            { cls: (q.difficulty || 'medium'), text: q.difficulty || 'medium' },
-            { text: (q.duration_mins || 30) + ' min' },
-            { text: (q.total_marks || 100) + ' marks' }
-          ], 'Start Quiz', "BrainLab.startQuiz('" + q.id + "')", false);
-        }).join('') + '</div>';
-      } else {
-        html = '<div class="bl-carousel">' + SEED_QUIZZES.map(function (q) {
-          return self.cardHTML(q.icon, q.title, q.category + ' · ' + q.questions + ' Questions', [
-            { cls: q.difficulty, text: q.difficulty },
-            { text: q.duration + ' min' },
-            { cls: 'gold', text: '+' + q.xp + ' XP' }
-          ], 'Start Quiz', "BrainLab.startSeedQuiz('" + q.id + "')", true);
-        }).join('') + '</div>';
-      }
-      container.innerHTML = html;
-    },
+    /* ══ 08 Mistake Review ══ */
+    renderMistakes:async function(){var c=document.getElementById('bl-mistakes');if(!c)return;var s=this,u=this.user(),cl=this.client();if(!cl||!u){c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🎯</div><div class="bl-empty-text">No mistakes to review. Complete a quiz and incorrect answers will appear here.</div></div>';return;}c.innerHTML='<div class="bl-skeleton" style="height:80px"></div>';try{var r=await cl.from('mistake_book').select('*').eq('user_id',u.id).eq('is_deleted',false).order('created_at',{ascending:false}).limit(50);var ms=r.data||[];if(!ms.length){c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🎯</div><div class="bl-empty-text">No mistakes to review. Complete a quiz and incorrect answers will appear here.</div></div>';return;}c.innerHTML=ms.map(function(m){return'<div class="bl-mistake-item bl-fade-in"><div class="bl-mistake-q">'+s.escape(m.question_text)+'</div><div class="bl-mistake-answers"><span class="bl-mistake-wrong">Your: '+s.escape(m.user_answer||'—')+'</span><span class="bl-mistake-right">Correct: '+s.escape(m.correct_answer||'—')+'</span></div>'+(m.explanation?'<div class="bl-mistake-explain">'+s.escape(m.explanation)+'</div>':'')+(m.topic?'<span class="bl-card-tag" style="margin-top:6px;display:inline-block">'+s.escape(m.topic)+'</span>':'')+'</div>';}).join('');}catch(e){c.innerHTML='<div class="bl-empty"><div class="bl-empty-text">Error loading.</div><button class="bl-empty-action" onclick="BrainLab.renderMistakes()">Retry</button></div>';}},
+    saveMistake:async function(q,ua){var cl=this.client(),u=this.user();if(!cl||!u)return;try{await cl.from('mistake_book').insert({user_id:u.id,question_text:q.question_text,user_answer:ua,correct_answer:q.correct_answer,explanation:q.explanation,source:'quiz',topic:q.topic});}catch(e){console.warn('Mistake:',e);}},
 
-    startSeedQuiz: function (seedId) {
-      this.toast('Quiz player requires published questions. Admins can add questions via BrainLab Manager.');
-    },
+    /* ══ 09 Performance ══ */
+    renderPerformance:async function(){var c=document.getElementById('bl-performance');if(!c)return;var s=this,u=this.user(),cl=this.client();if(!cl||!u){c.innerHTML='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">📊</div><div class="bl-empty-text">Start your first quiz to unlock performance insights.</div><button class="bl-empty-action" onclick="BrainLab.scrollToSection(\'bl-sec-quizzes\')">Browse Quizzes</button></div>';return;}c.innerHTML='<div class="bl-skeleton" style="height:100px"></div>';try{var r=await cl.from('quiz_attempts').select('*').eq('user_id',u.id).eq('is_deleted',false).order('created_at',{ascending:false}).limit(50);var a=r.data||[],t=a.length,ts=0;a.forEach(function(x){if(x.total_marks)ts+=(x.score/x.total_marks)*100;});var ap=t>0?Math.round(ts/t):0;var h='<div class="bl-perf-stats"><div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">'+t+'</div><div class="bl-perf-label">Tests</div></div><div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">'+ap+'%</div><div class="bl-perf-label">Avg Score</div></div><div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">'+s.dayStreak()+'</div><div class="bl-perf-label">Streak</div></div><div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">'+(t>0?'+'+Math.min(ap,15)+'%':'—')+'</div><div class="bl-perf-label">Improvement</div></div></div>';if(a.length>0){h+='<h3 class="bl-section-title" style="font-size:0.85rem;margin-bottom:10px">Recent Scores</h3><div class="bl-perf-bars">';var rc=a.slice(0,10).reverse(),mx=Math.max.apply(null,rc.map(function(x){return x.total_marks?(x.score/x.total_marks)*100:0;}).concat([1]));rc.forEach(function(x,i){var p=x.total_marks?(x.score/x.total_marks)*100:0,ht=Math.max(2,(p/mx)*100);h+='<div class="bl-perf-bar"><div style="font-size:0.55rem;color:var(--hp-muted,#8a8178)">'+Math.round(p)+'%</div><div class="bl-perf-bar-fill" style="height:'+ht+'%"></div><div class="bl-perf-bar-label">T'+(i+1)+'</div></div>';});h+='</div>';}c.innerHTML=h;}catch(e){c.innerHTML='<div class="bl-empty"><div class="bl-empty-text">Error.</div><button class="bl-empty-action" onclick="BrainLab.renderPerformance()">Retry</button></div>';}},
 
-    /* ── Quiz Player (existing logic preserved) ── */
-    startQuiz: async function (quizId) {
-      var client = this.client();
-      if (!client) { this.toast('Unable to connect'); return; }
-      try {
-        var quizRes = await client.from('brainlab_quizzes').select('*').eq('id', quizId).single();
-        var qRes = await client.from('quiz_questions').select('*').eq('quiz_id', quizId).eq('is_deleted', false);
-        this._currentQuiz = quizRes.data;
-        this._questions = qRes.data || [];
-        this._currentQIdx = 0;
-        this._answers = [];
-        this._startTime = Date.now();
-        if (!this._questions.length) { this.toast('No questions in this quiz yet.'); return; }
-        this.renderQuestion();
-      } catch (e) { this.toast('Error starting quiz'); console.warn(e); }
-    },
+    /* ══ 10 Leaderboard ══ */
+    renderLeaderboard:async function(){var c=document.getElementById('bl-leaderboard');if(!c)return;var s=this;c.innerHTML='<div class="bl-skeleton" style="height:50px"></div>';var cl=this.client(),en=[];try{if(cl){var r=await cl.from('leaderboards').select('*').eq('period','all-time').order('total_points',{ascending:false}).limit(50);en=r.data||[];}}catch(_){}var h='<div class="bl-leader-filters"><div class="bl-leader-filter active">All-Time</div></div>';if(en.length){h+='<div class="bl-leaderboard">'+en.map(function(e,i){var rc=i===0?'gold':i===1?'silver':i===2?'bronze':'';return'<div class="bl-leader-row bl-fade-in"><div class="bl-leader-rank '+rc+'">'+(i+1)+'</div><div class="bl-leader-name">User '+(e.user_id||'').slice(0,8)+'</div><div class="bl-leader-meta">'+(e.quizzes_taken||0)+' tests</div><div class="bl-leader-points">'+(e.total_points||0)+' pts</div></div>';}).join('')+'</div>';}else{h+='<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🏆</div><div class="bl-empty-text">No leaderboard data yet. Take quizzes to compete!</div><button class="bl-empty-action" onclick="BrainLab.scrollToSection(\'bl-sec-quizzes\')">Start a Quiz</button></div>';}c.innerHTML=h;},
+    updateLeaderboard:async function(cor,tot){var cl=this.client(),u=this.user();if(!cl||!u)return;try{var ex=await cl.from('leaderboards').select('*').eq('user_id',u.id).eq('period','all-time').maybeSingle();var pt=cor*10;if(ex.data){var nt=(ex.data.total_points||0)+pt,nc=(ex.data.quizzes_taken||0)+1,na=((ex.data.avg_score||0)*(nc-1)+(cor/tot)*100)/nc;await cl.from('leaderboards').update({total_points:nt,quizzes_taken:nc,avg_score:na,updated_at:new Date().toISOString()}).eq('id',ex.data.id);}else{await cl.from('leaderboards').insert({user_id:u.id,total_points:pt,quizzes_taken:1,avg_score:(cor/tot)*100,period:'all-time'});}}catch(e){console.warn('LB:',e);}},
 
-    renderQuestion: function () {
-      var container = document.getElementById('bl-quiz-player-area');
-      if (!container || !this._questions.length) return;
-      var self = this;
-      var q = this._questions[this._currentQIdx];
-      var total = this._questions.length;
-      var progress = (this._currentQIdx / total) * 100;
-      var html = '<div class="bl-quiz-player bl-fade-in">' +
-        '<div class="bl-quiz-progress"><div class="bl-quiz-progress-bar"><div class="bl-quiz-progress-fill" style="width:' + progress + '%"></div></div><div class="bl-quiz-counter">Q ' + (this._currentQIdx + 1) + '/' + total + '</div></div>' +
-        '<div class="bl-quiz-q">' + this.escape(q.question_text) + '</div><div class="bl-quiz-options">';
-      var opts = [{letter:'a',text:q.option_a},{letter:'b',text:q.option_b},{letter:'c',text:q.option_c},{letter:'d',text:q.option_d}].filter(function(o){return o.text;});
-      opts.forEach(function (o) {
-        html += '<div class="bl-quiz-option" data-answer="' + o.letter + '" onclick="BrainLab.selectAnswer(\'' + o.letter + '\')"><div class="bl-quiz-option-letter">' + o.letter.toUpperCase() + '</div><div>' + self.escape(o.text) + '</div></div>';
-      });
-      html += '</div><div id="quiz-explanation" style="display:none;margin-top:12px;padding:12px;border-radius:10px;background:rgba(147,2,5,0.04);font-size:0.78rem;line-height:1.5;color:var(--hp-muted,#8a8178)">' + (q.explanation || 'No explanation available.') + '</div>';
-      html += '<div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">';
-      if (this._currentQIdx < total - 1) html += '<button class="bl-card-cta" id="quiz-next-btn" onclick="BrainLab.nextQuestion()" style="display:none">Next →</button>';
-      else html += '<button class="bl-card-cta" id="quiz-next-btn" onclick="BrainLab.finishQuiz()" style="display:none">Finish</button>';
-      html += '</div></div>';
-      container.innerHTML = html;
-      container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    },
+    /* ══ 11 Study Streak ══ */
+    renderStudyStreak:function(){var c=document.getElementById('bl-streak');if(!c)return;var sk=this.dayStreak(),lg=0;try{lg=parseInt(localStorage.getItem('bl_longest_streak')||'0');}catch(_){}if(sk>lg){lg=sk;try{localStorage.setItem('bl_longest_streak',String(lg));}catch(_){}}var dy=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],td=new Date().getDay(),ad=[];try{ad=JSON.parse(localStorage.getItem('campus_study_days')||'[]');}catch(_){}var h='<div class="bl-streak bl-fade-in"><div class="bl-streak-fire">'+(sk>0?'🔥':'📅')+'</div><div class="bl-streak-count">'+sk+'</div><div class="bl-streak-label">Day Streak</div><div class="bl-streak-week">';for(var i=0;i<7;i++){var d=new Date(),of=i-(td===0?6:td-1);d.setDate(d.getDate()+of);var ds=d.toISOString().slice(0,10),dn=ad.indexOf(ds)!==-1,ist=of===0;h+='<div class="bl-streak-day"><div class="bl-streak-day-label">'+dy[i]+'</div><div class="bl-streak-day-mark '+(dn?'done':'')+(ist?' today':'')+'">'+(dn?'✓':'')+'</div></div>';}h+='</div><div class="bl-streak-meta"><div>Current: <strong>'+sk+' days</strong></div><div>Longest: <strong>'+lg+' days</strong></div></div>';if(!this.user())h+='<div style="margin-top:12px;font-size:0.72rem;color:var(--hp-muted,#8a8178)">Sign in to sync across devices</div>';h+='</div>';c.innerHTML=h;},
 
-    selectAnswer: function (letter) {
-      if (this._answers[this._currentQIdx]) return;
-      var q = this._questions[this._currentQIdx];
-      this._answers[this._currentQIdx] = letter;
-      document.querySelectorAll('.bl-quiz-option').forEach(function (opt) {
-        var ans = opt.dataset.answer;
-        opt.style.pointerEvents = 'none';
-        if (ans === q.correct_answer) opt.classList.add('correct');
-        else if (ans === letter) opt.classList.add('wrong');
-      });
-      var exp = document.getElementById('quiz-explanation');
-      if (exp) exp.style.display = 'block';
-      var nextBtn = document.getElementById('quiz-next-btn');
-      if (nextBtn) nextBtn.style.display = 'inline-flex';
-      if (letter !== q.correct_answer) this.saveMistake(q, letter);
-    },
+    /* ══ 12 Study Tools ══ */
+    renderStudyTools:function(){var c=document.getElementById('bl-tools');if(!c)return;c.innerHTML='<div class="bl-tools">'+ST.map(function(t){return'<div class="bl-tool-card bl-fade-in" onclick="BrainLab.openTool(\''+t.action+'\')"><div class="bl-tool-icon">'+t.icon+'</div><div class="bl-tool-name">'+t.name+'</div><div class="bl-tool-desc">'+t.desc+'</div></div>';}).join('')+'</div>';},
+    openTool:function(a){switch(a){case'timer':this.showTimer(25,'Focus Timer');break;case'revise':this.showTimer(15,'Revision Timer');break;case'focus':this.showTimer(50,'Deep Focus');break;case'planner':if(typeof StudyPlanner!=='undefined')navigate('study-planner');else this.toast('Study planner coming soon!');break;case'bookmarks':navigate('wishlist');break;case'formulas':this.showFormulas();break;case'facts':this.showFacts();break;case'vocab':this.showVocab();break;case'countdown':this.showCountdown();break;default:this.toast('Coming soon!');}},
+    showTimer:function(min,title){var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';var tot=min*60,rem=tot,s=this;if(this._timerInterval)clearInterval(this._timerInterval);var render=function(){var m=Math.floor(rem/60),sc=rem%60,pct=((tot-rem)/tot)*100;a.innerHTML='<div class="bl-quiz-player bl-fade-in" style="text-align:center;max-width:400px;margin:0 auto"><h3 style="font-size:1rem;font-weight:800;margin:0 0 20px;color:var(--hp-ink,#1c1b1a)">'+title+'</h3><div style="position:relative;width:180px;height:180px;margin:0 auto 20px"><svg width="180" height="180" style="transform:rotate(-90deg)"><circle cx="90" cy="90" r="80" fill="none" stroke="var(--hp-paper-dim,#f1ece3)" stroke-width="8"/><circle cx="90" cy="90" r="80" fill="none" stroke="var(--hp-red,#930205)" stroke-width="8" stroke-dasharray="'+(2*Math.PI*80)+'" stroke-dashoffset="'+(2*Math.PI*80*(1-pct/100))+'" stroke-linecap="round" style="transition:all 1s"/></svg><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.2rem;font-weight:800;color:var(--hp-ink,#1c1b1a)">'+m+':'+(sc<10?'0':'')+sc+'</div></div><div style="display:flex;gap:8px;justify-content:center"><button class="bl-card-cta" id="timer-toggle" onclick="BrainLab.toggleTimer()">Pause</button><button class="bl-card-cta secondary" onclick="BrainLab.stopTimer()">Stop</button></div></div>';};render();a.scrollIntoView({behavior:'smooth',block:'center'});this._timerPaused=false;this._timerInterval=setInterval(function(){if(!s._timerPaused){rem--;if(rem<=0){clearInterval(s._timerInterval);s._timerInterval=null;s.toast('⏰ Time\'s up! Great session!');try{var d=JSON.parse(localStorage.getItem('campus_study_days')||'[]'),t=new Date().toISOString().slice(0,10);if(d.indexOf(t)===-1){d.push(t);localStorage.setItem('campus_study_days',JSON.stringify(d));}}catch(_){}s.renderStudyStreak();s.hidePlayer();return;}render();}},1000);},
+    toggleTimer:function(){this._timerPaused=!this._timerPaused;var b=document.getElementById('timer-toggle');if(b)b.textContent=this._timerPaused?'Resume':'Pause';},
+    stopTimer:function(){if(this._timerInterval)clearInterval(this._timerInterval);this._timerInterval=null;this.hidePlayer();},
+    showFormulas:function(){var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';var h='<div class="bl-quiz-player bl-fade-in" style="max-width:500px;margin:0 auto"><h3 style="font-size:1rem;font-weight:800;margin:0 0 16px;color:var(--hp-ink,#1c1b1a)">📐 Formula Sheet</h3>';var ct='';FORMULAS.forEach(function(f){if(f.topic!==ct){ct=f.topic;h+='<div style="font-size:0.72rem;font-weight:700;color:var(--hp-gold,#c99a3c);text-transform:uppercase;margin:12px 0 6px">'+f.topic+'</div>';}h+='<div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:10px;background:var(--hp-paper-dim,#f1ece3);margin-bottom:6px"><span style="font-size:0.78rem;font-weight:600">'+f.name+'</span><span style="font-size:0.82rem;font-weight:800;color:var(--hp-red,#930205);font-family:monospace">'+f.formula+'</span></div>';});h+='<button class="bl-card-cta secondary" style="margin-top:16px" onclick="BrainLab.hidePlayer()">← Close</button></div>';a.innerHTML=h;a.scrollIntoView({behavior:'smooth',block:'center'});},
+    showFacts:function(){var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';var h='<div class="bl-quiz-player bl-fade-in" style="max-width:500px;margin:0 auto"><h3 style="font-size:1rem;font-weight:800;margin:0 0 16px;color:var(--hp-ink,#1c1b1a)">💡 Important Facts</h3>';var cc='';FACTS.forEach(function(f){if(f.cat!==cc){cc=f.cat;h+='<div style="font-size:0.72rem;font-weight:700;color:var(--hp-gold,#c99a3c);text-transform:uppercase;margin:12px 0 6px">'+f.cat+'</div>';}h+='<div style="padding:10px 14px;border-radius:10px;background:var(--hp-paper-dim,#f1ece3);margin-bottom:6px;font-size:0.8rem;line-height:1.5">• '+f.fact+'</div>';});h+='<button class="bl-card-cta secondary" style="margin-top:16px" onclick="BrainLab.hidePlayer()">← Close</button></div>';a.innerHTML=h;a.scrollIntoView({behavior:'smooth',block:'center'});},
+    showVocab:function(){this._vocabIdx=0;this.renderVocab();},
+    renderVocab:function(){var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';var cd=VOCAB[this._vocabIdx],tot=VOCAB.length;a.innerHTML='<div class="bl-quiz-player bl-fade-in" style="text-align:center;max-width:400px;margin:0 auto"><div style="font-size:0.72rem;color:var(--hp-muted,#8a8178);margin-bottom:8px">Word '+(this._vocabIdx+1)+' of '+tot+'</div><div class="bl-flashcard" style="max-width:380px" id="vocab-el" onclick="BrainLab.flipVocab()"><div class="bl-flashcard-inner"><div class="bl-flashcard-front"><div class="bl-flashcard-label">Word</div><div class="bl-flashcard-text">'+cd.word+'</div><div class="bl-flashcard-hint">Tap for meaning</div></div><div class="bl-flashcard-back"><div class="bl-flashcard-label">Meaning</div><div class="bl-flashcard-text" style="font-size:0.9rem">'+cd.meaning+'</div><div class="bl-flashcard-hint">Tap to flip</div></div></div></div><div style="display:flex;gap:8px;justify-content:center;margin-top:16px">';if(this._vocabIdx>0)a.innerHTML+='<button class="bl-card-cta secondary" onclick="BrainLab.prevVocab()">← Prev</button>';a.innerHTML+='<button class="bl-card-cta" onclick="BrainLab.nextVocab()">Next →</button><button class="bl-card-cta secondary" onclick="BrainLab.hidePlayer()">Close</button></div></div>';a.scrollIntoView({behavior:'smooth',block:'center'});},
+    flipVocab:function(){var e=document.getElementById('vocab-el');if(e)e.classList.toggle('flipped');},
+    nextVocab:function(){if(this._vocabIdx<VOCAB.length-1){this._vocabIdx++;this.renderVocab();}else{this.toast('All words reviewed! 🎉');this.hidePlayer();}},
+    prevVocab:function(){if(this._vocabIdx>0){this._vocabIdx--;this.renderVocab();}},
+    showCountdown:function(){var a=document.getElementById('bl-quiz-player-area');if(!a)return;a.style.display='block';var sd='',sn='';try{sd=localStorage.getItem('bl_exam_date')||'';sn=localStorage.getItem('bl_exam_name')||'';}catch(_){}var h='<div class="bl-quiz-player bl-fade-in" style="max-width:400px;margin:0 auto"><h3 style="font-size:1rem;font-weight:800;margin:0 0 16px;color:var(--hp-ink,#1c1b1a)">⏳ Exam Countdown</h3>';if(sd&&sn){var tg=new Date(sd+'T00:00:00'),nw=new Date(),df=Math.ceil((tg-nw)/(86400000));if(df>0){h+='<div style="text-align:center;padding:24px 16px;background:linear-gradient(135deg,rgba(147,2,5,0.06),rgba(201,154,60,0.04));border-radius:14px;margin-bottom:16px"><div style="font-size:0.72rem;color:var(--hp-muted,#8a8178);margin-bottom:4px">'+this.escape(sn)+'</div><div style="font-size:3rem;font-weight:800;color:var(--hp-red,#930205)">'+df+'</div><div style="font-size:0.78rem;color:var(--hp-muted,#8a8178)">'+(df===1?'day':'days')+' remaining</div><div style="font-size:0.7rem;color:var(--hp-muted,#8a8178);margin-top:4px">'+tg.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})+'</div></div>';}else{h+='<div style="text-align:center;padding:24px 16px;background:rgba(34,197,94,0.06);border-radius:14px;margin-bottom:16px"><div style="font-size:1.2rem;font-weight:700;color:#16a34a">✅ Exam day has arrived!</div></div>';}h+='<button class="bl-card-cta secondary" style="width:100%;margin-bottom:8px" onclick="BrainLab.clearCountdown()">Reset</button>';}h+='<div style="margin-bottom:12px"><label style="font-size:0.72rem;font-weight:600;display:block;margin-bottom:4px">Exam Name</label><input id="exam-name" type="text" placeholder="e.g., APSC Prelims 2026" value="'+this.escape(sn)+'" style="width:100%;padding:10px 14px;border:1px solid var(--hp-line,rgba(28,27,26,0.12));border-radius:12px;font-size:0.82rem;background:#fff;color:var(--hp-ink,#1c1b1a);outline:none;box-sizing:border-box"></div><div style="margin-bottom:16px"><label style="font-size:0.72rem;font-weight:600;display:block;margin-bottom:4px">Exam Date</label><input id="exam-date" type="date" value="'+sd+'" style="width:100%;padding:10px 14px;border:1px solid var(--hp-line,rgba(28,27,26,0.12));border-radius:12px;font-size:0.82rem;background:#fff;color:var(--hp-ink,#1c1b1a);outline:none;box-sizing:border-box"></div><button class="bl-card-cta" style="width:100%" onclick="BrainLab.saveCountdown()">Set Countdown</button><button class="bl-card-cta secondary" style="width:100%;margin-top:8px" onclick="BrainLab.hidePlayer()">Close</button></div>';a.innerHTML=h;a.scrollIntoView({behavior:'smooth',block:'center'});},
+    saveCountdown:function(){var n=document.getElementById('exam-name').value,d=document.getElementById('exam-date').value;if(!n||!d){this.toast('Enter name and date');return;}try{localStorage.setItem('bl_exam_date',d);localStorage.setItem('bl_exam_name',n);}catch(_){}this.toast('✅ Countdown set for '+n);this.showCountdown();},
+    clearCountdown:function(){try{localStorage.removeItem('bl_exam_date');localStorage.removeItem('bl_exam_name');}catch(_){}this.showCountdown();},
 
-    nextQuestion: function () { this._currentQIdx++; this.renderQuestion(); },
-
-    finishQuiz: async function () {
-      var client = this.client(), user = this.user(), total = this._questions.length, correct = 0, self = this;
-      this._questions.forEach(function (q, i) { if (self._answers[i] === q.correct_answer) correct++; });
-      var score = Math.round((correct / total) * (this._currentQuiz.total_marks || 100));
-      var timeTaken = Math.round((Date.now() - this._startTime) / 1000);
-      if (client && user) {
-        try {
-          await client.from('quiz_attempts').insert({ user_id: user.id, quiz_id: this._currentQuiz.id, score: score, total_marks: this._currentQuiz.total_marks || 100, answers: this._answers, time_taken: timeTaken, completed_at: new Date().toISOString() });
-          await this.updateLeaderboard(correct, total);
-        } catch (e) { console.warn('Save attempt:', e); }
-      }
-      var container = document.getElementById('bl-quiz-player-area');
-      if (!container) return;
-      var pct = Math.round((correct / total) * 100);
-      var emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : pct >= 40 ? '💪' : '📚';
-      container.innerHTML = '<div class="bl-quiz-player bl-fade-in" style="text-align:center">' +
-        '<div style="font-size:3rem;margin-bottom:8px">' + emoji + '</div>' +
-        '<div style="font-size:1.5rem;font-weight:800;margin-bottom:8px;color:var(--hp-ink,#1c1b1a)">' + score + '/' + (this._currentQuiz.total_marks || 100) + '</div>' +
-        '<div style="font-size:0.85rem;color:var(--hp-muted,#8a8178);margin-bottom:16px">' + correct + ' correct out of ' + total + ' (' + pct + '%)</div>' +
-        '<div style="font-size:0.75rem;color:var(--hp-muted,#8a8178);margin-bottom:20px">Time: ' + Math.floor(timeTaken / 60) + 'm ' + (timeTaken % 60) + 's</div>' +
-        '<button class="bl-card-cta" onclick="document.getElementById(\'bl-quiz-player-area\').innerHTML=\'\';BrainLab.scrollToSection(\'bl-sec-quizzes\')">Back to Quizzes</button>' +
-      '</div>';
-      this._currentQuiz = null; this._questions = []; this._currentQIdx = 0; this._answers = [];
-      this.renderStats();
-    },
-
-    /* ── 03. Mock Tests ── */
-    renderMockTests: async function () {
-      var container = document.getElementById('bl-mocks');
-      if (!container) return;
-      var self = this;
-      container.innerHTML = '<div class="bl-carousel"><div class="bl-skeleton" style="height:160px;width:240px"></div><div class="bl-skeleton" style="height:160px;width:240px"></div></div>';
-      var client = this.client();
-      var mocks = [];
-      try {
-        if (client) {
-          var res = await client.from('mock_tests').select('*').eq('status', 'published').eq('is_deleted', false).order('created_at', { ascending: false }).limit(50);
-          mocks = res.data || [];
-        }
-      } catch (_) {}
-      var html;
-      if (mocks.length) {
-        html = '<div class="bl-carousel">' + mocks.map(function (m) {
-          return self.cardHTML('📝', m.title, m.description || '', [
-            m.exam_type ? { text: m.exam_type } : null,
-            { text: (m.duration_mins || 180) + ' min' },
-            { text: (m.total_marks || 100) + ' marks' }
-          ].filter(Boolean), 'Start Test', "BrainLab.startMock('" + m.id + "')", false);
-        }).join('') + '</div>';
-      } else {
-        html = '<div class="bl-carousel">' + SEED_MOCKS.map(function (m) {
-          return self.cardHTML(m.icon, m.title, m.exam + ' · ' + m.questions + ' Questions', [
-            { cls: m.difficulty, text: m.difficulty },
-            { text: m.duration + ' min' },
-            { text: m.marks + ' marks' }
-          ], 'Start Test', "BrainLab.toast('Mock test requires published questions.')", true);
-        }).join('') + '</div>';
-      }
-      container.innerHTML = html;
-    },
-
-    startMock: async function (mockId) {
-      var client = this.client();
-      if (!client) { this.toast('Unable to connect'); return; }
-      try {
-        var mockRes = await client.from('mock_tests').select('*').eq('id', mockId).single();
-        var qRes = await client.from('mock_questions').select('*').eq('mock_id', mockId).eq('is_deleted', false);
-        this._currentQuiz = mockRes.data;
-        this._questions = qRes.data || [];
-        this._currentQIdx = 0; this._answers = []; this._startTime = Date.now();
-        if (!this._questions.length) { this.toast('No questions in this mock test yet.'); return; }
-        this.renderQuestion();
-      } catch (e) { this.toast('Error starting mock test'); }
-    },
-
-    /* ── 04. Flashcards ── */
-    renderFlashcardDecks: async function () {
-      var container = document.getElementById('bl-flashcard-decks');
-      if (!container) return;
-      var self = this;
-      container.innerHTML = '<div class="bl-carousel"><div class="bl-skeleton" style="height:160px;width:240px"></div><div class="bl-skeleton" style="height:160px;width:240px"></div></div>';
-      var client = this.client();
-      var decks = [];
-      try {
-        if (client) {
-          // Try to get decks from flashcard_decks table, or group flashcards by topic
-          var res = await client.from('flashcards').select('*').eq('status', 'published').eq('is_deleted', false).limit(200);
-          var cards = res.data || [];
-          if (cards.length) {
-            // Group by topic into decks
-            var byTopic = {};
-            cards.forEach(function (c) {
-              var t = c.topic || 'General';
-              if (!byTopic[t]) byTopic[t] = { title: t, topic: t, cards: 0, items: [] };
-              byTopic[t].cards++;
-              byTopic[t].items.push(c);
-            });
-            decks = Object.values(byTopic).slice(0, 20);
-          }
-        }
-      } catch (_) {}
-      var html;
-      if (decks.length) {
-        html = '<div class="bl-carousel">' + decks.map(function (d, i) {
-          return self.cardHTML('🎴', d.title, d.topic + ' · ' + d.cards + ' Cards', [
-            { text: d.cards + ' cards' }
-          ], 'Review Cards', "BrainLab.startFlashcards(" + JSON.stringify(d.items.map(function(c){return {front:c.front,back:c.back,topic:c.topic,id:c.id};})).replace(/"/g,'&quot;') + ")", false);
-        }).join('') + '</div>';
-      } else {
-        html = '<div class="bl-carousel">' + SEED_DECKS.map(function (d) {
-          return self.cardHTML(d.icon, d.title, d.topic + ' · ' + d.cards + ' Cards', [
-            { cls: d.difficulty, text: d.difficulty },
-            { text: d.cards + ' cards' }
-          ], 'Review Cards', "BrainLab.toast('Flashcard deck requires published cards.')", true);
-        }).join('') + '</div>';
-      }
-      container.innerHTML = html;
-    },
-
-    startFlashcards: function (cards) {
-      this._flashcards = cards;
-      this._flashcardIdx = 0;
-      this.renderFlashcard();
-    },
-
-    renderFlashcard: function () {
-      var container = document.getElementById('bl-quiz-player-area');
-      if (!container || !this._flashcards.length) return;
-      var card = this._flashcards[this._flashcardIdx];
-      var total = this._flashcards.length;
-      var self = this;
-      var html = '<div style="text-align:center;margin-bottom:12px;font-size:0.75rem;color:var(--hp-muted,#8a8178)">Card ' + (this._flashcardIdx + 1) + ' of ' + total + ' · ' + this.escape(card.topic || '') + '</div>';
-      html += '<div class="bl-flashcard bl-fade-in" id="flashcard-el" onclick="BrainLab.flipFlashcard()"><div class="bl-flashcard-inner"><div class="bl-flashcard-front"><div class="bl-flashcard-label">Question</div><div class="bl-flashcard-text">' + this.escape(card.front) + '</div><div class="bl-flashcard-hint">Tap to flip</div></div><div class="bl-flashcard-back"><div class="bl-flashcard-label">Answer</div><div class="bl-flashcard-text">' + this.escape(card.back) + '</div><div class="bl-flashcard-hint">Tap to flip back</div></div></div></div>';
-      html += '<div style="display:flex;gap:8px;justify-content:center;margin-top:16px">';
-      if (this._flashcardIdx > 0) html += '<button class="bl-card-cta secondary" onclick="BrainLab.prevFlashcard()">← Prev</button>';
-      html += '<button class="bl-card-cta" onclick="BrainLab.rateFlashcard(1)">Easy</button>';
-      html += '<button class="bl-card-cta secondary" onclick="BrainLab.rateFlashcard(3)">Medium</button>';
-      html += '<button class="bl-card-cta secondary" onclick="BrainLab.rateFlashcard(5)">Hard</button>';
-      if (this._flashcardIdx < total - 1) html += '<button class="bl-card-cta" onclick="BrainLab.nextFlashcard()">Next →</button>';
-      html += '</div>';
-      container.innerHTML = html;
-      container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    },
-
-    flipFlashcard: function () { var el = document.getElementById('flashcard-el'); if (el) el.classList.toggle('flipped'); },
-    nextFlashcard: function () { if (this._flashcardIdx < this._flashcards.length - 1) { this._flashcardIdx++; this.renderFlashcard(); } },
-    prevFlashcard: function () { if (this._flashcardIdx > 0) { this._flashcardIdx--; this.renderFlashcard(); } },
-
-    rateFlashcard: async function (boxLevel) {
-      var client = this.client(), user = this.user(), card = this._flashcards[this._flashcardIdx];
-      if (!card) return;
-      if (client && user && card.id) {
-        try {
-          var days = [1,2,4,7,15][boxLevel - 1] || 1;
-          var nextReview = new Date(Date.now() + days * 86400000).toISOString();
-          var existing = await client.from('flashcard_progress').select('*').eq('user_id', user.id).eq('flashcard_id', card.id).maybeSingle();
-          if (existing.data) {
-            await client.from('flashcard_progress').update({ box_level: boxLevel, next_review_at: nextReview, review_count: (existing.data.review_count || 0) + 1, last_reviewed: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', existing.data.id);
-          } else {
-            await client.from('flashcard_progress').insert({ user_id: user.id, flashcard_id: card.id, box_level: boxLevel, next_review_at: nextReview, review_count: 1, last_reviewed: new Date().toISOString() });
-          }
-        } catch (e) { console.warn('Flashcard progress:', e); }
-      }
-      if (this._flashcardIdx < this._flashcards.length - 1) { this.nextFlashcard(); }
-      else { this.toast('All flashcards reviewed! 🎉'); document.getElementById('bl-quiz-player-area').innerHTML = ''; }
-    },
-
-    /* ── 05. Current Affairs ── */
-    renderCurrentAffairs: async function () {
-      var container = document.getElementById('bl-affairs');
-      if (!container) return;
-      var self = this;
-      container.innerHTML = '<div class="bl-skeleton" style="height:60px;margin-bottom:8px"></div><div class="bl-skeleton" style="height:60px"></div>';
-      var client = this.client();
-      var news = [];
-      try {
-        if (client) {
-          var res = await client.from('current_affairs').select('*').eq('status', 'published').eq('is_deleted', false).order('published_date', { ascending: false }).limit(20);
-          news = res.data || [];
-        }
-      } catch (_) {}
-      var html;
-      if (news.length) {
-        html = news.map(function (n) {
-          return '<div class="bl-news-item bl-fade-in"><div class="bl-news-date">' + new Date(n.published_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + '</div><div class="bl-news-title">' + self.escape(n.title) + '</div><div class="bl-news-preview">' + self.escape((n.content || '').slice(0, 150)) + '...</div><span class="bl-news-category">' + self.escape(n.category || 'general') + '</span></div>';
-        }).join('');
-      } else {
-        // Show category cards as demo
-        html = '<div class="bl-card-grid">' + SEED_AFFAIRS_CATS.map(function (c) {
-          return '<div class="bl-card bl-fade-in" onclick="BrainLab.toast(\'Current affairs content requires published data.\')"><span class="bl-demo-badge">DEMO</span><div class="bl-card-icon">' + c.icon + '</div><div class="bl-card-title">' + c.title + '</div><div class="bl-card-subtitle">Tap to browse</div><button class="bl-card-cta secondary" onclick="event.stopPropagation();BrainLab.toast(\'Content coming soon\')">Browse</button></div>';
-        }).join('') + '</div>';
-      }
-      container.innerHTML = html;
-    },
-
-    /* ── 06. PYQ Practice ── */
-    renderPYQ: function () {
-      var container = document.getElementById('bl-pyq');
-      if (!container) return;
-      var self = this;
-      var html = '<div class="bl-carousel">' + SEED_PYQS.map(function (p) {
-        return self.cardHTML(p.icon, p.title, p.exam + ' · Previous Year Questions', [
-          { text: p.questions + ' Questions' },
-          { cls: 'gold', text: 'PYQ' }
-        ], 'Practice Now', "BrainLab.toast('PYQ practice requires published questions.')", true);
-      }).join('') + '</div>';
-      container.innerHTML = html;
-    },
-
-    /* ── 07. Mistake Review ── */
-    renderMistakes: async function () {
-      var container = document.getElementById('bl-mistakes');
-      if (!container) return;
-      var self = this;
-      var user = this.user();
-      var client = this.client();
-      if (!client || !user) {
-        container.innerHTML = '<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🎯</div><div class="bl-empty-text">No mistakes to review. Complete a quiz or mock test and your incorrect answers will appear here.</div></div>';
-        return;
-      }
-      container.innerHTML = '<div class="bl-skeleton" style="height:80px"></div>';
-      try {
-        var res = await client.from('mistake_book').select('*').eq('user_id', user.id).eq('is_deleted', false).order('created_at', { ascending: false }).limit(50);
-        var mistakes = res.data || [];
-        if (!mistakes.length) {
-          container.innerHTML = '<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🎯</div><div class="bl-empty-text">No mistakes to review. Complete a quiz or mock test and your incorrect answers will appear here.</div></div>';
-          return;
-        }
-        container.innerHTML = mistakes.map(function (m) {
-          return '<div class="bl-mistake-item bl-fade-in"><div class="bl-mistake-q">' + self.escape(m.question_text) + '</div><div class="bl-mistake-answers"><span class="bl-mistake-wrong">Your answer: ' + self.escape(m.user_answer || '—') + '</span><span class="bl-mistake-right">Correct: ' + self.escape(m.correct_answer || '—') + '</span></div>' + (m.explanation ? '<div class="bl-mistake-explain">' + self.escape(m.explanation) + '</div>' : '') + (m.topic ? '<span class="bl-card-tag" style="margin-top:6px;display:inline-block">' + self.escape(m.topic) + '</span>' : '') + '</div>';
-        }).join('');
-      } catch (e) {
-        container.innerHTML = '<div class="bl-empty"><div class="bl-empty-text">Error loading mistakes. Please retry.</div><button class="bl-empty-action" onclick="BrainLab.renderMistakes()">Retry</button></div>';
-      }
-    },
-
-    saveMistake: async function (question, userAnswer) {
-      var client = this.client(), user = this.user();
-      if (!client || !user) return;
-      try {
-        await client.from('mistake_book').insert({ user_id: user.id, question_text: question.question_text, user_answer: userAnswer, correct_answer: question.correct_answer, explanation: question.explanation, source: 'quiz', topic: question.topic });
-      } catch (e) { console.warn('Save mistake:', e); }
-    },
-
-    /* ── 08. Performance ── */
-    renderPerformance: async function () {
-      var container = document.getElementById('bl-performance');
-      if (!container) return;
-      var self = this;
-      var user = this.user();
-      var client = this.client();
-      if (!client || !user) {
-        container.innerHTML = '<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">📊</div><div class="bl-empty-text">Start your first quiz to unlock your performance insights.</div><button class="bl-empty-action" onclick="BrainLab.scrollToSection(\'bl-sec-quizzes\')">Browse Quizzes</button></div>';
-        return;
-      }
-      container.innerHTML = '<div class="bl-skeleton" style="height:100px"></div>';
-      try {
-        var res = await client.from('quiz_attempts').select('*').eq('user_id', user.id).eq('is_deleted', false).order('created_at', { ascending: false }).limit(50);
-        var aData = res.data || [];
-        var totalAttempts = aData.length;
-        var totalScore = 0;
-        aData.forEach(function (a) { var pct = a.total_marks ? (a.score / a.total_marks) * 100 : 0; totalScore += pct; });
-        var avgPct = totalAttempts > 0 ? Math.round(totalScore / totalAttempts) : 0;
-        var html = '<div class="bl-perf-stats">' +
-          '<div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">' + totalAttempts + '</div><div class="bl-perf-label">Tests</div></div>' +
-          '<div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">' + avgPct + '%</div><div class="bl-perf-label">Avg Score</div></div>' +
-          '<div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">' + self.dayStreak() + '</div><div class="bl-perf-label">Streak</div></div>' +
-          '<div class="bl-perf-stat bl-fade-in"><div class="bl-perf-num">' + (totalAttempts > 0 ? '+' + Math.min(avgPct, 15) + '%' : '—') + '</div><div class="bl-perf-label">Improvement</div></div>' +
-        '</div>';
-        if (aData.length > 0) {
-          html += '<h3 class="bl-section-title" style="font-size:0.85rem;margin-bottom:10px">Recent Scores</h3>';
-          html += '<div class="bl-perf-bars">';
-          var recent = aData.slice(0, 10).reverse();
-          var maxScore = Math.max.apply(null, recent.map(function (a) { return a.total_marks ? (a.score / a.total_marks) * 100 : 0; }).concat([1]));
-          recent.forEach(function (a, i) {
-            var pct = a.total_marks ? (a.score / a.total_marks) * 100 : 0;
-            var h = Math.max(2, (pct / maxScore) * 100);
-            html += '<div class="bl-perf-bar"><div style="font-size:0.55rem;color:var(--hp-muted,#8a8178)">' + Math.round(pct) + '%</div><div class="bl-perf-bar-fill" style="height:' + h + '%"></div><div class="bl-perf-bar-label">T' + (i + 1) + '</div></div>';
-          });
-          html += '</div>';
-        }
-        container.innerHTML = html;
-      } catch (e) {
-        container.innerHTML = '<div class="bl-empty"><div class="bl-empty-text">Error loading performance. Please retry.</div><button class="bl-empty-action" onclick="BrainLab.renderPerformance()">Retry</button></div>';
-      }
-    },
-
-    /* ── 09. Leaderboard ── */
-    renderLeaderboard: async function () {
-      var container = document.getElementById('bl-leaderboard');
-      if (!container) return;
-      var self = this;
-      container.innerHTML = '<div class="bl-leader-filters"><div class="bl-leader-filter active">All-Time</div><div class="bl-leader-filter">Weekly</div><div class="bl-leader-filter">Monthly</div></div><div class="bl-skeleton" style="height:50px;margin-bottom:6px"></div><div class="bl-skeleton" style="height:50px"></div>';
-      var client = this.client();
-      var entries = [];
-      try {
-        if (client) {
-          var res = await client.from('leaderboards').select('user_id,total_points,quizzes_taken,avg_score,period').eq('period', 'all-time').order('total_points', { ascending: false }).limit(50);
-          entries = res.data || [];
-        }
-      } catch (_) {}
-      var html = '<div class="bl-leader-filters"><div class="bl-leader-filter active" onclick="BrainLab._leaderFilter=\'all-time\';BrainLab.renderLeaderboard()">All-Time</div><div class="bl-leader-filter" onclick="BrainLab._leaderFilter=\'weekly\';BrainLab.renderLeaderboard()">Weekly</div><div class="bl-leader-filter" onclick="BrainLab._leaderFilter=\'monthly\';BrainLab.renderLeaderboard()">Monthly</div></div>';
-      if (entries.length) {
-        html += '<div class="bl-leaderboard">' + entries.map(function (e, i) {
-          var rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-          return '<div class="bl-leader-row bl-fade-in"><div class="bl-leader-rank ' + rankClass + '">' + (i + 1) + '</div><div class="bl-leader-name">User ' + (e.user_id || '').slice(0, 8) + '</div><div class="bl-leader-meta">' + (e.quizzes_taken || 0) + ' tests</div><div class="bl-leader-points">' + (e.total_points || 0) + ' pts</div></div>';
-        }).join('') + '</div>';
-      } else {
-        html += '<div class="bl-empty bl-fade-in"><div class="bl-empty-icon">🏆</div><div class="bl-empty-text">No leaderboard data yet. Take quizzes to compete and climb the ranks!</div><button class="bl-empty-action" onclick="BrainLab.scrollToSection(\'bl-sec-quizzes\')">Start a Quiz</button></div>';
-      }
-      container.innerHTML = html;
-    },
-
-    updateLeaderboard: async function (correct, total) {
-      var client = this.client(), user = this.user();
-      if (!client || !user) return;
-      try {
-        var existing = await client.from('leaderboards').select('*').eq('user_id', user.id).eq('period', 'all-time').maybeSingle();
-        var points = correct * 10;
-        if (existing.data) {
-          var newTotal = (existing.data.total_points || 0) + points;
-          var newCount = (existing.data.quizzes_taken || 0) + 1;
-          var newAvg = ((existing.data.avg_score || 0) * (newCount - 1) + (correct / total) * 100) / newCount;
-          await client.from('leaderboards').update({ total_points: newTotal, quizzes_taken: newCount, avg_score: newAvg, updated_at: new Date().toISOString() }).eq('id', existing.data.id);
-        } else {
-          await client.from('leaderboards').insert({ user_id: user.id, total_points: points, quizzes_taken: 1, avg_score: (correct / total) * 100, period: 'all-time' });
-        }
-      } catch (e) { console.warn('Leaderboard update:', e); }
-    },
-
-    /* ── 10. Study Streak ── */
-    renderStudyStreak: function () {
-      var container = document.getElementById('bl-streak');
-      if (!container) return;
-      var user = this.user();
-      var streak = this.dayStreak();
-      var longest = 0;
-      try { longest = parseInt(localStorage.getItem('bl_longest_streak') || '0'); } catch (_) {}
-      if (streak > longest) { longest = streak; try { localStorage.setItem('bl_longest_streak', String(longest)); } catch (_) {} }
-
-      // Build week view
-      var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      var today = new Date().getDay(); // 0=Sun
-      var activeDays = [];
-      try { activeDays = JSON.parse(localStorage.getItem('campus_study_days') || '[]'); } catch (_) {}
-      var html = '<div class="bl-streak bl-fade-in">';
-      html += '<div class="bl-streak-fire">' + (streak > 0 ? '🔥' : '📅') + '</div>';
-      html += '<div class="bl-streak-count">' + streak + '</div>';
-      html += '<div class="bl-streak-label">Day Streak</div>';
-      html += '<div class="bl-streak-week">';
-      for (var i = 0; i < 7; i++) {
-        var d = new Date();
-        var offset = i - (today === 0 ? 6 : today - 1); // Start from Monday
-        d.setDate(d.getDate() + offset);
-        var dStr = d.toISOString().slice(0, 10);
-        var isDone = activeDays.indexOf(dStr) !== -1;
-        var isToday = offset === 0;
-        html += '<div class="bl-streak-day"><div class="bl-streak-day-label">' + days[i] + '</div><div class="bl-streak-day-mark ' + (isDone ? 'done' : '') + (isToday ? ' today' : '') + '">' + (isDone ? '✓' : '') + '</div></div>';
-      }
-      html += '</div>';
-      html += '<div class="bl-streak-meta"><div>Current: <strong>' + streak + ' days</strong></div><div>Longest: <strong>' + longest + ' days</strong></div></div>';
-      if (!user) {
-        html += '<div style="margin-top:12px;font-size:0.72rem;color:var(--hp-muted,#8a8178)">Sign in to sync your streak across devices</div>';
-      }
-      html += '</div>';
-      container.innerHTML = html;
-    },
-
-    /* ── 11. Practice Arena ── */
-    renderPracticeArena: function () {
-      var container = document.getElementById('bl-arena');
-      if (!container) return;
-      var self = this;
-      var html = '<div class="bl-arena">' + SEED_ARENA.map(function (a) {
-        return '<div class="bl-arena-card bl-fade-in" onclick="BrainLab.startPractice(\'' + a.mode + '\')"><div class="bl-arena-icon">' + a.icon + '</div><div class="bl-arena-title">' + a.title + '</div><div class="bl-arena-sub">' + a.sub + '</div></div>';
-      }).join('') + '</div>';
-      container.innerHTML = html;
-    },
-
-    startPractice: function (mode) {
-      this.toast('Practice arena requires published questions. Admins can add content via BrainLab Manager.');
-    },
-
-    /* ── 12. Study Tools ── */
-    renderStudyTools: function () {
-      var container = document.getElementById('bl-tools');
-      if (!container) return;
-      var self = this;
-      var html = '<div class="bl-tools">' + SEED_TOOLS.map(function (t) {
-        return '<div class="bl-tool-card bl-fade-in" onclick="BrainLab.openTool(\'' + t.action + '\')"><div class="bl-tool-icon">' + t.icon + '</div><div class="bl-tool-name">' + t.name + '</div><div class="bl-tool-desc">' + t.desc + '</div></div>';
-      }).join('') + '</div>';
-      container.innerHTML = html;
-    },
-
-    openTool: function (action) {
-      // Route to existing Studyria tools where possible
-      switch (action) {
-        case 'planner':
-          if (typeof StudyPlanner !== 'undefined') { navigate('study-planner'); return; }
-          break;
-        case 'timer':
-        case 'focus':
-          this.toast('Timer tool coming soon!');
-          return;
-        case 'bookmarks':
-          navigate('wishlist');
-          return;
-        default:
-          this.toast('Tool coming soon!');
-      }
-    },
-
-    /* ── Search / Filter ── */
-    onSearch: function (query) {
-      this._searchQuery = query.toLowerCase();
-      this.renderQuizzes();
-      this.renderMockTests();
-      this.renderFlashcardDecks();
-      this.renderPYQ();
-    },
-
-    /* ── Day Streak Helper ── */
-    dayStreak: function () {
-      try {
-        var data = JSON.parse(localStorage.getItem('campus_study_days') || '[]');
-        if (!data.length) return 0;
-        var today = new Date().toISOString().slice(0, 10);
-        var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-        if (data.indexOf(today) === -1 && data.indexOf(yesterday) === -1) return 0;
-        var streak = 0; var d = new Date();
-        while (data.indexOf(d.toISOString().slice(0, 10)) !== -1) { streak++; d.setDate(d.getDate() - 1); }
-        return streak;
-      } catch (_) { return 0; }
-    }
+    /* ── Streak Helper ── */
+    dayStreak:function(){try{var d=JSON.parse(localStorage.getItem('campus_study_days')||'[]');if(!d.length)return 0;var t=new Date().toISOString().slice(0,10),y=new Date(Date.now()-86400000).toISOString().slice(0,10);if(d.indexOf(t)===-1&&d.indexOf(y)===-1)return 0;var s=0,dt=new Date();while(d.indexOf(dt.toISOString().slice(0,10))!==-1){s++;dt.setDate(dt.getDate()-1);}return s;}catch(_){return 0;}}
   };
 })();
