@@ -25550,6 +25550,27 @@ function logAdminActivity(msg, type = 'blue') {
 // ── Hamburger Menu — Vanilla JS (no Alpine.js dependency) ──────────
 window.dhHamburgerOpen = false;
 
+// Computes the REAL, current on-screen header height and forces the
+// drawer/backdrop to start exactly below it — via setProperty(...,'important')
+// so this always wins over any legacy/stale CSS (old .hamburger-dropdown
+// rules, hardcoded 52px/62px assumptions, etc.) regardless of how tall the
+// header actually renders on a given device/font-size. This is the fix for
+// "header disappears when menu opens" — the drawer can never again start
+// above the header's real bottom edge.
+function dhSyncHeaderOffset(menu, backdrop) {
+  var navBar = document.querySelector('.nav');
+  var headerH = navBar ? Math.ceil(navBar.getBoundingClientRect().height) : 62;
+  if (menu) {
+    menu.style.setProperty('top', headerH + 'px', 'important');
+    menu.style.setProperty('padding-top', '0px', 'important');
+    menu.style.setProperty('max-height', 'calc(100vh - ' + headerH + 'px)', 'important');
+  }
+  if (backdrop) {
+    backdrop.style.setProperty('top', headerH + 'px', 'important');
+  }
+  return navBar;
+}
+
 window.dhToggleHamburger = function(e) {
   if (e) e.stopPropagation();
   if (window.dhHamburgerOpen) {
@@ -25560,6 +25581,7 @@ window.dhToggleHamburger = function(e) {
     var btn = document.getElementById('hamburgerBtn');
     if (!menu) return;
     menu.style.display = 'block';
+    var navBar = dhSyncHeaderOffset(menu, backdrop);
     // Force reflow then open via class (max-height transition)
     void menu.offsetHeight;
     menu.classList.add('dh-open');
@@ -25567,8 +25589,7 @@ window.dhToggleHamburger = function(e) {
     if (backdrop) backdrop.style.display = 'block';
     document.body.style.overflow = 'hidden';
     window.dhHamburgerOpen = true;
-    // Keep the sticky header (logo + close button) visible above the dropdown
-    var navBar = document.querySelector('.nav');
+    // Keep the header visible ABOVE the dropdown + backdrop while menu is open
     if (navBar) navBar.classList.add('dh-nav-elevated');
     // Keep Alpine state in sync
     if (window._alpine) window._alpine.sidebarOpen = true;
@@ -25595,6 +25616,14 @@ window.dhCloseHamburger = function() {
   // Keep Alpine state in sync
   if (window._alpine) window._alpine.sidebarOpen = false;
 };
+
+// Re-sync the header offset if the viewport/header size changes while the
+// menu happens to be open (rotation, dynamic address-bar resize on Android).
+window.addEventListener('resize', function() {
+  if (window.dhHamburgerOpen) {
+    dhSyncHeaderOffset(document.getElementById('hamburgerMenu'), document.getElementById('dhHamburgerBackdrop'));
+  }
+});
 
 // Legacy compat: toggleHamburger delegates to vanilla toggle
 function toggleHamburger(e) {
