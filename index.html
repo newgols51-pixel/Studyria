@@ -47294,6 +47294,7 @@ window.addEventListener('load', function() {
   };
 
   var fmState = { loaded: false, materials: [], filtered: [] };
+  window.fmState = fmState;
 
   // ── Detect material type from title/description ──
   function fmDetectType(item) {
@@ -47331,22 +47332,22 @@ window.addEventListener('load', function() {
     // Try Supabase first — fetch free PDFs (price = 0 or free = true)
     if (window.supabaseClient) {
       try {
-        var q = window.supabaseClient.from('pdfs').select('*').eq('status', 'published');
+        var q = window.supabaseClient.from('pdfs').select('*');
         var res = await q.order('created_at', { ascending: false }).limit(200);
         if (!res.error && res.data) {
           materials = res.data.filter(function(p) {
-            var isFree = (p.free === true) || (Number(p.price) === 0) || (p.price === '0') || (p.price === null);
+            var isFree = p.free || !p.price || Number(p.price) === 0;
             return isFree;
           });
         }
       } catch(e) { console.warn('Free Materials Supabase fetch:', e); }
     }
 
-    // Fallback: check window.PDFS for free items
+    // Fallback: check window.PDFS for free items if Supabase returned nothing
     if (materials.length === 0 && window.PDFS && window.PDFS.length) {
       materials = window.PDFS.filter(function(p) {
-        var isFree = (p.free === true) || (Number(p.price) === 0) || (p.price === '0') || (!p.price);
-        return isFree && p.status !== 'draft' && p.status !== 'archived';
+        var isFree = p.free || !p.price || Number(p.price) === 0;
+        return isFree;  // status already filtered by Supabase; for PDFS fallback, just check free
       });
     }
 
