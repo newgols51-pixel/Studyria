@@ -6226,7 +6226,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260814f" defer></script>
-<script src="brainlab.js?v=20260814h" defer></script>
+<script src="brainlab.js?v=20260815a" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -6940,7 +6940,7 @@ crossorigin="anonymous"></script>
 })();
 </script>
 <link rel="stylesheet" href="campus.css?v=20260731a">
-<link rel="stylesheet" href="brainlab.css?v=20260814d">
+<link rel="stylesheet" href="brainlab.css?v=20260815a">
 <link rel="stylesheet" href="pdp-v2.css?v=20260801">
   <link rel="stylesheet" href="pdp-v3.css?v=20260803a">
   <link rel="stylesheet" href="pdp-v4.css?v=20260803a">
@@ -18638,6 +18638,16 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
         <span class="bl-hero-tag">Practice</span>
         <span class="bl-hero-tag">Performance</span>
       </div>
+      <div class="bl-hero-cta">
+        <button class="bl-hero-cta-btn bl-hero-cta-primary" onclick="BrainLab.navigate('dashboard');BrainLab.renderContinueLearning();">Continue Learning</button>
+        <button class="bl-hero-cta-btn bl-hero-cta-secondary" onclick="BrainLab.navigate('quizzes')">Start Practice</button>
+      </div>
+      <div class="bl-hero-links">
+        <a class="bl-hero-link" onclick="BrainLab.navigate('quizzes')">🧩 Quizzes</a>
+        <a class="bl-hero-link" onclick="BrainLab.navigate('mock-tests')">📝 Mock Tests</a>
+        <a class="bl-hero-link" onclick="BrainLab.navigate('flashcards')">📚 Flashcards</a>
+        <a class="bl-hero-link" onclick="BrainLab.navigate('practice')">🎯 Practice</a>
+      </div>
     </div>
 
     <!-- ── Quick Stats ── -->
@@ -18676,72 +18686,84 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     <!-- ══ Quizzes View ══ -->
     <div class="bl-view" id="bl-view-quizzes" style="display:none">
       <div class="bl-view-header"><h3>🧩 Quizzes</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Practice by exam, category and topic.</div>
       <div id="bl-quizzes"></div>
     </div>
 
     <!-- ══ Mock Tests View ══ -->
     <div class="bl-view" id="bl-view-mock-tests" style="display:none">
       <div class="bl-view-header"><h3>📝 Mock Tests</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Full-length exam-style mock tests.</div>
       <div id="bl-mocks"></div>
     </div>
 
     <!-- ══ Flashcards View ══ -->
     <div class="bl-view" id="bl-view-flashcards" style="display:none">
       <div class="bl-view-header"><h3>📚 Flashcards</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Quick revision with flashcard decks.</div>
       <div id="bl-flashcard-decks"></div>
     </div>
 
     <!-- ══ Practice Arena View ══ -->
     <div class="bl-view" id="bl-view-practice" style="display:none">
       <div class="bl-view-header"><h3>🎯 Practice Arena</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Build a practice session exactly the way you want.</div>
       <div id="bl-arena"></div>
     </div>
 
     <!-- ══ PYQ Practice View ══ -->
     <div class="bl-view" id="bl-view-pyq" style="display:none">
       <div class="bl-view-header"><h3>📖 PYQ Practice</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Previous year questions by exam.</div>
       <div id="bl-pyq"></div>
     </div>
 
     <!-- ══ MCQ Practice View ══ -->
     <div class="bl-view" id="bl-view-mcqs" style="display:none">
       <div class="bl-view-header"><h3>❓ MCQ Practice</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Topic-wise multiple choice questions.</div>
       <div id="bl-mcqs"></div>
     </div>
 
     <!-- ══ Daily Challenge View ══ -->
     <div class="bl-view" id="bl-view-daily" style="display:none">
       <div class="bl-view-header"><h3>⚡ Daily Challenge</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">10 fresh questions every day. Build your streak.</div>
       <div id="bl-daily-full"></div>
     </div>
 
     <!-- ══ Current Affairs View ══ -->
     <div class="bl-view" id="bl-view-current-affairs" style="display:none">
       <div class="bl-view-header"><h3>📰 Current Affairs</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Exam-focused updates for Assam & India.</div>
       <div id="bl-affairs"></div>
     </div>
 
     <!-- ══ Performance View ══ -->
     <div class="bl-view" id="bl-view-performance" style="display:none">
       <div class="bl-view-header"><h3>📊 Performance</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Your learning statistics and progress.</div>
       <div id="bl-performance"></div>
     </div>
 
     <!-- ══ Mistakes View ══ -->
     <div class="bl-view" id="bl-view-mistakes" style="display:none">
       <div class="bl-view-header"><h3>❌ Mistake Review</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Review your incorrect answers and learn from them.</div>
       <div id="bl-mistakes"></div>
     </div>
 
     <!-- ══ Leaderboard View ══ -->
     <div class="bl-view" id="bl-view-leaderboard" style="display:none">
       <div class="bl-view-header"><h3>🏆 Leaderboard</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Compete with other learners and track your rank.</div>
       <div id="bl-leaderboard"></div>
     </div>
 
     <!-- ══ Study Streak View ══ -->
     <div class="bl-view" id="bl-view-streak" style="display:none">
       <div class="bl-view-header"><h3>🔥 Study Streak</h3><button class="bl-back-btn" onclick="BrainLab.navigate('dashboard')">← Back</button></div>
+      <div class="bl-view-desc">Track your daily study streak and consistency.</div>
       <div id="bl-streak-full"></div>
     </div>
 
@@ -24978,7 +25000,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260814f" defer></script>
-<script src="brainlab.js?v=20260814h" defer></script>
+<script src="brainlab.js?v=20260815a" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -25692,7 +25714,7 @@ crossorigin="anonymous"></script>
 })();
 </script>
 <link rel="stylesheet" href="campus.css?v=20260731a">
-<link rel="stylesheet" href="brainlab.css?v=20260814d">
+<link rel="stylesheet" href="brainlab.css?v=20260815a">
 <link rel="stylesheet" href="pdp-v2.css?v=20260801">
   <link rel="stylesheet" href="pdp-v3.css?v=20260803a">
   <link rel="stylesheet" href="pdp-v4.css?v=20260803a">
