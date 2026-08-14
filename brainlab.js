@@ -130,7 +130,7 @@ renderDailyChallenge:function(){
   var status=s.getDailyStatus();
   var h='<div class="bl-section-header"><h2 class="bl-section-title">Daily Challenge</h2><span class="bl-section-sub">10 fresh questions every day</span></div>';
   if(status){
-    h+='<div class="bl-daily-card bl-daily-completed"><div class="bl-daily-icon">✅</div><div class="bl-daily-info"><h3>Today\'s Challenge Complete!</h3><p>You scored <strong>'+status.score+'%</strong> ('+status.correct+'/'+status.total+' correct)</p><p class="bl-daily-time">Completed at '+new Date(status.completed_at).toLocaleTimeString([],{hour:\'2-digit\',minute:\'2-digit\'})+'</p></div><button class="bl-daily-btn" onclick="BrainLab.startDailyChallenge()">Retry Today</button></div>';
+    h+='<div class="bl-daily-card bl-daily-completed"><div class="bl-daily-icon">✅</div><div class="bl-daily-info"><h3>Today\'s Challenge Complete!</h3><p>You scored <strong>'+status.score+'%</strong> ('+status.correct+'/'+status.total+' correct)</p><p class="bl-daily-time">Completed at '+new Date(status.completed_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})+'</p></div><button class="bl-daily-btn" onclick="BrainLab.startDailyChallenge()">Retry Today</button></div>';
   }else{
     h+='<div class="bl-daily-card" onclick="BrainLab.startDailyChallenge()"><div class="bl-daily-icon">⚡</div><div class="bl-daily-info"><h3>Today\'s Challenge</h3><p>10 mixed questions · ~10 min · Build your streak</p></div><button class="bl-daily-btn">Start Now</button></div>';
   }
