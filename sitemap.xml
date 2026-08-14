@@ -13,7 +13,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://studyria.qzz.io/</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -26,7 +26,7 @@
   <!-- PDF Library — primary content hub -->
   <url>
     <loc>https://studyria.qzz.io/?page=library</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
       <image:image>
@@ -39,7 +39,7 @@
   <!-- Discover / Search -->
   <url>
     <loc>https://studyria.qzz.io/?page=discover</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
@@ -47,7 +47,7 @@
   <!-- Career Hub — Jobs, Scholarships, Results -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
       <image:image>
@@ -60,7 +60,7 @@
   <!-- About Us -->
   <url>
     <loc>https://studyria.qzz.io/?page=about</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.55</priority>
       <image:image>
@@ -73,7 +73,7 @@
   <!-- Contact -->
   <url>
     <loc>https://studyria.qzz.io/?page=contact</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
       <image:image>
@@ -86,7 +86,7 @@
   <!-- Privacy Policy -->
   <url>
     <loc>https://studyria.qzz.io/?page=privacy</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.35</priority>
   </url>
@@ -94,7 +94,7 @@
   <!-- Terms of Service -->
   <url>
     <loc>https://studyria.qzz.io/?page=terms</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.35</priority>
   </url>
@@ -102,7 +102,7 @@
   <!-- Refund Policy -->
   <url>
     <loc>https://studyria.qzz.io/?page=refund</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.30</priority>
   </url>
@@ -112,7 +112,7 @@
   ══════════════════════════════════════════════ -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;filter=free</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
@@ -124,7 +124,7 @@
   <!-- ADRE (Assam Direct Recruitment Exam) -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=ADRE</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
   </url>
@@ -132,7 +132,7 @@
   <!-- APSC -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=APSC</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
@@ -140,7 +140,7 @@
   <!-- Assam Exams (general) -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+Exams</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.78</priority>
   </url>
@@ -148,7 +148,7 @@
   <!-- Assam Police -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+Police</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -156,7 +156,7 @@
   <!-- Assam TET -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=Assam+TET</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -164,7 +164,7 @@
   <!-- SSC -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=SSC</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.72</priority>
   </url>
@@ -172,7 +172,7 @@
   <!-- HSLC Board -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=HSLC</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -180,7 +180,7 @@
   <!-- HS Board (Class 12) -->
   <url>
     <loc>https://studyria.qzz.io/?page=library&amp;cat=HS</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -192,7 +192,7 @@
   <!-- Jobs -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=jobs</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
@@ -200,7 +200,7 @@
   <!-- Scholarships -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=scholarships</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.72</priority>
   </url>
@@ -208,7 +208,7 @@
   <!-- Results -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=results</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
@@ -216,13 +216,30 @@
   <!-- Admit Cards -->
   <url>
     <loc>https://studyria.qzz.io/?page=career-hub&amp;tab=admit-cards</loc>
-    <lastmod>2026-07-19</lastmod>
+    <lastmod>2026-08-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
 
   <!-- ═══ AUTO-GENERATED PRODUCT/JOB PAGES (do not hand-edit below) ═══ -->
+  
+  <!-- BrainLab -->
   <url>
+    <loc>https://studyria.qzz.io/?page=brainlab</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://studyria.qzz.io/?page=blog</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+<url>
     <loc>https://studyria.qzz.io/pdf/adre-grade-iv-2026-assam-history-culture-pdf-book-with-600-verified-mcqs-studyri.html</loc>
     <lastmod>2026-08-14</lastmod>
     <changefreq>weekly</changefreq>
