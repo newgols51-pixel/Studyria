@@ -6225,8 +6225,8 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <!-- OneSignal Web SDK — loaded once, deferred. Init is handled in app.js. -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script src="campus.js?v=20260731a" defer></script>
-<script src="question-bank.js?v=20260814f" defer></script>
-<script src="brainlab.js?v=20260814rb1" defer></script>
+<script src="question-bank.js?v=20260814mcq" defer></script>
+<script src="brainlab.js?v=20260814mcq" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -40002,7 +40002,7 @@ if (_origTrackReading) {
 <script>
 // ── HOME PAGE CACHE BUST (Quick Actions + Learning Stats removed) ──────
 (function() {
-  const CACHE_VERSION = 'v_home_clean_2';
+  const CACHE_VERSION = 'v_home_clean_2mcq';
   const BUST_KEY = 'studyria_home_cache_busted';
   if (localStorage.getItem(BUST_KEY) !== CACHE_VERSION) {
     // Clear legacy home layout keys
