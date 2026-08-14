@@ -1324,3 +1324,160 @@
 .bl-flashcard-text, .bl-qp-fb-answer {
   line-height: 1.6;
 }
+
+/* ═══ BrainLab View System CSS ═══ */
+.bl-view { display: none; }
+.bl-view-active { display: block; }
+
+/* Top Navigation Bar */
+.bl-topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(253,251,247,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(147,2,5,0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: -12px -12px 16px;
+  border-radius: 0 0 10px 10px;
+}
+.bl-topnav-home {
+  background: var(--hp-red, #930205);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+.bl-topnav-home:hover { opacity: 0.85; }
+.bl-topnav-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+.bl-topnav-tabs::-webkit-scrollbar { display: none; }
+.bl-topnav-tab {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #666;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.bl-topnav-tab:hover { background: rgba(147,2,5,0.06); color: var(--hp-red,#930205); }
+.bl-topnav-tab.active { background: var(--hp-red,#930205); color: #fff; }
+
+/* View Header */
+.bl-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.bl-view-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+.bl-back-btn {
+  background: rgba(147,2,5,0.08);
+  color: var(--hp-red, #930205);
+  border: 1px solid rgba(147,2,5,0.15);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.bl-back-btn:hover { background: rgba(147,2,5,0.12); }
+
+/* Dashboard Quick Grid */
+.bl-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.bl-quick-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.bl-quick-card:hover {
+  border-color: var(--hp-red, #930205);
+  box-shadow: 0 4px 14px rgba(147,2,5,0.1);
+  transform: translateY(-2px);
+}
+.bl-quick-icon { font-size: 1.6rem; }
+.bl-quick-title { font-size: 0.9rem; font-weight: 700; color: #222; }
+.bl-quick-sub { font-size: 0.72rem; color: #888; }
+
+/* Current Affairs cards */
+.bl-affair-cat {
+  display: inline-block;
+  background: rgba(147,2,5,0.08);
+  color: var(--hp-red, #930205);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+.bl-affair-item {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+}
+.bl-affair-date {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #999;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bl-affair-body h4 { font-size: 0.92rem; font-weight: 700; margin: 4px 0; }
+.bl-affair-body p { font-size: 0.82rem; color: #555; line-height: 1.5; margin: 4px 0; }
+.bl-affair-source { font-size: 0.7rem; color: #aaa; }
+.bl-affairs-list { margin-top: 8px; }
+
+/* Mobile responsive */
+@media (max-width: 430px) {
+  .bl-quick-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .bl-quick-card { padding: 12px 10px; }
+  .bl-quick-icon { font-size: 1.3rem; }
+  .bl-quick-title { font-size: 0.82rem; }
+  .bl-quick-sub { font-size: 0.68rem; }
+  .bl-topnav-tab { padding: 5px 10px; font-size: 0.72rem; }
+  .bl-view-header h3 { font-size: 1rem; }
+  .bl-affair-item { flex-direction: column; gap: 6px; padding: 12px; }
+}
