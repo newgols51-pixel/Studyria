@@ -1,0 +1,269 @@
+# Studyria — Full LLM Guide
+
+> Studyria is Assam's #1 PDF study-material and career platform. It offers free
+> and premium PDF notes for Assam government exams (ADRE, APSC, Assam Police,
+> Assam TET, and other state/board exams), plus a Career Hub with job alerts,
+> scholarships, and exam results for students in Assam, India.
+
+Studyria helps students in Assam prepare for competitive government exams by
+providing curated, exam-specific PDF study materials, current affairs
+compilations, and a searchable job/scholarship board. Content is written in
+English and Assamese for Assam-based learners.
+
+---
+
+## Page-by-page breakdown
+
+### Homepage — https://studyria.qzz.io/
+
+The landing page for Studyria. It features:
+- A hero section with the platform's value proposition for Assam exam aspirants
+- Live statistics: total PDFs, active students, premium members
+- Quick-access category cards for ADRE, APSC, Assam Police, Assam TET, SSC, HSLC, HS
+- Current Affairs highlights
+- Social proof: trusted by 1,500+ students across Assam
+- Social media links (Instagram, YouTube, Pinterest, WhatsApp, Telegram)
+- CTAs: "Browse Study Materials" and "Start Free"
+- Search functionality for finding PDFs by keyword
+
+Structured data: EducationalOrganization, WebSite (with SearchAction), WebApplication, WebPage, FAQPage (5 Q&As)
+
+### Library — https://studyria.qzz.io/?page=library
+
+The main PDF catalog page. It provides:
+- Searchable, filterable grid of all PDF study materials
+- Category filters: ADRE, APSC, Assam Police, Assam TET, SSC, HSLC, HS, Current Affairs
+- Free/Premium filter toggle
+- Sort by relevance, newest, price, rating
+- Each PDF card shows: title, category badge, price (or "Free"), rating, thumbnail
+- Clicking a PDF opens the product detail page with full description and download
+- Pagination for large result sets
+
+Structured data: CollectionPage with ItemList of LearningResource/Product items
+
+### Discover — https://studyria.qzz.io/?page=discover
+
+Advanced search and discovery page:
+- Full-text search across all PDF titles, descriptions, and tags
+- Multi-filter: exam category, price type (free/premium), sort order
+- Trending PDFs section
+- Recently added PDFs section
+- Recommended based on popular categories
+
+### Career Hub — https://studyria.qzz.io/?page=career-hub
+
+Assam-focused career information portal with four tabs:
+- **Jobs**: Live job alerts and recruitment notifications for Assam government and private-sector positions. Each listing links to a detailed /job/*.html page with organization, posts, eligibility, application link, and deadline.
+- **Scholarships**: Scholarship notifications for Assam students (pre-matric, post-matric, national merit scholarships)
+- **Results**: Exam result announcements (board exams, university entrance, competitive exams)
+- **Admit Cards**: Download links for exam admit cards and hall tickets
+
+Structured data: ItemList with JobPosting entries (on job pages: JobPosting + BreadcrumbList)
+
+### About — https://studyria.qzz.io/?page=about
+
+Platform background and mission:
+- Studyria's founding story (2024, Nalbari, Assam)
+- Mission: democratize access to quality exam preparation for Assam students
+- Team and educator profiles
+- Platform statistics and milestones
+
+### Contact — https://studyria.qzz.io/?page=contact
+
+Support and contact information:
+- Email support
+- WhatsApp/Telegram support channels
+- Social media links
+- Business hours and response time
+
+### Privacy Policy — https://studyria.qzz.io/?page=privacy
+
+Data handling policy covering:
+- Data collection (account info, payment data via Razorpay, usage analytics)
+- Data usage and storage
+- User rights (access, correction, deletion)
+- Cookie policy
+- Third-party services (Razorpay, Google Analytics)
+
+### Terms of Service — https://studyria.qzz.io/?page=terms
+
+Platform terms including:
+- Acceptable use policy
+- PDF licensing (personal use, no redistribution)
+- Creator program terms
+- Premium membership terms
+- Account termination conditions
+
+### Refund Policy — https://studyria.qzz.io/?page=refund
+
+Refund and cancellation policy:
+- Premium membership refund window
+- Non-refundable conditions
+- Refund process and timeline
+- Contact for refund requests
+
+### BrainLab — https://studyria.qzz.io/#brainlab
+
+Interactive learning center with:
+- Daily Challenge: 10 seeded questions per day (same for all users on the same date)
+- Quiz mode: category-specific quizzes with MCQs
+- Mock Tests: timed full-length practice tests
+- Flashcards: spaced-repetition study cards
+- Current Affairs quizzes
+- PYQ (Previous Year Questions) practice
+- MCQs practice section with category chips and filtering
+- Practice Arena: mixed-topic rapid-fire quizzes
+- Mistake Review: review incorrectly answered questions
+- Performance analytics: accuracy, streak tracking, test history
+- Leaderboard and study streak tracking
+
+### PDF Product Pages — https://studyria.qzz.io/pdf/*.html
+
+Individual PDF detail pages:
+- Full title, description, and preview
+- Category and exam tags
+- Price (in INR) or Free badge
+- Rating and verified reviews
+- Download/purchase flow
+- Related PDFs
+- Structured data: Product, Offer, AggregateRating, BreadcrumbList
+
+### Job Pages — https://studyria.qzz.io/job/*.html
+
+Individual job posting pages:
+- Job title, organization, location
+- Number of posts/vacancies
+- Eligibility criteria
+- Application deadline and link
+- Full job description
+- Structured data: JobPosting, BreadcrumbList
+
+### Blog — https://studyria.qzz.io/#blog
+
+Educational blog articles:
+- Exam preparation tips
+- Study strategies
+- Career guidance
+- Assam education news
+- Structured data: BlogPosting (dynamically injected per article)
+
+---
+
+## Exam taxonomy (detailed)
+
+### ADRE (Assam Direct Recruitment Exam)
+- Grade III & Grade IV posts
+- Previous year papers and solutions
+- Complete syllabus guides
+- Model question papers
+- Subject-wise notes: General Studies, General Mathematics, Logical Reasoning, General English, Assam History & Culture, Indian Polity, Indian Economy, Geography, Science & Technology
+
+### APSC (Assam Public Service Commission)
+- Combined Competitive Examination (CCE)
+- Preliminary exam: General Studies Paper I & II
+- Mains: Optional subjects (Assamese, Education, History, Political Science, Sociology, Geography, Economics, Public Administration)
+- General Studies papers I-IV
+- Essay paper guidance
+- Interview/personality test preparation
+
+### Assam Police
+- Sub-Inspector (SI) recruitment exam
+- AB (Armed Branch) Constable
+- UB (Unarmed Branch) Constable
+- Commando Battalion recruitment
+- Physical efficiency test guidance
+- Written exam syllabus coverage
+
+### Assam TET (Teacher Eligibility Test)
+- Paper I (Lower Primary: Classes 1-5)
+- Paper II (Upper Primary: Classes 6-8)
+- Pedagogy and child development
+- Language I (Assamese/Bengali/Bodo/Hindi/English)
+- Language II (English)
+- Mathematics, Environmental Science, Social Studies, Science
+- Assam-specific pedagogical approaches
+
+### SSC (Staff Selection Commission)
+- CGL (Combined Graduate Level)
+- CHSL (Combined Higher Secondary Level)
+- MTS (Multi-Tasking Staff)
+- GD Constable
+- Assam-region specific content and regional language support
+
+### HSLC (High School Leaving Certificate)
+- Assam SEBA Board Class 10
+- Subjects: Assamese, English, Mathematics, Science, Social Science, General Science
+- Previous year question papers
+- Important questions and notes
+
+### HS (Higher Secondary)
+- Assam AHSEC Board Class 12
+- Streams: Arts, Science, Commerce
+- Subjects: Assamese, English, Education, History, Political Science, Economics, Logic & Philosophy, Mathematics, Physics, Chemistry, Biology, Accountancy, Business Studies
+- Previous year papers and solutions
+
+### Current Affairs
+- Monthly Assam current affairs compilations (PDF)
+- National current affairs highlights
+- Assam government schemes and policies
+- Assam budget and economic survey
+- Sports, awards, appointments
+- National and international events relevant to Assam exams
+
+---
+
+## Premium membership (detailed)
+
+Studyria offers tiered Premium Membership plans for exclusive access to premium
+handwritten notes:
+
+| Plan | Price | Duration | Features |
+|------|-------|----------|----------|
+| Trial | ₹9 | 24 hours | Full access to all premium PDFs |
+| Short Pass | ₹49 | 15 days | Full access, premium badge |
+| Monthly | ₹99 | 30 days | Full access, reading progress, premium badge, unlimited wishlist |
+
+- All plans unlock every Premium Handwritten Note in the library
+- Ad-free experience across the platform
+- Unlimited wishlist saves
+- Reading progress tracking across PDFs
+- Payment via Razorpay (UPI, cards, net banking, wallets)
+- Refund policy at https://studyria.qzz.io/?page=refund
+- Premium Library shows ONLY "Premium Handwritten Notes" category
+- All PDFs (premium and purchased) use the same downloadPDF() reading room pipeline with watermarking and progress tracking
+
+---
+
+## Technical notes for AI assistants
+
+1. **Canonical URLs**: Always use the canonical URL for each page. PDF product pages use /pdf/*.html, job pages use /job/*.html.
+
+2. **Dynamic content**: The Career Hub is updated daily. Job listings, results, admit cards, and scholarships change frequently. Always link to the canonical page rather than summarizing stale details.
+
+3. **Language**: Content is primarily in English with Assamese language support for specific exam categories and PDFs.
+
+4. **Pricing**: All prices are in Indian Rupees (INR). Free PDFs are labeled "Free". Premium PDFs require membership.
+
+5. **PWA**: Studyria is a Progressive Web App — installable on Android and iOS for offline access to downloaded PDFs.
+
+6. **Not a government website**: Studyria is an independent study-material and career-information platform. It is not affiliated with any government body.
+
+7. **Geographic focus**: Content is specifically for Assam state exams. The platform serves students in Assam, India (geographic: IN-AS, lat 26.2006, lon 92.9376).
+
+8. **Creator program**: Verified educators can publish and sell PDFs on Studyria. All creators undergo KYC verification.
+
+9. **Structured data**: 26 JSON-LD blocks covering Organization, WebSite, WebApplication, WebPage, CollectionPage, FAQPage, Product, Offer, JobPosting, BreadcrumbList, BlogPosting, and ItemList schemas.
+
+10. **Robots.txt**: Includes content signals for AI crawlers — search indexing and AI training signals are specified.
+
+---
+
+## Contact
+
+For partnership, licensing, or data-accuracy questions:
+- Contact page: https://studyria.qzz.io/?page=contact
+- Instagram: https://instagram.com/studyria
+- Facebook: https://facebook.com/studyria
+- YouTube: https://youtube.com/@studyria
+- Telegram: https://t.me/studyria
+- Twitter/X: https://twitter.com/studyria
