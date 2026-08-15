@@ -59,21 +59,22 @@ function getUser(){
   return null;
 }
 function getCategories(){
-  if(typeof QB==='undefined')return['All'];
-  var cats={'All':1};QB.forEach(function(q){if(q[7])cats[q[7]]=1;});return Object.keys(cats);
+  if(!window.BrainLab)return['All'];
+  var cats=window.BrainLab.getCategories?window.BrainLab.getCategories():['All'];
+  return ['All'].concat(cats.filter(function(c){return c!=='All';}));
 }
 function countQuestions(opts){
-  if(typeof QB==='undefined')return 0;
-  return QB.filter(function(q){
-    if(opts.cat&&opts.cat!=='All'&&q[7]!==opts.cat)return false;
-    if(opts.exam&&opts.exam!=='All'){var tp=window.EXAM_TOPICS&&window.EXAM_TOPICS[opts.exam];if(tp&&tp.indexOf(q[7])===-1&&tp.indexOf(q[8])===-1)return false;}
-    if(opts.diff&&opts.diff!=='mixed'&&q[9]!==opts.diff)return false;
-    return true;
-  }).length;
+  if(!window.BrainLab||!window.BrainLab.filterQuestions)return 0;
+  var pool=window.BrainLab.filterQuestions({
+    category:opts.cat&&opts.cat!=='All'?opts.cat:undefined,
+    exam:opts.exam&&opts.exam!=='All'?opts.exam:undefined,
+    difficulty:opts.diff&&opts.diff!=='mixed'?opts.diff:undefined
+  });
+  return pool?pool.length:0;
 }
 function genSeed(){return Date.now()+Math.floor(Math.random()*1000000);}
 function getMatchQuestions(match){
-  if(!window.BrainLab||typeof QB==='undefined')return[];
+  if(!window.BrainLab||!window.BrainLab.filterQuestions)return[];
   var seedStr=match.questionIds||'';
   var seed=parseInt(String(seedStr).replace('seed:',''))||Date.now();
   var pool=BrainLab.filterQuestions({category:match.category!=='All'?match.category:undefined,exam:match.exam!=='All'?match.exam:undefined,difficulty:match.difficulty!=='mixed'?match.difficulty:undefined});
@@ -96,7 +97,7 @@ function getTeamForSlot(modeId,slot){
 // CSS
 // ══════════════════════════════════════════════
 var CSS=`
-.arena-overlay{position:fixed !important;top:0;left:0;width:100%;height:100%;background:rgba(20,12,15,0.97) !important;z-index:99999 !important;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:inherit}
+.arena-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,12,15,0.97);z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:inherit}
 .arena-wrap{max-width:560px;margin:0 auto;padding:16px 14px 40px;min-height:100%;box-sizing:border-box;color:#f5e9e0}
 .arena-close{position:fixed;top:12px;right:14px;z-index:100000;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f5e9e0;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
 .arena-close:active{background:rgba(255,255,255,0.2)}
@@ -1228,41 +1229,31 @@ async function acceptInvite(inviteId){
   
   // Get match config from invitation
   var cfg=inv.matchConfig||{};
-  var matchId=cfg.matchId;
   var team=cfg.team||'B';
   
-  // Accept the invitation (updates status)
-  await api('respondInvite',{inviteId:inviteId,response:'accepted'});
+  // Accept the invitation — backend always creates/joins a match and returns matchId
+  var res=await api('respondInvite',{inviteId:inviteId,response:'accepted'});
+  if(!res.ok){toast('Could not accept: '+(res.error||'Unknown error'));return;}
   
-  if(matchId){
-    // Join the existing match
-    S.matchId=matchId;
-    S.cfg={mode:cfg.mode||'1v1',qCount:cfg.questionCount||10,exam:cfg.exam||'All',cat:cfg.category||'All',diff:cfg.difficulty||'mixed'};
-    await api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam,arenaRating:0,wins:0,losses:0,draws:0,battles:0,status:'in_arena'});
-    
-    // Check if already in the match (respondInvite might have added us to a throwaway match)
-    var matchRes=await api('getMatch',{matchId:matchId});
-    if(matchRes.ok&&matchRes.match){
-      var existing=matchRes.match.players.find(function(p){return p.userId===S.user.id;});
-      if(!existing){
-        // Join the match
-        await api('joinMatch',{matchId:matchId,userId:S.user.id,userName:S.user.name,team:team});
-      }
+  var matchId=res.matchId;
+  if(!matchId){toast('Match could not be created. Please try again.');return;}
+  
+  S.matchId=matchId;
+  S.cfg={mode:cfg.mode||'1v1',qCount:cfg.questionCount||10,exam:cfg.exam||'All',cat:cfg.category||'All',diff:cfg.difficulty||'mixed'};
+  await api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam,arenaRating:0,wins:0,losses:0,draws:0,battles:0,status:'in_arena'});
+  
+  // Ensure we're actually in the match's player list (backend adds us on respondInvite, but double-check)
+  var matchRes=await api('getMatch',{matchId:matchId});
+  if(matchRes.ok&&matchRes.match){
+    var existing=matchRes.match.players.find(function(p){return p.userId===S.user.id;});
+    if(!existing){
+      await api('joinMatch',{matchId:matchId,userId:S.user.id,userName:S.user.name,team:team});
     }
-    
-    // Enter lobby
-    S._pendingMatchId=matchId;
-    showLobby();
-  }else{
-    // 1v1 flow — match created by respondInvite
-    // We need to find the match. Poll for it.
-    toast('Match created! Entering lobby...');
-    // The respondInvite action should have returned a matchId
-    // We need to get it somehow. For now, try to find active matches.
-    // Actually, let me modify: always create match first in the flow
-    toast('Waiting for match to start...');
   }
   
+  toast('Match found! Entering lobby...');
+  S._pendingMatchId=matchId;
+  showLobby();
   startPresence();
 }
 
@@ -1367,8 +1358,7 @@ function selectMode(modeId){
 // BRAINLAB HOOK
 // ══════════════════════════════════════════════
 function init(){
-  if(!window.BrainLab||window._arenaInit)return;
-  window._arenaInit=true;
+  if(!window.BrainLab)return;
   
   // Store original renderPracticeArena
   var origRender=BrainLab.renderPracticeArena;
@@ -1381,10 +1371,8 @@ function init(){
     // Call original to keep existing quick practice modes
     origRender.call(this);
     
-    // Add competitive arena banner (check if already exists)
-    if(c.querySelector('[data-arena-banner]'))return;
+    // Add competitive arena banner
     var banner=document.createElement('div');
-    banner.setAttribute('data-arena-banner','1');
     banner.style.cssText='margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.08));border:1px solid rgba(200,155,60,0.2);border-radius:14px;cursor:pointer';
     banner.onclick=function(){window.Arena.showHome();};
     banner.innerHTML=`
