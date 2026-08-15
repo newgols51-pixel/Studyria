@@ -1361,6 +1361,8 @@ function selectMode(modeId){
 // ══════════════════════════════════════════════
 function init(){
   if(!window.BrainLab)return;
+  if(window._arenaInitDone)return; // Prevent double-init
+  window._arenaInitDone=true;
   
   // Store original renderPracticeArena
   var origRender=BrainLab.renderPracticeArena;
@@ -1373,8 +1375,11 @@ function init(){
     // Call original to keep existing quick practice modes
     origRender.call(this);
     
-    // Add competitive arena banner
+    // Add competitive arena banner (idempotent — remove any old one first)
+    var oldBanner=c.querySelector('.arena-comp-banner');
+    if(oldBanner)oldBanner.remove();
     var banner=document.createElement('div');
+    banner.className='arena-comp-banner';
     banner.style.cssText='margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.08));border:1px solid rgba(200,155,60,0.2);border-radius:14px;cursor:pointer';
     banner.onclick=function(){window.Arena.showHome();};
     banner.innerHTML=`
