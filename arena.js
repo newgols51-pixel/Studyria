@@ -1268,19 +1268,21 @@ async function rejectInvite(inviteId){
 // ══════════════════════════════════════════════
 // TIMERS / POLLING
 // ══════════════════════════════════════════════
+function doPing(){
+  if(S.user){
+    var stats=getArenaStats();
+    api('ping',{
+      userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',
+      arenaRating:stats.rating||1000,wins:stats.wins||0,losses:stats.losses||0,
+      draws:stats.draws||0,battles:stats.battles||0,
+      status:S.screen==='battle'||S.screen==='lobby'||S.screen==='waiting'?'in_arena':'online'
+    });
+  }
+}
 function startPresence(){
   stopTimer('presence');
-  S.timers.presence=setInterval(function(){
-    if(S.user){
-      var stats=getArenaStats();
-      api('ping',{
-        userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',
-        arenaRating:stats.rating||1000,wins:stats.wins||0,losses:stats.losses||0,
-        draws:stats.draws||0,battles:stats.battles||0,
-        status:S.screen==='battle'||S.screen==='lobby'||S.screen==='waiting'?'in_arena':'online'
-      });
-    }
-  },PING_MS);
+  doPing(); // Ping immediately — don't wait for the first interval tick
+  S.timers.presence=setInterval(doPing,PING_MS);
 }
 
 function startInviteCheck(){
