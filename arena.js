@@ -491,9 +491,13 @@ async function invitePlayer(toUserId,toUserName){
   var res=await api('sendInvite',{
     fromUserId:S.user.id,fromUserName:S.user.name,
     toUserId:toUserId,toUserName:toUserName,
-    matchConfig:{mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff,matchId:S.matchId,team:team}
+    matchConfig:{mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff,matchId:S.matchId||null,team:team}
   });
-  if(res.ok){toast('Invitation sent to '+toUserName+'!');}
+  if(res.ok){
+    toast('Invitation sent to '+toUserName+'!');
+    // Keep searching — when they accept, inviteCheckPoll will auto-accept
+    // and our next autoMatch poll will detect the matchId
+  }
   else{toast('Could not invite: '+(res.error||'Unknown error'));}
 }
 
@@ -1191,15 +1195,23 @@ async function inviteCheckPoll(){
     // Auto-accept if we're in search mode (auto-matching)
     if(S.screen==='search'&&S.autoMatching){
       S.autoMatching=false;
-      await api('respondInvite',{inviteId:inv.id,response:'accepted'});
-      // The respondInvite creates/joins the match and sets our presence to matched
-      // Next searchPoll or autoMatch will detect the matchId
-      // For immediate response, check if we got a matchId
-      // Actually, respondInvite already set our presence, so let's re-enter search to pick it up
+      var accRes=await api('respondInvite',{inviteId:inv.id,response:'accepted'});
+      if(accRes.ok&&accRes.matchId){
+        // Direct transition to lobby — no waiting for next poll
+        S.matchId=accRes.matchId;
+        var matchRes=await api('getMatch',{matchId:S.matchId});
+        if(matchRes.ok&&matchRes.match){
+          S.match=matchRes.match;
+          S.screen='lobby';
+          showLobby();
+          return;
+        }
+      }
+      // Fallback: re-enable autoMatching so next searchPoll picks it up
       S.autoMatching=true;
       return;
     }
-    // Show modal for manual accept/reject
+    // Show modal for manual accept/reject (when not in search mode)
     if(!S.pendingInvite||S.pendingInvite.id!==inv.id){
       S.pendingInvite=inv;
       showInviteModal(inv);
