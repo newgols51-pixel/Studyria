@@ -96,7 +96,7 @@ function getTeamForSlot(modeId,slot){
 // CSS
 // ══════════════════════════════════════════════
 var CSS=`
-.arena-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,12,15,0.97);z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:inherit}
+.arena-overlay{position:fixed !important;top:0;left:0;width:100%;height:100%;background:rgba(20,12,15,0.97) !important;z-index:99999 !important;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:inherit}
 .arena-wrap{max-width:560px;margin:0 auto;padding:16px 14px 40px;min-height:100%;box-sizing:border-box;color:#f5e9e0}
 .arena-close{position:fixed;top:12px;right:14px;z-index:100000;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f5e9e0;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
 .arena-close:active{background:rgba(255,255,255,0.2)}
@@ -1367,7 +1367,8 @@ function selectMode(modeId){
 // BRAINLAB HOOK
 // ══════════════════════════════════════════════
 function init(){
-  if(!window.BrainLab)return;
+  if(!window.BrainLab||window._arenaInit)return;
+  window._arenaInit=true;
   
   // Store original renderPracticeArena
   var origRender=BrainLab.renderPracticeArena;
@@ -1380,8 +1381,10 @@ function init(){
     // Call original to keep existing quick practice modes
     origRender.call(this);
     
-    // Add competitive arena banner
+    // Add competitive arena banner (check if already exists)
+    if(c.querySelector('[data-arena-banner]'))return;
     var banner=document.createElement('div');
+    banner.setAttribute('data-arena-banner','1');
     banner.style.cssText='margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.08));border:1px solid rgba(200,155,60,0.2);border-radius:14px;cursor:pointer';
     banner.onclick=function(){window.Arena.showHome();};
     banner.innerHTML=`
