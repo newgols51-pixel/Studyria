@@ -285,9 +285,10 @@ async function showHome(){
     showOverlay('<div class="arena-login-prompt"><div class="arena-login-icon">🔐</div><div class="arena-login-text">Please log in to use the Practice Arena.</div><button class="arena-btn" onclick="Arena.close()">OK</button></div>');
     return;
   }
-  // Get presence/stats
-  var pres=await api('getPresence',{userId:S.user.id});
-  var p=pres.ok?pres.presence:null;
+  // Get my own stats (rating/battles/wins/losses) — NOT getPresence, which
+  // returns OTHER online players, not the current user's own record.
+  var statsRes=await api('getMyStats',{userId:S.user.id});
+  var p=statsRes.ok?statsRes.stats:null;
   var rating=p?p.arenaRating:1000;
   var wins=p?p.wins:0,losses=p?p.losses:0,draws=p?p.draws:0;
   var battles=p?p.battles:0,winRate=p?p.winRate:0;
