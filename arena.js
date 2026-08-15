@@ -6,7 +6,7 @@
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
+var API='https://velo-11720cbc.base44.app/functions/arenaApi';
 var POLL_MS=2000, PING_MS=8000, INV_MS=3000;
 
 var MODES=[
@@ -871,7 +871,7 @@ async function waitingPoll(){
   
   if(S.match.status==='completed'){
     stopTimer('waitingPoll');
-    showResults(JSON.parse(S.match.winner||'{}'));
+    showResults(S.match.winner||{});
     return;
   }
   
