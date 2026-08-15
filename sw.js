@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v51'; // v48: rollback cache-bust — force refresh of BrainLab bundle to clear stale pre-rollback cache on client devices
+const CACHE_VERSION = 'v52'; // v52: cache-bust arena.js — fix Ready Up sync (new arenaApi backend, removed double-JSON.parse bug)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;

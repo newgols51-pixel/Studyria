@@ -620,10 +620,15 @@ function renderEmptySlot(){
 
 async function setReady(ready){
   var res=await api('setReady',{matchId:S.matchId,userId:S.user.id,ready:ready});
-  if(res.ok&&res.matchStarted){
-    // Match is starting!
-    toast('Battle starting!');
-    setTimeout(function(){startBattle();},1000);
+  if(res.ok&&res.match){
+    S.match=res.match;
+    if(res.match.status==='in_progress'){
+      // Match is starting right now — don't wait for the next poll
+      toast('Battle starting!');
+      setTimeout(function(){startBattle();},600);
+      return;
+    }
+    renderLobby();
   }
 }
 
@@ -1195,7 +1200,7 @@ async function inviteCheckPoll(){
     // Auto-accept if we're in search mode (auto-matching)
     if(S.screen==='search'&&S.autoMatching){
       S.autoMatching=false;
-      var accRes=await api('respondInvite',{inviteId:inv.id,response:'accepted'});
+      var accRes=await api('respondInvite',{inviteId:inv.id,response:'accepted',userName:S.user.name});
       if(accRes.ok&&accRes.matchId){
         // Direct transition to lobby — no waiting for next poll
         S.matchId=accRes.matchId;
@@ -1263,7 +1268,7 @@ async function acceptInvite(inviteId){
   var team=cfg.team||'B';
   
   // Accept the invitation — backend always creates/joins a match and returns matchId
-  var res=await api('respondInvite',{inviteId:inviteId,response:'accepted'});
+  var res=await api('respondInvite',{inviteId:inviteId,response:'accepted',userName:S.user.name});
   if(!res.ok){toast('Could not accept: '+(res.error||'Unknown error'));return;}
   
   var matchId=res.matchId;
