@@ -1372,27 +1372,21 @@ function init(){
     var c=document.getElementById('bl-arena');
     if(!c)return;
     
-    // Call original to keep existing quick practice modes
+    // Call original to keep existing quick practice modes (this sets c.innerHTML = cards)
     origRender.call(this);
     
-    // Add competitive arena banner (idempotent — remove any old one first)
-    var oldBanner=c.querySelector('.arena-comp-banner');
-    if(oldBanner)oldBanner.remove();
-    var banner=document.createElement('div');
-    banner.className='arena-comp-banner';
-    banner.style.cssText='margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.08));border:1px solid rgba(200,155,60,0.2);border-radius:14px;cursor:pointer';
-    banner.onclick=function(){window.Arena.showHome();};
-    banner.innerHTML=`
-      <div style="display:flex;align-items:center;gap:12px">
-        <div style="font-size:32px">⚔️</div>
-        <div style="flex:1">
-          <div style="font-size:16px;font-weight:600;color:#8b1538">Practice Arena — Competitive Mode</div>
-          <div style="font-size:13px;color:#666;margin-top:2px">Battle real players in 1v1, team & free-for-all modes</div>
-        </div>
-        <div style="font-size:20px;color:#c89b3c">›</div>
-      </div>
-    `;
-    c.appendChild(banner);
+    // Append competitive arena banner into innerHTML (not appendChild) to avoid duplicates
+    var bannerHTML='<div class="arena-comp-banner" style="margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.08));border:1px solid rgba(200,155,60,0.2);border-radius:14px;cursor:pointer" onclick="window.Arena.showHome()">'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+        '<div style="font-size:32px">⚔️</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-size:16px;font-weight:600;color:#8b1538">Practice Arena — Competitive Mode</div>'+
+          '<div style="font-size:13px;color:#666;margin-top:2px">Battle real players in 1v1, team & free-for-all modes</div>'+
+        '</div>'+
+        '<div style="font-size:20px;color:#c89b3c">›</div>'+
+      '</div>'+
+    '</div>';
+    c.innerHTML=c.innerHTML+bannerHTML;
   };
   
   // Re-render the arena section
@@ -1438,7 +1432,7 @@ if(document.readyState==='loading'){
   setTimeout(init,500);
 }
 
-// Also try after window load (in case BrainLab loads late)
-window.addEventListener('load',function(){setTimeout(init,1000);});
+// Note: single init path via DOMContentLoaded/readyState above.
+// Removed window load listener that caused double-init race condition.
 
 })();
