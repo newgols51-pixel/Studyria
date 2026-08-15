@@ -6,7 +6,7 @@
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-var API='https://velo-11720cbc.base44.app/functions/arenaApi';
+var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
 var POLL_MS=2000, PING_MS=8000, INV_MS=3000;
 
 var MODES=[
@@ -864,7 +864,7 @@ async function finishBattle(){
 }
 
 function showWaitingForOpponent(){
-  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">✅ Battle Complete!</div><div class="arena-spinner"></div><div style="margin-top:16px;color:rgba(245,233,224,0.6)">Waiting for opponent to finish...</div><button class="arena-btn secondary" style="margin-top:24px" onclick="Arena.forfeitWait()">Don\'t Wait</button></div>');
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">✅ Battle Complete!</div><div class="arena-spinner"></div><div style="margin-top:16px;color:rgba(245,233,224,0.6)">Waiting for opponent to finish...</div><div style="margin-top:20px;display:flex;gap:10px;justify-content:center"><button class="arena-btn secondary" onclick="Arena.checkNowWait()">🔄 Check Now</button><button class="arena-btn secondary" onclick="Arena.forfeitWait()">Don\'t Wait</button></div></div>');
   S.screen='waiting';
   startWaitingPoll();
 }
@@ -877,23 +877,28 @@ async function waitingPoll(){
   
   if(S.match.status==='completed'){
     stopTimer('waitingPoll');
+    stopTimer('poll');
     showResults(S.match.winner||{});
     return;
   }
   
-  // Check if opponent abandoned
   var opponents=S.match.players.filter(function(p){return p.userId!==S.user.id;});
-  var allAbandoned=opponents.every(function(p){return p.status==='abandoned';});
-  if(allAbandoned&&opponents.length>0){
+  var allAbandoned=opponents.length>0&&opponents.every(function(p){return p.status==='abandoned';});
+  if(allAbandoned){
     stopTimer('waitingPoll');
+    stopTimer('poll');
     showResults({type:'user',userId:S.user.id,userName:S.user.name});
   }
 }
 
 function forfeitWait(){
   stopTimer('waitingPoll');
-  // Show results with just our data
+  stopTimer('poll');
   showResults({type:'user',userId:S.user.id,userName:S.user.name});
+}
+function checkNowWait(){
+  toast('Checking...');
+  waitingPoll();
 }
 
 async function leaveBattle(){
@@ -1039,6 +1044,43 @@ async function showResults(winner){
       }
       h+='</div>';
     }
+  }
+  
+  // Weak Areas & Improvement Tips
+  var topicsArr=Object.keys(S.battle.topicStats).map(function(t){
+    var s=S.battle.topicStats[t];
+    return {topic:t,correct:s.correct,total:s.total,acc:Math.round((s.correct/s.total)*100),avgT:Math.round(s.time/s.total)};
+  });
+  if(topicsArr.length){
+    var weak=topicsArr.filter(function(t){return t.acc<60;}).sort(function(a,b){return a.acc-b.acc;});
+    var slow=topicsArr.filter(function(t){return t.avgT>20;}).sort(function(a,b){return b.avgT-a.avgT;});
+    var strong=topicsArr.filter(function(t){return t.acc>=80;}).sort(function(a,b){return b.acc-a.acc;});
+    h+='<div class="arena-result-section"><div class="arena-result-section-title">🎯 Weak Areas & What To Improve</div>';
+    if(weak.length){
+      weak.forEach(function(t){
+        h+='<div style="padding:10px 0;border-bottom:1px solid rgba(245,233,224,0.08)">';
+        h+='<div style="font-weight:600;color:#ef5350">⚠️ '+escapeHtml(t.topic)+' — '+t.acc+'% accuracy ('+t.correct+'/'+t.total+')</div>';
+        h+='<div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">Revise this topic. Try a focused practice set on '+escapeHtml(t.topic)+' before your next battle.</div>';
+        h+='</div>';
+      });
+    }else{
+      h+='<div style="padding:8px 0;color:#66bb6a;font-size:13px">✅ No weak topics — solid accuracy across the board!</div>';
+    }
+    if(slow.length){
+      h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(245,233,224,0.08)">';
+      h+='<div style="font-weight:600;color:#ffb74d">🐢 Slow topics (avg time per question)</div>';
+      slow.slice(0,3).forEach(function(t){
+        h+='<div style="font-size:12px;color:rgba(245,233,224,0.6);margin-top:4px">'+escapeHtml(t.topic)+' — '+t.avgT+'s/question. Practice more to build speed.</div>';
+      });
+      h+='</div>';
+    }
+    if(strong.length){
+      h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(245,233,224,0.08)">';
+      h+='<div style="font-weight:600;color:#66bb6a">💪 Your strongest topics</div>';
+      h+='<div style="font-size:12px;color:rgba(245,233,224,0.6);margin-top:4px">'+strong.slice(0,3).map(function(t){return escapeHtml(t.topic)+' ('+t.acc+'%)';}).join(' · ')+'</div>';
+      h+='</div>';
+    }
+    h+='</div>';
   }
   
   // Question review
@@ -1357,10 +1399,19 @@ function startBattlePoll(){
   },POLL_MS);
 }
 
+var WAIT_POLL_MS=1500;
 function startWaitingPoll(){
   stopTimer('poll');
-  S.timers.poll=setInterval(waitingPoll,POLL_MS);
+  stopTimer('waitingPoll');
+  S.timers.waitingPoll=setInterval(waitingPoll,WAIT_POLL_MS);
   waitingPoll();
+  if(!S._waitVisHandler){
+    S._waitVisHandler=function(){
+      if(document.visibilityState==='visible'&&S.screen==='waiting')waitingPoll();
+    };
+    document.addEventListener('visibilitychange',S._waitVisHandler);
+    window.addEventListener('focus',S._waitVisHandler);
+  }
 }
 
 function stopTimer(name){
@@ -1463,6 +1514,8 @@ window.Arena={
   showLeaderboard:showLeaderboard,
   acceptInvite:acceptInvite,
   rejectInvite:rejectInvite,
+  forfeitWait:forfeitWait,
+  checkNowWait:checkNowWait,
   close:closeOverlay
 };
 
