@@ -6,7 +6,7 @@
 // ══════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════
-var API='https://solas-e60b5349.base44.app/functions/arenaApi';
+var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
 var POLL_MS=2000, PING_MS=8000, INV_MS=3000;
 
 var MODES=[
@@ -394,21 +394,12 @@ async function startSearch(){
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
   if(!m)return;
   
-  // Generate seed and create match
-  S.seed=genSeed();
-  var team=getTeamForSlot(S.cfg.mode,0);
-  var players=[{userId:S.user.id,userName:S.user.name,team:team,status:'lobby',ready:false,score:0,correct:0,wrong:0,skipped:0,answers:[],timing:[],completedAt:''}];
-  
-  var res=await api('createMatch',{
-    mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff,
-    questionIds:'seed:'+S.seed,players:players
-  });
-  
-  if(!res.ok){toast('Failed to create arena: '+(res.error||''));return;}
-  S.matchId=res.matchId;
-  
-  // Update presence
-  await api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam,arenaRating:0,wins:0,losses:0,draws:0,battles:0,status:'in_arena'});
+  S.screen='search';
+  S.searchStartTime=Date.now();
+  S.searchTimedOut=false;
+  S.matchId=null;
+  S.searchResults=[];
+  S.autoMatching=true;
   
   renderSearch();
   startPresence();
@@ -418,24 +409,30 @@ async function startSearch(){
 
 function renderSearch(){
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
-  var needed=m.players-1;
+  var elapsed=S.searchStartTime?Math.floor((Date.now()-S.searchStartTime)/1000):0;
   var h='<div class="arena-title">🔍 Find Players</div>';
-  h+='<div class="arena-sub">'+m.label+' · Need '+needed+' more player'+(needed>1?'s':'')+'</div>';
+  h+='<div class="arena-sub">'+m.label+' · Auto-matching...</div>';
   
   h+='<div class="arena-searching">';
   h+='<div class="arena-spinner"></div>';
-  h+='<div>Searching for online players...</div>';
+  h+='<div>Auto-matching with compatible players...</div>';
+  h+='<div style="font-size:12px;color:var(--muted);margin-top:4px">Searching for '+elapsed+'s</div>';
   h+='</div>';
   
   h+='<div class="arena-search-config">';
   h+='<span>📋 '+m.label+'</span><span>📝 '+S.cfg.qCount+'Q</span><span>📚 '+S.cfg.exam+'</span><span>📁 '+S.cfg.cat+'</span><span>📊 '+S.cfg.diff+'</span>';
   h+='</div>';
   
-  if(S.searchResults.length===0){
-    h+='<div class="arena-empty">No online players found yet.<br>Keep waiting — players will appear when they come online.</div>';
+  if(S.searchTimedOut){
+    h+='<div class="arena-empty">No compatible player found yet.<br>Try adjusting your settings or invite a friend manually below.</div>';
+  }else if(S.searchResults.length===0){
+    h+='<div class="arena-empty">Searching for compatible players...<br>Match starts automatically when someone joins!</div>';
   }else{
     h+='<div class="arena-player-list">';
+    h+='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Other online players (invite manually):</div>';
     S.searchResults.forEach(function(p){
+      var cfg=p.searchConfig||{};
+      var compat=cfg.mode===S.cfg.mode&&cfg.questionCount===S.cfg.qCount&&cfg.exam===S.cfg.exam;
       h+='<div class="arena-player-card">';
       h+='<div class="arena-player-info">';
       h+='<div class="arena-player-avatar">'+(p.userName[0]||'?').toUpperCase()+'</div>';
@@ -443,7 +440,7 @@ function renderSearch(){
       h+='<div class="arena-player-meta">'+(p.exam||'General')+' · '+p.battles+' battles · '+p.winRate+'% WR</div></div>';
       h+='</div>';
       h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+p.arenaRating+'</div>';
-      h+='<button class="arena-invite-btn" style="margin-top:6px" onclick="Arena.invitePlayer(\''+p.userId+'\',\''+escapeHtml(p.userName).replace(/'/g,'')+'\')">Invite</button></div>';
+      h+='<button class="arena-invite-btn" style="margin-top:6px" data-userid="'+p.userId+'" data-username="'+escapeHtml(p.userName)+'" onclick="Arena.invitePlayer(this.dataset.userid,this.dataset.username)">Invite</button></div>';
       h+='</div>';
     });
     h+='</div>';
@@ -455,30 +452,36 @@ function renderSearch(){
 }
 
 async function searchPoll(){
-  if(!S.matchId||S.screen!=='search')return;
-  var res=await api('search',{userId:S.user.id});
-  if(res.ok&&res.players){
-    // Filter out players already in the match
-    var matchRes=await api('getMatch',{matchId:S.matchId});
-    var existingIds=[];
-    if(matchRes.ok&&matchRes.match){
-      existingIds=matchRes.match.players.map(function(p){return p.userId;});
-    }
-    S.searchResults=res.players.filter(function(p){return existingIds.indexOf(p.userId)===-1;});
-    renderSearch();
-    
-    // Check if enough players have joined
-    if(matchRes.ok&&matchRes.match){
-      var joined=matchRes.match.players.filter(function(p){return p.status!=='abandoned';}).length;
-      var m=MODES.find(function(x){return x.id===S.cfg.mode;});
-      if(joined>=m.players){
-        // Enough players! Show lobby
-        S.match=matchRes.match;
-        showLobby();
-        return;
-      }
-    }
+  if(S.screen!=='search'||!S.autoMatching)return;
+  
+  // Call autoMatch to find compatible players
+  var res=await api('autoMatch',{
+    userId:S.user.id,
+    userName:S.user.name,
+    config:{mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff}
+  });
+  
+  if(res.ok&&res.matched&&res.matchId){
+    S.matchId=res.matchId;
+    S.match=res.match;
+    S.autoMatching=false;
+    S.screen='lobby';
+    showLobby();
+    return;
   }
+  
+  // Also fetch online players for manual invite display
+  var searchRes=await api('search',{userId:S.user.id});
+  if(searchRes.ok&&searchRes.players){
+    S.searchResults=searchRes.players;
+  }
+  
+  // Check timeout (2 minutes)
+  if(S.searchStartTime&&Date.now()-S.searchStartTime>120000){
+    S.searchTimedOut=true;
+  }
+  
+  renderSearch();
 }
 
 async function invitePlayer(toUserId,toUserName){
@@ -498,6 +501,10 @@ function cancelSearch(){
   if(S.matchId){
     api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
     S.matchId=null;
+  }
+  S.autoMatching=false;
+  if(S.user){
+    api('ping',{userId:S.user.id,userName:S.user.name,status:'online',exam:S.cfg.exam||'All'});
   }
   stopAllTimers();
   showHome();
@@ -1176,14 +1183,26 @@ async function showLeaderboard(){
 // ══════════════════════════════════════════════
 async function inviteCheckPoll(){
   if(!S.user)return;
-  if(S.screen==='battle'||S.screen==='waiting')return; // Don't show invites during battle
+  if(S.screen==='battle'||S.screen==='waiting')return;
   
   var res=await api('checkInvites',{userId:S.user.id});
   if(res.ok&&res.invites&&res.invites.length>0){
-    // Show the first pending invite
-    if(!S.pendingInvite||S.pendingInvite.id!==res.invites[0].id){
-      S.pendingInvite=res.invites[0];
-      showInviteModal(res.invites[0]);
+    var inv=res.invites[0];
+    // Auto-accept if we're in search mode (auto-matching)
+    if(S.screen==='search'&&S.autoMatching){
+      S.autoMatching=false;
+      await api('respondInvite',{inviteId:inv.id,response:'accepted'});
+      // The respondInvite creates/joins the match and sets our presence to matched
+      // Next searchPoll or autoMatch will detect the matchId
+      // For immediate response, check if we got a matchId
+      // Actually, respondInvite already set our presence, so let's re-enter search to pick it up
+      S.autoMatching=true;
+      return;
+    }
+    // Show modal for manual accept/reject
+    if(!S.pendingInvite||S.pendingInvite.id!==inv.id){
+      S.pendingInvite=inv;
+      showInviteModal(inv);
     }
   }
 }
@@ -1271,11 +1290,15 @@ async function rejectInvite(inviteId){
 function doPing(){
   if(S.user){
     var stats=getArenaStats();
+    var status='online';
+    var searchConfig=null;
+    if(S.screen==='search'){status='searching';searchConfig={mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff};}
+    else if(S.screen==='battle'||S.screen==='lobby'||S.screen==='waiting'){status='in_arena';}
     api('ping',{
       userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',
       arenaRating:stats.rating||1000,wins:stats.wins||0,losses:stats.losses||0,
       draws:stats.draws||0,battles:stats.battles||0,
-      status:S.screen==='battle'||S.screen==='lobby'||S.screen==='waiting'?'in_arena':'online'
+      status:status,searchConfig:searchConfig
     });
   }
 }
