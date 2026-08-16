@@ -852,8 +852,10 @@ async function finishBattle(){
   });
   
   if(res.ok&&res.allCompleted){
-    // Both players finished — show results
-    showResults(res.winner);
+    // Both players finished — show results using the FRESH match data we just got
+    // back from completeMatch (avoids read-after-write replication lag from a
+    // separate getMatch call right after this write)
+    showResults(res.winner,res.match);
   }else if(res.ok){
     // Waiting for opponent
     showWaitingForOpponent();
@@ -913,19 +915,39 @@ async function leaveBattle(){
 // ══════════════════════════════════════════════
 // SCREEN: RESULTS
 // ══════════════════════════════════════════════
-async function showResults(winner){
+async function showResults(winner,freshMatch){
   stopAllTimers();
   S.screen='results';
   
-  // Get final match state
-  var res=await api('getMatch',{matchId:S.matchId});
-  if(res.ok)S.match=res.match;
+  // Use the match we were just handed (fresh from completeMatch's own write) if
+  // available — avoids re-fetching via getMatch, which can race a DB replication
+  // lag right after our own write and return a stale/empty snapshot.
+  if(freshMatch){
+    S.match=freshMatch;
+  }else{
+    var res=await api('getMatch',{matchId:S.matchId});
+    if(res.ok)S.match=res.match;
+  }
   
   var m=MODES.find(function(x){return x.id===S.match.mode;});
-  var players=S.match.players;
-  var me=players.find(function(p){return p.userId===S.user.id;});
+  var players=S.match.players.slice();
+  var meIdx=players.findIndex(function(p){return p.userId===S.user.id;});
+  var me=meIdx>-1?players[meIdx]:null;
   var total=S.battle.questions.length||S.match.questionCount;
   var totalTime=S.battle.totalTime||0;
+  
+  // DEFENSIVE SAFETY NET: if the server's copy of MY row looks empty/stale
+  // (e.g. 0 correct+wrong) while we clearly played real questions locally,
+  // trust the local battle counters instead — they're always accurate for
+  // the current user regardless of any backend race or stale cache elsewhere.
+  if(me&&(me.correct||0)+(me.wrong||0)===0&&(S.battle.correct+S.battle.wrong)>0){
+    var localScore=total?Math.round((S.battle.correct/total)*100):0;
+    me=Object.assign({},me,{
+      correct:S.battle.correct,wrong:S.battle.wrong,skipped:S.battle.skipped,
+      score:localScore,totalTime:S.battle.totalTime||totalTime,
+    });
+    players[meIdx]=me;
+  }
   
   var isWin=winner.type==='user'&&winner.userId===S.user.id;
   var isDraw=winner.type==='draw';
