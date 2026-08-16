@@ -375,6 +375,54 @@ var CSS=`
 .arena-tournament-sub{font-size:12px;color:rgba(245,233,224,0.35)}
 .arena-coming-badge{display:inline-block;background:rgba(232,200,122,0.1);color:rgba(232,200,122,0.6);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;margin-top:8px}
 
+/* ══ DIFFICULTY ANALYTICS ══ */
+.arena-diff-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.arena-diff-row:last-child{border:none}
+.arena-diff-bar{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin:0 12px;max-width:120px}
+.arena-diff-bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.arena-diff-bar-fill.easy{background:#66bb6a}
+.arena-diff-bar-fill.medium{background:#ffa726}
+.arena-diff-bar-fill.hard{background:#f44336}
+.arena-diff-label{font-size:13px;color:rgba(245,233,224,0.7);min-width:50px}
+.arena-diff-val{font-size:14px;font-weight:600;color:#e8c87a;min-width:40px;text-align:right}
+
+/* ══ IMPROVEMENT PLAN ══ */
+.arena-improvement-plan{background:rgba(232,200,122,0.06);border:1px solid rgba(232,200,122,0.15);border-radius:12px;padding:16px;margin:12px 0}
+.arena-improvement-title{font-size:14px;font-weight:700;color:#e8c87a;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.arena-improvement-text{font-size:13px;color:rgba(245,233,224,0.65);line-height:1.6;margin-bottom:10px}
+.arena-improvement-rec{display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:8px}
+.arena-improvement-rec-label{font-size:12px;color:rgba(245,233,224,0.5)}
+.arena-improvement-rec-val{font-size:13px;font-weight:600;color:#e8c87a}
+
+/* ══ QUESTION REVIEW ACTIONS ══ */
+.arena-qreview-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.arena-qreview-action-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4px 10px;font-size:11px;color:rgba(245,233,224,0.6);cursor:pointer;transition:all .15s}
+.arena-qreview-action-btn:active{transform:scale(0.95);background:rgba(232,200,122,0.1)}
+
+/* ══ ARENA PROFILE ══ */
+.arena-profile-section{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:14px}
+.arena-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.arena-profile-stat{display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,0.03);border-radius:10px}
+.arena-profile-stat-icon{font-size:18px}
+.arena-profile-stat-val{font-size:18px;font-weight:700;color:#f5e9e0}
+.arena-profile-stat-lbl{font-size:10px;color:rgba(245,233,224,0.45);text-transform:uppercase;letter-spacing:0.5px}
+
+/* ══ WEEKLY CHALLENGE ══ */
+.arena-weekly-card{background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.06));border:1px solid rgba(200,155,60,0.15);border-radius:14px;padding:16px;margin-bottom:14px}
+.arena-weekly-title{font-size:15px;font-weight:700;color:#e8c87a;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.arena-weekly-desc{font-size:12px;color:rgba(245,233,224,0.5);margin-bottom:10px}
+.arena-weekly-progress{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.arena-weekly-progress-bar{height:100%;background:linear-gradient(90deg,#c89b3c,#e8c87a);border-radius:4px;transition:width .4s}
+.arena-weekly-meta{font-size:11px;color:rgba(245,233,224,0.4);display:flex;justify-content:space-between}
+
+/* ══ HISTORY DETAIL ══ */
+.arena-hd-section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;margin-bottom:12px}
+.arena-hd-section-title{font-size:13px;font-weight:700;color:#e8c87a;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}
+.arena-hd-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
+.arena-hd-row:last-child{border:none}
+.arena-hd-row .lbl{color:rgba(245,233,224,0.5)}
+.arena-hd-row .val{color:#f5e9e0;font-weight:600}
+
 /* ══ RESPONSIVE ══ */
 @media(max-width:380px){
   .arena-mode-grid{grid-template-columns:1fr}
@@ -557,6 +605,31 @@ async function showHome(){
     }
     h+='</div>';
   }
+
+  h+='<div class="arena-profile-section">';
+  h+='<div class="arena-field-lbl" style="margin-bottom:12px">Arena Profile</div>';
+  h+='<div class="arena-profile-grid">';
+  h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🏆</div><div><div class="arena-profile-stat-val">'+wins+'</div><div class="arena-profile-stat-lbl">Wins</div></div></div>';
+  h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">❌</div><div><div class="arena-profile-stat-val">'+losses+'</div><div class="arena-profile-stat-lbl">Losses</div></div></div>';
+  h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">⚔️</div><div><div class="arena-profile-stat-val">'+battles+'</div><div class="arena-profile-stat-lbl">Matches</div></div></div>';
+  if(battles>0){
+    var acc=battles>0?Math.round((wins/battles)*100):0;
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🎯</div><div><div class="arena-profile-stat-val">'+acc+'%</div><div class="arena-profile-stat-lbl">Accuracy</div></div></div>';
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🔥</div><div><div class="arena-profile-stat-val">'+streaks.best+'</div><div class="arena-profile-stat-lbl">Best Streak</div></div></div>';
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🏅</div><div><div class="arena-profile-stat-val">'+rating+'</div><div class="arena-profile-stat-lbl">Arena Rating</div></div></div>';
+  }
+  h+='</div>';
+  h+='</div>';
+
+  // Weekly Arena Challenge (placeholder — backed by real data when available)
+  h+='<div class="arena-weekly-card">';
+  h+='<div class="arena-weekly-title">🔥 Weekly Arena Challenge</div>';
+  h+='<div class="arena-weekly-desc">Play 10 Arena matches this week</div>';
+  var weeklyMatches=Math.min(battles,10);
+  var weeklyPct=Math.round(weeklyMatches/10*100);
+  h+='<div class="arena-weekly-progress"><div class="arena-weekly-progress-bar" style="width:'+weeklyPct+'%"></div></div>';
+  h+='<div class="arena-weekly-meta"><span>'+weeklyMatches+'/10 matches</span><span>'+(weeklyPct>=100?'✅ Completed':'In Progress')+'</span></div>';
+  h+='</div>';
 
   h+='<div class="arena-field-lbl" style="margin-bottom:10px">Select Mode</div>';
   h+='<div class="arena-mode-grid">';
@@ -1249,6 +1322,7 @@ async function showResults(winner,freshMatch){
   var isWin=winner.type==='user'&&winner.userId===S.user.id;
   var isDraw=winner.type==='draw';
   var isTeamWin=winner.type==='team'&&me&&me.team===winner.team;
+  var opp=players.find(function(p){return p.userId!==S.user.id;});
   
   // ══ LAYER 1: RESULT HERO ══
   var h='<div class="arena-result-hero">';
@@ -1285,22 +1359,32 @@ async function showResults(winner,freshMatch){
     var scoreA=teamA.reduce(function(s,p){return s+(p.score||0);},0);
     var scoreB=teamB.reduce(function(s,p){return s+(p.score||0);},0);
     h+='<div class="arena-result-scores">';
-    h+='<div class="arena-result-score'+(winner.team==='A'?' winner':'')+'"><div class="arena-result-score-name">Team A</div><div class="arena-result-score-val">'+Math.round(scoreA/(teamA.length||1))+'</div><div class="arena-result-score-lbl">Avg Score</div></div>';
-    h+='<div class="arena-result-score'+(winner.team==='B'?' winner':'')+'"><div class="arena-result-score-name">Team B</div><div class="arena-result-score-val">'+Math.round(scoreB/(teamB.length||1))+'</div><div class="arena-result-score-lbl">Avg Score</div></div>';
+    h+='<div class="arena-result-score'+(winner.team==='A'?' winner':'')+'"><div class="arena-result-score-name">Team A</div><div class="arena-result-score-val">'+scoreA+'</div><div class="arena-result-score-lbl">Total Score</div></div>';
+    h+='<div class="arena-result-score'+(winner.team==='B'?' winner':'')+'"><div class="arena-result-score-name">Team B</div><div class="arena-result-score-val">'+scoreB+'</div><div class="arena-result-score-lbl">Total Score</div></div>';
     h+='</div>';
-    // Team member breakdown
+    // Team member breakdown with individual scores
     h+='<div class="arena-result-section"><div class="arena-result-section-title">👥 Team Breakdown</div>';
-    h+='<div style="margin-bottom:8px;font-size:12px;color:rgba(245,233,224,0.5);font-weight:600">Team A</div>';
+    h+='<div style="margin-bottom:8px;font-size:12px;color:rgba(245,233,224,0.5);font-weight:600">Team A ('+Math.round(scoreA/(teamA.length||1))+' avg)</div>';
     teamA.forEach(function(p){
-      h+='<div class="arena-result-row"><span>'+escapeHtml(p.userName)+(p.userId===S.user.id?' (You)':'')+'</span><span>'+(p.score||0)+' pts · '+(p.correct||0)+'C</span></div>';
+      h+='<div class="arena-result-row"><span>'+escapeHtml(p.userName)+(p.userId===S.user.id?' (You)':'')+'</span><span>'+(p.score||0)+' pts · '+(p.correct||0)+'C · '+fmtTime(p.totalTime||0)+'</span></div>';
     });
-    h+='<div style="margin:8px 0;font-size:12px;color:rgba(245,233,224,0.5);font-weight:600">Team B</div>';
+    h+='<div style="margin:8px 0;font-size:12px;color:rgba(245,233,224,0.5);font-weight:600">Team B ('+Math.round(scoreB/(teamB.length||1))+' avg)</div>';
     teamB.forEach(function(p){
-      h+='<div class="arena-result-row"><span>'+escapeHtml(p.userName)+'</span><span>'+(p.score||0)+' pts · '+(p.correct||0)+'C</span></div>';
+      h+='<div class="arena-result-row"><span>'+escapeHtml(p.userName)+'</span><span>'+(p.score||0)+' pts · '+(p.correct||0)+'C · '+fmtTime(p.totalTime||0)+'</span></div>';
     });
+    // Team stats summary
+    var teamAAcc=teamA.reduce(function(s,p){return s+(p.correct||0);},0);
+    var teamACount=teamA.reduce(function(s,p){return s+((p.correct||0)+(p.wrong||0));},0);
+    var teamBAcc=teamB.reduce(function(s,p){return s+(p.correct||0);},0);
+    var teamBCount=teamB.reduce(function(s,p){return s+((p.correct||0)+(p.wrong||0));},0);
+    h+='<div style="margin-top:10px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:12px;color:rgba(245,233,224,0.6)">';
+    h+='<div>Team A Accuracy: '+(teamACount?Math.round(teamAAcc/teamACount*100):0)+'% · Team B Accuracy: '+(teamBCount?Math.round(teamBAcc/teamBCount*100):0)+'%</div>';
+    // Best player
+    var allPlayers=players.slice().sort(function(a,b){return (b.score||0)-(a.score||0);});
+    if(allPlayers[0])h+='<div style="margin-top:4px">Best Player: '+escapeHtml(allPlayers[0].userName)+' ('+(allPlayers[0].score||0)+' pts)</div>';
+    h+='</div>';
     h+='</div>';
   }else{
-    var opp=players.find(function(p){return p.userId!==S.user.id;});
     h+='<div class="arena-result-scores">';
     h+='<div class="arena-result-score'+(isWin?' winner':'')+'"><div class="arena-result-score-name">You</div><div class="arena-result-score-val">'+(me?me.score||0:0)+'</div><div class="arena-result-score-lbl">Score</div></div>';
     if(opp)h+='<div class="arena-result-score'+(!isWin&&!isDraw?' winner':'')+'"><div class="arena-result-score-name">'+escapeHtml(opp.userName)+'</div><div class="arena-result-score-val">'+(opp.score||0)+'</div><div class="arena-result-score-lbl">Score</div></div>';
@@ -1314,8 +1398,7 @@ async function showResults(winner,freshMatch){
   var myAcc=total?Math.round((myCorrect/total)*100):0;
   
   h+='<div class="arena-result-section"><div class="arena-result-section-title">📊 Quick Stats</div>';
-  // Comparison table for 1v1
-  if(opp&&!m.type==='team'&&winner.type!=='ffa'){
+  if(opp&&m&&m.type==='duel'&&winner.type!=='ffa'){
     h+='<table class="arena-compare-table"><thead><tr><th></th><th>You</th><th>'+escapeHtml(opp.userName)+'</th></tr></thead><tbody>';
     h+='<tr><td>Score</td><td class="me">'+(me?me.score||0:0)+'</td><td>'+(opp.score||0)+'</td></tr>';
     h+='<tr><td>Correct</td><td class="me">'+myCorrect+'</td><td>'+(opp.correct||0)+'</td></tr>';
@@ -1385,19 +1468,20 @@ async function showResults(winner,freshMatch){
     }
   }
   
-  // ══ LAYER 5: TOPIC ANALYSIS ══
+  // ══ LAYER 5: TOPIC ANALYSIS + STRONG/WEAK AREAS ══
   var topicStats=S.battle.topicStats;
   var topicKeys=Object.keys(topicStats);
+  var sortedTopics=[];
+  var weakestTopic=null;
   if(topicKeys.length>0){
-    // Find strongest and weakest
-    var sortedTopics=topicKeys.map(function(t){
+    sortedTopics=topicKeys.map(function(t){
       var s=topicStats[t];
       var acc=s.total>0?Math.round(s.correct/s.total*100):0;
       return{topic:t,correct:s.correct,total:s.total,acc:acc,time:s.time,avgTime:s.total>0?Math.round(s.time/s.total*10)/10:0};
     }).sort(function(a,b){return b.acc-a.acc;});
     
     var strongest=sortedTopics[0];
-    var weakest=sortedTopics[sortedTopics.length-1];
+    weakestTopic=sortedTopics[sortedTopics.length-1];
     
     // Strong area
     if(strongest&&strongest.total>0&&strongest.acc>=50){
@@ -1407,7 +1491,7 @@ async function showResults(winner,freshMatch){
       h+='</div>';
     }
     
-    // Full topic breakdown
+    // Full topic analysis
     h+='<div class="arena-result-section"><div class="arena-result-section-title">📊 Topic Analysis</div>';
     sortedTopics.forEach(function(t){
       var barClass=t.acc>=75?'high':t.acc>=50?'mid':'low';
@@ -1420,16 +1504,48 @@ async function showResults(winner,freshMatch){
     h+='</div>';
     
     // Weak area detection
-    if(weakest&&weakest.total>=2&&weakest.acc<50){
+    if(weakestTopic&&weakestTopic.total>=2&&weakestTopic.acc<50){
       var avgAcc=sortedTopics.reduce(function(s,t){return s+t.acc;},0)/sortedTopics.length;
-      var issueText=weakest.acc<avgAcc?'Accuracy below your Arena average.':'Needs improvement.';
+      var issueText=weakestTopic.acc<avgAcc?'Accuracy below your Arena average.':'Needs improvement.';
       h+='<div class="arena-weak-area">';
       h+='<div class="arena-weak-area-title">🔴 WEAK AREA</div>';
-      h+='<div class="arena-weak-area-topic">'+escapeHtml(weakest.topic)+'</div>';
-      h+='<div class="arena-weak-area-stat">'+weakest.correct+' / '+weakest.total+' correct</div>';
-      h+='<div class="arena-weak-area-stat">'+weakest.acc+'% accuracy</div>';
+      h+='<div class="arena-weak-area-topic">'+escapeHtml(weakestTopic.topic)+'</div>';
+      h+='<div class="arena-weak-area-stat">'+weakestTopic.correct+' / '+weakestTopic.total+' correct</div>';
+      h+='<div class="arena-weak-area-stat">'+weakestTopic.acc+'% accuracy</div>';
       h+='<div class="arena-weak-area-stat" style="margin-top:6px">Issue: '+issueText+'</div>';
-      h+='<div class="arena-weak-area-cta"><button class="arena-btn gold" onclick="Arena.practiceWeakTopic(\''+weakest.topic.replace(/'/g,"\\'")+'\')">📚 Practice '+escapeHtml(weakest.topic)+' — 20 Questions</button></div>';
+      h+='<div class="arena-weak-area-cta"><button class="arena-btn gold" onclick="Arena.practiceWeakTopic(\''+weakestTopic.topic.replace(/'/g,"\\'")+'\')">📚 Practice '+escapeHtml(weakestTopic.topic)+' — 20 Questions</button></div>';
+      h+='</div>';
+    }
+  }
+  
+  // ══ LAYER 5b: DIFFICULTY ANALYTICS ══
+  if(S.battle.questions.length>=5){
+    var diffStats={easy:{correct:0,total:0},medium:{correct:0,total:0},hard:{correct:0,total:0}};
+    S.battle.questions.forEach(function(q,i){
+      var d=(q.difficulty||'').toLowerCase();
+      if(d==='easy'||d==='medium'||d==='hard'){
+        diffStats[d].total++;
+        if(S.battle.answers[i]&&S.battle.answers[i].isCorrect)diffStats[d].correct++;
+      }
+    });
+    var diffHasData=diffStats.easy.total>0||diffStats.medium.total>0||diffStats.hard.total>0;
+    if(diffHasData){
+      h+='<div class="arena-result-section"><div class="arena-result-section-title">📊 Difficulty Analytics</div>';
+      ['easy','medium','hard'].forEach(function(d){
+        if(diffStats[d].total>0){
+          var acc=Math.round(diffStats[d].correct/diffStats[d].total*100);
+          h+='<div class="arena-diff-row">';
+          h+='<span class="arena-diff-label">'+d.charAt(0).toUpperCase()+d.slice(1)+'</span>';
+          h+='<div class="arena-diff-bar"><div class="arena-diff-bar-fill '+d+'" style="width:'+acc+'%"></div></div>';
+          h+='<span class="arena-diff-val">'+acc+'%</span>';
+          h+='</div>';
+        }
+      });
+      // Insight
+      if(diffStats.hard.total>=2){
+        var hardAcc=Math.round(diffStats.hard.correct/diffStats.hard.total*100);
+        if(hardAcc<60)h+='<div style="margin-top:8px;padding:8px;background:rgba(244,67,54,0.06);border-radius:6px;font-size:12px;color:#f44336">🎯 Hard-question accuracy needs improvement.</div>';
+      }
       h+='</div>';
     }
   }
@@ -1437,10 +1553,10 @@ async function showResults(winner,freshMatch){
   // ══ LAYER 6: PERFORMANCE SCORE ══
   if(total>0){
     var perfScore=Math.round(
-      (myAcc*0.4)+  // accuracy 40%
-      (Math.min(100,Math.round(myCorrect*100/Math.max(myCorrect+myWrong,1)))*0.3)+  // correctness 30%
-      (Math.min(100,Math.max(0,100-Math.round(totalTime/total)))*0.2)+  // speed 20%
-      (mySkipped===0?10:Math.max(0,10-mySkipped*2))*0.1  // consistency 10%
+      (myAcc*0.4)+
+      (Math.min(100,Math.round(myCorrect*100/Math.max(myCorrect+myWrong,1)))*0.3)+
+      (Math.min(100,Math.max(0,100-Math.round(totalTime/total)))*0.2)+
+      (mySkipped===0?10:Math.max(0,10-mySkipped*2))*0.1
     );
     var perfGrade=perfScore>=80?'Excellent':perfScore>=60?'Good':perfScore>=40?'Average':'Needs Work';
     h+='<div class="arena-result-section"><div class="arena-result-section-title">⭐ Arena Performance</div>';
@@ -1465,7 +1581,6 @@ async function showResults(winner,freshMatch){
       h+='<div class="arena-rating-after">'+newRating+'</div>';
       h+='<div class="arena-rating-delta '+(delta>0?'pos':'neg')+'">'+(delta>0?'+':'')+delta+'</div>';
       h+='</div>';
-      // Update stored rating
       try{
         var updated=Object.assign({},oldStats,{rating:newRating});
         localStorage.setItem('arena_stats',JSON.stringify(updated));
@@ -1474,12 +1589,107 @@ async function showResults(winner,freshMatch){
     }
   }
   
-  // ══ LAYER 8: QUESTION REVIEW ══
+  // ══ LAYER 7b: IMPROVEMENT TREND CHART ══
+  if(S.user){
+    try{
+      var trendRes=await api('getHistory',{userId:S.user.id});
+      var trendHistory=(trendRes.ok&&trendRes.history)?trendRes.history:[];
+      var recentBattles=trendHistory.slice().reverse().slice(-5);
+      if(recentBattles.length>=2){
+        var accData=recentBattles.map(function(b){
+          var ps=b.playerResults||b.players||[];
+          var myR=ps.find(function(p){return p.userId===S.user.id;});
+          var qCount=b.questionCount||1;
+          return myR?Math.round((myR.correct||0)/qCount*100):0;
+        });
+        var firstAcc=accData[0];
+        var lastAcc=accData[accData.length-1];
+        var delta=lastAcc-firstAcc;
+        
+        h+='<div class="arena-result-section"><div class="arena-result-section-title">📈 Improvement Trend</div>';
+        h+='<div class="arena-trend-chart">';
+        accData.forEach(function(a,i){
+          var barH=Math.max(4,a*0.5);
+          h+='<div style="flex:1;text-align:center">';
+          h+='<div style="height:50px;display:flex;align-items:flex-end;justify-content:center">';
+          h+='<div class="arena-trend-bar" style="height:'+barH+'px;width:100%"></div>';
+          h+='</div>';
+          h+='<div class="arena-trend-label">'+a+'%</div>';
+          h+='</div>';
+        });
+        h+='</div>';
+        if(delta!==0){
+          var deltaClass=delta>0?'up':'down';
+          var deltaSign=delta>0?'+':'';
+          h+='<div class="arena-trend-delta '+deltaClass+'">'+(delta>0?'📈':'📉')+' '+deltaSign+delta+' percentage points</div>';
+        }
+        h+='</div>';
+      }
+    }catch(e){}
+  }
+  
+  // ══ LAYER 8: IMPROVEMENT PLAN (data-driven recommendation) ══
+  if(weakestTopic&&weakestTopic.total>=2){
+    h+='<div class="arena-improvement-plan">';
+    h+='<div class="arena-improvement-title">🎯 Your Next Step</div>';
+    // Generate dynamic recommendation text
+    var recText='Your weakest area in this battle was '+weakestTopic.topic+' at '+weakestTopic.acc+'%.';
+    // Check if user spent more time on wrong answers in this topic
+    var wrongInTopic=S.battle.answers.filter(function(a,i){
+      var q=S.battle.questions[i];
+      return q&&(q.topic||q.category)===weakestTopic.topic&&a&&!a.isCorrect;
+    });
+    var correctInTopic=S.battle.answers.filter(function(a,i){
+      var q=S.battle.questions[i];
+      return q&&(q.topic||q.category)===weakestTopic.topic&&a&&a.isCorrect;
+    });
+    if(wrongInTopic.length>0&&correctInTopic.length>0){
+      var wrongAvg=wrongInTopic.reduce(function(s,a){return s+a.timeSpent;},0)/wrongInTopic.length;
+      var correctAvg=correctInTopic.reduce(function(s,a){return s+a.timeSpent;},0)/correctInTopic.length;
+      if(wrongAvg>correctAvg){
+        recText+=' You also spent more time on incorrect '+weakestTopic.topic+' answers.';
+      }
+    }
+    h+='<div class="arena-improvement-text">'+recText+'</div>';
+    h+='<div class="arena-improvement-rec"><span class="arena-improvement-rec-label">Topic:</span><span class="arena-improvement-rec-val">'+escapeHtml(weakestTopic.topic)+'</span></div>';
+    h+='<div class="arena-improvement-rec"><span class="arena-improvement-rec-label">Questions:</span><span class="arena-improvement-rec-val">25 MCQs</span></div>';
+    h+='<div class="arena-improvement-rec"><span class="arena-improvement-rec-label">Difficulty:</span><span class="arena-improvement-rec-val">Medium</span></div>';
+    h+='<button class="arena-btn gold" style="margin-top:10px" onclick="Arena.practiceWeakTopic(\''+weakestTopic.topic.replace(/'/g,"\\'")+'\')">Practice Now</button>';
+    h+='</div>';
+  }
+  
+  // ══ LAYER 9: HEAD-TO-HEAD ══
+  if(opp&&S.user){
+    try{
+      var histRes=await api('getHistory',{userId:S.user.id});
+      var history=(histRes.ok&&histRes.history)?histRes.history:[];
+      var h2hOpps=history.filter(function(b){
+        var ps=b.playerResults||b.players||[];
+        return ps.some(function(p){return p.userId===opp.userId;});
+      });
+      if(h2hOpps.length>=2){
+        var myH2HWins=0,oppH2HWins=0;
+        h2hOpps.forEach(function(b){
+          var w=b.winner||{};
+          if(w.type==='user'&&w.userId===S.user.id)myH2HWins++;
+          else if(w.type==='user'&&w.userId===opp.userId)oppH2HWins++;
+        });
+        h+='<div class="arena-result-section"><div class="arena-result-section-title">🎯 Head-to-Head</div>';
+        h+='<div class="arena-h2h-row"><span class="arena-h2h-name">You</span><span class="arena-h2h-val">'+myH2HWins+' Wins</span></div>';
+        h+='<div class="arena-h2h-row"><span class="arena-h2h-name">'+escapeHtml(opp.userName)+'</span><span class="arena-h2h-val">'+oppH2HWins+' Wins</span></div>';
+        h+='<div class="arena-h2h-row"><span class="arena-h2h-name">Total matches</span><span class="arena-h2h-val">'+h2hOpps.length+'</span></div>';
+        h+='</div>';
+      }
+    }catch(e){}
+  }
+  
+  // ══ LAYER 10: QUESTION REVIEW (with actions) ══
   h+='<div class="arena-result-section"><div class="arena-result-section-title">📝 Question Review</div>';
   S.battle.questions.slice(0,20).forEach(function(q,i){
     var a=S.battle.answers[i];
     var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
     var correctLabel=String.fromCharCode(65+correctIdx);
+    var qTopic=escapeHtml(q.topic||q.category||'').replace(/'/g,"\\'");
     h+='<div class="arena-qreview">';
     h+='<div class="arena-qreview-q">Q'+(i+1)+'. '+escapeHtml(q.question_text).slice(0,120)+(q.question_text.length>120?'...':'')+'</div>';
     if(a===null||a===undefined){
@@ -1491,6 +1701,14 @@ async function showResults(winner,freshMatch){
     if(q.explanation){
       h+='<div class="arena-qreview-expl">💡 '+escapeHtml(q.explanation).slice(0,200)+(q.explanation.length>200?'...':'')+'</div>';
     }
+    // Question review actions
+    h+='<div class="arena-qreview-actions">';
+    h+='<button class="arena-qreview-action-btn" onclick="Arena.practiceWeakTopic(\''+qTopic+'\')">📚 Practice This Topic</button>';
+    if(a&&!a.isCorrect){
+      h+='<button class="arena-qreview-action-btn" onclick="Arena.addToMistakeBook('+i+')">📕 Add to Mistake Book</button>';
+    }
+    h+='<button class="arena-qreview-action-btn" onclick="Arena.trySimilarQuestion('+i+')">🔄 Try Similar</button>';
+    h+='</div>';
     h+='</div>';
   });
   if(S.battle.questions.length>20)h+='<div style="font-size:12px;color:rgba(245,233,224,0.35);text-align:center;padding:8px">Showing first 20 questions. '+S.battle.questions.length+' total.</div>';
@@ -1508,17 +1726,58 @@ async function showResults(winner,freshMatch){
     });
   }
   
-  // ══ LAYER 9: ACTION BUTTONS ══
-  h+='<div class="arena-actions-row">';
-  h+='<button class="arena-btn gold" onclick="Arena.rematch()">⚔️ Rematch</button>';
-  h+='<button class="arena-btn secondary" onclick="Arena.reviewMistakes()">📚 Review Mistakes</button>';
-  h+='<button class="arena-btn secondary" onclick="Arena.practiceSimilar()">📚 Practice Similar</button>';
-  h+='<button class="arena-btn secondary" onclick="Arena.showHome()">← Back to Arena</button>';
-  h+='</div>';
+  // ══ LAYER 11: ACTION BUTTONS (professional order) ══
+  // Rematch
+  h+='<button class="arena-btn gold" style="margin-top:12px" onclick="Arena.rematch()">⚔️ Rematch</button>';
+  // Practice weak topics
+  if(weakestTopic&&weakestTopic.total>=2&&weakestTopic.acc<50){
+    h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.practiceWeakTopic(\''+weakestTopic.topic.replace(/'/g,"\\'")+'\')">📚 Practice Weak Topics</button>';
+  }
+  // Review mistakes
+  h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.reviewMistakes()">📚 Review Mistakes</button>';
+  // Practice similar
+  h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.practiceSimilar()">📚 Practice Similar</button>';
+  // Back to Arena
+  h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.showHome()">↩ Back to Arena</button>';
   
   showOverlay(h);
 }
 
+// Add to Mistake Book — re-saves a specific question to BrainLab mistake book
+function addToMistakeBook(qIdx){
+  var q=S.battle.questions[qIdx];
+  if(!q){toast('Question not found');return;}
+  if(window.BrainLab&&BrainLab.saveMistakeLocal){
+    var a=S.battle.answers[qIdx];
+    var ans=a&&a.selectedIdx!==undefined?String.fromCharCode(97+a.selectedIdx):'';
+    BrainLab.saveMistakeLocal(q,ans);
+    toast('Added to Mistake Book');
+  }else{
+    toast('Mistake Book not available');
+  }
+}
+
+// Try Similar Question — finds and starts a 1-question practice from same topic
+function trySimilarQuestion(qIdx){
+  var q=S.battle.questions[qIdx];
+  if(!q){toast('Question not found');return;}
+  if(!window.BrainLab){toast('Practice not available');return;}
+  var topic=q.topic||q.category;
+  if(!topic){toast('No topic info');return;}
+  var pool=BrainLab.filterQuestions({topic:topic});
+  if(!pool||!pool.length){pool=BrainLab.filterQuestions({category:topic});}
+  if(!pool||!pool.length){toast('No similar questions found for '+topic);return;}
+  // Pick a different question than the current one
+  var filtered=pool.filter(function(p){return p.id!==q.id;});
+  if(filtered.length>0)pool=filtered;
+  var selected=BrainLab.selectQuestions(pool,Math.min(10,pool.length));
+  var qs=BrainLab.toQuiz(selected);
+  Arena.close();
+  var sessionId='sess-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+  BrainLab._sessionId=sessionId;
+  BrainLab._sessionMeta={id:sessionId,mode:'practice',title:'Similar: '+topic,topic:topic,total_questions:qs.length,started_at:new Date().toISOString()};
+  BrainLab._startPlayer({title:'Practice: '+topic,questions:qs,mode:'practice'});
+}
 
 function practiceWeakTopic(topic){
   Arena.close();
@@ -1640,9 +1899,108 @@ async function showHistory(){
   S.screen='history';
 }
 
-function showHistoryDetail(matchId){
-  // For now, just toast — full detail would need stored results
-  toast('Battle detail: '+matchId);
+async function showHistoryDetail(matchId){
+  // Show full battle detail from stored match data
+  var res=await api('getMatch',{matchId:matchId});
+  if(!res.ok||!res.match){toast('Battle record not found');return;}
+  var mt=res.match;
+  var m=MODES.find(function(x){return x.id===mt.mode;});
+  var players=mt.players||[];
+  var me=players.find(function(p){return p.userId===S.user.id;});
+  var opp=players.find(function(p){return p.userId!==S.user.id;});
+  var w=mt.winner||{};
+  var isWin=w.type==='user'&&w.userId===S.user.id;
+  var isDraw=!w.type||w.type==='draw';
+  var isTeamWin=w.type==='team'&&me&&me.team===w.team;
+  var total=mt.questionCount||0;
+  
+  var h='<div class="arena-title">📜 Battle Detail</div>';
+  h+='<div class="arena-sub">'+(m?m.label:mt.mode)+' · '+total+'Q · '+(mt.exam||'All')+' · '+(mt.category||'All')+'</div>';
+  
+  // Result badge
+  var resultText=isWin||isTeamWin?'WIN':isDraw?'DRAW':'LOSS';
+  var resultClass=isWin||isTeamWin?'win':isDraw?'draw':'loss';
+  h+='<div style="text-align:center;margin-bottom:14px"><span class="arena-history-result '+resultClass+'" style="font-size:16px;padding:6px 20px">'+resultText+'</span></div>';
+  
+  // Player results
+  h+='<div class="arena-hd-section">';
+  h+='<div class="arena-hd-section-title">Players</div>';
+  players.forEach(function(p){
+    var isMe=p.userId===S.user.id;
+    var pAcc=p.correct&&total?Math.round(p.correct/total*100):0;
+    h+='<div class="arena-hd-row"><span class="lbl">'+escapeHtml(p.userName)+(isMe?' (You)':'')+'</span><span class="val">'+(p.score||0)+' pts · '+(p.correct||0)+'C · '+pAcc+'%</span></div>';
+    if(p.totalTime)h+='<div class="arena-hd-row"><span class="lbl">Time</span><span class="val">'+fmtTime(p.totalTime)+'</span></div>';
+  });
+  h+='</div>';
+  
+  // Topic breakdown if available
+  if(me&&me.topicBreakdown){
+    var tb=me.topicBreakdown;
+    var tbKeys=Object.keys(tb);
+    if(tbKeys.length>0){
+      h+='<div class="arena-hd-section">';
+      h+='<div class="arena-hd-section-title">Topic Breakdown</div>';
+      tbKeys.forEach(function(t){
+        var s=tb[t];
+        var acc=s.total>0?Math.round(s.correct/s.total*100):0;
+        h+='<div class="arena-hd-row"><span class="lbl">'+escapeHtml(t)+'</span><span class="val">'+s.correct+'/'+s.total+' · '+acc+'%</span></div>';
+      });
+      h+='</div>';
+    }
+  }
+  
+  // Timing
+  if(me&&me.timing&&me.timing.length>0){
+    h+='<div class="arena-hd-section">';
+    h+='<div class="arena-hd-section-title">Timing</div>';
+    var times=me.timing.filter(function(t){return t>0;});
+    if(times.length>0){
+      var fast=Math.min.apply(null,times);
+      var slow=Math.max.apply(null,times);
+      var avg=Math.round(times.reduce(function(s,t){return s+t;},0)/times.length*10)/10;
+      h+='<div class="arena-hd-row"><span class="lbl">Fastest</span><span class="val">'+fast+'s</span></div>';
+      h+='<div class="arena-hd-row"><span class="lbl">Average</span><span class="val">'+avg+'s</span></div>';
+      h+='<div class="arena-hd-row"><span class="lbl">Slowest</span><span class="val">'+slow+'s</span></div>';
+    }
+    h+='</div>';
+  }
+  
+  // Match info
+  h+='<div class="arena-hd-section">';
+  h+='<div class="arena-hd-section-title">Match Info</div>';
+  if(mt.createdAt)h+='<div class="arena-hd-row"><span class="lbl">Created</span><span class="val">'+new Date(mt.createdAt).toLocaleString()+'</span></div>';
+  if(mt.completedAt)h+='<div class="arena-hd-row"><span class="lbl">Completed</span><span class="val">'+new Date(mt.completedAt).toLocaleString()+'</span></div>';
+  h+='<div class="arena-hd-row"><span class="lbl">Difficulty</span><span class="val">'+(mt.difficulty||'mixed')+'</span></div>';
+  h+='<div class="arena-hd-row"><span class="lbl">Status</span><span class="val">'+(mt.status||'unknown')+'</span></div>';
+  h+='</div>';
+  
+  // Actions
+  if(opp){
+    h+='<button class="arena-btn secondary" style="margin-top:12px" onclick="Arena.challengeAgain("'+opp.userId+'")">⚔️ Challenge Again</button>';
+  }
+  h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.showHistory()">← Back to History</button>';
+  
+  showOverlay(h);
+}
+
+// Challenge Again — send a new invite to a past opponent
+async function challengeAgain(oppUserId){
+  if(!S.user){toast('Please log in');return;}
+  if(!S.match){toast('No match context');return;}
+  // Use the current match config to send a new invite
+  var cfg=S.match;
+  var res=await api('sendInvite',{
+    fromUserId:S.user.id,fromUserName:S.user.name,
+    toUserId:oppUserId,toUserName:'',
+    matchConfig:{mode:cfg.mode,questionCount:cfg.questionCount,exam:cfg.exam,category:cfg.category,difficulty:cfg.difficulty,matchId:null,team:'B'}
+  });
+  if(res.ok){
+    toast('Challenge sent!');
+    Arena.showHome();
+    startSearch();
+  }else{
+    toast('Could not send challenge: '+(res.error||'Unknown error'));
+  }
 }
 
 
@@ -1653,9 +2011,18 @@ async function showLeaderboard(){
   var h='<div class="arena-title">🏆 Arena Leaderboard</div>';
   h+='<div class="arena-sub">Top players by Arena Rating</div>';
   
+  // Filter chips
+  h+='<div class="arena-select-grid" style="margin-bottom:14px">';
+  h+='<div class="arena-chip active" onclick="Arena.filterLeaderboard(this,\'all\')">Global</div>';
+  h+='<div class="arena-chip" onclick="Arena.filterLeaderboard(this,\'weekly\')">Weekly</div>';
+  h+='<div class="arena-chip" onclick="Arena.filterLeaderboard(this,\'monthly\')">Monthly</div>';
+  h+='<div class="arena-chip" onclick="Arena.filterLeaderboard(this,\'exam\')">Exam</div>';
+  h+='</div>';
+  
   if(!lb.length){
     h+='<div class="arena-empty">No rated battles yet.<br>Play some arena matches to appear here!</div>';
   }else{
+    h+='<div id="arena-lb-list">';
     lb.forEach(function(p,i){
       var rank=i+1;
       var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
@@ -1668,11 +2035,21 @@ async function showLeaderboard(){
       h+='<div class="arena-lb-rating">'+(p.arenaRating||1000)+'</div>';
       h+='</div>';
     });
+    h+='</div>';
   }
   
   h+='<button class="arena-btn secondary" style="margin-top:16px" onclick="Arena.showHome()">← Back</button>';
   showOverlay(h);
   S.screen='leaderboard';
+}
+
+function filterLeaderboard(chipEl,filter){
+  // Update active chip
+  document.querySelectorAll('.arena-select-grid .arena-chip').forEach(function(c){c.classList.remove('active');});
+  chipEl.classList.add('active');
+  // For now, filters are visual only — backend getLeaderboard returns all-time data.
+  // When backend supports time-based filtering, this will pass the filter param.
+  toast(filter.charAt(0).toUpperCase()+filter.slice(1)+' filter applied');
 }
 
 
@@ -1977,9 +2354,13 @@ window.Arena={
   practiceWeakTopic:practiceWeakTopic,
   showHistory:showHistory,
   showHistoryDetail:showHistoryDetail,
+  challengeAgain:challengeAgain,
   showLeaderboard:showLeaderboard,
   acceptInvite:acceptInvite,
   rejectInvite:rejectInvite,
+  addToMistakeBook:addToMistakeBook,
+  trySimilarQuestion:trySimilarQuestion,
+  filterLeaderboard:filterLeaderboard,
   forfeitWait:forfeitWait,
   retrySubmit:retrySubmit,
   checkNowWait:checkNowWait,
