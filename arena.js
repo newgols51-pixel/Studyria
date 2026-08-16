@@ -841,12 +841,21 @@ async function finishBattle(){
   var total=S.battle.questions.length;
   var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
   var score=Math.round((S.battle.correct/total)*100);
+  // Backend stores players[].answers as an array of STRINGS (letter answers),
+  // not objects — sending {selectedIdx,isCorrect,timeSpent} objects fails schema
+  // validation on every single submit ("Input should be a valid string"), which
+  // is why completeMatch was failing on every real battle. Convert to plain
+  // letter strings here; skipped questions become an empty string.
+  var answersForServer=S.battle.answers.map(function(a){
+    if(a===null||a===undefined)return '';
+    return String.fromCharCode(97+a.selectedIdx);
+  });
   var payload={
     matchId:S.matchId,userId:S.user.id,
     correct:S.battle.correct,wrong:S.battle.wrong,skipped:S.battle.skipped,
     score:score,totalTime:totalTime,
     topicBreakdown:S.battle.topicStats,
-    answers:S.battle.answers
+    answers:answersForServer
   };
   
   // Submit final results — RETRY on failure. On flaky mobile connections a
