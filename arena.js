@@ -1694,6 +1694,12 @@ async function inviteCheckPoll(){
       if(accRes.ok&&accRes.matchId){
         // Direct transition to lobby — no waiting for next poll
         S.matchId=accRes.matchId;
+        // Self-heal: matches created via respondInvite can leave this player's stored
+        // status as 'abandoned' instead of 'lobby', which makes renderLobby() filter them
+        // out of their own lobby. setReady(false) corrects the stored status without
+        // marking anyone ready (same self-heal the existing autoMatch flow already
+        // performs for the inviter's side).
+        await api('setReady',{matchId:S.matchId,userId:S.user.id,ready:false});
         var matchRes=await api('getMatch',{matchId:S.matchId});
         if(matchRes.ok&&matchRes.match){
           S.match=matchRes.match;
@@ -1776,6 +1782,14 @@ async function acceptInvite(inviteId){
       await api('joinMatch',{matchId:matchId,userId:S.user.id,userName:S.user.name,team:team});
     }
   }
+  
+  // Self-heal: matches created via respondInvite can leave this player's stored status
+  // as 'abandoned' instead of 'lobby', which makes renderLobby() filter them out of their
+  // own lobby (players.filter(p=>p.status!=='abandoned')) — the lobby then looks stuck on
+  // "Waiting for opponent" forever for both sides. setReady(false) corrects the stored
+  // status without marking anyone ready — it's the same self-heal the existing autoMatch
+  // flow already performs for the inviter's side (verified: autoMatch persists 'lobby').
+  await api('setReady',{matchId:matchId,userId:S.user.id,ready:false});
   
   toast('Match found! Entering lobby...');
   S._pendingMatchId=matchId;
