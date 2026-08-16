@@ -266,8 +266,8 @@ function closeOverlay(){
   var o=document.getElementById('arena-overlay');
   if(o)o.remove();
   stopAllTimers();
-  // Reset presence to online
-  if(S.user){var si=getArenaStats();api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',arenaRating:si.rating||1000,wins:si.wins||0,losses:si.losses||0,draws:si.draws||0,battles:si.battles||0,status:'online'});}
+  // Clear match association and reset presence to online
+  if(S.user){api('clearMatch',{userId:S.user.id});var si=getArenaStats();api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',arenaRating:si.rating||1000,wins:si.wins||0,losses:si.losses||0,draws:si.draws||0,battles:si.battles||0,status:'online'});}
 }
 function toast(msg){
   var old=document.querySelector('.arena-toast');if(old)old.remove();
@@ -328,6 +328,8 @@ async function showHome(){
   // match (server-side gap in the arenaApi backend, outside client control) so
   // it always returns 1000/0/0/0/0%. Compute real stats from actual match
   // history instead — that data correctly reflects every completed battle.
+  // Clear any completed match association so recoverMatch doesn't loop back to old results
+  if(S.user)api('clearMatch',{userId:S.user.id});
   var st=await computeArenaStats(S.user.id);
   var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
   var battles=st.battles,winRate=st.winRate;
@@ -1235,6 +1237,7 @@ async function showResults(winner,freshMatch){
 
 function rematch(){
   // Create new match with same config
+  if(S.user)api('clearMatch',{userId:S.user.id});
   S.matchId=null;S.match=null;
   S.seed=genSeed();
   startSearch();
