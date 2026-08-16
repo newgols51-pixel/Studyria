@@ -101,7 +101,21 @@ filterQuestions:function(opts){opts=opts||{};var cat=opts.category,topic=opts.to
 getAttemptedIds:function(){try{return JSON.parse(localStorage.getItem('bl_attempted_q')||'[]');}catch(e){return[];}},
 markAttempted:function(ids){try{var ex=this.getAttemptedIds();ids.forEach(function(id){if(ex.indexOf(id)===-1)ex.push(id);});if(ex.length>2000)ex=ex.slice(ex.length-2000);localStorage.setItem('bl_attempted_q',JSON.stringify(ex));}catch(e){}},
 selectQuestions:function(pool,count){var s=this;if(pool.length<=count)return this.shuffle(pool);var attempted=this.getAttemptedIds();var unseen=pool.filter(function(q){return attempted.indexOf(String(q[0].slice(0,50)+q[5]))===-1;});var seen=pool.filter(function(q){return attempted.indexOf(String(q[0].slice(0,50)+q[5]))!==-1;});var result=[];if(unseen.length>=count){result=this.shuffle(unseen).slice(0,count);}else{result=unseen.slice();result=result.concat(this.shuffle(seen).slice(0,Math.min(count-unseen.length,seen.length)));}var unique=[],seenIds={};result.forEach(function(q){var id=String(q[0].slice(0,50)+q[5]);if(!seenIds[id]){seenIds[id]=1;unique.push(q);}});if(unique.length<count){pool.forEach(function(q){if(unique.length>=count)return;var id=String(q[0].slice(0,50)+q[5]);if(!seenIds[id]){seenIds[id]=1;unique.push(q);}});}return this.shuffle(unique).slice(0,Math.min(count,unique.length));},
-toQuiz:function(items){return items.map(function(item,i){return{id:'qb-'+i+'-'+Date.now(),question_text:item[0],option_a:item[1],option_b:item[2],option_c:item[3],option_d:item[4],correct_answer:item[5],explanation:item[6],topic:item[8],difficulty:item[9],category:item[7],exam_tags:item[10]||'',question_as:item[11]||'',opt_a_as:item[12]||'',opt_b_as:item[13]||'',opt_c_as:item[14]||'',opt_d_as:item[15]||'',exp_as:item[16]||'',question_type:item[17]||'MCQ',source:item[18]||''};});},
+toQuiz:function(items){return items.map(function(item,i){
+  /* SHUFFLE OPTIONS so correct answer is not always 'A' — fixes Arena/quiz pattern bug */
+  var _opts=[item[1],item[2],item[3],item[4]];
+  var _optAs=[item[12]||'',item[13]||'',item[14]||'',item[15]||''];
+  var _origAns=item[5];
+  var _origIdx=_origAns==='a'?0:_origAns==='b'?1:_origAns==='c'?2:_origAns==='d'?3:0;
+  /* Fisher-Yates shuffle of index [0,1,2,3] */
+  var _perm=[0,1,2,3];
+  for(var j=_perm.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=_perm[j];_perm[j]=_perm[k];_perm[k]=t;}
+  var _shOpts=_perm.map(function(p){return _opts[p];});
+  var _shOptAs=_perm.map(function(p){return _optAs[p];});
+  var _newCorrectIdx=_perm.indexOf(_origIdx);
+  var _newCorrectAns=String.fromCharCode(97+_newCorrectIdx);
+  return{id:'qb-'+i+'-'+Date.now(),question_text:item[0],option_a:_shOpts[0],option_b:_shOpts[1],option_c:_shOpts[2],option_d:_shOpts[3],correct_answer:_newCorrectAns,explanation:item[6],topic:item[8],difficulty:item[9],category:item[7],exam_tags:item[10]||'',question_as:item[11]||'',opt_a_as:_shOptAs[0],opt_b_as:_shOptAs[1],opt_c_as:_shOptAs[2],opt_d_as:_shOptAs[3],exp_as:item[16]||'',question_type:item[17]||'MCQ',source:item[18]||''};
+});},
 cardHTML:function(icon,title,sub,tags,cta,action){var h='<div class="bl-card bl-fade-in" onclick="'+action+'"><div class="bl-card-icon">'+icon+'</div><div class="bl-card-title">'+this.escape(title)+'</div>';if(sub)h+='<div class="bl-card-subtitle">'+this.escape(sub)+'</div>';if(tags&&tags.length){h+='<div class="bl-card-meta">';tags.forEach(function(t){if(t)h+='<span class="bl-card-tag '+(t.cls||'')+'">'+t.text+'</span>';});h+='</div>';}h+='<button class="bl-card-cta" onclick="event.stopPropagation();'+action+'">'+cta+'</button></div>';return h;},
 showPlayer:function(){var a=document.getElementById('bl-quiz-player-area');if(a){a.style.display='block';a.innerHTML='';window.scrollTo({top:a.offsetTop-80,behavior:'smooth'});}},
 hidePlayer:function(){var a=document.getElementById('bl-quiz-player-area');if(a){a.style.display='none';a.innerHTML='';}},
