@@ -897,7 +897,26 @@ async function waitingPoll(){
   if(S.match.status==='completed'){
     stopTimer('waitingPoll');
     stopTimer('poll');
-    showResults(S.match.winner||{});
+    // Pass the fresh match data we JUST fetched directly to showResults —
+    // avoids a redundant getMatch call that could return stale data.
+    showResults(S.match.winner||{},S.match);
+    return;
+  }
+  
+  // Also check: are all active players completed but status wasn't set yet?
+  // (race condition — getMatch self-healing on the backend should handle this,
+  // but double-check client-side too as a safety net)
+  var active=S.match.players.filter(function(p){return p.status!=='abandoned';});
+  var allCompleted=active.length>0&&active.every(function(p){return p.status==='completed';});
+  if(allCompleted){
+    stopTimer('waitingPoll');
+    stopTimer('poll');
+    var winner=active.slice().sort(function(a,b){return (b.score||0)-(a.score||0);});
+    var top=winner[0],second=winner[1];
+    var isDraw=second&&(second.score||0)===(top.score||0);
+    var w=isDraw?{type:'draw',userId:top.userId,userName:top.userName,score:top.score}
+      :{type:'user',userId:top.userId,userName:top.userName,score:top.score};
+    showResults(w,S.match);
     return;
   }
   
@@ -906,7 +925,7 @@ async function waitingPoll(){
   if(allAbandoned){
     stopTimer('waitingPoll');
     stopTimer('poll');
-    showResults({type:'user',userId:S.user.id,userName:S.user.name});
+    showResults({type:'user',userId:S.user.id,userName:S.user.name},S.match);
   }
 }
 
