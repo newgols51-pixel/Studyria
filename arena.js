@@ -279,19 +279,58 @@ function toast(msg){
 // ══════════════════════════════════════════════
 // SCREEN: HOME
 // ══════════════════════════════════════════════
+async function computeArenaStats(userId){
+  var res=await api('getHistory',{userId:userId});
+  var history=(res.ok&&res.history)?res.history:[];
+  var wins=0,losses=0,draws=0;
+  var teamLookups=[];
+  history.forEach(function(m){
+    if(m.status&&m.status!=='completed')return;
+    var w=m.winner||{};
+    if(!w.type){draws++;}
+    else if(w.type==='draw'){draws++;}
+    else if(w.type==='user'){
+      if(w.userId===userId)wins++;else losses++;
+    }else if(w.type==='team'){
+      teamLookups.push(m);
+    }
+  });
+  // Team-mode matches: getHistory's player entries don't include team, so
+  // resolve win/loss via a direct match lookup (only for 2v2/3v3/4v4 games).
+  if(teamLookups.length){
+    var results=await Promise.all(teamLookups.map(function(m){
+      return api('getMatch',{matchId:m.id||m.matchId});
+    }));
+    results.forEach(function(r){
+      if(!r.ok||!r.match)return;
+      var match=r.match;
+      var me=(match.players||[]).find(function(p){return p.userId===userId;});
+      if(!me)return;
+      if(match.winner&&match.winner.type==='team'&&match.winner.team===me.team)wins++;
+      else losses++;
+    });
+  }
+  var battles=wins+losses+draws;
+  var winRate=battles?Math.round(wins/battles*100):0;
+  // No persisted ELO on the backend — approximate rating from the real
+  // win/loss record so it moves with actual results instead of staying frozen.
+  var rating=1000+wins*25-losses*20;
+  if(rating<0)rating=0;
+  return {rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate};
+}
 async function showHome(){
   S.user=getUser();
   if(!S.user){
     showOverlay('<div class="arena-login-prompt"><div class="arena-login-icon">🔐</div><div class="arena-login-text">Please log in to use the Practice Arena.</div><button class="arena-btn" onclick="Arena.close()">OK</button></div>');
     return;
   }
-  // Get my own stats (rating/battles/wins/losses) — NOT getPresence, which
-  // returns OTHER online players, not the current user's own record.
-  var statsRes=await api('getMyStats',{userId:S.user.id});
-  var p=statsRes.ok?statsRes.stats:null;
-  var rating=p?p.arenaRating:1000;
-  var wins=p?p.wins:0,losses=p?p.losses:0,draws=p?p.draws:0;
-  var battles=p?p.battles:0,winRate=p?p.winRate:0;
+  // getMyStats on the backend is never updated after completeMatch finalizes a
+  // match (server-side gap in the arenaApi backend, outside client control) so
+  // it always returns 1000/0/0/0/0%. Compute real stats from actual match
+  // history instead — that data correctly reflects every completed battle.
+  var st=await computeArenaStats(S.user.id);
+  var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
+  var battles=st.battles,winRate=st.winRate;
   
   var h='<div class="arena-title">⚔️ Practice Arena</div>';
   h+='<div class="arena-sub">Compete with real players in real-time</div>';
@@ -1235,21 +1274,28 @@ async function showHistory(){
     h+='<div class="arena-empty">No battles yet.<br>Start your first arena battle!</div>';
   }else{
     history.slice().reverse().forEach(function(b){
-      var myResult=b.playerResults.find(function(p){return p.userId===S.user.id;});
-      var isWin=b.winner.type==='user'&&b.winner.userId===S.user.id;
-      var isDraw=b.winner.type==='draw';
-      var isTeamWin=b.winner.type==='team'&&myResult&&myResult.team===b.winner.team;
+      // Live backend returns players/id/completedAt (not the originally-expected
+      // playerResults/matchId/createdAt) — support both shapes defensively.
+      var matchId=b.matchId||b.id;
+      var players=b.playerResults||b.players||[];
+      var myResult=players.find(function(p){return p.userId===S.user.id;});
+      var w=b.winner||{};
+      var isWin=w.type==='user'&&w.userId===S.user.id;
+      var isDraw=!w.type||w.type==='draw';
+      var isTeamWin=w.type==='team'&&myResult&&myResult.team===w.team;
       var resultClass=isWin||isTeamWin?'win':isDraw?'draw':'loss';
       var resultText=isWin||isTeamWin?'WIN':isDraw?'DRAW':'LOSS';
       
-      var date=new Date(b.createdAt).toLocaleDateString([],{month:'short',day:'numeric'})+' '+new Date(b.createdAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      var oppNames=b.playerResults.filter(function(p){return p.userId!==S.user.id;}).map(function(p){return p.userName;}).join(', ');
+      var when=b.createdAt||b.completedAt;
+      var date=when?(new Date(when).toLocaleDateString([],{month:'short',day:'numeric'})+' '+new Date(when).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})):'';
+      var oppNames=players.filter(function(p){return p.userId!==S.user.id;}).map(function(p){return p.userName;}).join(', ');
+      var myAcc=myResult?(myResult.accuracy!==undefined?myResult.accuracy:(myResult.correct!==undefined&&b.questionCount?Math.round(myResult.correct/b.questionCount*100):null)):null;
       
-      h+='<div class="arena-history-item" onclick=\'Arena.showHistoryDetail("'+b.matchId+'")\'>';
+      h+='<div class="arena-history-item" onclick=\'Arena.showHistoryDetail("'+matchId+'")\'>';
       h+='<div class="arena-history-row">';
       h+='<div class="arena-history-left">';
       h+='<div class="arena-history-mode">'+modeIcon(b.mode)+' '+modeLabel(b.mode)+' · '+b.questionCount+'Q</div>';
-      h+='<div class="arena-history-meta">'+date+' · vs '+escapeHtml(oppNames||'Unknown')+' · '+(myResult?myResult.accuracy+'%':'')+'</div>';
+      h+='<div class="arena-history-meta">'+date+' · vs '+escapeHtml(oppNames||'Unknown')+(myAcc!==null?' · '+myAcc+'%':'')+'</div>';
       h+='</div>';
       h+='<div class="arena-history-result '+resultClass+'">'+resultText+'</div>';
       h+='</div>';
