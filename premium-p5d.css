@@ -23,7 +23,7 @@
 /* ── MEMBERSHIP CARD ────────────────────────────────────────────── */
 .p5d-mem-card {
   background: linear-gradient(135deg,
-    rgba(147,2,5,.12) 0%,
+    rgba(61,142,248,.12) 0%,
     rgba(139,92,246,.10) 50%,
     rgba(245,158,11,.08) 100%);
   border: 1.5px solid rgba(245,158,11,.25);
@@ -136,7 +136,7 @@
   height: 100%;
   border-radius: 3px;
   transition: width .6s cubic-bezier(.4,0,.2,1);
-  background: linear-gradient(90deg, #10d98e, #930205);
+  background: linear-gradient(90deg, #10d98e, #3d8ef8);
 }
 .p5d-days-bar-fill.p5d-bar-warn { background: linear-gradient(90deg, #f59e0b, #f97316); }
 .p5d-days-bar-fill.p5d-bar-crit { background: linear-gradient(90deg, #ff4d6d, #f43f5e); }
@@ -167,9 +167,9 @@
   color: #0a0a0a;
 }
 .p5d-btn-secondary {
-  background: rgba(147,2,5,.15);
-  color: #930205;
-  border: 1.5px solid rgba(147,2,5,.3);
+  background: rgba(61,142,248,.15);
+  color: #3d8ef8;
+  border: 1.5px solid rgba(61,142,248,.3);
 }
 .p5d-btn-danger {
   background: rgba(255,77,109,.12);
@@ -185,9 +185,9 @@
 /* ── FREE USER CARD ─────────────────────────────────────────────── */
 .p5d-free-card {
   background: linear-gradient(135deg,
-    rgba(147,2,5,.08) 0%,
+    rgba(61,142,248,.08) 0%,
     rgba(139,92,246,.06) 100%);
-  border: 1.5px dashed rgba(147,2,5,.25);
+  border: 1.5px dashed rgba(61,142,248,.25);
   border-radius: 18px;
   padding: 28px 22px;
   text-align: center;
@@ -355,15 +355,15 @@
 }
 .p5d-txn-load-more button {
   background: none;
-  border: 1px solid rgba(147,2,5,.25);
-  color: #930205;
+  border: 1px solid rgba(61,142,248,.25);
+  color: #3d8ef8;
   padding: 8px 20px;
   border-radius: 8px;
   font-size: .78rem;
   cursor: pointer;
   transition: background .15s;
 }
-.p5d-txn-load-more button:hover { background: rgba(147,2,5,.08); }
+.p5d-txn-load-more button:hover { background: rgba(61,142,248,.08); }
 
 /* ── PREMIUM BADGE (global, shown in nav/profile) ──────────────── */
 .p5d-premium-badge {

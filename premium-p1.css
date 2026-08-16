@@ -35,7 +35,7 @@
   background:
     radial-gradient(ellipse 80% 60% at 50% -10%,  rgba(251,191,36,.22) 0%, transparent 70%),
     radial-gradient(ellipse 60% 80% at 10%  50%,  rgba(139,92,246,.14) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 90%  50%,  rgba(147,2,5,.14) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 80% at 90%  50%,  rgba(61,142,248,.14) 0%, transparent 60%);
   z-index: 0;
   pointer-events: none;
 }
@@ -62,7 +62,7 @@
 }
 #page-premium .prm-orb-3 {
   width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(147,2,5,.40), transparent 70%);
+  background: radial-gradient(circle, rgba(61,142,248,.40), transparent 70%);
   top: 30px; right: -60px;
   animation: prmOrbFloat 6s ease-in-out 4s infinite alternate;
 }
@@ -113,7 +113,7 @@
   font-weight: 900;
   line-height: 1.15;
   letter-spacing: -.02em;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #a78bfa 70%, #930205 100%);
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #a78bfa 70%, #3d8ef8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -214,11 +214,11 @@
 
 /* Trial card — electric blue glow */
 #page-premium .prm-plan-card.prm-trial {
-  border-color: rgba(147,2,5,.35);
-  background: linear-gradient(160deg, rgba(147,2,5,.10) 0%, rgba(255,255,255,.04) 60%);
+  border-color: rgba(61,142,248,.35);
+  background: linear-gradient(160deg, rgba(61,142,248,.10) 0%, rgba(255,255,255,.04) 60%);
 }
 #page-premium .prm-plan-card.prm-trial:hover::after {
-  background: radial-gradient(ellipse 100% 50% at 50% 110%, rgba(147,2,5,.18), transparent 70%);
+  background: radial-gradient(ellipse 100% 50% at 50% 110%, rgba(61,142,248,.18), transparent 70%);
 }
 
 /* Popular variant — violet glow */
@@ -268,7 +268,7 @@
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.12);
 }
-#page-premium .prm-trial  .prm-plan-emoji { background: rgba(147,2,5,.12);  border-color: rgba(147,2,5,.25);  }
+#page-premium .prm-trial  .prm-plan-emoji { background: rgba(61,142,248,.12);  border-color: rgba(61,142,248,.25);  }
 #page-premium .prm-popular .prm-plan-emoji { background: rgba(139,92,246,.12); border-color: rgba(139,92,246,.25); }
 #page-premium .prm-best    .prm-plan-emoji { background: rgba(251,191,36,.14); border-color: rgba(251,191,36,.30); box-shadow: 0 0 20px rgba(251,191,36,.20); }
 
@@ -496,7 +496,7 @@
 .prm-home-banner {
   position: relative; overflow: hidden;
   border-radius: 20px; padding: 24px 20px; text-align: center;
-  background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(139,92,246,.10) 50%, rgba(147,2,5,.08));
+  background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(139,92,246,.10) 50%, rgba(61,142,248,.08));
   border: 1px solid rgba(251,191,36,.25);
   margin: 12px 16px;
 }
@@ -589,8 +589,8 @@
 
 /* Trial card in carousel */
 #prmPlansSection .prm-plans-carousel .prm-plan-card.prm-trial {
-  border-color: rgba(147,2,5,.40) !important;
-  background: linear-gradient(160deg, rgba(147,2,5,.10) 0%, rgba(255,255,255,.04) 60%) !important;
+  border-color: rgba(61,142,248,.40) !important;
+  background: linear-gradient(160deg, rgba(61,142,248,.10) 0%, rgba(255,255,255,.04) 60%) !important;
 }
 
 /* Price typography in carousel */

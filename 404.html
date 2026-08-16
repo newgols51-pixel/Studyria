@@ -39,8 +39,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     --text:         #eef2ff;
     --text2:        #7a8caa;
     --text3:        #4a5568;
-    --accent:       #930205;
-    --accent2:      #c99a3c;
+    --accent:       #3d8ef8;
+    --accent2:      #00c8e8;
     --gold:         #f59e0b;
     --danger:       #ff4d6d;
     --glass:        rgba(255,255,255,0.055);
@@ -63,8 +63,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     min-height: 100vh;
     overflow: hidden;
     background-image:
-      radial-gradient(ellipse at 15% 50%, rgba(147,2,5,0.09) 0%, transparent 60%),
-      radial-gradient(ellipse at 85% 10%, rgba(201,154,60,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 15% 50%, rgba(61,142,248,0.09) 0%, transparent 60%),
+      radial-gradient(ellipse at 85% 10%, rgba(0,200,232,0.06) 0%, transparent 55%),
       radial-gradient(ellipse at 50% 90%, rgba(139,92,246,0.05) 0%, transparent 50%);
   }
 
@@ -73,8 +73,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     content: '';
     position: fixed; inset: 0; z-index: 0;
     background-image:
-      linear-gradient(rgba(147,2,5,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(147,2,5,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(61,142,248,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(61,142,248,0.03) 1px, transparent 1px);
     background-size: 48px 48px;
     pointer-events: none;
   }
@@ -84,8 +84,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     position: fixed; border-radius: 50%; filter: blur(72px);
     pointer-events: none; z-index: 0; animation: drift 12s ease-in-out infinite alternate;
   }
-  .orb-1 { width: 320px; height: 320px; background: rgba(147,2,5,0.07); top: -60px; left: -60px; animation-delay: 0s; }
-  .orb-2 { width: 260px; height: 260px; background: rgba(201,154,60,0.06); bottom: -40px; right: -40px; animation-delay: -5s; }
+  .orb-1 { width: 320px; height: 320px; background: rgba(61,142,248,0.07); top: -60px; left: -60px; animation-delay: 0s; }
+  .orb-2 { width: 260px; height: 260px; background: rgba(0,200,232,0.06); bottom: -40px; right: -40px; animation-delay: -5s; }
   .orb-3 { width: 180px; height: 180px; background: rgba(139,92,246,0.05); top: 40%; left: 60%; animation-delay: -3s; }
 
   @keyframes drift {
@@ -114,7 +114,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-size: 1.35rem;
     font-weight: 800;
     margin-bottom: 44px;
-    background: linear-gradient(135deg, #930205, #c99a3c);
+    background: linear-gradient(135deg, #3d8ef8, #00c8e8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -130,18 +130,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-size: clamp(5.5rem, 20vw, 9.5rem);
     font-weight: 800;
     line-height: 1;
-    background: linear-gradient(135deg, #930205 0%, #c99a3c 55%, #e8d5a8 100%);
+    background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 55%, #b0e0ff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 36px rgba(147,2,5,0.28));
+    filter: drop-shadow(0 0 36px rgba(61,142,248,0.28));
     margin-bottom: 6px;
     animation: pulse 3.5s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { filter: drop-shadow(0 0 36px rgba(147,2,5,0.28)); }
-    50%       { filter: drop-shadow(0 0 56px rgba(201,154,60,0.42)); }
+    0%, 100% { filter: drop-shadow(0 0 36px rgba(61,142,248,0.28)); }
+    50%       { filter: drop-shadow(0 0 56px rgba(0,200,232,0.42)); }
   }
 
   /* ── Emoji icon ──────────────────────────────────────────────── */
@@ -202,13 +202,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, #930205, #c99a3c);
+    background: linear-gradient(135deg, #3d8ef8, #00c8e8);
     color: #fff;
-    box-shadow: 0 6px 24px rgba(147,2,5,0.4);
+    box-shadow: 0 6px 24px rgba(61,142,248,0.4);
   }
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 32px rgba(147,2,5,0.55);
+    box-shadow: 0 10px 32px rgba(61,142,248,0.55);
   }
 
   .btn-ghost {

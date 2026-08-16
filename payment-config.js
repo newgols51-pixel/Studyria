@@ -53,12 +53,52 @@ export const RAZORPAY_RETRY_MAX = 2;
 /** Timeout (ms) for order-creation fetch calls made from Edge Functions */
 export const ORDER_FETCH_TIMEOUT_MS = 12_000;
 
-// ── Membership plan catalogue (DEPRECATED — DO NOT USE FOR NEW CODE) ──────────
-// This hardcoded plan catalogue is DEPRECATED. All plan data must come
-// from the database (membership_plans table) via pass-sync.js (window.PassSync).
-// Kept only for backward compatibility with code that may still import it.
-// New code MUST fetch prices from Supabase — never from these constants.
-export const MEMBERSHIP_PLANS = Object.freeze([]); // DEPRECATED — All plan data comes from database (site_config/membership_plans). Never use hardcoded prices.
+// ── Membership plan catalogue (prices in INR, durations in days) ─────────────
+// NOTE: These are the DISPLAY-ONLY plan definitions used to build order payloads.
+//       No membership is activated until a successful payment_capture webhook
+//       is verified and processed by the server-side Edge Function.
+export const MEMBERSHIP_PLANS = Object.freeze([
+  {
+    id:          'trial_1day',
+    label:       '⚡ 1 Day Trial',
+    durationDays: 1,
+    priceINR:    9,
+    badge:       'NEW',
+    tagline:     'Try Premium for just ₹9. Risk-free.',
+  },
+  {
+    id:          'trial_15day',
+    label:       '🟢 15 Day Trial',
+    durationDays: 15,
+    priceINR:    49,
+    badge:       'POPULAR',
+    tagline:     'Explore everything for 15 days.',
+  },
+  {
+    id:          'monthly',
+    label:       '🔵 Monthly Premium',
+    durationDays: 30,
+    priceINR:    99,
+    badge:       null,
+    tagline:     'Best for regular exam learners.',
+  },
+  {
+    id:          'quarterly',
+    label:       '🟣 Quarterly Premium',
+    durationDays: 90,
+    priceINR:    249,
+    badge:       'MOST POPULAR',
+    tagline:     'Serious prep? 3 months of access.',
+  },
+  {
+    id:          'half_year',
+    label:       '👑 Half Year Premium',
+    durationDays: 180,
+    priceINR:    449,
+    badge:       'BEST VALUE',
+    tagline:     'Maximum value. 6 months of everything.',
+  },
+]);
 
 // ── Payment status values (mirrored from DB enum) ────────────────────────────
 // Kept here so payment-service.js and callers share a single source.

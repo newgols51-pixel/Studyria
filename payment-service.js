@@ -315,7 +315,7 @@ export function buildCheckoutOptions({
     order_id:    orderId,
     name:        MERCHANT_NAME,
     description: `${MERCHANT_DESCRIPTION} — ${planLabel}`,
-    image:       'https://studyria.qzz.io/icon-192.png',
+    image:       'https://studyria.qzz.io/icons/icon-192x192.png',
 
     prefill: {
       name:    userName  || '',
@@ -324,7 +324,7 @@ export function buildCheckoutOptions({
     },
 
     theme: {
-      color:        '#930205',
+      color:        '#3d8ef8',
       backdrop_blur: 5,
     },
 

@@ -225,7 +225,7 @@
           html += '</div>';
         }
         if (n.improved && n.improved.length) {
-          html += '<div class="pwa32-wn-group"><div class="pwa32-wn-group-title" style="color:#930205">⚡ Improved</div>';
+          html += '<div class="pwa32-wn-group"><div class="pwa32-wn-group-title" style="color:#3d8ef8">⚡ Improved</div>';
           n.improved.forEach(function(item) { html += '<div class="pwa32-wn-item pwa32-wn-improved">' + _escHtml(item) + '</div>'; });
           html += '</div>';
         }
@@ -669,12 +669,12 @@
     html += '</div>';
 
     // What's New Center
-    html += '<div class="pwa32-section"><div class="pwa32-section-title">What\'s New' + (unreadCount > 0 ? ' <span style="background:#930205;color:#fff;font-size:.66rem;padding:2px 8px;border-radius:10px">' + unreadCount + '</span>' : '') + '</div>';
+    html += '<div class="pwa32-section"><div class="pwa32-section-title">What\'s New' + (unreadCount > 0 ? ' <span style="background:#3d8ef8;color:#fff;font-size:.66rem;padding:2px 8px;border-radius:10px">' + unreadCount + '</span>' : '') + '</div>';
     html += '<div id="pwa32WhatsNew"></div>';
     html += '</div>';
 
     // Notifications
-    html += '<div class="pwa32-section"><div class="pwa32-section-title">Notifications' + (_getUnreadNotifCount() > 0 ? ' <span style="background:#930205;color:#fff;font-size:.66rem;padding:2px 8px;border-radius:10px">' + _getUnreadNotifCount() + '</span>' : '') + '</div>';
+    html += '<div class="pwa32-section"><div class="pwa32-section-title">Notifications' + (_getUnreadNotifCount() > 0 ? ' <span style="background:#3d8ef8;color:#fff;font-size:.66rem;padding:2px 8px;border-radius:10px">' + _getUnreadNotifCount() + '</span>' : '') + '</div>';
     html += '<div id="pwa32NotifList"></div>';
     html += '</div>';
 

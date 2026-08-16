@@ -31,14 +31,14 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v59'; // v59: schema fix — totalTime + topicBreakdown now persist in players array
+const CACHE_VERSION = 'v32';
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.13-new-logo-icon-cache-bust';
+const SW_BUILD      = '2026.07.18-pwa-v3.2';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🧠 BrainLab expanded: 12 learning sections with quizzes, mock tests, flashcards, PYQ practice, study streak, and more. Complete learning hub redesign.';
+const WHATS_NEW = '🚀 PWA V3.2 — Intelligent PWA Platform: auto release notes, download manager, notification V2.0, offline engine, admin control center, route prefetch, secure cache.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -96,11 +96,9 @@ self.addEventListener('install', event => {
           )
         )
       )
-      .then(() => console.log('[SW] v37 installed ✅'))
+      .then(() => console.log('[SW] v32 installed ✅'))
   );
-  // CRITICAL: auto-skipWaiting for v41 — fixes must reach devices NOW, not on user click
-  self.skipWaiting();
-  // Normal mode: update UX owns SKIP_WAITING — re-enable after this deploy
+  // Do NOT skipWaiting here — update UX owns that via SKIP_WAITING message
 });
 
 // ── ACTIVATE ─────────────────────────────────────────────────────

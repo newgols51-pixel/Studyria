@@ -10,12 +10,12 @@
 
 // ── Design Palette — 12 gradient themes (mirrors CS_THEMES in index.html) ──
 export const POSTER_THEMES = [
-  { bg: ['#0d1b3e','#1a3a6b','#0a2044'], accent: '#930205', accent2: '#c99a3c', icon: '💼' },
+  { bg: ['#0d1b3e','#1a3a6b','#0a2044'], accent: '#3d8ef8', accent2: '#00c8e8', icon: '💼' },
   { bg: ['#1a0d3e','#2d1a6b','#12044a'], accent: '#8b5cf6', accent2: '#c4b5fd', icon: '🎓' },
   { bg: ['#0d2e1b','#1a5c38','#0a3020'], accent: '#10d98e', accent2: '#34d399', icon: '🏛'  },
   { bg: ['#3e1a0d','#6b2d10','#4a1a08'], accent: '#f59e0b', accent2: '#fcd34d', icon: '⭐' },
   { bg: ['#2e0d1a','#6b1a38','#3a0820'], accent: '#ff4d6d', accent2: '#fda4af', icon: '🔥' },
-  { bg: ['#0d2e3e','#1a5c6b','#0a3040'], accent: '#c99a3c', accent2: '#67e8f9', icon: '🚀' },
+  { bg: ['#0d2e3e','#1a5c6b','#0a3040'], accent: '#00c8e8', accent2: '#67e8f9', icon: '🚀' },
   { bg: ['#1e0d3e','#3d1a6b','#160844'], accent: '#a78bfa', accent2: '#ddd6fe', icon: '✨' },
   { bg: ['#1a2e0d','#3a6b1a','#1e3a0a'], accent: '#84cc16', accent2: '#bef264', icon: '📋' },
   { bg: ['#3e2e0d','#6b4a10','#4a3008'], accent: '#f97316', accent2: '#fdba74', icon: '💰' },

@@ -115,7 +115,7 @@
 
       // ── Card gradient colours ──────────────────────────────────
       coverFrom: p.cover_from || '#1d4ed8',
-      coverTo:   p.cover_to   || '#930205',
+      coverTo:   p.cover_to   || '#3d8ef8',
 
       // ── Misc ───────────────────────────────────────────────────
       tag:    p.badge || p.tag || null,

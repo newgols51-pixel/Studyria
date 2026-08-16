@@ -37,7 +37,7 @@
  *   ✅ monthly → +30 days, yearly → +365 days
  *
  * @module premium-payment
- * @version 1.1
+ * @version 1.0
  */
 
 (function () {
@@ -51,7 +51,6 @@
 
   /* billing_cycle → days (requirement: monthly=30, yearly=365) */
   var CYCLE_DAYS = {
-    trial_7day:  7,
     trial_1day:  1,
     trial_15day: 15,
     monthly:     30,
@@ -65,8 +64,19 @@
     lifetime:    36500,
   };
 
-  /* No hardcoded plan prices. Payment ALWAYS fetches from DB via PassSync.
-     If fetch fails, show error and do NOT open payment. Never use hardcoded prices. */
+  /* Plan catalogue — fallback display prices if DB fetch fails.
+     Server never trusts these amounts; they are for modal display only. */
+  var PLAN_DISPLAY = {
+    trial_1day:  { name: '1 Day Trial',       display_inr: 9   },
+    trial_15day: { name: '15 Day Trial',      display_inr: 49  },
+    monthly:     { name: 'Monthly Premium',   display_inr: 99  },
+    quarterly:   { name: 'Quarterly Premium', display_inr: 249 },
+    half_year:   { name: 'Half Year Premium', display_inr: 449 },
+    // Legacy aliases
+    starter:     { name: 'Starter',           display_inr: 49  },
+    biannual:    { name: '6 Month',           display_inr: 449 },
+    yearly:      { name: 'Yearly',            display_inr: 999 },
+  };
 
   /* ── Logging ─────────────────────────────────────────────────── */
   function _log(fn, msg, d) {
@@ -163,7 +173,7 @@
     if (!btn) return;
     btn.disabled         = false;
     btn.textContent      = '✅ Premium Active';
-    btn.style.background = 'linear-gradient(135deg,#10d98e,#c99a3c)';
+    btn.style.background = 'linear-gradient(135deg,#10d98e,#00c8e8)';
     btn.style.color      = '#0a2a1a';
     btn.style.cursor     = 'default';
     btn.style.opacity    = '1';
@@ -201,328 +211,61 @@
     _btnLoading(triggerBtn);
 
     try {
-      /* ── 2. Fetch plan from database — ONE SINGLE SOURCE OF TRUTH ──
-         Priority:
-           0. PassSync cache (instant, shared across modules)
-           1. membership_plans (DB) — authoritative for price + ID
-           2. site_config (admin panel config) — display settings
-           3. localStorage (offline cache)
-           4. PassRenderer.DEFAULT_PLANS (last-resort hardcoded defaults)
-
-         PRICE always from membership_plans.price_inr (admin edits DB).
-      */
+      /* ── 2. Fetch plan from DB (price_inr, billing_cycle) ──────── */
       var plan = null;
-      var _fetchAttempt = 0;
+      try {
+        var planRes = await client
+          .from('membership_plans')
+          .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
+          .eq('slug', planSlug)
+          .eq('is_active', true)
+          .maybeSingle();
 
-      /* STEP 0: PassSync fast-path — try cached plan first (instant) */
-      if (typeof window.PassSync !== 'undefined' && window.PassSync.getPlanBySlug) {
-        try {
-          plan = await window.PassSync.getPlanBySlug(planSlug);
-          if (plan) {
-            _log('checkout', 'PassSync cache hit for plan:', { slug: planSlug, price_inr: plan.price_inr });
-          }
-        } catch (e) {
-          _warn('checkout', 'PassSync fetch exception:', e);
+        if (planRes.error) {
+          _warn('checkout', 'DB plan fetch error (using fallback):', planRes.error.message);
         }
+        plan = planRes.data;
+      } catch (e) {
+        _warn('checkout', 'Plan fetch exception (using fallback):', e);
       }
 
+      /* Fallback to display config if DB unavailable */
       if (!plan) {
-      /* ─────────────────────────────────────────────────────────────────
-         PLAN FETCH — SINGLE SOURCE OF TRUTH — v3.0
-         NEVER "Plan unavailable" if plan exists in membership_plans.
-       ─────────────────────────────────────────────────────────────────── */
-      async function _fetchPlanFromDB(attempt) {
-        _log('checkout', 'Fetching plan "' + planSlug + '"' + (attempt > 0 ? ' (retry ' + attempt + ')' : ''));
-
-        /* STEP 1: Fetch from membership_plans (price-authoritative)
-           1A: Targeted slug query (fastest path)
-           1B: Broad SELECT + client-side match (handles slug mismatches / missing rows) */
-        var dbPlan = null;
-        try {
-          var planRes = await client
-            .from('membership_plans')
-            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-            .eq('slug', planSlug)
-            .maybeSingle();
-          if (planRes.data && !planRes.error) {
-            dbPlan = planRes.data;
-            _log('checkout', 'Step 1A: plan found by slug:', { slug: planSlug, price: dbPlan.price_inr, id: dbPlan.id });
-          } else if (planRes.error) {
-            _warn('checkout', 'Step 1A fetch error:', planRes.error.message);
-          }
-        } catch (e) {
-          _warn('checkout', 'Step 1A fetch exception:', e);
+        var fb = PLAN_DISPLAY[planSlug];
+        if (!fb) {
+          _toast('Plan not found. Please try again.', 'error');
+          _btnRestore(triggerBtn);
+          return;
         }
-
-        /* STEP 1B: Broad SELECT fallback — if slug query missed (row exists but slug differs) */
-        if (!dbPlan) {
-          try {
-            var allPlansRes = await client
-              .from('membership_plans')
-              .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-              .limit(50);
-            if (allPlansRes.data && allPlansRes.data.length) {
-              var slugNorm = planSlug.toLowerCase().replace(/[\s_-]/g, '');
-              dbPlan = allPlansRes.data.find(function(p) {
-                if (p.slug === planSlug) return true;
-                if ((p.slug || '').toLowerCase().replace(/[\s_-]/g, '') === slugNorm) return true;
-                if ((p.name || '').toLowerCase().replace(/\s+/g, '_') === planSlug) return true;
-                if ((p.name || '').toLowerCase().replace(/[\s_-]/g, '') === slugNorm) return true;
-                return false;
-              }) || null;
-              if (dbPlan) {
-                _log('checkout', 'Step 1B: plan matched by broad SELECT:', { found: dbPlan.slug, id: dbPlan.id });
-              } else {
-                _log('checkout', 'Step 1B: plan "' + planSlug + '" not in DB (' + allPlansRes.data.length + ' plans fetched)');
-              }
-            }
-          } catch (e1b) {
-            _warn('checkout', 'Step 1B broad SELECT failed:', e1b);
-          }
-        }
-
-        /* STEP 2: Try site_config for display settings (badge, gradient, duration) */
-        var sitePlan = null;
-        try {
-          var cfgRes = await client
-            .from('site_config')
-            .select('value')
-            .eq('key', 'pass_management_config')
-            .maybeSingle();
-          if (cfgRes.data && cfgRes.data.value) {
-            var pmCfg = JSON.parse(cfgRes.data.value);
-            if (pmCfg.plans) {
-              pmCfg.plans.forEach(function(p) {
-                var pId = p.passId || (p.name || '').toLowerCase().replace(/\s+/g, '_');
-                if (pId === planSlug) { sitePlan = p; }
-              });
-            }
-          }
-        } catch (e) {
-          _warn('checkout', 'site_config fetch error:', e);
-        }
-
-        /* STEP 3: Try localStorage cache */
-        if (!sitePlan) {
-          try {
-            var lsRaw = localStorage.getItem('studyria_pass_config');
-            if (lsRaw) {
-              var lsCfg = JSON.parse(lsRaw);
-              if (lsCfg && lsCfg.plans) {
-                lsCfg.plans.forEach(function(p) {
-                  var pId = p.passId || (p.name || '').toLowerCase().replace(/\s+/g, '_');
-                  if (pId === planSlug) { sitePlan = p; }
-                });
-              }
-            }
-          } catch (e) { /* localStorage unavailable */ }
-        }
-
-        /* STEP 4: Try PassRenderer.DEFAULT_PLANS (known canonical plans) */
-        if (!sitePlan && window.PassRenderer && window.PassRenderer.DEFAULT_PLANS) {
-          var dp = window.PassRenderer.DEFAULT_PLANS.find(function(p) { return p.passId === planSlug; });
-          if (dp) {
-            sitePlan = dp;
-            _log('checkout', 'Plan found in PassRenderer.DEFAULT_PLANS:', planSlug);
-          }
-        }
-
-        /* STEP 5: If plan is still not found anywhere, it truly doesn't exist */
-        if (!dbPlan && !sitePlan) {
-          _warn('checkout', 'Plan "' + planSlug + '" not found in any source' + (attempt > 0 ? ' after retry' : ''));
-          return null;
-        }
-
-        /* BUILD PLAN OBJECT
-           PRICE RULE: membership_plans.price_inr wins over everything.
-           If plan has no DB row yet, use offerPrice from site_config/default.
-           Duration: use sitePlan.duration if available, else CYCLE_DAYS lookup. */
-        var finalPrice = dbPlan
-          ? dbPlan.price_inr
-          : (sitePlan ? (sitePlan.offerPrice || sitePlan.originalPrice || 0) : 0);
-
-        var finalDuration = sitePlan && sitePlan.durationUnit === 'lifetime'
-          ? '0'
-          : (sitePlan ? (sitePlan.duration || null) : null);
-
-        var finalDurationUnit = sitePlan && sitePlan.durationUnit
-          ? sitePlan.durationUnit : 'days';
-
-        var result = {
-          id:            dbPlan ? dbPlan.id : null,
+        plan = {
+          id:            null,
           slug:          planSlug,
-          name:          (dbPlan ? dbPlan.name : null) || (sitePlan ? sitePlan.name : planSlug),
-          price_inr:     finalPrice,
-          billing_cycle: dbPlan ? (dbPlan.billing_cycle || planSlug) : planSlug,
-          is_active:     dbPlan ? dbPlan.is_active : (sitePlan ? sitePlan.active !== false : true),
-          trial_days:    dbPlan ? dbPlan.trial_days : null,
-          duration:      finalDuration,
-          durationUnit:  finalDurationUnit,
-          _source:       dbPlan ? 'membership_plans+' + (sitePlan ? 'site_config' : 'default') : 'site_config_only',
+          name:          fb.name,
+          price_inr:     fb.display_inr,
+          billing_cycle: planSlug,
+          is_active:     true,
         };
-
-        _log('checkout', 'Plan resolved (v3 — DB price wins):', {
-          slug: planSlug, price: '₹' + result.price_inr,
-          active: result.is_active, id: result.id, source: result._source
-        });
-
-        return result;
+        _warn('checkout', 'Using fallback plan (DB unavailable):', plan);
       }
 
-      plan = await _fetchPlanFromDB(0);
-
-      /* RETRY LOGIC: If plan not found, refetch once */
-      if (!plan) {
-        _log('checkout', 'Plan not found — retrying once…');
-        plan = await _fetchPlanFromDB(1);
-      }
-
-      /* If still not found after retry, show error */
-      if (!plan) {
-        // FIX 14: Friendly error — plan may be temporarily unavailable, not deleted
-        // Provide actionable error: if admin hasn't synced yet, direct them there
-        _toast(
-          '⚠️ Plan "' + planSlug + '" not found. Go to Admin → Pass Management → Save Plans to sync, then refresh.',
-          'error'
-        );
-      } /* end inner if — "still not found after retry" */
-      } /* end if (!plan) — close PassSync fallback block (from line 229) */
-
-      /* PassSync retry: if still no plan after _fetchPlanFromDB, force-refresh and try once more */
-      if (!plan && typeof window.PassSync !== 'undefined' && window.PassSync.getPlanBySlug) {
-        _warn('checkout', 'Plan not found after DB fetch -- PassSync force refresh retry');
-        if (window.PassSync.invalidateCache) window.PassSync.invalidateCache();
-        try {
-          plan = await window.PassSync.getPlanBySlug(planSlug, true);
-        } catch (e) {
-          _warn('checkout', 'PassSync retry exception:', e);
-        }
-      }
-
-      if (!plan) {
-        _err('checkout', 'Plan not found in any source after all retries:', planSlug);
-        _toast(
-          '⚠️ Plan "' + planSlug + '" not found. Go to Admin → Pass Management → Save Plans to sync, then refresh.',
-          'error'
-        );
-        _btnRestore(triggerBtn);
-        return;
-      }
-
-      /* Compute duration from site_config duration field (authoritative) */
-      var durationDays;
-      if (plan.durationUnit === 'lifetime') {
-        durationDays = 36500;
-      } else {
-        durationDays = parseInt(plan.duration) || _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
-      }
-
-      /* ── Payment Validation ───────────────────────────────────
-         Verify plan exists, is active, price valid, offer valid, duration valid.
-         Never open payment using invalid data. */
-      var validationErrors = [];
-      // Check price valid
-      if (typeof plan.price_inr !== 'number' || plan.price_inr <= 0) {
-        validationErrors.push('Invalid price (\u20B9' + plan.price_inr + ')');
-      }
-      // Check plan active
-      if (plan.is_active === false) {
-        validationErrors.push('Plan is not active');
-      }
-      // Check duration valid
-      if (durationDays <= 0) {
-        validationErrors.push('Invalid duration (' + durationDays + ' days)');
-      }
-      if (validationErrors.length) {
-        var vMsg = '\u26A0\uFE0F Cannot proceed with payment: ' + validationErrors.join(', ') + '. Please contact support.';
-        _toast(vMsg, 'error');
-        _btnRestore(triggerBtn);
-        _err('checkout', 'Payment validation failed:', validationErrors);
-        return;
-      }
-      _log('checkout', 'Payment validation passed:', { price_inr: plan.price_inr, is_active: plan.is_active, durationDays: durationDays });
+      var durationDays = _cycleDays(plan.billing_cycle, plan.trial_days || planSlug);
       _log('checkout', 'Expiry calculation:', {
         slug: planSlug, billing_cycle: plan.billing_cycle,
         trial_days: plan.trial_days, durationDays: durationDays,
       });
 
-      /* If plan.id is null, try UPSERT into membership_plans.
-         - If row exists but our query missed it (slug mismatch) → upsert returns it
-         - If row truly missing and we have write permission → creates it
-         - If RLS blocks write → falls through to rescue SELECT below */
+      /* GUARD: plan.id must be a valid UUID — null causes NOT NULL violation in DB */
       if (!plan.id) {
-        _warn('checkout', 'Plan "' + planSlug + '" has no DB id \u2014 attempting upsert into membership_plans');
-        try {
-          var upsertRes = await client
-            .from('membership_plans')
-            .upsert(
-              { slug: planSlug, name: plan.name || planSlug, price_inr: plan.price_inr, billing_cycle: plan.billing_cycle || planSlug, is_active: true },
-              { onConflict: 'slug', ignoreDuplicates: false }
-            )
-            .select('id, slug, price_inr')
-            .maybeSingle();
-          if (upsertRes.data && upsertRes.data.id) {
-            plan.id = upsertRes.data.id;
-            if (upsertRes.data.price_inr) plan.price_inr = upsertRes.data.price_inr;
-            _log('checkout', 'Upsert succeeded — plan.id obtained:', plan.id);
-          } else if (upsertRes.error) {
-            /* 23505 = unique_violation → row exists, SELECT it directly */
-            /* 42501 = insufficient_privilege → RLS blocks INSERT, row may still exist */
-            var errCode = (upsertRes.error.code || '');
-            if (errCode === '23505' || errCode === '42501') {
-              _log('checkout', 'Upsert blocked (' + errCode + ') — will try rescue SELECT');
-            } else {
-              _warn('checkout', 'Upsert error:', upsertRes.error.message);
-            }
-          }
-        } catch (e) {
-          _warn('checkout', 'Upsert exception:', e.message || e);
-        }
-      }
-
-      /* GUARD: plan.id — broad rescue before final block */
-      if (!plan.id) {
-        /* RESCUE: SELECT all active plans and match by slug or name variant.
-           Handles: race conditions after INSERT, slug format mismatches,
-           rows that exist in DB but were missed by the targeted slug query. */
-        try {
-          var rescueRes = await client
-            .from('membership_plans')
-            .select('id, slug, name, price_inr, billing_cycle, is_active, trial_days')
-            .limit(50);
-          if (rescueRes.data && rescueRes.data.length) {
-            var planSlugNorm = planSlug.toLowerCase().replace(/[\s_-]/g, '');
-            var match = rescueRes.data.find(function(p) {
-              if (p.slug === planSlug) return true;
-              if ((p.slug || '').toLowerCase().replace(/[\s_-]/g, '') === planSlugNorm) return true;
-              if ((p.name || '').toLowerCase().replace(/\s+/g, '_') === planSlug) return true;
-              if ((p.name || '').toLowerCase().replace(/[\s_-]/g, '') === planSlugNorm) return true;
-              return false;
-            });
-            if (match) {
-              plan.id            = match.id;
-              plan.price_inr     = match.price_inr || plan.price_inr;
-              plan.billing_cycle = match.billing_cycle || plan.billing_cycle;
-              plan.is_active     = match.is_active;
-              _log('checkout', 'RESCUE: plan matched by broad SELECT:', { found: match.slug, id: match.id });
-            }
-          }
-        } catch (rescueErr) {
-          _warn('checkout', 'RESCUE SELECT failed:', rescueErr);
-        }
-      }
-
-      /* FINAL GUARD: no plan.id after all attempts */
-      if (!plan.id) {
-        _err('checkout', 'Plan ID null after rescue for "' + planSlug + '"');
+        _err('checkout', 'Plan ID is null — plan "' + planSlug + '" not found in membership_plans DB table.');
         _toast(
-          '\u26A0\uFE0F Plan "' + planSlug + '" needs syncing. Ask admin: Admin \u2192 Pass Management \u2192 Sync Plans, then retry.',
+          '⚠️ Plan "' + planSlug + '" is not yet activated in the database. ' +
+          'Please contact support or try again shortly.',
           'error'
         );
         _btnRestore(triggerBtn);
         return;
       }
-      _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays, id: plan.id });
+      _log('checkout', 'Plan resolved:', { slug: planSlug, price_inr: plan.price_inr, days: durationDays });
 
       /* ── 3. Check existing membership (ANY status) ───────────────
          CRITICAL FIX: Previously filtered by status='active' AND expires_at > now.
@@ -562,10 +305,7 @@
         throw new Error('Razorpay SDK unavailable after load');
       }
 
-      /* ── 5. Open Razorpay checkout ──────────────────────────────
-         FIX 13: Amount shown on Card, Checkout, Razorpay, Receipt must all match.
-         Log the exact amount being charged for audit trail. */
-      _log('checkout', 'Razorpay amount:', { price_inr: plan.price_inr, paise: plan.price_inr * 100, slug: planSlug });
+      /* ── 5. Open Razorpay checkout ────────────────────────────── */
       var paymentResponse = await new Promise(function (resolve, reject) {
         var options = {
           key:         RZP_KEY,
@@ -579,12 +319,8 @@
           },
           theme: { color: '#fbbf24' },
           notes: {
-            plan_slug:   planSlug,
-            plan_id:     plan.id || '',
-            plan_name:   plan.name || '',
-            user_id:     user.id,
-            amount_inr: String(plan.price_inr),
-            duration_days: String(durationDays),
+            plan_slug: planSlug,
+            user_id:   user.id,
           },
           handler: function (response) {
             resolve({
@@ -761,15 +497,13 @@
           membership_id:  membershipId,
           provider:       'razorpay',
           provider_tx_id: paymentResponse.payment_id,   /* UNIQUE — replay protection */
-          amount_inr:     plan.price_inr,  /* FIX 13: Must match Razorpay charge */
+          amount_inr:     plan.price_inr,
           currency:       'INR',
           status:         'completed',
           notes:          JSON.stringify({
-            plan_slug:   planSlug,
-            plan_name:   plan.name || '',
-            order_id:    paymentResponse.order_id,
-            amount_inr:  plan.price_inr,  /* FIX 13: For receipt consistency */
-            expires_at:  expiresAt,
+            plan_slug:  planSlug,
+            order_id:   paymentResponse.order_id,
+            expires_at: expiresAt,
           }),
         };
 
@@ -939,12 +673,6 @@
   window.PPAY = {
     _version: '1.0',
     checkout: checkout,
-    /* No cache — always fetch fresh from database */
   };
-
-  /* Listen for config update events from admin save */
-  window.addEventListener('studyria:passConfigUpdated', function() {
-    console.log('[PPAY] Config updated — next checkout will fetch fresh from database');
-  });
 
 })();

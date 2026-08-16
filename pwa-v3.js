@@ -188,7 +188,7 @@
     canvas.width = window.innerWidth;
     canvas.height= window.innerHeight;
 
-    const COLORS = ['#930205','#fbbf24','#10b981','#f43f5e','#8b5cf6','#06b6d4'];
+    const COLORS = ['#3d8ef8','#fbbf24','#10b981','#f43f5e','#8b5cf6','#06b6d4'];
     const particles = Array.from({ length: 80 }, (_, i) => ({
       x: canvas.width / 2,
       y: canvas.height * 0.4,

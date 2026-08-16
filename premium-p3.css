@@ -38,7 +38,7 @@
   --p3-gold-dark:  #d97706;
   --p3-violet:     #a78bfa;
   --p3-violet-d:   #7c3aed;
-  --p3-blue:       #930205;
+  --p3-blue:       #3d8ef8;
   --p3-green:      #10d98e;
   --p3-bg-dark:    rgba(15, 10, 30, 0.96);
   --p3-bg-card:    rgba(20, 15, 40, 0.92);
@@ -159,7 +159,7 @@
 }
 
 .prm-p3-badge--blue {
-  background: linear-gradient(135deg, #930205, #930205, #930205);
+  background: linear-gradient(135deg, #2563eb, #3d8ef8, #2563eb);
   background-size: 200% 100%;
   color: #fff;
   animation: prm-p3-shimmer 3s linear infinite;

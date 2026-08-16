@@ -78,7 +78,7 @@ ALTER TABLE public.website_settings ADD COLUMN IF NOT EXISTS community_hub_enabl
 INSERT INTO public.community_links (id, title, description, icon, color, url, is_primary, enabled, sort_order)
 VALUES
   ('a1b2c3d4-0001-4000-8000-000000000001', 'Studyria Official', 'Reels & stories on Instagram',
-   '📸', '#e1306c', 'https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==', true, true, 1),
+   '📸', '#e1306c', 'https://www.instagram.com/studyria.official/', true, true, 1),
   ('a1b2c3d4-0002-4000-8000-000000000002', 'Studyria Official', 'Daily updates on Telegram',
    '✈️', '#0088cc', 'https://t.me/studyria', true, true, 2)
 ON CONFLICT (id) DO UPDATE SET

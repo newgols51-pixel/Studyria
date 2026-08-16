@@ -20,7 +20,7 @@
  */
 (function () {
   'use strict';
-  if (window.SMCI && window.SMCI._version === 'pci-2.6') return;
+  if (window.SMCI && window.SMCI._version === 'pci-2.4') return;
 
   /* ── Constants ─────────────────────────────────────────────────── */
   var CACHE_TTL_MS      = 60000;    /* 1-min membership status cache */
@@ -41,12 +41,6 @@
   /* Category config cache */
   var _catCache    = { cats: null, fetchedAt: 0 };
   var _premPdfCache = { pdfs: null, fetchedAt: 0, ttlMs: 90000 }; /* 90s TTL */
-
-  /* PERSISTENT PDF STORE — survives window.PDFS replacement by pdf-list.js.
-   * When _getPremiumCategoryPdfs returns PDFs, they are stored here.
-   * When _openReadingRoomById can't find a PDF in window.PDFS, it checks
-   * this store before falling back to Supabase. */
-  var _smciPdfStore = {}; /* { id: pdfObject } */
 
   /* ── Utilities ─────────────────────────────────────────────────── */
   function _sb()    { return window.supabaseClient || null; }
@@ -296,7 +290,6 @@
 
     if (localPdfs.length > 0) {
       _premPdfCache.pdfs = localPdfs; _premPdfCache.fetchedAt = Date.now();
-      localPdfs.forEach(function(p) { _smciPdfStore[String(p.id)] = p; });
       return localPdfs;
     }
 
@@ -325,7 +318,6 @@
       if (matched.length > 0) {
         _premPdfCache.pdfs = matched; _premPdfCache.fetchedAt = Date.now();
         matched.forEach(function(p) {
-          _smciPdfStore[String(p.id)] = p;
           if (!window.PDFS) window.PDFS = [];
           if (!window.PDFS.some(function(x) { return String(x.id) === String(p.id); })) {
             window.PDFS.push(p);
@@ -368,143 +360,6 @@
   var _rrScale = 1.3;
   var _rrPdfId = null;
   var _rrRenderTask = null;
-  var _rrTheme = 'dark';
-  var _rrBookmarks = [];
-  var _rrReadingStart = 0;
-  var _rrReadingSeconds = 0;
-  var _rrAntiCopyHandlers = null;
-
-  /* ── THEME SYSTEM (Dark / Light / Sepia) ── */
-  var _rrThemes = {
-    dark:  { bg:'#0b0e14', panel:'#11151c', border:'rgba(255,255,255,0.06)', text:'#fff', subtext:'rgba(255,255,255,0.4)', btnBg:'rgba(255,255,255,.06)', btnBorder:'rgba(255,255,255,.12)' },
-    light: { bg:'#f5f0e8', panel:'#fff', border:'rgba(0,0,0,0.08)', text:'#1c1b1a', subtext:'rgba(0,0,0,0.4)', btnBg:'rgba(0,0,0,.04)', btnBorder:'rgba(0,0,0,.1)' },
-    sepia: { bg:'#1a140e', panel:'#231910', border:'rgba(212,180,140,0.12)', text:'#f0e4d0', subtext:'rgba(212,180,140,0.45)', btnBg:'rgba(212,180,140,.06)', btnBorder:'rgba(212,180,140,.15)' }
-  };
-  function _rrLoadTheme() {
-    try { return localStorage.getItem('studyria_rr_theme') || 'dark'; } catch(e) { return 'dark'; }
-  }
-  function _rrApplyTheme(theme) {
-    if (!_rrOverlay) return;
-    var t = _rrThemes[theme] || _rrThemes.dark;
-    _rrOverlay.style.background = t.bg;
-    var header = _rrOverlay.querySelector('#rrHeader');
-    var footer = _rrOverlay.querySelector('#rrFooter');
-    var canvasWrap = _rrOverlay.querySelector('#rrCanvasWrap');
-    if (header) { header.style.background = t.panel; header.style.borderBottomColor = t.border; }
-    if (footer) { footer.style.background = t.panel; footer.style.borderTopColor = t.border; }
-    if (canvasWrap) canvasWrap.style.background = t.bg;
-    /* Update all buttons */
-    var btns = _rrOverlay.querySelectorAll('button');
-    for (var i = 0; i < btns.length; i++) {
-      var b = btns[i];
-      if (b.id && b.id.indexOf('rrTheme') === 0) continue;
-      b.style.background = t.btnBg;
-      b.style.borderColor = t.btnBorder;
-      b.style.color = t.text;
-    }
-    /* Update inputs */
-    var inputs = _rrOverlay.querySelectorAll('input');
-    for (var j = 0; j < inputs.length; j++) {
-      inputs[j].style.background = t.btnBg;
-      inputs[j].style.borderColor = t.btnBorder;
-      inputs[j].style.color = t.text;
-    }
-    /* Update subtext elements */
-    var subs = _rrOverlay.querySelectorAll('[data-rr-subtext]');
-    for (var k = 0; k < subs.length; k++) subs[k].style.color = t.subtext;
-    /* Update zoom label */
-    var zl = _rrOverlay.querySelector('#rrZoomLabel');
-    if (zl) zl.style.color = t.subtext;
-    /* Update theme button active states */
-    ['dark','light','sepia'].forEach(function(tn) {
-      var btn = _rrOverlay.querySelector('#rrTheme' + tn);
-      if (btn) {
-        btn.style.opacity = tn === theme ? '1' : '0.4';
-        btn.style.background = tn === theme ? t.btnBg : 'transparent';
-      }
-    });
-    _rrTheme = theme;
-    try { localStorage.setItem('studyria_rr_theme', theme); } catch(e) {}
-  }
-
-  /* ── BOOKMARK SYSTEM ── */
-  function _rrGetBookmarkKey(pdfId) { return 'studyria_rr_bm_' + pdfId; }
-  function _rrLoadBookmarks(pdfId) {
-    try {
-      var raw = localStorage.getItem(_rrGetBookmarkKey(pdfId));
-      return raw ? JSON.parse(raw) : [];
-    } catch(e) { return []; }
-  }
-  function _rrSaveBookmarks(pdfId, marks) {
-    try { localStorage.setItem(_rrGetBookmarkKey(pdfId), JSON.stringify(marks)); } catch(e) {}
-  }
-  function _rrToggleBookmark(pdfId, page) {
-    var marks = _rrLoadBookmarks(pdfId);
-    var idx = marks.indexOf(page);
-    if (idx >= 0) marks.splice(idx, 1);
-    else marks.push(page);
-    marks.sort(function(a,b){ return a-b; });
-    _rrSaveBookmarks(pdfId, marks);
-    return marks;
-  }
-  function _rrUpdateBookmarkBtn() {
-    var btn = _rrOverlay ? _rrOverlay.querySelector('#rrBookmarkBtn') : null;
-    if (!btn) return;
-    var isMarked = _rrBookmarks.indexOf(_rrCurrentPage) >= 0;
-    btn.textContent = isMarked ? '\u2605' : '\u2606';
-    btn.style.color = isMarked ? '#fbbf24' : '';
-    btn.title = isMarked ? 'Remove bookmark' : 'Add bookmark';
-  }
-  function _rrRenderBookmarkMarkers() {
-    if (!_rrOverlay) return;
-    var bar = _rrOverlay.querySelector('#rrProgressBg');
-    if (!bar || _rrTotalPages < 1) return;
-    /* Remove old markers */
-    var old = bar.querySelectorAll('.rr-bm-mark');
-    for (var i = 0; i < old.length; i++) old[i].remove();
-    /* Add new markers */
-    for (var j = 0; j < _rrBookmarks.length; j++) {
-      var pct = (_rrBookmarks[j] / _rrTotalPages) * 100;
-      var mark = document.createElement('div');
-      mark.className = 'rr-bm-mark';
-      mark.style.cssText = 'position:absolute;top:0;left:' + pct + '%;width:2px;height:100%;background:#fbbf24;opacity:.7;pointer-events:none';
-      bar.appendChild(mark);
-    }
-  }
-
-  /* ── READING TIME TRACKING ── */
-  function _rrStartTimer() { _rrReadingStart = Date.now(); }
-  function _rrStopTimer() {
-    if (_rrReadingStart) {
-      _rrReadingSeconds += Math.round((Date.now() - _rrReadingStart) / 1000);
-      _rrReadingStart = 0;
-    }
-    return _rrReadingSeconds;
-  }
-
-  /* ── ANTI-COPY / ANTI-DOWNLOAD ── */
-  function _rrAntiCopyOn() {
-    if (!_rrOverlay) return;
-    function block(e) { e.preventDefault(); return false; }
-    function blockKeys(e) {
-      if ((e.ctrlKey || e.metaKey) && ['s','c','p','u'].indexOf((e.key||'').toLowerCase()) >= 0) {
-        e.preventDefault(); return false;
-      }
-    }
-    _rrOverlay.addEventListener('contextmenu', block);
-    _rrOverlay.addEventListener('selectstart', block);
-    _rrOverlay.addEventListener('copy', block);
-    _rrOverlay.addEventListener('keydown', blockKeys);
-    _rrAntiCopyHandlers = { block: block, blockKeys: blockKeys };
-  }
-  function _rrAntiCopyOff() {
-    if (!_rrOverlay || !_rrAntiCopyHandlers) return;
-    _rrOverlay.removeEventListener('contextmenu', _rrAntiCopyHandlers.block);
-    _rrOverlay.removeEventListener('selectstart', _rrAntiCopyHandlers.block);
-    _rrOverlay.removeEventListener('copy', _rrAntiCopyHandlers.block);
-    _rrOverlay.removeEventListener('keydown', _rrAntiCopyHandlers.blockKeys);
-    _rrAntiCopyHandlers = null;
-  }
 
   function _rrWatermarkText() {
     var u = _user();
@@ -521,7 +376,7 @@
 
   function _rrSaveProgress(pdfId, page, total) {
     try {
-      localStorage.setItem(_rrGetProgressKey(pdfId), JSON.stringify({ page: page, total: total, zoom: _rrScale, seconds: _rrReadingSeconds + (_rrReadingStart ? Math.round((Date.now()-_rrReadingStart)/1000) : 0), ts: Date.now() }));
+      localStorage.setItem(_rrGetProgressKey(pdfId), JSON.stringify({ page: page, total: total, ts: Date.now() }));
     } catch(e) {}
   }
 
@@ -537,11 +392,6 @@
   }
 
   function _rrClose() {
-    /* Stop reading timer and save final time */
-    _rrStopTimer();
-    if (_rrPdfId) _rrSaveProgress(_rrPdfId, _rrCurrentPage, _rrTotalPages);
-    /* Remove anti-copy listeners */
-    _rrAntiCopyOff();
     if (_rrRenderTask) { try { _rrRenderTask.cancel(); } catch(e) {} _rrRenderTask = null; }
     if (_rrOverlay) {
       _rrOverlay.style.opacity = '0';
@@ -617,51 +467,11 @@
     var nextBtn = _rrOverlay.querySelector('#rrNextBtn');
     if (prevBtn) prevBtn.style.opacity = pageNum <= 1 ? '0.3' : '1';
     if (nextBtn) nextBtn.style.opacity = pageNum >= _rrTotalPages ? '0.3' : '1';
-
-    // Update bookmark button and markers
-    _rrUpdateBookmarkBtn();
-    _rrRenderBookmarkMarkers();
-  }
-
-  /* LAZY-LOAD pdf.js on demand — fixes "PDF reader not loaded" error.
-   * pdf.js is loaded with defer in index.html, but CDN failures or timing
-   * issues can leave window.pdfjsLib undefined. This loader fetches it
-   * dynamically before giving up. */
-  var _pdfjsLoading = null;
-  function _ensurePdfjs() {
-    if (window.pdfjsLib) return Promise.resolve(true);
-    if (_pdfjsLoading) return _pdfjsLoading;
-    var src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js';
-    var worker = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-    _pdfjsLoading = new Promise(function(resolve) {
-      var s = document.createElement('script');
-      s.src = src;
-      s.onload = function() {
-        if (window.pdfjsLib) {
-          window.pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
-          resolve(true);
-        } else {
-          _warn('pdf.js script loaded but window.pdfjsLib still undefined');
-          resolve(false);
-        }
-      };
-      s.onerror = function() {
-        _warn('pdf.js CDN script failed to load');
-        _pdfjsLoading = null; /* allow retry */
-        resolve(false);
-      };
-      document.head.appendChild(s);
-    });
-    return _pdfjsLoading;
   }
 
   async function _openReadingRoom(pdf, signedUrl) {
     if (!signedUrl) { _toast('PDF URL not available.', 'error'); return; }
-    if (!window.pdfjsLib) {
-      _log('pdfjsLib not loaded — lazy loading...');
-      var loaded = await _ensurePdfjs();
-      if (!loaded) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
-    }
+    if (!window.pdfjsLib) { _toast('PDF reader not loaded. Please refresh.', 'error'); return; }
 
     _rrPdfId = String(pdf.id);
 
@@ -677,49 +487,36 @@
       'display:flex', 'flex-direction:column',
       'opacity:0', 'transition:opacity .2s ease'
     ].join(';') + ';';
-    _rrTheme = _rrLoadTheme();
-    _rrBookmarks = _rrLoadBookmarks(_rrPdfId);
-    _rrReadingSeconds = 0;
-    var th = _rrThemes[_rrTheme] || _rrThemes.dark;
     _rrOverlay.innerHTML = [
-      '<div id="rrHeader" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:' + th.panel + ';border-bottom:1px solid ' + th.border + ';flex-shrink:0">',
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#11151c;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0">',
         '<div style="display:flex;align-items:center;gap:10px;min-width:0">',
-          '<button id="rrCloseBtn" style="background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:8px;padding:6px 12px;font-size:.8rem;color:' + th.text + ';cursor:pointer;flex-shrink:0">\u2190 Close</button>',
+          '<button id="rrCloseBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 12px;font-size:.8rem;color:#fff;cursor:pointer;flex-shrink:0">\u2190 Close</button>',
           '<div style="min-width:0;overflow:hidden">',
             '<div style="font-size:.82rem;font-weight:700;color:#fbbf24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + _esc(pdf.title || 'Premium PDF') + '</div>',
-            '<div data-rr-subtext style="font-size:.65rem;color:' + th.subtext + '">\uD83D\uDC51 Premium Reading Room</div>',
+            '<div style="font-size:.65rem;color:rgba(255,255,255,0.35)">\uD83D\uDC51 Premium Reading Room</div>',
           '</div>',
         '</div>',
-        '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">',
-          /* Theme buttons */
-          '<button id="rrThemeDark" title="Dark theme" style="background:' + (_rrTheme==='dark' ? th.btnBg : 'transparent') + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;width:28px;height:28px;color:' + th.text + ';cursor:pointer;font-size:.8rem;opacity:' + (_rrTheme==='dark'?'1':'0.4') + '">\u25CF</button>',
-          '<button id="rrThemeLight" title="Light theme" style="background:' + (_rrTheme==='light' ? th.btnBg : 'transparent') + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;width:28px;height:28px;color:' + th.text + ';cursor:pointer;font-size:.8rem;opacity:' + (_rrTheme==='light'?'1':'0.4') + '">\u25CB</button>',
-          '<button id="rrThemeSepia" title="Sepia theme" style="background:' + (_rrTheme==='sepia' ? th.btnBg : 'transparent') + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;width:28px;height:28px;color:' + th.text + ';cursor:pointer;font-size:.8rem;opacity:' + (_rrTheme==='sepia'?'1':'0.4') + '">\u25D0</button>',
-          '<div style="width:1px;height:24px;background:' + th.border + ';margin:0 4px"></div>',
-          /* Bookmark button */
-          '<button id="rrBookmarkBtn" title="Add bookmark" style="background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;width:32px;height:32px;color:' + th.text + ';cursor:pointer;font-size:1rem">\u2606</button>',
-          '<div style="width:1px;height:24px;background:' + th.border + ';margin:0 4px"></div>',
-          /* Zoom controls */
-          '<button id="rrZoomOut" style="background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;width:32px;height:32px;color:' + th.text + ';cursor:pointer;font-size:1rem">\u2212</button>',
-          '<span id="rrZoomLabel" data-rr-subtext style="font-size:.72rem;color:' + th.subtext + ';min-width:36px;text-align:center">130%</span>',
-          '<button id="rrZoomIn" style="background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;width:32px;height:32px;color:' + th.text + ';cursor:pointer;font-size:1rem">+</button>',
+        '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">',
+          '<button id="rrZoomOut" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;width:32px;height:32px;color:#fff;cursor:pointer;font-size:1rem">\u2212</button>',
+          '<span id="rrZoomLabel" style="font-size:.72rem;color:rgba(255,255,255,0.5);min-width:36px;text-align:center">130%</span>',
+          '<button id="rrZoomIn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;width:32px;height:32px;color:#fff;cursor:pointer;font-size:1rem">+</button>',
         '</div>',
       '</div>',
-      '<div id="rrCanvasWrap" style="flex:1;overflow:auto;display:flex;justify-content:center;padding:16px;-webkit-overflow-scrolling:touch;background:' + th.bg + '">',
+      '<div style="flex:1;overflow:auto;display:flex;justify-content:center;padding:16px;-webkit-overflow-scrolling:touch">',
         '<canvas id="rrCanvas" style="max-width:100%;border-radius:4px;box-shadow:0 4px 24px rgba(0,0,0,0.5)"></canvas>',
       '</div>',
-      '<div id="rrFooter" style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px;background:' + th.panel + ';border-top:1px solid ' + th.border + ';flex-shrink:0">',
-        '<button id="rrPrevBtn" style="background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:8px;padding:8px 16px;font-size:.8rem;color:' + th.text + ';cursor:pointer">\u2190 Prev</button>',
+      '<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px;background:#11151c;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0">',
+        '<button id="rrPrevBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:.8rem;color:#fff;cursor:pointer">\u2190 Prev</button>',
         '<div style="display:flex;align-items:center;gap:8px">',
-          '<input id="rrPageInput" type="number" min="1" value="1" style="width:48px;text-align:center;background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:6px;padding:4px 6px;color:' + th.text + ';font-size:.78rem">',
-          '<span data-rr-subtext style="font-size:.72rem;color:' + th.subtext + '">/</span>',
-          '<span id="rrPageIndicator" data-rr-subtext style="font-size:.72rem;color:' + th.subtext + '">1 / 1</span>',
+          '<input id="rrPageInput" type="number" min="1" value="1" style="width:48px;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 6px;color:#fff;font-size:.78rem">',
+          '<span style="font-size:.72rem;color:rgba(255,255,255,0.4)">/</span>',
+          '<span id="rrPageIndicator" style="font-size:.72rem;color:rgba(255,255,255,0.5)">1 / 1</span>',
         '</div>',
-        '<button id="rrNextBtn" style="background:' + th.btnBg + ';border:1px solid ' + th.btnBorder + ';border-radius:8px;padding:8px 16px;font-size:.8rem;color:' + th.text + ';cursor:pointer">Next \u2192</button>',
+        '<button id="rrNextBtn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 16px;font-size:.8rem;color:#fff;cursor:pointer">Next \u2192</button>',
       '</div>',
-      '<div id="rrProgressBg" style="height:3px;background:rgba(255,255,255,0.04);flex-shrink:0;position:relative;overflow:visible">',
+      '<div style="height:3px;background:rgba(255,255,255,0.04);flex-shrink:0;position:relative">',
         '<div id="rrProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .3s ease;border-radius:0 2px 2px 0"></div>',
-        '<span id="rrProgressText" data-rr-subtext style="position:absolute;right:8px;top:-18px;font-size:.65rem;color:' + th.subtext + '">0%</span>',
+        '<span id="rrProgressText" style="position:absolute;right:8px;top:-18px;font-size:.65rem;color:rgba(255,255,255,0.35)">0%</span>',
       '</div>',
     ].join('');
 
@@ -751,25 +548,6 @@
       _rrRenderPage(_rrCurrentPage);
     });
 
-    /* Theme button handlers */
-    _rrOverlay.querySelector('#rrThemeDark').addEventListener('click', function() { _rrApplyTheme('dark'); });
-    _rrOverlay.querySelector('#rrThemeLight').addEventListener('click', function() { _rrApplyTheme('light'); });
-    _rrOverlay.querySelector('#rrThemeSepia').addEventListener('click', function() { _rrApplyTheme('sepia'); });
-
-    /* Bookmark handler */
-    _rrOverlay.querySelector('#rrBookmarkBtn').addEventListener('click', function() {
-      _rrBookmarks = _rrToggleBookmark(_rrPdfId, _rrCurrentPage);
-      _rrUpdateBookmarkBtn();
-      _rrRenderBookmarkMarkers();
-      _toast(_rrBookmarks.indexOf(_rrCurrentPage) >= 0 ? 'Bookmark added on page ' + _rrCurrentPage : 'Bookmark removed', 'info');
-    });
-
-    /* Anti-copy / anti-download */
-    _rrAntiCopyOn();
-
-    /* Start reading timer */
-    _rrStartTimer();
-
     // Keyboard navigation
     function _rrKeyHandler(e) {
       if (!_rrOverlay) { document.removeEventListener('keydown', _rrKeyHandler); return; }
@@ -796,16 +574,8 @@
       }).promise;
       _rrTotalPages = _rrPdfDoc.numPages || 1;
 
-      // Resume from last page + restore zoom level
-      var savedProgress = (function() {
-        try { var raw = localStorage.getItem(_rrGetProgressKey(_rrPdfId)); return raw ? JSON.parse(raw) : null; } catch(e) { return null; }
-      })();
-      var resumePage = savedProgress ? (savedProgress.page || 1) : 1;
-      if (savedProgress && savedProgress.zoom) {
-        _rrScale = savedProgress.zoom;
-        var zl = _rrOverlay.querySelector('#rrZoomLabel');
-        if (zl) zl.textContent = Math.round(_rrScale * 100) + '%';
-      }
+      // Resume from last page
+      var resumePage = _rrLoadProgress(_rrPdfId);
       if (resumePage > _rrTotalPages) resumePage = 1;
       if (resumePage > 1) {
         _toast('Resuming from page ' + resumePage, 'info');
@@ -931,7 +701,7 @@
     /* BUG-FIX: Use quoted string concatenation that avoids inner single-quote breaks */
     var coverHtml = cover
       ? "<img src=\"" + cover + "\" alt=\"" + title + "\" style=\"width:100%;height:100%;object-fit:cover\" loading=\"lazy\" decoding=\"async\">"
-      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(147,2,5,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(61,142,248,0.08),rgba(139,92,246,0.08))">&#x1F4CC;</div>';
     /* BUG-FIX (BUG-2): Open Free calls openReadingRoom directly — never goes to checkout */
     var onclickCard = "if(window.SMCI&&window.SMCI.openReadingRoom)window.SMCI.openReadingRoom('" + id + "');else if(typeof openDetail===\'function\')openDetail('" + id + "')";
     var onclickBtn  = "event.stopPropagation();" + onclickCard;
@@ -1039,7 +809,7 @@
       + (expFmt ? '<div style="font-size:.7rem;color:var(--text2);margin-top:3px">Access until ' + expFmt + ' · ' + _esc(status.planName) + '</div>' : '')
       + '</div>'
       + '<button onclick="navigate(\'premium-library\')" style="font-size:.75rem;color:var(--accent);'
-      + 'background:none;border:1px solid rgba(147,2,5,0.25);border-radius:20px;'
+      + 'background:none;border:1px solid rgba(61,142,248,0.25);border-radius:20px;'
       + 'padding:5px 12px;cursor:pointer;font-weight:600">View All →</button>'
       + '</div>'
       + sectionsHtml
@@ -1444,8 +1214,8 @@
         h += '</div>';
       }
 
-      h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(147,2,5,.08);'
-        + 'border:1px solid rgba(147,2,5,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
+      h += '<div style="margin-top:14px;padding:10px 14px;border-radius:8px;background:rgba(61,142,248,.08);'
+        + 'border:1px solid rgba(61,142,248,.2);font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.5">'
         + 'ℹ Config stored in <strong>site_config</strong> (key: <code>premium_categories_config</code>). '
         + 'Individual PDF purchases always work regardless of toggle. '
         + 'Toggling OFF only removes membership access — purchased content is never affected.'
@@ -1569,7 +1339,7 @@
       }
       setTimeout(_waitAuth, 1200);
     }
-    _log('Init complete — SMCI pci-2.6 (reading room, try-catch library page)');
+    _log('Init complete — SMCI pci-2.4 (reading room, try-catch library page)');
   }
 
 
@@ -1596,7 +1366,7 @@
       container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
         + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
         + '<div style="font-size:.9rem;margin-bottom:16px">Loading timed out. Please retry.</div>'
-        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#930205,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+        + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
         + '</div>';
     }, 5000);
 
@@ -1718,7 +1488,7 @@
         container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">'
           + '<div style="font-size:2rem;margin-bottom:12px">⚠</div>'
           + '<div style="font-size:.9rem;margin-bottom:16px">Could not load Premium Library.</div>'
-          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#930205,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
+          + '<button onclick="window.SMCI.renderPremiumLibraryPage(true)" style="background:linear-gradient(135deg,#3d8ef8,#0ea5e9);color:#fff;font-weight:700;padding:10px 24px;border-radius:20px;border:none;cursor:pointer;font-size:.85rem">↻ Retry</button>'
           + '</div>';
       }
     }
@@ -1727,44 +1497,21 @@
 
 
   async function _openReadingRoomById(pdfId) {
-    console.log('[SMCI] openReadingRoom called with pdfId:', pdfId, 'type:', typeof pdfId);
-    if (!pdfId || pdfId === 'undefined' || pdfId === 'null') {
-      _toast('Invalid PDF ID. Please refresh and try again.', 'error');
-      return;
-    }
-    var pdfIdStr = String(pdfId);
-
-    // STEP 1: Check window.PDFS
-    var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === pdfIdStr; });
+    var pdf = (window.PDFS || []).find(function(p) { return String(p.id) === String(pdfId); });
     if (pdf && typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-    console.log('[SMCI] window.PDFS lookup:', pdf ? 'FOUND' : 'NOT FOUND', '| window.PDFS length:', (window.PDFS||[]).length);
-
-    // STEP 2: Check persistent _smciPdfStore (survives window.PDFS replacement)
-    if (!pdf && _smciPdfStore[pdfIdStr]) {
-      pdf = _smciPdfStore[pdfIdStr];
-      if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-      console.log('[SMCI] _smciPdfStore lookup: FOUND');
-    }
-
-    // STEP 3: Fetch from Supabase by ID
+    // FIX (BUG-2): If pdf not in local cache, fetch it directly from Supabase by ID
     if (!pdf) {
-      _log('openReadingRoom: pdf ' + pdfIdStr + ' not in window.PDFS or _smciPdfStore, fetching from DB...');
+      _log('openReadingRoom: pdf ' + pdfId + ' not in window.PDFS, fetching from DB...');
       var sbClient = _sb();
       if (sbClient) {
         try {
-          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', pdfIdStr).single();
-          console.log('[SMCI] Supabase fetch result:', { error: fetchRes.error, hasData: !!fetchRes.data });
+          var fetchRes = await sbClient.from('pdfs').select('*').eq('id', pdfId).single();
           if (!fetchRes.error && fetchRes.data) {
             pdf = fetchRes.data;
             if (typeof window.normalizePdf === 'function') pdf = window.normalizePdf(pdf);
-            // Store in persistent store AND window.PDFS
-            if (pdf) {
-              _smciPdfStore[pdfIdStr] = pdf;
-              if (!window.PDFS) window.PDFS = [];
-              if (!window.PDFS.some(function(x) { return String(x.id) === pdfIdStr; })) {
-                window.PDFS.push(pdf);
-              }
-            }
+            // Also push into window.PDFS cache for future use
+            if (pdf && !window.PDFS) window.PDFS = [];
+            if (pdf && window.PDFS) window.PDFS.push(pdf);
           }
         } catch(e) { _warn('openReadingRoom: DB fetch failed', e); }
       }
@@ -1804,7 +1551,7 @@
   }
 
   window.SMCI = {
-    _version:               'pci-2.6',
+    _version:               'pci-2.4',
     openReadingRoom:        function(pdfId) { return _openReadingRoomById(pdfId); },
     _injectStatus:          function(status) { _injectStatus(status); },
     _getState:              function() { return Object.assign({}, _state); },
