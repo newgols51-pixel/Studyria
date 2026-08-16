@@ -267,7 +267,7 @@ function closeOverlay(){
   if(o)o.remove();
   stopAllTimers();
   // Reset presence to online
-  if(S.user)api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',arenaRating:0,wins:0,losses:0,draws:0,battles:0,status:'online'});
+  if(S.user){var si=getArenaStats();api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',arenaRating:si.rating||1000,wins:si.wins||0,losses:si.losses||0,draws:si.draws||0,battles:si.battles||0,status:'online'});}
 }
 function toast(msg){
   var old=document.querySelector('.arena-toast');if(old)old.remove();
