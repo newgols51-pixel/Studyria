@@ -5,7 +5,7 @@
    Reasoning, English, Computer, Economy, General Knowledge, Environment
    Each question: [q, a, b, c, d, ans, cat, topic, diff, exam_tags]
    ═══════════════════════════════════════════════════════════════════════ */
-/* Total questions: 5303 (822 original + 4481 new) */
+/* Total questions: 7317 (822 original + 6495 new) */
 window.STUDYRIA_QB = [
   ['Who was the first Chief Minister of Assam?','Gopinath Bordoloi','Bishnuram Medhi','Sarat Chandra Sinha','Hiteswar Saikia','a','Gopinath Bordoloi was the first CM of Assam (1946-1957).','Assam GK','Assam Polity','easy','APSC,ADRE'],
   ['Which dynasty ruled Assam for nearly 600 years?','Koch','Ahom','Kachari','Chutiya','b','The Ahom Dynasty ruled Assam 1228-1826, repelling Mughal invasions.','Assam GK','Assam History','easy','APSC,ADRE'],
@@ -9788,5 +9788,4031 @@ window.STUDYRIA_QB = [
   ['What does the idiom "to go the extra mile" mean?','To do more than required','To travel far','To run fast','To be generous','a','Answer: To do more than required','English','Vocabulary','medium','APSC,ADRE'],
 
   ['What does the idiom "to miss the boat" mean?','To miss an opportunity','To be late for a trip','To forget something','To make a mistake','a','Answer: To miss an opportunity','English','Vocabulary','medium','APSC,ADRE'],
+  ['What is the chemical symbol of Hydrogen?','H','Xx','Yy','Zz','a','Hydrogen symbol is H.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Hydrogen at room temperature?','gas','plasma','condensed','superfluid','a','Hydrogen is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Helium?','2','7','-3','12','a','Helium has atomic number 2. Second most abundant, used in balloons.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Helium?','He','Xx','Yy','Zz','a','Helium symbol is He.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Helium at room temperature?','gas','plasma','condensed','superfluid','a','Helium is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Lithium?','3','8','-2','13','a','Lithium has atomic number 3. Used in batteries.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Lithium?','Li','Xx','Yy','Zz','a','Lithium symbol is Li.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Lithium at room temperature?','solid','plasma','condensed','superfluid','a','Lithium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Beryllium?','4','9','-1','14','a','Beryllium has atomic number 4. Used in aerospace alloys.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Beryllium?','Be','Xx','Yy','Zz','a','Beryllium symbol is Be.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Beryllium at room temperature?','solid','plasma','condensed','superfluid','a','Beryllium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Boron?','5','10','0','15','a','Boron has atomic number 5. Used in glass and detergents.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Boron?','B','Xx','Yy','Zz','a','Boron symbol is B.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Boron at room temperature?','solid','plasma','condensed','superfluid','a','Boron is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical symbol of Carbon?','C','Xx','Yy','Zz','a','Carbon symbol is C.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Carbon at room temperature?','solid','plasma','condensed','superfluid','a','Carbon is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Nitrogen?','7','12','2','17','a','Nitrogen has atomic number 7. 78% of Earth atmosphere.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Nitrogen?','N','Xx','Yy','Zz','a','Nitrogen symbol is N.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Nitrogen at room temperature?','gas','plasma','condensed','superfluid','a','Nitrogen is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical symbol of Oxygen?','O','Xx','Yy','Zz','a','Oxygen symbol is O.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Oxygen at room temperature?','gas','plasma','condensed','superfluid','a','Oxygen is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Fluorine?','9','14','4','19','a','Fluorine has atomic number 9. Most reactive non-metal.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Fluorine?','F','Xx','Yy','Zz','a','Fluorine symbol is F.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Fluorine at room temperature?','gas','plasma','condensed','superfluid','a','Fluorine is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Neon?','10','15','5','20','a','Neon has atomic number 10. Used in advertising signs.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Neon?','Ne','Xx','Yy','Zz','a','Neon symbol is Ne.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Neon at room temperature?','gas','plasma','condensed','superfluid','a','Neon is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Sodium?','11','16','6','21','a','Sodium has atomic number 11. Reactive metal, found in salt.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Sodium?','Na','Xx','Yy','Zz','a','Sodium symbol is Na.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Sodium at room temperature?','solid','plasma','condensed','superfluid','a','Sodium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Magnesium?','12','17','7','22','a','Magnesium has atomic number 12. Used in fireworks and alloys.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Magnesium?','Mg','Xx','Yy','Zz','a','Magnesium symbol is Mg.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Magnesium at room temperature?','solid','plasma','condensed','superfluid','a','Magnesium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Aluminium?','13','18','8','23','a','Aluminium has atomic number 13. Most abundant metal in Earth crust.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Aluminium?','Al','Xx','Yy','Zz','a','Aluminium symbol is Al.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Aluminium at room temperature?','solid','plasma','condensed','superfluid','a','Aluminium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Silicon?','14','19','9','24','a','Silicon has atomic number 14. Used in computer chips.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Silicon?','Si','Xx','Yy','Zz','a','Silicon symbol is Si.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Silicon at room temperature?','solid','plasma','condensed','superfluid','a','Silicon is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Phosphorus?','15','20','10','25','a','Phosphorus has atomic number 15. Essential for DNA and bones.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Phosphorus?','P','Xx','Yy','Zz','a','Phosphorus symbol is P.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Phosphorus at room temperature?','solid','plasma','condensed','superfluid','a','Phosphorus is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Sulfur?','16','21','11','26','a','Sulfur has atomic number 16. Found in volcanic regions.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Sulfur?','S','Xx','Yy','Zz','a','Sulfur symbol is S.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Sulfur at room temperature?','solid','plasma','condensed','superfluid','a','Sulfur is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Chlorine?','17','22','12','27','a','Chlorine has atomic number 17. Used in water purification.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Chlorine?','Cl','Xx','Yy','Zz','a','Chlorine symbol is Cl.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Chlorine at room temperature?','gas','plasma','condensed','superfluid','a','Chlorine is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Argon?','18','23','13','28','a','Argon has atomic number 18. Used in welding and light bulbs.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Argon?','Ar','Xx','Yy','Zz','a','Argon symbol is Ar.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Argon at room temperature?','gas','plasma','condensed','superfluid','a','Argon is a gas at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Potassium?','19','24','14','29','a','Potassium has atomic number 19. Essential for nerve function.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Potassium?','K','Xx','Yy','Zz','a','Potassium symbol is K.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Potassium at room temperature?','solid','plasma','condensed','superfluid','a','Potassium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Calcium?','20','25','15','30','a','Calcium has atomic number 20. Essential for bones and teeth.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Calcium?','Ca','Xx','Yy','Zz','a','Calcium symbol is Ca.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Calcium at room temperature?','solid','plasma','condensed','superfluid','a','Calcium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical symbol of Iron?','Fe','Xx','Yy','Zz','a','Iron symbol is Fe.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Iron at room temperature?','solid','plasma','condensed','superfluid','a','Iron is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Cobalt?','27','32','22','37','a','Cobalt has atomic number 27. Used in batteries and magnets.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Cobalt?','Co','Xx','Yy','Zz','a','Cobalt symbol is Co.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Cobalt at room temperature?','solid','plasma','condensed','superfluid','a','Cobalt is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Nickel?','28','33','23','38','a','Nickel has atomic number 28. Used in stainless steel.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Nickel?','Ni','Xx','Yy','Zz','a','Nickel symbol is Ni.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Nickel at room temperature?','solid','plasma','condensed','superfluid','a','Nickel is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Copper?','29','34','24','39','a','Copper has atomic number 29. Excellent electrical conductor.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Copper?','Cu','Xx','Yy','Zz','a','Copper symbol is Cu.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Copper at room temperature?','solid','plasma','condensed','superfluid','a','Copper is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Zinc?','30','35','25','40','a','Zinc has atomic number 30. Used in galvanization.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Zinc?','Zn','Xx','Yy','Zz','a','Zinc symbol is Zn.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Zinc at room temperature?','solid','plasma','condensed','superfluid','a','Zinc is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Silver?','47','52','42','57','a','Silver has atomic number 47. Best electrical conductor.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Silver?','Ag','Xx','Yy','Zz','a','Silver symbol is Ag.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Silver at room temperature?','solid','plasma','condensed','superfluid','a','Silver is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Tin?','50','55','45','60','a','Tin has atomic number 50. Used in solder and cans.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Tin?','Sn','Xx','Yy','Zz','a','Tin symbol is Sn.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Tin at room temperature?','solid','plasma','condensed','superfluid','a','Tin is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Iodine?','53','58','48','63','a','Iodine has atomic number 53. Essential for thyroid function.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Iodine?','I','Xx','Yy','Zz','a','Iodine symbol is I.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Iodine at room temperature?','solid','plasma','condensed','superfluid','a','Iodine is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical symbol of Gold?','Au','Xx','Yy','Zz','a','Gold symbol is Au.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Gold at room temperature?','solid','plasma','condensed','superfluid','a','Gold is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Mercury?','80','85','75','90','a','Mercury has atomic number 80. Only liquid metal at room temp.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Mercury?','Hg','Xx','Yy','Zz','a','Mercury symbol is Hg.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Mercury at room temperature?','liquid','plasma','condensed','superfluid','a','Mercury is a liquid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Lead?','82','87','77','92','a','Lead has atomic number 82. Used in batteries and radiation shielding.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Lead?','Pb','Xx','Yy','Zz','a','Lead symbol is Pb.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Lead at room temperature?','solid','plasma','condensed','superfluid','a','Lead is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['What is the atomic number of Uranium?','92','97','87','102','a','Uranium has atomic number 92. Used as nuclear fuel.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol of Uranium?','U','Xx','Yy','Zz','a','Uranium symbol is U.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the state of Uranium at room temperature?','solid','plasma','condensed','superfluid','a','Uranium is a solid at room temperature.','Science','Chemistry','medium','APSC'],
+
+  ['Which organs are part of the Skeletal system?','206 bones','Heart only','Brain only','Lungs only','a','Skeletal system: 206 bones.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Skeletal system?','Provides structure and protects organs','Photosynthesis','Gravity','Magnetism','a','Skeletal system: Provides structure and protects organs.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Muscular system?','600+ muscles','Heart only','Brain only','Lungs only','a','Muscular system: 600+ muscles.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Muscular system?','Enables movement and maintains posture','Photosynthesis','Gravity','Magnetism','a','Muscular system: Enables movement and maintains posture.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Nervous system?','Brain, spinal cord, nerves','Heart only','Brain only','Lungs only','a','Nervous system: Brain, spinal cord, nerves.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Nervous system?','Controls and coordinates body functions','Photosynthesis','Gravity','Magnetism','a','Nervous system: Controls and coordinates body functions.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Circulatory system?','Heart, blood vessels, blood','Heart only','Brain only','Lungs only','a','Circulatory system: Heart, blood vessels, blood.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Circulatory system?','Transports oxygen, nutrients, and waste','Photosynthesis','Gravity','Magnetism','a','Circulatory system: Transports oxygen, nutrients, and waste.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Respiratory system?','Lungs, trachea, bronchi','Heart only','Brain only','Lungs only','a','Respiratory system: Lungs, trachea, bronchi.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Respiratory system?','Facilitates gas exchange','Photosynthesis','Gravity','Magnetism','a','Respiratory system: Facilitates gas exchange.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Digestive system?','Stomach, intestines, liver','Heart only','Brain only','Lungs only','a','Digestive system: Stomach, intestines, liver.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Digestive system?','Breaks down food and absorbs nutrients','Photosynthesis','Gravity','Magnetism','a','Digestive system: Breaks down food and absorbs nutrients.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Excretory system?','Kidneys, bladder, ureters','Heart only','Brain only','Lungs only','a','Excretory system: Kidneys, bladder, ureters.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Excretory system?','Removes waste from the body','Photosynthesis','Gravity','Magnetism','a','Excretory system: Removes waste from the body.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Endocrine system?','Glands and hormones','Heart only','Brain only','Lungs only','a','Endocrine system: Glands and hormones.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Endocrine system?','Regulates body functions through hormones','Photosynthesis','Gravity','Magnetism','a','Endocrine system: Regulates body functions through hormones.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Reproductive system?','Gonads and reproductive organs','Heart only','Brain only','Lungs only','a','Reproductive system: Gonads and reproductive organs.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Reproductive system?','Enables reproduction','Photosynthesis','Gravity','Magnetism','a','Reproductive system: Enables reproduction.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Integumentary system?','Skin, hair, nails','Heart only','Brain only','Lungs only','a','Integumentary system: Skin, hair, nails.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Integumentary system?','Protects body from external damage','Photosynthesis','Gravity','Magnetism','a','Integumentary system: Protects body from external damage.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Immune system?','Lymph nodes, spleen, white blood cells','Heart only','Brain only','Lungs only','a','Immune system: Lymph nodes, spleen, white blood cells.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Immune system?','Defends against pathogens','Photosynthesis','Gravity','Magnetism','a','Immune system: Defends against pathogens.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organs are part of the Lymphatic system?','Lymph vessels and nodes','Heart only','Brain only','Lungs only','a','Lymphatic system: Lymph vessels and nodes.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the primary function of the Lymphatic system?','Maintains fluid balance and immunity','Photosynthesis','Gravity','Magnetism','a','Lymphatic system: Maintains fluid balance and immunity.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What does the unit "Candela" measure?','Luminous intensity','Weight','Volume','Length','a','Candela (cd) measures Luminous intensity.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Mole" measure?','Amount of substance','Weight','Volume','Length','a','Mole (mol) measures Amount of substance.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Kelvin" measure?','Temperature','Weight','Volume','Length','a','Kelvin (K) measures Temperature.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Ampere" measure?','Electric current','Weight','Volume','Length','a','Ampere (A) measures Electric current.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Coulomb" measure?','Electric charge','Weight','Volume','Length','a','Coulomb (C) measures Electric charge.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Farad" measure?','Capacitance','Weight','Volume','Length','a','Farad (F) measures Capacitance.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Henry" measure?','Inductance','Weight','Volume','Length','a','Henry (H) measures Inductance.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Weber" measure?','Magnetic flux','Weight','Volume','Length','a','Weber (Wb) measures Magnetic flux.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Lumen" measure?','Luminous flux','Weight','Volume','Length','a','Lumen (lm) measures Luminous flux.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Lux" measure?','Illuminance','Weight','Volume','Length','a','Lux (lx) measures Illuminance.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Becquerel" measure?','Radioactivity','Weight','Volume','Length','a','Becquerel (Bq) measures Radioactivity.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Gray" measure?','Absorbed dose','Weight','Volume','Length','a','Gray (Gy) measures Absorbed dose.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Sievert" measure?','Dose equivalent','Weight','Volume','Length','a','Sievert (Sv) measures Dose equivalent.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Katal" measure?','Catalytic activity','Weight','Volume','Length','a','Katal (kat) measures Catalytic activity.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Newton" measure?','Force','Weight','Volume','Length','a','Newton (N) measures Force.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Pascal" measure?','Pressure','Weight','Volume','Length','a','Pascal (Pa) measures Pressure.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Joule" measure?','Energy','Weight','Volume','Length','a','Joule (J) measures Energy.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Watt" measure?','Power','Weight','Volume','Length','a','Watt (W) measures Power.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Hertz" measure?','Frequency','Weight','Volume','Length','a','Hertz (Hz) measures Frequency.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What does the unit "Tesla" measure?','Magnetic field','Weight','Volume','Length','a','Tesla (T) measures Magnetic field.','Science','Physics','medium','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Tamil Nadu?','Bharatanatyam','Bharatanatyam','Kathak','Kathakali','a','Bharatanatyam originated in Tamil Nadu. Oldest classical dance form.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Bharatanatyam known for?','Oldest classical dance form','Olympic sport','Cooking style','Musical instrument','a','Bharatanatyam: Oldest classical dance form.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Northern India?','Kathak','Bharatanatyam','Kathak','Kathakali','a','Kathak originated in Northern India. Storytelling through dance, Mughal influence.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Kathak known for?','Storytelling through dance, Mughal influence','Olympic sport','Cooking style','Musical instrument','a','Kathak: Storytelling through dance, Mughal influence.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Kerala?','Kathakali','Bharatanatyam','Kathak','Kathakali','a','Kathakali originated in Kerala. Dance drama with elaborate makeup.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Kathakali known for?','Dance drama with elaborate makeup','Olympic sport','Cooking style','Musical instrument','a','Kathakali: Dance drama with elaborate makeup.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Manipur?','Manipuri','Bharatanatyam','Kathak','Kathakali','a','Manipuri originated in Manipur. Devotional dance based on Ras Lila.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Manipuri known for?','Devotional dance based on Ras Lila','Olympic sport','Cooking style','Musical instrument','a','Manipuri: Devotional dance based on Ras Lila.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Mohiniyattam known for?','Dance of the enchantress','Olympic sport','Cooking style','Musical instrument','a','Mohiniyattam: Dance of the enchantress.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Odisha?','Odissi','Bharatanatyam','Kathak','Kathakali','a','Odissi originated in Odisha. Temple dance tradition.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Odissi known for?','Temple dance tradition','Olympic sport','Cooking style','Musical instrument','a','Odissi: Temple dance tradition.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Andhra Pradesh?','Kuchipudi','Bharatanatyam','Kathak','Kathakali','a','Kuchipudi originated in Andhra Pradesh. Dance drama tradition.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Kuchipudi known for?','Dance drama tradition','Olympic sport','Cooking style','Musical instrument','a','Kuchipudi: Dance drama tradition.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Assam?','Sattriya','Bharatanatyam','Kathak','Kathakali','a','Sattriya originated in Assam. Dance form from Vaishnavite monasteries.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Sattriya known for?','Dance form from Vaishnavite monasteries','Olympic sport','Cooking style','Musical instrument','a','Sattriya: Dance form from Vaishnavite monasteries.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Bihu known for?','Folk dance celebrating spring','Olympic sport','Cooking style','Musical instrument','a','Bihu: Folk dance celebrating spring.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Punjab?','Bhangra','Bharatanatyam','Kathak','Kathakali','a','Bhangra originated in Punjab. Folk dance celebrating harvest.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Bhangra known for?','Folk dance celebrating harvest','Olympic sport','Cooking style','Musical instrument','a','Bhangra: Folk dance celebrating harvest.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Gujarat?','Garba','Bharatanatyam','Kathak','Kathakali','a','Garba originated in Gujarat. Circular dance during Navratri.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Garba known for?','Circular dance during Navratri','Olympic sport','Cooking style','Musical instrument','a','Garba: Circular dance during Navratri.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Maharashtra?','Lavani','Bharatanatyam','Kathak','Kathakali','a','Lavani originated in Maharashtra. Energetic dance form.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Lavani known for?','Energetic dance form','Olympic sport','Cooking style','Musical instrument','a','Lavani: Energetic dance form.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['Which Indian classical dance form originated in Jharkhand/Odisha/West Bengal?','Chhau','Bharatanatyam','Kathak','Kathakali','a','Chhau originated in Jharkhand/Odisha/West Bengal. Martial dance with masks.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['What is Chhau known for?','Martial dance with masks','Olympic sport','Cooking style','Musical instrument','a','Chhau: Martial dance with masks.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Ghumura known for?','Folk dance with ancient roots','Olympic sport','Cooking style','Musical instrument','a','Ghumura: Folk dance with ancient roots.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['On which river is the Bhakra Nangal Dam built?','Sutlej River','Ganga','Yamuna','Godavari','a','Bhakra Nangal Dam is on the Sutlej River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Bhakra Nangal Dam located?','Himachal Pradesh','Assam','Kerala','Punjab','a','Bhakra Nangal Dam is in Himachal Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Bhakra Nangal Dam?','240m meters','50 meters','500 meters','1000 meters','a','Bhakra Nangal Dam is 240m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Hirakud Dam built?','Mahanadi River','Ganga','Yamuna','Godavari','a','Hirakud Dam is on the Mahanadi River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Hirakud Dam located?','Odisha','Assam','Kerala','Punjab','a','Hirakud Dam is in Odisha.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Hirakud Dam?','25km meters','50 meters','500 meters','1000 meters','a','Hirakud Dam is 25km high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Nagarjuna Sagar Dam built?','Krishna River','Ganga','Yamuna','Godavari','a','Nagarjuna Sagar Dam is on the Krishna River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Nagarjuna Sagar Dam located?','Telangana/Andhra Pradesh','Assam','Kerala','Punjab','a','Nagarjuna Sagar Dam is in Telangana/Andhra Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Nagarjuna Sagar Dam?','124m meters','50 meters','500 meters','1000 meters','a','Nagarjuna Sagar Dam is 124m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Sardar Sarovar Dam built?','Narmada River','Ganga','Yamuna','Godavari','a','Sardar Sarovar Dam is on the Narmada River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Sardar Sarovar Dam located?','Gujarat','Assam','Kerala','Punjab','a','Sardar Sarovar Dam is in Gujarat.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Sardar Sarovar Dam?','163m meters','50 meters','500 meters','1000 meters','a','Sardar Sarovar Dam is 163m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Tehri Dam built?','Bhagirathi River','Ganga','Yamuna','Godavari','a','Tehri Dam is on the Bhagirathi River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Tehri Dam located?','Uttarakhand','Assam','Kerala','Punjab','a','Tehri Dam is in Uttarakhand.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Tehri Dam?','260m meters','50 meters','500 meters','1000 meters','a','Tehri Dam is 260m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Indira Sagar Dam built?','Narmada River','Ganga','Yamuna','Godavari','a','Indira Sagar Dam is on the Narmada River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Indira Sagar Dam located?','Madhya Pradesh','Assam','Kerala','Punjab','a','Indira Sagar Dam is in Madhya Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Indira Sagar Dam?','92m meters','50 meters','500 meters','1000 meters','a','Indira Sagar Dam is 92m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Koyna Dam built?','Koyna River','Ganga','Yamuna','Godavari','a','Koyna Dam is on the Koyna River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Koyna Dam located?','Maharashtra','Assam','Kerala','Punjab','a','Koyna Dam is in Maharashtra.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Koyna Dam?','103m meters','50 meters','500 meters','1000 meters','a','Koyna Dam is 103m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Mettur Dam built?','Kaveri River','Ganga','Yamuna','Godavari','a','Mettur Dam is on the Kaveri River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Mettur Dam located?','Tamil Nadu','Assam','Kerala','Punjab','a','Mettur Dam is in Tamil Nadu.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Mettur Dam?','70m meters','50 meters','500 meters','1000 meters','a','Mettur Dam is 70m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Alamatti Dam built?','Krishna River','Ganga','Yamuna','Godavari','a','Alamatti Dam is on the Krishna River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Alamatti Dam located?','Karnataka','Assam','Kerala','Punjab','a','Alamatti Dam is in Karnataka.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Alamatti Dam?','42m meters','50 meters','500 meters','1000 meters','a','Alamatti Dam is 42m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Ukai Dam built?','Tapti River','Ganga','Yamuna','Godavari','a','Ukai Dam is on the Tapti River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Ukai Dam located?','Gujarat','Assam','Kerala','Punjab','a','Ukai Dam is in Gujarat.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Ukai Dam?','120m meters','50 meters','500 meters','1000 meters','a','Ukai Dam is 120m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Baglihar Dam built?','Chenab River','Ganga','Yamuna','Godavari','a','Baglihar Dam is on the Chenab River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Baglihar Dam located?','Jammu and Kashmir','Assam','Kerala','Punjab','a','Baglihar Dam is in Jammu and Kashmir.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Baglihar Dam?','143m meters','50 meters','500 meters','1000 meters','a','Baglihar Dam is 143m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Salal Dam built?','Chenab River','Ganga','Yamuna','Godavari','a','Salal Dam is on the Chenab River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Salal Dam located?','Jammu and Kashmir','Assam','Kerala','Punjab','a','Salal Dam is in Jammu and Kashmir.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Salal Dam?','113m meters','50 meters','500 meters','1000 meters','a','Salal Dam is 113m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Karcham Wangtoo built?','Sutlej River','Ganga','Yamuna','Godavari','a','Karcham Wangtoo is on the Sutlej River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Karcham Wangtoo located?','Himachal Pradesh','Assam','Kerala','Punjab','a','Karcham Wangtoo is in Himachal Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Karcham Wangtoo?','98m meters','50 meters','500 meters','1000 meters','a','Karcham Wangtoo is 98m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Lakhwar Dam built?','Yamuna River','Ganga','Yamuna','Godavari','a','Lakhwar Dam is on the Yamuna River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Lakhwar Dam located?','Uttarakhand','Assam','Kerala','Punjab','a','Lakhwar Dam is in Uttarakhand.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Lakhwar Dam?','204m meters','50 meters','500 meters','1000 meters','a','Lakhwar Dam is 204m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['On which river is the Idukki Dam built?','Periyar River','Ganga','Yamuna','Godavari','a','Idukki Dam is on the Periyar River.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['In which state is the Idukki Dam located?','Kerala','Assam','Kerala','Punjab','a','Idukki Dam is in Kerala.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the height of the Idukki Dam?','169m meters','50 meters','500 meters','1000 meters','a','Idukki Dam is 169m high.','General Knowledge','World GK','hard','APSC'],
+
+  ['When is Republic Day celebrated in India?','January 26','March 15','July 4','September 5','a','Republic Day is on January 26. Constitution came into effect in 1950.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is Republic Day celebrated?','Constitution came into effect in 1950','To celebrate cricket','To mark a battle victory','To honor a scientist','a','Republic Day: Constitution came into effect in 1950.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is Independence Day celebrated in India?','August 15','March 15','July 4','September 5','a','Independence Day is on August 15. India gained independence in 1947.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is Independence Day celebrated?','India gained independence in 1947','To celebrate cricket','To mark a battle victory','To honor a scientist','a','Independence Day: India gained independence in 1947.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is Gandhi Jayanti celebrated in India?','October 2','March 15','July 4','September 5','a','Gandhi Jayanti is on October 2. Birthday of Mahatma Gandhi.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is Gandhi Jayanti celebrated?','Birthday of Mahatma Gandhi','To celebrate cricket','To mark a battle victory','To honor a scientist','a','Gandhi Jayanti: Birthday of Mahatma Gandhi.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Youth Day celebrated in India?','January 12','March 15','July 4','September 5','a','National Youth Day is on January 12. Birthday of Swami Vivekananda.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Youth Day celebrated?','Birthday of Swami Vivekananda','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Youth Day: Birthday of Swami Vivekananda.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Science Day celebrated in India?','February 28','March 15','July 4','September 5','a','National Science Day is on February 28. Discovery of Raman Effect by C V Raman.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Science Day celebrated?','Discovery of Raman Effect by C V Raman','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Science Day: Discovery of Raman Effect by C V Raman.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Education Day celebrated in India?','November 11','March 15','July 4','September 5','a','National Education Day is on November 11. Birthday of Maulana Abul Kalam Azad.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Education Day celebrated?','Birthday of Maulana Abul Kalam Azad','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Education Day: Birthday of Maulana Abul Kalam Azad.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Constitution Day celebrated in India?','November 26','March 15','July 4','September 5','a','National Constitution Day is on November 26. Constitution was adopted in 1949.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Constitution Day celebrated?','Constitution was adopted in 1949','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Constitution Day: Constitution was adopted in 1949.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Voters Day celebrated in India?','January 25','March 15','July 4','September 5','a','National Voters Day is on January 25. To encourage voter participation.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Voters Day celebrated?','To encourage voter participation','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Voters Day: To encourage voter participation.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Army Day celebrated in India?','January 15','March 15','July 4','September 5','a','National Army Day is on January 15. Field Marshal K M Cariappa took charge in 1949.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Army Day celebrated?','Field Marshal K M Cariappa took charge in 1949','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Army Day: Field Marshal K M Cariappa took charge in 1949.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Tourism Day celebrated in India?','January 25','March 15','July 4','September 5','a','National Tourism Day is on January 25. To promote tourism in India.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Tourism Day celebrated?','To promote tourism in India','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Tourism Day: To promote tourism in India.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Girl Child Day celebrated in India?','January 24','March 15','July 4','September 5','a','National Girl Child Day is on January 24. To promote rights of the girl child.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Girl Child Day celebrated?','To promote rights of the girl child','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Girl Child Day: To promote rights of the girl child.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Pollution Control Day celebrated in India?','December 2','March 15','July 4','September 5','a','National Pollution Control Day is on December 2. In memory of Bhopal Gas Tragedy.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Pollution Control Day celebrated?','In memory of Bhopal Gas Tragedy','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Pollution Control Day: In memory of Bhopal Gas Tragedy.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Human Rights Day celebrated in India?','December 10','March 15','July 4','September 5','a','National Human Rights Day is on December 10. Universal Declaration of Human Rights.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Human Rights Day celebrated?','Universal Declaration of Human Rights','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Human Rights Day: Universal Declaration of Human Rights.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Energy Conservation Day celebrated in India?','December 14','March 15','July 4','September 5','a','National Energy Conservation Day is on December 14. To promote energy efficiency.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Energy Conservation Day celebrated?','To promote energy efficiency','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Energy Conservation Day: To promote energy efficiency.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When is National Farmers Day celebrated in India?','December 23','March 15','July 4','September 5','a','National Farmers Day is on December 23. Birthday of Chaudhary Charan Singh.','General Knowledge','World GK','easy','APSC,ADRE,UPSC'],
+
+  ['Why is National Farmers Day celebrated?','Birthday of Chaudhary Charan Singh','To celebrate cricket','To mark a battle victory','To honor a scientist','a','National Farmers Day: Birthday of Chaudhary Charan Singh.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['When was State Bank of India established?','1955','1950','2000','2010','a','State Bank of India was established in 1955. Largest public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of State Bank of India?','Mumbai','Delhi','Kolkata','Chennai','a','State Bank of India HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of State Bank of India?','SBI','XXX','YYY','ZZZ','a','State Bank of India is abbreviated as SBI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Punjab National Bank established?','1894','1950','2000','2010','a','Punjab National Bank was established in 1894. Second largest public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Punjab National Bank?','New Delhi','Delhi','Kolkata','Chennai','a','Punjab National Bank HQ is in New Delhi.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Punjab National Bank?','PNB','XXX','YYY','ZZZ','a','Punjab National Bank is abbreviated as PNB.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Bank of Baroda established?','1908','1950','2000','2010','a','Bank of Baroda was established in 1908. Third largest public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Bank of Baroda?','Vadodara','Delhi','Kolkata','Chennai','a','Bank of Baroda HQ is in Vadodara.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Bank of Baroda?','BOB','XXX','YYY','ZZZ','a','Bank of Baroda is abbreviated as BOB.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Canara Bank established?','1906','1950','2000','2010','a','Canara Bank was established in 1906. Major public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Canara Bank?','Bengaluru','Delhi','Kolkata','Chennai','a','Canara Bank HQ is in Bengaluru.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Canara Bank?','CB','XXX','YYY','ZZZ','a','Canara Bank is abbreviated as CB.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Union Bank of India established?','1919','1950','2000','2010','a','Union Bank of India was established in 1919. Major public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Union Bank of India?','Mumbai','Delhi','Kolkata','Chennai','a','Union Bank of India HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Union Bank of India?','UBI','XXX','YYY','ZZZ','a','Union Bank of India is abbreviated as UBI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Bank of India established?','1906','1950','2000','2010','a','Bank of India was established in 1906. Major public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Bank of India?','Mumbai','Delhi','Kolkata','Chennai','a','Bank of India HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Bank of India?','BOI','XXX','YYY','ZZZ','a','Bank of India is abbreviated as BOI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Central Bank of India established?','1911','1950','2000','2010','a','Central Bank of India was established in 1911. Major public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Central Bank of India?','Mumbai','Delhi','Kolkata','Chennai','a','Central Bank of India HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Central Bank of India?','CBI','XXX','YYY','ZZZ','a','Central Bank of India is abbreviated as CBI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Indian Bank established?','1907','1950','2000','2010','a','Indian Bank was established in 1907. Major public sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Indian Bank?','Chennai','Delhi','Kolkata','Chennai','a','Indian Bank HQ is in Chennai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Indian Bank?','IB','XXX','YYY','ZZZ','a','Indian Bank is abbreviated as IB.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was ICICI Bank established?','1994','1950','2000','2010','a','ICICI Bank was established in 1994. Largest private sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of ICICI Bank?','Mumbai','Delhi','Kolkata','Chennai','a','ICICI Bank HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of ICICI Bank?','ICICI','XXX','YYY','ZZZ','a','ICICI Bank is abbreviated as ICICI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was HDFC Bank established?','1994','1950','2000','2010','a','HDFC Bank was established in 1994. Second largest private sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of HDFC Bank?','Mumbai','Delhi','Kolkata','Chennai','a','HDFC Bank HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of HDFC Bank?','HDFC','XXX','YYY','ZZZ','a','HDFC Bank is abbreviated as HDFC.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Axis Bank established?','1993','1950','2000','2010','a','Axis Bank was established in 1993. Third largest private sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Axis Bank?','Mumbai','Delhi','Kolkata','Chennai','a','Axis Bank HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Axis Bank?','AXIS','XXX','YYY','ZZZ','a','Axis Bank is abbreviated as AXIS.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Kotak Mahindra Bank established?','2003','1950','2000','2010','a','Kotak Mahindra Bank was established in 2003. Fourth largest private sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Kotak Mahindra Bank?','Mumbai','Delhi','Kolkata','Chennai','a','Kotak Mahindra Bank HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Kotak Mahindra Bank?','KMB','XXX','YYY','ZZZ','a','Kotak Mahindra Bank is abbreviated as KMB.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was Yes Bank established?','2004','1950','2000','2010','a','Yes Bank was established in 2004. Private sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Yes Bank?','Mumbai','Delhi','Kolkata','Chennai','a','Yes Bank HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of Yes Bank?','YES','XXX','YYY','ZZZ','a','Yes Bank is abbreviated as YES.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was IDFC First Bank established?','2015','1950','2000','2010','a','IDFC First Bank was established in 2015. Private sector bank.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of IDFC First Bank?','Mumbai','Delhi','Kolkata','Chennai','a','IDFC First Bank HQ is in Mumbai.','Economy','Indian Economy','easy','APSC'],
+
+  ['What is the abbreviation of IDFC First Bank?','IDFC','XXX','YYY','ZZZ','a','IDFC First Bank is abbreviated as IDFC.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Pradhan Mantri Jan Dhan Yojana launched?','2014','2000','2010','2025','a','Pradhan Mantri Jan Dhan Yojana was launched in 2014. Purpose: Financial inclusion.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Pradhan Mantri Jan Dhan Yojana?','Financial inclusion','Space exploration','Military training','Sports promotion','a','Pradhan Mantri Jan Dhan Yojana: Financial inclusion.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Pradhan Mantri Jan Dhan Yojana?','PMJDY','XXX','YYY','ZZZ','a','Pradhan Mantri Jan Dhan Yojana is abbreviated as PMJDY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Pradhan Mantri Awas Yojana launched?','2015','2000','2010','2025','a','Pradhan Mantri Awas Yojana was launched in 2015. Purpose: Housing for all.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Pradhan Mantri Awas Yojana?','Housing for all','Space exploration','Military training','Sports promotion','a','Pradhan Mantri Awas Yojana: Housing for all.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Pradhan Mantri Awas Yojana?','PMAY','XXX','YYY','ZZZ','a','Pradhan Mantri Awas Yojana is abbreviated as PMAY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Ayushman Bharat launched?','2018','2000','2010','2025','a','Ayushman Bharat was launched in 2018. Purpose: Health insurance for poor.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Ayushman Bharat?','Health insurance for poor','Space exploration','Military training','Sports promotion','a','Ayushman Bharat: Health insurance for poor.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Ayushman Bharat?','PMJAY','XXX','YYY','ZZZ','a','Ayushman Bharat is abbreviated as PMJAY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Pradhan Mantri Ujjwala Yojana launched?','2016','2000','2010','2025','a','Pradhan Mantri Ujjwala Yojana was launched in 2016. Purpose: Free LPG connections.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Pradhan Mantri Ujjwala Yojana?','Free LPG connections','Space exploration','Military training','Sports promotion','a','Pradhan Mantri Ujjwala Yojana: Free LPG connections.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Pradhan Mantri Ujjwala Yojana?','PMUY','XXX','YYY','ZZZ','a','Pradhan Mantri Ujjwala Yojana is abbreviated as PMUY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Swachh Bharat Mission launched?','2014','2000','2010','2025','a','Swachh Bharat Mission was launched in 2014. Purpose: Clean India campaign.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Swachh Bharat Mission?','Clean India campaign','Space exploration','Military training','Sports promotion','a','Swachh Bharat Mission: Clean India campaign.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Swachh Bharat Mission?','SBM','XXX','YYY','ZZZ','a','Swachh Bharat Mission is abbreviated as SBM.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Make in India launched?','2014','2000','2010','2025','a','Make in India was launched in 2014. Purpose: Manufacturing promotion.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Make in India?','Manufacturing promotion','Space exploration','Military training','Sports promotion','a','Make in India: Manufacturing promotion.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Make in India?','MII','XXX','YYY','ZZZ','a','Make in India is abbreviated as MII.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Digital India launched?','2015','2000','2010','2025','a','Digital India was launched in 2015. Purpose: Digital empowerment.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Digital India?','Digital empowerment','Space exploration','Military training','Sports promotion','a','Digital India: Digital empowerment.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Digital India?','DI','XXX','YYY','ZZZ','a','Digital India is abbreviated as DI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Skill India launched?','2015','2000','2010','2025','a','Skill India was launched in 2015. Purpose: Skill development.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Skill India?','Skill development','Space exploration','Military training','Sports promotion','a','Skill India: Skill development.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Skill India?','SI','XXX','YYY','ZZZ','a','Skill India is abbreviated as SI.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Startup India launched?','2016','2000','2010','2025','a','Startup India was launched in 2016. Purpose: Startup ecosystem promotion.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Startup India?','Startup ecosystem promotion','Space exploration','Military training','Sports promotion','a','Startup India: Startup ecosystem promotion.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Startup India?','SU','XXX','YYY','ZZZ','a','Startup India is abbreviated as SU.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Beti Bachao Beti Padhao launched?','2015','2000','2010','2025','a','Beti Bachao Beti Padhao was launched in 2015. Purpose: Girl child welfare.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Beti Bachao Beti Padhao?','Girl child welfare','Space exploration','Military training','Sports promotion','a','Beti Bachao Beti Padhao: Girl child welfare.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Beti Bachao Beti Padhao?','BBBP','XXX','YYY','ZZZ','a','Beti Bachao Beti Padhao is abbreviated as BBBP.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Atal Pension Yojana launched?','2015','2000','2010','2025','a','Atal Pension Yojana was launched in 2015. Purpose: Pension scheme for unorganized sector.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Atal Pension Yojana?','Pension scheme for unorganized sector','Space exploration','Military training','Sports promotion','a','Atal Pension Yojana: Pension scheme for unorganized sector.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Atal Pension Yojana?','APY','XXX','YYY','ZZZ','a','Atal Pension Yojana is abbreviated as APY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Pradhan Mantri Mudra Yojana launched?','2015','2000','2010','2025','a','Pradhan Mantri Mudra Yojana was launched in 2015. Purpose: Micro finance.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Pradhan Mantri Mudra Yojana?','Micro finance','Space exploration','Military training','Sports promotion','a','Pradhan Mantri Mudra Yojana: Micro finance.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Pradhan Mantri Mudra Yojana?','PMMY','XXX','YYY','ZZZ','a','Pradhan Mantri Mudra Yojana is abbreviated as PMMY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the National Health Mission launched?','2005','2000','2010','2025','a','National Health Mission was launched in 2005. Purpose: Healthcare for rural areas.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the National Health Mission?','Healthcare for rural areas','Space exploration','Military training','Sports promotion','a','National Health Mission: Healthcare for rural areas.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of National Health Mission?','NHM','XXX','YYY','ZZZ','a','National Health Mission is abbreviated as NHM.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Sarva Shiksha Abhiyan launched?','2001','2000','2010','2025','a','Sarva Shiksha Abhiyan was launched in 2001. Purpose: Universal elementary education.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Sarva Shiksha Abhiyan?','Universal elementary education','Space exploration','Military training','Sports promotion','a','Sarva Shiksha Abhiyan: Universal elementary education.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Sarva Shiksha Abhiyan?','SSA','XXX','YYY','ZZZ','a','Sarva Shiksha Abhiyan is abbreviated as SSA.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Mid Day Meal Scheme launched?','1995','2000','2010','2025','a','Mid Day Meal Scheme was launched in 1995. Purpose: School meal program.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Mid Day Meal Scheme?','School meal program','Space exploration','Military training','Sports promotion','a','Mid Day Meal Scheme: School meal program.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Mid Day Meal Scheme?','MDMS','XXX','YYY','ZZZ','a','Mid Day Meal Scheme is abbreviated as MDMS.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Pradhan Mantri Kisan Samman Nidhi launched?','2019','2000','2010','2025','a','Pradhan Mantri Kisan Samman Nidhi was launched in 2019. Purpose: Income support for farmers.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Pradhan Mantri Kisan Samman Nidhi?','Income support for farmers','Space exploration','Military training','Sports promotion','a','Pradhan Mantri Kisan Samman Nidhi: Income support for farmers.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Pradhan Mantri Kisan Samman Nidhi?','PMKSN','XXX','YYY','ZZZ','a','Pradhan Mantri Kisan Samman Nidhi is abbreviated as PMKSN.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Pradhan Mantri Fasal Bima Yojana launched?','2016','2000','2010','2025','a','Pradhan Mantri Fasal Bima Yojana was launched in 2016. Purpose: Crop insurance.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Pradhan Mantri Fasal Bima Yojana?','Crop insurance','Space exploration','Military training','Sports promotion','a','Pradhan Mantri Fasal Bima Yojana: Crop insurance.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Pradhan Mantri Fasal Bima Yojana?','PMFBY','XXX','YYY','ZZZ','a','Pradhan Mantri Fasal Bima Yojana is abbreviated as PMFBY.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Soil Health Card Scheme launched?','2015','2000','2010','2025','a','Soil Health Card Scheme was launched in 2015. Purpose: Soil testing for farmers.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Soil Health Card Scheme?','Soil testing for farmers','Space exploration','Military training','Sports promotion','a','Soil Health Card Scheme: Soil testing for farmers.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Soil Health Card Scheme?','SHC','XXX','YYY','ZZZ','a','Soil Health Card Scheme is abbreviated as SHC.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Atmanirbhar Bharat launched?','2020','2000','2010','2025','a','Atmanirbhar Bharat was launched in 2020. Purpose: Self-reliant India.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the Atmanirbhar Bharat?','Self-reliant India','Space exploration','Military training','Sports promotion','a','Atmanirbhar Bharat: Self-reliant India.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of Atmanirbhar Bharat?','AB','XXX','YYY','ZZZ','a','Atmanirbhar Bharat is abbreviated as AB.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the National Education Policy launched?','2020','2000','2010','2025','a','National Education Policy was launched in 2020. Purpose: Education reform.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the purpose of the National Education Policy?','Education reform','Space exploration','Military training','Sports promotion','a','National Education Policy: Education reform.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the abbreviation of National Education Policy?','NEP','XXX','YYY','ZZZ','a','National Education Policy is abbreviated as NEP.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What does LAN stand for?','Local Area Network','Large Area Network','Limited Access Network','Local Access Node','a','Answer: Local Area Network','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does WAN stand for?','Wide Area Network','World Area Network','Web Access Network','Wide Access Node','a','Answer: Wide Area Network','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does MAN stand for?','Metropolitan Area Network','Main Area Network','Mobile Access Network','Multiple Access Node','a','Answer: Metropolitan Area Network','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does PAN stand for?','Personal Area Network','Public Area Network','Private Access Network','Personal Access Node','a','Answer: Personal Area Network','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does ISP stand for?','Internet Service Provider','Internet Security Protocol','Internal Service Provider','International Service Provider','a','Answer: Internet Service Provider','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does TCP stand for?','Transmission Control Protocol','Transfer Control Protocol','Transit Communication Protocol','Technical Control Protocol','a','Answer: Transmission Control Protocol','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does UDP stand for?','User Datagram Protocol','Universal Data Protocol','Unified Data Protocol','User Data Packet','a','Answer: User Datagram Protocol','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does IP address stand for?','Internet Protocol Address','Internal Protocol Address','Internet Provider Address','International Protocol Address','a','Answer: Internet Protocol Address','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does MAC address stand for?','Media Access Control Address','Machine Access Control','Main Access Code','Media Application Control','a','Answer: Media Access Control Address','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does SSID stand for?','Service Set Identifier','System Security Identifier','Service Security ID','System Set Identifier','a','Answer: Service Set Identifier','Computer','Software','medium','APSC,ADRE'],
+
+  ['What is a router?','A device that forwards data packets between networks','A type of cable','A web browser','An operating system','a','Answer: A device that forwards data packets between networks','Computer','Software','medium','APSC,ADRE'],
+
+  ['What is a switch?','A device that connects devices within a network','A power button','A software application','A type of cable','a','Answer: A device that connects devices within a network','Computer','Software','medium','APSC,ADRE'],
+
+  ['What is a modem?','A device that converts digital signals to analog and vice versa','A monitor','A keyboard','A mouse','a','Answer: A device that converts digital signals to analog and vice versa','Computer','Software','medium','APSC,ADRE'],
+
+  ['What is bandwidth?','The maximum rate of data transfer across a network','A type of cable','A network protocol','A security measure','a','Answer: The maximum rate of data transfer across a network','Computer','Software','medium','APSC,ADRE'],
+
+  ['What is latency?','The delay before a transfer of data begins','A type of network','A security threat','A data format','a','Answer: The delay before a transfer of data begins','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does IoT stand for?','Internet of Things','Internet of Technology','Internal of Things','International of Technology','a','Answer: Internet of Things','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does AI stand for?','Artificial Intelligence','Automated Intelligence','Applied Intelligence','Advanced Intelligence','a','Answer: Artificial Intelligence','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does ML stand for?','Machine Learning','Multiple Learning','Mobile Learning','Modern Learning','a','Answer: Machine Learning','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does NLP stand for?','Natural Language Processing','Network Language Protocol','New Language Processing','Natural Logic Processing','a','Answer: Natural Language Processing','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does API stand for?','Application Programming Interface','Application Protocol Interface','Advanced Programming Interface','Automated Programming Interface','a','Answer: Application Programming Interface','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does SDK stand for?','Software Development Kit','System Development Kit','Standard Development Kit','Software Design Kit','a','Answer: Software Development Kit','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does IDE stand for?','Integrated Development Environment','Internal Development Environment','Internet Development Environment','Integrated Design Environment','a','Answer: Integrated Development Environment','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does JSON stand for?','JavaScript Object Notation','Java Standard Object Notation','JavaScript Ordered Notation','Java Source Object Notation','a','Answer: JavaScript Object Notation','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does XML stand for?','Extensible Markup Language','Extended Markup Language','Extensible Modern Language','XML Markup Language','a','Answer: Extensible Markup Language','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does HTTP status code 404 mean?','Not Found','Server Error','Unauthorized','Redirect','a','Answer: Not Found','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does HTTP status code 200 mean?','OK','Not Found','Server Error','Forbidden','a','Answer: OK','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does HTTP status code 500 mean?','Internal Server Error','OK','Not Found','Unauthorized','a','Answer: Internal Server Error','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does HTTP status code 403 mean?','Forbidden','Not Found','OK','Server Error','a','Answer: Forbidden','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does HTTP status code 301 mean?','Moved Permanently','OK','Not Found','Server Error','a','Answer: Moved Permanently','Computer','Software','medium','APSC,ADRE'],
+
+  ['In which state is Jim Corbett National Park located?','Uttarakhand','Assam','Punjab','Kerala','a','Jim Corbett National Park is in Uttarakhand.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Jim Corbett National Park established?','1936','1950','2000','2010','a','Jim Corbett National Park was established in 1936.','Environment','Conservation','hard','APSC'],
+
+  ['Jim Corbett National Park is famous for which species?','Bengal Tiger','Polar Bear','Penguin','Kangaroo','a','Jim Corbett National Park is famous for Bengal Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Bandhavgarh National Park located?','Madhya Pradesh','Assam','Punjab','Kerala','a','Bandhavgarh National Park is in Madhya Pradesh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Bandhavgarh National Park established?','1968','1950','2000','2010','a','Bandhavgarh National Park was established in 1968.','Environment','Conservation','hard','APSC'],
+
+  ['Bandhavgarh National Park is famous for which species?','White Tiger','Polar Bear','Penguin','Kangaroo','a','Bandhavgarh National Park is famous for White Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Kanha National Park located?','Madhya Pradesh','Assam','Punjab','Kerala','a','Kanha National Park is in Madhya Pradesh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Kanha National Park established?','1955','1950','2000','2010','a','Kanha National Park was established in 1955.','Environment','Conservation','hard','APSC'],
+
+  ['Kanha National Park is famous for which species?','Bengal Tiger and Barasingha','Polar Bear','Penguin','Kangaroo','a','Kanha National Park is famous for Bengal Tiger and Barasingha.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Ranthambore National Park located?','Rajasthan','Assam','Punjab','Kerala','a','Ranthambore National Park is in Rajasthan.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Ranthambore National Park established?','1980','1950','2000','2010','a','Ranthambore National Park was established in 1980.','Environment','Conservation','hard','APSC'],
+
+  ['Ranthambore National Park is famous for which species?','Bengal Tiger','Polar Bear','Penguin','Kangaroo','a','Ranthambore National Park is famous for Bengal Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Sundarbans National Park located?','West Bengal','Assam','Punjab','Kerala','a','Sundarbans National Park is in West Bengal.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Sundarbans National Park established?','1984','1950','2000','2010','a','Sundarbans National Park was established in 1984.','Environment','Conservation','hard','APSC'],
+
+  ['Sundarbans National Park is famous for which species?','Royal Bengal Tiger','Polar Bear','Penguin','Kangaroo','a','Sundarbans National Park is famous for Royal Bengal Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Gir National Park located?','Gujarat','Assam','Punjab','Kerala','a','Gir National Park is in Gujarat.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Gir National Park established?','1965','1950','2000','2010','a','Gir National Park was established in 1965.','Environment','Conservation','hard','APSC'],
+
+  ['Gir National Park is famous for which species?','Asiatic Lion','Polar Bear','Penguin','Kangaroo','a','Gir National Park is famous for Asiatic Lion.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Bandipur National Park located?','Karnataka','Assam','Punjab','Kerala','a','Bandipur National Park is in Karnataka.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Bandipur National Park established?','1974','1950','2000','2010','a','Bandipur National Park was established in 1974.','Environment','Conservation','hard','APSC'],
+
+  ['Bandipur National Park is famous for which species?','Bengal Tiger and Elephants','Polar Bear','Penguin','Kangaroo','a','Bandipur National Park is famous for Bengal Tiger and Elephants.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Periyar National Park located?','Kerala','Assam','Punjab','Kerala','a','Periyar National Park is in Kerala.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Periyar National Park established?','1982','1950','2000','2010','a','Periyar National Park was established in 1982.','Environment','Conservation','hard','APSC'],
+
+  ['Periyar National Park is famous for which species?','Asian Elephant and Tiger','Polar Bear','Penguin','Kangaroo','a','Periyar National Park is famous for Asian Elephant and Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Nagarhole National Park located?','Karnataka','Assam','Punjab','Kerala','a','Nagarhole National Park is in Karnataka.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Nagarhole National Park established?','1988','1950','2000','2010','a','Nagarhole National Park was established in 1988.','Environment','Conservation','hard','APSC'],
+
+  ['Nagarhole National Park is famous for which species?','Bengal Tiger and Elephants','Polar Bear','Penguin','Kangaroo','a','Nagarhole National Park is famous for Bengal Tiger and Elephants.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Sariska National Park located?','Rajasthan','Assam','Punjab','Kerala','a','Sariska National Park is in Rajasthan.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Sariska National Park established?','1955','1950','2000','2010','a','Sariska National Park was established in 1955.','Environment','Conservation','hard','APSC'],
+
+  ['Sariska National Park is famous for which species?','Bengal Tiger','Polar Bear','Penguin','Kangaroo','a','Sariska National Park is famous for Bengal Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Pench National Park located?','Madhya Pradesh','Assam','Punjab','Kerala','a','Pench National Park is in Madhya Pradesh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Pench National Park established?','1975','1950','2000','2010','a','Pench National Park was established in 1975.','Environment','Conservation','hard','APSC'],
+
+  ['Pench National Park is famous for which species?','Bengal Tiger','Polar Bear','Penguin','Kangaroo','a','Pench National Park is famous for Bengal Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Tadoba National Park located?','Maharashtra','Assam','Punjab','Kerala','a','Tadoba National Park is in Maharashtra.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Tadoba National Park established?','1955','1950','2000','2010','a','Tadoba National Park was established in 1955.','Environment','Conservation','hard','APSC'],
+
+  ['Tadoba National Park is famous for which species?','Bengal Tiger','Polar Bear','Penguin','Kangaroo','a','Tadoba National Park is famous for Bengal Tiger.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Silent Valley National Park located?','Kerala','Assam','Punjab','Kerala','a','Silent Valley National Park is in Kerala.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Silent Valley National Park established?','1984','1950','2000','2010','a','Silent Valley National Park was established in 1984.','Environment','Conservation','hard','APSC'],
+
+  ['Silent Valley National Park is famous for which species?','Lion-tailed Macaque','Polar Bear','Penguin','Kangaroo','a','Silent Valley National Park is famous for Lion-tailed Macaque.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Valley of Flowers National Park located?','Uttarakhand','Assam','Punjab','Kerala','a','Valley of Flowers National Park is in Uttarakhand.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Valley of Flowers National Park established?','1982','1950','2000','2010','a','Valley of Flowers National Park was established in 1982.','Environment','Conservation','hard','APSC'],
+
+  ['Valley of Flowers National Park is famous for which species?','Alpine flowers','Polar Bear','Penguin','Kangaroo','a','Valley of Flowers National Park is famous for Alpine flowers.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Hemis National Park located?','Ladakh','Assam','Punjab','Kerala','a','Hemis National Park is in Ladakh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Hemis National Park established?','1981','1950','2000','2010','a','Hemis National Park was established in 1981.','Environment','Conservation','hard','APSC'],
+
+  ['Hemis National Park is famous for which species?','Snow Leopard','Polar Bear','Penguin','Kangaroo','a','Hemis National Park is famous for Snow Leopard.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Great Himalayan National Park located?','Himachal Pradesh','Assam','Punjab','Kerala','a','Great Himalayan National Park is in Himachal Pradesh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Great Himalayan National Park established?','1984','1950','2000','2010','a','Great Himalayan National Park was established in 1984.','Environment','Conservation','hard','APSC'],
+
+  ['Great Himalayan National Park is famous for which species?','Western Tragopan','Polar Bear','Penguin','Kangaroo','a','Great Himalayan National Park is famous for Western Tragopan.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Namdapha National Park located?','Arunachal Pradesh','Assam','Punjab','Kerala','a','Namdapha National Park is in Arunachal Pradesh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Namdapha National Park established?','1983','1950','2000','2010','a','Namdapha National Park was established in 1983.','Environment','Conservation','hard','APSC'],
+
+  ['Namdapha National Park is famous for which species?','Hoolock Gibbon','Polar Bear','Penguin','Kangaroo','a','Namdapha National Park is famous for Hoolock Gibbon.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Mouling National Park located?','Arunachal Pradesh','Assam','Punjab','Kerala','a','Mouling National Park is in Arunachal Pradesh.','Environment','Conservation','medium','APSC,ADRE,UPSC'],
+
+  ['When was Mouling National Park established?','1986','1950','2000','2010','a','Mouling National Park was established in 1986.','Environment','Conservation','hard','APSC'],
+
+  ['Mouling National Park is famous for which species?','Red Panda','Polar Bear','Penguin','Kangaroo','a','Mouling National Park is famous for Red Panda.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['In which state is Nilgiri Biosphere Reserve located?','Karnataka, Kerala, Tamil Nadu','Goa','Bihar','Assam','a','Nilgiri Biosphere Reserve is in Karnataka, Kerala, Tamil Nadu.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Nilgiri Biosphere Reserve?','Siddhis and Todas','Desert ecosystem','Arctic tundra','Coral reef','a','Nilgiri Biosphere Reserve: Siddhis and Todas.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Nanda Devi Biosphere Reserve located?','Uttarakhand','Goa','Bihar','Assam','a','Nanda Devi Biosphere Reserve is in Uttarakhand.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Nanda Devi Biosphere Reserve?','Himalayan flora and fauna','Desert ecosystem','Arctic tundra','Coral reef','a','Nanda Devi Biosphere Reserve: Himalayan flora and fauna.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Sundarbans Biosphere Reserve located?','West Bengal','Goa','Bihar','Assam','a','Sundarbans Biosphere Reserve is in West Bengal.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Sundarbans Biosphere Reserve?','Mangrove forest','Desert ecosystem','Arctic tundra','Coral reef','a','Sundarbans Biosphere Reserve: Mangrove forest.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Gulf of Mannar Biosphere Reserve located?','Tamil Nadu','Goa','Bihar','Assam','a','Gulf of Mannar Biosphere Reserve is in Tamil Nadu.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Gulf of Mannar Biosphere Reserve?','Marine ecosystem','Desert ecosystem','Arctic tundra','Coral reef','a','Gulf of Mannar Biosphere Reserve: Marine ecosystem.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Simlipal Biosphere Reserve located?','Odisha','Goa','Bihar','Assam','a','Simlipal Biosphere Reserve is in Odisha.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Simlipal Biosphere Reserve?','Tiger reserve and forests','Desert ecosystem','Arctic tundra','Coral reef','a','Simlipal Biosphere Reserve: Tiger reserve and forests.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Pachmarhi Biosphere Reserve located?','Madhya Pradesh','Goa','Bihar','Assam','a','Pachmarhi Biosphere Reserve is in Madhya Pradesh.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Pachmarhi Biosphere Reserve?','Satpura forests','Desert ecosystem','Arctic tundra','Coral reef','a','Pachmarhi Biosphere Reserve: Satpura forests.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Achanakmar-Amarkantak Biosphere Reserve located?','Chhattisgarh and Madhya Pradesh','Goa','Bihar','Assam','a','Achanakmar-Amarkantak Biosphere Reserve is in Chhattisgarh and Madhya Pradesh.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Achanakmar-Amarkantak Biosphere Reserve?','Tropical forests','Desert ecosystem','Arctic tundra','Coral reef','a','Achanakmar-Amarkantak Biosphere Reserve: Tropical forests.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Khangchendzonga Biosphere Reserve located?','Sikkim','Goa','Bihar','Assam','a','Khangchendzonga Biosphere Reserve is in Sikkim.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Khangchendzonga Biosphere Reserve?','High altitude ecosystem','Desert ecosystem','Arctic tundra','Coral reef','a','Khangchendzonga Biosphere Reserve: High altitude ecosystem.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Agasthyamalai Biosphere Reserve located?','Kerala and Tamil Nadu','Goa','Bihar','Assam','a','Agasthyamalai Biosphere Reserve is in Kerala and Tamil Nadu.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Agasthyamalai Biosphere Reserve?','Endemic species','Desert ecosystem','Arctic tundra','Coral reef','a','Agasthyamalai Biosphere Reserve: Endemic species.','Environment','Conservation','hard','APSC'],
+
+  ['In which state is Great Nicobar Biosphere Reserve located?','Andaman and Nicobar Islands','Goa','Bihar','Assam','a','Great Nicobar Biosphere Reserve is in Andaman and Nicobar Islands.','Environment','Conservation','medium','APSC,UPSC'],
+
+  ['What is special about Great Nicobar Biosphere Reserve?','Tropical rainforest','Desert ecosystem','Arctic tundra','Coral reef','a','Great Nicobar Biosphere Reserve: Tropical rainforest.','Environment','Conservation','hard','APSC'],
+
+  ['When did the First Battle of Panipat take place?','1526','1600','1700','1900','a','First Battle of Panipat (1526): Babur vs Ibrahim Lodi. Result: Mughal Empire founded.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the First Battle of Panipat?','Babur vs Ibrahim Lodi','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','First Battle of Panipat: Babur vs Ibrahim Lodi.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the First Battle of Panipat?','Mughal Empire founded','India gained independence','British left India','Mughal Empire began','a','Result of First Battle of Panipat: Mughal Empire founded.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Second Battle of Panipat take place?','1556','1600','1700','1900','a','Second Battle of Panipat (1556): Akbar vs Hemu. Result: Mughal Empire consolidated.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Second Battle of Panipat?','Akbar vs Hemu','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Second Battle of Panipat: Akbar vs Hemu.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Second Battle of Panipat?','Mughal Empire consolidated','India gained independence','British left India','Mughal Empire began','a','Result of Second Battle of Panipat: Mughal Empire consolidated.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Third Battle of Panipat take place?','1761','1600','1700','1900','a','Third Battle of Panipat (1761): Ahmad Shah Abdali vs Marathas. Result: Maratha power weakened.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Third Battle of Panipat?','Ahmad Shah Abdali vs Marathas','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Third Battle of Panipat: Ahmad Shah Abdali vs Marathas.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Third Battle of Panipat?','Maratha power weakened','India gained independence','British left India','Mughal Empire began','a','Result of Third Battle of Panipat: Maratha power weakened.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Battle of Haldighati take place?','1576','1600','1700','1900','a','Battle of Haldighati (1576): Akbar vs Maharana Pratap. Result: Rajput resistance.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Battle of Haldighati?','Akbar vs Maharana Pratap','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Battle of Haldighati: Akbar vs Maharana Pratap.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Battle of Haldighati?','Rajput resistance','India gained independence','British left India','Mughal Empire began','a','Result of Battle of Haldighati: Rajput resistance.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Battle of Talikota take place?','1565','1600','1700','1900','a','Battle of Talikota (1565): Deccan Sultanates vs Vijayanagara. Result: Vijayanagara Empire fell.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Battle of Talikota?','Deccan Sultanates vs Vijayanagara','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Battle of Talikota: Deccan Sultanates vs Vijayanagara.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Battle of Talikota?','Vijayanagara Empire fell','India gained independence','British left India','Mughal Empire began','a','Result of Battle of Talikota: Vijayanagara Empire fell.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Battle of Plassey take place?','1757','1600','1700','1900','a','Battle of Plassey (1757): British vs Siraj-ud-daula. Result: British rule in Bengal began.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Battle of Plassey?','British vs Siraj-ud-daula','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Battle of Plassey: British vs Siraj-ud-daula.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Battle of Plassey?','British rule in Bengal began','India gained independence','British left India','Mughal Empire began','a','Result of Battle of Plassey: British rule in Bengal began.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Battle of Buxar take place?','1764','1600','1700','1900','a','Battle of Buxar (1764): British vs combined Indian forces. Result: Diwani rights to British.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Battle of Buxar?','British vs combined Indian forces','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Battle of Buxar: British vs combined Indian forces.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Battle of Buxar?','Diwani rights to British','India gained independence','British left India','Mughal Empire began','a','Result of Battle of Buxar: Diwani rights to British.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Battle of Srirangapatna take place?','1799','1600','1700','1900','a','Battle of Srirangapatna (1799): British vs Tipu Sultan. Result: Tipu Sultan killed.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Battle of Srirangapatna?','British vs Tipu Sultan','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Battle of Srirangapatna: British vs Tipu Sultan.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Battle of Srirangapatna?','Tipu Sultan killed','India gained independence','British left India','Mughal Empire began','a','Result of Battle of Srirangapatna: Tipu Sultan killed.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Anglo-Mysore War I take place?','1767','1600','1700','1900','a','Anglo-Mysore War I (1767): British vs Hyder Ali. Result: Inconclusive.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Anglo-Mysore War I?','British vs Hyder Ali','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Anglo-Mysore War I: British vs Hyder Ali.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Anglo-Mysore War I?','Inconclusive','India gained independence','British left India','Mughal Empire began','a','Result of Anglo-Mysore War I: Inconclusive.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Anglo-Mysore War II take place?','1780','1600','1700','1900','a','Anglo-Mysore War II (1780): British vs Hyder Ali and Tipu. Result: Treaty of Mangalore.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Anglo-Mysore War II?','British vs Hyder Ali and Tipu','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Anglo-Mysore War II: British vs Hyder Ali and Tipu.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Anglo-Mysore War II?','Treaty of Mangalore','India gained independence','British left India','Mughal Empire began','a','Result of Anglo-Mysore War II: Treaty of Mangalore.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Anglo-Mysore War III take place?','1790','1600','1700','1900','a','Anglo-Mysore War III (1790): British vs Tipu Sultan. Result: Tipu ceded territory.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Anglo-Mysore War III?','British vs Tipu Sultan','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Anglo-Mysore War III: British vs Tipu Sultan.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Anglo-Mysore War III?','Tipu ceded territory','India gained independence','British left India','Mughal Empire began','a','Result of Anglo-Mysore War III: Tipu ceded territory.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Anglo-Mysore War IV take place?','1799','1600','1700','1900','a','Anglo-Mysore War IV (1799): British vs Tipu Sultan. Result: Tipu killed, Mysore fell.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Anglo-Mysore War IV?','British vs Tipu Sultan','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Anglo-Mysore War IV: British vs Tipu Sultan.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Anglo-Mysore War IV?','Tipu killed, Mysore fell','India gained independence','British left India','Mughal Empire began','a','Result of Anglo-Mysore War IV: Tipu killed, Mysore fell.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the First Anglo-Sikh War take place?','1845','1600','1700','1900','a','First Anglo-Sikh War (1845): British vs Sikh Empire. Result: Treaty of Lahore.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the First Anglo-Sikh War?','British vs Sikh Empire','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','First Anglo-Sikh War: British vs Sikh Empire.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the First Anglo-Sikh War?','Treaty of Lahore','India gained independence','British left India','Mughal Empire began','a','Result of First Anglo-Sikh War: Treaty of Lahore.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Second Anglo-Sikh War take place?','1848','1600','1700','1900','a','Second Anglo-Sikh War (1848): British vs Sikh Empire. Result: Punjab annexed by British.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Second Anglo-Sikh War?','British vs Sikh Empire','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Second Anglo-Sikh War: British vs Sikh Empire.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Second Anglo-Sikh War?','Punjab annexed by British','India gained independence','British left India','Mughal Empire began','a','Result of Second Anglo-Sikh War: Punjab annexed by British.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the First Anglo-Maratha War take place?','1775','1600','1700','1900','a','First Anglo-Maratha War (1775): British vs Maratha Empire. Result: Treaty of Salbai.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the First Anglo-Maratha War?','British vs Maratha Empire','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','First Anglo-Maratha War: British vs Maratha Empire.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the First Anglo-Maratha War?','Treaty of Salbai','India gained independence','British left India','Mughal Empire began','a','Result of First Anglo-Maratha War: Treaty of Salbai.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Second Anglo-Maratha War take place?','1803','1600','1700','1900','a','Second Anglo-Maratha War (1803): British vs Maratha Empire. Result: British gained territory.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Second Anglo-Maratha War?','British vs Maratha Empire','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Second Anglo-Maratha War: British vs Maratha Empire.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Second Anglo-Maratha War?','British gained territory','India gained independence','British left India','Mughal Empire began','a','Result of Second Anglo-Maratha War: British gained territory.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When did the Third Anglo-Maratha War take place?','1817','1600','1700','1900','a','Third Anglo-Maratha War (1817): British vs Maratha Empire. Result: Maratha Empire ended.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who fought in the Third Anglo-Maratha War?','British vs Maratha Empire','Mughals vs British','Mauryas vs Greeks','Marathas vs Portuguese','a','Third Anglo-Maratha War: British vs Maratha Empire.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the result of the Third Anglo-Maratha War?','Maratha Empire ended','India gained independence','British left India','Mughal Empire began','a','Result of Third Anglo-Maratha War: Maratha Empire ended.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Allahabad signed?','1765','1600','1700','1900','a','Treaty of Allahabad (1765): British got Diwani rights of Bengal, Bihar, and Orissa.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Allahabad?','British got Diwani rights of Bengal, Bihar, and Orissa','Established democracy','Started space program','Built railways','a','Treaty of Allahabad: British got Diwani rights of Bengal, Bihar, and Orissa.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Mangalore signed?','1784','1600','1700','1900','a','Treaty of Mangalore (1784): Ended Second Anglo-Mysore War.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Mangalore?','Ended Second Anglo-Mysore War','Established democracy','Started space program','Built railways','a','Treaty of Mangalore: Ended Second Anglo-Mysore War.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Seringapatam signed?','1792','1600','1700','1900','a','Treaty of Seringapatam (1792): Ended Third Anglo-Mysore War, Tipu ceded half his territory.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Seringapatam?','Ended Third Anglo-Mysore War, Tipu ceded half his territory','Established democracy','Started space program','Built railways','a','Treaty of Seringapatam: Ended Third Anglo-Mysore War, Tipu ceded half his territory.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Amritsar signed?','1809','1600','1700','1900','a','Treaty of Amritsar (1809): British and Ranjit Singh established friendship.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Amritsar?','British and Ranjit Singh established friendship','Established democracy','Started space program','Built railways','a','Treaty of Amritsar: British and Ranjit Singh established friendship.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Lahore signed?','1846','1600','1700','1900','a','Treaty of Lahore (1846): Ended First Anglo-Sikh War.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Lahore?','Ended First Anglo-Sikh War','Established democracy','Started space program','Built railways','a','Treaty of Lahore: Ended First Anglo-Sikh War.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Bassein signed?','1802','1600','1700','1900','a','Treaty of Bassein (1802): British gained control over Peshwa territory.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Bassein?','British gained control over Peshwa territory','Established democracy','Started space program','Built railways','a','Treaty of Bassein: British gained control over Peshwa territory.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Salbai signed?','1782','1600','1700','1900','a','Treaty of Salbai (1782): Ended First Anglo-Maratha War.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Salbai?','Ended First Anglo-Maratha War','Established democracy','Started space program','Built railways','a','Treaty of Salbai: Ended First Anglo-Maratha War.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Treaty of Yandaboo signed?','1826','1600','1700','1900','a','Treaty of Yandaboo (1826): Ended First Anglo-Burmese War, British gained Assam.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Treaty of Yandaboo?','Ended First Anglo-Burmese War, British gained Assam','Established democracy','Started space program','Built railways','a','Treaty of Yandaboo: Ended First Anglo-Burmese War, British gained Assam.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Subsidiary Alliance signed?','1798','1600','1700','1900','a','Subsidiary Alliance (1798): Introduced by Lord Wellesley, Indian rulers under British protection.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Subsidiary Alliance?','Introduced by Lord Wellesley, Indian rulers under British protection','Established democracy','Started space program','Built railways','a','Subsidiary Alliance: Introduced by Lord Wellesley, Indian rulers under British protection.','History','Indian History','medium','APSC,ADRE'],
+
+  ['When was the Doctrine of Lapse signed?','1848','1600','1700','1900','a','Doctrine of Lapse (1848): Introduced by Lord Dalhousie, annexed states without heir.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What was the significance of the Doctrine of Lapse?','Introduced by Lord Dalhousie, annexed states without heir','Established democracy','Started space program','Built railways','a','Doctrine of Lapse: Introduced by Lord Dalhousie, annexed states without heir.','History','Indian History','medium','APSC,ADRE'],
+
+  ['What does the First Schedule of the Indian Constitution contain?','Names of States and Union Territories','Fundamental Rights','Directive Principles','Emergency provisions','a','First Schedule: Names of States and Union Territories.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Second Schedule of the Indian Constitution contain?','Provisions relating to President, Governors, Speaker, and Judges','Fundamental Rights','Directive Principles','Emergency provisions','a','Second Schedule: Provisions relating to President, Governors, Speaker, and Judges.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Third Schedule of the Indian Constitution contain?','Forms of Oaths and Affirmations','Fundamental Rights','Directive Principles','Emergency provisions','a','Third Schedule: Forms of Oaths and Affirmations.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Fourth Schedule of the Indian Constitution contain?','Allocation of seats in Rajya Sabha','Fundamental Rights','Directive Principles','Emergency provisions','a','Fourth Schedule: Allocation of seats in Rajya Sabha.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Fifth Schedule of the Indian Constitution contain?','Administration and control of Scheduled Areas','Fundamental Rights','Directive Principles','Emergency provisions','a','Fifth Schedule: Administration and control of Scheduled Areas.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Sixth Schedule of the Indian Constitution contain?','Administration of Tribal Areas in Northeast India','Fundamental Rights','Directive Principles','Emergency provisions','a','Sixth Schedule: Administration of Tribal Areas in Northeast India.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Seventh Schedule of the Indian Constitution contain?','Division of powers: Union, State, and Concurrent Lists','Fundamental Rights','Directive Principles','Emergency provisions','a','Seventh Schedule: Division of powers: Union, State, and Concurrent Lists.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Eighth Schedule of the Indian Constitution contain?','Languages recognized by the Constitution (22 languages)','Fundamental Rights','Directive Principles','Emergency provisions','a','Eighth Schedule: Languages recognized by the Constitution (22 languages).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Ninth Schedule of the Indian Constitution contain?','Land reform laws (added by 1st Amendment)','Fundamental Rights','Directive Principles','Emergency provisions','a','Ninth Schedule: Land reform laws (added by 1st Amendment).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Tenth Schedule of the Indian Constitution contain?','Anti-Defection Law (added by 52nd Amendment)','Fundamental Rights','Directive Principles','Emergency provisions','a','Tenth Schedule: Anti-Defection Law (added by 52nd Amendment).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Eleventh Schedule of the Indian Constitution contain?','Panchayati Raj (added by 73rd Amendment)','Fundamental Rights','Directive Principles','Emergency provisions','a','Eleventh Schedule: Panchayati Raj (added by 73rd Amendment).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the Twelfth Schedule of the Indian Constitution contain?','Municipalities (added by 74th Amendment)','Fundamental Rights','Directive Principles','Emergency provisions','a','Twelfth Schedule: Municipalities (added by 74th Amendment).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 1 of the Indian Constitution deal with?','Name and territory of the Union — India shall be a Union of States','Foreign policy','Defense','Trade','a','Article 1: Name and territory of the Union — India shall be a Union of States.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 5 of the Indian Constitution deal with?','Citizenship at the commencement of the Constitution','Foreign policy','Defense','Trade','a','Article 5: Citizenship at the commencement of the Constitution.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 44 of the Indian Constitution deal with?','Uniform Civil Code for citizens (DPSP)','Foreign policy','Defense','Trade','a','Article 44: Uniform Civil Code for citizens (DPSP).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 45 of the Indian Constitution deal with?','Free and compulsory education for children (DPSP)','Foreign policy','Defense','Trade','a','Article 45: Free and compulsory education for children (DPSP).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 48 of the Indian Constitution deal with?','Organization of agriculture and animal husbandry (DPSP)','Foreign policy','Defense','Trade','a','Article 48: Organization of agriculture and animal husbandry (DPSP).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 50 of the Indian Constitution deal with?','Separation of judiciary from executive (DPSP)','Foreign policy','Defense','Trade','a','Article 50: Separation of judiciary from executive (DPSP).','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 51A of the Indian Constitution deal with?','Fundamental Duties of citizens','Foreign policy','Defense','Trade','a','Article 51A: Fundamental Duties of citizens.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 74 of the Indian Constitution deal with?','Council of Ministers to aid and advise the President','Foreign policy','Defense','Trade','a','Article 74: Council of Ministers to aid and advise the President.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 124 of the Indian Constitution deal with?','Establishment and constitution of Supreme Court','Foreign policy','Defense','Trade','a','Article 124: Establishment and constitution of Supreme Court.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 214 of the Indian Constitution deal with?','High Courts for States','Foreign policy','Defense','Trade','a','Article 214: High Courts for States.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 280 of the Indian Constitution deal with?','Finance Commission','Foreign policy','Defense','Trade','a','Article 280: Finance Commission.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 315 of the Indian Constitution deal with?','Public Service Commissions for Union and States','Foreign policy','Defense','Trade','a','Article 315: Public Service Commissions for Union and States.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 324 of the Indian Constitution deal with?','Election Commission','Foreign policy','Defense','Trade','a','Article 324: Election Commission.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 352 of the Indian Constitution deal with?','National Emergency','Foreign policy','Defense','Trade','a','Article 352: National Emergency.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 356 of the Indian Constitution deal with?','President Rule in States','Foreign policy','Defense','Trade','a','Article 356: President Rule in States.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 360 of the Indian Constitution deal with?','Financial Emergency','Foreign policy','Defense','Trade','a','Article 360: Financial Emergency.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the Election Commission?','Chief Election Commissioner','A private company','A political party','A sports body','a','Election Commission: Chief Election Commissioner.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the Union Public Service Commission?','Article 315','Article 1','Article 14','Article 21','a','Union Public Service Commission is under Article 315. Chairman and members appointed by President.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the Union Public Service Commission?','Chairman and members appointed by President','A private company','A political party','A sports body','a','Union Public Service Commission: Chairman and members appointed by President.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the Finance Commission?','Article 280','Article 1','Article 14','Article 21','a','Finance Commission is under Article 280. Chairman and members appointed by President.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the Finance Commission?','Chairman and members appointed by President','A private company','A political party','A sports body','a','Finance Commission: Chairman and members appointed by President.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the National Commission for Scheduled Castes?','Article 338','Article 1','Article 14','Article 21','a','National Commission for Scheduled Castes is under Article 338. Appointed by President.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the National Commission for Scheduled Castes?','Appointed by President','A private company','A political party','A sports body','a','National Commission for Scheduled Castes: Appointed by President.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the National Commission for Scheduled Tribes?','Article 338A','Article 1','Article 14','Article 21','a','National Commission for Scheduled Tribes is under Article 338A. Appointed by President.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the National Commission for Scheduled Tribes?','Appointed by President','A private company','A political party','A sports body','a','National Commission for Scheduled Tribes: Appointed by President.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the National Commission for Backward Classes?','Article 338B','Article 1','Article 14','Article 21','a','National Commission for Backward Classes is under Article 338B. Constitutional status by 102nd Amendment.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the National Commission for Backward Classes?','Constitutional status by 102nd Amendment','A private company','A political party','A sports body','a','National Commission for Backward Classes: Constitutional status by 102nd Amendment.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the State Public Service Commission?','Article 315','Article 1','Article 14','Article 21','a','State Public Service Commission is under Article 315. Chairman and members appointed by Governor.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the State Public Service Commission?','Chairman and members appointed by Governor','A private company','A political party','A sports body','a','State Public Service Commission: Chairman and members appointed by Governor.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the Comptroller and Auditor General?','Article 148','Article 1','Article 14','Article 21','a','Comptroller and Auditor General is under Article 148. Appointed by President.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the Comptroller and Auditor General?','Appointed by President','A private company','A political party','A sports body','a','Comptroller and Auditor General: Appointed by President.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the Attorney General of India?','Article 76','Article 1','Article 14','Article 21','a','Attorney General of India is under Article 76. First law officer of India.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the Attorney General of India?','First law officer of India','A private company','A political party','A sports body','a','Attorney General of India: First law officer of India.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the Advocate General of State?','Article 165','Article 1','Article 14','Article 21','a','Advocate General of State is under Article 165. First law officer of the State.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What is the Advocate General of State?','First law officer of the State','A private company','A political party','A sports body','a','Advocate General of State: First law officer of the State.','Polity','Indian Polity','medium','APSC'],
+  ['A bag contains 52 balls. If 10 are red, what is the probability of drawing a red ball?','0.1923','0.29','0.09','0.81','a','P(red) = 10/52 = 0.1923','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 25 are red, what is the probability of drawing a red ball?','0.625','0.72','0.53','0.38','a','P(red) = 25/40 = 0.625','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 9 are red, what is the probability of drawing a red ball?','0.6','0.7','0.5','0.4','a','P(red) = 9/15 = 0.6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 24 are red, what is the probability of drawing a red ball?','0.48','0.58','0.38','0.52','a','P(red) = 24/50 = 0.48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 4 are red, what is the probability of drawing a red ball?','0.4','0.5','0.3','0.6','a','P(red) = 4/10 = 0.4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 6 balls. If 3 are red, what is the probability of drawing a red ball?','0.5','0.6','0.4','0.5','a','P(red) = 3/6 = 0.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 9 are red, what is the probability of drawing a red ball?','0.3','0.4','0.2','0.7','a','P(red) = 9/30 = 0.3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 6 balls. If 2 are red, what is the probability of drawing a red ball?','0.3333','0.43','0.23','0.67','a','P(red) = 2/6 = 0.3333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 1 are red, what is the probability of drawing a red ball?','0.0667','0.17','-0.03','0.93','a','P(red) = 1/15 = 0.0667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 13 are red, what is the probability of drawing a red ball?','0.4333','0.53','0.33','0.57','a','P(red) = 13/30 = 0.4333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 24 are red, what is the probability of drawing a red ball?','0.8','0.9','0.7','0.2','a','P(red) = 24/30 = 0.8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 6 balls. If 5 are red, what is the probability of drawing a red ball?','0.8333','0.93','0.73','0.17','a','P(red) = 5/6 = 0.8333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 15 are red, what is the probability of drawing a red ball?','0.375','0.47','0.28','0.62','a','P(red) = 15/40 = 0.375','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 23 are red, what is the probability of drawing a red ball?','0.4423','0.54','0.34','0.56','a','P(red) = 23/52 = 0.4423','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 11 are red, what is the probability of drawing a red ball?','0.7333','0.83','0.63','0.27','a','P(red) = 11/15 = 0.7333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 2 are red, what is the probability of drawing a red ball?','0.2','0.3','0.1','0.8','a','P(red) = 2/10 = 0.2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 29 are red, what is the probability of drawing a red ball?','0.8056','0.91','0.71','0.19','a','P(red) = 29/36 = 0.8056','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 2 are red, what is the probability of drawing a red ball?','0.1333','0.23','0.03','0.87','a','P(red) = 2/15 = 0.1333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 38 are red, what is the probability of drawing a red ball?','0.95','1.05','0.85','0.05','a','P(red) = 38/40 = 0.95','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 6 are red, what is the probability of drawing a red ball?','0.2','0.3','0.1','0.8','a','P(red) = 6/30 = 0.2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 29 are red, what is the probability of drawing a red ball?','0.5577','0.66','0.46','0.44','a','P(red) = 29/52 = 0.5577','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 41 are red, what is the probability of drawing a red ball?','0.7885','0.89','0.69','0.21','a','P(red) = 41/52 = 0.7885','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 3 are red, what is the probability of drawing a red ball?','0.3','0.4','0.2','0.7','a','P(red) = 3/10 = 0.3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 11 are red, what is the probability of drawing a red ball?','0.3667','0.47','0.27','0.63','a','P(red) = 11/30 = 0.3667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 3 are red, what is the probability of drawing a red ball?','0.25','0.35','0.15','0.75','a','P(red) = 3/12 = 0.25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 6 balls. If 4 are red, what is the probability of drawing a red ball?','0.6667','0.77','0.57','0.33','a','P(red) = 4/6 = 0.6667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 14 are red, what is the probability of drawing a red ball?','0.9333','1.03','0.83','0.07','a','P(red) = 14/15 = 0.9333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 17 are red, what is the probability of drawing a red ball?','0.68','0.78','0.58','0.32','a','P(red) = 17/25 = 0.68','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 1 are red, what is the probability of drawing a red ball?','0.1','0.2','0.0','0.9','a','P(red) = 1/10 = 0.1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 49 are red, what is the probability of drawing a red ball?','0.98','1.08','0.88','0.02','a','P(red) = 49/50 = 0.98','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 37 are red, what is the probability of drawing a red ball?','0.7115','0.81','0.61','0.29','a','P(red) = 37/52 = 0.7115','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 8 are red, what is the probability of drawing a red ball?','0.2222','0.32','0.12','0.78','a','P(red) = 8/36 = 0.2222','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 11 are red, what is the probability of drawing a red ball?','0.9167','1.02','0.82','0.08','a','P(red) = 11/12 = 0.9167','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 8 are red, what is the probability of drawing a red ball?','0.16','0.26','0.06','0.84','a','P(red) = 8/50 = 0.16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 7 are red, what is the probability of drawing a red ball?','0.4667','0.57','0.37','0.53','a','P(red) = 7/15 = 0.4667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 9 are red, what is the probability of drawing a red ball?','0.75','0.85','0.65','0.25','a','P(red) = 9/12 = 0.75','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 1 are red, what is the probability of drawing a red ball?','0.0192','0.12','-0.08','0.98','a','P(red) = 1/52 = 0.0192','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 5 are red, what is the probability of drawing a red ball?','0.5','0.6','0.4','0.5','a','P(red) = 5/10 = 0.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 11 are red, what is the probability of drawing a red ball?','0.22','0.32','0.12','0.78','a','P(red) = 11/50 = 0.22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 10 are red, what is the probability of drawing a red ball?','0.4','0.5','0.3','0.6','a','P(red) = 10/25 = 0.4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 5 are red, what is the probability of drawing a red ball?','0.25','0.35','0.15','0.75','a','P(red) = 5/20 = 0.25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 13 are red, what is the probability of drawing a red ball?','0.65','0.75','0.55','0.35','a','P(red) = 13/20 = 0.65','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 33 are red, what is the probability of drawing a red ball?','0.66','0.76','0.56','0.34','a','P(red) = 33/50 = 0.66','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 17 are red, what is the probability of drawing a red ball?','0.4722','0.57','0.37','0.53','a','P(red) = 17/36 = 0.4722','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 26 are red, what is the probability of drawing a red ball?','0.65','0.75','0.55','0.35','a','P(red) = 26/40 = 0.65','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 31 are red, what is the probability of drawing a red ball?','0.5962','0.7','0.5','0.4','a','P(red) = 31/52 = 0.5962','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 23 are red, what is the probability of drawing a red ball?','0.92','1.02','0.82','0.08','a','P(red) = 23/25 = 0.92','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 30 are red, what is the probability of drawing a red ball?','0.8333','0.93','0.73','0.17','a','P(red) = 30/36 = 0.8333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 8 are red, what is the probability of drawing a red ball?','0.2667','0.37','0.17','0.73','a','P(red) = 8/30 = 0.2667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 21 are red, what is the probability of drawing a red ball?','0.7','0.8','0.6','0.3','a','P(red) = 21/30 = 0.7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 7 are red, what is the probability of drawing a red ball?','0.1346','0.23','0.03','0.87','a','P(red) = 7/52 = 0.1346','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 10 are red, what is the probability of drawing a red ball?','0.3333','0.43','0.23','0.67','a','P(red) = 10/30 = 0.3333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 20 are red, what is the probability of drawing a red ball?','0.8','0.9','0.7','0.2','a','P(red) = 20/25 = 0.8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 8 are red, what is the probability of drawing a red ball?','0.8','0.9','0.7','0.2','a','P(red) = 8/10 = 0.8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 22 are red, what is the probability of drawing a red ball?','0.88','0.98','0.78','0.12','a','P(red) = 22/25 = 0.88','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 7 are red, what is the probability of drawing a red ball?','0.35','0.45','0.25','0.65','a','P(red) = 7/20 = 0.35','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 40 are red, what is the probability of drawing a red ball?','0.7692','0.87','0.67','0.23','a','P(red) = 40/52 = 0.7692','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 8 are red, what is the probability of drawing a red ball?','0.6667','0.77','0.57','0.33','a','P(red) = 8/12 = 0.6667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 17 are red, what is the probability of drawing a red ball?','0.34','0.44','0.24','0.66','a','P(red) = 17/50 = 0.34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 3 are red, what is the probability of drawing a red ball?','0.1','0.2','0.0','0.9','a','P(red) = 3/30 = 0.1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 2 are red, what is the probability of drawing a red ball?','0.1667','0.27','0.07','0.83','a','P(red) = 2/12 = 0.1667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 44 are red, what is the probability of drawing a red ball?','0.88','0.98','0.78','0.12','a','P(red) = 44/50 = 0.88','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 27 are red, what is the probability of drawing a red ball?','0.9','1.0','0.8','0.1','a','P(red) = 27/30 = 0.9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 6 are red, what is the probability of drawing a red ball?','0.6','0.7','0.5','0.4','a','P(red) = 6/10 = 0.6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 4 are red, what is the probability of drawing a red ball?','0.2667','0.37','0.17','0.73','a','P(red) = 4/15 = 0.2667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 1 are red, what is the probability of drawing a red ball?','0.0333','0.13','-0.07','0.97','a','P(red) = 1/30 = 0.0333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 2 are red, what is the probability of drawing a red ball?','0.05','0.15','-0.05','0.95','a','P(red) = 2/40 = 0.05','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 15 are red, what is the probability of drawing a red ball?','0.6','0.7','0.5','0.4','a','P(red) = 15/25 = 0.6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 12 are red, what is the probability of drawing a red ball?','0.8','0.9','0.7','0.2','a','P(red) = 12/15 = 0.8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 18 are red, what is the probability of drawing a red ball?','0.9','1.0','0.8','0.1','a','P(red) = 18/20 = 0.9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 13 are red, what is the probability of drawing a red ball?','0.52','0.62','0.42','0.48','a','P(red) = 13/25 = 0.52','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 2 are red, what is the probability of drawing a red ball?','0.1','0.2','0.0','0.9','a','P(red) = 2/20 = 0.1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 3 are red, what is the probability of drawing a red ball?','0.075','0.17','-0.03','0.93','a','P(red) = 3/40 = 0.075','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 13 are red, what is the probability of drawing a red ball?','0.25','0.35','0.15','0.75','a','P(red) = 13/52 = 0.25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 45 are red, what is the probability of drawing a red ball?','0.9','1.0','0.8','0.1','a','P(red) = 45/50 = 0.9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 14 are red, what is the probability of drawing a red ball?','0.35','0.45','0.25','0.65','a','P(red) = 14/40 = 0.35','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 25 are red, what is the probability of drawing a red ball?','0.5','0.6','0.4','0.5','a','P(red) = 25/50 = 0.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 6 are red, what is the probability of drawing a red ball?','0.1667','0.27','0.07','0.83','a','P(red) = 6/36 = 0.1667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 10 are red, what is the probability of drawing a red ball?','0.8333','0.93','0.73','0.17','a','P(red) = 10/12 = 0.8333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 4 are red, what is the probability of drawing a red ball?','0.3333','0.43','0.23','0.67','a','P(red) = 4/12 = 0.3333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 14 are red, what is the probability of drawing a red ball?','0.2692','0.37','0.17','0.73','a','P(red) = 14/52 = 0.2692','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 1 are red, what is the probability of drawing a red ball?','0.0833','0.18','-0.02','0.92','a','P(red) = 1/12 = 0.0833','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 13 are red, what is the probability of drawing a red ball?','0.8667','0.97','0.77','0.13','a','P(red) = 13/15 = 0.8667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 39 are red, what is the probability of drawing a red ball?','0.975','1.07','0.88','0.03','a','P(red) = 39/40 = 0.975','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 27 are red, what is the probability of drawing a red ball?','0.54','0.64','0.44','0.46','a','P(red) = 27/50 = 0.54','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 20 are red, what is the probability of drawing a red ball?','0.6667','0.77','0.57','0.33','a','P(red) = 20/30 = 0.6667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 14 are red, what is the probability of drawing a red ball?','0.7','0.8','0.6','0.3','a','P(red) = 14/20 = 0.7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 10 are red, what is the probability of drawing a red ball?','0.6667','0.77','0.57','0.33','a','P(red) = 10/15 = 0.6667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 8 are red, what is the probability of drawing a red ball?','0.32','0.42','0.22','0.68','a','P(red) = 8/25 = 0.32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 23 are red, what is the probability of drawing a red ball?','0.7667','0.87','0.67','0.23','a','P(red) = 23/30 = 0.7667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 20 are red, what is the probability of drawing a red ball?','0.5','0.6','0.4','0.5','a','P(red) = 20/40 = 0.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 31 are red, what is the probability of drawing a red ball?','0.8611','0.96','0.76','0.14','a','P(red) = 31/36 = 0.8611','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 3 are red, what is the probability of drawing a red ball?','0.2','0.3','0.1','0.8','a','P(red) = 3/15 = 0.2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 10 balls. If 9 are red, what is the probability of drawing a red ball?','0.9','1.0','0.8','0.1','a','P(red) = 9/10 = 0.9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 14 are red, what is the probability of drawing a red ball?','0.28','0.38','0.18','0.72','a','P(red) = 14/50 = 0.28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 12 are red, what is the probability of drawing a red ball?','0.6','0.7','0.5','0.4','a','P(red) = 12/20 = 0.6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 7 are red, what is the probability of drawing a red ball?','0.28','0.38','0.18','0.72','a','P(red) = 7/25 = 0.28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 23 are red, what is the probability of drawing a red ball?','0.6389','0.74','0.54','0.36','a','P(red) = 23/36 = 0.6389','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 6 are red, what is the probability of drawing a red ball?','0.5','0.6','0.4','0.5','a','P(red) = 6/12 = 0.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 12 balls. If 5 are red, what is the probability of drawing a red ball?','0.4167','0.52','0.32','0.58','a','P(red) = 5/12 = 0.4167','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 6 are red, what is the probability of drawing a red ball?','0.1154','0.22','0.02','0.88','a','P(red) = 6/52 = 0.1154','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 6 balls. If 1 are red, what is the probability of drawing a red ball?','0.1667','0.27','0.07','0.83','a','P(red) = 1/6 = 0.1667','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 28 are red, what is the probability of drawing a red ball?','0.9333','1.03','0.83','0.07','a','P(red) = 28/30 = 0.9333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 10 are red, what is the probability of drawing a red ball?','0.25','0.35','0.15','0.75','a','P(red) = 10/40 = 0.25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 39 are red, what is the probability of drawing a red ball?','0.78','0.88','0.68','0.22','a','P(red) = 39/50 = 0.78','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 12 are red, what is the probability of drawing a red ball?','0.4','0.5','0.3','0.6','a','P(red) = 12/30 = 0.4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 34 are red, what is the probability of drawing a red ball?','0.6538','0.75','0.55','0.35','a','P(red) = 34/52 = 0.6538','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 12 are red, what is the probability of drawing a red ball?','0.48','0.58','0.38','0.52','a','P(red) = 12/25 = 0.48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 10 are red, what is the probability of drawing a red ball?','0.2778','0.38','0.18','0.72','a','P(red) = 10/36 = 0.2778','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 44 are red, what is the probability of drawing a red ball?','0.8462','0.95','0.75','0.15','a','P(red) = 44/52 = 0.8462','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 6 are red, what is the probability of drawing a red ball?','0.15','0.25','0.05','0.85','a','P(red) = 6/40 = 0.15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 25 are red, what is the probability of drawing a red ball?','0.8333','0.93','0.73','0.17','a','P(red) = 25/30 = 0.8333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 15 are red, what is the probability of drawing a red ball?','0.75','0.85','0.65','0.25','a','P(red) = 15/20 = 0.75','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 36 balls. If 4 are red, what is the probability of drawing a red ball?','0.1111','0.21','0.01','0.89','a','P(red) = 4/36 = 0.1111','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 18 are red, what is the probability of drawing a red ball?','0.36','0.46','0.26','0.64','a','P(red) = 18/50 = 0.36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 19 are red, what is the probability of drawing a red ball?','0.76','0.86','0.66','0.24','a','P(red) = 19/25 = 0.76','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 4 are red, what is the probability of drawing a red ball?','0.2','0.3','0.1','0.8','a','P(red) = 4/20 = 0.2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 5 are red, what is the probability of drawing a red ball?','0.1','0.2','0.0','0.9','a','P(red) = 5/50 = 0.1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 25 balls. If 4 are red, what is the probability of drawing a red ball?','0.16','0.26','0.06','0.84','a','P(red) = 4/25 = 0.16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 32 are red, what is the probability of drawing a red ball?','0.6154','0.72','0.52','0.38','a','P(red) = 32/52 = 0.6154','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 50 balls. If 42 are red, what is the probability of drawing a red ball?','0.84','0.94','0.74','0.16','a','P(red) = 42/50 = 0.84','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 15 balls. If 8 are red, what is the probability of drawing a red ball?','0.5333','0.63','0.43','0.47','a','P(red) = 8/15 = 0.5333','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 20 balls. If 1 are red, what is the probability of drawing a red ball?','0.05','0.15','-0.05','0.95','a','P(red) = 1/20 = 0.05','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 52 balls. If 27 are red, what is the probability of drawing a red ball?','0.5192','0.62','0.42','0.48','a','P(red) = 27/52 = 0.5192','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 40 balls. If 9 are red, what is the probability of drawing a red ball?','0.225','0.33','0.12','0.78','a','P(red) = 9/40 = 0.225','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A bag contains 30 balls. If 15 are red, what is the probability of drawing a red ball?','0.5','0.6','0.4','0.5','a','P(red) = 15/30 = 0.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 8?','0.1389','0.19','0.09','0.86','a','P(sum=8) = 5/36 = 0.1389','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 7?','0.1667','0.22','0.12','0.83','a','P(sum=7) = 6/36 = 0.1667','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 10?','0.0833','0.13','0.03','0.92','a','P(sum=10) = 3/36 = 0.0833','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 4?','0.0833','0.13','0.03','0.92','a','P(sum=4) = 3/36 = 0.0833','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 3?','0.0556','0.11','0.01','0.94','a','P(sum=3) = 2/36 = 0.0556','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 2?','0.0278','0.08','-0.02','0.97','a','P(sum=2) = 1/36 = 0.0278','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 12?','0.0278','0.08','-0.02','0.97','a','P(sum=12) = 1/36 = 0.0278','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 6?','0.1389','0.19','0.09','0.86','a','P(sum=6) = 5/36 = 0.1389','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 9?','0.1111','0.16','0.06','0.89','a','P(sum=9) = 4/36 = 0.1111','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 5?','0.1111','0.16','0.06','0.89','a','P(sum=5) = 4/36 = 0.1111','Mathematics','Arithmetic','hard','APSC'],
+
+  ['When two dice are rolled, what is the probability of getting a sum of 11?','0.0556','0.11','0.01','0.94','a','P(sum=11) = 2/36 = 0.0556','Mathematics','Arithmetic','hard','APSC'],
+
+  ['How many possible outcomes when flipping 5 coin(s)?','32','64','16','5','a','2^5 = 32','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['How many possible outcomes when flipping 4 coin(s)?','16','32','8','4','a','2^4 = 16','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['How many possible outcomes when flipping 3 coin(s)?','8','16','4','3','a','2^3 = 8','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['How many possible outcomes when flipping 2 coin(s)?','4','8','2','2','a','2^2 = 4','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['How many possible outcomes when flipping 1 coin(s)?','2','4','1','1','a','2^1 = 2','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['If 20x + 4 = 104, what is the value of x?','5','6','4','7','a','20x = 100, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 10 = 244, what is the value of x?','18','19','17','20','a','13x = 234, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 14 = 455, what is the value of x?','49','50','48','51','a','9x = 441, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 3 = 171, what is the value of x?','28','29','27','30','a','6x = 168, x = 28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 9 = 111, what is the value of x?','6','7','5','8','a','17x = 102, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 19 = 399, what is the value of x?','38','39','37','40','a','10x = 380, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 3 = 915, what is the value of x?','48','49','47','50','a','19x = 912, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 13 = 103, what is the value of x?','6','7','5','8','a','15x = 90, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 2 = 130, what is the value of x?','8','9','7','10','a','16x = 128, x = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 10 = 157, what is the value of x?','21','22','20','23','a','7x = 147, x = 21','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 12 = 572, what is the value of x?','35','36','34','37','a','16x = 560, x = 35','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 9 = 270, what is the value of x?','29','30','28','31','a','9x = 261, x = 29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 14 = 91, what is the value of x?','7','8','6','9','a','11x = 77, x = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 3 = 51, what is the value of x?','24','25','23','26','a','2x = 48, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 2 = 182, what is the value of x?','30','31','29','32','a','6x = 180, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 10 = 164, what is the value of x?','22','23','21','24','a','7x = 154, x = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 13 = 693, what is the value of x?','34','35','33','36','a','20x = 680, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 13 = 67, what is the value of x?','6','7','5','8','a','9x = 54, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 4 = 36, what is the value of x?','8','9','7','10','a','4x = 32, x = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 14 = 53, what is the value of x?','13','14','12','15','a','3x = 39, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 10 = 34, what is the value of x?','4','5','3','6','a','6x = 24, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 2 = 62, what is the value of x?','6','7','5','8','a','10x = 60, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 2 = 343, what is the value of x?','31','32','30','33','a','11x = 341, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 12 = 204, what is the value of x?','48','49','47','50','a','4x = 192, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 13 = 37, what is the value of x?','4','5','3','6','a','6x = 24, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 19 = 175, what is the value of x?','26','27','25','28','a','6x = 156, x = 26','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 19 = 222, what is the value of x?','29','30','28','31','a','7x = 203, x = 29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 13 = 309, what is the value of x?','37','38','36','39','a','8x = 296, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 18x + 2 = 254, what is the value of x?','14','15','13','16','a','18x = 252, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 4 = 466, what is the value of x?','33','34','32','35','a','14x = 462, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 20 = 440, what is the value of x?','42','43','41','44','a','10x = 420, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 8 = 468, what is the value of x?','23','24','22','25','a','20x = 460, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 16 = 64, what is the value of x?','8','9','7','10','a','6x = 48, x = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 18 = 676, what is the value of x?','47','48','46','49','a','14x = 658, x = 47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 17 = 368, what is the value of x?','39','40','38','41','a','9x = 351, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 15 = 80, what is the value of x?','13','14','12','15','a','5x = 65, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 19 = 81, what is the value of x?','31','32','30','33','a','2x = 62, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 17 = 116, what is the value of x?','11','12','10','13','a','9x = 99, x = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 9 = 636, what is the value of x?','33','34','32','35','a','19x = 627, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 15 = 303, what is the value of x?','36','37','35','38','a','8x = 288, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 17 = 105, what is the value of x?','22','23','21','24','a','4x = 88, x = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 14 = 124, what is the value of x?','11','12','10','13','a','10x = 110, x = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 3 = 87, what is the value of x?','14','15','13','16','a','6x = 84, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 3 = 171, what is the value of x?','42','43','41','44','a','4x = 168, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 14 = 158, what is the value of x?','9','10','8','11','a','16x = 144, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 2 = 882, what is the value of x?','44','45','43','46','a','20x = 880, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 10 = 770, what is the value of x?','40','41','39','42','a','19x = 760, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 5 = 725, what is the value of x?','36','37','35','38','a','20x = 720, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 14 = 209, what is the value of x?','15','16','14','17','a','13x = 195, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 14 = 774, what is the value of x?','38','39','37','40','a','20x = 760, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 11 = 113, what is the value of x?','17','18','16','19','a','6x = 102, x = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 17 = 413, what is the value of x?','44','45','43','46','a','9x = 396, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 20 = 44, what is the value of x?','3','4','2','5','a','8x = 24, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 6 = 170, what is the value of x?','41','42','40','43','a','4x = 164, x = 41','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 5 = 74, what is the value of x?','23','24','22','25','a','3x = 69, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 18 = 144, what is the value of x?','14','15','13','16','a','9x = 126, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 6 = 231, what is the value of x?','25','26','24','27','a','9x = 225, x = 25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 4 = 514, what is the value of x?','30','31','29','32','a','17x = 510, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 14 = 104, what is the value of x?','30','31','29','32','a','3x = 90, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 6 = 24, what is the value of x?','6','7','5','8','a','3x = 18, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 10 = 792, what is the value of x?','46','47','45','48','a','17x = 782, x = 46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 10 = 70, what is the value of x?','6','7','5','8','a','10x = 60, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 17 = 393, what is the value of x?','47','48','46','49','a','8x = 376, x = 47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 12 = 318, what is the value of x?','18','19','17','20','a','17x = 306, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 19 = 371, what is the value of x?','44','45','43','46','a','8x = 352, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 4 = 148, what is the value of x?','36','37','35','38','a','4x = 144, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 4 = 100, what is the value of x?','6','7','5','8','a','16x = 96, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 18x + 10 = 442, what is the value of x?','24','25','23','26','a','18x = 432, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 7 = 168, what is the value of x?','23','24','22','25','a','7x = 161, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 6 = 56, what is the value of x?','5','6','4','7','a','10x = 50, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 2 = 432, what is the value of x?','43','44','42','45','a','10x = 430, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 18 = 45, what is the value of x?','3','4','2','5','a','9x = 27, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 20 = 510, what is the value of x?','49','50','48','51','a','10x = 490, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 12x + 16 = 340, what is the value of x?','27','28','26','29','a','12x = 324, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 13 = 189, what is the value of x?','22','23','21','24','a','8x = 176, x = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 13 = 175, what is the value of x?','27','28','26','29','a','6x = 162, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 6 = 104, what is the value of x?','7','8','6','9','a','14x = 98, x = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 11 = 23, what is the value of x?','3','4','2','5','a','4x = 12, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 10 = 94, what is the value of x?','14','15','13','16','a','6x = 84, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 8 = 99, what is the value of x?','13','14','12','15','a','7x = 91, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 7 = 57, what is the value of x?','5','6','4','7','a','10x = 50, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 18 = 135, what is the value of x?','13','14','12','15','a','9x = 117, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 13 = 51, what is the value of x?','2','3','1','4','a','19x = 38, x = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 8 = 440, what is the value of x?','27','28','26','29','a','16x = 432, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 5 = 91, what is the value of x?','43','44','42','45','a','2x = 86, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 2 = 152, what is the value of x?','50','51','49','52','a','3x = 150, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 20 = 548, what is the value of x?','33','34','32','35','a','16x = 528, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 2 = 236, what is the value of x?','18','19','17','20','a','13x = 234, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 14 = 994, what is the value of x?','49','50','48','51','a','20x = 980, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 20 = 276, what is the value of x?','16','17','15','18','a','16x = 256, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 5 = 165, what is the value of x?','20','21','19','22','a','8x = 160, x = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 12x + 4 = 592, what is the value of x?','49','50','48','51','a','12x = 588, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 8 = 208, what is the value of x?','50','51','49','52','a','4x = 200, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 9 = 669, what is the value of x?','44','45','43','46','a','15x = 660, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 6 = 156, what is the value of x?','30','31','29','32','a','5x = 150, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 7 = 319, what is the value of x?','39','40','38','41','a','8x = 312, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 17 = 141, what is the value of x?','31','32','30','33','a','4x = 124, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 8 = 188, what is the value of x?','18','19','17','20','a','10x = 180, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 13 = 133, what is the value of x?','24','25','23','26','a','5x = 120, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 11 = 191, what is the value of x?','12','13','11','14','a','15x = 180, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 15 = 366, what is the value of x?','27','28','26','29','a','13x = 351, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 18 = 170, what is the value of x?','8','9','7','10','a','19x = 152, x = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 10 = 941, what is the value of x?','49','50','48','51','a','19x = 931, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 5 = 489, what is the value of x?','44','45','43','46','a','11x = 484, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 16 = 192, what is the value of x?','16','17','15','18','a','11x = 176, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 11 = 411, what is the value of x?','40','41','39','42','a','10x = 400, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 14 = 420, what is the value of x?','29','30','28','31','a','14x = 406, x = 29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 13 = 43, what is the value of x?','6','7','5','8','a','5x = 30, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 2 = 705, what is the value of x?','37','38','36','39','a','19x = 703, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 14 = 421, what is the value of x?','37','38','36','39','a','11x = 407, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 10 = 346, what is the value of x?','42','43','41','44','a','8x = 336, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 6 = 406, what is the value of x?','40','41','39','42','a','10x = 400, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 18x + 20 = 128, what is the value of x?','6','7','5','8','a','18x = 108, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 10 = 61, what is the value of x?','17','18','16','19','a','3x = 51, x = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 11 = 201, what is the value of x?','19','20','18','21','a','10x = 190, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 14 = 34, what is the value of x?','5','6','4','7','a','4x = 20, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 8 = 680, what is the value of x?','48','49','47','50','a','14x = 672, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 4 = 124, what is the value of x?','30','31','29','32','a','4x = 120, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 10 = 165, what is the value of x?','31','32','30','33','a','5x = 155, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 8 = 136, what is the value of x?','16','17','15','18','a','8x = 128, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 20 = 980, what is the value of x?','48','49','47','50','a','20x = 960, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 13 = 642, what is the value of x?','37','38','36','39','a','17x = 629, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 10 = 75, what is the value of x?','5','6','4','7','a','13x = 65, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 4 = 28, what is the value of x?','4','5','3','6','a','6x = 24, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 12x + 14 = 278, what is the value of x?','22','23','21','24','a','12x = 264, x = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 11 = 583, what is the value of x?','44','45','43','46','a','13x = 572, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 12x + 6 = 318, what is the value of x?','26','27','25','28','a','12x = 312, x = 26','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 14 = 974, what is the value of x?','48','49','47','50','a','20x = 960, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 18x + 17 = 485, what is the value of x?','26','27','25','28','a','18x = 468, x = 26','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 2 = 212, what is the value of x?','30','31','29','32','a','7x = 210, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 4 = 58, what is the value of x?','18','19','17','20','a','3x = 54, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 11 = 62, what is the value of x?','17','18','16','19','a','3x = 51, x = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 16 = 511, what is the value of x?','45','46','44','47','a','11x = 495, x = 45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 9 = 360, what is the value of x?','27','28','26','29','a','13x = 351, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 13 = 128, what is the value of x?','23','24','22','25','a','5x = 115, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 7 = 367, what is the value of x?','40','41','39','42','a','9x = 360, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 11 = 163, what is the value of x?','8','9','7','10','a','19x = 152, x = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 9 = 161, what is the value of x?','38','39','37','40','a','4x = 152, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 18 = 94, what is the value of x?','38','39','37','40','a','2x = 76, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 18 = 421, what is the value of x?','31','32','30','33','a','13x = 403, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 11 = 47, what is the value of x?','9','10','8','11','a','4x = 36, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 7 = 61, what is the value of x?','9','10','8','11','a','6x = 54, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 3 = 146, what is the value of x?','11','12','10','13','a','13x = 143, x = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 10 = 238, what is the value of x?','38','39','37','40','a','6x = 228, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 11 = 811, what is the value of x?','40','41','39','42','a','20x = 800, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 19 = 359, what is the value of x?','34','35','33','36','a','10x = 340, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 17 = 257, what is the value of x?','16','17','15','18','a','15x = 240, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 11x + 14 = 531, what is the value of x?','47','48','46','49','a','11x = 517, x = 47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 6 = 42, what is the value of x?','6','7','5','8','a','6x = 36, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 7 = 95, what is the value of x?','44','45','43','46','a','2x = 88, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 8 = 178, what is the value of x?','34','35','33','36','a','5x = 170, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 18 = 306, what is the value of x?','36','37','35','38','a','8x = 288, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 12x + 9 = 477, what is the value of x?','39','40','38','41','a','12x = 468, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x + 5 = 141, what is the value of x?','17','18','16','19','a','8x = 136, x = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 5 = 635, what is the value of x?','42','43','41','44','a','15x = 630, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 18x + 2 = 866, what is the value of x?','48','49','47','50','a','18x = 864, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 4 = 74, what is the value of x?','35','36','34','37','a','2x = 70, x = 35','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 16 = 276, what is the value of x?','13','14','12','15','a','20x = 260, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 3 = 435, what is the value of x?','27','28','26','29','a','16x = 432, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 8 = 179, what is the value of x?','19','20','18','21','a','9x = 171, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 20 = 770, what is the value of x?','50','51','49','52','a','15x = 750, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 12x + 15 = 75, what is the value of x?','5','6','4','7','a','12x = 60, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 5 = 175, what is the value of x?','10','11','9','12','a','17x = 170, x = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 12 = 147, what is the value of x?','45','46','44','47','a','3x = 135, x = 45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 12 = 601, what is the value of x?','31','32','30','33','a','19x = 589, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 2 = 268, what is the value of x?','14','15','13','16','a','19x = 266, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 17 = 311, what is the value of x?','21','22','20','23','a','14x = 294, x = 21','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 10 = 30, what is the value of x?','1','2','0','3','a','20x = 20, x = 1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 17 = 680, what is the value of x?','39','40','38','41','a','17x = 663, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 14 = 94, what is the value of x?','40','41','39','42','a','2x = 80, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 5 = 113, what is the value of x?','36','37','35','38','a','3x = 108, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x + 20 = 272, what is the value of x?','36','37','35','38','a','7x = 252, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x + 7 = 119, what is the value of x?','28','29','27','30','a','4x = 112, x = 28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 17 = 513, what is the value of x?','31','32','30','33','a','16x = 496, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 17 = 62, what is the value of x?','5','6','4','7','a','9x = 45, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x + 13 = 142, what is the value of x?','43','44','42','45','a','3x = 129, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 7 = 137, what is the value of x?','13','14','12','15','a','10x = 130, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 3 = 723, what is the value of x?','45','46','44','47','a','16x = 720, x = 45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 14 = 194, what is the value of x?','36','37','35','38','a','5x = 180, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 16 = 178, what is the value of x?','27','28','26','29','a','6x = 162, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 17 = 132, what is the value of x?','23','24','22','25','a','5x = 115, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 14 = 152, what is the value of x?','23','24','22','25','a','6x = 138, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x + 12 = 192, what is the value of x?','18','19','17','20','a','10x = 180, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x + 19 = 64, what is the value of x?','9','10','8','11','a','5x = 45, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 13 = 325, what is the value of x?','24','25','23','26','a','13x = 312, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 4 = 211, what is the value of x?','23','24','22','25','a','9x = 207, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 10 = 435, what is the value of x?','25','26','24','27','a','17x = 425, x = 25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 18 = 749, what is the value of x?','43','44','42','45','a','17x = 731, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 14x + 4 = 88, what is the value of x?','6','7','5','8','a','14x = 84, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 19x + 11 = 524, what is the value of x?','27','28','26','29','a','19x = 513, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 16x + 12 = 716, what is the value of x?','44','45','43','46','a','16x = 704, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 15x + 8 = 593, what is the value of x?','39','40','38','41','a','15x = 585, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 17x + 9 = 451, what is the value of x?','26','27','25','28','a','17x = 442, x = 26','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x + 5 = 71, what is the value of x?','33','34','32','35','a','2x = 66, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 20x + 10 = 190, what is the value of x?','9','10','8','11','a','20x = 180, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 13x + 7 = 267, what is the value of x?','20','21','19','22','a','13x = 260, x = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x + 20 = 236, what is the value of x?','24','25','23','26','a','9x = 216, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x + 17 = 119, what is the value of x?','17','18','16','19','a','6x = 102, x = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 8, what is the value of x?','9','10','8','11','a','2x = 18, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 4 = 156, what is the value of x?','32','33','31','34','a','5x = 160, x = 32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 10 = 215, what is the value of x?','25','26','24','27','a','9x = 225, x = 25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 26, what is the value of x?','18','19','17','20','a','2x = 36, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 3 = 39, what is the value of x?','14','15','13','16','a','3x = 42, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 9 = 267, what is the value of x?','46','47','45','48','a','6x = 276, x = 46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 10 = 341, what is the value of x?','39','40','38','41','a','9x = 351, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 9 = 229, what is the value of x?','34','35','33','36','a','7x = 238, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 9 = 81, what is the value of x?','9','10','8','11','a','10x = 90, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 3 = 93, what is the value of x?','12','13','11','14','a','8x = 96, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 2 = 46, what is the value of x?','24','25','23','26','a','2x = 48, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 7 = 140, what is the value of x?','49','50','48','51','a','3x = 147, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 84, what is the value of x?','47','48','46','49','a','2x = 94, x = 47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 2 = 37, what is the value of x?','13','14','12','15','a','3x = 39, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 8 = 332, what is the value of x?','34','35','33','36','a','10x = 340, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 10 = 162, what is the value of x?','43','44','42','45','a','4x = 172, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 6 = 114, what is the value of x?','30','31','29','32','a','4x = 120, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 7 = 213, what is the value of x?','22','23','21','24','a','10x = 220, x = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 5 = 121, what is the value of x?','42','43','41','44','a','3x = 126, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 10 = 30, what is the value of x?','10','11','9','12','a','4x = 40, x = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 9 = 249, what is the value of x?','43','44','42','45','a','6x = 258, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 2 = 52, what is the value of x?','9','10','8','11','a','6x = 54, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 10 = -2, what is the value of x?','1','2','0','3','a','8x = 8, x = 1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 9 = 19, what is the value of x?','14','15','13','16','a','2x = 28, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 4 = 53, what is the value of x?','19','20','18','21','a','3x = 57, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 10 = 26, what is the value of x?','6','7','5','8','a','6x = 36, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 5 = 35, what is the value of x?','20','21','19','22','a','2x = 40, x = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 6 = 354, what is the value of x?','40','41','39','42','a','9x = 360, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 7 = 200, what is the value of x?','23','24','22','25','a','9x = 207, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 9 = 291, what is the value of x?','30','31','29','32','a','10x = 300, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 4 = 6, what is the value of x?','5','6','4','7','a','2x = 10, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 7 = 105, what is the value of x?','14','15','13','16','a','8x = 112, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 5 = 3, what is the value of x?','4','5','3','6','a','2x = 8, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 4 = 5, what is the value of x?','1','2','0','3','a','9x = 9, x = 1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 3 = 24, what is the value of x?','3','4','2','5','a','9x = 27, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 6 = 250, what is the value of x?','32','33','31','34','a','8x = 256, x = 32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 7 = 77, what is the value of x?','42','43','41','44','a','2x = 84, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 5 = 124, what is the value of x?','43','44','42','45','a','3x = 129, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 6 = 98, what is the value of x?','13','14','12','15','a','8x = 104, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 7 = -5, what is the value of x?','1','2','0','3','a','2x = 2, x = 1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 8 = 122, what is the value of x?','13','14','12','15','a','10x = 130, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 6 = 204, what is the value of x?','42','43','41','44','a','5x = 210, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 8 = 28, what is the value of x?','12','13','11','14','a','3x = 36, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 2 = 134, what is the value of x?','34','35','33','36','a','4x = 136, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 5 = 166, what is the value of x?','19','20','18','21','a','9x = 171, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 8 = 192, what is the value of x?','25','26','24','27','a','8x = 200, x = 25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 10 = 298, what is the value of x?','44','45','43','46','a','7x = 308, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 9 = 27, what is the value of x?','12','13','11','14','a','3x = 36, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 2 = 53, what is the value of x?','11','12','10','13','a','5x = 55, x = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 4 = 68, what is the value of x?','9','10','8','11','a','8x = 72, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 5 = 139, what is the value of x?','48','49','47','50','a','3x = 144, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 2 = 70, what is the value of x?','18','19','17','20','a','4x = 72, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 6 = 114, what is the value of x?','12','13','11','14','a','10x = 120, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 6 = 54, what is the value of x?','12','13','11','14','a','5x = 60, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 4 = 52, what is the value of x?','7','8','6','9','a','8x = 56, x = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 10 = 80, what is the value of x?','30','31','29','32','a','3x = 90, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 6 = 18, what is the value of x?','3','4','2','5','a','8x = 24, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 4 = 50, what is the value of x?','18','19','17','20','a','3x = 54, x = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 6 = 194, what is the value of x?','40','41','39','42','a','5x = 200, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 8 = 136, what is the value of x?','24','25','23','26','a','6x = 144, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 5 = 283, what is the value of x?','32','33','31','34','a','9x = 288, x = 32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 7 = 65, what is the value of x?','24','25','23','26','a','3x = 72, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 3 = 197, what is the value of x?','40','41','39','42','a','5x = 200, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 4 = 116, what is the value of x?','15','16','14','17','a','8x = 120, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 6 = 54, what is the value of x?','15','16','14','17','a','4x = 60, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 4 = 176, what is the value of x?','30','31','29','32','a','6x = 180, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 4 = 304, what is the value of x?','44','45','43','46','a','7x = 308, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 9 = 285, what is the value of x?','42','43','41','44','a','7x = 294, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 3 = 291, what is the value of x?','42','43','41','44','a','7x = 294, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 10 = 8, what is the value of x?','6','7','5','8','a','3x = 18, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 10 = 340, what is the value of x?','50','51','49','52','a','7x = 350, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 8 = 214, what is the value of x?','37','38','36','39','a','6x = 222, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 3 = 21, what is the value of x?','3','4','2','5','a','8x = 24, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 2 = 338, what is the value of x?','34','35','33','36','a','10x = 340, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 7 = 433, what is the value of x?','44','45','43','46','a','10x = 440, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 3 = 47, what is the value of x?','10','11','9','12','a','5x = 50, x = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 9 = 263, what is the value of x?','34','35','33','36','a','8x = 272, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 7 = 443, what is the value of x?','50','51','49','52','a','9x = 450, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 5 = 275, what is the value of x?','40','41','39','42','a','7x = 280, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 4 = 134, what is the value of x?','23','24','22','25','a','6x = 138, x = 23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 8 = 379, what is the value of x?','43','44','42','45','a','9x = 387, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 4 = 239, what is the value of x?','27','28','26','29','a','9x = 243, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 6 = 192, what is the value of x?','33','34','32','35','a','6x = 198, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 3 = 375, what is the value of x?','42','43','41','44','a','9x = 378, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 14, what is the value of x?','12','13','11','14','a','2x = 24, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 6 = 327, what is the value of x?','37','38','36','39','a','9x = 333, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 9 = 111, what is the value of x?','24','25','23','26','a','5x = 120, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 10 = 182, what is the value of x?','48','49','47','50','a','4x = 192, x = 48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 7 = 453, what is the value of x?','46','47','45','48','a','10x = 460, x = 46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 6 = 234, what is the value of x?','24','25','23','26','a','10x = 240, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 4 = 44, what is the value of x?','16','17','15','18','a','3x = 48, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 8 = 46, what is the value of x?','27','28','26','29','a','2x = 54, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 4 = 164, what is the value of x?','42','43','41','44','a','4x = 168, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 9 = 21, what is the value of x?','15','16','14','17','a','2x = 30, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 8 = 82, what is the value of x?','30','31','29','32','a','3x = 90, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 3 = 237, what is the value of x?','30','31','29','32','a','8x = 240, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 8 = 197, what is the value of x?','41','42','40','43','a','5x = 205, x = 41','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 7 = 117, what is the value of x?','31','32','30','33','a','4x = 124, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 10 = 95, what is the value of x?','15','16','14','17','a','7x = 105, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 8 = 212, what is the value of x?','44','45','43','46','a','5x = 220, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 6 = 39, what is the value of x?','15','16','14','17','a','3x = 45, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 5 = 97, what is the value of x?','34','35','33','36','a','3x = 102, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 5 = 415, what is the value of x?','42','43','41','44','a','10x = 420, x = 42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 3 = 85, what is the value of x?','44','45','43','46','a','2x = 88, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 7 = 5, what is the value of x?','4','5','3','6','a','3x = 12, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 10 = 58, what is the value of x?','17','18','16','19','a','4x = 68, x = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 9 = 299, what is the value of x?','44','45','43','46','a','7x = 308, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 7 = 101, what is the value of x?','36','37','35','38','a','3x = 108, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 3 = 69, what is the value of x?','24','25','23','26','a','3x = 72, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 2 = 448, what is the value of x?','45','46','44','47','a','10x = 450, x = 45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 2 = 25, what is the value of x?','9','10','8','11','a','3x = 27, x = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 6 = 408, what is the value of x?','46','47','45','48','a','9x = 414, x = 46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 6 = 210, what is the value of x?','27','28','26','29','a','8x = 216, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 7 = 293, what is the value of x?','50','51','49','52','a','6x = 300, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 4 = 297, what is the value of x?','43','44','42','45','a','7x = 301, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 4 = 224, what is the value of x?','38','39','37','40','a','6x = 228, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 5 = 72, what is the value of x?','11','12','10','13','a','7x = 77, x = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 5 = 425, what is the value of x?','43','44','42','45','a','10x = 430, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 62, what is the value of x?','36','37','35','38','a','2x = 72, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 2 = 34, what is the value of x?','4','5','3','6','a','9x = 36, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 8 = 8, what is the value of x?','2','3','1','4','a','8x = 16, x = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 5 = 23, what is the value of x?','14','15','13','16','a','2x = 28, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 4 = 16, what is the value of x?','2','3','1','4','a','10x = 20, x = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 6 = 54, what is the value of x?','30','31','29','32','a','2x = 60, x = 30','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 2 = 30, what is the value of x?','4','5','3','6','a','8x = 32, x = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 6 = 78, what is the value of x?','21','22','20','23','a','4x = 84, x = 21','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 8 = 31, what is the value of x?','13','14','12','15','a','3x = 39, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 10 = 404, what is the value of x?','46','47','45','48','a','9x = 414, x = 46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 9 = 291, what is the value of x?','50','51','49','52','a','6x = 300, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 5 = 240, what is the value of x?','35','36','34','37','a','7x = 245, x = 35','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 8 = 104, what is the value of x?','28','29','27','30','a','4x = 112, x = 28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 4 = 392, what is the value of x?','44','45','43','46','a','9x = 396, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 7 = 69, what is the value of x?','19','20','18','21','a','4x = 76, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 9 = 215, what is the value of x?','32','33','31','34','a','7x = 224, x = 32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 8 = 22, what is the value of x?','15','16','14','17','a','2x = 30, x = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 10 = 104, what is the value of x?','38','39','37','40','a','3x = 114, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 3 = 101, what is the value of x?','13','14','12','15','a','8x = 104, x = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 5 = 259, what is the value of x?','33','34','32','35','a','8x = 264, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 4 = 91, what is the value of x?','19','20','18','21','a','5x = 95, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 6 = 232, what is the value of x?','34','35','33','36','a','7x = 238, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 7 = 289, what is the value of x?','37','38','36','39','a','8x = 296, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 7 = 57, what is the value of x?','16','17','15','18','a','4x = 64, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 5 = 95, what is the value of x?','50','51','49','52','a','2x = 100, x = 50','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 10 = 14, what is the value of x?','3','4','2','5','a','8x = 24, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 7 = 138, what is the value of x?','29','30','28','31','a','5x = 145, x = 29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 5 = 170, what is the value of x?','35','36','34','37','a','5x = 175, x = 35','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 2 = 172, what is the value of x?','29','30','28','31','a','6x = 174, x = 29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 6 = 184, what is the value of x?','38','39','37','40','a','5x = 190, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 2 = 250, what is the value of x?','28','29','27','30','a','9x = 252, x = 28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 5 = 49, what is the value of x?','6','7','5','8','a','9x = 54, x = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 5 = 10, what is the value of x?','3','4','2','5','a','5x = 15, x = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 4 = 306, what is the value of x?','31','32','30','33','a','10x = 310, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 5 = 67, what is the value of x?','24','25','23','26','a','3x = 72, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 7 = 13, what is the value of x?','5','6','4','7','a','4x = 20, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 7 = 281, what is the value of x?','36','37','35','38','a','8x = 288, x = 36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 3 = 45, what is the value of x?','24','25','23','26','a','2x = 48, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 3 = 149, what is the value of x?','38','39','37','40','a','4x = 152, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 58, what is the value of x?','34','35','33','36','a','2x = 68, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 3 = 317, what is the value of x?','32','33','31','34','a','10x = 320, x = 32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 2 = 46, what is the value of x?','8','9','7','10','a','6x = 48, x = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 4 = 68, what is the value of x?','12','13','11','14','a','6x = 72, x = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 4 = 88, what is the value of x?','46','47','45','48','a','2x = 92, x = 46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 5 = 235, what is the value of x?','40','41','39','42','a','6x = 240, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 4 = 275, what is the value of x?','31','32','30','33','a','9x = 279, x = 31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 6 = 334, what is the value of x?','34','35','33','36','a','10x = 340, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 4 = 200, what is the value of x?','34','35','33','36','a','6x = 204, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 9 = 215, what is the value of x?','28','29','27','30','a','8x = 224, x = 28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 6 = 345, what is the value of x?','39','40','38','41','a','9x = 351, x = 39','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 8 = 208, what is the value of x?','27','28','26','29','a','8x = 216, x = 27','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 3 = 267, what is the value of x?','45','46','44','47','a','6x = 270, x = 45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 3 = 25, what is the value of x?','14','15','13','16','a','2x = 28, x = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 7 = 158, what is the value of x?','33','34','32','35','a','5x = 165, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 5 = 155, what is the value of x?','40','41','39','42','a','4x = 160, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 5x - 8 = 27, what is the value of x?','7','8','6','9','a','5x = 35, x = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 2 = 173, what is the value of x?','25','26','24','27','a','7x = 175, x = 25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 9 = 135, what is the value of x?','16','17','15','18','a','9x = 144, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 3 = 73, what is the value of x?','38','39','37','40','a','2x = 76, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 3 = 7, what is the value of x?','5','6','4','7','a','2x = 10, x = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 2 = 170, what is the value of x?','43','44','42','45','a','4x = 172, x = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 9x - 4 = 95, what is the value of x?','11','12','10','13','a','9x = 99, x = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 3 = 301, what is the value of x?','38','39','37','40','a','8x = 304, x = 38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 9 = 222, what is the value of x?','33','34','32','35','a','7x = 231, x = 33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 9 = 151, what is the value of x?','16','17','15','18','a','10x = 160, x = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 8 = 160, what is the value of x?','24','25','23','26','a','7x = 168, x = 24','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 8x - 7 = 385, what is the value of x?','49','50','48','51','a','8x = 392, x = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 10 = 54, what is the value of x?','32','33','31','34','a','2x = 64, x = 32','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 2x - 4 = 76, what is the value of x?','40','41','39','42','a','2x = 80, x = 40','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 8 = 168, what is the value of x?','44','45','43','46','a','4x = 176, x = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 3x - 4 = 107, what is the value of x?','37','38','36','39','a','3x = 111, x = 37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 10x - 9 = 331, what is the value of x?','34','35','33','36','a','10x = 340, x = 34','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 4x - 4 = 84, what is the value of x?','22','23','21','24','a','4x = 88, x = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 7x - 8 = 132, what is the value of x?','20','21','19','22','a','7x = 140, x = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If 6x - 10 = 104, what is the value of x?','19','20','18','21','a','6x = 114, x = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 57 and width 45?','2565 sq units','102 sq units','204 sq units','102 sq units','a','Area = length × width = 57 × 45 = 2565','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 57 and width 45?','204 units','2565 units','102 units','2565 units','a','Perimeter = 2(length + width) = 2(57+45) = 204','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 37 and width 91?','3367 sq units','128 sq units','256 sq units','128 sq units','a','Area = length × width = 37 × 91 = 3367','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 37 and width 91?','256 units','3367 units','128 units','3367 units','a','Perimeter = 2(length + width) = 2(37+91) = 256','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 68 and width 54?','3672 sq units','122 sq units','244 sq units','122 sq units','a','Area = length × width = 68 × 54 = 3672','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 68 and width 54?','244 units','3672 units','122 units','3672 units','a','Perimeter = 2(length + width) = 2(68+54) = 244','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 33 and width 67?','2211 sq units','100 sq units','200 sq units','100 sq units','a','Area = length × width = 33 × 67 = 2211','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 33 and width 67?','200 units','2211 units','100 units','2211 units','a','Perimeter = 2(length + width) = 2(33+67) = 200','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 72 and width 43?','3096 sq units','115 sq units','230 sq units','115 sq units','a','Area = length × width = 72 × 43 = 3096','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 72 and width 43?','230 units','3096 units','115 units','3096 units','a','Perimeter = 2(length + width) = 2(72+43) = 230','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 65 and width 58?','3770 sq units','123 sq units','246 sq units','123 sq units','a','Area = length × width = 65 × 58 = 3770','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 65 and width 58?','246 units','3770 units','123 units','3770 units','a','Perimeter = 2(length + width) = 2(65+58) = 246','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 39 and width 42?','1638 sq units','81 sq units','162 sq units','81 sq units','a','Area = length × width = 39 × 42 = 1638','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 39 and width 42?','162 units','1638 units','81 units','1638 units','a','Perimeter = 2(length + width) = 2(39+42) = 162','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 95 and width 64?','6080 sq units','159 sq units','318 sq units','159 sq units','a','Area = length × width = 95 × 64 = 6080','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 95 and width 64?','318 units','6080 units','159 units','6080 units','a','Perimeter = 2(length + width) = 2(95+64) = 318','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 20 and width 89?','1780 sq units','109 sq units','218 sq units','109 sq units','a','Area = length × width = 20 × 89 = 1780','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 20 and width 89?','218 units','1780 units','109 units','1780 units','a','Perimeter = 2(length + width) = 2(20+89) = 218','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 92 and width 40?','3680 sq units','132 sq units','264 sq units','132 sq units','a','Area = length × width = 92 × 40 = 3680','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 92 and width 40?','264 units','3680 units','132 units','3680 units','a','Perimeter = 2(length + width) = 2(92+40) = 264','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 48 and width 89?','4272 sq units','137 sq units','274 sq units','137 sq units','a','Area = length × width = 48 × 89 = 4272','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 48 and width 89?','274 units','4272 units','137 units','4272 units','a','Perimeter = 2(length + width) = 2(48+89) = 274','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 92 and width 58?','5336 sq units','150 sq units','300 sq units','150 sq units','a','Area = length × width = 92 × 58 = 5336','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 92 and width 58?','300 units','5336 units','150 units','5336 units','a','Perimeter = 2(length + width) = 2(92+58) = 300','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 14 and width 85?','1190 sq units','99 sq units','198 sq units','99 sq units','a','Area = length × width = 14 × 85 = 1190','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 14 and width 85?','198 units','1190 units','99 units','1190 units','a','Perimeter = 2(length + width) = 2(14+85) = 198','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 27 and width 96?','2592 sq units','123 sq units','246 sq units','123 sq units','a','Area = length × width = 27 × 96 = 2592','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 27 and width 96?','246 units','2592 units','123 units','2592 units','a','Perimeter = 2(length + width) = 2(27+96) = 246','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 31 and width 53?','1643 sq units','84 sq units','168 sq units','84 sq units','a','Area = length × width = 31 × 53 = 1643','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 31 and width 53?','168 units','1643 units','84 units','1643 units','a','Perimeter = 2(length + width) = 2(31+53) = 168','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 29 and width 72?','2088 sq units','101 sq units','202 sq units','101 sq units','a','Area = length × width = 29 × 72 = 2088','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 29 and width 72?','202 units','2088 units','101 units','2088 units','a','Perimeter = 2(length + width) = 2(29+72) = 202','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 68 and width 41?','2788 sq units','109 sq units','218 sq units','109 sq units','a','Area = length × width = 68 × 41 = 2788','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 68 and width 41?','218 units','2788 units','109 units','2788 units','a','Perimeter = 2(length + width) = 2(68+41) = 218','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 95 and width 3?','285 sq units','98 sq units','196 sq units','98 sq units','a','Area = length × width = 95 × 3 = 285','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 95 and width 3?','196 units','285 units','98 units','285 units','a','Perimeter = 2(length + width) = 2(95+3) = 196','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 52 and width 12?','624 sq units','64 sq units','128 sq units','64 sq units','a','Area = length × width = 52 × 12 = 624','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 52 and width 12?','128 units','624 units','64 units','624 units','a','Perimeter = 2(length + width) = 2(52+12) = 128','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 6 and width 13?','78 sq units','19 sq units','38 sq units','19 sq units','a','Area = length × width = 6 × 13 = 78','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 6 and width 13?','38 units','78 units','19 units','78 units','a','Perimeter = 2(length + width) = 2(6+13) = 38','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 30 and width 73?','2190 sq units','103 sq units','206 sq units','103 sq units','a','Area = length × width = 30 × 73 = 2190','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 30 and width 73?','206 units','2190 units','103 units','2190 units','a','Perimeter = 2(length + width) = 2(30+73) = 206','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 71 and width 65?','4615 sq units','136 sq units','272 sq units','136 sq units','a','Area = length × width = 71 × 65 = 4615','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 71 and width 65?','272 units','4615 units','136 units','4615 units','a','Perimeter = 2(length + width) = 2(71+65) = 272','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 74 and width 25?','1850 sq units','99 sq units','198 sq units','99 sq units','a','Area = length × width = 74 × 25 = 1850','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 74 and width 25?','198 units','1850 units','99 units','1850 units','a','Perimeter = 2(length + width) = 2(74+25) = 198','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 83?','996 sq units','95 sq units','190 sq units','95 sq units','a','Area = length × width = 12 × 83 = 996','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 83?','190 units','996 units','95 units','996 units','a','Perimeter = 2(length + width) = 2(12+83) = 190','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 99?','7722 sq units','177 sq units','354 sq units','177 sq units','a','Area = length × width = 78 × 99 = 7722','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 99?','354 units','7722 units','177 units','7722 units','a','Perimeter = 2(length + width) = 2(78+99) = 354','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 3 and width 75?','225 sq units','78 sq units','156 sq units','78 sq units','a','Area = length × width = 3 × 75 = 225','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 3 and width 75?','156 units','225 units','78 units','225 units','a','Perimeter = 2(length + width) = 2(3+75) = 156','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 81 and width 28?','2268 sq units','109 sq units','218 sq units','109 sq units','a','Area = length × width = 81 × 28 = 2268','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 81 and width 28?','218 units','2268 units','109 units','2268 units','a','Perimeter = 2(length + width) = 2(81+28) = 218','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 13 and width 72?','936 sq units','85 sq units','170 sq units','85 sq units','a','Area = length × width = 13 × 72 = 936','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 13 and width 72?','170 units','936 units','85 units','936 units','a','Perimeter = 2(length + width) = 2(13+72) = 170','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 10?','120 sq units','22 sq units','44 sq units','22 sq units','a','Area = length × width = 12 × 10 = 120','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 10?','44 units','120 units','22 units','120 units','a','Perimeter = 2(length + width) = 2(12+10) = 44','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 22 and width 45?','990 sq units','67 sq units','134 sq units','67 sq units','a','Area = length × width = 22 × 45 = 990','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 22 and width 45?','134 units','990 units','67 units','990 units','a','Perimeter = 2(length + width) = 2(22+45) = 134','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 25 and width 45?','1125 sq units','70 sq units','140 sq units','70 sq units','a','Area = length × width = 25 × 45 = 1125','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 25 and width 45?','140 units','1125 units','70 units','1125 units','a','Perimeter = 2(length + width) = 2(25+45) = 140','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 97 and width 43?','4171 sq units','140 sq units','280 sq units','140 sq units','a','Area = length × width = 97 × 43 = 4171','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 97 and width 43?','280 units','4171 units','140 units','4171 units','a','Perimeter = 2(length + width) = 2(97+43) = 280','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 25 and width 11?','275 sq units','36 sq units','72 sq units','36 sq units','a','Area = length × width = 25 × 11 = 275','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 25 and width 11?','72 units','275 units','36 units','275 units','a','Perimeter = 2(length + width) = 2(25+11) = 72','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 31 and width 20?','620 sq units','51 sq units','102 sq units','51 sq units','a','Area = length × width = 31 × 20 = 620','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 31 and width 20?','102 units','620 units','51 units','620 units','a','Perimeter = 2(length + width) = 2(31+20) = 102','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 89 and width 76?','6764 sq units','165 sq units','330 sq units','165 sq units','a','Area = length × width = 89 × 76 = 6764','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 89 and width 76?','330 units','6764 units','165 units','6764 units','a','Perimeter = 2(length + width) = 2(89+76) = 330','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 32 and width 33?','1056 sq units','65 sq units','130 sq units','65 sq units','a','Area = length × width = 32 × 33 = 1056','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 32 and width 33?','130 units','1056 units','65 units','1056 units','a','Perimeter = 2(length + width) = 2(32+33) = 130','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 13 and width 92?','1196 sq units','105 sq units','210 sq units','105 sq units','a','Area = length × width = 13 × 92 = 1196','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 13 and width 92?','210 units','1196 units','105 units','1196 units','a','Perimeter = 2(length + width) = 2(13+92) = 210','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 29?','2262 sq units','107 sq units','214 sq units','107 sq units','a','Area = length × width = 78 × 29 = 2262','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 29?','214 units','2262 units','107 units','2262 units','a','Perimeter = 2(length + width) = 2(78+29) = 214','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 88 and width 18?','1584 sq units','106 sq units','212 sq units','106 sq units','a','Area = length × width = 88 × 18 = 1584','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 88 and width 18?','212 units','1584 units','106 units','1584 units','a','Perimeter = 2(length + width) = 2(88+18) = 212','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 89 and width 97?','8633 sq units','186 sq units','372 sq units','186 sq units','a','Area = length × width = 89 × 97 = 8633','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 89 and width 97?','372 units','8633 units','186 units','8633 units','a','Perimeter = 2(length + width) = 2(89+97) = 372','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 61 and width 30?','1830 sq units','91 sq units','182 sq units','91 sq units','a','Area = length × width = 61 × 30 = 1830','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 61 and width 30?','182 units','1830 units','91 units','1830 units','a','Perimeter = 2(length + width) = 2(61+30) = 182','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 48 and width 77?','3696 sq units','125 sq units','250 sq units','125 sq units','a','Area = length × width = 48 × 77 = 3696','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 48 and width 77?','250 units','3696 units','125 units','3696 units','a','Perimeter = 2(length + width) = 2(48+77) = 250','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 13 and width 93?','1209 sq units','106 sq units','212 sq units','106 sq units','a','Area = length × width = 13 × 93 = 1209','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 13 and width 93?','212 units','1209 units','106 units','1209 units','a','Perimeter = 2(length + width) = 2(13+93) = 212','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 90 and width 49?','4410 sq units','139 sq units','278 sq units','139 sq units','a','Area = length × width = 90 × 49 = 4410','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 90 and width 49?','278 units','4410 units','139 units','4410 units','a','Perimeter = 2(length + width) = 2(90+49) = 278','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 75 and width 93?','6975 sq units','168 sq units','336 sq units','168 sq units','a','Area = length × width = 75 × 93 = 6975','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 75 and width 93?','336 units','6975 units','168 units','6975 units','a','Perimeter = 2(length + width) = 2(75+93) = 336','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 54 and width 81?','4374 sq units','135 sq units','270 sq units','135 sq units','a','Area = length × width = 54 × 81 = 4374','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 54 and width 81?','270 units','4374 units','135 units','4374 units','a','Perimeter = 2(length + width) = 2(54+81) = 270','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 21 and width 95?','1995 sq units','116 sq units','232 sq units','116 sq units','a','Area = length × width = 21 × 95 = 1995','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 21 and width 95?','232 units','1995 units','116 units','1995 units','a','Perimeter = 2(length + width) = 2(21+95) = 232','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 88 and width 32?','2816 sq units','120 sq units','240 sq units','120 sq units','a','Area = length × width = 88 × 32 = 2816','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 88 and width 32?','240 units','2816 units','120 units','2816 units','a','Perimeter = 2(length + width) = 2(88+32) = 240','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 80 and width 7?','560 sq units','87 sq units','174 sq units','87 sq units','a','Area = length × width = 80 × 7 = 560','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 80 and width 7?','174 units','560 units','87 units','560 units','a','Perimeter = 2(length + width) = 2(80+7) = 174','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 50 and width 13?','650 sq units','63 sq units','126 sq units','63 sq units','a','Area = length × width = 50 × 13 = 650','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 50 and width 13?','126 units','650 units','63 units','650 units','a','Perimeter = 2(length + width) = 2(50+13) = 126','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 10 and width 74?','740 sq units','84 sq units','168 sq units','84 sq units','a','Area = length × width = 10 × 74 = 740','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 10 and width 74?','168 units','740 units','84 units','740 units','a','Perimeter = 2(length + width) = 2(10+74) = 168','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 68 and width 24?','1632 sq units','92 sq units','184 sq units','92 sq units','a','Area = length × width = 68 × 24 = 1632','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 68 and width 24?','184 units','1632 units','92 units','1632 units','a','Perimeter = 2(length + width) = 2(68+24) = 184','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 51 and width 17?','867 sq units','68 sq units','136 sq units','68 sq units','a','Area = length × width = 51 × 17 = 867','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 51 and width 17?','136 units','867 units','68 units','867 units','a','Perimeter = 2(length + width) = 2(51+17) = 136','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 86 and width 70?','6020 sq units','156 sq units','312 sq units','156 sq units','a','Area = length × width = 86 × 70 = 6020','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 86 and width 70?','312 units','6020 units','156 units','6020 units','a','Perimeter = 2(length + width) = 2(86+70) = 312','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 50 and width 51?','2550 sq units','101 sq units','202 sq units','101 sq units','a','Area = length × width = 50 × 51 = 2550','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 50 and width 51?','202 units','2550 units','101 units','2550 units','a','Perimeter = 2(length + width) = 2(50+51) = 202','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 89 and width 4?','356 sq units','93 sq units','186 sq units','93 sq units','a','Area = length × width = 89 × 4 = 356','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 89 and width 4?','186 units','356 units','93 units','356 units','a','Perimeter = 2(length + width) = 2(89+4) = 186','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 96 and width 18?','1728 sq units','114 sq units','228 sq units','114 sq units','a','Area = length × width = 96 × 18 = 1728','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 96 and width 18?','228 units','1728 units','114 units','1728 units','a','Perimeter = 2(length + width) = 2(96+18) = 228','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 44 and width 35?','1540 sq units','79 sq units','158 sq units','79 sq units','a','Area = length × width = 44 × 35 = 1540','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 44 and width 35?','158 units','1540 units','79 units','1540 units','a','Perimeter = 2(length + width) = 2(44+35) = 158','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 30 and width 62?','1860 sq units','92 sq units','184 sq units','92 sq units','a','Area = length × width = 30 × 62 = 1860','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 30 and width 62?','184 units','1860 units','92 units','1860 units','a','Perimeter = 2(length + width) = 2(30+62) = 184','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 72 and width 85?','6120 sq units','157 sq units','314 sq units','157 sq units','a','Area = length × width = 72 × 85 = 6120','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 72 and width 85?','314 units','6120 units','157 units','6120 units','a','Perimeter = 2(length + width) = 2(72+85) = 314','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 95 and width 79?','7505 sq units','174 sq units','348 sq units','174 sq units','a','Area = length × width = 95 × 79 = 7505','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 95 and width 79?','348 units','7505 units','174 units','7505 units','a','Perimeter = 2(length + width) = 2(95+79) = 348','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 60 and width 72?','4320 sq units','132 sq units','264 sq units','132 sq units','a','Area = length × width = 60 × 72 = 4320','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 60 and width 72?','264 units','4320 units','132 units','4320 units','a','Perimeter = 2(length + width) = 2(60+72) = 264','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 23 and width 89?','2047 sq units','112 sq units','224 sq units','112 sq units','a','Area = length × width = 23 × 89 = 2047','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 23 and width 89?','224 units','2047 units','112 units','2047 units','a','Perimeter = 2(length + width) = 2(23+89) = 224','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 88 and width 64?','5632 sq units','152 sq units','304 sq units','152 sq units','a','Area = length × width = 88 × 64 = 5632','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 88 and width 64?','304 units','5632 units','152 units','5632 units','a','Perimeter = 2(length + width) = 2(88+64) = 304','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 18 and width 8?','144 sq units','26 sq units','52 sq units','26 sq units','a','Area = length × width = 18 × 8 = 144','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 18 and width 8?','52 units','144 units','26 units','144 units','a','Perimeter = 2(length + width) = 2(18+8) = 52','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 33 and width 45?','1485 sq units','78 sq units','156 sq units','78 sq units','a','Area = length × width = 33 × 45 = 1485','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 33 and width 45?','156 units','1485 units','78 units','1485 units','a','Perimeter = 2(length + width) = 2(33+45) = 156','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 53 and width 5?','265 sq units','58 sq units','116 sq units','58 sq units','a','Area = length × width = 53 × 5 = 265','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 53 and width 5?','116 units','265 units','58 units','265 units','a','Perimeter = 2(length + width) = 2(53+5) = 116','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 95 and width 86?','8170 sq units','181 sq units','362 sq units','181 sq units','a','Area = length × width = 95 × 86 = 8170','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 95 and width 86?','362 units','8170 units','181 units','8170 units','a','Perimeter = 2(length + width) = 2(95+86) = 362','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 49 and width 29?','1421 sq units','78 sq units','156 sq units','78 sq units','a','Area = length × width = 49 × 29 = 1421','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 49 and width 29?','156 units','1421 units','78 units','1421 units','a','Perimeter = 2(length + width) = 2(49+29) = 156','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 16 and width 28?','448 sq units','44 sq units','88 sq units','44 sq units','a','Area = length × width = 16 × 28 = 448','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 16 and width 28?','88 units','448 units','44 units','448 units','a','Perimeter = 2(length + width) = 2(16+28) = 88','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 96 and width 82?','7872 sq units','178 sq units','356 sq units','178 sq units','a','Area = length × width = 96 × 82 = 7872','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 96 and width 82?','356 units','7872 units','178 units','7872 units','a','Perimeter = 2(length + width) = 2(96+82) = 356','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 16 and width 79?','1264 sq units','95 sq units','190 sq units','95 sq units','a','Area = length × width = 16 × 79 = 1264','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 16 and width 79?','190 units','1264 units','95 units','1264 units','a','Perimeter = 2(length + width) = 2(16+79) = 190','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 66?','5148 sq units','144 sq units','288 sq units','144 sq units','a','Area = length × width = 78 × 66 = 5148','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 66?','288 units','5148 units','144 units','5148 units','a','Perimeter = 2(length + width) = 2(78+66) = 288','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 42 and width 59?','2478 sq units','101 sq units','202 sq units','101 sq units','a','Area = length × width = 42 × 59 = 2478','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 42 and width 59?','202 units','2478 units','101 units','2478 units','a','Perimeter = 2(length + width) = 2(42+59) = 202','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 90 and width 86?','7740 sq units','176 sq units','352 sq units','176 sq units','a','Area = length × width = 90 × 86 = 7740','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 90 and width 86?','352 units','7740 units','176 units','7740 units','a','Perimeter = 2(length + width) = 2(90+86) = 352','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 77 and width 76?','5852 sq units','153 sq units','306 sq units','153 sq units','a','Area = length × width = 77 × 76 = 5852','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 77 and width 76?','306 units','5852 units','153 units','5852 units','a','Perimeter = 2(length + width) = 2(77+76) = 306','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 69 and width 100?','6900 sq units','169 sq units','338 sq units','169 sq units','a','Area = length × width = 69 × 100 = 6900','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 69 and width 100?','338 units','6900 units','169 units','6900 units','a','Perimeter = 2(length + width) = 2(69+100) = 338','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 25 and width 100?','2500 sq units','125 sq units','250 sq units','125 sq units','a','Area = length × width = 25 × 100 = 2500','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 25 and width 100?','250 units','2500 units','125 units','2500 units','a','Perimeter = 2(length + width) = 2(25+100) = 250','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 8 and width 31?','248 sq units','39 sq units','78 sq units','39 sq units','a','Area = length × width = 8 × 31 = 248','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 8 and width 31?','78 units','248 units','39 units','248 units','a','Perimeter = 2(length + width) = 2(8+31) = 78','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 10 and width 35?','350 sq units','45 sq units','90 sq units','45 sq units','a','Area = length × width = 10 × 35 = 350','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 10 and width 35?','90 units','350 units','45 units','350 units','a','Perimeter = 2(length + width) = 2(10+35) = 90','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 58 and width 85?','4930 sq units','143 sq units','286 sq units','143 sq units','a','Area = length × width = 58 × 85 = 4930','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 58 and width 85?','286 units','4930 units','143 units','4930 units','a','Perimeter = 2(length + width) = 2(58+85) = 286','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 40 and width 79?','3160 sq units','119 sq units','238 sq units','119 sq units','a','Area = length × width = 40 × 79 = 3160','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 40 and width 79?','238 units','3160 units','119 units','3160 units','a','Perimeter = 2(length + width) = 2(40+79) = 238','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 13 and width 82?','1066 sq units','95 sq units','190 sq units','95 sq units','a','Area = length × width = 13 × 82 = 1066','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 13 and width 82?','190 units','1066 units','95 units','1066 units','a','Perimeter = 2(length + width) = 2(13+82) = 190','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 34 and width 40?','1360 sq units','74 sq units','148 sq units','74 sq units','a','Area = length × width = 34 × 40 = 1360','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 34 and width 40?','148 units','1360 units','74 units','1360 units','a','Perimeter = 2(length + width) = 2(34+40) = 148','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 8?','96 sq units','20 sq units','40 sq units','20 sq units','a','Area = length × width = 12 × 8 = 96','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 8?','40 units','96 units','20 units','96 units','a','Perimeter = 2(length + width) = 2(12+8) = 40','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 18 and width 13?','234 sq units','31 sq units','62 sq units','31 sq units','a','Area = length × width = 18 × 13 = 234','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 18 and width 13?','62 units','234 units','31 units','234 units','a','Perimeter = 2(length + width) = 2(18+13) = 62','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 47 and width 66?','3102 sq units','113 sq units','226 sq units','113 sq units','a','Area = length × width = 47 × 66 = 3102','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 47 and width 66?','226 units','3102 units','113 units','3102 units','a','Perimeter = 2(length + width) = 2(47+66) = 226','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 25 and width 44?','1100 sq units','69 sq units','138 sq units','69 sq units','a','Area = length × width = 25 × 44 = 1100','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 25 and width 44?','138 units','1100 units','69 units','1100 units','a','Perimeter = 2(length + width) = 2(25+44) = 138','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 24 and width 9?','216 sq units','33 sq units','66 sq units','33 sq units','a','Area = length × width = 24 × 9 = 216','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 24 and width 9?','66 units','216 units','33 units','216 units','a','Perimeter = 2(length + width) = 2(24+9) = 66','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 6 and width 48?','288 sq units','54 sq units','108 sq units','54 sq units','a','Area = length × width = 6 × 48 = 288','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 6 and width 48?','108 units','288 units','54 units','288 units','a','Perimeter = 2(length + width) = 2(6+48) = 108','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 35 and width 53?','1855 sq units','88 sq units','176 sq units','88 sq units','a','Area = length × width = 35 × 53 = 1855','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 35 and width 53?','176 units','1855 units','88 units','1855 units','a','Perimeter = 2(length + width) = 2(35+53) = 176','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 64?','768 sq units','76 sq units','152 sq units','76 sq units','a','Area = length × width = 12 × 64 = 768','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 64?','152 units','768 units','76 units','768 units','a','Perimeter = 2(length + width) = 2(12+64) = 152','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 86 and width 100?','8600 sq units','186 sq units','372 sq units','186 sq units','a','Area = length × width = 86 × 100 = 8600','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 86 and width 100?','372 units','8600 units','186 units','8600 units','a','Perimeter = 2(length + width) = 2(86+100) = 372','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 3 and width 49?','147 sq units','52 sq units','104 sq units','52 sq units','a','Area = length × width = 3 × 49 = 147','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 3 and width 49?','104 units','147 units','52 units','147 units','a','Perimeter = 2(length + width) = 2(3+49) = 104','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 54 and width 94?','5076 sq units','148 sq units','296 sq units','148 sq units','a','Area = length × width = 54 × 94 = 5076','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 54 and width 94?','296 units','5076 units','148 units','5076 units','a','Perimeter = 2(length + width) = 2(54+94) = 296','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 81 and width 79?','6399 sq units','160 sq units','320 sq units','160 sq units','a','Area = length × width = 81 × 79 = 6399','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 81 and width 79?','320 units','6399 units','160 units','6399 units','a','Perimeter = 2(length + width) = 2(81+79) = 320','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 80 and width 80?','6400 sq units','160 sq units','320 sq units','160 sq units','a','Area = length × width = 80 × 80 = 6400','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 80 and width 80?','320 units','6400 units','160 units','6400 units','a','Perimeter = 2(length + width) = 2(80+80) = 320','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 32 and width 21?','672 sq units','53 sq units','106 sq units','53 sq units','a','Area = length × width = 32 × 21 = 672','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 32 and width 21?','106 units','672 units','53 units','672 units','a','Perimeter = 2(length + width) = 2(32+21) = 106','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 96 and width 15?','1440 sq units','111 sq units','222 sq units','111 sq units','a','Area = length × width = 96 × 15 = 1440','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 96 and width 15?','222 units','1440 units','111 units','1440 units','a','Perimeter = 2(length + width) = 2(96+15) = 222','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 60 and width 79?','4740 sq units','139 sq units','278 sq units','139 sq units','a','Area = length × width = 60 × 79 = 4740','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 60 and width 79?','278 units','4740 units','139 units','4740 units','a','Perimeter = 2(length + width) = 2(60+79) = 278','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 28 and width 46?','1288 sq units','74 sq units','148 sq units','74 sq units','a','Area = length × width = 28 × 46 = 1288','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 28 and width 46?','148 units','1288 units','74 units','1288 units','a','Perimeter = 2(length + width) = 2(28+46) = 148','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 29 and width 6?','174 sq units','35 sq units','70 sq units','35 sq units','a','Area = length × width = 29 × 6 = 174','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 29 and width 6?','70 units','174 units','35 units','174 units','a','Perimeter = 2(length + width) = 2(29+6) = 70','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 14 and width 2?','28 sq units','16 sq units','32 sq units','16 sq units','a','Area = length × width = 14 × 2 = 28','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 14 and width 2?','32 units','28 units','16 units','28 units','a','Perimeter = 2(length + width) = 2(14+2) = 32','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 60 and width 9?','540 sq units','69 sq units','138 sq units','69 sq units','a','Area = length × width = 60 × 9 = 540','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 60 and width 9?','138 units','540 units','69 units','540 units','a','Perimeter = 2(length + width) = 2(60+9) = 138','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 86 and width 44?','3784 sq units','130 sq units','260 sq units','130 sq units','a','Area = length × width = 86 × 44 = 3784','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 86 and width 44?','260 units','3784 units','130 units','3784 units','a','Perimeter = 2(length + width) = 2(86+44) = 260','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 28 and width 35?','980 sq units','63 sq units','126 sq units','63 sq units','a','Area = length × width = 28 × 35 = 980','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 28 and width 35?','126 units','980 units','63 units','980 units','a','Perimeter = 2(length + width) = 2(28+35) = 126','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 97 and width 51?','4947 sq units','148 sq units','296 sq units','148 sq units','a','Area = length × width = 97 × 51 = 4947','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 97 and width 51?','296 units','4947 units','148 units','4947 units','a','Perimeter = 2(length + width) = 2(97+51) = 296','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 24 and width 16?','384 sq units','40 sq units','80 sq units','40 sq units','a','Area = length × width = 24 × 16 = 384','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 24 and width 16?','80 units','384 units','40 units','384 units','a','Perimeter = 2(length + width) = 2(24+16) = 80','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 70 and width 81?','5670 sq units','151 sq units','302 sq units','151 sq units','a','Area = length × width = 70 × 81 = 5670','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 70 and width 81?','302 units','5670 units','151 units','5670 units','a','Perimeter = 2(length + width) = 2(70+81) = 302','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 93 and width 19?','1767 sq units','112 sq units','224 sq units','112 sq units','a','Area = length × width = 93 × 19 = 1767','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 93 and width 19?','224 units','1767 units','112 units','1767 units','a','Perimeter = 2(length + width) = 2(93+19) = 224','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 24 and width 81?','1944 sq units','105 sq units','210 sq units','105 sq units','a','Area = length × width = 24 × 81 = 1944','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 24 and width 81?','210 units','1944 units','105 units','1944 units','a','Perimeter = 2(length + width) = 2(24+81) = 210','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 58 and width 7?','406 sq units','65 sq units','130 sq units','65 sq units','a','Area = length × width = 58 × 7 = 406','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 58 and width 7?','130 units','406 units','65 units','406 units','a','Perimeter = 2(length + width) = 2(58+7) = 130','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 29 and width 37?','1073 sq units','66 sq units','132 sq units','66 sq units','a','Area = length × width = 29 × 37 = 1073','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 29 and width 37?','132 units','1073 units','66 units','1073 units','a','Perimeter = 2(length + width) = 2(29+37) = 132','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 76 and width 93?','7068 sq units','169 sq units','338 sq units','169 sq units','a','Area = length × width = 76 × 93 = 7068','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 76 and width 93?','338 units','7068 units','169 units','7068 units','a','Perimeter = 2(length + width) = 2(76+93) = 338','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 28 and width 26?','728 sq units','54 sq units','108 sq units','54 sq units','a','Area = length × width = 28 × 26 = 728','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 28 and width 26?','108 units','728 units','54 units','728 units','a','Perimeter = 2(length + width) = 2(28+26) = 108','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 39 and width 57?','2223 sq units','96 sq units','192 sq units','96 sq units','a','Area = length × width = 39 × 57 = 2223','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 39 and width 57?','192 units','2223 units','96 units','2223 units','a','Perimeter = 2(length + width) = 2(39+57) = 192','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 21?','252 sq units','33 sq units','66 sq units','33 sq units','a','Area = length × width = 12 × 21 = 252','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 21?','66 units','252 units','33 units','252 units','a','Perimeter = 2(length + width) = 2(12+21) = 66','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 43 and width 38?','1634 sq units','81 sq units','162 sq units','81 sq units','a','Area = length × width = 43 × 38 = 1634','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 43 and width 38?','162 units','1634 units','81 units','1634 units','a','Perimeter = 2(length + width) = 2(43+38) = 162','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 20 and width 28?','560 sq units','48 sq units','96 sq units','48 sq units','a','Area = length × width = 20 × 28 = 560','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 20 and width 28?','96 units','560 units','48 units','560 units','a','Perimeter = 2(length + width) = 2(20+28) = 96','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 60 and width 90?','5400 sq units','150 sq units','300 sq units','150 sq units','a','Area = length × width = 60 × 90 = 5400','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 60 and width 90?','300 units','5400 units','150 units','5400 units','a','Perimeter = 2(length + width) = 2(60+90) = 300','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 4 and width 59?','236 sq units','63 sq units','126 sq units','63 sq units','a','Area = length × width = 4 × 59 = 236','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 4 and width 59?','126 units','236 units','63 units','236 units','a','Perimeter = 2(length + width) = 2(4+59) = 126','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 7 and width 4?','28 sq units','11 sq units','22 sq units','11 sq units','a','Area = length × width = 7 × 4 = 28','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 7 and width 4?','22 units','28 units','11 units','28 units','a','Perimeter = 2(length + width) = 2(7+4) = 22','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 8 and width 73?','584 sq units','81 sq units','162 sq units','81 sq units','a','Area = length × width = 8 × 73 = 584','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 8 and width 73?','162 units','584 units','81 units','584 units','a','Perimeter = 2(length + width) = 2(8+73) = 162','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 98 and width 77?','7546 sq units','175 sq units','350 sq units','175 sq units','a','Area = length × width = 98 × 77 = 7546','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 98 and width 77?','350 units','7546 units','175 units','7546 units','a','Perimeter = 2(length + width) = 2(98+77) = 350','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 64 and width 87?','5568 sq units','151 sq units','302 sq units','151 sq units','a','Area = length × width = 64 × 87 = 5568','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 64 and width 87?','302 units','5568 units','151 units','5568 units','a','Perimeter = 2(length + width) = 2(64+87) = 302','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 77 and width 86?','6622 sq units','163 sq units','326 sq units','163 sq units','a','Area = length × width = 77 × 86 = 6622','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 77 and width 86?','326 units','6622 units','163 units','6622 units','a','Perimeter = 2(length + width) = 2(77+86) = 326','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 28 and width 16?','448 sq units','44 sq units','88 sq units','44 sq units','a','Area = length × width = 28 × 16 = 448','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 28 and width 16?','88 units','448 units','44 units','448 units','a','Perimeter = 2(length + width) = 2(28+16) = 88','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 3 and width 5?','15 sq units','8 sq units','16 sq units','8 sq units','a','Area = length × width = 3 × 5 = 15','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 3 and width 5?','16 units','15 units','8 units','15 units','a','Perimeter = 2(length + width) = 2(3+5) = 16','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 58 and width 46?','2668 sq units','104 sq units','208 sq units','104 sq units','a','Area = length × width = 58 × 46 = 2668','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 58 and width 46?','208 units','2668 units','104 units','2668 units','a','Perimeter = 2(length + width) = 2(58+46) = 208','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 100 and width 71?','7100 sq units','171 sq units','342 sq units','171 sq units','a','Area = length × width = 100 × 71 = 7100','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 100 and width 71?','342 units','7100 units','171 units','7100 units','a','Perimeter = 2(length + width) = 2(100+71) = 342','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 20 and width 82?','1640 sq units','102 sq units','204 sq units','102 sq units','a','Area = length × width = 20 × 82 = 1640','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 20 and width 82?','204 units','1640 units','102 units','1640 units','a','Perimeter = 2(length + width) = 2(20+82) = 204','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 89 and width 78?','6942 sq units','167 sq units','334 sq units','167 sq units','a','Area = length × width = 89 × 78 = 6942','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 89 and width 78?','334 units','6942 units','167 units','6942 units','a','Perimeter = 2(length + width) = 2(89+78) = 334','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 45 and width 35?','1575 sq units','80 sq units','160 sq units','80 sq units','a','Area = length × width = 45 × 35 = 1575','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 45 and width 35?','160 units','1575 units','80 units','1575 units','a','Perimeter = 2(length + width) = 2(45+35) = 160','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 14 and width 23?','322 sq units','37 sq units','74 sq units','37 sq units','a','Area = length × width = 14 × 23 = 322','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 14 and width 23?','74 units','322 units','37 units','322 units','a','Perimeter = 2(length + width) = 2(14+23) = 74','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 53 and width 37?','1961 sq units','90 sq units','180 sq units','90 sq units','a','Area = length × width = 53 × 37 = 1961','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 53 and width 37?','180 units','1961 units','90 units','1961 units','a','Perimeter = 2(length + width) = 2(53+37) = 180','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 72 and width 74?','5328 sq units','146 sq units','292 sq units','146 sq units','a','Area = length × width = 72 × 74 = 5328','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 72 and width 74?','292 units','5328 units','146 units','5328 units','a','Perimeter = 2(length + width) = 2(72+74) = 292','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 61 and width 88?','5368 sq units','149 sq units','298 sq units','149 sq units','a','Area = length × width = 61 × 88 = 5368','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 61 and width 88?','298 units','5368 units','149 units','5368 units','a','Perimeter = 2(length + width) = 2(61+88) = 298','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 61 and width 61?','3721 sq units','122 sq units','244 sq units','122 sq units','a','Area = length × width = 61 × 61 = 3721','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 61 and width 61?','244 units','3721 units','122 units','3721 units','a','Perimeter = 2(length + width) = 2(61+61) = 244','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 25 and width 65?','1625 sq units','90 sq units','180 sq units','90 sq units','a','Area = length × width = 25 × 65 = 1625','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 25 and width 65?','180 units','1625 units','90 units','1625 units','a','Perimeter = 2(length + width) = 2(25+65) = 180','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 8 and width 82?','656 sq units','90 sq units','180 sq units','90 sq units','a','Area = length × width = 8 × 82 = 656','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 8 and width 82?','180 units','656 units','90 units','656 units','a','Perimeter = 2(length + width) = 2(8+82) = 180','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 34 and width 78?','2652 sq units','112 sq units','224 sq units','112 sq units','a','Area = length × width = 34 × 78 = 2652','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 34 and width 78?','224 units','2652 units','112 units','2652 units','a','Perimeter = 2(length + width) = 2(34+78) = 224','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 64 and width 10?','640 sq units','74 sq units','148 sq units','74 sq units','a','Area = length × width = 64 × 10 = 640','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 64 and width 10?','148 units','640 units','74 units','640 units','a','Perimeter = 2(length + width) = 2(64+10) = 148','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 43 and width 87?','3741 sq units','130 sq units','260 sq units','130 sq units','a','Area = length × width = 43 × 87 = 3741','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 43 and width 87?','260 units','3741 units','130 units','3741 units','a','Perimeter = 2(length + width) = 2(43+87) = 260','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 16 and width 32?','512 sq units','48 sq units','96 sq units','48 sq units','a','Area = length × width = 16 × 32 = 512','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 16 and width 32?','96 units','512 units','48 units','512 units','a','Perimeter = 2(length + width) = 2(16+32) = 96','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 66 and width 18?','1188 sq units','84 sq units','168 sq units','84 sq units','a','Area = length × width = 66 × 18 = 1188','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 66 and width 18?','168 units','1188 units','84 units','1188 units','a','Perimeter = 2(length + width) = 2(66+18) = 168','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 41 and width 93?','3813 sq units','134 sq units','268 sq units','134 sq units','a','Area = length × width = 41 × 93 = 3813','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 41 and width 93?','268 units','3813 units','134 units','3813 units','a','Perimeter = 2(length + width) = 2(41+93) = 268','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 54 and width 51?','2754 sq units','105 sq units','210 sq units','105 sq units','a','Area = length × width = 54 × 51 = 2754','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 54 and width 51?','210 units','2754 units','105 units','2754 units','a','Perimeter = 2(length + width) = 2(54+51) = 210','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 37 and width 80?','2960 sq units','117 sq units','234 sq units','117 sq units','a','Area = length × width = 37 × 80 = 2960','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 37 and width 80?','234 units','2960 units','117 units','2960 units','a','Perimeter = 2(length + width) = 2(37+80) = 234','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 98 and width 44?','4312 sq units','142 sq units','284 sq units','142 sq units','a','Area = length × width = 98 × 44 = 4312','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 98 and width 44?','284 units','4312 units','142 units','4312 units','a','Perimeter = 2(length + width) = 2(98+44) = 284','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 92 and width 85?','7820 sq units','177 sq units','354 sq units','177 sq units','a','Area = length × width = 92 × 85 = 7820','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 92 and width 85?','354 units','7820 units','177 units','7820 units','a','Perimeter = 2(length + width) = 2(92+85) = 354','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 86 and width 49?','4214 sq units','135 sq units','270 sq units','135 sq units','a','Area = length × width = 86 × 49 = 4214','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 86 and width 49?','270 units','4214 units','135 units','4214 units','a','Perimeter = 2(length + width) = 2(86+49) = 270','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 60?','4680 sq units','138 sq units','276 sq units','138 sq units','a','Area = length × width = 78 × 60 = 4680','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 60?','276 units','4680 units','138 units','4680 units','a','Perimeter = 2(length + width) = 2(78+60) = 276','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 89 and width 47?','4183 sq units','136 sq units','272 sq units','136 sq units','a','Area = length × width = 89 × 47 = 4183','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 89 and width 47?','272 units','4183 units','136 units','4183 units','a','Perimeter = 2(length + width) = 2(89+47) = 272','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 59 and width 47?','2773 sq units','106 sq units','212 sq units','106 sq units','a','Area = length × width = 59 × 47 = 2773','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 59 and width 47?','212 units','2773 units','106 units','2773 units','a','Perimeter = 2(length + width) = 2(59+47) = 212','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 29 and width 80?','2320 sq units','109 sq units','218 sq units','109 sq units','a','Area = length × width = 29 × 80 = 2320','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 29 and width 80?','218 units','2320 units','109 units','2320 units','a','Perimeter = 2(length + width) = 2(29+80) = 218','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 5 and width 67?','335 sq units','72 sq units','144 sq units','72 sq units','a','Area = length × width = 5 × 67 = 335','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 5 and width 67?','144 units','335 units','72 units','335 units','a','Perimeter = 2(length + width) = 2(5+67) = 144','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 79 and width 34?','2686 sq units','113 sq units','226 sq units','113 sq units','a','Area = length × width = 79 × 34 = 2686','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 79 and width 34?','226 units','2686 units','113 units','2686 units','a','Perimeter = 2(length + width) = 2(79+34) = 226','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 32 and width 27?','864 sq units','59 sq units','118 sq units','59 sq units','a','Area = length × width = 32 × 27 = 864','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 32 and width 27?','118 units','864 units','59 units','864 units','a','Perimeter = 2(length + width) = 2(32+27) = 118','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 58?','4524 sq units','136 sq units','272 sq units','136 sq units','a','Area = length × width = 78 × 58 = 4524','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 58?','272 units','4524 units','136 units','4524 units','a','Perimeter = 2(length + width) = 2(78+58) = 272','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 29?','348 sq units','41 sq units','82 sq units','41 sq units','a','Area = length × width = 12 × 29 = 348','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 29?','82 units','348 units','41 units','348 units','a','Perimeter = 2(length + width) = 2(12+29) = 82','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 55 and width 52?','2860 sq units','107 sq units','214 sq units','107 sq units','a','Area = length × width = 55 × 52 = 2860','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 55 and width 52?','214 units','2860 units','107 units','2860 units','a','Perimeter = 2(length + width) = 2(55+52) = 214','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 52 and width 85?','4420 sq units','137 sq units','274 sq units','137 sq units','a','Area = length × width = 52 × 85 = 4420','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 52 and width 85?','274 units','4420 units','137 units','4420 units','a','Perimeter = 2(length + width) = 2(52+85) = 274','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 77 and width 83?','6391 sq units','160 sq units','320 sq units','160 sq units','a','Area = length × width = 77 × 83 = 6391','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 77 and width 83?','320 units','6391 units','160 units','6391 units','a','Perimeter = 2(length + width) = 2(77+83) = 320','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 30 and width 59?','1770 sq units','89 sq units','178 sq units','89 sq units','a','Area = length × width = 30 × 59 = 1770','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 30 and width 59?','178 units','1770 units','89 units','1770 units','a','Perimeter = 2(length + width) = 2(30+59) = 178','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 13 and width 41?','533 sq units','54 sq units','108 sq units','54 sq units','a','Area = length × width = 13 × 41 = 533','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 13 and width 41?','108 units','533 units','54 units','533 units','a','Perimeter = 2(length + width) = 2(13+41) = 108','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 60 and width 37?','2220 sq units','97 sq units','194 sq units','97 sq units','a','Area = length × width = 60 × 37 = 2220','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 60 and width 37?','194 units','2220 units','97 units','2220 units','a','Perimeter = 2(length + width) = 2(60+37) = 194','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 64 and width 2?','128 sq units','66 sq units','132 sq units','66 sq units','a','Area = length × width = 64 × 2 = 128','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 64 and width 2?','132 units','128 units','66 units','128 units','a','Perimeter = 2(length + width) = 2(64+2) = 132','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 86 and width 19?','1634 sq units','105 sq units','210 sq units','105 sq units','a','Area = length × width = 86 × 19 = 1634','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 86 and width 19?','210 units','1634 units','105 units','1634 units','a','Perimeter = 2(length + width) = 2(86+19) = 210','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 12 and width 93?','1116 sq units','105 sq units','210 sq units','105 sq units','a','Area = length × width = 12 × 93 = 1116','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 12 and width 93?','210 units','1116 units','105 units','1116 units','a','Perimeter = 2(length + width) = 2(12+93) = 210','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 29 and width 13?','377 sq units','42 sq units','84 sq units','42 sq units','a','Area = length × width = 29 × 13 = 377','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 29 and width 13?','84 units','377 units','42 units','377 units','a','Perimeter = 2(length + width) = 2(29+13) = 84','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 32 and width 13?','416 sq units','45 sq units','90 sq units','45 sq units','a','Area = length × width = 32 × 13 = 416','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 32 and width 13?','90 units','416 units','45 units','416 units','a','Perimeter = 2(length + width) = 2(32+13) = 90','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 59 and width 51?','3009 sq units','110 sq units','220 sq units','110 sq units','a','Area = length × width = 59 × 51 = 3009','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 59 and width 51?','220 units','3009 units','110 units','3009 units','a','Perimeter = 2(length + width) = 2(59+51) = 220','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 98 and width 67?','6566 sq units','165 sq units','330 sq units','165 sq units','a','Area = length × width = 98 × 67 = 6566','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 98 and width 67?','330 units','6566 units','165 units','6566 units','a','Perimeter = 2(length + width) = 2(98+67) = 330','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 83 and width 75?','6225 sq units','158 sq units','316 sq units','158 sq units','a','Area = length × width = 83 × 75 = 6225','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 83 and width 75?','316 units','6225 units','158 units','6225 units','a','Perimeter = 2(length + width) = 2(83+75) = 316','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 11 and width 17?','187 sq units','28 sq units','56 sq units','28 sq units','a','Area = length × width = 11 × 17 = 187','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 11 and width 17?','56 units','187 units','28 units','187 units','a','Perimeter = 2(length + width) = 2(11+17) = 56','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 44 and width 42?','1848 sq units','86 sq units','172 sq units','86 sq units','a','Area = length × width = 44 × 42 = 1848','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 44 and width 42?','172 units','1848 units','86 units','1848 units','a','Perimeter = 2(length + width) = 2(44+42) = 172','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 95 and width 89?','8455 sq units','184 sq units','368 sq units','184 sq units','a','Area = length × width = 95 × 89 = 8455','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 95 and width 89?','368 units','8455 units','184 units','8455 units','a','Perimeter = 2(length + width) = 2(95+89) = 368','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 30 and width 10?','300 sq units','40 sq units','80 sq units','40 sq units','a','Area = length × width = 30 × 10 = 300','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 30 and width 10?','80 units','300 units','40 units','300 units','a','Perimeter = 2(length + width) = 2(30+10) = 80','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 36 and width 17?','612 sq units','53 sq units','106 sq units','53 sq units','a','Area = length × width = 36 × 17 = 612','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 36 and width 17?','106 units','612 units','53 units','612 units','a','Perimeter = 2(length + width) = 2(36+17) = 106','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 64 and width 91?','5824 sq units','155 sq units','310 sq units','155 sq units','a','Area = length × width = 64 × 91 = 5824','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 64 and width 91?','310 units','5824 units','155 units','5824 units','a','Perimeter = 2(length + width) = 2(64+91) = 310','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 48 and width 72?','3456 sq units','120 sq units','240 sq units','120 sq units','a','Area = length × width = 48 × 72 = 3456','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 48 and width 72?','240 units','3456 units','120 units','3456 units','a','Perimeter = 2(length + width) = 2(48+72) = 240','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 71 and width 4?','284 sq units','75 sq units','150 sq units','75 sq units','a','Area = length × width = 71 × 4 = 284','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 71 and width 4?','150 units','284 units','75 units','284 units','a','Perimeter = 2(length + width) = 2(71+4) = 150','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 55 and width 58?','3190 sq units','113 sq units','226 sq units','113 sq units','a','Area = length × width = 55 × 58 = 3190','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 55 and width 58?','226 units','3190 units','113 units','3190 units','a','Perimeter = 2(length + width) = 2(55+58) = 226','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 55?','4290 sq units','133 sq units','266 sq units','133 sq units','a','Area = length × width = 78 × 55 = 4290','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 55?','266 units','4290 units','133 units','4290 units','a','Perimeter = 2(length + width) = 2(78+55) = 266','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 73 and width 66?','4818 sq units','139 sq units','278 sq units','139 sq units','a','Area = length × width = 73 × 66 = 4818','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 73 and width 66?','278 units','4818 units','139 units','4818 units','a','Perimeter = 2(length + width) = 2(73+66) = 278','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 75 and width 65?','4875 sq units','140 sq units','280 sq units','140 sq units','a','Area = length × width = 75 × 65 = 4875','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 75 and width 65?','280 units','4875 units','140 units','4875 units','a','Perimeter = 2(length + width) = 2(75+65) = 280','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 63 and width 92?','5796 sq units','155 sq units','310 sq units','155 sq units','a','Area = length × width = 63 × 92 = 5796','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 63 and width 92?','310 units','5796 units','155 units','5796 units','a','Perimeter = 2(length + width) = 2(63+92) = 310','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 38 and width 35?','1330 sq units','73 sq units','146 sq units','73 sq units','a','Area = length × width = 38 × 35 = 1330','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 38 and width 35?','146 units','1330 units','73 units','1330 units','a','Perimeter = 2(length + width) = 2(38+35) = 146','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 78 and width 35?','2730 sq units','113 sq units','226 sq units','113 sq units','a','Area = length × width = 78 × 35 = 2730','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 78 and width 35?','226 units','2730 units','113 units','2730 units','a','Perimeter = 2(length + width) = 2(78+35) = 226','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 7 and width 55?','385 sq units','62 sq units','124 sq units','62 sq units','a','Area = length × width = 7 × 55 = 385','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 7 and width 55?','124 units','385 units','62 units','385 units','a','Perimeter = 2(length + width) = 2(7+55) = 124','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 8 and width 23?','184 sq units','31 sq units','62 sq units','31 sq units','a','Area = length × width = 8 × 23 = 184','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 8 and width 23?','62 units','184 units','31 units','184 units','a','Perimeter = 2(length + width) = 2(8+23) = 62','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 11 and width 41?','451 sq units','52 sq units','104 sq units','52 sq units','a','Area = length × width = 11 × 41 = 451','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 11 and width 41?','104 units','451 units','52 units','451 units','a','Perimeter = 2(length + width) = 2(11+41) = 104','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 32 and width 12?','384 sq units','44 sq units','88 sq units','44 sq units','a','Area = length × width = 32 × 12 = 384','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 32 and width 12?','88 units','384 units','44 units','384 units','a','Perimeter = 2(length + width) = 2(32+12) = 88','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 42 and width 30?','1260 sq units','72 sq units','144 sq units','72 sq units','a','Area = length × width = 42 × 30 = 1260','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 42 and width 30?','144 units','1260 units','72 units','1260 units','a','Perimeter = 2(length + width) = 2(42+30) = 144','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 17 and width 97?','1649 sq units','114 sq units','228 sq units','114 sq units','a','Area = length × width = 17 × 97 = 1649','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 17 and width 97?','228 units','1649 units','114 units','1649 units','a','Perimeter = 2(length + width) = 2(17+97) = 228','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 87 and width 26?','2262 sq units','113 sq units','226 sq units','113 sq units','a','Area = length × width = 87 × 26 = 2262','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 87 and width 26?','226 units','2262 units','113 units','2262 units','a','Perimeter = 2(length + width) = 2(87+26) = 226','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length 64 and width 40?','2560 sq units','104 sq units','208 sq units','104 sq units','a','Area = length × width = 64 × 40 = 2560','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length 64 and width 40?','208 units','2560 units','104 units','2560 units','a','Perimeter = 2(length + width) = 2(64+40) = 208','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 13? (use π = 3.14)','530.66 sq units','81.64 units','169 sq units','40.82 units','a','Area = πr² = 3.14 × 13² = 530.66','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 13? (use π = 3.14)','81.64 units','530.66 sq units','26 units','40.82 units','a','Circumference = 2πr = 2 × 3.14 × 13 = 81.64','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 11? (use π = 3.14)','379.94 sq units','69.08 units','121 sq units','34.54 units','a','Area = πr² = 3.14 × 11² = 379.94','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 11? (use π = 3.14)','69.08 units','379.94 sq units','22 units','34.54 units','a','Circumference = 2πr = 2 × 3.14 × 11 = 69.08','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 10? (use π = 3.14)','314.0 sq units','62.8 units','100 sq units','31.400000000000002 units','a','Area = πr² = 3.14 × 10² = 314.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 10? (use π = 3.14)','62.8 units','314.0 sq units','20 units','31.4 units','a','Circumference = 2πr = 2 × 3.14 × 10 = 62.8','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 28? (use π = 3.14)','2461.76 sq units','175.84 units','784 sq units','87.92 units','a','Area = πr² = 3.14 × 28² = 2461.76','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 28? (use π = 3.14)','175.84 units','2461.76 sq units','56 units','87.92 units','a','Circumference = 2πr = 2 × 3.14 × 28 = 175.84','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 47? (use π = 3.14)','6936.26 sq units','295.16 units','2209 sq units','147.58 units','a','Area = πr² = 3.14 × 47² = 6936.26','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 47? (use π = 3.14)','295.16 units','6936.26 sq units','94 units','147.58 units','a','Circumference = 2πr = 2 × 3.14 × 47 = 295.16','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 5? (use π = 3.14)','78.5 sq units','31.4 units','25 sq units','15.700000000000001 units','a','Area = πr² = 3.14 × 5² = 78.5','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 5? (use π = 3.14)','31.4 units','78.5 sq units','10 units','15.7 units','a','Circumference = 2πr = 2 × 3.14 × 5 = 31.4','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 9? (use π = 3.14)','254.34 sq units','56.52 units','81 sq units','28.26 units','a','Area = πr² = 3.14 × 9² = 254.34','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 9? (use π = 3.14)','56.52 units','254.34 sq units','18 units','28.26 units','a','Circumference = 2πr = 2 × 3.14 × 9 = 56.52','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 41? (use π = 3.14)','5278.34 sq units','257.48 units','1681 sq units','128.74 units','a','Area = πr² = 3.14 × 41² = 5278.34','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 41? (use π = 3.14)','257.48 units','5278.34 sq units','82 units','128.74 units','a','Circumference = 2πr = 2 × 3.14 × 41 = 257.48','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 32? (use π = 3.14)','3215.36 sq units','200.96 units','1024 sq units','100.48 units','a','Area = πr² = 3.14 × 32² = 3215.36','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 32? (use π = 3.14)','200.96 units','3215.36 sq units','64 units','100.48 units','a','Circumference = 2πr = 2 × 3.14 × 32 = 200.96','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 37? (use π = 3.14)','4298.66 sq units','232.36 units','1369 sq units','116.18 units','a','Area = πr² = 3.14 × 37² = 4298.66','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 37? (use π = 3.14)','232.36 units','4298.66 sq units','74 units','116.18 units','a','Circumference = 2πr = 2 × 3.14 × 37 = 232.36','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 12? (use π = 3.14)','452.16 sq units','75.36 units','144 sq units','37.68 units','a','Area = πr² = 3.14 × 12² = 452.16','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 12? (use π = 3.14)','75.36 units','452.16 sq units','24 units','37.68 units','a','Circumference = 2πr = 2 × 3.14 × 12 = 75.36','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 14? (use π = 3.14)','615.44 sq units','87.92 units','196 sq units','43.96 units','a','Area = πr² = 3.14 × 14² = 615.44','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 14? (use π = 3.14)','87.92 units','615.44 sq units','28 units','43.96 units','a','Circumference = 2πr = 2 × 3.14 × 14 = 87.92','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 30? (use π = 3.14)','2826.0 sq units','188.4 units','900 sq units','94.2 units','a','Area = πr² = 3.14 × 30² = 2826.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 30? (use π = 3.14)','188.4 units','2826.0 sq units','60 units','94.2 units','a','Circumference = 2πr = 2 × 3.14 × 30 = 188.4','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 15? (use π = 3.14)','706.5 sq units','94.2 units','225 sq units','47.1 units','a','Area = πr² = 3.14 × 15² = 706.5','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 15? (use π = 3.14)','94.2 units','706.5 sq units','30 units','47.1 units','a','Circumference = 2πr = 2 × 3.14 × 15 = 94.2','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 19? (use π = 3.14)','1133.54 sq units','119.32 units','361 sq units','59.660000000000004 units','a','Area = πr² = 3.14 × 19² = 1133.54','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 19? (use π = 3.14)','119.32 units','1133.54 sq units','38 units','59.66 units','a','Circumference = 2πr = 2 × 3.14 × 19 = 119.32','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 22? (use π = 3.14)','1519.76 sq units','138.16 units','484 sq units','69.08 units','a','Area = πr² = 3.14 × 22² = 1519.76','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 22? (use π = 3.14)','138.16 units','1519.76 sq units','44 units','69.08 units','a','Circumference = 2πr = 2 × 3.14 × 22 = 138.16','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 29? (use π = 3.14)','2640.74 sq units','182.12 units','841 sq units','91.06 units','a','Area = πr² = 3.14 × 29² = 2640.74','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 29? (use π = 3.14)','182.12 units','2640.74 sq units','58 units','91.06 units','a','Circumference = 2πr = 2 × 3.14 × 29 = 182.12','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 45? (use π = 3.14)','6358.5 sq units','282.6 units','2025 sq units','141.3 units','a','Area = πr² = 3.14 × 45² = 6358.5','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 45? (use π = 3.14)','282.6 units','6358.5 sq units','90 units','141.3 units','a','Circumference = 2πr = 2 × 3.14 × 45 = 282.6','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 6? (use π = 3.14)','113.04 sq units','37.68 units','36 sq units','18.84 units','a','Area = πr² = 3.14 × 6² = 113.04','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 6? (use π = 3.14)','37.68 units','113.04 sq units','12 units','18.84 units','a','Circumference = 2πr = 2 × 3.14 × 6 = 37.68','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 34? (use π = 3.14)','3629.84 sq units','213.52 units','1156 sq units','106.76 units','a','Area = πr² = 3.14 × 34² = 3629.84','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 34? (use π = 3.14)','213.52 units','3629.84 sq units','68 units','106.76 units','a','Circumference = 2πr = 2 × 3.14 × 34 = 213.52','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 33? (use π = 3.14)','3419.46 sq units','207.24 units','1089 sq units','103.62 units','a','Area = πr² = 3.14 × 33² = 3419.46','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 33? (use π = 3.14)','207.24 units','3419.46 sq units','66 units','103.62 units','a','Circumference = 2πr = 2 × 3.14 × 33 = 207.24','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 8? (use π = 3.14)','200.96 sq units','50.24 units','64 sq units','25.12 units','a','Area = πr² = 3.14 × 8² = 200.96','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 8? (use π = 3.14)','50.24 units','200.96 sq units','16 units','25.12 units','a','Circumference = 2πr = 2 × 3.14 × 8 = 50.24','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 42? (use π = 3.14)','5538.96 sq units','263.76 units','1764 sq units','131.88 units','a','Area = πr² = 3.14 × 42² = 5538.96','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 42? (use π = 3.14)','263.76 units','5538.96 sq units','84 units','131.88 units','a','Circumference = 2πr = 2 × 3.14 × 42 = 263.76','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 49? (use π = 3.14)','7539.14 sq units','307.72 units','2401 sq units','153.86 units','a','Area = πr² = 3.14 × 49² = 7539.14','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 49? (use π = 3.14)','307.72 units','7539.14 sq units','98 units','153.86 units','a','Circumference = 2πr = 2 × 3.14 × 49 = 307.72','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 7? (use π = 3.14)','153.86 sq units','43.96 units','49 sq units','21.98 units','a','Area = πr² = 3.14 × 7² = 153.86','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 7? (use π = 3.14)','43.96 units','153.86 sq units','14 units','21.98 units','a','Circumference = 2πr = 2 × 3.14 × 7 = 43.96','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 21? (use π = 3.14)','1384.74 sq units','131.88 units','441 sq units','65.94 units','a','Area = πr² = 3.14 × 21² = 1384.74','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 21? (use π = 3.14)','131.88 units','1384.74 sq units','42 units','65.94 units','a','Circumference = 2πr = 2 × 3.14 × 21 = 131.88','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 36? (use π = 3.14)','4069.44 sq units','226.08 units','1296 sq units','113.04 units','a','Area = πr² = 3.14 × 36² = 4069.44','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 36? (use π = 3.14)','226.08 units','4069.44 sq units','72 units','113.04 units','a','Circumference = 2πr = 2 × 3.14 × 36 = 226.08','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 24? (use π = 3.14)','1808.64 sq units','150.72 units','576 sq units','75.36 units','a','Area = πr² = 3.14 × 24² = 1808.64','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 24? (use π = 3.14)','150.72 units','1808.64 sq units','48 units','75.36 units','a','Circumference = 2πr = 2 × 3.14 × 24 = 150.72','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 40? (use π = 3.14)','5024.0 sq units','251.2 units','1600 sq units','125.60000000000001 units','a','Area = πr² = 3.14 × 40² = 5024.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 40? (use π = 3.14)','251.2 units','5024.0 sq units','80 units','125.6 units','a','Circumference = 2πr = 2 × 3.14 × 40 = 251.2','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 27? (use π = 3.14)','2289.06 sq units','169.56 units','729 sq units','84.78 units','a','Area = πr² = 3.14 × 27² = 2289.06','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 27? (use π = 3.14)','169.56 units','2289.06 sq units','54 units','84.78 units','a','Circumference = 2πr = 2 × 3.14 × 27 = 169.56','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 16? (use π = 3.14)','803.84 sq units','100.48 units','256 sq units','50.24 units','a','Area = πr² = 3.14 × 16² = 803.84','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 16? (use π = 3.14)','100.48 units','803.84 sq units','32 units','50.24 units','a','Circumference = 2πr = 2 × 3.14 × 16 = 100.48','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 18? (use π = 3.14)','1017.36 sq units','113.04 units','324 sq units','56.52 units','a','Area = πr² = 3.14 × 18² = 1017.36','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 18? (use π = 3.14)','113.04 units','1017.36 sq units','36 units','56.52 units','a','Circumference = 2πr = 2 × 3.14 × 18 = 113.04','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 43? (use π = 3.14)','5805.86 sq units','270.04 units','1849 sq units','135.02 units','a','Area = πr² = 3.14 × 43² = 5805.86','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 43? (use π = 3.14)','270.04 units','5805.86 sq units','86 units','135.02 units','a','Circumference = 2πr = 2 × 3.14 × 43 = 270.04','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 20? (use π = 3.14)','1256.0 sq units','125.6 units','400 sq units','62.800000000000004 units','a','Area = πr² = 3.14 × 20² = 1256.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 20? (use π = 3.14)','125.6 units','1256.0 sq units','40 units','62.8 units','a','Circumference = 2πr = 2 × 3.14 × 20 = 125.6','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 44? (use π = 3.14)','6079.04 sq units','276.32 units','1936 sq units','138.16 units','a','Area = πr² = 3.14 × 44² = 6079.04','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 44? (use π = 3.14)','276.32 units','6079.04 sq units','88 units','138.16 units','a','Circumference = 2πr = 2 × 3.14 × 44 = 276.32','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 39? (use π = 3.14)','4775.94 sq units','244.92 units','1521 sq units','122.46000000000001 units','a','Area = πr² = 3.14 × 39² = 4775.94','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 39? (use π = 3.14)','244.92 units','4775.94 sq units','78 units','122.46 units','a','Circumference = 2πr = 2 × 3.14 × 39 = 244.92','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 48? (use π = 3.14)','7234.56 sq units','301.44 units','2304 sq units','150.72 units','a','Area = πr² = 3.14 × 48² = 7234.56','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 48? (use π = 3.14)','301.44 units','7234.56 sq units','96 units','150.72 units','a','Circumference = 2πr = 2 × 3.14 × 48 = 301.44','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 3? (use π = 3.14)','28.26 sq units','18.84 units','9 sq units','9.42 units','a','Area = πr² = 3.14 × 3² = 28.26','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 3? (use π = 3.14)','18.84 units','28.26 sq units','6 units','9.42 units','a','Circumference = 2πr = 2 × 3.14 × 3 = 18.84','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 35? (use π = 3.14)','3846.5 sq units','219.8 units','1225 sq units','109.9 units','a','Area = πr² = 3.14 × 35² = 3846.5','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 35? (use π = 3.14)','219.8 units','3846.5 sq units','70 units','109.9 units','a','Circumference = 2πr = 2 × 3.14 × 35 = 219.8','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 46? (use π = 3.14)','6644.24 sq units','288.88 units','2116 sq units','144.44 units','a','Area = πr² = 3.14 × 46² = 6644.24','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 46? (use π = 3.14)','288.88 units','6644.24 sq units','92 units','144.44 units','a','Circumference = 2πr = 2 × 3.14 × 46 = 288.88','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 31? (use π = 3.14)','3017.54 sq units','194.68 units','961 sq units','97.34 units','a','Area = πr² = 3.14 × 31² = 3017.54','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 31? (use π = 3.14)','194.68 units','3017.54 sq units','62 units','97.34 units','a','Circumference = 2πr = 2 × 3.14 × 31 = 194.68','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 4? (use π = 3.14)','50.24 sq units','25.12 units','16 sq units','12.56 units','a','Area = πr² = 3.14 × 4² = 50.24','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 4? (use π = 3.14)','25.12 units','50.24 sq units','8 units','12.56 units','a','Circumference = 2πr = 2 × 3.14 × 4 = 25.12','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 2? (use π = 3.14)','12.56 sq units','12.56 units','4 sq units','6.28 units','a','Area = πr² = 3.14 × 2² = 12.56','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 2? (use π = 3.14)','12.56 units','12.56 sq units','4 units','6.28 units','a','Circumference = 2πr = 2 × 3.14 × 2 = 12.56','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 17? (use π = 3.14)','907.46 sq units','106.76 units','289 sq units','53.38 units','a','Area = πr² = 3.14 × 17² = 907.46','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 17? (use π = 3.14)','106.76 units','907.46 sq units','34 units','53.38 units','a','Circumference = 2πr = 2 × 3.14 × 17 = 106.76','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 26? (use π = 3.14)','2122.64 sq units','163.28 units','676 sq units','81.64 units','a','Area = πr² = 3.14 × 26² = 2122.64','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 26? (use π = 3.14)','163.28 units','2122.64 sq units','52 units','81.64 units','a','Circumference = 2πr = 2 × 3.14 × 26 = 163.28','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 50? (use π = 3.14)','7850.0 sq units','314.0 units','2500 sq units','157.0 units','a','Area = πr² = 3.14 × 50² = 7850.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 50? (use π = 3.14)','314.0 units','7850.0 sq units','100 units','157.0 units','a','Circumference = 2πr = 2 × 3.14 × 50 = 314.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 23? (use π = 3.14)','1661.06 sq units','144.44 units','529 sq units','72.22 units','a','Area = πr² = 3.14 × 23² = 1661.06','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 23? (use π = 3.14)','144.44 units','1661.06 sq units','46 units','72.22 units','a','Circumference = 2πr = 2 × 3.14 × 23 = 144.44','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 25? (use π = 3.14)','1962.5 sq units','157.0 units','625 sq units','78.5 units','a','Area = πr² = 3.14 × 25² = 1962.5','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 25? (use π = 3.14)','157.0 units','1962.5 sq units','50 units','78.5 units','a','Circumference = 2πr = 2 × 3.14 × 25 = 157.0','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius 38? (use π = 3.14)','4534.16 sq units','238.64 units','1444 sq units','119.32000000000001 units','a','Area = πr² = 3.14 × 38² = 4534.16','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius 38? (use π = 3.14)','238.64 units','4534.16 sq units','76 units','119.32 units','a','Circumference = 2πr = 2 × 3.14 × 38 = 238.64','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 26?','325.0 sq units','650 sq units','51 sq units','1300 sq units','a','Area = ½ × base × height = ½ × 25 × 26 = 325.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 44 and height 15?','330.0 sq units','660 sq units','59 sq units','1320 sq units','a','Area = ½ × base × height = ½ × 44 × 15 = 330.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 20 and height 32?','320.0 sq units','640 sq units','52 sq units','1280 sq units','a','Area = ½ × base × height = ½ × 20 × 32 = 320.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 9?','225.0 sq units','450 sq units','59 sq units','900 sq units','a','Area = ½ × base × height = ½ × 50 × 9 = 225.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 39 and height 39?','760.5 sq units','1521 sq units','78 sq units','3042 sq units','a','Area = ½ × base × height = ½ × 39 × 39 = 760.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 41 and height 30?','615.0 sq units','1230 sq units','71 sq units','2460 sq units','a','Area = ½ × base × height = ½ × 41 × 30 = 615.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 38 and height 5?','95.0 sq units','190 sq units','43 sq units','380 sq units','a','Area = ½ × base × height = ½ × 38 × 5 = 95.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 23?','287.5 sq units','575 sq units','48 sq units','1150 sq units','a','Area = ½ × base × height = ½ × 25 × 23 = 287.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 2 and height 9?','9.0 sq units','18 sq units','11 sq units','36 sq units','a','Area = ½ × base × height = ½ × 2 × 9 = 9.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 32?','288.0 sq units','576 sq units','50 sq units','1152 sq units','a','Area = ½ × base × height = ½ × 18 × 32 = 288.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 33?','412.5 sq units','825 sq units','58 sq units','1650 sq units','a','Area = ½ × base × height = ½ × 25 × 33 = 412.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 37?','573.5 sq units','1147 sq units','68 sq units','2294 sq units','a','Area = ½ × base × height = ½ × 31 × 37 = 573.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 7?','84.0 sq units','168 sq units','31 sq units','336 sq units','a','Area = ½ × base × height = ½ × 24 × 7 = 84.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 3?','27.0 sq units','54 sq units','21 sq units','108 sq units','a','Area = ½ × base × height = ½ × 18 × 3 = 27.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 4 and height 50?','100.0 sq units','200 sq units','54 sq units','400 sq units','a','Area = ½ × base × height = ½ × 4 × 50 = 100.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 33 and height 28?','462.0 sq units','924 sq units','61 sq units','1848 sq units','a','Area = ½ × base × height = ½ × 33 × 28 = 462.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 40 and height 9?','180.0 sq units','360 sq units','49 sq units','720 sq units','a','Area = ½ × base × height = ½ × 40 × 9 = 180.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 49 and height 38?','931.0 sq units','1862 sq units','87 sq units','3724 sq units','a','Area = ½ × base × height = ½ × 49 × 38 = 931.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 27 and height 35?','472.5 sq units','945 sq units','62 sq units','1890 sq units','a','Area = ½ × base × height = ½ × 27 × 35 = 472.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 41 and height 23?','471.5 sq units','943 sq units','64 sq units','1886 sq units','a','Area = ½ × base × height = ½ × 41 × 23 = 471.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 2 and height 18?','18.0 sq units','36 sq units','20 sq units','72 sq units','a','Area = ½ × base × height = ½ × 2 × 18 = 18.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 29 and height 2?','29.0 sq units','58 sq units','31 sq units','116 sq units','a','Area = ½ × base × height = ½ × 29 × 2 = 29.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 18?','270.0 sq units','540 sq units','48 sq units','1080 sq units','a','Area = ½ × base × height = ½ × 30 × 18 = 270.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 43 and height 20?','430.0 sq units','860 sq units','63 sq units','1720 sq units','a','Area = ½ × base × height = ½ × 43 × 20 = 430.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 46 and height 29?','667.0 sq units','1334 sq units','75 sq units','2668 sq units','a','Area = ½ × base × height = ½ × 46 × 29 = 667.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 22 and height 19?','209.0 sq units','418 sq units','41 sq units','836 sq units','a','Area = ½ × base × height = ½ × 22 × 19 = 209.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 11 and height 11?','60.5 sq units','121 sq units','22 sq units','242 sq units','a','Area = ½ × base × height = ½ × 11 × 11 = 60.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 39 and height 25?','487.5 sq units','975 sq units','64 sq units','1950 sq units','a','Area = ½ × base × height = ½ × 39 × 25 = 487.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 35 and height 36?','630.0 sq units','1260 sq units','71 sq units','2520 sq units','a','Area = ½ × base × height = ½ × 35 × 36 = 630.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 33 and height 11?','181.5 sq units','363 sq units','44 sq units','726 sq units','a','Area = ½ × base × height = ½ × 33 × 11 = 181.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 10 and height 15?','75.0 sq units','150 sq units','25 sq units','300 sq units','a','Area = ½ × base × height = ½ × 10 × 15 = 75.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 50?','1250.0 sq units','2500 sq units','100 sq units','5000 sq units','a','Area = ½ × base × height = ½ × 50 × 50 = 1250.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 9 and height 25?','112.5 sq units','225 sq units','34 sq units','450 sq units','a','Area = ½ × base × height = ½ × 9 × 25 = 112.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 20 and height 37?','370.0 sq units','740 sq units','57 sq units','1480 sq units','a','Area = ½ × base × height = ½ × 20 × 37 = 370.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 28 and height 42?','588.0 sq units','1176 sq units','70 sq units','2352 sq units','a','Area = ½ × base × height = ½ × 28 × 42 = 588.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 17 and height 11?','93.5 sq units','187 sq units','28 sq units','374 sq units','a','Area = ½ × base × height = ½ × 17 × 11 = 93.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 23 and height 38?','437.0 sq units','874 sq units','61 sq units','1748 sq units','a','Area = ½ × base × height = ½ × 23 × 38 = 437.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 28 and height 33?','462.0 sq units','924 sq units','61 sq units','1848 sq units','a','Area = ½ × base × height = ½ × 28 × 33 = 462.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 48?','1200.0 sq units','2400 sq units','98 sq units','4800 sq units','a','Area = ½ × base × height = ½ × 50 × 48 = 1200.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 43 and height 27?','580.5 sq units','1161 sq units','70 sq units','2322 sq units','a','Area = ½ × base × height = ½ × 43 × 27 = 580.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 15?','180.0 sq units','360 sq units','39 sq units','720 sq units','a','Area = ½ × base × height = ½ × 24 × 15 = 180.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 48 and height 6?','144.0 sq units','288 sq units','54 sq units','576 sq units','a','Area = ½ × base × height = ½ × 48 × 6 = 144.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 49 and height 25?','612.5 sq units','1225 sq units','74 sq units','2450 sq units','a','Area = ½ × base × height = ½ × 49 × 25 = 612.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 3 and height 18?','27.0 sq units','54 sq units','21 sq units','108 sq units','a','Area = ½ × base × height = ½ × 3 × 18 = 27.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 48 and height 37?','888.0 sq units','1776 sq units','85 sq units','3552 sq units','a','Area = ½ × base × height = ½ × 48 × 37 = 888.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 48?','432.0 sq units','864 sq units','66 sq units','1728 sq units','a','Area = ½ × base × height = ½ × 18 × 48 = 432.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 35?','875.0 sq units','1750 sq units','85 sq units','3500 sq units','a','Area = ½ × base × height = ½ × 50 × 35 = 875.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 42 and height 23?','483.0 sq units','966 sq units','65 sq units','1932 sq units','a','Area = ½ × base × height = ½ × 42 × 23 = 483.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 17 and height 39?','331.5 sq units','663 sq units','56 sq units','1326 sq units','a','Area = ½ × base × height = ½ × 17 × 39 = 331.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 10 and height 39?','195.0 sq units','390 sq units','49 sq units','780 sq units','a','Area = ½ × base × height = ½ × 10 × 39 = 195.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 34 and height 13?','221.0 sq units','442 sq units','47 sq units','884 sq units','a','Area = ½ × base × height = ½ × 34 × 13 = 221.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 3 and height 22?','33.0 sq units','66 sq units','25 sq units','132 sq units','a','Area = ½ × base × height = ½ × 3 × 22 = 33.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 17 and height 36?','306.0 sq units','612 sq units','53 sq units','1224 sq units','a','Area = ½ × base × height = ½ × 17 × 36 = 306.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 39?','351.0 sq units','702 sq units','57 sq units','1404 sq units','a','Area = ½ × base × height = ½ × 18 × 39 = 351.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 34 and height 43?','731.0 sq units','1462 sq units','77 sq units','2924 sq units','a','Area = ½ × base × height = ½ × 34 × 43 = 731.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 40 and height 2?','40.0 sq units','80 sq units','42 sq units','160 sq units','a','Area = ½ × base × height = ½ × 40 × 2 = 40.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 17?','255.0 sq units','510 sq units','47 sq units','1020 sq units','a','Area = ½ × base × height = ½ × 30 × 17 = 255.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 34 and height 39?','663.0 sq units','1326 sq units','73 sq units','2652 sq units','a','Area = ½ × base × height = ½ × 34 × 39 = 663.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 40 and height 38?','760.0 sq units','1520 sq units','78 sq units','3040 sq units','a','Area = ½ × base × height = ½ × 40 × 38 = 760.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 47 and height 9?','211.5 sq units','423 sq units','56 sq units','846 sq units','a','Area = ½ × base × height = ½ × 47 × 9 = 211.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 6 and height 43?','129.0 sq units','258 sq units','49 sq units','516 sq units','a','Area = ½ × base × height = ½ × 6 × 43 = 129.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 14?','168.0 sq units','336 sq units','38 sq units','672 sq units','a','Area = ½ × base × height = ½ × 24 × 14 = 168.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 11 and height 13?','71.5 sq units','143 sq units','24 sq units','286 sq units','a','Area = ½ × base × height = ½ × 11 × 13 = 71.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 36 and height 10?','180.0 sq units','360 sq units','46 sq units','720 sq units','a','Area = ½ × base × height = ½ × 36 × 10 = 180.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 22 and height 50?','550.0 sq units','1100 sq units','72 sq units','2200 sq units','a','Area = ½ × base × height = ½ × 22 × 50 = 550.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 7 and height 37?','129.5 sq units','259 sq units','44 sq units','518 sq units','a','Area = ½ × base × height = ½ × 7 × 37 = 129.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 6 and height 50?','150.0 sq units','300 sq units','56 sq units','600 sq units','a','Area = ½ × base × height = ½ × 6 × 50 = 150.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 38 and height 47?','893.0 sq units','1786 sq units','85 sq units','3572 sq units','a','Area = ½ × base × height = ½ × 38 × 47 = 893.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 33 and height 37?','610.5 sq units','1221 sq units','70 sq units','2442 sq units','a','Area = ½ × base × height = ½ × 33 × 37 = 610.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 25?','387.5 sq units','775 sq units','56 sq units','1550 sq units','a','Area = ½ × base × height = ½ × 31 × 25 = 387.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 46 and height 21?','483.0 sq units','966 sq units','67 sq units','1932 sq units','a','Area = ½ × base × height = ½ × 46 × 21 = 483.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 36?','540.0 sq units','1080 sq units','66 sq units','2160 sq units','a','Area = ½ × base × height = ½ × 30 × 36 = 540.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 9 and height 34?','153.0 sq units','306 sq units','43 sq units','612 sq units','a','Area = ½ × base × height = ½ × 9 × 34 = 153.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 46 and height 18?','414.0 sq units','828 sq units','64 sq units','1656 sq units','a','Area = ½ × base × height = ½ × 46 × 18 = 414.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 33 and height 5?','82.5 sq units','165 sq units','38 sq units','330 sq units','a','Area = ½ × base × height = ½ × 33 × 5 = 82.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 15 and height 23?','172.5 sq units','345 sq units','38 sq units','690 sq units','a','Area = ½ × base × height = ½ × 15 × 23 = 172.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 26?','650.0 sq units','1300 sq units','76 sq units','2600 sq units','a','Area = ½ × base × height = ½ × 50 × 26 = 650.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 16 and height 19?','152.0 sq units','304 sq units','35 sq units','608 sq units','a','Area = ½ × base × height = ½ × 16 × 19 = 152.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 22?','341.0 sq units','682 sq units','53 sq units','1364 sq units','a','Area = ½ × base × height = ½ × 31 × 22 = 341.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 19 and height 45?','427.5 sq units','855 sq units','64 sq units','1710 sq units','a','Area = ½ × base × height = ½ × 19 × 45 = 427.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 34 and height 44?','748.0 sq units','1496 sq units','78 sq units','2992 sq units','a','Area = ½ × base × height = ½ × 34 × 44 = 748.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 23?','356.5 sq units','713 sq units','54 sq units','1426 sq units','a','Area = ½ × base × height = ½ × 31 × 23 = 356.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 39 and height 17?','331.5 sq units','663 sq units','56 sq units','1326 sq units','a','Area = ½ × base × height = ½ × 39 × 17 = 331.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 48 and height 36?','864.0 sq units','1728 sq units','84 sq units','3456 sq units','a','Area = ½ × base × height = ½ × 48 × 36 = 864.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 19?','171.0 sq units','342 sq units','37 sq units','684 sq units','a','Area = ½ × base × height = ½ × 18 × 19 = 171.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 7 and height 26?','91.0 sq units','182 sq units','33 sq units','364 sq units','a','Area = ½ × base × height = ½ × 7 × 26 = 91.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 6 and height 47?','141.0 sq units','282 sq units','53 sq units','564 sq units','a','Area = ½ × base × height = ½ × 6 × 47 = 141.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 10 and height 3?','15.0 sq units','30 sq units','13 sq units','60 sq units','a','Area = ½ × base × height = ½ × 10 × 3 = 15.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 17 and height 16?','136.0 sq units','272 sq units','33 sq units','544 sq units','a','Area = ½ × base × height = ½ × 17 × 16 = 136.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 19 and height 32?','304.0 sq units','608 sq units','51 sq units','1216 sq units','a','Area = ½ × base × height = ½ × 19 × 32 = 304.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 36 and height 17?','306.0 sq units','612 sq units','53 sq units','1224 sq units','a','Area = ½ × base × height = ½ × 36 × 17 = 306.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 36 and height 7?','126.0 sq units','252 sq units','43 sq units','504 sq units','a','Area = ½ × base × height = ½ × 36 × 7 = 126.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 44 and height 17?','374.0 sq units','748 sq units','61 sq units','1496 sq units','a','Area = ½ × base × height = ½ × 44 × 17 = 374.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 45 and height 48?','1080.0 sq units','2160 sq units','93 sq units','4320 sq units','a','Area = ½ × base × height = ½ × 45 × 48 = 1080.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 9 and height 23?','103.5 sq units','207 sq units','32 sq units','414 sq units','a','Area = ½ × base × height = ½ × 9 × 23 = 103.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 16 and height 42?','336.0 sq units','672 sq units','58 sq units','1344 sq units','a','Area = ½ × base × height = ½ × 16 × 42 = 336.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 27 and height 13?','175.5 sq units','351 sq units','40 sq units','702 sq units','a','Area = ½ × base × height = ½ × 27 × 13 = 175.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 17?','425.0 sq units','850 sq units','67 sq units','1700 sq units','a','Area = ½ × base × height = ½ × 50 × 17 = 425.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 38 and height 44?','836.0 sq units','1672 sq units','82 sq units','3344 sq units','a','Area = ½ × base × height = ½ × 38 × 44 = 836.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 13?','162.5 sq units','325 sq units','38 sq units','650 sq units','a','Area = ½ × base × height = ½ × 25 × 13 = 162.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 41 and height 36?','738.0 sq units','1476 sq units','77 sq units','2952 sq units','a','Area = ½ × base × height = ½ × 41 × 36 = 738.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 6 and height 2?','6.0 sq units','12 sq units','8 sq units','24 sq units','a','Area = ½ × base × height = ½ × 6 × 2 = 6.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 43?','645.0 sq units','1290 sq units','73 sq units','2580 sq units','a','Area = ½ × base × height = ½ × 30 × 43 = 645.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 49?','1225.0 sq units','2450 sq units','99 sq units','4900 sq units','a','Area = ½ × base × height = ½ × 50 × 49 = 1225.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 32 and height 5?','80.0 sq units','160 sq units','37 sq units','320 sq units','a','Area = ½ × base × height = ½ × 32 × 5 = 80.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 3?','45.0 sq units','90 sq units','33 sq units','180 sq units','a','Area = ½ × base × height = ½ × 30 × 3 = 45.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 12 and height 6?','36.0 sq units','72 sq units','18 sq units','144 sq units','a','Area = ½ × base × height = ½ × 12 × 6 = 36.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 37 and height 28?','518.0 sq units','1036 sq units','65 sq units','2072 sq units','a','Area = ½ × base × height = ½ × 37 × 28 = 518.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 23 and height 21?','241.5 sq units','483 sq units','44 sq units','966 sq units','a','Area = ½ × base × height = ½ × 23 × 21 = 241.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 6 and height 7?','21.0 sq units','42 sq units','13 sq units','84 sq units','a','Area = ½ × base × height = ½ × 6 × 7 = 21.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 20 and height 22?','220.0 sq units','440 sq units','42 sq units','880 sq units','a','Area = ½ × base × height = ½ × 20 × 22 = 220.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 8 and height 37?','148.0 sq units','296 sq units','45 sq units','592 sq units','a','Area = ½ × base × height = ½ × 8 × 37 = 148.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 27 and height 20?','270.0 sq units','540 sq units','47 sq units','1080 sq units','a','Area = ½ × base × height = ½ × 27 × 20 = 270.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 19 and height 20?','190.0 sq units','380 sq units','39 sq units','760 sq units','a','Area = ½ × base × height = ½ × 19 × 20 = 190.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 14 and height 9?','63.0 sq units','126 sq units','23 sq units','252 sq units','a','Area = ½ × base × height = ½ × 14 × 9 = 63.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 22 and height 45?','495.0 sq units','990 sq units','67 sq units','1980 sq units','a','Area = ½ × base × height = ½ × 22 × 45 = 495.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 8 and height 46?','184.0 sq units','368 sq units','54 sq units','736 sq units','a','Area = ½ × base × height = ½ × 8 × 46 = 184.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 38 and height 29?','551.0 sq units','1102 sq units','67 sq units','2204 sq units','a','Area = ½ × base × height = ½ × 38 × 29 = 551.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 36 and height 11?','198.0 sq units','396 sq units','47 sq units','792 sq units','a','Area = ½ × base × height = ½ × 36 × 11 = 198.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 47 and height 30?','705.0 sq units','1410 sq units','77 sq units','2820 sq units','a','Area = ½ × base × height = ½ × 47 × 30 = 705.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 17 and height 30?','255.0 sq units','510 sq units','47 sq units','1020 sq units','a','Area = ½ × base × height = ½ × 17 × 30 = 255.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 11?','170.5 sq units','341 sq units','42 sq units','682 sq units','a','Area = ½ × base × height = ½ × 31 × 11 = 170.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 42 and height 37?','777.0 sq units','1554 sq units','79 sq units','3108 sq units','a','Area = ½ × base × height = ½ × 42 × 37 = 777.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 44 and height 37?','814.0 sq units','1628 sq units','81 sq units','3256 sq units','a','Area = ½ × base × height = ½ × 44 × 37 = 814.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 12 and height 50?','300.0 sq units','600 sq units','62 sq units','1200 sq units','a','Area = ½ × base × height = ½ × 12 × 50 = 300.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 48 and height 40?','960.0 sq units','1920 sq units','88 sq units','3840 sq units','a','Area = ½ × base × height = ½ × 48 × 40 = 960.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 8 and height 2?','8.0 sq units','16 sq units','10 sq units','32 sq units','a','Area = ½ × base × height = ½ × 8 × 2 = 8.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 4?','60.0 sq units','120 sq units','34 sq units','240 sq units','a','Area = ½ × base × height = ½ × 30 × 4 = 60.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 17?','212.5 sq units','425 sq units','42 sq units','850 sq units','a','Area = ½ × base × height = ½ × 25 × 17 = 212.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 48?','600.0 sq units','1200 sq units','73 sq units','2400 sq units','a','Area = ½ × base × height = ½ × 25 × 48 = 600.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 11 and height 5?','27.5 sq units','55 sq units','16 sq units','110 sq units','a','Area = ½ × base × height = ½ × 11 × 5 = 27.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 40 and height 8?','160.0 sq units','320 sq units','48 sq units','640 sq units','a','Area = ½ × base × height = ½ × 40 × 8 = 160.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 50 and height 24?','600.0 sq units','1200 sq units','74 sq units','2400 sq units','a','Area = ½ × base × height = ½ × 50 × 24 = 600.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 3?','37.5 sq units','75 sq units','28 sq units','150 sq units','a','Area = ½ × base × height = ½ × 25 × 3 = 37.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 47 and height 46?','1081.0 sq units','2162 sq units','93 sq units','4324 sq units','a','Area = ½ × base × height = ½ × 47 × 46 = 1081.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 24?','360.0 sq units','720 sq units','54 sq units','1440 sq units','a','Area = ½ × base × height = ½ × 30 × 24 = 360.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 37 and height 16?','296.0 sq units','592 sq units','53 sq units','1184 sq units','a','Area = ½ × base × height = ½ × 37 × 16 = 296.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 30 and height 25?','375.0 sq units','750 sq units','55 sq units','1500 sq units','a','Area = ½ × base × height = ½ × 30 × 25 = 375.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 7 and height 11?','38.5 sq units','77 sq units','18 sq units','154 sq units','a','Area = ½ × base × height = ½ × 7 × 11 = 38.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 42 and height 12?','252.0 sq units','504 sq units','54 sq units','1008 sq units','a','Area = ½ × base × height = ½ × 42 × 12 = 252.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 35 and height 47?','822.5 sq units','1645 sq units','82 sq units','3290 sq units','a','Area = ½ × base × height = ½ × 35 × 47 = 822.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 11 and height 35?','192.5 sq units','385 sq units','46 sq units','770 sq units','a','Area = ½ × base × height = ½ × 11 × 35 = 192.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 28 and height 6?','84.0 sq units','168 sq units','34 sq units','336 sq units','a','Area = ½ × base × height = ½ × 28 × 6 = 84.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 5 and height 16?','40.0 sq units','80 sq units','21 sq units','160 sq units','a','Area = ½ × base × height = ½ × 5 × 16 = 40.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 34 and height 20?','340.0 sq units','680 sq units','54 sq units','1360 sq units','a','Area = ½ × base × height = ½ × 34 × 20 = 340.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 45 and height 50?','1125.0 sq units','2250 sq units','95 sq units','4500 sq units','a','Area = ½ × base × height = ½ × 45 × 50 = 1125.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 32 and height 39?','624.0 sq units','1248 sq units','71 sq units','2496 sq units','a','Area = ½ × base × height = ½ × 32 × 39 = 624.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 44 and height 38?','836.0 sq units','1672 sq units','82 sq units','3344 sq units','a','Area = ½ × base × height = ½ × 44 × 38 = 836.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 4 and height 21?','42.0 sq units','84 sq units','25 sq units','168 sq units','a','Area = ½ × base × height = ½ × 4 × 21 = 42.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 25 and height 5?','62.5 sq units','125 sq units','30 sq units','250 sq units','a','Area = ½ × base × height = ½ × 25 × 5 = 62.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 36 and height 15?','270.0 sq units','540 sq units','51 sq units','1080 sq units','a','Area = ½ × base × height = ½ × 36 × 15 = 270.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 43 and height 14?','301.0 sq units','602 sq units','57 sq units','1204 sq units','a','Area = ½ × base × height = ½ × 43 × 14 = 301.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 45 and height 12?','270.0 sq units','540 sq units','57 sq units','1080 sq units','a','Area = ½ × base × height = ½ × 45 × 12 = 270.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 23 and height 25?','287.5 sq units','575 sq units','48 sq units','1150 sq units','a','Area = ½ × base × height = ½ × 23 × 25 = 287.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 14 and height 8?','56.0 sq units','112 sq units','22 sq units','224 sq units','a','Area = ½ × base × height = ½ × 14 × 8 = 56.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 34 and height 47?','799.0 sq units','1598 sq units','81 sq units','3196 sq units','a','Area = ½ × base × height = ½ × 34 × 47 = 799.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 44 and height 4?','88.0 sq units','176 sq units','48 sq units','352 sq units','a','Area = ½ × base × height = ½ × 44 × 4 = 88.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 13?','117.0 sq units','234 sq units','31 sq units','468 sq units','a','Area = ½ × base × height = ½ × 18 × 13 = 117.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 38 and height 26?','494.0 sq units','988 sq units','64 sq units','1976 sq units','a','Area = ½ × base × height = ½ × 38 × 26 = 494.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 38 and height 43?','817.0 sq units','1634 sq units','81 sq units','3268 sq units','a','Area = ½ × base × height = ½ × 38 × 43 = 817.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 16?','192.0 sq units','384 sq units','40 sq units','768 sq units','a','Area = ½ × base × height = ½ × 24 × 16 = 192.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 6 and height 17?','51.0 sq units','102 sq units','23 sq units','204 sq units','a','Area = ½ × base × height = ½ × 6 × 17 = 51.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 35 and height 19?','332.5 sq units','665 sq units','54 sq units','1330 sq units','a','Area = ½ × base × height = ½ × 35 × 19 = 332.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 41 and height 3?','61.5 sq units','123 sq units','44 sq units','246 sq units','a','Area = ½ × base × height = ½ × 41 × 3 = 61.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 37 and height 17?','314.5 sq units','629 sq units','54 sq units','1258 sq units','a','Area = ½ × base × height = ½ × 37 × 17 = 314.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 4?','48.0 sq units','96 sq units','28 sq units','192 sq units','a','Area = ½ × base × height = ½ × 24 × 4 = 48.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 17 and height 35?','297.5 sq units','595 sq units','52 sq units','1190 sq units','a','Area = ½ × base × height = ½ × 17 × 35 = 297.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 19 and height 17?','161.5 sq units','323 sq units','36 sq units','646 sq units','a','Area = ½ × base × height = ½ × 19 × 17 = 161.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 23 and height 10?','115.0 sq units','230 sq units','33 sq units','460 sq units','a','Area = ½ × base × height = ½ × 23 × 10 = 115.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 23 and height 47?','540.5 sq units','1081 sq units','70 sq units','2162 sq units','a','Area = ½ × base × height = ½ × 23 × 47 = 540.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 43 and height 5?','107.5 sq units','215 sq units','48 sq units','430 sq units','a','Area = ½ × base × height = ½ × 43 × 5 = 107.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 41 and height 40?','820.0 sq units','1640 sq units','81 sq units','3280 sq units','a','Area = ½ × base × height = ½ × 41 × 40 = 820.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 26?','312.0 sq units','624 sq units','50 sq units','1248 sq units','a','Area = ½ × base × height = ½ × 24 × 26 = 312.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 27 and height 25?','337.5 sq units','675 sq units','52 sq units','1350 sq units','a','Area = ½ × base × height = ½ × 27 × 25 = 337.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 18 and height 34?','306.0 sq units','612 sq units','52 sq units','1224 sq units','a','Area = ½ × base × height = ½ × 18 × 34 = 306.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 3 and height 50?','75.0 sq units','150 sq units','53 sq units','300 sq units','a','Area = ½ × base × height = ½ × 3 × 50 = 75.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 12 and height 4?','24.0 sq units','48 sq units','16 sq units','96 sq units','a','Area = ½ × base × height = ½ × 12 × 4 = 24.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 35 and height 23?','402.5 sq units','805 sq units','58 sq units','1610 sq units','a','Area = ½ × base × height = ½ × 35 × 23 = 402.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 19 and height 29?','275.5 sq units','551 sq units','48 sq units','1102 sq units','a','Area = ½ × base × height = ½ × 19 × 29 = 275.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 15 and height 15?','112.5 sq units','225 sq units','30 sq units','450 sq units','a','Area = ½ × base × height = ½ × 15 × 15 = 112.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 19 and height 15?','142.5 sq units','285 sq units','34 sq units','570 sq units','a','Area = ½ × base × height = ½ × 19 × 15 = 142.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 44?','682.0 sq units','1364 sq units','75 sq units','2728 sq units','a','Area = ½ × base × height = ½ × 31 × 44 = 682.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 3 and height 15?','22.5 sq units','45 sq units','18 sq units','90 sq units','a','Area = ½ × base × height = ½ × 3 × 15 = 22.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 9 and height 37?','166.5 sq units','333 sq units','46 sq units','666 sq units','a','Area = ½ × base × height = ½ × 9 × 37 = 166.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 42 and height 17?','357.0 sq units','714 sq units','59 sq units','1428 sq units','a','Area = ½ × base × height = ½ × 42 × 17 = 357.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 31 and height 13?','201.5 sq units','403 sq units','44 sq units','806 sq units','a','Area = ½ × base × height = ½ × 31 × 13 = 201.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 24 and height 10?','120.0 sq units','240 sq units','34 sq units','480 sq units','a','Area = ½ × base × height = ½ × 24 × 10 = 120.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 35 and height 27?','472.5 sq units','945 sq units','62 sq units','1890 sq units','a','Area = ½ × base × height = ½ × 35 × 27 = 472.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 41 and height 11?','225.5 sq units','451 sq units','52 sq units','902 sq units','a','Area = ½ × base × height = ½ × 41 × 11 = 225.5','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 20 and height 18?','180.0 sq units','360 sq units','38 sq units','720 sq units','a','Area = ½ × base × height = ½ × 20 × 18 = 180.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 36 and height 18?','324.0 sq units','648 sq units','54 sq units','1296 sq units','a','Area = ½ × base × height = ½ × 36 × 18 = 324.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['What is the area of a triangle with base 2 and height 47?','47.0 sq units','94 sq units','49 sq units','188 sq units','a','Area = ½ × base × height = ½ × 2 × 47 = 47.0','Mathematics','Geometry','easy','APSC,ADRE'],
+
+  ['If each letter in "GHOST" is shifted forward by 16 positions, what is the result?','WXEIJ','XYFJK','VWDHI','YZGKL','a','Each letter shifted by 16: GHOST -> WXEIJ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 1 positions, what is the result?','FBSUI','GCTVJ','EARTH','HDUWK','a','Each letter shifted by 1: EARTH -> FBSUI','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 24 positions, what is the result?','ZPYGL','AQZHM','YOXFK','BRAIN','a','Each letter shifted by 24: BRAIN -> ZPYGL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 7 positions, what is the result?','MSHTL','NTIUM','LRGSK','OUJVN','a','Each letter shifted by 7: FLAME -> MSHTL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 8 positions, what is the result?','IXXTM','JYYUN','HWWSL','KZZVO','a','Each letter shifted by 8: APPLE -> IXXTM','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 7 positions, what is the result?','QBTWF','RCUXG','PASVE','SDVYH','a','Each letter shifted by 7: JUMPY -> QBTWF','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 18 positions, what is the result?','UDGMV','VEHNW','TCFLU','WFIOX','a','Each letter shifted by 18: CLOUD -> UDGMV','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 5 positions, what is the result?','IWJFR','JXKGS','HVIEQ','KYLHT','a','Each letter shifted by 5: DREAM -> IWJFR','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 20 positions, what is the result?','UJJFY','VKKGZ','TIIEX','WLLHA','a','Each letter shifted by 20: APPLE -> UJJFY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 2 positions, what is the result?','IJQUV','JKRVW','HIPTU','KLSWX','a','Each letter shifted by 2: GHOST -> IJQUV','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 1 positions, what is the result?','ESFBN','FTGCO','DREAM','GUHDP','a','Each letter shifted by 1: DREAM -> ESFBN','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 21 positions, what is the result?','DYZVG','EZAWH','CXYUF','FABXI','a','Each letter shifted by 21: IDEAL -> DYZVG','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 10 positions, what is the result?','QRYCD','RSZDE','PQXBC','STAEF','a','Each letter shifted by 10: GHOST -> QRYCD','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 21 positions, what is the result?','AGVHZ','BHWIA','ZFUGY','CIXJB','a','Each letter shifted by 21: FLAME -> AGVHZ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 16 positions, what is the result?','SBEKT','TCFLU','RADJS','UDGMV','a','Each letter shifted by 16: CLOUD -> SBEKT','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 20 positions, what is the result?','DOGJS','EPHKT','CNFIR','FQILU','a','Each letter shifted by 20: JUMPY -> DOGJS','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 4 positions, what is the result?','HVIEQ','IWJFR','GUHDP','JXKGS','a','Each letter shifted by 4: DREAM -> HVIEQ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 21 positions, what is the result?','WMVDI','XNWEJ','VLUCH','YOXFK','a','Each letter shifted by 21: BRAIN -> WMVDI','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 19 positions, what is the result?','WKXTF','XLYUG','VJWSE','YMZVH','a','Each letter shifted by 19: DREAM -> WKXTF','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 5 positions, what is the result?','MJFWY','NKGXZ','LIEVX','OLHYA','a','Each letter shifted by 5: HEART -> MJFWY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 6 positions, what is the result?','OJKGR','PKLHS','NIJFQ','QLMIT','a','Each letter shifted by 6: IDEAL -> OJKGR','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 23 positions, what is the result?','GRJMV','HSKNW','FQILU','ITLOX','a','Each letter shifted by 23: JUMPY -> GRJMV','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 11 positions, what is the result?','RSZDE','STAEF','QRYCD','TUBFG','a','Each letter shifted by 11: GHOST -> RSZDE','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 21 positions, what is the result?','EPHKT','FQILU','DOGJS','GRJMV','a','Each letter shifted by 21: JUMPY -> EPHKT','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 12 positions, what is the result?','MBBXQ','NCCYR','LAAWP','ODDZS','a','Each letter shifted by 12: APPLE -> MBBXQ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 19 positions, what is the result?','VEHNW','WFIOX','UDGMV','XGJPY','a','Each letter shifted by 19: CLOUD -> VEHNW','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 18 positions, what is the result?','XDSEW','YETFX','WCRDV','ZFUGY','a','Each letter shifted by 18: FLAME -> XDSEW','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 20 positions, what is the result?','WFIOX','XGJPY','VEHNW','YHKQZ','a','Each letter shifted by 20: CLOUD -> WFIOX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 20 positions, what is the result?','ZFUGY','AGVHZ','YETFX','BHWIA','a','Each letter shifted by 20: FLAME -> ZFUGY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 4 positions, what is the result?','IEVXL','JFWYM','HDUWK','KGXZN','a','Each letter shifted by 4: EARTH -> IEVXL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 10 positions, what is the result?','PVKWO','QWLXP','OUJVN','RXMYQ','a','Each letter shifted by 10: FLAME -> PVKWO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 24 positions, what is the result?','EFMQR','FGNRS','DELPQ','GHOST','a','Each letter shifted by 24: GHOST -> EFMQR','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 9 positions, what is the result?','JYYUN','KZZVO','IXXTM','LAAWP','a','Each letter shifted by 9: APPLE -> JYYUN','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 4 positions, what is the result?','JPEQI','KQFRJ','IODPH','LRGSK','a','Each letter shifted by 4: FLAME -> JPEQI','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 24 positions, what is the result?','FCYPR','GDZQS','EBXOQ','HEART','a','Each letter shifted by 24: HEART -> FCYPR','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 4 positions, what is the result?','MHIEP','NIJFQ','LGHDO','OJKGR','a','Each letter shifted by 4: IDEAL -> MHIEP','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 19 positions, what is the result?','AXTKM','BYULN','ZWSJL','CZVMO','a','Each letter shifted by 19: HEART -> AXTKM','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 7 positions, what is the result?','IYHPU','JZIQV','HXGOT','KAJRW','a','Each letter shifted by 7: BRAIN -> IYHPU','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 7 positions, what is the result?','LHYAO','MIZBP','KGXZN','NJACQ','a','Each letter shifted by 7: EARTH -> LHYAO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 3 positions, what is the result?','FORXG','GPSYH','ENQWF','HQTZI','a','Each letter shifted by 3: CLOUD -> FORXG','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 17 positions, what is the result?','VRIKY','WSJLZ','UQHJX','XTKMA','a','Each letter shifted by 17: EARTH -> VRIKY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 12 positions, what is the result?','PDQMY','QERNZ','OCPLX','RFSOA','a','Each letter shifted by 12: DREAM -> PDQMY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 6 positions, what is the result?','IRUAJ','JSVBK','HQTZI','KTWCL','a','Each letter shifted by 6: CLOUD -> IRUAJ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 23 positions, what is the result?','ZILRA','AJMSB','YHKQZ','BKNTC','a','Each letter shifted by 23: CLOUD -> ZILRA','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 14 positions, what is the result?','PFOWB','QGPXC','OENVA','RHQYD','a','Each letter shifted by 14: BRAIN -> PFOWB','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 6 positions, what is the result?','MNUYZ','NOVZA','LMTXY','OPWAB','a','Each letter shifted by 6: GHOST -> MNUYZ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 13 positions, what is the result?','NCCYR','ODDZS','MBBXQ','PEEAT','a','Each letter shifted by 13: APPLE -> NCCYR','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 2 positions, what is the result?','LWORA','MXPSB','KVNQZ','NYQTC','a','Each letter shifted by 2: JUMPY -> LWORA','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 2 positions, what is the result?','ENQWF','FORXG','DMPVE','GPSYH','a','Each letter shifted by 2: CLOUD -> ENQWF','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 9 positions, what is the result?','KAJRW','LBKSX','JZIQV','MCLTY','a','Each letter shifted by 9: BRAIN -> KAJRW','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 9 positions, what is the result?','QNJAC','ROKBD','PMIZB','SPLCE','a','Each letter shifted by 9: HEART -> QNJAC','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 1 positions, what is the result?','IFBSU','JGCTV','HEART','KHDUW','a','Each letter shifted by 1: HEART -> IFBSU','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 13 positions, what is the result?','PYBHQ','QZCIR','OXAGP','RADJS','a','Each letter shifted by 13: CLOUD -> PYBHQ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 20 positions, what is the result?','VLUCH','WMVDI','UKTBG','XNWEJ','a','Each letter shifted by 20: BRAIN -> VLUCH','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 13 positions, what is the result?','URNEG','VSOFH','TQMDF','WTPGI','a','Each letter shifted by 13: HEART -> URNEG','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 4 positions, what is the result?','ETTPI','FUUQJ','DSSOH','GVVRK','a','Each letter shifted by 4: APPLE -> ETTPI','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 15 positions, what is the result?','UAPBT','VBQCU','TZOAS','WCRDV','a','Each letter shifted by 15: FLAME -> UAPBT','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 10 positions, what is the result?','LBKSX','MCLTY','KAJRW','NDMUZ','a','Each letter shifted by 10: BRAIN -> LBKSX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 1 positions, what is the result?','JEFBM','KFGCN','IDEAL','LGHDO','a','Each letter shifted by 1: IDEAL -> JEFBM','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 3 positions, what is the result?','LGHDO','MHIEP','KFGCN','NIJFQ','a','Each letter shifted by 3: IDEAL -> LGHDO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 23 positions, what is the result?','BXOQE','CYPRF','AWNPD','DZQSG','a','Each letter shifted by 23: EARTH -> BXOQE','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 8 positions, what is the result?','RCUXG','SDVYH','QBTWF','TEWZI','a','Each letter shifted by 8: JUMPY -> RCUXG','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 18 positions, what is the result?','VJWSE','WKXTF','UIVRD','XLYUG','a','Each letter shifted by 18: DREAM -> VJWSE','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 1 positions, what is the result?','HIPTU','IJQUV','GHOST','JKRVW','a','Each letter shifted by 1: GHOST -> HIPTU','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 20 positions, what is the result?','CXYUF','DYZVG','BWXTE','EZAWH','a','Each letter shifted by 20: IDEAL -> CXYUF','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 18 positions, what is the result?','ZWSJL','AXTKM','YVRIK','BYULN','a','Each letter shifted by 18: HEART -> ZWSJL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 18 positions, what is the result?','YZGKL','ZAHLM','XYFJK','ABIMN','a','Each letter shifted by 18: GHOST -> YZGKL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 14 positions, what is the result?','RFSOA','SGTPB','QERNZ','THUQC','a','Each letter shifted by 14: DREAM -> RFSOA','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 13 positions, what is the result?','WHZCL','XIADM','VGYBK','YJBEN','a','Each letter shifted by 13: JUMPY -> WHZCL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 22 positions, what is the result?','BHWIA','CIXJB','AGVHZ','DJYKC','a','Each letter shifted by 22: FLAME -> BHWIA','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 10 positions, what is the result?','MVYEN','NWZFO','LUXDM','OXAGP','a','Each letter shifted by 10: CLOUD -> MVYEN','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 9 positions, what is the result?','MANJV','NBOKW','LZMIU','OCPLX','a','Each letter shifted by 9: DREAM -> MANJV','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 5 positions, what is the result?','OZRUD','PASVE','NYQTC','QBTWF','a','Each letter shifted by 5: JUMPY -> OZRUD','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 17 positions, what is the result?','YVRIK','ZWSJL','XUQHJ','AXTKM','a','Each letter shifted by 17: HEART -> YVRIK','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 8 positions, what is the result?','JZIQV','KAJRW','IYHPU','LBKSX','a','Each letter shifted by 8: BRAIN -> JZIQV','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 22 positions, what is the result?','XNWEJ','YOXFK','WMVDI','ZPYGL','a','Each letter shifted by 22: BRAIN -> XNWEJ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 12 positions, what is the result?','VGYBK','WHZCL','UFXAJ','XIADM','a','Each letter shifted by 12: JUMPY -> VGYBK','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 16 positions, what is the result?','UQHJX','VRIKY','TPGIW','WSJLZ','a','Each letter shifted by 16: EARTH -> UQHJX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 14 positions, what is the result?','ODDZS','PEEAT','NCCYR','QFFBU','a','Each letter shifted by 14: APPLE -> ODDZS','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 25 positions, what is the result?','BKNTC','CLOUD','AJMSB','DMPVE','a','Each letter shifted by 25: CLOUD -> BKNTC','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 21 positions, what is the result?','CZVMO','DAWNP','BYULN','EBXOQ','a','Each letter shifted by 21: HEART -> CZVMO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 21 positions, what is the result?','BCJNO','CDKOP','ABIMN','DELPQ','a','Each letter shifted by 21: GHOST -> BCJNO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 23 positions, what is the result?','FABXI','GBCYJ','EZAWH','HCDZK','a','Each letter shifted by 23: IDEAL -> FABXI','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 7 positions, what is the result?','HWWSL','IXXTM','GVVRK','JYYUN','a','Each letter shifted by 7: APPLE -> HWWSL','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 12 positions, what is the result?','UPQMX','VQRNY','TOPLW','WRSOZ','a','Each letter shifted by 12: IDEAL -> UPQMX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 3 positions, what is the result?','GUHDP','HVIEQ','FTGCO','IWJFR','a','Each letter shifted by 3: DREAM -> GUHDP','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 12 positions, what is the result?','OXAGP','PYBHQ','NWZFO','QZCIR','a','Each letter shifted by 12: CLOUD -> OXAGP','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 3 positions, what is the result?','JKRVW','KLSWX','IJQUV','LMTXY','a','Each letter shifted by 3: GHOST -> JKRVW','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 8 positions, what is the result?','PMIZB','QNJAC','OLHYA','ROKBD','a','Each letter shifted by 8: HEART -> PMIZB','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 14 positions, what is the result?','TZOAS','UAPBT','SYNZR','VBQCU','a','Each letter shifted by 14: FLAME -> TZOAS','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 19 positions, what is the result?','ZAHLM','ABIMN','YZGKL','BCJNO','a','Each letter shifted by 19: GHOST -> ZAHLM','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 3 positions, what is the result?','KHDUW','LIEVX','JGCTV','MJFWY','a','Each letter shifted by 3: HEART -> KHDUW','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 4 positions, what is the result?','LIEVX','MJFWY','KHDUW','NKGXZ','a','Each letter shifted by 4: HEART -> LIEVX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 15 positions, what is the result?','QGPXC','RHQYD','PFOWB','SIRZE','a','Each letter shifted by 15: BRAIN -> QGPXC','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 16 positions, what is the result?','QFFBU','RGGCV','PEEAT','SHHDW','a','Each letter shifted by 16: APPLE -> QFFBU','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 17 positions, what is the result?','XYFJK','YZGKL','WXEIJ','ZAHLM','a','Each letter shifted by 17: GHOST -> XYFJK','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 17 positions, what is the result?','TCFLU','UDGMV','SBEKT','VEHNW','a','Each letter shifted by 17: CLOUD -> TCFLU','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 5 positions, what is the result?','LMTXY','MNUYZ','KLSWX','NOVZA','a','Each letter shifted by 5: GHOST -> LMTXY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 12 positions, what is the result?','RXMYQ','SYNZR','QWLXP','TZOAS','a','Each letter shifted by 12: FLAME -> RXMYQ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 25 positions, what is the result?','EKZLD','FLAME','DJYKC','GMBNF','a','Each letter shifted by 25: FLAME -> EKZLD','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 15 positions, what is the result?','PEEAT','QFFBU','ODDZS','RGGCV','a','Each letter shifted by 15: APPLE -> PEEAT','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 22 positions, what is the result?','DAWNP','EBXOQ','CZVMO','FCYPR','a','Each letter shifted by 22: HEART -> DAWNP','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 16 positions, what is the result?','ZKCFO','ALDGP','YJBEN','BMEHQ','a','Each letter shifted by 16: JUMPY -> ZKCFO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 16 positions, what is the result?','THUQC','UIVRD','SGTPB','VJWSE','a','Each letter shifted by 16: DREAM -> THUQC','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 13 positions, what is the result?','RNEGU','SOFHV','QMDFT','TPGIW','a','Each letter shifted by 13: EARTH -> RNEGU','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 18 positions, what is the result?','WSJLZ','XTKMA','VRIKY','YULNB','a','Each letter shifted by 18: EARTH -> WSJLZ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 5 positions, what is the result?','KQFRJ','LRGSK','JPEQI','MSHTL','a','Each letter shifted by 5: FLAME -> KQFRJ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 11 positions, what is the result?','SPLCE','TQMDF','ROKBD','URNEG','a','Each letter shifted by 11: HEART -> SPLCE','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 3 positions, what is the result?','MXPSB','NYQTC','LWORA','OZRUD','a','Each letter shifted by 3: JUMPY -> MXPSB','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 19 positions, what is the result?','YETFX','ZFUGY','XDSEW','AGVHZ','a','Each letter shifted by 19: FLAME -> YETFX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 12 positions, what is the result?','TQMDF','URNEG','SPLCE','VSOFH','a','Each letter shifted by 12: HEART -> TQMDF','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 18 positions, what is the result?','SHHDW','TIIEX','RGGCV','UJJFY','a','Each letter shifted by 18: APPLE -> SHHDW','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 21 positions, what is the result?','XGJPY','YHKQZ','WFIOX','ZILRA','a','Each letter shifted by 21: CLOUD -> XGJPY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 9 positions, what is the result?','SDVYH','TEWZI','RCUXG','UFXAJ','a','Each letter shifted by 9: JUMPY -> SDVYH','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 5 positions, what is the result?','JFWYM','KGXZN','IEVXL','LHYAO','a','Each letter shifted by 5: EARTH -> JFWYM','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "JUMPY" is shifted forward by 19 positions, what is the result?','CNFIR','DOGJS','BMEHQ','EPHKT','a','Each letter shifted by 19: JUMPY -> CNFIR','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 1 positions, what is the result?','BQQMF','CRRNG','APPLE','DSSOH','a','Each letter shifted by 1: APPLE -> BQQMF','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 9 positions, what is the result?','PQXBC','QRYCD','OPWAB','RSZDE','a','Each letter shifted by 9: GHOST -> PQXBC','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "FLAME" is shifted forward by 11 positions, what is the result?','QWLXP','RXMYQ','PVKWO','SYNZR','a','Each letter shifted by 11: FLAME -> QWLXP','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 11 positions, what is the result?','NWZFO','OXAGP','MVYEN','PYBHQ','a','Each letter shifted by 11: CLOUD -> NWZFO','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 1 positions, what is the result?','DMPVE','ENQWF','CLOUD','FORXG','a','Each letter shifted by 1: CLOUD -> DMPVE','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 7 positions, what is the result?','KYLHT','LZMIU','JXKGS','MANJV','a','Each letter shifted by 7: DREAM -> KYLHT','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "APPLE" is shifted forward by 21 positions, what is the result?','VKKGZ','WLLHA','UJJFY','XMMIB','a','Each letter shifted by 21: APPLE -> VKKGZ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 15 positions, what is the result?','RADJS','SBEKT','QZCIR','TCFLU','a','Each letter shifted by 15: CLOUD -> RADJS','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "DREAM" is shifted forward by 11 positions, what is the result?','OCPLX','PDQMY','NBOKW','QERNZ','a','Each letter shifted by 11: DREAM -> OCPLX','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 5 positions, what is the result?','HQTZI','IRUAJ','GPSYH','JSVBK','a','Each letter shifted by 5: CLOUD -> HQTZI','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 11 positions, what is the result?','MCLTY','NDMUZ','LBKSX','OENVA','a','Each letter shifted by 11: BRAIN -> MCLTY','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 2 positions, what is the result?','DTCKP','EUDLQ','CSBJO','FVEMR','a','Each letter shifted by 2: BRAIN -> DTCKP','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 9 positions, what is the result?','LUXDM','MVYEN','KTWCL','NWZFO','a','Each letter shifted by 9: CLOUD -> LUXDM','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 19 positions, what is the result?','UKTBG','VLUCH','TJSAF','WMVDI','a','Each letter shifted by 19: BRAIN -> UKTBG','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 10 positions, what is the result?','SNOKV','TOPLW','RMNJU','UPQMX','a','Each letter shifted by 10: IDEAL -> SNOKV','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "IDEAL" is shifted forward by 25 positions, what is the result?','HCDZK','IDEAL','GBCYJ','JEFBM','a','Each letter shifted by 25: IDEAL -> HCDZK','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 5 positions, what is the result?','GWFNS','HXGOT','FVEMR','IYHPU','a','Each letter shifted by 5: BRAIN -> GWFNS','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 10 positions, what is the result?','ROKBD','SPLCE','QNJAC','TQMDF','a','Each letter shifted by 10: HEART -> ROKBD','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "GHOST" is shifted forward by 8 positions, what is the result?','OPWAB','PQXBC','NOVZA','QRYCD','a','Each letter shifted by 8: GHOST -> OPWAB','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 4 positions, what is the result?','GPSYH','HQTZI','FORXG','IRUAJ','a','Each letter shifted by 4: CLOUD -> GPSYH','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "EARTH" is shifted forward by 2 positions, what is the result?','GCTVJ','HDUWK','FBSUI','IEVXL','a','Each letter shifted by 2: EARTH -> GCTVJ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "HEART" is shifted forward by 14 positions, what is the result?','VSOFH','WTPGI','URNEG','XUQHJ','a','Each letter shifted by 14: HEART -> VSOFH','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 16 positions, what is the result?','RHQYD','SIRZE','QGPXC','TJSAF','a','Each letter shifted by 16: BRAIN -> RHQYD','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "BRAIN" is shifted forward by 3 positions, what is the result?','EUDLQ','FVEMR','DTCKP','GWFNS','a','Each letter shifted by 3: BRAIN -> EUDLQ','Reasoning','Classification','hard','APSC'],
+
+  ['If each letter in "CLOUD" is shifted forward by 7 positions, what is the result?','JSVBK','KTWCL','IRUAJ','LUXDM','a','Each letter shifted by 7: CLOUD -> JSVBK','Reasoning','Classification','hard','APSC'],
+
+  ['A person facing North turns left. Which direction is the person now facing?','West','North','North','South','a','Facing North, turning left -> facing West','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing South turns right. Which direction is the person now facing?','West','South','North','South','a','Facing South, turning right -> facing West','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing South turns left. Which direction is the person now facing?','East','South','North','South','a','Facing South, turning left -> facing East','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing West turns right. Which direction is the person now facing?','North','West','North','South','a','Facing West, turning right -> facing North','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing East turns right. Which direction is the person now facing?','South','East','North','South','a','Facing East, turning right -> facing South','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing North turns right. Which direction is the person now facing?','East','North','North','South','a','Facing North, turning right -> facing East','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing West turns left. Which direction is the person now facing?','South','West','North','South','a','Facing West, turning left -> facing South','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['A person facing East turns left. Which direction is the person now facing?','North','East','North','South','a','Facing East, turning left -> facing North','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['When was Taj Mahal declared a UNESCO World Heritage Site?','1983','1950','2000','2025','a','Taj Mahal (1983): Mughal architecture. Located at Agra, Uttar Pradesh.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Taj Mahal located?','Agra, Uttar Pradesh','Assam','Kerala','Punjab','a','Taj Mahal is at Agra, Uttar Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Taj Mahal known for?','Mughal architecture','Modern technology','Sports events','Film industry','a','Taj Mahal: Mughal architecture.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Red Fort Complex declared a UNESCO World Heritage Site?','2007','1950','2000','2025','a','Red Fort Complex (2007): Mughal palace and fort. Located at Delhi.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Red Fort Complex located?','Delhi','Assam','Kerala','Punjab','a','Red Fort Complex is at Delhi.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Red Fort Complex known for?','Mughal palace and fort','Modern technology','Sports events','Film industry','a','Red Fort Complex: Mughal palace and fort.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Qutub Minar declared a UNESCO World Heritage Site?','1993','1950','2000','2025','a','Qutub Minar (1993): Tallest brick minaret. Located at Delhi.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Qutub Minar located?','Delhi','Assam','Kerala','Punjab','a','Qutub Minar is at Delhi.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Qutub Minar known for?','Tallest brick minaret','Modern technology','Sports events','Film industry','a','Qutub Minar: Tallest brick minaret.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Humayun Tomb declared a UNESCO World Heritage Site?','1993','1950','2000','2025','a','Humayun Tomb (1993): Mughal garden tomb. Located at Delhi.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Humayun Tomb located?','Delhi','Assam','Kerala','Punjab','a','Humayun Tomb is at Delhi.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Humayun Tomb known for?','Mughal garden tomb','Modern technology','Sports events','Film industry','a','Humayun Tomb: Mughal garden tomb.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Ajanta Caves declared a UNESCO World Heritage Site?','1983','1950','2000','2025','a','Ajanta Caves (1983): Buddhist rock-cut caves. Located at Maharashtra.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Ajanta Caves located?','Maharashtra','Assam','Kerala','Punjab','a','Ajanta Caves is at Maharashtra.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Ajanta Caves known for?','Buddhist rock-cut caves','Modern technology','Sports events','Film industry','a','Ajanta Caves: Buddhist rock-cut caves.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Ellora Caves declared a UNESCO World Heritage Site?','1983','1950','2000','2025','a','Ellora Caves (1983): Buddhist, Hindu, Jain caves. Located at Maharashtra.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Ellora Caves located?','Maharashtra','Assam','Kerala','Punjab','a','Ellora Caves is at Maharashtra.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Ellora Caves known for?','Buddhist, Hindu, Jain caves','Modern technology','Sports events','Film industry','a','Ellora Caves: Buddhist, Hindu, Jain caves.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Elephanta Caves declared a UNESCO World Heritage Site?','1987','1950','2000','2025','a','Elephanta Caves (1987): Hindu rock-cut caves. Located at Maharashtra.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Elephanta Caves located?','Maharashtra','Assam','Kerala','Punjab','a','Elephanta Caves is at Maharashtra.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Elephanta Caves known for?','Hindu rock-cut caves','Modern technology','Sports events','Film industry','a','Elephanta Caves: Hindu rock-cut caves.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Sun Temple Konark declared a UNESCO World Heritage Site?','1984','1950','2000','2025','a','Sun Temple Konark (1984): 13th century Sun temple. Located at Odisha.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Sun Temple Konark located?','Odisha','Assam','Kerala','Punjab','a','Sun Temple Konark is at Odisha.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Sun Temple Konark known for?','13th century Sun temple','Modern technology','Sports events','Film industry','a','Sun Temple Konark: 13th century Sun temple.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Khajuraho Group of Monuments declared a UNESCO World Heritage Site?','1986','1950','2000','2025','a','Khajuraho Group of Monuments (1986): Medieval Hindu and Jain temples. Located at Madhya Pradesh.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Khajuraho Group of Monuments located?','Madhya Pradesh','Assam','Kerala','Punjab','a','Khajuraho Group of Monuments is at Madhya Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Khajuraho Group of Monuments known for?','Medieval Hindu and Jain temples','Modern technology','Sports events','Film industry','a','Khajuraho Group of Monuments: Medieval Hindu and Jain temples.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Mahabodhi Temple declared a UNESCO World Heritage Site?','2002','1950','2000','2025','a','Mahabodhi Temple (2002): Where Buddha attained enlightenment. Located at Bihar.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Mahabodhi Temple located?','Bihar','Assam','Kerala','Punjab','a','Mahabodhi Temple is at Bihar.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Mahabodhi Temple known for?','Where Buddha attained enlightenment','Modern technology','Sports events','Film industry','a','Mahabodhi Temple: Where Buddha attained enlightenment.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Hampi declared a UNESCO World Heritage Site?','1986','1950','2000','2025','a','Hampi (1986): Ruins of Vijayanagara Empire. Located at Karnataka.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Hampi located?','Karnataka','Assam','Kerala','Punjab','a','Hampi is at Karnataka.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Hampi known for?','Ruins of Vijayanagara Empire','Modern technology','Sports events','Film industry','a','Hampi: Ruins of Vijayanagara Empire.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Pattadakal declared a UNESCO World Heritage Site?','1987','1950','2000','2025','a','Pattadakal (1987): Chalukya architecture. Located at Karnataka.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Pattadakal located?','Karnataka','Assam','Kerala','Punjab','a','Pattadakal is at Karnataka.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Pattadakal known for?','Chalukya architecture','Modern technology','Sports events','Film industry','a','Pattadakal: Chalukya architecture.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Fatehpur Sikri declared a UNESCO World Heritage Site?','1986','1950','2000','2025','a','Fatehpur Sikri (1986): Mughal capital city. Located at Uttar Pradesh.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Fatehpur Sikri located?','Uttar Pradesh','Assam','Kerala','Punjab','a','Fatehpur Sikri is at Uttar Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Fatehpur Sikri known for?','Mughal capital city','Modern technology','Sports events','Film industry','a','Fatehpur Sikri: Mughal capital city.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Great Living Chola Temples declared a UNESCO World Heritage Site?','1987','1950','2000','2025','a','Great Living Chola Temples (1987): Chola dynasty temples. Located at Tamil Nadu.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Great Living Chola Temples located?','Tamil Nadu','Assam','Kerala','Punjab','a','Great Living Chola Temples is at Tamil Nadu.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Great Living Chola Temples known for?','Chola dynasty temples','Modern technology','Sports events','Film industry','a','Great Living Chola Temples: Chola dynasty temples.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Brihadisvara Temple declared a UNESCO World Heritage Site?','1987','1950','2000','2025','a','Brihadisvara Temple (1987): Chola temple at Thanjavur. Located at Tamil Nadu.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Brihadisvara Temple located?','Tamil Nadu','Assam','Kerala','Punjab','a','Brihadisvara Temple is at Tamil Nadu.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Brihadisvara Temple known for?','Chola temple at Thanjavur','Modern technology','Sports events','Film industry','a','Brihadisvara Temple: Chola temple at Thanjavur.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Sanchi Stupa declared a UNESCO World Heritage Site?','1989','1950','2000','2025','a','Sanchi Stupa (1989): Buddhist monument. Located at Madhya Pradesh.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Sanchi Stupa located?','Madhya Pradesh','Assam','Kerala','Punjab','a','Sanchi Stupa is at Madhya Pradesh.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Sanchi Stupa known for?','Buddhist monument','Modern technology','Sports events','Film industry','a','Sanchi Stupa: Buddhist monument.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Champaner-Pavagadh declared a UNESCO World Heritage Site?','2004','1950','2000','2025','a','Champaner-Pavagadh (2004): Pre-Mughal Islamic city. Located at Gujarat.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Champaner-Pavagadh located?','Gujarat','Assam','Kerala','Punjab','a','Champaner-Pavagadh is at Gujarat.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Champaner-Pavagadh known for?','Pre-Mughal Islamic city','Modern technology','Sports events','Film industry','a','Champaner-Pavagadh: Pre-Mughal Islamic city.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Chhatrapati Shivaji Terminus declared a UNESCO World Heritage Site?','2004','1950','2000','2025','a','Chhatrapati Shivaji Terminus (2004): Victorian Gothic railway station. Located at Maharashtra.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Chhatrapati Shivaji Terminus located?','Maharashtra','Assam','Kerala','Punjab','a','Chhatrapati Shivaji Terminus is at Maharashtra.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Chhatrapati Shivaji Terminus known for?','Victorian Gothic railway station','Modern technology','Sports events','Film industry','a','Chhatrapati Shivaji Terminus: Victorian Gothic railway station.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Mountain Railways of India declared a UNESCO World Heritage Site?','1999','1950','2000','2025','a','Mountain Railways of India (1999): Historic railway lines. Located at Multiple states.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Mountain Railways of India located?','Multiple states','Assam','Kerala','Punjab','a','Mountain Railways of India is at Multiple states.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Mountain Railways of India known for?','Historic railway lines','Modern technology','Sports events','Film industry','a','Mountain Railways of India: Historic railway lines.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Jantar Mantar Jaipur declared a UNESCO World Heritage Site?','2010','1950','2000','2025','a','Jantar Mantar Jaipur (2010): Astronomical instruments. Located at Rajasthan.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Jantar Mantar Jaipur located?','Rajasthan','Assam','Kerala','Punjab','a','Jantar Mantar Jaipur is at Rajasthan.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Jantar Mantar Jaipur known for?','Astronomical instruments','Modern technology','Sports events','Film industry','a','Jantar Mantar Jaipur: Astronomical instruments.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Kaziranga National Park declared a UNESCO World Heritage Site?','1985','1950','2000','2025','a','Kaziranga National Park (1985): One-horned rhinoceros. Located at Assam.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Kaziranga National Park located?','Assam','Assam','Kerala','Punjab','a','Kaziranga National Park is at Assam.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Kaziranga National Park known for?','One-horned rhinoceros','Modern technology','Sports events','Film industry','a','Kaziranga National Park: One-horned rhinoceros.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Manas Wildlife Sanctuary declared a UNESCO World Heritage Site?','1985','1950','2000','2025','a','Manas Wildlife Sanctuary (1985): Tiger and elephant reserve. Located at Assam.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Manas Wildlife Sanctuary located?','Assam','Assam','Kerala','Punjab','a','Manas Wildlife Sanctuary is at Assam.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Manas Wildlife Sanctuary known for?','Tiger and elephant reserve','Modern technology','Sports events','Film industry','a','Manas Wildlife Sanctuary: Tiger and elephant reserve.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Keoladeo National Park declared a UNESCO World Heritage Site?','1985','1950','2000','2025','a','Keoladeo National Park (1985): Bird sanctuary at Bharatpur. Located at Rajasthan.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Keoladeo National Park located?','Rajasthan','Assam','Kerala','Punjab','a','Keoladeo National Park is at Rajasthan.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Keoladeo National Park known for?','Bird sanctuary at Bharatpur','Modern technology','Sports events','Film industry','a','Keoladeo National Park: Bird sanctuary at Bharatpur.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Sundarbans National Park declared a UNESCO World Heritage Site?','1987','1950','2000','2025','a','Sundarbans National Park (1987): Mangrove forest and tigers. Located at West Bengal.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Sundarbans National Park located?','West Bengal','Assam','Kerala','Punjab','a','Sundarbans National Park is at West Bengal.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Sundarbans National Park known for?','Mangrove forest and tigers','Modern technology','Sports events','Film industry','a','Sundarbans National Park: Mangrove forest and tigers.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Western Ghats declared a UNESCO World Heritage Site?','2012','1950','2000','2025','a','Western Ghats (2012): Biodiversity hotspot. Located at Multiple states.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Western Ghats located?','Multiple states','Assam','Kerala','Punjab','a','Western Ghats is at Multiple states.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Western Ghats known for?','Biodiversity hotspot','Modern technology','Sports events','Film industry','a','Western Ghats: Biodiversity hotspot.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Hill Forts of Rajasthan declared a UNESCO World Heritage Site?','2013','1950','2000','2025','a','Hill Forts of Rajasthan (2013): Chittorgarh, Kumbhalgarh, etc. Located at Rajasthan.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Hill Forts of Rajasthan located?','Rajasthan','Assam','Kerala','Punjab','a','Hill Forts of Rajasthan is at Rajasthan.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Hill Forts of Rajasthan known for?','Chittorgarh, Kumbhalgarh, etc','Modern technology','Sports events','Film industry','a','Hill Forts of Rajasthan: Chittorgarh, Kumbhalgarh, etc.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Rani Ki Vav declared a UNESCO World Heritage Site?','2014','1950','2000','2025','a','Rani Ki Vav (2014): Stepwell in Patan. Located at Gujarat.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Rani Ki Vav located?','Gujarat','Assam','Kerala','Punjab','a','Rani Ki Vav is at Gujarat.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Rani Ki Vav known for?','Stepwell in Patan','Modern technology','Sports events','Film industry','a','Rani Ki Vav: Stepwell in Patan.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Nalanda Mahavihara declared a UNESCO World Heritage Site?','2016','1950','2000','2025','a','Nalanda Mahavihara (2016): Ancient university. Located at Bihar.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Nalanda Mahavihara located?','Bihar','Assam','Kerala','Punjab','a','Nalanda Mahavihara is at Bihar.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Nalanda Mahavihara known for?','Ancient university','Modern technology','Sports events','Film industry','a','Nalanda Mahavihara: Ancient university.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was  Historic City of Ahmedabad declared a UNESCO World Heritage Site?','2017','1950','2000','2025','a',' Historic City of Ahmedabad (2017): First Indian UNESCO city. Located at Gujarat.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is  Historic City of Ahmedabad located?','Gujarat','Assam','Kerala','Punjab','a',' Historic City of Ahmedabad is at Gujarat.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is  Historic City of Ahmedabad known for?','First Indian UNESCO city','Modern technology','Sports events','Film industry','a',' Historic City of Ahmedabad: First Indian UNESCO city.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was Victorian Gothic and Art Deco Ensembles of Mumbai declared a UNESCO World Heritage Site?','2018','1950','2000','2025','a','Victorian Gothic and Art Deco Ensembles of Mumbai (2018): 19th and 20th century architecture. Located at Maharashtra.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is Victorian Gothic and Art Deco Ensembles of Mumbai located?','Maharashtra','Assam','Kerala','Punjab','a','Victorian Gothic and Art Deco Ensembles of Mumbai is at Maharashtra.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is Victorian Gothic and Art Deco Ensembles of Mumbai known for?','19th and 20th century architecture','Modern technology','Sports events','Film industry','a','Victorian Gothic and Art Deco Ensembles of Mumbai: 19th and 20th century architecture.','General Knowledge','World GK','medium','APSC'],
 
 ];
