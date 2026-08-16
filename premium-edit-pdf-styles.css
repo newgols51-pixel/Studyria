@@ -12,9 +12,9 @@
   --pep-surface: rgba(20,22,30,0.85);
   --pep-surface2: rgba(14,16,22,0.92);
   --pep-blur: blur(16px);
-  --pep-accent: #3d8ef8;
+  --pep-accent: #7d1122;
   --pep-accent2: #10d98e;
-  --pep-accent3: #8b5cf6;
+  --pep-accent3: #930205;
   --pep-danger: #ff4d6d;
   --pep-warn: #f59e0b;
   --pep-radius: 16px;
@@ -113,7 +113,7 @@
 }
 .pep-card-badge.optional {
   background: rgba(139,92,246,0.12);
-  color: #8b5cf6;
+  color: #930205;
   border: 1px solid rgba(139,92,246,0.2);
 }
 
@@ -277,7 +277,7 @@
 .pep-select-action-btn.edit:hover { background: rgba(245,158,11,0.12); }
 .pep-select-action-btn.del   { color: var(--pep-danger); border-color: rgba(255,77,109,0.2); }
 .pep-select-action-btn.del:hover { background: rgba(255,77,109,0.1); }
-.pep-select-action-btn.refresh { color: #8b5cf6; border-color: rgba(139,92,246,0.2); }
+.pep-select-action-btn.refresh { color: #930205; border-color: rgba(139,92,246,0.2); }
 .pep-select-action-btn.refresh:hover { background: rgba(139,92,246,0.12); }
 .pep-select-action-btn.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
@@ -312,7 +312,7 @@
 .pep-classif-crumb {
   font-size: .7rem;
   font-weight: 700;
-  color: #8b5cf6;
+  color: #930205;
   padding: 2px 8px;
   background: rgba(139,92,246,0.12);
   border-radius: 5px;
@@ -529,7 +529,7 @@
 }
 .pep-mini-card-classif {
   font-size: .62rem;
-  color: #8b5cf6;
+  color: #930205;
   font-weight: 700;
   margin-bottom: 8px;
   overflow: hidden;

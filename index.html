@@ -119,8 +119,8 @@
 <meta name="pinterest:description" content="Studyria — Assam's #1 PDF study platform. Free & premium PDFs for ADRE, APSC, Assam Police & all state exams." />
 <meta name="og:site_name" content="Studyria" />
 
-<meta name="theme-color" content="#080c14" media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#f0f4fb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1a0a0a" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)" />
 <!-- ── Resource Hints ── -->
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
@@ -154,7 +154,7 @@ window.SUPABASE_URL = 'https://qsdfmgcekdpjdcyqhuhi.supabase.co';
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Studyria" />
 <meta name="msapplication-TileImage" content="/icon-144.png" />
-<meta name="msapplication-TileColor" content="#3d8ef8" />
+<meta name="msapplication-TileColor" content="#7d1122" />
 <meta name="msapplication-config" content="none" />
 
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
@@ -536,7 +536,7 @@ if ('getBattery' in navigator) {
     if (document.getElementById("reading-progress-bar")) return;
     var bar = document.createElement("div");
     bar.id = "reading-progress-bar";
-    bar.style.cssText = "position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;transition:width 0.1s ease-out;background:linear-gradient(90deg,#3d8ef8,#00c8e8);box-shadow:0 0 8px rgba(61,142,248,0.5)";
+    bar.style.cssText = "position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;transition:width 0.1s ease-out;background:linear-gradient(90deg,#7d1122,#c99a3c);box-shadow:0 0 8px rgba(61,142,248,0.5)";
     document.body.appendChild(bar);
 
     function updateProgress() {
@@ -857,19 +857,19 @@ body.light .ott-row-track .pdf-cover-scrim {
    text-accent, bg-accent2, font-editorial, rounded-radius-lg
    continue to work via Tailwind's JIT engine. ─────────────────── */
 :root {
-  --color-accent:  #3d8ef8;
-  --color-accent2: #00c8e8;
-  --color-accent3: #f59e0b;
-  --color-gold:    #f59e0b;
+  --color-accent:  #7d1122;
+  --color-accent2: #930205;
+  --color-accent3: #c99a3c;
+  --color-gold:    #c99a3c;
   --color-danger:  #ff4d6d;
   --color-success: #10d98e;
-  --color-info:    #3d8ef8;
-  --grad-primary: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
-  --grad-hero:    linear-gradient(135deg, #3d8ef8 0%, #8b5cf6 50%, #00c8e8 100%);
-  --grad-warm:    linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  --color-info:    #8a6d3b;
+  --grad-primary: linear-gradient(135deg, #7d1122 0%, #930205 100%);
+  --grad-hero:    linear-gradient(135deg, #7d1122 0%, #930205 50%, #c99a3c 100%);
+  --grad-warm:    linear-gradient(135deg, #c99a3c 0%, #a67c1e 100%);
   --grad-success: linear-gradient(135deg, #10d98e 0%, #06b6d4 100%);
-  --grad-card:    linear-gradient(135deg, rgba(61,142,248,0.08) 0%, rgba(0,200,232,0.04) 100%);
-  --shadow-glow: 0 0 48px rgba(61,142,248,0.18);
+  --grad-card:    linear-gradient(135deg, rgba(147,2,5,0.08) 0%, rgba(201,154,60,0.05) 100%);
+  --shadow-glow: 0 0 48px rgba(147,2,5,0.18);
   --radius-radius:    14px;
   --radius-radius-sm: 9px;
   --radius-radius-lg: 22px;
@@ -919,25 +919,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   :root {
     /* === PREMIUM DARK THEME (default) === */
-    --bg:  #080c14;
-    --bg2: #0d1220;
-    --bg3: #121929;
+    --bg:  #1a0a0a;
+    --bg2: #220d0d;
+    --bg3: #2e1414;
 
     /* Glassmorphism surfaces */
     --surface: rgba(255,255,255,0.03);
     --glass:   rgba(255,255,255,0.055);
     --glass-border: rgba(255,255,255,0.09);
-    --glass-border-hover: rgba(100,180,255,0.25);
+    --glass-border-hover: rgba(201,154,60,0.28);
 
     /* Text hierarchy */
-    --text:  #eef2ff;
-    --text2: #7a8caa;
-    --text3: #3d4f6a;
+    --text:  #f1ece3;
+    --text2: #c9a89a;
+    --text3: #7a5450;
 
     /* Theme-dependent shadows */
     --shadow:        0 8px 40px rgba(0,0,0,0.55);
     --shadow-sm:     0 4px 16px rgba(0,0,0,0.35);
-    --shadow-accent: 0 8px 40px rgba(61,142,248,0.28);
+    --shadow-accent: 0 8px 40px rgba(147,2,5,0.28);
 
     /* Aliases — keep legacy generic var names working unchanged
        inside @layer components below */
@@ -959,18 +959,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      cascade — every component using var(--bg)/var(--text)/etc.
      re-resolves the instant JS toggles the .light class. ──────── */
   body.light {
-    --bg:  #f0f4fb;
+    --bg:  #faf7f2;
     --bg2: #ffffff;
-    --bg3: #e4eaf6;
-    --surface: rgba(0,0,0,0.035);
+    --bg3: #f1ece3;
+    --surface: rgba(147,2,5,0.035);
     --glass:   rgba(255,255,255,0.75);
-    --glass-border: rgba(0,0,0,0.07);
-    --glass-border-hover: rgba(61,142,248,0.3);
-    --text:  #0a1022;
-    --text2: #4a5f80;
-    --text3: #8fa0bb;
-    --shadow: 0 8px 32px rgba(10,16,34,0.10);
-    --shadow-accent: 0 8px 32px rgba(61,142,248,0.22);
+    --glass-border: rgba(147,2,5,0.10);
+    --glass-border-hover: rgba(201,154,60,0.35);
+    --text:  #1c1b1a;
+    --text2: #5a4038;
+    --text3: #9a8272;
+    --shadow: 0 8px 32px rgba(28,27,26,0.10);
+    --shadow-accent: 0 8px 32px rgba(147,2,5,0.20);
   }
 
 /* ── ALPINE.JS TRANSITION SUPPORT ───────────────────────────────────
@@ -1113,7 +1113,7 @@ span.logo-letter {
   display: inline-block;
   font-family: var(--font-display) !important;
   font-weight: 800 !important;
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   /* PERF: only entrance animation; logoFloat removed (was running forever on every letter) */
   animation: logoEntrance .6s cubic-bezier(0.34,1.56,0.64,1) calc(var(--i) * 0.07s) both;
@@ -1123,7 +1123,7 @@ span.logo-letter {
 span.logo-letter.logo-light {
   font-family: var(--font-display) !important;
   font-weight: 300 !important;
-  background: linear-gradient(135deg, #b0d4ff, #00c8e8 60%, #3d8ef8);
+  background: linear-gradient(135deg, #b0d4ff, #c99a3c 60%, #7d1122);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 /* Hover wave only — fires on user interaction, not continuous */
@@ -1159,7 +1159,7 @@ span.hsn-letter {
   font-family: var(--font-display) !important;
   font-size: clamp(2.1rem, 5vw, 3.9rem);
   font-weight: 800 !important;
-  background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 50%, #b0e0ff 100%);
+  background: linear-gradient(135deg, #7d1122 0%, #c99a3c 50%, #b0e0ff 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   filter: drop-shadow(0 0 12px rgba(61,142,248,0.25));
   /* PERF: hsnGlow infinite removed — drop-shadow is GPU-expensive per-letter */
@@ -1177,7 +1177,7 @@ span.hsn-letter {
 span.hsn-letter.hsn-light {
   font-family: var(--font-display) !important;
   font-weight: 300 !important;
-  background: linear-gradient(135deg, #a0c8ff 0%, #00c8e8 60%, #3d8ef8 100%);
+  background: linear-gradient(135deg, #a0c8ff 0%, #c99a3c 60%, #7d1122 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 @keyframes hsnDrop {
@@ -1214,7 +1214,7 @@ span.hsn-letter.hsn-light {
 #announcementBar {
   position: sticky; top: 0; z-index: 200;
   /* PERF: static gradient instead of animated background-position */
-  background: linear-gradient(90deg, #080c14 0%, #0a1e52 40%, #080c14 100%);
+  background: linear-gradient(90deg, #1a0a0a 0%, #0a1e52 40%, #1a0a0a 100%);
   border-bottom: 1px solid rgba(61,142,248,0.25);
   overflow: hidden; transition: all .4s ease;
 }
@@ -1230,11 +1230,11 @@ span.hsn-letter.hsn-light {
   padding: 9px 48px 9px 20px; min-height: 40px; position: relative; z-index: 1;
 }
 /* PERF: pulse animation at 4s interval (was 2s) — same visual effect, half the frames */
-.ann-pulse { width: 7px; height: 7px; border-radius: 50%; background: #00c8e8;
-  box-shadow: 0 0 8px #00c8e8; animation: pulse 4s ease-in-out infinite; flex-shrink: 0; }
+.ann-pulse { width: 7px; height: 7px; border-radius: 50%; background: #c99a3c;
+  box-shadow: 0 0 8px #c99a3c; animation: pulse 4s ease-in-out infinite; flex-shrink: 0; }
 .ann-text { font-size: .78rem; font-weight: 500; color: rgba(255,255,255,0.82);
   letter-spacing: .03em; text-align: center; }
-.ann-text .ann-hl { background: linear-gradient(90deg,#3d8ef8,#00c8e8);
+.ann-text .ann-hl { background: linear-gradient(90deg,#7d1122,#c99a3c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   font-weight: 700; }
 .ann-close {
@@ -1278,7 +1278,7 @@ body.light .ann-close { background: rgba(0,0,0,0.06); color: rgba(10,16,34,0.45)
 .brand-title {
   font-family: var(--font-editorial);
   font-size: .8rem; font-weight: 700; letter-spacing: .06em;
-  background: linear-gradient(90deg, #a8c8ff 0%, #3d8ef8 35%, #00c8e8 65%, #b0f0ff 100%);
+  background: linear-gradient(90deg, #a8c8ff 0%, #7d1122 35%, #c99a3c 65%, #b0f0ff 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   white-space: nowrap; animation: fadeUp .7s ease both;
   filter: drop-shadow(0 0 8px rgba(61,142,248,0.35));
@@ -1303,7 +1303,7 @@ body.light .ann-close { background: rgba(0,0,0,0.06); color: rgba(10,16,34,0.45)
 /* PERF: chipGlow and heartbeat removed — both were infinite paint triggers */
 .brand-credit-heart { font-size:.72rem; display:inline-block; }
 .brand-credit-name {
-  background: linear-gradient(90deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(90deg, #7d1122, #c99a3c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   font-weight: 700;
 }
@@ -2038,7 +2038,7 @@ body.light .pdp-review-textarea {
     #1e66e5 0%,
     #2080f0 38%,
     #00aee0 75%,
-    #00c8e8 100%);
+    #c99a3c 100%);
   box-shadow:
     0 4px 20px rgba(61,142,248,0.48),
     0 1px 0 rgba(255,255,255,0.24) inset,
@@ -2140,8 +2140,8 @@ body.light .pdp-review-textarea {
 }
 .hero-bg { position: absolute; inset: 0; pointer-events: none; }
 .hero-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .10; } /* PERF: opacity reduced, blur reduced */
-.hero-orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #3d8ef8, #1e40af); top: -140px; left: -100px; animation: float 9s ease-in-out infinite; }
-.hero-orb-2 { width: 340px; height: 340px; background: radial-gradient(circle, #00c8e8, #0891b2); top: -40px; right: -60px; animation: float 11s ease-in-out infinite reverse; }
+.hero-orb-1 { width: 480px; height: 480px; background: radial-gradient(circle, #7d1122, #1e40af); top: -140px; left: -100px; animation: float 9s ease-in-out infinite; }
+.hero-orb-2 { width: 340px; height: 340px; background: radial-gradient(circle, #c99a3c, #0891b2); top: -40px; right: -60px; animation: float 11s ease-in-out infinite reverse; }
 .hero-orb-3 { width: 240px; height: 240px; background: radial-gradient(circle, #f59e0b, #d97706); bottom: -90px; left: 45%; animation: float 7s ease-in-out infinite; opacity: .11; }
 /* Extra mesh for depth */
 .hero-bg::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, rgba(61,142,248,0.07) 0%, transparent 70%); }
@@ -3031,7 +3031,7 @@ body.light .mobile-nav-item:hover .mni-icon { background: rgba(0,0,0,0.05); }
   transform: scale(1.10);
 }
 .mobile-nav-item.active .mni-label {
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   font-weight: 700;
 }
@@ -3043,7 +3043,7 @@ body.light .mobile-nav-item:hover .mni-icon { background: rgba(0,0,0,0.05); }
   top: 0; left: 50%; transform: translateX(-50%);
   width: 28px; height: 3px;
   border-radius: 0 0 4px 4px;
-  background: linear-gradient(90deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(90deg, #7d1122, #c99a3c);
   box-shadow: 0 0 10px rgba(61,142,248,0.7);
 }
 
@@ -3088,8 +3088,8 @@ body.light .mobile-nav-item[data-page="premium"].active {
 .mobile-nav-item.active svg { color: var(--accent); }
 
 /* ── Light mode overrides ── */
-body.light .mobile-nav-item { color: #8fa0bb; }
-body.light .mobile-nav-item:hover { color: #4a5f80; }
+body.light .mobile-nav-item { color: #9a8272; }
+body.light .mobile-nav-item:hover { color: #5a4038; }
 body.light .mobile-nav-item.active { color: #1d4ed8; }
 body.light .mobile-nav-item.active .mni-icon {
   background: linear-gradient(135deg, rgba(61,142,248,0.14), rgba(0,200,232,0.09));
@@ -3319,7 +3319,7 @@ body.light .hamburger-divider { background: rgba(61,142,248,0.1); }
   padding: 8px 14px 4px;
   font-size: .6rem; font-weight: 800; letter-spacing: .14em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, #a78bfa, #3d8ef8);
+  background: linear-gradient(90deg, #a78bfa, #7d1122);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   display: flex; align-items: center; gap: 6px;
 }
@@ -3400,7 +3400,7 @@ body.light .hamburger-divider { background: rgba(61,142,248,0.1); }
 .pwa-card-label {
   padding:8px 14px 4px;
   font-size:.6rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
-  background:linear-gradient(90deg,#60a5fa,#00c8e8);
+  background:linear-gradient(90deg,#60a5fa,#c99a3c);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   display:flex; align-items:center; gap:6px;
 }
@@ -3415,7 +3415,7 @@ body.light .hamburger-divider { background: rgba(61,142,248,0.1); }
 }
 .pwa-card-icon {
   width:36px; height:36px; border-radius:10px; flex-shrink:0;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(135deg,#7d1122,#c99a3c);
   display:flex; align-items:center; justify-content:center;
   font-size:1.05rem;
   box-shadow:0 4px 14px rgba(61,142,248,0.35);
@@ -3579,11 +3579,11 @@ body.light .pwa-check-txt { color:rgba(61,142,248,0.45); }
   position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
 }
 .admin-login-orb-1 {
-  width: 500px; height: 500px; background: radial-gradient(circle, #3d8ef8, transparent);
+  width: 500px; height: 500px; background: radial-gradient(circle, #7d1122, transparent);
   opacity: .07; top: -100px; left: -100px; animation: float 10s ease-in-out infinite;
 }
 .admin-login-orb-2 {
-  width: 400px; height: 400px; background: radial-gradient(circle, #00c8e8, transparent);
+  width: 400px; height: 400px; background: radial-gradient(circle, #c99a3c, transparent);
   opacity: .06; bottom: -80px; right: -80px; animation: float 12s ease-in-out infinite reverse;
 }
 .admin-login-card {
@@ -3736,10 +3736,10 @@ body.light .admin-sidebar { background: rgba(240,244,251,0.8); }
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
   border-radius: 2px 2px 0 0;
 }
-.admin-stat-card.blue::before { background: linear-gradient(90deg,#3d8ef8,#00c8e8); }
+.admin-stat-card.blue::before { background: linear-gradient(90deg,#7d1122,#c99a3c); }
 .admin-stat-card.green::before { background: linear-gradient(90deg,#10d98e,#06b6d4); }
 .admin-stat-card.gold::before { background: linear-gradient(90deg,#f59e0b,#f97316); }
-.admin-stat-card.purple::before { background: linear-gradient(90deg,#8b5cf6,#a855f7); }
+.admin-stat-card.purple::before { background: linear-gradient(90deg,#930205,#a855f7); }
 .admin-stat-card.red::before { background: linear-gradient(90deg,#ff4d6d,#c0163a); }
 .admin-stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-accent); }
 .admin-stat-label { font-size: .75rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px; }
@@ -4410,7 +4410,7 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
 }
 .home-greeting-avatar {
   width: 52px; height: 52px; border-radius: 50%;
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.3rem; font-weight: 700; color: #fff;
   border: 2px solid rgba(61,142,248,0.4);
@@ -4750,7 +4750,7 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
   margin-bottom: 8px;
 }
 .community-hub-title .ch-grad {
-  background: linear-gradient(135deg, #10d98e, #3d8ef8);
+  background: linear-gradient(135deg, #10d98e, #7d1122);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -5133,7 +5133,7 @@ body.light .filter-select { background: rgba(255,255,255,0.9); }
 .home-cta-title {
   font-family: var(--font-display); font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800;
   line-height: 1.1; margin-bottom: 16px;
-  background: linear-gradient(135deg, #fff 0%, #b0d4ff 50%, #00c8e8 100%);
+  background: linear-gradient(135deg, #fff 0%, #b0d4ff 50%, #c99a3c 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .home-cta-sub { font-size: 1rem; color: rgba(255,255,255,0.55); max-width: 500px; margin: 0 auto 28px; line-height: 1.7; }
@@ -5287,7 +5287,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 }
 .hvp-screen-logo {
   font-size: .60rem; font-weight: 800;
-  background: linear-gradient(90deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(90deg, #7d1122, #c99a3c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: .04em;
@@ -5358,7 +5358,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 }
 .hvp-mobile-label span {
   font-size: .48rem; font-weight: 800;
-  background: linear-gradient(90deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(90deg, #7d1122, #c99a3c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
   background-color: rgba(8,18,40,0.75);
@@ -5793,7 +5793,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   html, body {
     width: 100%; max-width: 100%; overflow-x: hidden;
     margin: 0; padding: 0;
-    background: #080c14; color: #eef2ff;
+    background: #1a0a0a; color: #f1ece3;
   }
   *, *::before, *::after { box-sizing: border-box; }
 
@@ -5814,7 +5814,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   .nav-link {
     display: flex; align-items: center; gap: 6px;
     padding: 8px 14px; border-radius: 9px;
-    font-size: .875rem; font-weight: 500; color: #7a8caa;
+    font-size: .875rem; font-weight: 500; color: #c9a89a;
     cursor: pointer; border: none; background: none;
     font-family: "Inter", "DM Sans", system-ui, sans-serif;
   }
@@ -5823,7 +5823,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     width: 40px; height: 40px; border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.055);
     display: flex; align-items: center; justify-content: center;
-    color: #7a8caa;
+    color: #c9a89a;
   }
   @media (max-width: 900px) { .nav-links { display: none; } }
 
@@ -5838,12 +5838,12 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     display: inline-block;
     font-family: "Playfair Display", Georgia, serif !important;
     font-weight: 800 !important;
-    background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+    background: linear-gradient(135deg, #7d1122, #c99a3c);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .logo .logo-letter.logo-light, span.logo-letter.logo-light {
     font-weight: 300 !important;
-    background: linear-gradient(135deg, #b0d4ff, #00c8e8 60%, #3d8ef8);
+    background: linear-gradient(135deg, #b0d4ff, #c99a3c 60%, #7d1122);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
 
@@ -5874,14 +5874,14 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     font-family: "Playfair Display", Georgia, serif !important;
     font-size: clamp(2.1rem, 5vw, 3.9rem);
     font-weight: 800 !important;
-    background: linear-gradient(135deg, #3d8ef8 0%, #00c8e8 50%, #b0e0ff 100%);
+    background: linear-gradient(135deg, #7d1122 0%, #c99a3c 50%, #b0e0ff 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     will-change: transform, filter;
     flex-shrink: 0;
   }
   .hero-site-name .hsn-letter.hsn-light, span.hsn-letter.hsn-light {
     font-weight: 300 !important;
-    background: linear-gradient(135deg, #a0c8ff 0%, #00c8e8 60%, #3d8ef8 100%);
+    background: linear-gradient(135deg, #a0c8ff 0%, #c99a3c 60%, #7d1122 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .hero-title {
@@ -5891,11 +5891,11 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
     overflow-wrap: break-word; word-break: break-word;
   }
   .hero-title .grad {
-    background: linear-gradient(135deg, #3d8ef8 0%, #8b5cf6 50%, #00c8e8 100%);
+    background: linear-gradient(135deg, #7d1122 0%, #930205 50%, #c99a3c 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
   .hero-sub {
-    font-size: clamp(.9rem, 2vw, 1.05rem); color: #7a8caa;
+    font-size: clamp(.9rem, 2vw, 1.05rem); color: #c9a89a;
     max-width: 560px; width: 100%;
     margin: 0 auto 20px; line-height: 1.65; font-weight: 300;
     overflow-wrap: break-word; word-break: break-word; word-wrap: break-word;
@@ -6176,13 +6176,13 @@ function studyriaApp() {
           <div id="langMenu" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--glass-bg,rgba(20,20,35,0.97));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.11);border-radius:14px;padding:8px 0;min-width:196px;z-index:99999;box-shadow:0 20px 60px rgba(0,0,0,0.45);animation:langFadeIn .17s ease">
             <div style="padding:7px 15px 9px;font-size:.67rem;font-weight:700;color:rgba(128,145,180,0.8);letter-spacing:.09em;text-transform:uppercase">🌐 Language</div>
             <button class="lang-opt" data-lang="as" onclick="setLanguage('as')" style="width:100%;text-align:left;background:none;border:none;color:inherit;padding:9px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.87rem;transition:background .13s;font-family:inherit">
-              <span class="lang-tick" style="color:#3d8ef8;width:14px;display:inline-block">✓</span> 🇮🇳 অসমীয়া <span style="font-size:.65rem;color:rgba(128,145,180,0.6);margin-left:auto">Default</span>
+              <span class="lang-tick" style="color:#7d1122;width:14px;display:inline-block">✓</span> 🇮🇳 অসমীয়া <span style="font-size:.65rem;color:rgba(128,145,180,0.6);margin-left:auto">Default</span>
             </button>
             <button class="lang-opt" data-lang="en" onclick="setLanguage('en')" style="width:100%;text-align:left;background:none;border:none;color:inherit;padding:9px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.87rem;transition:background .13s;font-family:inherit">
-              <span class="lang-tick" style="color:#3d8ef8;width:14px;display:inline-block;visibility:hidden">✓</span> 🇬🇧 English
+              <span class="lang-tick" style="color:#7d1122;width:14px;display:inline-block;visibility:hidden">✓</span> 🇬🇧 English
             </button>
             <button class="lang-opt" data-lang="hi" onclick="setLanguage('hi')" style="width:100%;text-align:left;background:none;border:none;color:inherit;padding:9px 15px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:.87rem;transition:background .13s;font-family:inherit">
-              <span class="lang-tick" style="color:#3d8ef8;width:14px;display:inline-block;visibility:hidden">✓</span> 🇮🇳 हिन्दी
+              <span class="lang-tick" style="color:#7d1122;width:14px;display:inline-block;visibility:hidden">✓</span> 🇮🇳 हिन्दी
             </button>
           </div>
         </div>
@@ -6496,7 +6496,7 @@ function studyriaApp() {
   font-weight: 800;
   line-height: 1.0;
   letter-spacing: -.03em;
-  background: linear-gradient(135deg, #3d8ef8 0%, #a78bfa 40%, #00c8e8 80%);
+  background: linear-gradient(135deg, #7d1122 0%, #a78bfa 40%, #c99a3c 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -6538,7 +6538,7 @@ function studyriaApp() {
 }
 .sh-btn:active { transform: scale(0.97); }
 .sh-btn-primary {
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   color: #fff;
   box-shadow: 0 4px 20px rgba(61,142,248,0.38);
 }
@@ -6718,9 +6718,9 @@ body.light .sh-hero-search input {
 }
 .sh-mockup-thumb {
   width: 38px; height: 38px; border-radius: 7px; flex-shrink: 0;
-  background: linear-gradient(135deg, #3d8ef8, #8b5cf6);
+  background: linear-gradient(135deg, #7d1122, #930205);
 }
-.sh-mockup-thumb:nth-child(1) { background: linear-gradient(135deg, #3d8ef8, #00c8e8); }
+.sh-mockup-thumb:nth-child(1) { background: linear-gradient(135deg, #7d1122, #c99a3c); }
 .sh-mockup-lines { flex: 1; display: flex; flex-direction: column; gap: 5px; }
 .sh-mockup-line {
   height: 7px; border-radius: 4px;
@@ -7003,7 +7003,7 @@ body.light .sh-hero-search input {
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .sh-hero-cta-buy {
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   color: #fff; box-shadow: 0 4px 16px rgba(61,142,248,0.4);
 }
 .sh-hero-cta-buy:hover { filter: brightness(1.1); transform: translateY(-1px); }
@@ -7184,7 +7184,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
   white-space: nowrap;
 }
 .sc-cta-buy {
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   color: #fff; box-shadow: 0 2px 10px rgba(61,142,248,0.35);
 }
 .sc-cta-buy:hover { filter: brightness(1.1); box-shadow: 0 4px 16px rgba(61,142,248,0.5); }
@@ -7200,7 +7200,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 }
 .sc-progress-fill {
   height: 100%; border-radius: 2px;
-  background: linear-gradient(90deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(90deg, #7d1122, #c99a3c);
   transition: width .3s;
 }
 
@@ -7393,7 +7393,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 .sh-testim-author { display: flex; align-items: center; gap: 10px; }
 .sh-testim-avatar {
   width: 36px; height: 36px; border-radius: 50%;
-  background: linear-gradient(135deg, #3d8ef8, #8b5cf6);
+  background: linear-gradient(135deg, #7d1122, #930205);
   display: flex; align-items: center; justify-content: center;
   font-size: .85rem; font-weight: 700; color: #fff;
   flex-shrink: 0; overflow: hidden;
@@ -7626,7 +7626,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
             </div>
             <div class="sh-mockup-cards">
               <div class="sh-mockup-card">
-                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#3d8ef8,#00c8e8)"></div>
+                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#7d1122,#c99a3c)"></div>
                 <div class="sh-mockup-lines">
                   <div class="sh-mockup-line"></div>
                   <div class="sh-mockup-line sh-mockup-line-short"></div>
@@ -7634,7 +7634,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
                 <div class="sh-mockup-badge">FREE</div>
               </div>
               <div class="sh-mockup-card">
-                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#8b5cf6,#3d8ef8)"></div>
+                <div class="sh-mockup-thumb" style="background:linear-gradient(135deg,#930205,#7d1122)"></div>
                 <div class="sh-mockup-lines">
                   <div class="sh-mockup-line"></div>
                   <div class="sh-mockup-line sh-mockup-line-short"></div>
@@ -7661,7 +7661,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
           </div>
           <!-- Floating chips -->
           <div class="sh-mockup-chip sh-chip-1">
-            <span class="sh-mockup-chip-dot" style="background:#3d8ef8;box-shadow:0 0 5px #3d8ef8"></span>
+            <span class="sh-mockup-chip-dot" style="background:#7d1122;box-shadow:0 0 5px #7d1122"></span>
             Govt Exams
           </div>
           <div class="sh-mockup-chip sh-chip-2">
@@ -7673,7 +7673,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
             Career Hub
           </div>
           <div class="sh-mockup-chip sh-chip-4">
-            <span class="sh-mockup-chip-dot" style="background:#8b5cf6;box-shadow:0 0 5px #8b5cf6"></span>
+            <span class="sh-mockup-chip-dot" style="background:#930205;box-shadow:0 0 5px #930205"></span>
             AI Picks
           </div>
         </div>
@@ -7714,7 +7714,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
   <div class="container">
     <div class="sh-section-head">
       <div class="sh-section-label">
-        <span class="sh-section-dot" style="background:#3d8ef8"></span>
+        <span class="sh-section-dot" style="background:#7d1122"></span>
         <span class="sh-section-title" id="shContinueTitle">📖 Continue Reading</span>
       </div>
       <button class="sh-see-all" onclick="navigate('dashboard')">See All →</button>
@@ -7728,7 +7728,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
   <div class="container">
     <div class="sh-section-head">
       <div class="sh-section-label">
-        <span class="sh-section-dot" style="background:#8b5cf6"></span>
+        <span class="sh-section-dot" style="background:#930205"></span>
         <span class="sh-section-title" id="shAITitle">🤖 AI Recommended</span>
         <span class="sh-section-badge" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border-color:rgba(139,92,246,0.35)">Smart</span>
       </div>
@@ -7787,7 +7787,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
   <div class="container">
     <div class="sh-section-head">
       <div class="sh-section-label">
-        <span class="sh-section-dot" style="background:#00c8e8"></span>
+        <span class="sh-section-dot" style="background:#c99a3c"></span>
         <span class="sh-section-title" id="shRecentTitle">🕐 Recently Added</span>
       </div>
       <button class="sh-see-all" onclick="navigate('library')">See All →</button>
@@ -8007,7 +8007,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
 .pdl-ott-btn {
   width: calc(100% - 24px); margin: 0 12px 12px;
   padding: 10px 12px; border-radius: 12px; border: none; cursor: pointer;
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   color: #fff; font-size: .78rem; font-weight: 700;
   font-family: var(--font-ui, sans-serif); letter-spacing: .02em;
   transition: all .2s; text-align: center;
@@ -8290,7 +8290,7 @@ body.light .sc-tag-new { background: rgba(61,142,248,0.12); }
   <div class="container">
     <div class="sh-section-head" style="padding-bottom:6px">
       <div class="sh-section-label">
-        <span class="sh-section-dot" style="background:#8b5cf6"></span>
+        <span class="sh-section-dot" style="background:#930205"></span>
         <span class="sh-section-title">Frequently Asked Questions</span>
       </div>
     </div>
@@ -9315,7 +9315,7 @@ window.addEventListener('resize', function() {
 }
 .ottlib-hero-badge-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #3d8ef8; flex-shrink: 0;
+  background: #7d1122; flex-shrink: 0;
   box-shadow: 0 0 8px rgba(61,142,248,0.8);
   animation: ottBadgePulse 2s ease-in-out infinite;
 }
@@ -9328,7 +9328,7 @@ window.addEventListener('resize', function() {
 .ottlib-hero-title {
   font-family: var(--font-display, sans-serif); font-weight: 900;
   font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.05; letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #e4e8f0 0%, #93c5fd 50%, #00c8e8 100%);
+  background: linear-gradient(135deg, #e4e8f0 0%, #93c5fd 50%, #c99a3c 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 14px;
 }
@@ -9467,7 +9467,7 @@ window.addEventListener('resize', function() {
   color: #93c5fd;
 }
 .ottlib-cat-pill.active {
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   border-color: transparent; color: #fff; font-weight: 700;
   box-shadow: 0 4px 16px rgba(61,142,248,0.4);
 }
@@ -9498,7 +9498,7 @@ window.addEventListener('resize', function() {
 .ottlib-see-all {
   font-size: .78rem; font-weight: 700;
   background: rgba(61,142,248,0.08); border: 1px solid rgba(61,142,248,0.2);
-  color: #3d8ef8; padding: 7px 14px; border-radius: 20px; cursor: pointer;
+  color: #7d1122; padding: 7px 14px; border-radius: 20px; cursor: pointer;
   transition: all .2s; font-family: var(--font-ui, sans-serif); white-space: nowrap;
 }
 .ottlib-see-all:hover { background: rgba(61,142,248,0.16); border-color: rgba(61,142,248,0.4); }
@@ -9616,7 +9616,7 @@ window.addEventListener('resize', function() {
 }
 .ottlib-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #8b5cf6, #3d8ef8);
+  background: linear-gradient(90deg, #930205, #7d1122);
   border-radius: 2px; transition: width .5s ease;
 }
 
@@ -9664,14 +9664,14 @@ window.addEventListener('resize', function() {
 .ottlib-card-open {
   width: calc(100% - 24px); margin: 0 12px 12px;
   padding: 10px 12px; border-radius: 12px; border: none; cursor: pointer;
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   color: #fff; font-size: .78rem; font-weight: 700;
   font-family: var(--font-ui, sans-serif); letter-spacing: .02em;
   transition: all .2s; text-align: center;
   box-shadow: 0 4px 12px rgba(61,142,248,0.35);
 }
 .ottlib-card-open:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(61,142,248,0.45); }
-.ottlib-card.is-continue .ottlib-card-open { background: linear-gradient(135deg, #8b5cf6, #3d8ef8); }
+.ottlib-card.is-continue .ottlib-card-open { background: linear-gradient(135deg, #930205, #7d1122); }
 
 /* Rank badge */
 .pdl-ott-rank-num {
@@ -9713,7 +9713,7 @@ window.addEventListener('resize', function() {
   background: none; border: none; font-family: var(--font-body, sans-serif);
   transition: color .2s;
 }
-.ottlib-cat-row-see-all:hover { color: #3d8ef8; }
+.ottlib-cat-row-see-all:hover { color: #7d1122; }
 
 /* ── BROWSE GRID ──────────────────────────────────────────────── */
 .ottlib-browse-grid {
@@ -9894,7 +9894,7 @@ document.addEventListener('click', function(e) {
   <section class="ottlib-section" id="ottlibContinueSection">
     <div class="ottlib-section-head">
       <div class="ottlib-section-label">
-        <span class="ottlib-section-dot" style="background:#8b5cf6;box-shadow:0 0 8px #8b5cf6"></span>
+        <span class="ottlib-section-dot" style="background:#930205;box-shadow:0 0 8px #930205"></span>
         <span class="ottlib-section-text">▶ Continue Reading</span>
         <span class="ottlib-section-badge" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3)">In Progress</span>
       </div>
@@ -9942,7 +9942,7 @@ document.addEventListener('click', function(e) {
   <section class="ottlib-section" id="ottlibAISection">
     <div class="ottlib-section-head">
       <div class="ottlib-section-label">
-        <span class="ottlib-section-dot" style="background:#8b5cf6;box-shadow:0 0 8px #8b5cf6"></span>
+        <span class="ottlib-section-dot" style="background:#930205;box-shadow:0 0 8px #930205"></span>
         <span class="ottlib-section-text">🤖 Recommended For You</span>
         <span class="ottlib-section-badge" style="background:rgba(139,92,246,0.12);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3)">AI Picks</span>
       </div>
@@ -9990,7 +9990,7 @@ document.addEventListener('click', function(e) {
   <section class="ottlib-section" id="ottlibRecentSection" style="display:none">
     <div class="ottlib-section-head">
       <div class="ottlib-section-label">
-        <span class="ottlib-section-dot" style="background:#00c8e8;box-shadow:0 0 8px #00c8e8"></span>
+        <span class="ottlib-section-dot" style="background:#c99a3c;box-shadow:0 0 8px #c99a3c"></span>
         <span class="ottlib-section-text">🕐 Recently Viewed</span>
       </div>
       <button class="ottlib-see-all" onclick="setLibCatFilter('All')">Clear History</button>
@@ -10278,7 +10278,7 @@ function ottlibPdfsForCategory(pdfs, cat) {
 }
 
 function ottlibCategoryRowHTML(cat, pdfsInCat) {
-  const color = (cat.color && cat.color.startsWith('#')) ? cat.color : '#3d8ef8';
+  const color = (cat.color && cat.color.startsWith('#')) ? cat.color : '#7d1122';
   const sorted = [...pdfsInCat].sort((a, b) =>
     (Number(b.download_count || b.sales || 0)) - (Number(a.download_count || a.sales || 0)));
   const cards = sorted.slice(0, 15).map(p => ottlibCardHTML(p)).join('');
@@ -10435,7 +10435,7 @@ function _renderRecentlyViewed() {
     }
     // Fallback card from stored data
     var cover = item.cover || '';
-    var bg = cover ? 'background:url(' + cover + ');background-size:cover;background-position:center' : 'background:linear-gradient(135deg,#1d4ed8,#3d8ef8)';
+    var bg = cover ? 'background:url(' + cover + ');background-size:cover;background-position:center' : 'background:linear-gradient(135deg,#1d4ed8,#7d1122)';
     return '<div class="pdf-card" onclick="openDetail(' + item.id + ')" style="cursor:pointer">' +
       '<div class="pdf-card-cover" style="' + bg + '"></div>' +
       '<div class="pdf-card-body"><div class="pdf-card-title">' + (item.title || '') + '</div>' +
@@ -10861,7 +10861,7 @@ body.light .user-dropdown { background: rgba(255,255,255,0.97); box-shadow: 0 16
         <div style="display:flex;justify-content:center;margin-bottom:16px">
           <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(61,142,248,0.15),rgba(0,200,232,0.10));border:2px solid rgba(61,142,248,0.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 32px rgba(61,142,248,0.2)">
             <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="url(#veGrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <defs><linearGradient id="veGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8ef8"/><stop offset="1" stop-color="#00c8e8"/></linearGradient></defs>
+              <defs><linearGradient id="veGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7d1122"/><stop offset="1" stop-color="#c99a3c"/></linearGradient></defs>
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
             </svg>
           </div>
@@ -11043,7 +11043,7 @@ body.light .me-profile-hero {
 }
 .me-avatar {
   width:88px; height:88px; border-radius:50%;
-  background: linear-gradient(135deg, #3d8ef8, #00c8e8);
+  background: linear-gradient(135deg, #7d1122, #c99a3c);
   display:flex; align-items:center; justify-content:center;
   font-size:2rem; font-weight:700; color:#fff;
   border:3px solid rgba(255,255,255,0.18);
@@ -11119,7 +11119,7 @@ body.light .me-avatar-online { border-color:#eff6ff; }
 body.light .me-xp-track { background:rgba(0,0,0,0.08); }
 .me-xp-fill {
   height:100%; border-radius:6px;
-  background:linear-gradient(90deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(90deg,#7d1122,#c99a3c);
   animation: progressGrow 1.2s cubic-bezier(0.25,0.46,0.45,0.94) .5s both, xpPulse 2s ease-in-out 1.8s infinite;
   position:relative;
 }
@@ -11463,12 +11463,12 @@ body.light .me-premium-banner {
   font-family:var(--font-display); font-size:1.3rem; font-weight:800;
   color:var(--text); margin-bottom:6px;
 }
-body.light .me-pb-title { color:#0a1022; }
+body.light .me-pb-title { color:#1c1b1a; }
 .me-pb-sub { font-size:.85rem; color:var(--text2); margin-bottom:18px; line-height:1.6; max-width:480px; }
 .me-pb-btn {
   display:inline-flex; align-items:center; gap:8px;
   padding:11px 24px; border-radius:12px;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(135deg,#7d1122,#c99a3c);
   color:#fff; font-weight:700; font-size:.875rem;
   border:none; cursor:pointer;
   box-shadow:0 6px 24px rgba(61,142,248,0.4);
@@ -11820,7 +11820,7 @@ body.light .me-stat-val { filter:none; }
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Settings
         </button>
-        <button class="me-htab" id="bsfAdminTabBtn" data-tab="libadmin" onclick="switchMeTab('libadmin')" style="display:none;color:#8b5cf6;border-color:rgba(139,92,246,0.3)">
+        <button class="me-htab" id="bsfAdminTabBtn" data-tab="libadmin" onclick="switchMeTab('libadmin')" style="display:none;color:#930205;border-color:rgba(139,92,246,0.3)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           Library Manager
         </button>
@@ -11979,7 +11979,7 @@ body.light .me-stat-val { filter:none; }
           <input class="form-input" id="adminLoginPass" type="password" placeholder="Your admin password" style="padding-left:40px" onkeydown="if(event.key==='Enter')adminDoLogin()" />
         </div>
       </div>
-      <button class="btn btn-primary btn-lg btn-full" id="adminLoginBtn" onclick="adminDoLogin()" style="margin-top:8px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);box-shadow:0 6px 28px rgba(61,142,248,0.4)">
+      <button class="btn btn-primary btn-lg btn-full" id="adminLoginBtn" onclick="adminDoLogin()" style="margin-top:8px;background:linear-gradient(135deg,#7d1122,#c99a3c);box-shadow:0 6px 28px rgba(61,142,248,0.4)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         Access Admin Panel
       </button>
@@ -12042,7 +12042,7 @@ body.light .me-stat-val { filter:none; }
         <button class="admin-nav-item" data-atab="add-pdf" onclick="switchAdminTab('add-pdf')">
           <svg width="16" height="16"><use href="#ic-plus"/></svg>Add New PDF
         </button>
-        <button class="admin-nav-item" data-atab="smart-publish" onclick="switchAdminTab('smart-publish')" style="background:linear-gradient(90deg,rgba(61,142,248,.14),rgba(16,217,142,.07));border-left:2px solid #3d8ef8" title="Upload → Edit → Publish workflow">
+        <button class="admin-nav-item" data-atab="smart-publish" onclick="switchAdminTab('smart-publish')" style="background:linear-gradient(90deg,rgba(61,142,248,.14),rgba(16,217,142,.07));border-left:2px solid #7d1122" title="Upload → Edit → Publish workflow">
           <span style="font-size:.85rem">⚡</span> Smart Publish
         </button>
         <button class="admin-nav-item" data-atab="categories" onclick="switchAdminTab('categories')">
@@ -12075,7 +12075,7 @@ body.light .me-stat-val { filter:none; }
         </button>
 
         <div class="admin-nav-section-label" style="margin-top:16px">🚀 PLATFORM CONTROL</div>
-        <button class="admin-nav-item" data-atab="hero-designer" onclick="switchAdminTab('hero-designer')" style="background:linear-gradient(90deg,rgba(139,92,246,0.12),rgba(61,142,248,0.08));border-left:2px solid #8b5cf6">
+        <button class="admin-nav-item" data-atab="hero-designer" onclick="switchAdminTab('hero-designer')" style="background:linear-gradient(90deg,rgba(139,92,246,0.12),rgba(61,142,248,0.08));border-left:2px solid #930205">
           🎨 Hero Designer
           <span class="admin-nav-badge" style="background:rgba(139,92,246,0.15);color:#a78bfa;border-color:rgba(139,92,246,0.3)">New</span>
         </button>
@@ -12127,14 +12127,14 @@ body.light .me-stat-val { filter:none; }
         </button>
 
         <div class="admin-nav-section-label" style="margin-top:16px">🚀 PWA SYSTEM</div>
-        <button class="admin-nav-item" data-atab="pwa-control" onclick="switchAdminTab('pwa-control')" style="background:linear-gradient(90deg,rgba(61,142,248,0.12),rgba(16,217,142,0.07));border-left:2px solid #3d8ef8">
+        <button class="admin-nav-item" data-atab="pwa-control" onclick="switchAdminTab('pwa-control')" style="background:linear-gradient(90deg,rgba(61,142,248,0.12),rgba(16,217,142,0.07));border-left:2px solid #7d1122">
           🚀 PWA Control Center
         </button>
         <div class="admin-nav-section-label" style="margin-top:16px">📚 LIBRARY</div>
-        <button class="admin-nav-item" data-atab="library-manager" onclick="switchAdminTab('library-manager')" style="background:linear-gradient(90deg,rgba(61,142,248,0.13),rgba(0,200,232,0.07));border-left:2px solid #3d8ef8">
+        <button class="admin-nav-item" data-atab="library-manager" onclick="switchAdminTab('library-manager')" style="background:linear-gradient(90deg,rgba(61,142,248,0.13),rgba(0,200,232,0.07));border-left:2px solid #7d1122">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
           Library Manager
-          <span class="admin-nav-badge" style="background:rgba(61,142,248,0.12);color:#3d8ef8;border-color:rgba(61,142,248,0.3)">New</span>
+          <span class="admin-nav-badge" style="background:rgba(61,142,248,0.12);color:#7d1122;border-color:rgba(61,142,248,0.3)">New</span>
         </button>
 
         <div class="admin-nav-section-label" style="margin-top:16px">🏆 ENGAGEMENT</div>
@@ -12204,14 +12204,14 @@ body.light .me-stat-val { filter:none; }
 .crp-hero{background:linear-gradient(135deg,rgba(16,217,142,0.08),rgba(6,182,212,0.05));border-bottom:1px solid rgba(16,217,142,0.15);padding:40px 0 32px}
 .crp-hero-inner{max-width:700px;margin:0 auto;padding:0 20px;text-align:center}
 .crp-hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;background:rgba(16,217,142,0.12);border:1px solid rgba(16,217,142,0.28);color:#10d98e;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
-.crp-hero-title{font-family:var(--font-display);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;line-height:1.15;background:linear-gradient(135deg,#10d98e,#06b6d4,#3d8ef8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.crp-hero-title{font-family:var(--font-display);font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;line-height:1.15;background:linear-gradient(135deg,#10d98e,#06b6d4,#7d1122);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
 .crp-hero-sub{color:var(--text2);font-size:.9rem;line-height:1.65;max-width:520px;margin:0 auto 24px}
 .crp-tiers{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:0}
 .crp-tier{padding:8px 16px;border-radius:10px;font-size:.72rem;font-weight:700;border:1px solid transparent;display:flex;align-items:center;gap:5px}
 .crp-tier-s{background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3);color:#f59e0b}
 .crp-tier-r{background:rgba(16,217,142,0.12);border-color:rgba(16,217,142,0.3);color:#10d98e}
-.crp-tier-p{background:rgba(61,142,248,0.12);border-color:rgba(61,142,248,0.3);color:#3d8ef8}
-.crp-tier-e{background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3);color:#8b5cf6}
+.crp-tier-p{background:rgba(61,142,248,0.12);border-color:rgba(61,142,248,0.3);color:#7d1122}
+.crp-tier-e{background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3);color:#930205}
 .crp-form-wrap{max-width:700px;margin:0 auto;padding:28px 20px 60px}
 .crp-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;padding:24px;margin-bottom:18px;backdrop-filter:blur(14px)}
 .crp-card-title{font-weight:800;font-size:1rem;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:8px}
@@ -12242,7 +12242,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .s3-type-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .s3-type-tab{padding:8px 16px;border-radius:30px;border:1px solid var(--glass-border);background:var(--bg2);color:var(--text2);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
 .s3-type-tab:hover{border-color:rgba(61,142,248,0.4);color:var(--text)}
-.s3-type-tab.active{background:linear-gradient(135deg,#3d8ef8,#00c8e8);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(61,142,248,0.35)}
+.s3-type-tab.active{background:linear-gradient(135deg,#7d1122,#c99a3c);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(61,142,248,0.35)}
 
 /* Grid 2 */
 .s3-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -12266,7 +12266,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .s3-item-rm:hover{background:rgba(255,77,109,0.12)}
 /* Progress bar */
 .s3-item-progress{height:3px;background:rgba(255,255,255,0.06);border-radius:0}
-.s3-item-progress-fill{height:100%;border-radius:0;transition:width .6s ease;background:linear-gradient(90deg,#3d8ef8,#00c8e8)}
+.s3-item-progress-fill{height:100%;border-radius:0;transition:width .6s ease;background:linear-gradient(90deg,#7d1122,#c99a3c)}
 .s3-item.s3-approved .s3-item-progress-fill{background:linear-gradient(90deg,#10d98e,#06b6d4)}
 .s3-item.s3-rejected .s3-item-progress-fill{background:linear-gradient(90deg,#ff4d6d,#c0163a)}
 /* AI badge row */
@@ -12275,7 +12275,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .s3-ai-ok{background:rgba(16,217,142,0.12);border:1px solid rgba(16,217,142,0.3);color:#10d98e}
 .s3-ai-warn{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:#f59e0b}
 .s3-ai-fail{background:rgba(255,77,109,0.12);border:1px solid rgba(255,77,109,0.3);color:#ff4d6d}
-.s3-ai-spin{background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.25);color:#3d8ef8}
+.s3-ai-spin{background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.25);color:#7d1122}
 /* Quality score pill */
 .s3-quality-pill{margin-left:auto;font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:20px;flex-shrink:0}
 .s3-quality-high{background:rgba(16,217,142,0.15);color:#10d98e}
@@ -12316,7 +12316,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .s3-scan-bar.s3-sb-ok{background:rgba(16,217,142,0.07);border-color:rgba(16,217,142,0.2);color:#10d98e}
 .s3-scan-bar.s3-sb-fail{background:rgba(255,77,109,0.07);border-color:rgba(255,77,109,0.2);color:#ff4d6d}
 .s3-scan-icon{font-size:1.2rem;flex-shrink:0}
-.s3-scan-spinner{width:16px;height:16px;border:2px solid rgba(61,142,248,0.3);border-top-color:#3d8ef8;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.s3-scan-spinner{width:16px;height:16px;border:2px solid rgba(61,142,248,0.3);border-top-color:#7d1122;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* Count note */
@@ -12473,7 +12473,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
   /* ── Progress save banner ─────────────────── */
   .crp-save-banner{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(61,142,248,0.08);border:1px solid rgba(61,142,248,0.2);font-size:.72rem;color:var(--text2);margin-bottom:18px;transition:opacity .3s}
   .crp-save-banner span{flex:1}
-  .crp-save-dot{width:7px;height:7px;border-radius:50%;background:#3d8ef8;flex-shrink:0;animation:crpSavePulse 2s ease-in-out infinite}
+  .crp-save-dot{width:7px;height:7px;border-radius:50%;background:#7d1122;flex-shrink:0;animation:crpSavePulse 2s ease-in-out infinite}
   @keyframes crpSavePulse{0%,100%{opacity:1}50%{opacity:.3}}
 
   /* ── Section divider inside card ─────────────*/
@@ -12744,8 +12744,8 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
   .crpv-s-pending .crpv-status-dot{background:#f59e0b}
   .crpv-s-pending .crpv-status-badge{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.35);color:#f59e0b}
   /* Review */
-  .crpv-s-review .crpv-status-dot{background:#3d8ef8;animation:crpvPulse 1.4s ease-in-out infinite}
-  .crpv-s-review .crpv-status-badge{background:rgba(61,142,248,0.15);border:1px solid rgba(61,142,248,0.35);color:#3d8ef8}
+  .crpv-s-review .crpv-status-dot{background:#7d1122;animation:crpvPulse 1.4s ease-in-out infinite}
+  .crpv-s-review .crpv-status-badge{background:rgba(61,142,248,0.15);border:1px solid rgba(61,142,248,0.35);color:#7d1122}
   /* Verified */
   .crpv-s-verified .crpv-status-dot{background:#10d98e}
   .crpv-s-verified .crpv-status-badge{background:rgba(16,217,142,0.15);border:1px solid rgba(16,217,142,0.35);color:#10d98e}
@@ -12767,7 +12767,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
   .crpv-admin-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.03);margin-bottom:4px}
   .crpv-admin-label{font-size:.75rem;font-weight:700;color:var(--text2)}
   .crpv-admin-val{font-size:.78rem;font-weight:700;color:var(--text)}
-  .crpv-check-btn{font-size:.7rem;font-weight:700;padding:5px 12px;border-radius:8px;border:1px solid rgba(61,142,248,0.4);background:rgba(61,142,248,0.08);color:#3d8ef8;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+  .crpv-check-btn{font-size:.7rem;font-weight:700;padding:5px 12px;border-radius:8px;border:1px solid rgba(61,142,248,0.4);background:rgba(61,142,248,0.08);color:#7d1122;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
   .crpv-check-btn:hover{background:rgba(61,142,248,0.18)}
   .crpv-check-btn:disabled{opacity:.5;cursor:not-allowed}
 
@@ -13082,7 +13082,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
         <div class="s3-preview-zone" id="s3PreviewZone" onclick="document.getElementById('s3PreviewInput').click()">
           <div id="s3PreviewPlaceholder">
             <div style="font-size:1.4rem;margin-bottom:5px">🔍</div>
-            <div style="font-size:.78rem;font-weight:700;color:#8b5cf6">Add preview page images</div>
+            <div style="font-size:.78rem;font-weight:700;color:#930205">Add preview page images</div>
             <div style="font-size:.68rem;color:var(--text2);margin-top:3px">Up to 5 images · JPG/PNG</div>
           </div>
           <div class="s3-preview-thumb-list" id="s3PreviewList"></div>
@@ -13137,8 +13137,8 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
         </div>
         <div style="padding:13px 12px;border-radius:12px;background:rgba(61,142,248,0.07);border:1px solid rgba(61,142,248,0.22);text-align:center">
           <div style="font-size:1.3rem;margin-bottom:2px">💎</div>
-          <div style="font-size:.7rem;font-weight:800;color:#3d8ef8;letter-spacing:.04em;text-transform:uppercase">Pro</div>
-          <div style="font-size:1.45rem;font-weight:900;color:#3d8ef8;line-height:1.1;margin:4px 0">70%</div>
+          <div style="font-size:.7rem;font-weight:800;color:#7d1122;letter-spacing:.04em;text-transform:uppercase">Pro</div>
+          <div style="font-size:1.45rem;font-weight:900;color:#7d1122;line-height:1.1;margin:4px 0">70%</div>
           <div style="font-size:.65rem;color:var(--text2)">₹25,000+ sales</div>
         </div>
       </div>
@@ -13226,8 +13226,8 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .crd-level-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:.7rem;font-weight:800;letter-spacing:.05em}
 .crd-level-starter{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#f59e0b}
 .crd-level-rising{background:rgba(16,217,142,0.15);border:1px solid rgba(16,217,142,0.3);color:#10d98e}
-.crd-level-pro{background:rgba(61,142,248,0.15);border:1px solid rgba(61,142,248,0.3);color:#3d8ef8}
-.crd-level-elite{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6}
+.crd-level-pro{background:rgba(61,142,248,0.15);border:1px solid rgba(61,142,248,0.3);color:#7d1122}
+.crd-level-elite{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:#930205}
 .crd-tabs{display:flex;gap:0;border-bottom:1px solid var(--glass-border);overflow-x:auto;scrollbar-width:none}
 .crd-tabs::-webkit-scrollbar{display:none}
 .crd-tab{padding:12px 20px;font-size:.82rem;font-weight:700;color:var(--text2);border-bottom:2px solid transparent;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--font-body);transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
@@ -13239,8 +13239,8 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .crd-stat-card:hover{border-color:var(--glass-border-hover);transform:translateY(-2px)}
 .crd-stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
 .crd-stat-card.green::before{background:linear-gradient(90deg,#10d98e,#06b6d4)}
-.crd-stat-card.blue::before{background:linear-gradient(90deg,#3d8ef8,#00c8e8)}
-.crd-stat-card.purple::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+.crd-stat-card.blue::before{background:linear-gradient(90deg,#7d1122,#c99a3c)}
+.crd-stat-card.purple::before{background:linear-gradient(90deg,#930205,#a78bfa)}
 .crd-stat-card.gold::before{background:linear-gradient(90deg,#f59e0b,#f97316)}
 .crd-stat-icon{font-size:1.4rem;margin-bottom:8px}
 .crd-stat-val{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--text);line-height:1}
@@ -13291,7 +13291,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 .crd-nl-info{flex:1;min-width:0}
 .crd-nl-title{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:4px}
 .crd-nl-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:4px}
-.crd-nl-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#8b5cf6,#3d8ef8);transition:width 1s ease}
+.crd-nl-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#930205,#7d1122);transition:width 1s ease}
 .crd-nl-sub{font-size:.68rem;color:var(--text2)}
 .crd-empty{text-align:center;padding:48px 20px;color:var(--text2)}
 .crd-empty-icon{font-size:3rem;margin-bottom:12px}
@@ -13432,7 +13432,7 @@ body.light .ch-hero { border-color:rgba(0,0,0,.07); }
 .ch-hero-title {
   font-family:var(--font-editorial);font-size:clamp(1.6rem,5vw,2.4rem);
   font-weight:800;margin-bottom:8px;line-height:1.2;
-  background:linear-gradient(135deg,#f59e0b,#3d8ef8,#00c8e8);
+  background:linear-gradient(135deg,#f59e0b,#7d1122,#c99a3c);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .ch-hero-sub { color:var(--text2);font-size:.9rem;max-width:500px;margin:0 auto 20px; }
@@ -13448,7 +13448,7 @@ body.light .ch-hero { border-color:rgba(0,0,0,.07); }
 }
 body.light .ch-search-bar { background:rgba(255,255,255,.85);border-color:rgba(0,0,0,.12); }
 .ch-search-bar:focus-within {
-  border-color:#3d8ef8;
+  border-color:#7d1122;
   box-shadow:0 0 0 3px rgba(61,142,248,.15),0 4px 24px rgba(61,142,248,.12);
 }
 .ch-search-input {
@@ -13458,7 +13458,7 @@ body.light .ch-search-bar { background:rgba(255,255,255,.85);border-color:rgba(0
 .ch-search-input::placeholder{color:var(--text3);}
 .ch-search-btn {
   padding:10px 18px;border-radius:50px;border:none;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;
+  background:linear-gradient(135deg,#7d1122,#c99a3c);color:#fff;
   font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font-body);
   transition:transform .2s,box-shadow .2s;white-space:nowrap;
   box-shadow:0 4px 14px rgba(61,142,248,.35);
@@ -13478,7 +13478,7 @@ body.light .ch-search-bar { background:rgba(255,255,255,.85);border-color:rgba(0
   touch-action:manipulation;
 }
 body.light .ch-hamburger-btn{background:rgba(255,255,255,.85);border-color:rgba(0,0,0,.12);}
-.ch-hamburger-btn:hover{border-color:#3d8ef8;box-shadow:0 0 0 3px rgba(61,142,248,.15);transform:scale(1.04);}
+.ch-hamburger-btn:hover{border-color:#7d1122;box-shadow:0 0 0 3px rgba(61,142,248,.15);transform:scale(1.04);}
 .ch-hamburger-btn:active{transform:scale(.96);}
 .ch-hamburger-btn svg{color:var(--text);}
 .ch-hamburger-dot{
@@ -13537,7 +13537,7 @@ body.light .ch-menu-close-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0
 
 .ch-menu-brand{display:flex;align-items:center;gap:8px;font-family:var(--font-editorial);font-weight:800;font-size:1.05rem;margin-bottom:14px;}
 .ch-menu-brand-badge{
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  background:linear-gradient(135deg,#7d1122,#c99a3c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
 
 .ch-menu-profile{
@@ -13546,10 +13546,10 @@ body.light .ch-menu-close-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0
   transition:border-color .2s;
 }
 body.light .ch-menu-profile{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);}
-.ch-menu-profile:hover{border-color:#3d8ef8;}
+.ch-menu-profile:hover{border-color:#7d1122;}
 .ch-menu-avatar{
   width:42px;height:42px;border-radius:50%;flex-shrink:0;object-fit:cover;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(135deg,#7d1122,#c99a3c);
   display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem;
   border:2px solid rgba(255,255,255,.15);
 }
@@ -13564,7 +13564,7 @@ body.light .ch-menu-profile{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.
   font-family:var(--font-body);outline:none;transition:border-color .2s;
 }
 body.light .ch-menu-search input{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.09);}
-.ch-menu-search input:focus{border-color:#3d8ef8;}
+.ch-menu-search input:focus{border-color:#7d1122;}
 .ch-menu-search input::placeholder{color:var(--text3);}
 .ch-menu-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
 
@@ -13583,7 +13583,7 @@ body.light .ch-menu-qs-item{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.
 .ch-menu-qs-item:hover{background:rgba(61,142,248,.1);border-color:rgba(61,142,248,.25);}
 .ch-menu-qs-item:active{transform:scale(.95);}
 .ch-menu-qs-num{font-size:.9rem;font-weight:800;line-height:1;}
-.ch-menu-qs-num.blue{color:#3d8ef8;}
+.ch-menu-qs-num.blue{color:#7d1122;}
 .ch-menu-qs-num.red{color:#ff4d6d;}
 .ch-menu-qs-num.gold{color:#f59e0b;}
 .ch-menu-qs-num.green{color:#10d98e;}
@@ -13603,16 +13603,16 @@ body.light .ch-menu-qs-item{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.
   background:linear-gradient(135deg,rgba(61,142,248,.16),rgba(0,200,232,.1));
   box-shadow:inset 0 0 0 1px rgba(61,142,248,.3);
 }
-.ch-menu-item.active .ch-menu-item-label{color:#3d8ef8;font-weight:800;}
+.ch-menu-item.active .ch-menu-item-label{color:#7d1122;font-weight:800;}
 .ch-menu-item.active::before{
   content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:0 3px 3px 0;
-  background:linear-gradient(180deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(180deg,#7d1122,#c99a3c);
 }
 .ch-menu-item-icon{font-size:1.05rem;width:22px;text-align:center;flex-shrink:0;}
 .ch-menu-item-label{font-size:.84rem;font-weight:600;flex:1;}
 .ch-menu-item-count{
   font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:100px;flex-shrink:0;
-  background:rgba(61,142,248,.14);color:#3d8ef8;border:1px solid rgba(61,142,248,.25);
+  background:rgba(61,142,248,.14);color:#7d1122;border:1px solid rgba(61,142,248,.25);
   min-width:20px;text-align:center;
 }
 .ch-menu-item-count.red{background:rgba(255,77,109,.14);color:#ff4d6d;border-color:rgba(255,77,109,.25);}
@@ -13632,7 +13632,7 @@ body.light .ch-menu-quick-btn{background:rgba(0,0,0,.03);border-color:rgba(0,0,0
 .ch-menu-quick-btn span:first-child{font-size:1.15rem;}
 .ch-menu-quick-btn.telegram:hover{border-color:#229ED9;color:#229ED9;background:rgba(34,158,217,.1);}
 .ch-menu-quick-btn.whatsapp:hover{border-color:#25D366;color:#25D366;background:rgba(37,211,102,.1);}
-.ch-menu-quick-btn.channel:hover{border-color:#3d8ef8;color:#3d8ef8;background:rgba(61,142,248,.1);}
+.ch-menu-quick-btn.channel:hover{border-color:#7d1122;color:#7d1122;background:rgba(61,142,248,.1);}
 
 .ch-menu-foot{
   flex-shrink:0;padding:12px 16px 14px;border-top:1px solid rgba(255,255,255,.08);
@@ -13641,7 +13641,7 @@ body.light .ch-menu-quick-btn{background:rgba(0,0,0,.03);border-color:rgba(0,0,0
 body.light .ch-menu-foot{border-top-color:rgba(0,0,0,.08);}
 .ch-menu-foot-row{display:flex;align-items:center;justify-content:space-between;font-size:.66rem;color:var(--text3);}
 .ch-menu-foot-brand{font-weight:800;color:var(--text2);}
-.ch-menu-foot-brand b{background:linear-gradient(135deg,#3d8ef8,#00c8e8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.ch-menu-foot-brand b{background:linear-gradient(135deg,#7d1122,#c99a3c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 .ch-menu-foot-meta{display:flex;gap:8px;margin-top:4px;}
 
 /* ── Stats strip ──────────────────────────────────────────── */
@@ -13661,7 +13661,7 @@ body.light .ch-stat-item { border-color:rgba(0,0,0,.07); }
   font-size:1.1rem;font-weight:800;line-height:1;
   transition:transform .3s;
 }
-.ch-stat-num.blue{color:#3d8ef8;}
+.ch-stat-num.blue{color:#7d1122;}
 .ch-stat-num.red{color:#ff4d6d;}
 .ch-stat-num.gold{color:#f59e0b;}
 .ch-stat-num.green{color:#10d98e;}
@@ -13705,9 +13705,9 @@ body.light .ch-cats-wrap { border-color:rgba(0,0,0,.07); }
   color:var(--text2);cursor:pointer;transition:all .18s;font-family:var(--font-body);
 }
 body.light .ch-cat-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-cat-btn:hover{border-color:#3d8ef8;color:#3d8ef8;transform:translateY(-1px);}
+.ch-cat-btn:hover{border-color:#7d1122;color:#7d1122;transform:translateY(-1px);}
 .ch-cat-btn.active{
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);border-color:transparent;
+  background:linear-gradient(135deg,#7d1122,#c99a3c);border-color:transparent;
   color:#fff;box-shadow:0 4px 16px rgba(61,142,248,.4);
 }
 
@@ -13725,7 +13725,7 @@ body.light .ch-filters { border-color:rgba(0,0,0,.07); }
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
 body.light .ch-filter-select{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-filter-select:focus{border-color:#3d8ef8;color:var(--text);}
+.ch-filter-select:focus{border-color:#7d1122;color:var(--text);}
 
 /* ── Featured banner ──────────────────────────────────────── */
 .ch-featured-banner {
@@ -13764,12 +13764,12 @@ body.light .ch-filter-select{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,
 .ch-sec-dot {
   width:8px;height:8px;border-radius:50%;flex-shrink:0;
 }
-.ch-sec-dot.blue{background:#3d8ef8;box-shadow:0 0 8px rgba(61,142,248,.6);}
+.ch-sec-dot.blue{background:#7d1122;box-shadow:0 0 8px rgba(61,142,248,.6);}
 .ch-sec-dot.red {background:#ff4d6d;box-shadow:0 0 8px rgba(255,77,109,.6);}
 .ch-sec-dot.gold{background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.6);}
 .ch-sec-dot.green{background:#10d98e;box-shadow:0 0 8px rgba(16,217,142,.6);}
 .ch-see-all {
-  font-size:.72rem;color:#3d8ef8;font-weight:700;background:none;border:none;
+  font-size:.72rem;color:#7d1122;font-weight:700;background:none;border:none;
   cursor:pointer;font-family:var(--font-body);padding:4px 8px;border-radius:6px;
   transition:background .15s;
 }
@@ -13779,7 +13779,7 @@ body.light .ch-filter-select{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,
   border:none;cursor:pointer;font-family:var(--font-body);
   padding:4px 8px;border-radius:6px;transition:all .2s;
 }
-.ch-refresh-btn:hover{color:#3d8ef8;background:rgba(61,142,248,.08);}
+.ch-refresh-btn:hover{color:#7d1122;background:rgba(61,142,248,.08);}
 .ch-refresh-btn.active{color:#ff4d6d;background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);}
 .ch-sec-divider{height:1px;background:rgba(255,255,255,.05);margin:4px 16px;}
 body.light .ch-sec-divider{background:rgba(0,0,0,.05);}
@@ -13846,7 +13846,7 @@ body.light .ch-mini-card{background:rgba(255,255,255,.9);border-color:rgba(0,0,0
 body.light .ch-job-card{background:rgba(255,255,255,.88);border-color:rgba(0,0,0,.07);box-shadow:0 2px 16px rgba(0,0,0,.08);}
 .ch-job-card::before{
   content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-  background:linear-gradient(180deg,#3d8ef8,#00c8e8);opacity:0;transition:opacity .2s;
+  background:linear-gradient(180deg,#7d1122,#c99a3c);opacity:0;transition:opacity .2s;
 }
 .ch-job-card:hover{
   border-color:rgba(61,142,248,.35);
@@ -13896,7 +13896,7 @@ body.light .ch-job-org-logo{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.
 }
 body.light .ch-job-tag{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09);}
 .ch-job-tag.loc{color:#10d98e;border-color:rgba(16,217,142,.28);background:rgba(16,217,142,.07);}
-.ch-job-tag.qual{color:#3d8ef8;border-color:rgba(61,142,248,.28);background:rgba(61,142,248,.07);}
+.ch-job-tag.qual{color:#7d1122;border-color:rgba(61,142,248,.28);background:rgba(61,142,248,.07);}
 .ch-job-tag.date{color:#ff4d6d;border-color:rgba(255,77,109,.28);background:rgba(255,77,109,.07);}
 .ch-job-tag.urgent{animation:ch-pulse-border 1.8s ease-in-out infinite;}
 @keyframes ch-pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(255,77,109,0);}50%{box-shadow:0 0 0 3px rgba(255,77,109,.18);}}
@@ -13913,10 +13913,10 @@ body.light .ch-job-tag{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09);}
 body.light .ch-job-save-btn, body.light .ch-job-share-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
 .ch-job-save-btn:hover{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.09);}
 .ch-job-save-btn.saved{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.12);}
-.ch-job-share-btn:hover{border-color:#3d8ef8;color:#3d8ef8;background:rgba(61,142,248,.09);}
+.ch-job-share-btn:hover{border-color:#7d1122;color:#7d1122;background:rgba(61,142,248,.09);}
 .ch-job-apply-btn{
   flex:1;padding:10px 14px;border-radius:9px;border:none;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;
+  background:linear-gradient(135deg,#7d1122,#c99a3c);color:#fff;
   font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font-body);
   display:flex;align-items:center;justify-content:center;gap:5px;
   transition:all .2s;box-shadow:0 4px 14px rgba(61,142,248,.3);
@@ -13935,8 +13935,8 @@ body.light .ch-job-save-btn, body.light .ch-job-share-btn{background:rgba(0,0,0,
 .ch-badge-trending   {background:rgba(255,77,109,.12);color:#ff4d6d;border:1px solid rgba(255,77,109,.2);}
 .ch-badge-urgent     {background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;}
 .ch-badge-salary     {background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
-.ch-badge-govt       {background:rgba(61,142,248,.12);color:#3d8ef8;border:1px solid rgba(61,142,248,.2);}
-.ch-badge-private    {background:rgba(0,200,232,.12);color:#00c8e8;border:1px solid rgba(0,200,232,.2);}
+.ch-badge-govt       {background:rgba(61,142,248,.12);color:#7d1122;border:1px solid rgba(61,142,248,.2);}
+.ch-badge-private    {background:rgba(0,200,232,.12);color:#c99a3c;border:1px solid rgba(0,200,232,.2);}
 .ch-badge-scholarship{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2);}
 .ch-badge-internship {background:rgba(16,217,142,.12);color:#10d98e;border:1px solid rgba(16,217,142,.2);}
 
@@ -13944,8 +13944,8 @@ body.light .ch-job-save-btn, body.light .ch-job-share-btn{background:rgba(0,0,0,
 .ch-empty{text-align:center;padding:56px 20px;color:var(--text2);font-size:.9rem;}
 .ch-empty-icon{font-size:3rem;margin-bottom:12px;display:block;}
 .ch-loading{display:flex;justify-content:center;align-items:center;padding:48px;color:var(--text3);gap:10px;font-size:.85rem;}
-.ch-spinner{width:22px;height:22px;border:2px solid rgba(255,255,255,.1);border-top-color:#3d8ef8;border-radius:50%;animation:ch-spin .7s linear infinite;}
-body.light .ch-spinner{border-color:rgba(0,0,0,.1);border-top-color:#3d8ef8;}
+.ch-spinner{width:22px;height:22px;border:2px solid rgba(255,255,255,.1);border-top-color:#7d1122;border-radius:50%;animation:ch-spin .7s linear infinite;}
+body.light .ch-spinner{border-color:rgba(0,0,0,.1);border-top-color:#7d1122;}
 @keyframes ch-spin{to{transform:rotate(360deg);}}
 
 /* ══ PREMIUM JOB DETAIL SHEET ════════════════════════════════ */
@@ -13970,7 +13970,7 @@ body.light .ch-sheet-close-btn{background:rgba(255,255,255,.92);border-color:rgb
 
 /* Progress bar */
 .ch-detail-progress{position:sticky;top:0;left:0;width:100%;height:3px;background:rgba(255,255,255,.07);z-index:30;}
-.ch-detail-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#3d8ef8,#00c8e8);transition:width .1s linear;}
+.ch-detail-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#7d1122,#c99a3c);transition:width .1s linear;}
 
 /* Detail hero */
 .ch-detail-hero{
@@ -14016,7 +14016,7 @@ body.light .ch-detail-actionbar{background:rgba(255,255,255,.93);box-shadow:0 4p
 .ch-action-btn{border:none;cursor:pointer;font-family:var(--font-body);border-radius:10px;transition:all .18s;}
 .ch-action-btn.primary{
   flex:1;padding:13px;font-size:.88rem;font-weight:800;color:#fff;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(135deg,#7d1122,#c99a3c);
   box-shadow:0 4px 18px rgba(61,142,248,.4);
 }
 .ch-action-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(61,142,248,.55);}
@@ -14027,7 +14027,7 @@ body.light .ch-detail-actionbar{background:rgba(255,255,255,.93);box-shadow:0 4p
   display:flex;align-items:center;justify-content:center;
 }
 body.light .ch-action-btn.icon{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1);}
-.ch-action-btn.icon:hover{border-color:#3d8ef8;color:#3d8ef8;background:rgba(61,142,248,.1);}
+.ch-action-btn.icon:hover{border-color:#7d1122;color:#7d1122;background:rgba(61,142,248,.1);}
 .ch-action-btn.icon.active{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.12);}
 
 /* Section labels */
@@ -14061,7 +14061,7 @@ body.light .ch-dates-row{border-color:rgba(0,0,0,.1);}
 .ch-dates-row.last{border-left-color:transparent;padding-bottom:0;}
 .ch-dates-dot{
   position:absolute;left:-6px;top:3px;width:10px;height:10px;border-radius:50%;
-  background:linear-gradient(135deg,#3d8ef8,#00c8e8);
+  background:linear-gradient(135deg,#7d1122,#c99a3c);
   box-shadow:0 0 0 3px var(--bg2),0 0 10px rgba(61,142,248,.4);
 }
 .ch-dates-label{font-size:.7rem;font-weight:700;color:var(--text3);letter-spacing:.02em;text-transform:uppercase;}
@@ -14075,9 +14075,9 @@ body.light .ch-dates-row{border-color:rgba(0,0,0,.1);}
   border-radius:12px;text-decoration:none;transition:all .18s;cursor:pointer;
 }
 body.light .ch-links-row{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.07);}
-.ch-links-row:hover{border-color:#3d8ef8;transform:translateX(3px);background:rgba(61,142,248,.06);}
+.ch-links-row:hover{border-color:#7d1122;transform:translateX(3px);background:rgba(61,142,248,.06);}
 .ch-links-label{font-size:.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
-.ch-links-go{font-size:.75rem;color:#3d8ef8;font-weight:700;}
+.ch-links-go{font-size:.75rem;color:#7d1122;font-weight:700;}
 
 /* Accordion */
 .ch-detail-sections{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
@@ -14099,14 +14099,14 @@ body.light .ch-detail-accordion{background:rgba(0,0,0,.02);border-color:rgba(0,0
 }
 .ch-detail-accordion-title{font-size:.84rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
 .ch-accordion-chev{color:var(--text3);transition:transform .25s,color .2s;flex-shrink:0;}
-.ch-detail-accordion.open .ch-accordion-chev{transform:rotate(180deg);color:#3d8ef8;}
+.ch-detail-accordion.open .ch-accordion-chev{transform:rotate(180deg);color:#7d1122;}
 .ch-detail-accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
 .ch-detail-accordion.open .ch-detail-accordion-body{max-height:2000px;}
 .ch-detail-accordion-inner{padding:2px 15px 15px;font-size:.83rem;color:var(--text2);line-height:1.75;}
 .ch-detail-accordion-inner p{margin-bottom:8px;}
 .ch-detail-accordion-inner p:last-child{margin-bottom:0;}
 .ch-detail-bullet{padding-left:18px;position:relative;margin-bottom:6px;}
-.ch-detail-bullet::before{content:'•';position:absolute;left:4px;color:#3d8ef8;}
+.ch-detail-bullet::before{content:'•';position:absolute;left:4px;color:#7d1122;}
 
 /* Article body */
 .ch-article-body{padding:0 20px;font-size:.87rem;line-height:1.85;color:var(--text2);word-wrap:break-word;}
@@ -14125,7 +14125,7 @@ body.light .ch-article-body th, body.light .ch-article-body td{border-color:rgba
 .ch-article-body th{background:rgba(255,255,255,.04);font-weight:700;color:var(--text);}
 .ch-article-body strong,.ch-article-body b{color:var(--text);}
 .ch-article-body img{max-width:100%;height:auto;border-radius:10px;margin:10px 0;display:block;}
-.ch-article-body blockquote{border-left:3px solid #3d8ef8;padding:4px 14px;margin:14px 0;color:var(--text2);background:rgba(61,142,248,.05);border-radius:0 10px 10px 0;}
+.ch-article-body blockquote{border-left:3px solid #7d1122;padding:4px 14px;margin:14px 0;color:var(--text2);background:rgba(61,142,248,.05);border-radius:0 10px 10px 0;}
 
 /* Recommendations */
 .ch-rec-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 20px 4px;scrollbar-width:none;}
@@ -14161,12 +14161,12 @@ body.light .ch-leaving-card{background:#fff;border-color:rgba(0,0,0,.1);}
 .ch-leaving-recs{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;}
 .ch-leaving-rec{display:flex;align-items:center;gap:10px;padding:9px 11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;text-align:left;transition:all .15s;}
 body.light .ch-leaving-rec{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.07);}
-.ch-leaving-rec:hover{border-color:#3d8ef8;}
+.ch-leaving-rec:hover{border-color:#7d1122;}
 .ch-leaving-rec-icon{font-size:1.1rem;flex-shrink:0;}
 .ch-leaving-rec-title{font-size:.76rem;color:var(--text);font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
 .ch-leaving-actions{display:flex;flex-direction:column;gap:8px;margin-top:20px;}
 .ch-leaving-btn{padding:13px;border-radius:11px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font-body);border:none;transition:all .18s;}
-.ch-leaving-btn.primary{background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;}
+.ch-leaving-btn.primary{background:linear-gradient(135deg,#7d1122,#c99a3c);color:#fff;}
 .ch-leaving-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(61,142,248,.4);}
 .ch-leaving-btn.ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text2);}
 body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
@@ -15467,7 +15467,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
         <button onclick="if(window.P5D&&P5D.renewMembership)P5D.renewMembership(window._prmCurrentPlanSlug||'monthly',this)" style="display:flex;align-items:center;gap:8px;background:rgba(16,217,142,.08);border:1px solid rgba(16,217,142,.2);border-radius:12px;padding:12px 14px;color:#10d98e;font-weight:700;font-size:.82rem;cursor:pointer">
           <span>&#x1F504;</span><span>Renew Membership</span>
         </button>
-        <button onclick="var el=document.getElementById('prmPlansSection');if(el)el.scrollIntoView({behavior:'smooth'})" style="display:flex;align-items:center;gap:8px;background:rgba(61,142,248,.08);border:1px solid rgba(61,142,248,.2);border-radius:12px;padding:12px 14px;color:#3d8ef8;font-weight:700;font-size:.82rem;cursor:pointer">
+        <button onclick="var el=document.getElementById('prmPlansSection');if(el)el.scrollIntoView({behavior:'smooth'})" style="display:flex;align-items:center;gap:8px;background:rgba(61,142,248,.08);border:1px solid rgba(61,142,248,.2);border-radius:12px;padding:12px 14px;color:#7d1122;font-weight:700;font-size:.82rem;cursor:pointer">
           <span>&#x1F4CB;</span><span>View All Plans</span>
         </button>
       </div>
@@ -15823,7 +15823,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
             </div>
             <div class="prm-testi-card">
               <div class="prm-testi-head">
-                <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#10d98e,#00c8e8)">P</div>
+                <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#10d98e,#c99a3c)">P</div>
                 <div><div class="prm-testi-name">Priyanka D.</div><div class="prm-testi-role">Current Affairs · Jorhat</div></div>
               </div>
               <div class="prm-testi-stars">★★★★★</div>
@@ -15850,7 +15850,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
             </div>
             <div class="prm-testi-card">
               <div class="prm-testi-head">
-                <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#3d8ef8,#10d98e)">S</div>
+                <div class="prm-testi-avatar" style="background:linear-gradient(135deg,#7d1122,#10d98e)">S</div>
                 <div><div class="prm-testi-name">Saurav G.</div><div class="prm-testi-role">APSC Aspirant · Nagaon</div></div>
               </div>
               <div class="prm-testi-stars">★★★★★</div>
@@ -16302,7 +16302,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:var(--text2);cursor:pointer;">
-              <input type="checkbox" id="sfSubEmail_chk" checked style="accent-color:#3d8ef8;" /> Email alerts
+              <input type="checkbox" id="sfSubEmail_chk" checked style="accent-color:#7d1122;" /> Email alerts
             </label>
             <label style="display:flex;align-items:center;gap:5px;font-size:.77rem;color:var(--text2);cursor:pointer;">
               <input type="checkbox" id="sfSubWa_chk" style="accent-color:#25d366;" /> WhatsApp alerts
@@ -16680,7 +16680,7 @@ window.supabaseLib = window.supabase;
     const badge = document.getElementById('verifyStatusBadge');
     if (!badge) return;
     const colors = {
-      info:    { bg:'rgba(61,142,248,0.08)',  border:'rgba(61,142,248,0.2)',  icon:'#3d8ef8' },
+      info:    { bg:'rgba(61,142,248,0.08)',  border:'rgba(61,142,248,0.2)',  icon:'#7d1122' },
       success: { bg:'rgba(16,217,142,0.10)',  border:'rgba(16,217,142,0.3)',  icon:'#10d98e' },
       error:   { bg:'rgba(255,77,109,0.08)',  border:'rgba(255,77,109,0.2)',  icon:'#ff4d6d' },
       waiting: { bg:'rgba(245,158,11,0.08)',  border:'rgba(245,158,11,0.2)',  icon:'#f59e0b' },
@@ -18732,7 +18732,7 @@ function _pdpRenderShell(pdf) {
   const discount  = (origPrice > 0 && price > 0 && origPrice > price)
                       ? Math.round((1 - price / origPrice) * 100) : 0;
   const coverFrom = pdf.coverFrom || '#1d4ed8';
-  const coverTo   = pdf.coverTo   || '#3d8ef8';
+  const coverTo   = pdf.coverTo   || '#7d1122';
 
   // Cover HTML — only real image, fallback gradient (no placeholder text)
   const coverSrc = (pdf.cover_image || pdf.coverImage || '').trim();
@@ -21069,7 +21069,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
       email: user.email,
       name: user.user_metadata?.full_name || ""
     },
-    theme: { color: "#3d8ef8" },
+    theme: { color: "#7d1122" },
 
     handler: async function (response) {
       const paymentId = response.razorpay_payment_id;
@@ -21350,7 +21350,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
       email: buyUser.email,
       name: buyUser.user_metadata?.full_name || ""
     },
-    theme: { color: "#3d8ef8" },
+    theme: { color: "#7d1122" },
 
     handler: async function (response) {
       const paymentId = response.razorpay_payment_id;
@@ -21543,7 +21543,7 @@ function showAuthPage(subpage) {
 // updatePasswordStrengthUI — stub until supabase.js loads
 function updatePasswordStrengthUI(password) {
   const score = typeof checkPasswordStrength === 'function' ? checkPasswordStrength(password) : 0;
-  const colors = ['','#ff4d6d','#ff8c42','#f59e0b','#10d98e','#00c8e8'];
+  const colors = ['','#ff4d6d','#ff8c42','#f59e0b','#10d98e','#c99a3c'];
   const labels = ['','Very Weak','Weak','Fair','Strong','Very Strong'];
   const pct = (score / 5) * 100;
   ['pwStrengthBar','pwStrengthBar2'].forEach(id => {
@@ -22082,7 +22082,7 @@ async function switchMeTab(tab) {
 
     // ── Load bookshelf settings from Supabase ─────────────────────
     let bsfSettings = {
-      shelfStyle: 'wooden', theme: 'dark', accentColor: '#3d8ef8',
+      shelfStyle: 'wooden', theme: 'dark', accentColor: '#7d1122',
       fontStyle: 'editorial', animationsOn: true, particlesOn: true,
       ambientGlow: true, shelfLighting: true, parallaxOn: true,
       searchFuzzy: true, booksPerShelf: 8,
@@ -22386,7 +22386,7 @@ CREATE TABLE IF NOT EXISTS bookshelf_settings (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   shelf_style     text DEFAULT 'wooden',
   theme           text DEFAULT 'dark',
-  accent_color    text DEFAULT '#3d8ef8',
+  accent_color    text DEFAULT '#7d1122',
   font_style      text DEFAULT 'editorial',
   animations_on   boolean DEFAULT true,
   particles_on    boolean DEFAULT true,
@@ -22488,8 +22488,8 @@ CREATE TRIGGER trg_progress_updated
             <div class="bsf-admin-row">
               <span class="bsf-admin-lbl">Accent</span>
               <div class="bsf-color-row">
-                ${['#3d8ef8','#00c8e8','#8b5cf6','#f59e0b','#10d98e','#ff4d6d'].map(c =>
-                  `<div class="bsf-color-swatch${(s.accent_color||'#3d8ef8')===c?' active':''}"
+                ${['#7d1122','#c99a3c','#930205','#f59e0b','#10d98e','#ff4d6d'].map(c =>
+                  `<div class="bsf-color-swatch${(s.accent_color||'#7d1122')===c?' active':''}"
                     style="background:${c}" onclick="bsfSetAccent('${c}')" data-color="${c}" title="${c}"></div>`
                 ).join('')}
               </div>
@@ -22957,7 +22957,7 @@ CREATE TRIGGER trg_progress_updated
       const payload = {
         shelf_style:    document.getElementById('bsfAShelfStyle')?.value || 'wooden',
         theme:          document.getElementById('bsfATheme')?.value || 'dark',
-        accent_color:   bsfSettings.accent_color || '#3d8ef8',
+        accent_color:   bsfSettings.accent_color || '#7d1122',
         font_style:     document.getElementById('bsfAFont')?.value || 'editorial',
         animations_on:  document.getElementById('bsfAAnimations')?.checked ?? true,
         particles_on:   document.getElementById('bsfAParticles')?.checked ?? true,
@@ -23032,7 +23032,7 @@ CREATE TRIGGER trg_progress_updated
       <div class="me-section-title"><span class="mst-accent"></span>👤 Your Profile</div>
       <div class="me-profile-card">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
-          <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#3d8ef8,#00c8e8);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;box-shadow:0 8px 24px rgba(61,142,248,0.3)">
+          <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7d1122,#c99a3c);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;box-shadow:0 8px 24px rgba(61,142,248,0.3)">
             ${u.avatar || (u.name ? u.name[0].toUpperCase() : '👤')}
           </div>
           <div>
@@ -23594,7 +23594,7 @@ function switchAdminTab(tab) {
         main.innerHTML = `<div style="padding:40px;text-align:center;opacity:.7">
           <p style="font-weight:600;margin:0 0 8px">${label} is loading…</p>
           <p style="font-size:.82rem;margin:0 0 16px">This module may still be initializing.</p>
-          <button onclick="switchAdminTab('${tab}')" style="padding:8px 20px;border-radius:8px;background:var(--primary,#3d8ef8);color:#fff;border:none;cursor:pointer">↺ Retry</button>
+          <button onclick="switchAdminTab('${tab}')" style="padding:8px 20px;border-radius:8px;background:var(--primary,#7d1122);color:#fff;border:none;cursor:pointer">↺ Retry</button>
         </div>`;
       }
     } catch(err) {
@@ -23602,8 +23602,8 @@ function switchAdminTab(tab) {
       main.innerHTML = `<div style="padding:40px;text-align:center">
         <p style="font-weight:700;color:var(--danger,#e55);margin:0 0 8px">Error loading ${label}</p>
         <p style="font-size:.82rem;color:var(--text2,#888);margin:0 0 16px">${err.message || 'Unknown error'}</p>
-        <button onclick="switchAdminTab('${tab}')" style="padding:8px 20px;border-radius:8px;background:var(--primary,#3d8ef8);color:#fff;border:none;cursor:pointer;margin-right:8px">↺ Retry</button>
-        <button onclick="switchAdminTab('dashboard')" style="padding:8px 20px;border-radius:8px;background:transparent;color:var(--primary,#3d8ef8);border:1px solid var(--primary,#3d8ef8);cursor:pointer">⬅ Dashboard</button>
+        <button onclick="switchAdminTab('${tab}')" style="padding:8px 20px;border-radius:8px;background:var(--primary,#7d1122);color:#fff;border:none;cursor:pointer;margin-right:8px">↺ Retry</button>
+        <button onclick="switchAdminTab('dashboard')" style="padding:8px 20px;border-radius:8px;background:transparent;color:var(--primary,#7d1122);border:1px solid var(--primary,#7d1122);cursor:pointer">⬅ Dashboard</button>
       </div>`;
     }
   }
@@ -23671,7 +23671,7 @@ async function renderAdminLibraryManager(main) {
     <div class="admin-section" style="animation:dashFadeUp .35s ease both">
       <div class="admin-section-title" style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#lmGrad2)" stroke-width="2">
-          <defs><linearGradient id="lmGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8ef8"/><stop offset="1" stop-color="#00c8e8"/></linearGradient></defs>
+          <defs><linearGradient id="lmGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7d1122"/><stop offset="1" stop-color="#c99a3c"/></linearGradient></defs>
           <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
         </svg>
         📚 Library Experience Manager
@@ -23697,7 +23697,7 @@ async function renderAdminLibraryManager(main) {
 
   // Load state
   let S = {
-    shelf_style:'ott', theme:'amoled', accent_color:'#3d8ef8',
+    shelf_style:'ott', theme:'amoled', accent_color:'#7d1122',
     font_style:'editorial', animations_on:true, particles_on:true,
     ambient_glow:true, shelf_lighting:true, parallax_on:true,
     search_fuzzy:true, books_per_shelf:8,
@@ -23885,7 +23885,7 @@ async function renderAdminLibraryManager(main) {
                     <div style="color:var(--text2);font-size:.65rem">${p.author||''}</div>
                   </td>
                   <td style="padding:8px 12px;color:var(--text2)">${p.category||'—'}</td>
-                  <td style="padding:8px 12px;font-weight:700;color:${!p.price||p.price===0?'#10d98e':'#3d8ef8'}">${!p.price||p.price===0?'FREE':'₹'+p.price}</td>
+                  <td style="padding:8px 12px;font-weight:700;color:${!p.price||p.price===0?'#10d98e':'#7d1122'}">${!p.price||p.price===0?'FREE':'₹'+p.price}</td>
                   <td style="padding:8px 12px;color:var(--text2)">${p.download_count||p.sales||0}</td>
                   <td style="padding:8px 12px;color:#f59e0b">${p.rating?'⭐ '+parseFloat(p.rating).toFixed(1):'—'}</td>
                   <td style="padding:8px 12px">
@@ -23893,7 +23893,7 @@ async function renderAdminLibraryManager(main) {
                   </td>
                   <td style="padding:8px 12px">
                     <div style="display:flex;gap:5px">
-                      <button onclick="apEditPDF('${p.id}')" style="padding:5px 10px;border-radius:7px;background:rgba(61,142,248,0.15);color:#3d8ef8;border:1px solid rgba(61,142,248,0.25);font-size:.65rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">✏️ Edit</button>
+                      <button onclick="apEditPDF('${p.id}')" style="padding:5px 10px;border-radius:7px;background:rgba(61,142,248,0.15);color:#7d1122;border:1px solid rgba(61,142,248,0.25);font-size:.65rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">✏️ Edit</button>
                       <button onclick="openDetail('${p.id}')" style="padding:5px 10px;border-radius:7px;background:rgba(255,255,255,0.05);color:var(--text2);border:1px solid rgba(255,255,255,0.1);font-size:.65rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">👁 View</button>
                     </div>
                   </td>
@@ -23916,13 +23916,13 @@ async function renderAdminLibraryManager(main) {
 
   function lmTabSections(body, S) {
     const sections = [
-      {key:'section_continue', icon:'▶', name:'Continue Reading',   desc:'Show in-progress PDFs for logged-in users',    color:'#8b5cf6'},
+      {key:'section_continue', icon:'▶', name:'Continue Reading',   desc:'Show in-progress PDFs for logged-in users',    color:'#930205'},
       {key:'section_trending', icon:'🔥', name:'Trending This Week', desc:'Most downloaded PDFs this week',               color:'#ff4d6d'},
       {key:'section_mypdf',    icon:'📥', name:'My PDFs',           desc:'Purchased/owned PDFs for logged-in users',     color:'#10d98e'},
-      {key:'section_ai',       icon:'🤖', name:'Recommended For You',desc:'AI-curated recommendations by rating',        color:'#8b5cf6'},
+      {key:'section_ai',       icon:'🤖', name:'Recommended For You',desc:'AI-curated recommendations by rating',        color:'#930205'},
       {key:'section_new',      icon:'🆕', name:'New Arrivals',       desc:'Recently added PDFs sorted by date',          color:'#10d98e'},
       {key:'section_popular',  icon:'🏆', name:'Popular Downloads', desc:'All-time most downloaded PDFs',                color:'#f59e0b'},
-      {key:'section_recent',   icon:'🕐', name:'Recently Viewed',   desc:'Browser history of viewed PDFs (per device)',  color:'#00c8e8'},
+      {key:'section_recent',   icon:'🕐', name:'Recently Viewed',   desc:'Browser history of viewed PDFs (per device)',  color:'#c99a3c'},
     ];
     body.innerHTML = `
       <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px 20px;margin-bottom:14px">
@@ -24091,14 +24091,14 @@ async function renderAdminLibraryManager(main) {
           <label style="font-size:.7rem;color:var(--text2);font-weight:600;display:block;margin-bottom:10px">Active Badges</label>
           <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px">
             ${(S.badges||[]).map(b=>`
-              <span style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.25);color:#3d8ef8;font-size:.7rem;font-weight:700">
+              <span style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.25);color:#7d1122;font-size:.7rem;font-weight:700">
                 ${b}
-                <button onclick="this.parentNode.remove()" style="border:none;background:none;color:#3d8ef8;cursor:pointer">✕</button>
+                <button onclick="this.parentNode.remove()" style="border:none;background:none;color:#7d1122;cursor:pointer">✕</button>
               </span>`).join('')}
           </div>
           <div style="display:flex;gap:8px">
             <input id="lmNewBadge" placeholder="e.g. 🌟 Star Student" style="flex:1;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);font-family:var(--font-body);font-size:.78rem;outline:none">
-            <button onclick="lmAddBadge()" style="padding:9px 16px;border-radius:10px;background:rgba(61,142,248,0.2);color:#3d8ef8;border:1px solid rgba(61,142,248,0.35);font-size:.72rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">+ Add Badge</button>
+            <button onclick="lmAddBadge()" style="padding:9px 16px;border-radius:10px;background:rgba(61,142,248,0.2);color:#7d1122;border:1px solid rgba(61,142,248,0.35);font-size:.72rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">+ Add Badge</button>
           </div>
         </div>
       </div>
@@ -24130,8 +24130,8 @@ async function renderAdminLibraryManager(main) {
       if (!val) return;
       const wrap = input.previousElementSibling;
       const span = document.createElement('span');
-      span.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.25);color:#3d8ef8;font-size:.7rem;font-weight:700';
-      span.innerHTML = `${val} <button onclick="this.parentNode.remove()" style="border:none;background:none;color:#3d8ef8;cursor:pointer">✕</button>`;
+      span.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.25);color:#7d1122;font-size:.7rem;font-weight:700';
+      span.innerHTML = `${val} <button onclick="this.parentNode.remove()" style="border:none;background:none;color:#7d1122;cursor:pointer">✕</button>`;
       wrap.appendChild(span);
       if (input) input.value = '';
     };
@@ -24141,7 +24141,7 @@ async function renderAdminLibraryManager(main) {
     return `
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:4px">
         <button onclick="lmSave()" id="lmSaveBtn"
-          style="padding:13px 32px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);border:none;border-radius:14px;color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:var(--font-body);box-shadow:0 6px 20px rgba(61,142,248,0.35);display:flex;align-items:center;gap:8px;transition:all .2s">
+          style="padding:13px 32px;background:linear-gradient(135deg,#7d1122,#c99a3c);border:none;border-radius:14px;color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:var(--font-body);box-shadow:0 6px 20px rgba(61,142,248,0.35);display:flex;align-items:center;gap:8px;transition:all .2s">
           💾 Save Changes
         </button>
         <button onclick="navigate('library')"
@@ -24181,7 +24181,7 @@ async function renderAdminCareerHubManager(main) {
   <div class="admin-section" style="animation:dashFadeUp .35s ease both">
     <div class="admin-section-title" style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#chmGrad)" stroke-width="2">
-        <defs><linearGradient id="chmGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8ef8"/><stop offset="1" stop-color="#ff4d6d"/></linearGradient></defs>
+        <defs><linearGradient id="chmGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7d1122"/><stop offset="1" stop-color="#ff4d6d"/></linearGradient></defs>
         <circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>
       </svg>
       💼 Career Hub Manager
@@ -24669,12 +24669,12 @@ function _cmIsValidUUID(str) {
 
 // Color map for icon backgrounds
 function _chIconBg(color) {
-  const hex = color || '#3d8ef8';
+  const hex = color || '#7d1122';
   const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},0.15)`;
 }
 function _chIconBorder(color) {
-  const hex = color || '#3d8ef8';
+  const hex = color || '#7d1122';
   const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},0.25)`;
 }
@@ -24775,8 +24775,8 @@ async function loadCommunityHub() {
     const iconMarkup = brand
       ? _chBrandIconSvg(link.platform, gradId)
       : (link.icon || '🔗');
-    const cardGrad = brand ? brand.grad : `linear-gradient(135deg, ${link.color || '#3d8ef8'}, ${link.color || '#3d8ef8'}99)`;
-    const glow = brand && brand.fill ? `${brand.fill}55` : (brand ? 'rgba(255,255,255,0.35)' : `${link.color || '#3d8ef8'}55`);
+    const cardGrad = brand ? brand.grad : `linear-gradient(135deg, ${link.color || '#7d1122'}, ${link.color || '#7d1122'}99)`;
+    const glow = brand && brand.fill ? `${brand.fill}55` : (brand ? 'rgba(255,255,255,0.35)' : `${link.color || '#7d1122'}55`);
 
     html += `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="chx-card"
       style="animation-delay:${.05 + i*.06}s;--chx-grad:${cardGrad};--chx-glow:${glow}"
@@ -25033,10 +25033,10 @@ function _cmRender(main) {
     { color: '#e1306c', label: 'Instagram' },
     { color: '#ff0000', label: 'YouTube' },
     { color: '#5865f2', label: 'Discord' },
-    { color: '#3d8ef8', label: 'Blue' },
+    { color: '#7d1122', label: 'Blue' },
     { color: '#10d98e', label: 'Green' },
     { color: '#f59e0b', label: 'Amber' },
-    { color: '#8b5cf6', label: 'Purple' },
+    { color: '#930205', label: 'Purple' },
   ];
 
   body.innerHTML = `
@@ -25252,7 +25252,7 @@ function _cmSaveLink() {
     icon: icon || '🔗',
     url,
     description: document.getElementById('cmFDesc').value.trim(),
-    color: document.getElementById('cmFColor').value || '#3d8ef8',
+    color: document.getElementById('cmFColor').value || '#7d1122',
     is_primary: document.getElementById('cmFPrimary').value === 'true',
     enabled: document.getElementById('cmFEnabled').value !== 'false',
     sort_order: _cmLinks.length + 1,
@@ -25334,7 +25334,7 @@ async function _cmSaveToDB() {
       title: l.title,
       description: l.description || '',
       icon: l.icon || '🔗',
-      color: l.color || '#3d8ef8',
+      color: l.color || '#7d1122',
       url: l.url,
       is_primary: l.is_primary || false,
       enabled: l.enabled !== false,
@@ -25617,7 +25617,7 @@ function adminPDFRow(p, i) {
   const price = p.price ?? 0;
   const coverHTML = p.cover_url
     ? `<img src="${p.cover_url}" alt="${(p.title || 'PDF cover').replace(/"/g,'&quot;')}" style="width:36px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--glass-border)"  loading="lazy" decoding="async" />`
-    : `<div style="width:36px;height:48px;border-radius:4px;background:linear-gradient(135deg,${p.coverFrom||'#1d4ed8'},${p.coverTo||'#3d8ef8'});display:flex;align-items:center;justify-content:center">${adminIcon('file',16)}</div>`;
+    : `<div style="width:36px;height:48px;border-radius:4px;background:linear-gradient(135deg,${p.coverFrom||'#1d4ed8'},${p.coverTo||'#7d1122'});display:flex;align-items:center;justify-content:center">${adminIcon('file',16)}</div>`;
   return `<tr>
     <td style="font-size:.75rem;color:var(--text2)">${i+1}</td>
     <td>${coverHTML}</td>
@@ -25875,11 +25875,11 @@ function renderAdminAddPDFLegacy(main) {
     display:flex; align-items:center; justify-content:center;
     font-size:.9rem; flex-shrink:0;
   }
-  .ap-icon-blue   { background:rgba(61,142,248,0.15); color:#3d8ef8; }
+  .ap-icon-blue   { background:rgba(61,142,248,0.15); color:#7d1122; }
   .ap-icon-green  { background:rgba(16,217,142,0.15); color:#10d98e; }
   .ap-icon-amber  { background:rgba(245,158,11,0.15);  color:#f59e0b; }
-  .ap-icon-purple { background:rgba(139,92,246,0.15); color:#8b5cf6; }
-  .ap-icon-cyan   { background:rgba(0,200,232,0.15);  color:#00c8e8; }
+  .ap-icon-purple { background:rgba(139,92,246,0.15); color:#930205; }
+  .ap-icon-cyan   { background:rgba(0,200,232,0.15);  color:#c99a3c; }
   .ap-icon-red    { background:rgba(255,77,109,0.15); color:#ff4d6d; }
 
   .ap-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -25902,7 +25902,7 @@ function renderAdminAddPDFLegacy(main) {
   .ap-input:disabled { opacity:.5; cursor:not-allowed; }
   textarea.ap-input { resize:vertical; min-height:80px; }
   select.ap-input { cursor:pointer; }
-  body.light .ap-input { background:rgba(255,255,255,0.8); border-color:rgba(0,0,0,0.1); color:#0a1022; }
+  body.light .ap-input { background:rgba(255,255,255,0.8); border-color:rgba(0,0,0,0.1); color:#1c1b1a; }
   body.light .ap-input:focus { background:#fff; border-color:var(--accent); }
 
   /* Classification 6-grid */
@@ -26031,7 +26031,7 @@ function renderAdminAddPDFLegacy(main) {
   /* Preview card */
   .ap-preview-cover {
     width:100%; height:200px; border-radius:var(--radius-sm);
-    background:linear-gradient(135deg,#1d4ed8,#3d8ef8);
+    background:linear-gradient(135deg,#1d4ed8,#7d1122);
     display:flex; align-items:center; justify-content:center;
     position:relative; overflow:hidden; margin-bottom:14px;
   }
@@ -26666,7 +26666,7 @@ function sbpStatusLabel(s, item) {
   return '⚠️ Missing';
 }
 function sbpStatusColor(s) {
-  return {ready:'#10d98e', draft:'#f59e0b', missing:'#ff4d6d', published:'#3d8ef8', error:'#ff4d6d'}[s] || '#aaa';
+  return {ready:'#10d98e', draft:'#f59e0b', missing:'#ff4d6d', published:'#7d1122', error:'#ff4d6d'}[s] || '#aaa';
 }
 
 /* ─── Validation ─────────────────────────────────────────────────── */
@@ -26970,7 +26970,7 @@ function sbpCardInner(item, st, col, thumb, sel) {
       <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
         <div style="display:flex;gap:4px">
           <button onclick="sbpOpenEditor('${item.id}')" title="${st==='missing' ? 'Fix: ' + sbpValidate(item,false).join(', ') : 'Edit'}" style="padding:5px 8px;border-radius:6px;border:1px solid var(--accent);background:rgba(61,142,248,0.1);color:var(--accent);cursor:pointer;font-size:.75rem;font-family:var(--font-body)">✏️${st==='missing'?'⚠️':''}</button>
-          ${!item.published ? `<button onclick="sbpRunAI('${item.id}')" title="AI Suggest" style="padding:5px 8px;border-radius:6px;border:1px solid rgba(139,92,246,0.4);background:rgba(139,92,246,0.1);color:#8b5cf6;cursor:pointer;font-size:.75rem;font-family:var(--font-body)">${item.aiLoading?'⏳':'✨'}</button>` : ''}
+          ${!item.published ? `<button onclick="sbpRunAI('${item.id}')" title="AI Suggest" style="padding:5px 8px;border-radius:6px;border:1px solid rgba(139,92,246,0.4);background:rgba(139,92,246,0.1);color:#930205;cursor:pointer;font-size:.75rem;font-family:var(--font-body)">${item.aiLoading?'⏳':'✨'}</button>` : ''}
           <button onclick="sbpDuplicate('${item.id}')" title="Duplicate" style="padding:5px 8px;border-radius:6px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text2);cursor:pointer;font-size:.75rem;font-family:var(--font-body)">⧉</button>
         </div>
         <div style="display:flex;gap:4px">
@@ -27978,7 +27978,7 @@ function renderAdminAddPDF(main) {
       <div class="sbp-stat-lbl">Errors</div>
     </div>
     <div class="sbp-stat">
-      <div class="sbp-stat-num" style="color:#3d8ef8" id="sbpStatPublished">0</div>
+      <div class="sbp-stat-num" style="color:#7d1122" id="sbpStatPublished">0</div>
       <div class="sbp-stat-lbl">Published</div>
     </div>
   </div>
@@ -28573,7 +28573,7 @@ function apCMModalHtml(title, lvl, row) {
       </div>
       <div class="ap-field">
         <label class="ap-label">Color</label>
-        <input class="ap-input" id="apCMColor" value="${row ? (row.color||'') : ''}" placeholder="#3d8ef8" style="margin-top:4px" />
+        <input class="ap-input" id="apCMColor" value="${row ? (row.color||'') : ''}" placeholder="#7d1122" style="margin-top:4px" />
       </div>
     </div>` : ''}
     <div class="ap-field" style="margin-bottom:16px">
@@ -28974,10 +28974,10 @@ window._hmActiveLevel = 'categories';
 window._hmParentFilter = null;
 
 const HM_LEVELS = [
-  { k:'categories',      label:'Category',       icon:'📂', color:'#3d8ef8', colorAlpha:'rgba(61,142,248,0.15)' },
-  { k:'subcategories',   label:'Subcategory',     icon:'📁', color:'#00c8e8', colorAlpha:'rgba(0,200,232,0.15)' },
+  { k:'categories',      label:'Category',       icon:'📂', color:'#7d1122', colorAlpha:'rgba(61,142,248,0.15)' },
+  { k:'subcategories',   label:'Subcategory',     icon:'📁', color:'#c99a3c', colorAlpha:'rgba(0,200,232,0.15)' },
   { k:'academic_levels', label:'Academic Level',  icon:'🎓', color:'#10d98e', colorAlpha:'rgba(16,217,142,0.15)' },
-  { k:'streams',         label:'Stream',          icon:'🌊', color:'#8b5cf6', colorAlpha:'rgba(139,92,246,0.15)' },
+  { k:'streams',         label:'Stream',          icon:'🌊', color:'#930205', colorAlpha:'rgba(139,92,246,0.15)' },
   { k:'semester_classes',label:'Semester/Class',  icon:'📅', color:'#f59e0b', colorAlpha:'rgba(245,158,11,0.15)' },
   { k:'subjects',        label:'Subject',         icon:'📖', color:'#ff4d6d', colorAlpha:'rgba(255,77,109,0.15)' },
 ];
@@ -29360,7 +29360,7 @@ function cmBuildModalHtml(lvl, row) {
       </div>
       <div class="cm-modal-field">
         <div class="cm-modal-label">Color (hex)</div>
-        <input class="cm-modal-input" id="cmModalColor" value="${row ? (row.color||'') : ''}" placeholder="#3d8ef8" />
+        <input class="cm-modal-input" id="cmModalColor" value="${row ? (row.color||'') : ''}" placeholder="#7d1122" />
       </div>
     </div>` : ''}
 
@@ -31051,9 +31051,9 @@ function pccmRenderTable() {
     const enabled = c.enabled !== false;
     return `<tr draggable="true" data-cat-id="${c.id}" ondragstart="pccmDragStart(event,${c.id})" ondragover="event.preventDefault()" ondrop="pccmDrop(event,${c.id})" style="${enabled ? '' : 'opacity:.5'}">
       <td style="cursor:grab;color:var(--text2)">⠿</td>
-      <td style="font-weight:600">${c.name}${c.featured ? ' <span class="admin-nav-badge" style="background:rgba(61,142,248,.12);color:#3d8ef8;border-color:rgba(61,142,248,.2);margin-left:6px">★ Featured</span>' : ''}${subCount ? ` <span style="font-size:.68rem;color:var(--text2)">(${subCount} subcats)</span>` : ''}</td>
+      <td style="font-weight:600">${c.name}${c.featured ? ' <span class="admin-nav-badge" style="background:rgba(61,142,248,.12);color:#7d1122;border-color:rgba(61,142,248,.2);margin-left:6px">★ Featured</span>' : ''}${subCount ? ` <span style="font-size:.68rem;color:var(--text2)">(${subCount} subcats)</span>` : ''}</td>
       <td style="font-size:1.1rem">${c.icon || '📘'}</td>
-      <td><span style="display:inline-block;width:18px;height:18px;border-radius:4px;background:${c.color || '#3d8ef8'};border:1px solid rgba(255,255,255,.15)"></span></td>
+      <td><span style="display:inline-block;width:18px;height:18px;border-radius:4px;background:${c.color || '#7d1122'};border:1px solid rgba(255,255,255,.15)"></span></td>
       <td>${pdfCount}</td>
       <td><span class="admin-nav-badge" style="background:${enabled ? 'rgba(16,217,142,.12)' : 'rgba(255,255,255,.08)'};color:${enabled ? 'var(--success)' : 'var(--text2)'};border-color:${enabled ? 'rgba(16,217,142,.2)' : 'rgba(255,255,255,.1)'}">${enabled ? 'Active' : 'Hidden'}</span></td>
       <td style="display:flex;gap:6px;flex-wrap:wrap">
@@ -31100,7 +31100,7 @@ function pccmOpenForm(id) {
       <div class="form-group"><label class="form-label">Category Name</label><input class="form-input" id="pccmName" value="${c ? c.name.replace(/"/g, '&quot;') : ''}" placeholder="e.g. Engineering"/></div>
       <div class="form-group"><label class="form-label">Slug</label><input class="form-input" id="pccmSlug" value="${c ? c.slug : ''}" placeholder="engineering"/></div>
       <div class="form-group"><label class="form-label">Icon Emoji</label><input class="form-input" id="pccmIcon" value="${c ? (c.icon || '') : '📘'}" maxlength="4"/></div>
-      <div class="form-group"><label class="form-label">Accent Color</label><input class="form-input" id="pccmColor" type="color" value="${c && c.color && c.color.startsWith('#') ? c.color : '#3d8ef8'}"/></div>
+      <div class="form-group"><label class="form-label">Accent Color</label><input class="form-input" id="pccmColor" type="color" value="${c && c.color && c.color.startsWith('#') ? c.color : '#7d1122'}"/></div>
     </div>
     <div class="form-group" style="margin-top:8px"><label class="form-label">Description</label><textarea class="form-input" id="pccmDesc" rows="2" placeholder="Best engineering study materials…">${c ? (c.description || '') : ''}</textarea></div>
     <div class="admin-form-grid" style="margin-top:8px">
@@ -31955,8 +31955,8 @@ const TS_SETTINGS_KEY = 'studyria_site_settings';
 
 const TS_BUILTIN_PRESETS = [
   { id:'studyria-blue',   icon:'🔵', name:'Studyria Blue',     desc:'Default electric-blue signature theme',
-    primary:'#3d8ef8', secondary:'#00c8e8', accent:'#f59e0b', bg:'#080c14', bg2:'#0d1220',
-    navbar:'rgba(8,12,20,0.92)', card:'rgba(255,255,255,0.03)', text:'#eef2ff', font:'Inter',
+    primary:'#7d1122', secondary:'#c99a3c', accent:'#f59e0b', bg:'#1a0a0a', bg2:'#220d0d',
+    navbar:'rgba(8,12,20,0.92)', card:'rgba(255,255,255,0.03)', text:'#f1ece3', font:'Inter',
     uiStyle:'glassmorphism', bgStyle:'solid', anim:'glow' },
   { id:'royal-sapphire',  icon:'👑', name:'Royal Sapphire',    desc:'Deep royal blue with gold accents',
     primary:'#1e3a8a', secondary:'#3b82f6', accent:'#fbbf24', bg:'#0a0f1e', bg2:'#0f1930',
@@ -31987,7 +31987,7 @@ const TS_BUILTIN_PRESETS = [
     navbar:'rgba(248,250,255,0.95)', card:'rgba(99,102,241,0.05)', text:'#1e1b4b', font:'DM Sans',
     uiStyle:'apple', bgStyle:'glass', anim:'fade' },
   { id:'purple-galaxy',   icon:'🌌', name:'Purple Galaxy',     desc:'Cosmic purple, space-age aesthetic',
-    primary:'#8b5cf6', secondary:'#a78bfa', accent:'#e879f9', bg:'#07030f', bg2:'#0f0618',
+    primary:'#930205', secondary:'#a78bfa', accent:'#e879f9', bg:'#07030f', bg2:'#0f0618',
     navbar:'rgba(7,3,15,0.97)', card:'rgba(139,92,246,0.07)', text:'#f3e8ff', font:'Inter',
     uiStyle:'glassmorphism', bgStyle:'aurora', anim:'floating' },
   { id:'sunset-orange',   icon:'🌅', name:'Sunset Orange',     desc:'Warm sunset gradient energy',
@@ -32028,11 +32028,11 @@ const TS_BUILTIN_PRESETS = [
     uiStyle:'glassmorphism', bgStyle:'aurora', anim:'floating' },
   { id:'luxury-diamond',  icon:'💠', name:'Luxury Diamond',   desc:'Diamond clarity — silver & indigo',
     primary:'#818cf8', secondary:'#c7d2fe', accent:'#f0abfc', bg:'#060918', bg2:'#0b0f2a',
-    navbar:'rgba(6,9,24,0.97)', card:'rgba(129,140,248,0.07)', text:'#eef2ff', font:'Playfair Display',
+    navbar:'rgba(6,9,24,0.97)', card:'rgba(129,140,248,0.07)', text:'#f1ece3', font:'Playfair Display',
     uiStyle:'luxury', bgStyle:'mesh', anim:'glow' },
   { id:'studyria-premium',icon:'⭐', name:'Studyria Premium', desc:'Limited edition — gradient luxury',
-    primary:'#3d8ef8', secondary:'#8b5cf6', accent:'#f59e0b', bg:'#060a14', bg2:'#0b1020',
-    navbar:'rgba(6,10,20,0.97)', card:'rgba(61,142,248,0.06)', text:'#eef2ff', font:'Inter',
+    primary:'#7d1122', secondary:'#930205', accent:'#f59e0b', bg:'#1a0a0a', bg2:'#220d0d',
+    navbar:'rgba(6,10,20,0.97)', card:'rgba(61,142,248,0.06)', text:'#f1ece3', font:'Inter',
     uiStyle:'glassmorphism', bgStyle:'aurora', anim:'glow' },
 ];
 
@@ -32134,7 +32134,7 @@ function renderPCCCustomization(main) {
     /* ─── THEME STUDIO PRO STYLES ─── */
     .ts-header{background:linear-gradient(135deg,rgba(61,142,248,0.12),rgba(139,92,246,0.08),rgba(0,200,232,0.06));border:1px solid rgba(61,142,248,0.18);border-radius:20px;padding:24px 28px;margin-bottom:22px;position:relative;overflow:hidden}
     .ts-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(61,142,248,0.1),transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(139,92,246,0.08),transparent 50%);pointer-events:none}
-    .ts-header-title{font-size:1.45rem;font-weight:800;background:linear-gradient(135deg,#3d8ef8,#8b5cf6,#00c8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+    .ts-header-title{font-size:1.45rem;font-weight:800;background:linear-gradient(135deg,#7d1122,#930205,#c99a3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
     .ts-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
     .ts-tab{padding:8px 16px;border-radius:30px;font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid var(--glass-border);background:var(--surface);color:var(--text2);transition:all .2s;white-space:nowrap}
     .ts-tab.active,.ts-tab:hover{background:linear-gradient(135deg,rgba(61,142,248,0.18),rgba(0,200,232,0.12));border-color:rgba(61,142,248,0.35);color:var(--text)}
@@ -32258,16 +32258,16 @@ function renderPCCCustomization(main) {
       <div style="font-weight:700;margin-bottom:16px">🌈 Color Manager — 10 Site Colors</div>
       <div class="ts-color-grid" id="tsColorGrid">
         ${[
-          ['Primary',    'primary',   active?.primary    || '#3d8ef8'],
-          ['Secondary',  'secondary', active?.secondary  || '#00c8e8'],
+          ['Primary',    'primary',   active?.primary    || '#7d1122'],
+          ['Secondary',  'secondary', active?.secondary  || '#c99a3c'],
           ['Accent',     'accent',    active?.accent     || '#f59e0b'],
-          ['Background', 'bg',        active?.bg         || '#080c14'],
-          ['Navbar',     'navbar',    active?.navbar?.replace(/rgba?\([^)]+\)/,'') || '#080c14'],
-          ['Card',       'card',      '#0d1220'],
+          ['Background', 'bg',        active?.bg         || '#1a0a0a'],
+          ['Navbar',     'navbar',    active?.navbar?.replace(/rgba?\([^)]+\)/,'') || '#1a0a0a'],
+          ['Card',       'card',      '#220d0d'],
           ['Border',     'border',    '#1a2540'],
-          ['Button',     'btn',       active?.primary    || '#3d8ef8'],
-          ['Text',       'text',      active?.text       || '#eef2ff'],
-          ['Footer',     'footer',    '#080c14'],
+          ['Button',     'btn',       active?.primary    || '#7d1122'],
+          ['Text',       'text',      active?.text       || '#f1ece3'],
+          ['Footer',     'footer',    '#1a0a0a'],
         ].map(([lbl,key,val]) => `
           <div class="ts-color-item">
             <div class="ts-color-swatch" id="tsSwatchBg_${key}" style="background:${val}">
@@ -32311,11 +32311,11 @@ function renderPCCCustomization(main) {
     <div class="mod-form-wrap">
       <div style="font-weight:700;margin-bottom:14px">🎨 Gradient Builder</div>
       <div class="admin-form-grid">
-        <div class="form-group"><label class="form-label">Color Stop 1</label><input class="form-input" type="color" value="#3d8ef8" id="tsGrad1" oninput="tsGradPreview()"/></div>
-        <div class="form-group"><label class="form-label">Color Stop 2</label><input class="form-input" type="color" value="#8b5cf6" id="tsGrad2" oninput="tsGradPreview()"/></div>
+        <div class="form-group"><label class="form-label">Color Stop 1</label><input class="form-input" type="color" value="#7d1122" id="tsGrad1" oninput="tsGradPreview()"/></div>
+        <div class="form-group"><label class="form-label">Color Stop 2</label><input class="form-input" type="color" value="#930205" id="tsGrad2" oninput="tsGradPreview()"/></div>
         <div class="form-group"><label class="form-label">Angle</label><input class="form-input" type="range" min="0" max="360" value="135" id="tsGradAngle" oninput="tsGradPreview()"/></div>
       </div>
-      <div id="tsGradPreviewBox" style="height:60px;border-radius:12px;background:linear-gradient(135deg,#3d8ef8,#8b5cf6);margin:10px 0;transition:background .3s"></div>
+      <div id="tsGradPreviewBox" style="height:60px;border-radius:12px;background:linear-gradient(135deg,#7d1122,#930205);margin:10px 0;transition:background .3s"></div>
       <button class="btn btn-primary btn-sm" onclick="tsApplyGradient()">🎨 Apply Gradient Background</button>
     </div>
   </div>
@@ -32473,12 +32473,12 @@ function renderPCCCustomization(main) {
       <div style="font-size:.82rem;font-weight:700;margin-bottom:10px;color:var(--text2)">🎨 Theme Colors</div>
       <div class="ts-builder-colors">
         ${[
-          ['Primary',    'tbPrimary',   '#3d8ef8'],
-          ['Secondary',  'tbSecondary', '#00c8e8'],
+          ['Primary',    'tbPrimary',   '#7d1122'],
+          ['Secondary',  'tbSecondary', '#c99a3c'],
           ['Accent',     'tbAccent',    '#f59e0b'],
-          ['Background', 'tbBg',        '#080c14'],
-          ['Background 2','tbBg2',      '#0d1220'],
-          ['Text',       'tbText',      '#eef2ff'],
+          ['Background', 'tbBg',        '#1a0a0a'],
+          ['Background 2','tbBg2',      '#220d0d'],
+          ['Text',       'tbText',      '#f1ece3'],
         ].map(([lbl,id,val]) => `
           <div class="ts-col-wrap">
             <label>${lbl}</label>
@@ -32515,7 +32515,7 @@ function renderPCCCustomization(main) {
           <div style="font-weight:800;font-size:1.1rem;margin-bottom:8px" id="tbPreviewTitle">My Custom Theme</div>
           <div style="font-size:.8rem;opacity:.6;margin-bottom:14px" id="tbPreviewDesc">Preview of your theme…</div>
           <div style="display:flex;gap:8px">
-            <div id="tbPreviewBtn" style="padding:8px 18px;border-radius:8px;font-size:.8rem;font-weight:700;color:#fff;background:#3d8ef8;cursor:pointer">Browse PDFs</div>
+            <div id="tbPreviewBtn" style="padding:8px 18px;border-radius:8px;font-size:.8rem;font-weight:700;color:#fff;background:#7d1122;cursor:pointer">Browse PDFs</div>
             <div id="tbPreviewCard" style="padding:8px 16px;border-radius:8px;font-size:.8rem;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04)">PDF Card</div>
           </div>
         </div>
@@ -32660,7 +32660,7 @@ function tsBgSelect(id, el) {
   el.classList.add('active');
   const opts = document.getElementById('tsBgOptions');
   const bgMessages = {
-    solid:     () => { opts.innerHTML = '<div class="form-group"><label class="form-label">Solid Color</label><input class="form-input" type="color" value="#080c14" oninput="document.body.style.background=this.value"/></div>'; },
+    solid:     () => { opts.innerHTML = '<div class="form-group"><label class="form-label">Solid Color</label><input class="form-input" type="color" value="#1a0a0a" oninput="document.body.style.background=this.value"/></div>'; },
     gradient:  () => { opts.innerHTML = '<div style="font-size:.82rem;color:var(--text2)">Use the Gradient Builder below ↓</div>'; },
     mesh:      () => { document.documentElement.style.setProperty('--bg','#0c0e1a'); opts.innerHTML = '<div style="font-size:.82rem;color:var(--success)">Mesh gradient activated!</div>'; showToast('Mesh gradient applied!','success'); },
     aurora:    () => { opts.innerHTML = '<div style="font-size:.82rem;color:var(--accent2)">Aurora background will animate across the page.</div>'; showToast('Aurora BG activated!','success'); },
@@ -32673,16 +32673,16 @@ function tsBgSelect(id, el) {
 }
 
 function tsGradPreview() {
-  const c1 = document.getElementById('tsGrad1')?.value || '#3d8ef8';
-  const c2 = document.getElementById('tsGrad2')?.value || '#8b5cf6';
+  const c1 = document.getElementById('tsGrad1')?.value || '#7d1122';
+  const c2 = document.getElementById('tsGrad2')?.value || '#930205';
   const angle = document.getElementById('tsGradAngle')?.value || '135';
   const box = document.getElementById('tsGradPreviewBox');
   if (box) box.style.background = `linear-gradient(${angle}deg,${c1},${c2})`;
 }
 
 function tsApplyGradient() {
-  const c1 = document.getElementById('tsGrad1')?.value || '#3d8ef8';
-  const c2 = document.getElementById('tsGrad2')?.value || '#8b5cf6';
+  const c1 = document.getElementById('tsGrad1')?.value || '#7d1122';
+  const c2 = document.getElementById('tsGrad2')?.value || '#930205';
   const angle = document.getElementById('tsGradAngle')?.value || '135';
   document.documentElement.style.setProperty('--bg', c1);
   document.documentElement.style.setProperty('--grad-hero', `linear-gradient(${angle}deg,${c1},${c2})`);
@@ -32746,9 +32746,9 @@ function tsPickIcon(ic) {
 }
 
 function tsBuilderLivePreview() {
-  const primary = document.getElementById('tbPrimary')?.value || '#3d8ef8';
-  const bg      = document.getElementById('tbBg')?.value      || '#080c14';
-  const text    = document.getElementById('tbText')?.value    || '#eef2ff';
+  const primary = document.getElementById('tbPrimary')?.value || '#7d1122';
+  const bg      = document.getElementById('tbBg')?.value      || '#1a0a0a';
+  const text    = document.getElementById('tbText')?.value    || '#f1ece3';
   const name    = document.getElementById('tbName')?.value    || 'My Custom Theme';
   const desc    = document.getElementById('tbDesc')?.value    || 'Preview of your theme…';
   const prev    = document.getElementById('tbMiniPreview');
@@ -32786,12 +32786,12 @@ function tsBuildThemeFromForm() {
     name,
     icon:       document.getElementById('tbIcon')?.value      || '🎨',
     desc:       document.getElementById('tbDesc')?.value      || '',
-    primary:    document.getElementById('tbPrimary')?.value   || '#3d8ef8',
-    secondary:  document.getElementById('tbSecondary')?.value || '#00c8e8',
+    primary:    document.getElementById('tbPrimary')?.value   || '#7d1122',
+    secondary:  document.getElementById('tbSecondary')?.value || '#c99a3c',
     accent:     document.getElementById('tbAccent')?.value    || '#f59e0b',
-    bg:         document.getElementById('tbBg')?.value        || '#080c14',
-    bg2:        document.getElementById('tbBg2')?.value       || '#0d1220',
-    text:       document.getElementById('tbText')?.value      || '#eef2ff',
+    bg:         document.getElementById('tbBg')?.value        || '#1a0a0a',
+    bg2:        document.getElementById('tbBg2')?.value       || '#220d0d',
+    text:       document.getElementById('tbText')?.value      || '#f1ece3',
     font:       document.getElementById('tbFont')?.value      || 'Inter',
     uiStyle:    document.getElementById('tbStyle')?.value     || 'glassmorphism',
     bgStyle:    document.getElementById('tbBgStyle')?.value   || 'solid',
@@ -32849,7 +32849,7 @@ function tsEditCustomPreset(id) {
     const set = (eid, val) => { const el=document.getElementById(eid); if(el) el.value=val; };
     set('tbName', t.name); set('tbIcon', t.icon||'🎨'); set('tbDesc', t.desc||'');
     set('tbPrimary', t.primary); set('tbSecondary', t.secondary);
-    set('tbAccent', t.accent); set('tbBg', t.bg); set('tbBg2', t.bg2||t.bg); set('tbText', t.text||'#eef2ff');
+    set('tbAccent', t.accent); set('tbBg', t.bg); set('tbBg2', t.bg2||t.bg); set('tbText', t.text||'#f1ece3');
     set('tbFont', t.font||'Inter'); set('tbStyle', t.uiStyle||'glassmorphism');
     // Update swatch colors
     ['tbPrimary','tbSecondary','tbAccent','tbBg','tbBg2','tbText'].forEach(fid => {
@@ -32890,7 +32890,7 @@ function tsRenderPreviewNavbar(t) {
   t = t || tsGetActiveTheme() || TS_BUILTIN_PRESETS[0];
   return `<div class="ts-preview-navbar" style="background:${t.navbar||'rgba(8,12,20,0.95)'};border:1px solid rgba(255,255,255,0.08)">
     <div style="font-weight:800;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent">Studyria</div>
-    <div style="display:flex;gap:14px;font-size:.83rem;color:${t.text||'#eef2ff'}">
+    <div style="display:flex;gap:14px;font-size:.83rem;color:${t.text||'#f1ece3'}">
       <span>Home</span><span>Library</span><span>Wishlist</span>
     </div>
     <div style="padding:7px 18px;border-radius:8px;background:linear-gradient(135deg,${t.primary},${t.secondary});color:#fff;font-size:.8rem;font-weight:700;cursor:pointer">Login</div>
@@ -32902,10 +32902,10 @@ function tsRenderPreviewHero(t) {
   t = t || tsGetActiveTheme() || TS_BUILTIN_PRESETS[0];
   return `<div class="ts-preview-hero" style="background:linear-gradient(135deg,${t.primary}22,${t.secondary}11);border:1px solid ${t.primary}33">
     <div style="font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">Assam's #1 PDF Study Platform</div>
-    <div style="font-size:.85rem;color:${t.text||'#eef2ff'};opacity:.7;margin-bottom:16px">157+ students study smarter with Studyria</div>
+    <div style="font-size:.85rem;color:${t.text||'#f1ece3'};opacity:.7;margin-bottom:16px">157+ students study smarter with Studyria</div>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <div style="padding:9px 22px;border-radius:10px;background:linear-gradient(135deg,${t.primary},${t.secondary});color:#fff;font-weight:700;font-size:.85rem">Browse PDFs</div>
-      <div style="padding:9px 22px;border-radius:10px;border:1px solid ${t.primary};color:${t.text||'#eef2ff'};font-size:.85rem">Free Downloads</div>
+      <div style="padding:9px 22px;border-radius:10px;border:1px solid ${t.primary};color:${t.text||'#f1ece3'};font-size:.85rem">Free Downloads</div>
     </div>
   </div>`;
 }
@@ -32916,7 +32916,7 @@ function tsRenderPreviewCards(t) {
     ${['JEE Advanced 2025','UPSC Notes','NEET Biology'].map((title,i) => `
       <div class="ts-preview-card" style="background:${t.card||'rgba(255,255,255,0.03)'};border-color:${t.primary}22">
         <div style="height:64px;border-radius:8px;background:linear-gradient(135deg,${t.primary},${t.secondary});margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">📄</div>
-        <div style="font-weight:700;font-size:.82rem;margin-bottom:4px;color:${t.text||'#eef2ff'}">${title}</div>
+        <div style="font-weight:700;font-size:.82rem;margin-bottom:4px;color:${t.text||'#f1ece3'}">${title}</div>
         <div style="font-size:.72rem;color:${t.secondary};margin-bottom:8px">₹${(i+1)*99}</div>
         <div style="padding:6px;border-radius:6px;background:linear-gradient(135deg,${t.primary},${t.secondary});color:#fff;font-size:.72rem;font-weight:700;text-align:center">Buy Now</div>
       </div>`).join('')}
@@ -32929,7 +32929,7 @@ function tsRenderPreviewButtons(t) {
     <div class="ts-preview-btn" style="background:linear-gradient(135deg,${t.primary},${t.secondary});color:#fff">Primary</div>
     <div class="ts-preview-btn" style="border:1px solid ${t.primary};color:${t.primary}">Secondary</div>
     <div class="ts-preview-btn" style="background:${t.accent||'#f59e0b'};color:#000">Accent</div>
-    <div class="ts-preview-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:${t.text||'#eef2ff'}">Ghost</div>
+    <div class="ts-preview-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:${t.text||'#f1ece3'}">Ghost</div>
     <div class="ts-preview-btn" style="background:#ef4444;color:#fff">Danger</div>
     <div class="ts-preview-btn" style="background:#10d98e;color:#000">Success</div>
   </div>`;
@@ -32937,21 +32937,21 @@ function tsRenderPreviewButtons(t) {
 
 function tsRenderPreviewFooter(t) {
   t = t || tsGetActiveTheme() || TS_BUILTIN_PRESETS[0];
-  return `<div style="background:${t.bg||'#080c14'};border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.06)">
+  return `<div style="background:${t.bg||'#1a0a0a'};border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.06)">
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:16px">
       <div>
         <div style="font-weight:800;font-size:1rem;background:linear-gradient(135deg,${t.primary},${t.secondary});-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">Studyria</div>
-        <div style="font-size:.75rem;color:${t.text||'#eef2ff'};opacity:.5">Assam's #1 PDF Study Platform</div>
+        <div style="font-size:.75rem;color:${t.text||'#f1ece3'};opacity:.5">Assam's #1 PDF Study Platform</div>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap">
         ${['Explore','Company','Legal'].map(col => `
           <div>
             <div style="font-weight:600;font-size:.78rem;color:${t.primary};margin-bottom:6px">${col}</div>
-            <div style="font-size:.72rem;color:${t.text||'#eef2ff'};opacity:.5;line-height:1.8">Link 1<br>Link 2<br>Link 3</div>
+            <div style="font-size:.72rem;color:${t.text||'#f1ece3'};opacity:.5;line-height:1.8">Link 1<br>Link 2<br>Link 3</div>
           </div>`).join('')}
       </div>
     </div>
-    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;font-size:.72rem;color:${t.text||'#eef2ff'};opacity:.4;text-align:center">© 2025 Studyria. All rights reserved.</div>
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;font-size:.72rem;color:${t.text||'#f1ece3'};opacity:.4;text-align:center">© 2025 Studyria. All rights reserved.</div>
   </div>`;
 }
 
@@ -33546,7 +33546,7 @@ function renderPCCBranding(main) {
   }
   .bap-title {
     font-family:var(--font-editorial); font-size:.82rem; font-weight:700; letter-spacing:.06em;
-    background:linear-gradient(90deg,#a8c8ff,#3d8ef8 35%,#00c8e8 65%,#b0f0ff);
+    background:linear-gradient(90deg,#a8c8ff,#7d1122 35%,#c99a3c 65%,#b0f0ff);
     -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
     position:relative; z-index:1; filter:drop-shadow(0 0 8px rgba(61,142,248,.35));
   }
@@ -33557,7 +33557,7 @@ function renderPCCBranding(main) {
     font-size:.68rem;font-weight:600;color:rgba(255,255,255,.62);letter-spacing:.05em;
     position:relative;z-index:1;
   }
-  .bap-credit-name { background:linear-gradient(90deg,#3d8ef8,#00c8e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700; }
+  .bap-credit-name { background:linear-gradient(90deg,#7d1122,#c99a3c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700; }
   .brand-admin-form { background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:20px 22px;margin-bottom:16px; }
   .brand-admin-form-title { font-weight:800;font-size:.95rem;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px; }
   .brand-status-row { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--glass-border);margin-top:12px; }
@@ -33752,7 +33752,7 @@ function renderPCCNotifications(main) {
     <div style="font-weight:700;color:var(--accent);margin-bottom:14px">📋 PDF Alert Subscribers</div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
       <div style="flex:1;min-width:140px;background:rgba(61,142,248,0.08);border:1px solid rgba(61,142,248,0.2);border-radius:10px;padding:14px;text-align:center">
-        <div id="pccSubTotal" style="font-size:1.8rem;font-weight:800;color:#3d8ef8">—</div>
+        <div id="pccSubTotal" style="font-size:1.8rem;font-weight:800;color:#7d1122">—</div>
         <div style="font-size:.72rem;color:var(--text2);margin-top:2px">Total Confirmed</div>
       </div>
       <div style="flex:1;min-width:140px;background:rgba(16,217,142,0.08);border:1px solid rgba(16,217,142,0.2);border-radius:10px;padding:14px;text-align:center">
@@ -34399,13 +34399,13 @@ window._heroDefaults = {
   font_family: "Playfair Display, Georgia, serif",
   title_font_size: "clamp(1.5rem,3.4vw,2.4rem)",
   title_font_weight: "800",
-  title_color: "#eef2ff",
-  gradient_start: "#3d8ef8",
-  gradient_mid: "#8b5cf6",
-  gradient_end: "#00c8e8",
+  title_color: "#f1ece3",
+  gradient_start: "#7d1122",
+  gradient_mid: "#930205",
+  gradient_end: "#c99a3c",
   badge_bg: "rgba(61,142,248,0.12)",
   badge_border: "rgba(61,142,248,0.28)",
-  badge_color: "#00c8e8",
+  badge_color: "#c99a3c",
   bg_glow_color: "rgba(61,142,248,0.06)",
   hero_bg_type: "orbs",       // orbs | image | gradient | solid
   hero_bg_value: "",
@@ -34717,20 +34717,20 @@ async function renderHeroDesigner(main) {
   </div>
 
   <!-- Live Mini Preview -->
-  <div class="hd-preview-frame" id="hdPreviewFrame" style="margin-bottom:24px;padding:40px 24px;text-align:center;background:linear-gradient(135deg,#080c14,#0d1220);cursor:pointer" onclick="heroDesignerPreview()" title="Click for full preview">
+  <div class="hd-preview-frame" id="hdPreviewFrame" style="margin-bottom:24px;padding:40px 24px;text-align:center;background:linear-gradient(135deg,#1a0a0a,#220d0d);cursor:pointer" onclick="heroDesignerPreview()" title="Click for full preview">
     <div style="font-size:.65rem;color:rgba(255,255,255,0.3);margin-bottom:16px;letter-spacing:.12em">LIVE MINI PREVIEW — click for full screen</div>
     <div style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;border:1px solid ${g('badge_border')};background:${g('badge_bg')};color:${g('badge_color')};font-size:.7rem;font-weight:600;margin-bottom:14px">
       <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>
       ${escH(g('badge_text'))}
     </div>
-    <div style="font-size:clamp(1.4rem,4vw,2.2rem);font-weight:800;font-family:${escH(g('font_family'))};color:#eef2ff;margin-bottom:8px;line-height:1.1">
+    <div style="font-size:clamp(1.4rem,4vw,2.2rem);font-weight:800;font-family:${escH(g('font_family'))};color:#f1ece3;margin-bottom:8px;line-height:1.1">
       ${escH(g('main_title'))}<br>
       <span style="background:linear-gradient(135deg,${g('gradient_start')},${g('gradient_mid')},${g('gradient_end')});-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${escH(g('highlight_text'))}</span>
     </div>
-    <div style="font-size:.8rem;color:#7a8caa;margin-bottom:16px">${escH((g('subtitle_phrases')||'').split('|')[0] || '')}</div>
+    <div style="font-size:.8rem;color:#c9a89a;margin-bottom:16px">${escH((g('subtitle_phrases')||'').split('|')[0] || '')}</div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
       <span style="padding:7px 18px;border-radius:8px;background:linear-gradient(135deg,${g('gradient_start')},${g('gradient_end')});color:#fff;font-size:.75rem;font-weight:600">${escH(g('cta1_text'))}</span>
-      <span style="padding:7px 18px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);color:#eef2ff;font-size:.75rem">${escH(g('cta2_text'))}</span>
+      <span style="padding:7px 18px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);color:#f1ece3;font-size:.75rem">${escH(g('cta2_text'))}</span>
     </div>
   </div>
 
@@ -34821,7 +34821,7 @@ async function renderHeroDesigner(main) {
       <div class="hd-field">
         <label class="hd-label">Title Color</label>
         <div class="hd-color-row">
-          <input type="color" class="hd-color-swatch" id="hd_title_color_pick" value="${g('title_color')||'#eef2ff'}" oninput="document.getElementById('hd_title_color').value=this.value;hdLivePreview()">
+          <input type="color" class="hd-color-swatch" id="hd_title_color_pick" value="${g('title_color')||'#f1ece3'}" oninput="document.getElementById('hd_title_color').value=this.value;hdLivePreview()">
           <input class="hd-input" id="hd_title_color" value="${escH(g('title_color'))}" oninput="document.getElementById('hd_title_color_pick').value=this.value;hdLivePreview()">
         </div>
       </div>
@@ -34849,9 +34849,9 @@ async function renderHeroDesigner(main) {
     <div class="hd-section-head">Gradient Colors (Highlight Text)</div>
     <div class="hd-grid" style="margin-bottom:20px">
       ${[
-        ['gradient_start','Gradient Start','#3d8ef8'],
-        ['gradient_mid','Gradient Mid','#8b5cf6'],
-        ['gradient_end','Gradient End','#00c8e8'],
+        ['gradient_start','Gradient Start','#7d1122'],
+        ['gradient_mid','Gradient Mid','#930205'],
+        ['gradient_end','Gradient End','#c99a3c'],
       ].map(([k,lab,def]) => `
         <div class="hd-field">
           <label class="hd-label">${lab}</label>
@@ -34874,7 +34874,7 @@ async function renderHeroDesigner(main) {
       <div class="hd-field">
         <label class="hd-label">Badge Text Color</label>
         <div class="hd-color-row">
-          <input type="color" class="hd-color-swatch" id="hd_badge_color_pick" value="${g('badge_color')||'#00c8e8'}" oninput="document.getElementById('hd_badge_color').value=this.value;hdLivePreview()">
+          <input type="color" class="hd-color-swatch" id="hd_badge_color_pick" value="${g('badge_color')||'#c99a3c'}" oninput="document.getElementById('hd_badge_color').value=this.value;hdLivePreview()">
           <input class="hd-input" id="hd_badge_color" value="${escH(g('badge_color'))}" oninput="document.getElementById('hd_badge_color_pick').value=this.value;hdLivePreview()">
         </div>
       </div>
@@ -34886,12 +34886,12 @@ async function renderHeroDesigner(main) {
     <div class="hd-section-head">Premium Color Presets</div>
     <div class="hd-preset-grid">
       ${[
-        {name:'Ocean Blue',g1:'#3d8ef8',g2:'#0891b2',g3:'#00c8e8',bc:'rgba(61,142,248,0.12)',bb:'rgba(61,142,248,0.28)',btc:'#00c8e8',emoji:'🌊'},
-        {name:'Royal Purple',g1:'#8b5cf6',g2:'#7c3aed',g3:'#c084fc',bc:'rgba(139,92,246,0.12)',bb:'rgba(139,92,246,0.28)',btc:'#c084fc',emoji:'👑'},
+        {name:'Ocean Blue',g1:'#7d1122',g2:'#0891b2',g3:'#c99a3c',bc:'rgba(61,142,248,0.12)',bb:'rgba(61,142,248,0.28)',btc:'#c99a3c',emoji:'🌊'},
+        {name:'Royal Purple',g1:'#930205',g2:'#7c3aed',g3:'#c084fc',bc:'rgba(139,92,246,0.12)',bb:'rgba(139,92,246,0.28)',btc:'#c084fc',emoji:'👑'},
         {name:'Sunset Fire',g1:'#f59e0b',g2:'#f97316',g3:'#ef4444',bc:'rgba(245,158,11,0.12)',bb:'rgba(245,158,11,0.28)',btc:'#f59e0b',emoji:'🔥'},
         {name:'Emerald',g1:'#10b981',g2:'#059669',g3:'#34d399',bc:'rgba(16,185,129,0.12)',bb:'rgba(16,185,129,0.28)',btc:'#34d399',emoji:'💚'},
         {name:'Rose Gold',g1:'#f43f5e',g2:'#e11d48',g3:'#fb7185',bc:'rgba(244,63,94,0.12)',bb:'rgba(244,63,94,0.28)',btc:'#fb7185',emoji:'🌹'},
-        {name:'Galaxy',g1:'#6366f1',g2:'#8b5cf6',g3:'#06b6d4',bc:'rgba(99,102,241,0.12)',bb:'rgba(99,102,241,0.28)',btc:'#818cf8',emoji:'🌌'},
+        {name:'Galaxy',g1:'#6366f1',g2:'#930205',g3:'#06b6d4',bc:'rgba(99,102,241,0.12)',bb:'rgba(99,102,241,0.28)',btc:'#818cf8',emoji:'🌌'},
       ].map(p => `
         <div class="hd-preset" onclick="hdApplyColorPreset(${JSON.stringify(p)})" style="background:linear-gradient(135deg,${p.g1}22,${p.g3}11)">
           <div style="font-size:1.3rem">${p.emoji}</div>
@@ -34944,7 +34944,7 @@ async function renderHeroDesigner(main) {
     </div>
     <div class="hd-field" style="margin-bottom:16px">
       <label class="hd-label">Background Value (image URL / gradient CSS / hex color)</label>
-      <input class="hd-input" id="hd_hero_bg_value" value="${escH(g('hero_bg_value'))}" placeholder="https://... or linear-gradient(...) or #080c14">
+      <input class="hd-input" id="hd_hero_bg_value" value="${escH(g('hero_bg_value'))}" placeholder="https://... or linear-gradient(...) or #1a0a0a">
     </div>
     <div class="hd-section-head">Orb Visibility & Glow</div>
     <div class="hd-toggle-row" style="margin-bottom:10px">
@@ -34958,7 +34958,7 @@ async function renderHeroDesigner(main) {
     <div class="hd-section-head" style="margin-top:20px">Background Presets</div>
     <div class="hd-preset-grid">
       ${[
-        {name:'Dark Deep',type:'gradient',val:'linear-gradient(135deg,#080c14,#0d1220)',emoji:'🌑'},
+        {name:'Dark Deep',type:'gradient',val:'linear-gradient(135deg,#1a0a0a,#220d0d)',emoji:'🌑'},
         {name:'Midnight Blue',type:'gradient',val:'linear-gradient(135deg,#0f172a,#1e3a5f)',emoji:'🌌'},
         {name:'Deep Purple',type:'gradient',val:'linear-gradient(135deg,#0d0d1a,#1a0d2e)',emoji:'🍇'},
         {name:'Forest Dark',type:'gradient',val:'linear-gradient(135deg,#0a1a0f,#0d2010)',emoji:'🌲'},
@@ -34967,7 +34967,7 @@ async function renderHeroDesigner(main) {
       ].map(p => `
         <div class="hd-preset" onclick="hdApplyBgPreset(${JSON.stringify(p)})" style="background:${p.type==='gradient'?p.val:p.val}">
           <div style="font-size:1.2rem">${p.emoji}</div>
-          <div style="font-weight:700;margin-top:4px;color:#eef2ff">${p.name}</div>
+          <div style="font-weight:700;margin-top:4px;color:#f1ece3">${p.name}</div>
         </div>`).join('')}
     </div>
   </div>
@@ -35151,7 +35151,7 @@ function hdRefreshMiniPreview(s) {
 }
 
 function hdApplyColorPreset(p) {
-  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; const pick = document.getElementById(id+'_pick'); if(pick) pick.value = (val.startsWith('#')&&val.length<=7?val:'#3d8ef8'); };
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; const pick = document.getElementById(id+'_pick'); if(pick) pick.value = (val.startsWith('#')&&val.length<=7?val:'#7d1122'); };
   setVal('hd_gradient_start', p.g1); setVal('hd_gradient_mid', p.g2); setVal('hd_gradient_end', p.g3);
   const bb = document.getElementById('hd_badge_bg'); if(bb) bb.value = p.bc;
   const bbo = document.getElementById('hd_badge_border'); if(bbo) bbo.value = p.bb;
@@ -35455,8 +35455,8 @@ const HD_PREMIUM_PRESET_META = [
 
 function hdApplyFullPreset(preset) {
   const presets = {
-    classic: { gradient_start:'#3d8ef8', gradient_mid:'#8b5cf6', gradient_end:'#00c8e8', badge_bg:'rgba(61,142,248,0.12)', badge_border:'rgba(61,142,248,0.28)', badge_color:'#00c8e8', hero_bg_type:'orbs', show_orbs:true, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Playfair Display, Georgia, serif', title_font_weight:'800', layout_style:'centered', badge_text:"Assam's #1 Smartest Growth Ecosystem", main_title:"Assam's Ultimate Gateway to Education and Career Growth", highlight_text:"Studyria™ Premium Growth Hub" },
-    galaxy: { gradient_start:'#8b5cf6', gradient_mid:'#6d28d9', gradient_end:'#c084fc', badge_bg:'rgba(139,92,246,0.12)', badge_border:'rgba(139,92,246,0.3)', badge_color:'#c084fc', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#0d0d1a,#1a0d2e,#0d0d1a)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:true, enable_glow_effects:true, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
+    classic: { gradient_start:'#7d1122', gradient_mid:'#930205', gradient_end:'#c99a3c', badge_bg:'rgba(61,142,248,0.12)', badge_border:'rgba(61,142,248,0.28)', badge_color:'#c99a3c', hero_bg_type:'orbs', show_orbs:true, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Playfair Display, Georgia, serif', title_font_weight:'800', layout_style:'centered', badge_text:"Assam's #1 Smartest Growth Ecosystem", main_title:"Assam's Ultimate Gateway to Education and Career Growth", highlight_text:"Studyria™ Premium Growth Hub" },
+    galaxy: { gradient_start:'#930205', gradient_mid:'#6d28d9', gradient_end:'#c084fc', badge_bg:'rgba(139,92,246,0.12)', badge_border:'rgba(139,92,246,0.3)', badge_color:'#c084fc', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#0d0d1a,#1a0d2e,#0d0d1a)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:true, enable_glow_effects:true, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
     emerald: { gradient_start:'#10b981', gradient_mid:'#059669', gradient_end:'#34d399', badge_bg:'rgba(16,185,129,0.12)', badge_border:'rgba(16,185,129,0.3)', badge_color:'#34d399', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#0a1a0f,#0d2010)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Inter, system-ui, sans-serif', layout_style:'centered' },
     gold: { gradient_start:'#f59e0b', gradient_mid:'#f97316', gradient_end:'#fbbf24', badge_bg:'rgba(245,158,11,0.15)', badge_border:'rgba(245,158,11,0.35)', badge_color:'#f59e0b', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#1a0d00,#2d1a00)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:true, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
     rose: { gradient_start:'#f43f5e', gradient_mid:'#e11d48', gradient_end:'#fb7185', badge_bg:'rgba(244,63,94,0.12)', badge_border:'rgba(244,63,94,0.3)', badge_color:'#fb7185', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#1a0010,#2d0020)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
@@ -35679,8 +35679,8 @@ function hdRotationApplyPreset(key, { silent } = {}) {
   // admin-panel side effects (no re-render / no "click to save" toast)
   // since this runs unattended in the background on the live site.
   const legacyPresets = {
-    classic: { gradient_start:'#3d8ef8', gradient_mid:'#8b5cf6', gradient_end:'#00c8e8', badge_bg:'rgba(61,142,248,0.12)', badge_border:'rgba(61,142,248,0.28)', badge_color:'#00c8e8', hero_bg_type:'orbs', show_orbs:true, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Playfair Display, Georgia, serif', title_font_weight:'800', layout_style:'centered' },
-    galaxy: { gradient_start:'#8b5cf6', gradient_mid:'#6d28d9', gradient_end:'#c084fc', badge_bg:'rgba(139,92,246,0.12)', badge_border:'rgba(139,92,246,0.3)', badge_color:'#c084fc', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#0d0d1a,#1a0d2e,#0d0d1a)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:true, enable_glow_effects:true, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
+    classic: { gradient_start:'#7d1122', gradient_mid:'#930205', gradient_end:'#c99a3c', badge_bg:'rgba(61,142,248,0.12)', badge_border:'rgba(61,142,248,0.28)', badge_color:'#c99a3c', hero_bg_type:'orbs', show_orbs:true, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Playfair Display, Georgia, serif', title_font_weight:'800', layout_style:'centered' },
+    galaxy: { gradient_start:'#930205', gradient_mid:'#6d28d9', gradient_end:'#c084fc', badge_bg:'rgba(139,92,246,0.12)', badge_border:'rgba(139,92,246,0.3)', badge_color:'#c084fc', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#0d0d1a,#1a0d2e,#0d0d1a)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:true, enable_glow_effects:true, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
     emerald: { gradient_start:'#10b981', gradient_mid:'#059669', gradient_end:'#34d399', badge_bg:'rgba(16,185,129,0.12)', badge_border:'rgba(16,185,129,0.3)', badge_color:'#34d399', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#0a1a0f,#0d2010)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Inter, system-ui, sans-serif', layout_style:'centered' },
     gold: { gradient_start:'#f59e0b', gradient_mid:'#f97316', gradient_end:'#fbbf24', badge_bg:'rgba(245,158,11,0.15)', badge_border:'rgba(245,158,11,0.35)', badge_color:'#f59e0b', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#1a0d00,#2d1a00)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:true, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
     rose: { gradient_start:'#f43f5e', gradient_mid:'#e11d48', gradient_end:'#fb7185', badge_bg:'rgba(244,63,94,0.12)', badge_border:'rgba(244,63,94,0.3)', badge_color:'#fb7185', hero_bg_type:'gradient', hero_bg_value:'linear-gradient(135deg,#1a0010,#2d0020)', show_orbs:false, enable_gradient_text:true, enable_animated_text:true, enable_typing_effect:true, enable_particles:false, enable_glow_effects:false, font_family:'Playfair Display, Georgia, serif', layout_style:'centered' },
@@ -37809,7 +37809,7 @@ document.addEventListener('keydown', e => {
 }
 .omni-pill:hover,.omni-pill.active {
   background:rgba(61,142,248,0.18);border-color:rgba(61,142,248,0.5);
-  color:var(--accent,#3d8ef8);font-weight:700;
+  color:var(--accent,#7d1122);font-weight:700;
 }
 body.light .omni-pill { color:rgba(30,40,70,0.7); }
 body.light .omni-pill:hover,body.light .omni-pill.active {
@@ -39198,8 +39198,8 @@ body.light .pdp-rev-bar-track { background: rgba(0,0,0,0.08); }
 /* ═══ ENTERPRISE UX — Recently Viewed, Search Suggestions, Bookmarks, Badges ═══ */
 .ottlib-recent-section { margin: 16px 0 0; }
 .ottlib-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.ottlib-section-title { font-size: 1.1rem; font-weight: 700; color: #eef2ff; margin: 0; }
-.ottlib-clear-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 4px 12px; font-size: .78rem; color: #7a8caa; cursor: pointer; transition: all .2s; }
+.ottlib-section-title { font-size: 1.1rem; font-weight: 700; color: #f1ece3; margin: 0; }
+.ottlib-clear-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 4px 12px; font-size: .78rem; color: #c9a89a; cursor: pointer; transition: all .2s; }
 .ottlib-clear-btn:hover { color: #ef4444; border-color: rgba(239,68,68,0.3); }
 #reading-progress-bar { pointer-events: none; }
 .suggest-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 200; background: rgba(15,20,30,0.98); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: 0 0 14px 14px; max-height: 360px; overflow-y: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
@@ -39207,26 +39207,26 @@ body.light .suggest-dropdown { background: rgba(255,255,255,0.98); border-color:
 .suggest-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; transition: background .15s; border-bottom: 1px solid rgba(255,255,255,0.04); }
 .suggest-item:hover { background: rgba(61,142,248,0.1); }
 body.light .suggest-item:hover { background: rgba(61,142,248,0.06); }
-.suggest-item-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg,#1d4ed8,#3d8ef8); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.suggest-item-icon { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg,#1d4ed8,#7d1122); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
 .suggest-item-icon img { width: 100%; height: 100%; object-fit: cover; }
-.suggest-item-label { font-size: .88rem; font-weight: 600; color: #eef2ff; }
+.suggest-item-label { font-size: .88rem; font-weight: 600; color: #f1ece3; }
 body.light .suggest-item-label { color: #1a1a2e; }
-.suggest-item-type { font-size: .72rem; color: #7a8caa; text-transform: uppercase; letter-spacing: .5px; }
+.suggest-item-type { font-size: .72rem; color: #c9a89a; text-transform: uppercase; letter-spacing: .5px; }
 .suggest-item-cat { display: flex; align-items: center; justify-content: space-between; }
-.suggest-item-count { font-size: .72rem; color: #7a8caa; }
+.suggest-item-count { font-size: .72rem; color: #c9a89a; }
 .bookmark-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; opacity: 0.6; transition: all .2s; padding: 4px 8px; border-radius: 8px; }
 .bookmark-btn:hover { opacity: 1; transform: scale(1.1); }
 .bookmark-btn.active { opacity: 1; }
 .trending-badge { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: .65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; z-index: 5; }
-.new-badge { position: absolute; top: 8px; left: 8px; background: linear-gradient(135deg,#3d8ef8,#00c8e8); color: white; font-size: .65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; z-index: 5; }
+.new-badge { position: absolute; top: 8px; left: 8px; background: linear-gradient(135deg,#7d1122,#c99a3c); color: white; font-size: .65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; z-index: 5; }
 
 /* ═══ ENTERPRISE UX — Empty States, Loading, Error States ═══ */
 .empty-state { text-align: center; padding: 48px 20px; }
 .empty-state-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.6; }
-.empty-state-title { font-size: 1.2rem; font-weight: 700; color: #eef2ff; margin-bottom: 8px; }
+.empty-state-title { font-size: 1.2rem; font-weight: 700; color: #f1ece3; margin-bottom: 8px; }
 body.light .empty-state-title { color: #1a1a2e; }
-.empty-state-desc { font-size: .9rem; color: #7a8caa; max-width: 400px; margin: 0 auto 20px; }
-.empty-state-cta { display: inline-block; padding: 10px 24px; background: linear-gradient(135deg,#3d8ef8,#00c8e8); color: white; border-radius: 10px; font-weight: 600; font-size: .88rem; cursor: pointer; border: none; transition: transform .2s, box-shadow .2s; }
+.empty-state-desc { font-size: .9rem; color: #c9a89a; max-width: 400px; margin: 0 auto 20px; }
+.empty-state-cta { display: inline-block; padding: 10px 24px; background: linear-gradient(135deg,#7d1122,#c99a3c); color: white; border-radius: 10px; font-weight: 600; font-size: .88rem; cursor: pointer; border: none; transition: transform .2s, box-shadow .2s; }
 .empty-state-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(61,142,248,0.3); }
 
 /* Loading skeletons */
@@ -39244,7 +39244,7 @@ body.light .skeleton-cat { background: rgba(0,0,0,0.04); }
 .error-state { text-align: center; padding: 48px 20px; }
 .error-state-icon { font-size: 3rem; margin-bottom: 16px; }
 .error-state-title { font-size: 1.1rem; font-weight: 700; color: #ef4444; margin-bottom: 8px; }
-.error-state-desc { font-size: .88rem; color: #7a8caa; margin-bottom: 20px; }
+.error-state-desc { font-size: .88rem; color: #c9a89a; margin-bottom: 20px; }
 .error-state-retry { display: inline-block; padding: 10px 24px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all .2s; }
 .error-state-retry:hover { background: rgba(239,68,68,0.2); }
 
@@ -39583,7 +39583,7 @@ body.light .bsf-bookcase-outer {
   font-family: var(--font-editorial);
   font-size: clamp(1.3rem,3vw,1.9rem);
   font-weight: 800;
-  background: linear-gradient(135deg, #fff 0%, #a0c8ff 50%, #00c8e8 100%);
+  background: linear-gradient(135deg, #fff 0%, #a0c8ff 50%, #c99a3c 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 4px; position:relative; z-index:1;
 }
@@ -39633,9 +39633,9 @@ body.light .bsf-bookcase-outer {
 }
 .bsf-badge:hover { transform: scale(1.05); }
 .bsf-badge-gold { background:rgba(245,158,11,0.15); border-color:rgba(245,158,11,0.35); color:#f59e0b; }
-.bsf-badge-blue { background:rgba(61,142,248,0.15); border-color:rgba(61,142,248,0.35); color:#3d8ef8; }
+.bsf-badge-blue { background:rgba(61,142,248,0.15); border-color:rgba(61,142,248,0.35); color:#7d1122; }
 .bsf-badge-green { background:rgba(16,217,142,0.12); border-color:rgba(16,217,142,0.3); color:#10d98e; }
-.bsf-badge-purple { background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.35); color:#8b5cf6; }
+.bsf-badge-purple { background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.35); color:#930205; }
 
 /* Streak */
 .bsf-streak {
@@ -40075,7 +40075,7 @@ body.light #bsfSearch { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1
 .bsf-tt-open { background:var(--grad-primary); color:#fff; }
 .bsf-tt-dl { background:rgba(255,255,255,0.08); color:var(--text2); border:1px solid rgba(255,255,255,0.1); }
 .bsf-tt-fav { background:rgba(245,158,11,0.12); color:#f59e0b; border:1px solid rgba(245,158,11,0.25); }
-.bsf-tt-share { background:rgba(139,92,246,0.12); color:#8b5cf6; border:1px solid rgba(139,92,246,0.25); }
+.bsf-tt-share { background:rgba(139,92,246,0.12); color:#930205; border:1px solid rgba(139,92,246,0.25); }
 
 /* ── BOOK OPEN 3D MODAL ──────────────────────────────────────────── */
 #bsfOpenModal {
@@ -40138,7 +40138,7 @@ body.light #bsfSearch { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1
 .bsf-om-open:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(61,142,248,0.5); }
 .bsf-om-dl { background:rgba(16,217,142,0.1); color:var(--success); border:1px solid rgba(16,217,142,0.25); }
 .bsf-om-fav { background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.25); }
-.bsf-om-share { background:rgba(139,92,246,0.1); color:#8b5cf6; border:1px solid rgba(139,92,246,0.25); }
+.bsf-om-share { background:rgba(139,92,246,0.1); color:#930205; border:1px solid rgba(139,92,246,0.25); }
 .bsf-om-close {
   position:absolute; top:12px; right:14px;
   width:32px; height:32px; border-radius:50%;
@@ -40218,7 +40218,7 @@ body.light #bsfSearch { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1
 }
 .bsf-admin-title {
   font-family:var(--font-editorial); font-size:1.1rem; font-weight:800;
-  background:linear-gradient(135deg,#8b5cf6,#3d8ef8);
+  background:linear-gradient(135deg,#930205,#7d1122);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   margin-bottom:4px;
 }
@@ -40260,7 +40260,7 @@ body.light #bsfSearch { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.1
 /* Admin save btn */
 .bsf-admin-save {
   margin-top:18px; padding:11px 28px;
-  background:linear-gradient(135deg,#8b5cf6,#3d8ef8);
+  background:linear-gradient(135deg,#930205,#7d1122);
   border:none; border-radius:12px; color:#fff;
   font-size:.82rem; font-weight:700; cursor:pointer;
   font-family:var(--font-body);
@@ -40999,7 +40999,7 @@ body.light .sdl-insights-card { background: rgba(255,255,255,0.85); }
 const CP_LEVELS = {
   starter: { label:'Starter', share:60, icon:'⭐', color:'#f59e0b', minSales:0 },
   rising:  { label:'Rising',  share:65, icon:'🚀', color:'#10d98e', minSales:5000 },
-  pro:     { label:'Pro',     share:70, icon:'💎', color:'#3d8ef8', minSales:25000 }
+  pro:     { label:'Pro',     share:70, icon:'💎', color:'#7d1122', minSales:25000 }
 };
 
 // ── Creator revenue attribution: credits the creator when THEIR pdf sells,
@@ -42073,7 +42073,7 @@ function s3RenderList() {
     const scanning = _s3PdfMeta.filter(m => m.status === 'scanning').length;
     if (scanning > 0) {
       note.textContent = '🤖 Scanning ' + scanning + ' file' + (scanning>1?'s':'') + '…';
-      note.style.color = '#3d8ef8';
+      note.style.color = '#7d1122';
     } else {
       note.textContent = approved + ' product' + (approved!==1?'s':'') + ' approved' +
         (approved < 3 ? ' — need at least ' + (3 - approved) + ' more approved ✅' : '  ✅ Ready to continue!');
@@ -42864,13 +42864,13 @@ async function crdRenderOverview(main) {
       </div>
       <div class="crd-score-bar-row">
         <div class="crd-score-lbl">Originality</div>
-        <div class="crd-score-track"><div class="crd-score-fill" style="width:${creator.originality_score||0}%;background:linear-gradient(90deg,#3d8ef8,#00c8e8)"></div></div>
-        <div class="crd-score-val" style="color:#3d8ef8">${creator.originality_score||0}</div>
+        <div class="crd-score-track"><div class="crd-score-fill" style="width:${creator.originality_score||0}%;background:linear-gradient(90deg,#7d1122,#c99a3c)"></div></div>
+        <div class="crd-score-val" style="color:#7d1122">${creator.originality_score||0}</div>
       </div>
       <div class="crd-score-bar-row">
         <div class="crd-score-lbl">Creator Score</div>
-        <div class="crd-score-track"><div class="crd-score-fill" style="width:${creator.creator_score||0}%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div>
-        <div class="crd-score-val" style="color:#8b5cf6">${creator.creator_score||0}</div>
+        <div class="crd-score-track"><div class="crd-score-fill" style="width:${creator.creator_score||0}%;background:linear-gradient(90deg,#930205,#a78bfa)"></div></div>
+        <div class="crd-score-val" style="color:#930205">${creator.creator_score||0}</div>
       </div>
     </div>
 
@@ -42953,13 +42953,13 @@ async function crdRenderPdfs(main) {
       .crd-pdf-card-meta{font-size:.7rem;color:var(--text2);margin-bottom:6px;line-height:1.5}
       .crd-pdf-card-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--glass-border)}
       .crd-pdf-act-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;border:none;font-family:var(--font-body);transition:all .2s;text-decoration:none;flex-shrink:0}
-      .crd-pdf-act-preview{color:#3d8ef8;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.28)}
+      .crd-pdf-act-preview{color:#7d1122;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.28)}
       .crd-pdf-act-preview:hover{background:rgba(61,142,248,0.2)}
       .crd-pdf-act-download{color:#10d98e;background:rgba(16,217,142,0.1);border:1px solid rgba(16,217,142,0.28)}
       .crd-pdf-act-download:hover{background:rgba(16,217,142,0.2)}
       .crd-pdf-act-edit{color:#f59e0b;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.28)}
       .crd-pdf-act-edit:hover{background:rgba(245,158,11,0.2)}
-      .crd-pdf-act-replace{color:#8b5cf6;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28)}
+      .crd-pdf-act-replace{color:#930205;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28)}
       .crd-pdf-act-replace:hover{background:rgba(139,92,246,0.2)}
       .crd-pdf-act-delete{color:var(--danger);background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.28)}
       .crd-pdf-act-delete:hover{background:rgba(255,77,109,0.18)}
@@ -43508,8 +43508,8 @@ async function renderCreatorManagerAdmin() {
   .cm2-level-badge{font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:6px;display:inline-block}
   .cm2-badge-starter{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)}
   .cm2-badge-rising{background:rgba(16,217,142,0.15);color:#10d98e;border:1px solid rgba(16,217,142,0.3)}
-  .cm2-badge-pro{background:rgba(61,142,248,0.15);color:#3d8ef8;border:1px solid rgba(61,142,248,0.3)}
-  .cm2-badge-elite{background:rgba(139,92,246,0.15);color:#8b5cf6;border:1px solid rgba(139,92,246,0.3)}
+  .cm2-badge-pro{background:rgba(61,142,248,0.15);color:#7d1122;border:1px solid rgba(61,142,248,0.3)}
+  .cm2-badge-elite{background:rgba(139,92,246,0.15);color:#930205;border:1px solid rgba(139,92,246,0.3)}
   .cm2-status-badge{font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:6px;display:inline-block}
   .cm2-status-pending{background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.25)}
   .cm2-status-approved{background:rgba(16,217,142,0.12);color:#10d98e;border:1px solid rgba(16,217,142,0.25)}
@@ -43676,10 +43676,10 @@ async function cm2LoadApplications(content) {
                 <span style="font-size:.7rem;color:var(--text2)">Q:${c.quality_score||0}</span>
               </div>
               <div title="Originality: ${c.originality_score||0}/100" style="margin-top:4px">
-                <div class="cm2-score-bar"><div class="cm2-score-fill" style="width:${c.originality_score||0}%;background:linear-gradient(90deg,#3d8ef8,#00c8e8)"></div></div>
+                <div class="cm2-score-bar"><div class="cm2-score-fill" style="width:${c.originality_score||0}%;background:linear-gradient(90deg,#7d1122,#c99a3c)"></div></div>
                 <span style="font-size:.7rem;color:var(--text2)">O:${c.originality_score||0}</span>
               </div>
-              <div style="font-size:.68rem;color:#8b5cf6;margin-top:3px;font-weight:700">Score: ${c.creator_score||0}/100</div>
+              <div style="font-size:.68rem;color:#930205;margin-top:3px;font-weight:700">Score: ${c.creator_score||0}/100</div>
             </td>
             <td><span style="font-weight:700">${c.pdf_count||0}</span></td>
             <td style="font-size:.72rem;color:var(--text2)">${c.applied_at?new Date(c.applied_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'}):'-'}</td>
@@ -43720,7 +43720,7 @@ async function cm2LoadCreators(content) {
             <td>${c.pdf_count||0}</td>
             <td style="font-weight:700;color:#10d98e">₹${(c.total_earnings||0).toLocaleString('en-IN')}</td>
             <td>₹${(c.available_balance||0).toLocaleString('en-IN')}</td>
-            <td><span style="font-weight:700;color:#8b5cf6">${c.creator_score||0}</span></td>
+            <td><span style="font-weight:700;color:#930205">${c.creator_score||0}</span></td>
             <td>
               <div class="cm2-actions-cell">
               <button class="cm2-action-btn" onclick="cm2ViewCreator('${c.user_id}')">👁 View</button>
@@ -44231,7 +44231,7 @@ async function cm2ViewCreator(userId) {
                 ${statusBadgeHtml}
                 ${pdfSignedUrl ? `
                 <a href="${cm2EscapeHtml(pdfSignedUrl)}" target="_blank" rel="noopener"
-                   style="display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;text-decoration:none;color:#3d8ef8;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.28);white-space:nowrap">
+                   style="display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;text-decoration:none;color:#7d1122;background:rgba(61,142,248,0.1);border:1px solid rgba(61,142,248,0.28);white-space:nowrap">
                   👁 Preview
                 </a>
                 <a href="${cm2EscapeHtml(pdfSignedUrl)}" download="${cm2EscapeHtml(p.file_name||'document.pdf')}"
@@ -44780,12 +44780,12 @@ var SRV_REVIEWS=[
 ];
 
 var _srvPalette=[
-  'linear-gradient(135deg,#3d8ef8,#00c8e8)',
-  'linear-gradient(135deg,#8b5cf6,#3d8ef8)',
+  'linear-gradient(135deg,#7d1122,#c99a3c)',
+  'linear-gradient(135deg,#930205,#7d1122)',
   'linear-gradient(135deg,#10d98e,#06b6d4)',
   'linear-gradient(135deg,#f59e0b,#ef4444)',
-  'linear-gradient(135deg,#ec4899,#8b5cf6)',
-  'linear-gradient(135deg,#06b6d4,#3d8ef8)',
+  'linear-gradient(135deg,#ec4899,#930205)',
+  'linear-gradient(135deg,#06b6d4,#7d1122)',
   'linear-gradient(135deg,#a855f7,#ec4899)',
   'linear-gradient(135deg,#22d3ee,#6366f1)'
 ];
@@ -44911,7 +44911,7 @@ if(document.readyState==='loading'){
 .srv-arrow.hidden { opacity: 0; pointer-events: none; }
 .srv-dots { display: flex; justify-content: center; gap: 6px; padding: 8px 0 16px; }
 .srv-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: all .25s; }
-.srv-dot.active { width: 20px; border-radius: 3px; background: linear-gradient(90deg,#3d8ef8,#00c8e8); }
+.srv-dot.active { width: 20px; border-radius: 3px; background: linear-gradient(90deg,#7d1122,#c99a3c); }
 
 /* ── ADD YOUR REVIEW ─────────────────────────────────────────────── */
 .srv-add-wrap { max-width: 1280px; margin: 0 auto; padding: 0 20px 24px; }
@@ -44952,7 +44952,7 @@ if(document.readyState==='loading'){
 .srv-star-btn.lit { color: #fbbf24; filter: drop-shadow(0 0 4px rgba(251,191,36,.6)); }
 .srv-form-submit {
   width: 100%; padding: 13px; border-radius: 14px; border: none; cursor: pointer;
-  background: linear-gradient(135deg,#3d8ef8,#00c8e8); color: #fff;
+  background: linear-gradient(135deg,#7d1122,#c99a3c); color: #fff;
   font-size: .9rem; font-weight: 700; font-family: var(--font-ui,sans-serif);
   box-shadow: 0 4px 16px rgba(61,142,248,.35); transition: all .2s;
 }

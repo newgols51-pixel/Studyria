@@ -136,7 +136,7 @@
   height: 100%;
   border-radius: 3px;
   transition: width .6s cubic-bezier(.4,0,.2,1);
-  background: linear-gradient(90deg, #10d98e, #3d8ef8);
+  background: linear-gradient(90deg, #10d98e, #7d1122);
 }
 .p5d-days-bar-fill.p5d-bar-warn { background: linear-gradient(90deg, #f59e0b, #f97316); }
 .p5d-days-bar-fill.p5d-bar-crit { background: linear-gradient(90deg, #ff4d6d, #f43f5e); }
@@ -168,7 +168,7 @@
 }
 .p5d-btn-secondary {
   background: rgba(61,142,248,.15);
-  color: #3d8ef8;
+  color: #7d1122;
   border: 1.5px solid rgba(61,142,248,.3);
 }
 .p5d-btn-danger {
@@ -356,7 +356,7 @@
 .p5d-txn-load-more button {
   background: none;
   border: 1px solid rgba(61,142,248,.25);
-  color: #3d8ef8;
+  color: #7d1122;
   padding: 8px 20px;
   border-radius: 8px;
   font-size: .78rem;

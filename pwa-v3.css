@@ -11,7 +11,7 @@
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: #080c14;
+  background: #1a0a0a;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -68,7 +68,7 @@
 }
 
 .pwa-splash-brand span {
-  background: linear-gradient(135deg, #3d8ef8, #93c5fd);
+  background: linear-gradient(135deg, #7d1122, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -97,7 +97,7 @@
   width: 32px;
   height: 32px;
   border: 2.5px solid rgba(61,142,248,0.15);
-  border-top-color: #3d8ef8;
+  border-top-color: #7d1122;
   border-radius: 50%;
   animation: splashSpin 0.8s linear infinite;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -205,7 +205,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3d8ef8;
+  color: #7d1122;
 }
 
 .pwa-update-text {
@@ -231,7 +231,7 @@
 .pwa-update-btn {
   flex-shrink: 0;
   padding: 7px 14px;
-  background: #3d8ef8;
+  background: #7d1122;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -315,7 +315,7 @@
 .pwa-install-progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #3d8ef8, #93c5fd);
+  background: linear-gradient(90deg, #7d1122, #93c5fd);
   border-radius: 2px;
   transition: width 1.5s ease;
 }
@@ -399,7 +399,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #3d8ef8;
+  background: #7d1122;
   box-shadow: 0 0 10px rgba(61,142,248,0.7);
   animation: pwaUbPulse 1.4s ease-in-out infinite;
 }
@@ -434,7 +434,7 @@
 .pwa-ub-btn:active { transform: scale(0.95); }
 .pwa-ub-btn--now {
   padding: 8px 15px;
-  background: #3d8ef8;
+  background: #7d1122;
   color: #fff;
 }
 .pwa-ub-btn--now:hover { background: #2b7de0; }
@@ -448,7 +448,7 @@
 .pwa-ub-btn--details {
   padding: 8px 11px;
   background: rgba(61,142,248,0.12);
-  color: #3d8ef8;
+  color: #7d1122;
   border: 1px solid rgba(61,142,248,0.25) !important;
 }
 .pwa-ub-btn--details:hover { background: rgba(61,142,248,0.2); }
@@ -507,7 +507,7 @@
 }
 .pwa-upd-bar {
   height: 100%;
-  background: linear-gradient(90deg, #3d8ef8, #06b6d4);
+  background: linear-gradient(90deg, #7d1122, #06b6d4);
   border-radius: 3px;
   transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
 }
@@ -576,7 +576,7 @@
 .pwa-wn-close {
   width: 100%;
   padding: 13px;
-  background: #3d8ef8;
+  background: #7d1122;
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -611,7 +611,7 @@
 .pwa-force-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #3d8ef8, #06b6d4);
+  background: linear-gradient(135deg, #7d1122, #06b6d4);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -657,7 +657,7 @@
   border: 1px solid rgba(61,142,248,0.3);
   border-radius: 10px;
   background: rgba(61,142,248,0.08);
-  color: #3d8ef8;
+  color: #7d1122;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
