@@ -7,7 +7,7 @@
 // CONFIG
 // ════════════════════════════════════════════════
 var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
-var POLL_MS=2000, PING_MS=8000, INV_MS=3000;
+var POLL_MS=2000, PING_MS=8000, INV_MS=3000, WAIT_POLL_MS=2000; // WAIT_POLL_MS was referenced in startWaitingPoll() but never declared — in strict mode this threw a ReferenceError the instant startWaitingPoll ran, which killed the auto-poll setInterval, the immediate waitingPoll() call, AND the visibilitychange/focus listener setup before any of them executed. Result: the 'waiting for opponent' screen never auto-refreshed — only the manual 'Check Now' button (which calls waitingPoll() directly, bypassing startWaitingPoll) worked. This declaration is the real, permanent fix.
 var battleTimerInt=null; // Battle question timer interval handle — MUST be declared (strict mode); missing var here previously caused ReferenceError on every Next/Skip/finish/leave click, silently breaking battle progression.
 
 var MODES=[
@@ -2242,7 +2242,16 @@ function startBattlePoll(){
 function startWaitingPoll(){
   stopTimer('poll');
   stopTimer('waitingPoll');
-  S.timers.waitingPoll=setInterval(waitingPoll,WAIT_POLL_MS);
+  // Defensive: wrap setup in try/catch so any future error here (e.g. an
+  // undeclared variable, like the WAIT_POLL_MS bug this replaced) degrades
+  // to a safe fallback interval instead of silently killing auto-polling
+  // and stranding the user on "Waiting for opponent" forever.
+  try{
+    S.timers.waitingPoll=setInterval(waitingPoll,WAIT_POLL_MS);
+  }catch(e){
+    console.error('Arena: startWaitingPoll interval setup failed, using fallback interval',e);
+    S.timers.waitingPoll=setInterval(waitingPoll,2500);
+  }
   waitingPoll();
   if(!S._waitVisHandler){
     S._waitVisHandler=function(){

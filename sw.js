@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v60'; // v60: invite fix — setReady(false) self-heal after acceptInvite
+const CACHE_VERSION = 'v61'; // v61: fixed missing WAIT_POLL_MS declaration — waiting-for-opponent screen now auto-detects match completion instead of requiring manual 'Check Now' tap
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
