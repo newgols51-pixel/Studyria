@@ -331,6 +331,8 @@ async function showHome(){
   var st=await computeArenaStats(S.user.id);
   var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
   var battles=st.battles,winRate=st.winRate;
+  // Persist so doPing/closeOverlay send real stats to presence (fixes leaderboard too)
+  try{localStorage.setItem('arena_stats',JSON.stringify({rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate}));}catch(e){}
   
   var h='<div class="arena-title">⚔️ Practice Arena</div>';
   h+='<div class="arena-sub">Compete with real players in real-time</div>';
@@ -1432,7 +1434,7 @@ async function acceptInvite(inviteId){
   
   S.matchId=matchId;
   S.cfg={mode:cfg.mode||'1v1',qCount:cfg.questionCount||10,exam:cfg.exam||'All',cat:cfg.category||'All',diff:cfg.difficulty||'mixed'};
-  await api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam,arenaRating:0,wins:0,losses:0,draws:0,battles:0,status:'in_arena'});
+  {var sai=getArenaStats();await api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam,arenaRating:sai.rating||1000,wins:sai.wins||0,losses:sai.losses||0,draws:sai.draws||0,battles:sai.battles||0,status:'in_arena'});}
   
   // Ensure we're actually in the match's player list (backend adds us on respondInvite, but double-check)
   var matchRes=await api('getMatch',{matchId:matchId});
