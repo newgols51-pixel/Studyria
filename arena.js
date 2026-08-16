@@ -8,6 +8,7 @@
 // ════════════════════════════════════════════════
 var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
 var POLL_MS=2000, PING_MS=8000, INV_MS=3000;
+var battleTimerInt=null; // Battle question timer interval handle — MUST be declared (strict mode); missing var here previously caused ReferenceError on every Next/Skip/finish/leave click, silently breaking battle progression.
 
 var MODES=[
   {id:'1v1',label:'1 v 1',icon:'⚔️',desc:'Head-to-head duel',players:2,type:'duel',teamA:1,teamB:1},
