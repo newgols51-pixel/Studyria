@@ -5,6 +5,7 @@
    Reasoning, English, Computer, Economy, General Knowledge, Environment
    Each question: [q, a, b, c, d, ans, cat, topic, diff, exam_tags]
    ═══════════════════════════════════════════════════════════════════════ */
+/* Total questions: 5303 (822 original + 4481 new) */
 window.STUDYRIA_QB = [
   ['Who was the first Chief Minister of Assam?','Gopinath Bordoloi','Bishnuram Medhi','Sarat Chandra Sinha','Hiteswar Saikia','a','Gopinath Bordoloi was the first CM of Assam (1946-1957).','Assam GK','Assam Polity','easy','APSC,ADRE'],
   ['Which dynasty ruled Assam for nearly 600 years?','Koch','Ahom','Kachari','Chutiya','b','The Ahom Dynasty ruled Assam 1228-1826, repelling Mughal invasions.','Assam GK','Assam History','easy','APSC,ADRE'],
@@ -830,5 +831,8962 @@ window.STUDYRIA_QB = [
   ['Which Assamese month corresponds to the Rongali Bihu?','Bohag','Kati','Magh','Jeth','a','Rongali Bihu is celebrated in Bohag (mid-April), the Assamese New Year.','Assam GK','Assam Culture','medium','APSC,ADRE'],
   ['Majuli island is primarily inhabited by which tribal community?','Bodo','Mishing','Karbi','Dimasa','b','Mishing (Mising) is the largest tribal community on Majuli island.','Assam GK','Assam Culture','medium','APSC,ADRE'],
   ['The first tea garden in Assam was established at?','Dibrugarh','Sadia','Jorhat','Chabua','d','The first tea garden in Assam was established at Chabua in 1837.','Assam GK','Assam History','hard','APSC,ADRE'],
+  ['What is the headquarters of Baksa district?','Mushalpur','Guwahati','Tezpur','Silchar','a','Mushalpur is the headquarters of Baksa district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Baksa district located?','BTAD','Central Assam','Brahmaputra Valley','Barak Valley','a','Baksa district is in the BTAD region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Baksa district in sq km?','2850','5000','8000','10000','a','Baksa district has an area of approximately 2850 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Barpeta district?','Barpeta','Guwahati','Tezpur','Silchar','a','Barpeta is the headquarters of Barpeta district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Barpeta district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Barpeta district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Barpeta district in sq km?','3245','5000','8000','10000','a','Barpeta district has an area of approximately 3245 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Biswanath district?','Biswanath Chariali','Guwahati','Tezpur','Silchar','a','Biswanath Chariali is the headquarters of Biswanath district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Biswanath district located?','Northern Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Biswanath district is in the Northern Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Biswanath district in sq km?','1530','5000','8000','10000','a','Biswanath district has an area of approximately 1530 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Bongaigaon district?','Bongaigaon','Guwahati','Tezpur','Silchar','a','Bongaigaon is the headquarters of Bongaigaon district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Bongaigaon district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Bongaigaon district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Bongaigaon district in sq km?','1549','5000','8000','10000','a','Bongaigaon district has an area of approximately 1549 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Cachar district?','Silchar','Guwahati','Tezpur','Silchar','a','Silchar is the headquarters of Cachar district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Cachar district located?','Barak Valley','Central Assam','Brahmaputra Valley','Barak Valley','a','Cachar district is in the Barak Valley region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Cachar district in sq km?','3786','5000','8000','10000','a','Cachar district has an area of approximately 3786 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Charaideo district?','Sonari','Guwahati','Tezpur','Silchar','a','Sonari is the headquarters of Charaideo district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Charaideo district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Charaideo district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Charaideo district in sq km?','1520','5000','8000','10000','a','Charaideo district has an area of approximately 1520 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Chirang district?','Kajalgaon','Guwahati','Tezpur','Silchar','a','Kajalgaon is the headquarters of Chirang district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Chirang district located?','BTAD','Central Assam','Brahmaputra Valley','Barak Valley','a','Chirang district is in the BTAD region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Chirang district in sq km?','1516','5000','8000','10000','a','Chirang district has an area of approximately 1516 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Darrang district?','Mangaldai','Guwahati','Tezpur','Silchar','a','Mangaldai is the headquarters of Darrang district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Darrang district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Darrang district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Darrang district in sq km?','1640','5000','8000','10000','a','Darrang district has an area of approximately 1640 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Dhemaji district?','Dhemaji','Guwahati','Tezpur','Silchar','a','Dhemaji is the headquarters of Dhemaji district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Dhemaji district located?','Northern Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Dhemaji district is in the Northern Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Dhemaji district in sq km?','2657','5000','8000','10000','a','Dhemaji district has an area of approximately 2657 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Dhubri district?','Dhubri','Guwahati','Tezpur','Silchar','a','Dhubri is the headquarters of Dhubri district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Dhubri district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Dhubri district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Dhubri district in sq km?','2831','5000','8000','10000','a','Dhubri district has an area of approximately 2831 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Dibrugarh district?','Dibrugarh','Guwahati','Tezpur','Silchar','a','Dibrugarh is the headquarters of Dibrugarh district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Dibrugarh district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Dibrugarh district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Dibrugarh district in sq km?','3381','5000','8000','10000','a','Dibrugarh district has an area of approximately 3381 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Dima Hasao district?','Haflong','Guwahati','Tezpur','Silchar','a','Haflong is the headquarters of Dima Hasao district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Dima Hasao district located?','Hill District','Central Assam','Brahmaputra Valley','Barak Valley','a','Dima Hasao district is in the Hill District region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Dima Hasao district in sq km?','4890','5000','8000','10000','a','Dima Hasao district has an area of approximately 4890 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Goalpara district?','Goalpara','Guwahati','Tezpur','Silchar','a','Goalpara is the headquarters of Goalpara district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Goalpara district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Goalpara district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Goalpara district in sq km?','1824','5000','8000','10000','a','Goalpara district has an area of approximately 1824 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Golaghat district?','Golaghat','Guwahati','Tezpur','Silchar','a','Golaghat is the headquarters of Golaghat district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Golaghat district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Golaghat district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Golaghat district in sq km?','3502','5000','8000','10000','a','Golaghat district has an area of approximately 3502 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Hailakandi district?','Hailakandi','Guwahati','Tezpur','Silchar','a','Hailakandi is the headquarters of Hailakandi district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Hailakandi district located?','Barak Valley','Central Assam','Brahmaputra Valley','Barak Valley','a','Hailakandi district is in the Barak Valley region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Hailakandi district in sq km?','1327','5000','8000','10000','a','Hailakandi district has an area of approximately 1327 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Hojai district?','Hojai','Guwahati','Tezpur','Silchar','a','Hojai is the headquarters of Hojai district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Hojai district located?','Central Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Hojai district is in the Central Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Hojai district in sq km?','1683','5000','8000','10000','a','Hojai district has an area of approximately 1683 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Jorhat district?','Jorhat','Guwahati','Tezpur','Silchar','a','Jorhat is the headquarters of Jorhat district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Jorhat district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Jorhat district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Jorhat district in sq km?','2851','5000','8000','10000','a','Jorhat district has an area of approximately 2851 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Karbi Anglong district?','Diphu','Guwahati','Tezpur','Silchar','a','Diphu is the headquarters of Karbi Anglong district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Karbi Anglong district located?','Hill District','Central Assam','Brahmaputra Valley','Barak Valley','a','Karbi Anglong district is in the Hill District region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Karbi Anglong district in sq km?','10400','5000','8000','10000','a','Karbi Anglong district has an area of approximately 10400 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Karimganj district?','Karimganj','Guwahati','Tezpur','Silchar','a','Karimganj is the headquarters of Karimganj district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Karimganj district located?','Barak Valley','Central Assam','Brahmaputra Valley','Barak Valley','a','Karimganj district is in the Barak Valley region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Karimganj district in sq km?','1809','5000','8000','10000','a','Karimganj district has an area of approximately 1809 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Kokrajhar district?','Kokrajhar','Guwahati','Tezpur','Silchar','a','Kokrajhar is the headquarters of Kokrajhar district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Kokrajhar district located?','BTAD','Central Assam','Brahmaputra Valley','Barak Valley','a','Kokrajhar district is in the BTAD region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Kokrajhar district in sq km?','1205','5000','8000','10000','a','Kokrajhar district has an area of approximately 1205 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Kamrup district?','Amingaon','Guwahati','Tezpur','Silchar','a','Amingaon is the headquarters of Kamrup district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Kamrup district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Kamrup district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Kamrup district in sq km?','2745','5000','8000','10000','a','Kamrup district has an area of approximately 2745 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Kamrup Metro district?','Guwahati','Guwahati','Tezpur','Silchar','a','Guwahati is the headquarters of Kamrup Metro district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Kamrup Metro district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Kamrup Metro district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Kamrup Metro district in sq km?','955','5000','8000','10000','a','Kamrup Metro district has an area of approximately 955 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Lakhimpur district?','North Lakhimpur','Guwahati','Tezpur','Silchar','a','North Lakhimpur is the headquarters of Lakhimpur district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Lakhimpur district located?','Northern Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Lakhimpur district is in the Northern Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Lakhimpur district in sq km?','2277','5000','8000','10000','a','Lakhimpur district has an area of approximately 2277 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Majuli district?','Garamur','Guwahati','Tezpur','Silchar','a','Garamur is the headquarters of Majuli district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Majuli district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Majuli district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Majuli district in sq km?','525','5000','8000','10000','a','Majuli district has an area of approximately 525 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Morigaon district?','Morigaon','Guwahati','Tezpur','Silchar','a','Morigaon is the headquarters of Morigaon district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Morigaon district located?','Central Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Morigaon district is in the Central Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Morigaon district in sq km?','1704','5000','8000','10000','a','Morigaon district has an area of approximately 1704 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Nagaon district?','Nagaon','Guwahati','Tezpur','Silchar','a','Nagaon is the headquarters of Nagaon district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Nagaon district located?','Central Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Nagaon district is in the Central Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Nagaon district in sq km?','1827','5000','8000','10000','a','Nagaon district has an area of approximately 1827 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Nalbari district?','Nalbari','Guwahati','Tezpur','Silchar','a','Nalbari is the headquarters of Nalbari district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Nalbari district located?','Lower Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Nalbari district is in the Lower Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Nalbari district in sq km?','1157','5000','8000','10000','a','Nalbari district has an area of approximately 1157 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Sivasagar district?','Sivasagar','Guwahati','Tezpur','Silchar','a','Sivasagar is the headquarters of Sivasagar district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Sivasagar district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Sivasagar district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Sivasagar district in sq km?','2676','5000','8000','10000','a','Sivasagar district has an area of approximately 2676 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Sonitpur district?','Tezpur','Guwahati','Tezpur','Silchar','a','Tezpur is the headquarters of Sonitpur district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Sonitpur district located?','Northern Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Sonitpur district is in the Northern Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Sonitpur district in sq km?','1208','5000','8000','10000','a','Sonitpur district has an area of approximately 1208 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Tinsukia district?','Tinsukia','Guwahati','Tezpur','Silchar','a','Tinsukia is the headquarters of Tinsukia district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Tinsukia district located?','Upper Assam','Central Assam','Brahmaputra Valley','Barak Valley','a','Tinsukia district is in the Upper Assam region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Tinsukia district in sq km?','3792','5000','8000','10000','a','Tinsukia district has an area of approximately 3792 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of Udalguri district?','Tangla','Guwahati','Tezpur','Silchar','a','Tangla is the headquarters of Udalguri district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is Udalguri district located?','BTAD','Central Assam','Brahmaputra Valley','Barak Valley','a','Udalguri district is in the BTAD region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of Udalguri district in sq km?','1840','5000','8000','10000','a','Udalguri district has an area of approximately 1840 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What is the headquarters of West Karbi Anglong district?','Hamren','Guwahati','Tezpur','Silchar','a','Hamren is the headquarters of West Karbi Anglong district.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['In which region of Assam is West Karbi Anglong district located?','Hill District','Central Assam','Brahmaputra Valley','Barak Valley','a','West Karbi Anglong district is in the Hill District region of Assam.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate area of West Karbi Anglong district in sq km?','2448','5000','8000','10000','a','West Karbi Anglong district has an area of approximately 2448 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Brahmaputra river originate?','Chemayungdung glacier in Tibet','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Brahmaputra river originates from Chemayungdung glacier in Tibet.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Brahmaputra river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Brahmaputra flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Brahmaputra river?','2906 km','1000 km','2000 km','500 km','a','The Brahmaputra river is approximately 2906 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Barak river originate?','Lushai Hills in Manipur','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Barak river originates from Lushai Hills in Manipur.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Barak river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Barak flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Barak river?','900 km','1000 km','2000 km','500 km','a','The Barak river is approximately 900 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Subansiri river originate?','Tibet','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Subansiri river originates from Tibet.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Subansiri river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Subansiri flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Subansiri river?','442 km','1000 km','2000 km','500 km','a','The Subansiri river is approximately 442 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Manas river originate?','Bhutan Himalayas','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Manas river originates from Bhutan Himalayas.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Manas river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Manas flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Manas river?','376 km','1000 km','2000 km','500 km','a','The Manas river is approximately 376 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Dhansiri river originate?','Nagaland','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Dhansiri river originates from Nagaland.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Dhansiri river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Dhansiri flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Dhansiri river?','300 km','1000 km','2000 km','500 km','a','The Dhansiri river is approximately 300 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Kapili river originate?','Meghalaya','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Kapili river originates from Meghalaya.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Kapili river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Kapili flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Kapili river?','256 km','1000 km','2000 km','500 km','a','The Kapili river is approximately 256 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Dibang river originate?','Arunachal Pradesh','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Dibang river originates from Arunachal Pradesh.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Dibang river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Dibang flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Dibang river?','600 km','1000 km','2000 km','500 km','a','The Dibang river is approximately 600 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Lohit river originate?','Tibet','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Lohit river originates from Tibet.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Lohit river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Lohit flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Lohit river?','480 km','1000 km','2000 km','500 km','a','The Lohit river is approximately 480 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Burhi Dihing river originate?','Arunachal Pradesh','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Burhi Dihing river originates from Arunachal Pradesh.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Burhi Dihing river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Burhi Dihing flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Burhi Dihing river?','380 km','1000 km','2000 km','500 km','a','The Burhi Dihing river is approximately 380 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Disang river originate?','Nagaland','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Disang river originates from Nagaland.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Disang river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Disang flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Disang river?','230 km','1000 km','2000 km','500 km','a','The Disang river is approximately 230 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Kopili river originate?','Meghalaya','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Kopili river originates from Meghalaya.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Kopili river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Kopili flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Kopili river?','256 km','1000 km','2000 km','500 km','a','The Kopili river is approximately 256 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Jia Bharali river originate?','Arunachal Pradesh','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Jia Bharali river originates from Arunachal Pradesh.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Jia Bharali river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Jia Bharali flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Jia Bharali river?','270 km','1000 km','2000 km','500 km','a','The Jia Bharali river is approximately 270 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Pagladia river originate?','Bhutan','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Pagladia river originates from Bhutan.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Pagladia river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Pagladia flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Pagladia river?','180 km','1000 km','2000 km','500 km','a','The Pagladia river is approximately 180 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Sankosh river originate?','Bhutan','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Sankosh river originates from Bhutan.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Sankosh river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Sankosh flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Sankosh river?','220 km','1000 km','2000 km','500 km','a','The Sankosh river is approximately 220 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['Where does the Raidak river originate?','Bhutan','Himalayas in Uttarakhand','Vindhya Range','Western Ghats','a','The Raidak river originates from Bhutan.','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['The Raidak river is a tributary of which major river?','Brahmaputra','Barak','Ganga','Subansiri','a','The Raidak flows into the Brahmaputra.','Assam GK','Assam Geography','medium','APSC'],
+
+  ['What is the approximate length of the Raidak river?','180 km','1000 km','2000 km','500 km','a','The Raidak river is approximately 180 km long.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['In which district(s) is Kaziranga National Park located?','Golaghat and Nagaon','Dibrugarh','Kamrup','Cachar','a','Kaziranga National Park is located in Golaghat and Nagaon district(s).','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['Kaziranga National Park is famous for which species?','One-horned Rhinoceros','Asiatic Lion','Snow Leopard','Wild Buffalo','a','Kaziranga National Park is famous for One-horned Rhinoceros.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['What is the approximate area of Kaziranga National Park?','430 sq km','1000 sq km','2000 sq km','500 sq km','a','Kaziranga National Park covers approximately 430 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['In which district(s) is Manas National Park located?','Chirang and Baksa','Dibrugarh','Kamrup','Cachar','a','Manas National Park is located in Chirang and Baksa district(s).','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['Manas National Park is famous for which species?','Golden Langur and Bengal Florican','Asiatic Lion','Snow Leopard','Wild Buffalo','a','Manas National Park is famous for Golden Langur and Bengal Florican.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['What is the approximate area of Manas National Park?','500 sq km','1000 sq km','2000 sq km','500 sq km','a','Manas National Park covers approximately 500 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['In which district(s) is Dibru-Saikhowa National Park located?','Tinsukia and Dibrugarh','Dibrugarh','Kamrup','Cachar','a','Dibru-Saikhowa National Park is located in Tinsukia and Dibrugarh district(s).','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['Dibru-Saikhowa National Park is famous for which species?','Feral Horses','Asiatic Lion','Snow Leopard','Wild Buffalo','a','Dibru-Saikhowa National Park is famous for Feral Horses.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['What is the approximate area of Dibru-Saikhowa National Park?','340 sq km','1000 sq km','2000 sq km','500 sq km','a','Dibru-Saikhowa National Park covers approximately 340 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['In which district(s) is Nameri National Park located?','Sonitpur','Dibrugarh','Kamrup','Cachar','a','Nameri National Park is located in Sonitpur district(s).','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['Nameri National Park is famous for which species?','White-winged Wood Duck','Asiatic Lion','Snow Leopard','Wild Buffalo','a','Nameri National Park is famous for White-winged Wood Duck.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['What is the approximate area of Nameri National Park?','200 sq km','1000 sq km','2000 sq km','500 sq km','a','Nameri National Park covers approximately 200 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['In which district(s) is Rajiv Gandhi Orang National Park located?','Darrang and Sonitpur','Dibrugarh','Kamrup','Cachar','a','Rajiv Gandhi Orang National Park is located in Darrang and Sonitpur district(s).','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['Rajiv Gandhi Orang National Park is famous for which species?','One-horned Rhinoceros','Asiatic Lion','Snow Leopard','Wild Buffalo','a','Rajiv Gandhi Orang National Park is famous for One-horned Rhinoceros.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['What is the approximate area of Rajiv Gandhi Orang National Park?','78.8 sq km','1000 sq km','2000 sq km','500 sq km','a','Rajiv Gandhi Orang National Park covers approximately 78.8 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['In which district(s) is Pobitora National Park located?','Morigaon','Dibrugarh','Kamrup','Cachar','a','Pobitora National Park is located in Morigaon district(s).','Assam GK','Assam Geography','medium','APSC,ADRE'],
+
+  ['Pobitora National Park is famous for which species?','One-horned Rhinoceros','Asiatic Lion','Snow Leopard','Wild Buffalo','a','Pobitora National Park is famous for One-horned Rhinoceros.','Assam GK','Assam Geography','easy','APSC,ADRE'],
+
+  ['What is the approximate area of Pobitora National Park?','38.8 sq km','1000 sq km','2000 sq km','500 sq km','a','Pobitora National Park covers approximately 38.8 sq km.','Assam GK','Assam Geography','hard','APSC'],
+
+  ['What significant event happened in Assam in 1228?','Chao Lung Sukapha founded the Ahom kingdom','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1228, Chao Lung Sukapha founded the Ahom kingdom.','Assam GK','Assam History','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Chao Lung Sukapha founded the Ahom kingdom?','1228','1850','1900','1950','a','This event occurred in 1228.','Assam GK','Assam History','hard','APSC'],
+
+  ['What significant event happened in Assam in 1671?','Battle of Saraighat — Lachit Borphukan defeated Mughals','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1671, Battle of Saraighat — Lachit Borphukan defeated Mughals.','Assam GK','Assam History','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Battle of Saraighat — Lachit Borphukan defeated Mughals?','1671','1850','1900','1950','a','This event occurred in 1671.','Assam GK','Assam History','hard','APSC'],
+
+  ['What significant event happened in Assam in 1826?','Treaty of Yandaboo — Assam came under British rule','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1826, Treaty of Yandaboo — Assam came under British rule.','Assam GK','Assam History','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Treaty of Yandaboo — Assam came under British rule?','1826','1850','1900','1950','a','This event occurred in 1826.','Assam GK','Assam History','hard','APSC'],
+
+  ['What significant event happened in Assam in 1905?','Bengal Partition — Assam became part of Eastern Bengal','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1905, Bengal Partition — Assam became part of Eastern Bengal.','Assam GK','Assam History','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Bengal Partition — Assam became part of Eastern Bengal?','1905','1850','1900','1950','a','This event occurred in 1905.','Assam GK','Assam History','hard','APSC'],
+
+  ['What significant event happened in Assam in 1912?','Assam became a separate province under British India','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1912, Assam became a separate province under British India.','Assam GK','Assam History','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Assam became a separate province under British India?','1912','1850','1900','1950','a','This event occurred in 1912.','Assam GK','Assam History','hard','APSC'],
+
+  ['What significant event happened in Assam in 1947?','India gained independence — Assam became a state of India','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1947, India gained independence — Assam became a state of India.','Assam GK','Assam History','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: India gained independence — Assam became a state of India?','1947','1850','1900','1950','a','This event occurred in 1947.','Assam GK','Assam History','hard','APSC'],
+
+  ['What significant event happened in Assam in 1960?','Assam Official Language Act made Assamese the official language','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1960, Assam Official Language Act made Assamese the official language.','Assam GK','Assam Polity','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Assam Official Language Act made Assamese the official language?','1960','1850','1900','1950','a','This event occurred in 1960.','Assam GK','Assam Polity','hard','APSC'],
+
+  ['What significant event happened in Assam in 1979?','Assam Agitation began against illegal immigration','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1979, Assam Agitation began against illegal immigration.','Assam GK','Assam Polity','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Assam Agitation began against illegal immigration?','1979','1850','1900','1950','a','This event occurred in 1979.','Assam GK','Assam Polity','hard','APSC'],
+
+  ['What significant event happened in Assam in 1985?','Assam Accord signed ending the Assam Agitation','Assam became a state','Tea cultivation began','Oil was discovered','a','In 1985, Assam Accord signed ending the Assam Agitation.','Assam GK','Assam Polity','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: Assam Accord signed ending the Assam Agitation?','1985','1850','1900','1950','a','This event occurred in 1985.','Assam GK','Assam Polity','hard','APSC'],
+
+  ['What significant event happened in Assam in 2026?','BJP won 82 seats in Assam Legislative Assembly election','Assam became a state','Tea cultivation began','Oil was discovered','a','In 2026, BJP won 82 seats in Assam Legislative Assembly election.','Assam GK','Assam Polity','medium','APSC,ADRE'],
+
+  ['In which year did the following event occur in Assam: BJP won 82 seats in Assam Legislative Assembly election?','2026','1850','1900','1950','a','This event occurred in 2026.','Assam GK','Assam Polity','hard','APSC'],
+
+  ['In which month is Rongali Bihu celebrated?','April','March','July','November','a','Rongali Bihu is celebrated in April. Marks the Assamese New Year and spring season.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Rongali Bihu?','Marks the Assamese New Year and spring season','Victory in battle','Independence day','Founding of Ahom kingdom','a','Rongali Bihu: Marks the Assamese New Year and spring season.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Magh Bihu celebrated?','January','March','July','November','a','Magh Bihu is celebrated in January. Harvest festival also known as Bhogali Bihu.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Magh Bihu?','Harvest festival also known as Bhogali Bihu','Victory in battle','Independence day','Founding of Ahom kingdom','a','Magh Bihu: Harvest festival also known as Bhogali Bihu.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Kati Bihu celebrated?','October','March','July','November','a','Kati Bihu is celebrated in October. Festival of lamps praying for good harvest.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Kati Bihu?','Festival of lamps praying for good harvest','Victory in battle','Independence day','Founding of Ahom kingdom','a','Kati Bihu: Festival of lamps praying for good harvest.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Ambubachi Mela celebrated?','June','March','July','November','a','Ambubachi Mela is celebrated in June. Festival at Kamakhya Temple.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Ambubachi Mela?','Festival at Kamakhya Temple','Victory in battle','Independence day','Founding of Ahom kingdom','a','Ambubachi Mela: Festival at Kamakhya Temple.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Baishagu celebrated?','April','March','July','November','a','Baishagu is celebrated in April. Spring festival of the Bodo community.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Baishagu?','Spring festival of the Bodo community','Victory in battle','Independence day','Founding of Ahom kingdom','a','Baishagu: Spring festival of the Bodo community.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Ali-Aye-Ligang celebrated?','February','March','July','November','a','Ali-Aye-Ligang is celebrated in February. Agricultural festival of the Mising community.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Ali-Aye-Ligang?','Agricultural festival of the Mising community','Victory in battle','Independence day','Founding of Ahom kingdom','a','Ali-Aye-Ligang: Agricultural festival of the Mising community.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Bwisagu celebrated?','April','March','July','November','a','Bwisagu is celebrated in April. New Year festival of the Bodo community.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Bwisagu?','New Year festival of the Bodo community','Victory in battle','Independence day','Founding of Ahom kingdom','a','Bwisagu: New Year festival of the Bodo community.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Me-Dam-Me-Phi celebrated?','January','March','July','November','a','Me-Dam-Me-Phi is celebrated in January. Ancestor worship festival of the Ahom community.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Me-Dam-Me-Phi?','Ancestor worship festival of the Ahom community','Victory in battle','Independence day','Founding of Ahom kingdom','a','Me-Dam-Me-Phi: Ancestor worship festival of the Ahom community.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Jonbeel Mela celebrated?','January','March','July','November','a','Jonbeel Mela is celebrated in January. Community fair and barter system near Guwahati.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Jonbeel Mela?','Community fair and barter system near Guwahati','Victory in battle','Independence day','Founding of Ahom kingdom','a','Jonbeel Mela: Community fair and barter system near Guwahati.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['In which month is Dehing Patkai Festival celebrated?','January','March','July','November','a','Dehing Patkai Festival is celebrated in January. Festival celebrating heritage of Dehing Patkai region.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['What is the significance of Dehing Patkai Festival?','Festival celebrating heritage of Dehing Patkai region','Victory in battle','Independence day','Founding of Ahom kingdom','a','Dehing Patkai Festival: Festival celebrating heritage of Dehing Patkai region.','Assam GK','Assam Culture','medium','APSC,ADRE'],
+
+  ['Who was Gopinath Bordoloi?','First Chief Minister of Assam','A freedom fighter','A scientist','An athlete','a','Gopinath Bordoloi was First Chief Minister of Assam.','Assam GK','Assam Polity','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Gopinath Bordoloi?','First Chief Minister of Assam','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Gopinath Bordoloi is known for: First Chief Minister of Assam.','Assam GK','Assam Polity','medium','APSC'],
+
+  ['Who was Bishnuprasad Rabha?','Cultural revolutionary known as Kalaguru','A freedom fighter','A scientist','An athlete','a','Bishnuprasad Rabha was Cultural revolutionary known as Kalaguru.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Bishnuprasad Rabha?','Cultural revolutionary known as Kalaguru','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Bishnuprasad Rabha is known for: Cultural revolutionary known as Kalaguru.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Jyotiprasad Agarwala?','First Assamese filmmaker and playwright','A freedom fighter','A scientist','An athlete','a','Jyotiprasad Agarwala was First Assamese filmmaker and playwright.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Jyotiprasad Agarwala?','First Assamese filmmaker and playwright','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Jyotiprasad Agarwala is known for: First Assamese filmmaker and playwright.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Bhupen Hazarika?','Legendary musician and filmmaker known as Sudhakantha','A freedom fighter','A scientist','An athlete','a','Bhupen Hazarika was Legendary musician and filmmaker known as Sudhakantha.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Bhupen Hazarika?','Legendary musician and filmmaker known as Sudhakantha','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Bhupen Hazarika is known for: Legendary musician and filmmaker known as Sudhakantha.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Srimanta Sankardeva?','Saint-scholar who founded Ekasarana Dharma','A freedom fighter','A scientist','An athlete','a','Srimanta Sankardeva was Saint-scholar who founded Ekasarana Dharma.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Srimanta Sankardeva?','Saint-scholar who founded Ekasarana Dharma','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Srimanta Sankardeva is known for: Saint-scholar who founded Ekasarana Dharma.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Madhavdeva?','Chief disciple of Sankardeva','A freedom fighter','A scientist','An athlete','a','Madhavdeva was Chief disciple of Sankardeva.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Madhavdeva?','Chief disciple of Sankardeva','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Madhavdeva is known for: Chief disciple of Sankardeva.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Lachit Borphukan?','Ahom general who won the Battle of Saraighat','A freedom fighter','A scientist','An athlete','a','Lachit Borphukan was Ahom general who won the Battle of Saraighat.','Assam GK','Assam History','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Lachit Borphukan?','Ahom general who won the Battle of Saraighat','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Lachit Borphukan is known for: Ahom general who won the Battle of Saraighat.','Assam GK','Assam History','medium','APSC'],
+
+  ['Who was Chao Lung Sukapha?','Founder of the Ahom kingdom','A freedom fighter','A scientist','An athlete','a','Chao Lung Sukapha was Founder of the Ahom kingdom.','Assam GK','Assam History','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Chao Lung Sukapha?','Founder of the Ahom kingdom','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Chao Lung Sukapha is known for: Founder of the Ahom kingdom.','Assam GK','Assam History','medium','APSC'],
+
+  ['Who was Rudra Singha?','Ahom king who shifted capital to Rangpur','A freedom fighter','A scientist','An athlete','a','Rudra Singha was Ahom king who shifted capital to Rangpur.','Assam GK','Assam History','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Rudra Singha?','Ahom king who shifted capital to Rangpur','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Rudra Singha is known for: Ahom king who shifted capital to Rangpur.','Assam GK','Assam History','medium','APSC'],
+
+  ['Who was Birendra Kumar Bhattacharya?','First Assamese writer to win the Jnanpith Award','A freedom fighter','A scientist','An athlete','a','Birendra Kumar Bhattacharya was First Assamese writer to win the Jnanpith Award.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Birendra Kumar Bhattacharya?','First Assamese writer to win the Jnanpith Award','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Birendra Kumar Bhattacharya is known for: First Assamese writer to win the Jnanpith Award.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Mamoni Raisom Goswami?','Jnanpith Award-winning Assamese writer','A freedom fighter','A scientist','An athlete','a','Mamoni Raisom Goswami was Jnanpith Award-winning Assamese writer.','Assam GK','Assam Culture','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Mamoni Raisom Goswami?','Jnanpith Award-winning Assamese writer','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Mamoni Raisom Goswami is known for: Jnanpith Award-winning Assamese writer.','Assam GK','Assam Culture','medium','APSC'],
+
+  ['Who was Syeda Anwara Taimur?','First and only woman Chief Minister of Assam','A freedom fighter','A scientist','An athlete','a','Syeda Anwara Taimur was First and only woman Chief Minister of Assam.','Assam GK','Assam Polity','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Syeda Anwara Taimur?','First and only woman Chief Minister of Assam','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Syeda Anwara Taimur is known for: First and only woman Chief Minister of Assam.','Assam GK','Assam Polity','medium','APSC'],
+
+  ['Who was Tarun Gogoi?','Three-term Chief Minister of Assam from 2001 to 2016','A freedom fighter','A scientist','An athlete','a','Tarun Gogoi was Three-term Chief Minister of Assam from 2001 to 2016.','Assam GK','Assam Polity','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Tarun Gogoi?','Three-term Chief Minister of Assam from 2001 to 2016','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Tarun Gogoi is known for: Three-term Chief Minister of Assam from 2001 to 2016.','Assam GK','Assam Polity','medium','APSC'],
+
+  ['Who was Sarat Chandra Sinha?','Chief Minister of Assam from 1972 to 1978','A freedom fighter','A scientist','An athlete','a','Sarat Chandra Sinha was Chief Minister of Assam from 1972 to 1978.','Assam GK','Assam Polity','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Sarat Chandra Sinha?','Chief Minister of Assam from 1972 to 1978','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Sarat Chandra Sinha is known for: Chief Minister of Assam from 1972 to 1978.','Assam GK','Assam Polity','medium','APSC'],
+
+  ['Who was Prafulla Kumar Mahanta?','AGP leader and two-term Chief Minister of Assam','A freedom fighter','A scientist','An athlete','a','Prafulla Kumar Mahanta was AGP leader and two-term Chief Minister of Assam.','Assam GK','Assam Polity','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Prafulla Kumar Mahanta?','AGP leader and two-term Chief Minister of Assam','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Prafulla Kumar Mahanta is known for: AGP leader and two-term Chief Minister of Assam.','Assam GK','Assam Polity','medium','APSC'],
+
+  ['Who was Hemanta Biswa Sarma?','Chief Minister of Assam since 2021','A freedom fighter','A scientist','An athlete','a','Hemanta Biswa Sarma was Chief Minister of Assam since 2021.','Assam GK','Assam Polity','easy','APSC,ADRE'],
+
+  ['Which of the following is associated with Hemanta Biswa Sarma?','Chief Minister of Assam since 2021','Battle of Plassey','Discovery of penicillin','Olympic gold medal','a','Hemanta Biswa Sarma is known for: Chief Minister of Assam since 2021.','Assam GK','Assam Polity','medium','APSC'],
+
+  ['Which is the largest tea-producing state in India?','Assam','West Bengal','Karnataka','Tamil Nadu','a','Assam is the largest tea-producing state in India.','Assam GK','Assam Economy','easy','APSC,ADRE'],
+
+  ['Which type of silk is produced only in Assam?','Muga silk','Mulberry silk','Tasar silk','Eri silk','a','Muga silk (golden silk) is produced only in Assam.','Assam GK','Assam Economy','medium','APSC,ADRE'],
+
+  ['What is the main agricultural crop of Assam?','Rice','Wheat','Cotton','Sugarcane','a','Rice is the staple food and most cultivated crop in Assam.','Assam GK','Assam Economy','easy','APSC,ADRE'],
+
+  ['Which is the oldest oil refinery in India located in Assam?','Digboi Refinery','Guwahati Refinery','Numaligarh Refinery','Bongaigaon Refinery','a','Digboi Refinery, established in 1901, is the oldest refinery in India.','Assam GK','Assam Economy','medium','APSC,ADRE'],
+
+  ['Which industry is the backbone of Assam economy?','Tea industry','IT industry','Textile industry','Automobile industry','a','The tea industry is the backbone of Assam economy.','Assam GK','Assam Economy','easy','APSC,ADRE'],
+
+  ['Assam produces which three types of silk?','Muga, Pat, and Eri','Mulberry, Tasar, and Eri','Muga, Tasar, and Mulberry','Pat, Eri, and Mulberry','a','Assam is the only state producing Muga, Pat, and Eri silk.','Assam GK','Assam Economy','medium','APSC,ADRE'],
+
+  ['Where is the headquarters of Oil India Limited located?','Duliajan','Digboi','Guwahati','Naharkatia','a','Oil India Limited headquarters is in Duliajan, Assam.','Assam GK','Assam Economy','hard','APSC'],
+
+  ['The Guwahati Tea Auction Centre was established in which year?','1970','1965','1975','1980','a','Guwahati Tea Auction Centre was established in 1970.','Assam GK','Assam Economy','hard','APSC'],
+
+  ['Which sector contributes the most to Assam GSDP?','Agriculture and allied sectors','Manufacturing','Services','Mining','a','Agriculture and allied sectors contribute the most to Assam GSDP.','Assam GK','Assam Economy','medium','APSC'],
+
+  ['What does the 1 Constitutional Amendment deal with?','Added Ninth Schedule to protect land reform laws','Abolition of untouchability','Right to property','Emergency provisions','a','The 1th Amendment (1951): Added Ninth Schedule to protect land reform laws.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 1 Constitutional Amendment passed?','1951','1950','2000','2010','a','The 1th Amendment was passed in 1951.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 42 Constitutional Amendment deal with?','Mini Constitution — added words Socialist and Secular to Preamble','Abolition of untouchability','Right to property','Emergency provisions','a','The 42th Amendment (1976): Mini Constitution — added words Socialist and Secular to Preamble.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 42 Constitutional Amendment passed?','1976','1950','2000','2010','a','The 42th Amendment was passed in 1976.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 44 Constitutional Amendment deal with?','Amended Anti-Defection provisions','Abolition of untouchability','Right to property','Emergency provisions','a','The 44th Amendment (1978): Amended Anti-Defection provisions.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 44 Constitutional Amendment passed?','1978','1950','2000','2010','a','The 44th Amendment was passed in 1978.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 61 Constitutional Amendment deal with?','Voting age reduced from 21 to 18 years','Abolition of untouchability','Right to property','Emergency provisions','a','The 61th Amendment (1988): Voting age reduced from 21 to 18 years.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 61 Constitutional Amendment passed?','1988','1950','2000','2010','a','The 61th Amendment was passed in 1988.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 73 Constitutional Amendment deal with?','Panchayati Raj system given constitutional status','Abolition of untouchability','Right to property','Emergency provisions','a','The 73th Amendment (1993): Panchayati Raj system given constitutional status.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 73 Constitutional Amendment passed?','1993','1950','2000','2010','a','The 73th Amendment was passed in 1993.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 74 Constitutional Amendment deal with?','Municipalities given constitutional status','Abolition of untouchability','Right to property','Emergency provisions','a','The 74th Amendment (1993): Municipalities given constitutional status.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 74 Constitutional Amendment passed?','1993','1950','2000','2010','a','The 74th Amendment was passed in 1993.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 86 Constitutional Amendment deal with?','Right to Education made fundamental right for 6-14 age group','Abolition of untouchability','Right to property','Emergency provisions','a','The 86th Amendment (2002): Right to Education made fundamental right for 6-14 age group.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 86 Constitutional Amendment passed?','2002','1950','2000','2010','a','The 86th Amendment was passed in 2002.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 101 Constitutional Amendment deal with?','GST introduced — Goods and Services Tax','Abolition of untouchability','Right to property','Emergency provisions','a','The 101th Amendment (2017): GST introduced — Goods and Services Tax.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 101 Constitutional Amendment passed?','2017','1950','2000','2010','a','The 101th Amendment was passed in 2017.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 103 Constitutional Amendment deal with?','Abolished Triple Talaq practice','Abolition of untouchability','Right to property','Emergency provisions','a','The 103th Amendment (2019): Abolished Triple Talaq practice.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 103 Constitutional Amendment passed?','2019','1950','2000','2010','a','The 103th Amendment was passed in 2019.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 105 Constitutional Amendment deal with?','Gave constitutional status to National Commission for Backward Classes','Abolition of untouchability','Right to property','Emergency provisions','a','The 105th Amendment (2021): Gave constitutional status to National Commission for Backward Classes.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 105 Constitutional Amendment passed?','2021','1950','2000','2010','a','The 105th Amendment was passed in 2021.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 118 Constitutional Amendment deal with?','One Nation One Election amendment','Abolition of untouchability','Right to property','Emergency provisions','a','The 118th Amendment (2024): One Nation One Election amendment.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 118 Constitutional Amendment passed?','2024','1950','2000','2010','a','The 118th Amendment was passed in 2024.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 52 Constitutional Amendment deal with?','Anti-Defection Law added to Tenth Schedule','Abolition of untouchability','Right to property','Emergency provisions','a','The 52th Amendment (1985): Anti-Defection Law added to Tenth Schedule.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 52 Constitutional Amendment passed?','1985','1950','2000','2010','a','The 52th Amendment was passed in 1985.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 24 Constitutional Amendment deal with?','Fundamental Duties added by 42nd Amendment','Abolition of untouchability','Right to property','Emergency provisions','a','The 24th Amendment (1971): Fundamental Duties added by 42nd Amendment.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 24 Constitutional Amendment passed?','1971','1950','2000','2010','a','The 24th Amendment was passed in 1971.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 31 Constitutional Amendment deal with?','Restricted judicial review of certain laws','Abolition of untouchability','Right to property','Emergency provisions','a','The 31th Amendment (1971): Restricted judicial review of certain laws.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['In which year was the 31 Constitutional Amendment passed?','1971','1950','2000','2010','a','The 31th Amendment was passed in 1971.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does the 370 Constitutional Amendment deal with?','Power of Parliament to amend the Constitution','Abolition of untouchability','Right to property','Emergency provisions','a','The 370th Amendment (None): Power of Parliament to amend the Constitution.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What does Article 14 of the Indian Constitution deal with?','Right to Equality','Right to Property','Right to Education','Right to Vote','a','Article 14: Right to Equality — Equality before law and equal protection of laws.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 14?','Right to Equality: Equality before law and equal protection of laws','Right to Property','Right to Education','Right to Vote','a','Article 14 guarantees: Right to Equality.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 15 of the Indian Constitution deal with?','Prohibition of Discrimination','Right to Property','Right to Education','Right to Vote','a','Article 15: Prohibition of Discrimination — No discrimination on grounds of religion, race, caste, sex, or birth place.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 15?','Prohibition of Discrimination: No discrimination on grounds of religion, race, caste, sex, or birth place','Right to Property','Right to Education','Right to Vote','a','Article 15 guarantees: Prohibition of Discrimination.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 16 of the Indian Constitution deal with?','Equality of Opportunity','Right to Property','Right to Education','Right to Vote','a','Article 16: Equality of Opportunity — Equal opportunity in public employment.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 16?','Equality of Opportunity: Equal opportunity in public employment','Right to Property','Right to Education','Right to Vote','a','Article 16 guarantees: Equality of Opportunity.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 19 of the Indian Constitution deal with?','Right to Freedom','Right to Property','Right to Education','Right to Vote','a','Article 19: Right to Freedom — Freedom of speech, assembly, association, movement, residence, and profession.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 19?','Right to Freedom: Freedom of speech, assembly, association, movement, residence, and profession','Right to Property','Right to Education','Right to Vote','a','Article 19 guarantees: Right to Freedom.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 21 of the Indian Constitution deal with?','Right to Life and Personal Liberty','Right to Property','Right to Education','Right to Vote','a','Article 21: Right to Life and Personal Liberty — No person shall be deprived of life or personal liberty except according to procedure established by law.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 21?','Right to Life and Personal Liberty: No person shall be deprived of life or personal liberty except according to procedure established by law','Right to Property','Right to Education','Right to Vote','a','Article 21 guarantees: Right to Life and Personal Liberty.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 22 of the Indian Constitution deal with?','Protection against Arrest','Right to Property','Right to Education','Right to Vote','a','Article 22: Protection against Arrest — Protection against arrest and detention in certain cases.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 22?','Protection against Arrest: Protection against arrest and detention in certain cases','Right to Property','Right to Education','Right to Vote','a','Article 22 guarantees: Protection against Arrest.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 23 of the Indian Constitution deal with?','Prohibition of Traffic','Right to Property','Right to Education','Right to Vote','a','Article 23: Prohibition of Traffic — Prohibition of traffic in human beings and forced labour.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 23?','Prohibition of Traffic: Prohibition of traffic in human beings and forced labour','Right to Property','Right to Education','Right to Vote','a','Article 23 guarantees: Prohibition of Traffic.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 24 of the Indian Constitution deal with?','Prohibition of Child Labour','Right to Property','Right to Education','Right to Vote','a','Article 24: Prohibition of Child Labour — No child below 14 years shall be employed in factories.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 24?','Prohibition of Child Labour: No child below 14 years shall be employed in factories','Right to Property','Right to Education','Right to Vote','a','Article 24 guarantees: Prohibition of Child Labour.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 25 of the Indian Constitution deal with?','Right to Freedom of Religion','Right to Property','Right to Education','Right to Vote','a','Article 25: Right to Freedom of Religion — Freedom of conscience and free profession, practice, and propagation of religion.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 25?','Right to Freedom of Religion: Freedom of conscience and free profession, practice, and propagation of religion','Right to Property','Right to Education','Right to Vote','a','Article 25 guarantees: Right to Freedom of Religion.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 26 of the Indian Constitution deal with?','Freedom of Religious Denominations','Right to Property','Right to Education','Right to Vote','a','Article 26: Freedom of Religious Denominations — Freedom to manage religious affairs.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 26?','Freedom of Religious Denominations: Freedom to manage religious affairs','Right to Property','Right to Education','Right to Vote','a','Article 26 guarantees: Freedom of Religious Denominations.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 29 of the Indian Constitution deal with?','Protection of Minorities','Right to Property','Right to Education','Right to Vote','a','Article 29: Protection of Minorities — Protection of interests of minorities.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 29?','Protection of Minorities: Protection of interests of minorities','Right to Property','Right to Education','Right to Vote','a','Article 29 guarantees: Protection of Minorities.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 30 of the Indian Constitution deal with?','Right of Minorities to Educational Institutions','Right to Property','Right to Education','Right to Vote','a','Article 30: Right of Minorities to Educational Institutions — Right of minorities to establish and administer educational institutions.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 30?','Right of Minorities to Educational Institutions: Right of minorities to establish and administer educational institutions','Right to Property','Right to Education','Right to Vote','a','Article 30 guarantees: Right of Minorities to Educational Institutions.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['What does Article 32 of the Indian Constitution deal with?','Right to Constitutional Remedies','Right to Property','Right to Education','Right to Vote','a','Article 32: Right to Constitutional Remedies — Right to move Supreme Court for enforcement of fundamental rights — called the heart and soul of the Constitution by Ambedkar.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which fundamental right is guaranteed under Article 32?','Right to Constitutional Remedies: Right to move Supreme Court for enforcement of fundamental rights — called the heart and soul of the Constitution by Ambedkar','Right to Property','Right to Education','Right to Vote','a','Article 32 guarantees: Right to Constitutional Remedies.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['Who was the President of India from 1950 to 1962?','Rajendra Prasad','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Rajendra Prasad was President from 1950 to 1962. First President of India.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Rajendra Prasad?','First President of India','Won Nobel Prize','Cricket player','Film actor','a','Rajendra Prasad: First President of India.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1962 to 1967?','Sarvepalli Radhakrishnan','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Sarvepalli Radhakrishnan was President from 1962 to 1967. Former philosopher and teacher, Teachers Day is celebrated on his birthday.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Sarvepalli Radhakrishnan?','Former philosopher and teacher, Teachers Day is celebrated on his birthday','Won Nobel Prize','Cricket player','Film actor','a','Sarvepalli Radhakrishnan: Former philosopher and teacher, Teachers Day is celebrated on his birthday.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1967 to 1969?','Zakir Husain','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Zakir Husain was President from 1967 to 1969. First Muslim President of India.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Zakir Husain?','First Muslim President of India','Won Nobel Prize','Cricket player','Film actor','a','Zakir Husain: First Muslim President of India.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1969 to 1974?','V V Giri','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','V V Giri was President from 1969 to 1974. Independent President who won as an independent candidate.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about V V Giri?','Independent President who won as an independent candidate','Won Nobel Prize','Cricket player','Film actor','a','V V Giri: Independent President who won as an independent candidate.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1974 to 1977?','Fakhruddin Ali Ahmed','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Fakhruddin Ali Ahmed was President from 1974 to 1977. President during Emergency.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Fakhruddin Ali Ahmed?','President during Emergency','Won Nobel Prize','Cricket player','Film actor','a','Fakhruddin Ali Ahmed: President during Emergency.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1977 to 1982?','Neelam Sanjiva Reddy','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Neelam Sanjiva Reddy was President from 1977 to 1982. Youngest President at the time of election.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Neelam Sanjiva Reddy?','Youngest President at the time of election','Won Nobel Prize','Cricket player','Film actor','a','Neelam Sanjiva Reddy: Youngest President at the time of election.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1982 to 1987?','Giani Zail Singh','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Giani Zail Singh was President from 1982 to 1987. Former Chief Minister of Punjab.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Giani Zail Singh?','Former Chief Minister of Punjab','Won Nobel Prize','Cricket player','Film actor','a','Giani Zail Singh: Former Chief Minister of Punjab.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1987 to 1992?','R Venkataraman','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','R Venkataraman was President from 1987 to 1992. Former Vice President before becoming President.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about R Venkataraman?','Former Vice President before becoming President','Won Nobel Prize','Cricket player','Film actor','a','R Venkataraman: Former Vice President before becoming President.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1992 to 1997?','Shankar Dayal Sharma','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Shankar Dayal Sharma was President from 1992 to 1997. Former Chief Minister of Bhopal.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Shankar Dayal Sharma?','Former Chief Minister of Bhopal','Won Nobel Prize','Cricket player','Film actor','a','Shankar Dayal Sharma: Former Chief Minister of Bhopal.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 1997 to 2002?','K R Narayanan','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','K R Narayanan was President from 1997 to 2002. First Dalit President of India.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about K R Narayanan?','First Dalit President of India','Won Nobel Prize','Cricket player','Film actor','a','K R Narayanan: First Dalit President of India.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 2002 to 2007?','A P J Abdul Kalam','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','A P J Abdul Kalam was President from 2002 to 2007. Missile Man of India and scientist.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about A P J Abdul Kalam?','Missile Man of India and scientist','Won Nobel Prize','Cricket player','Film actor','a','A P J Abdul Kalam: Missile Man of India and scientist.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 2007 to 2012?','Pratibha Patil','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Pratibha Patil was President from 2007 to 2012. First woman President of India.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Pratibha Patil?','First woman President of India','Won Nobel Prize','Cricket player','Film actor','a','Pratibha Patil: First woman President of India.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 2012 to 2017?','Pranab Mukherjee','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Pranab Mukherjee was President from 2012 to 2017. Former Finance Minister of India.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Pranab Mukherjee?','Former Finance Minister of India','Won Nobel Prize','Cricket player','Film actor','a','Pranab Mukherjee: Former Finance Minister of India.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 2017 to 2022?','Ram Nath Kovind','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Ram Nath Kovind was President from 2017 to 2022. Former Governor of Bihar.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Ram Nath Kovind?','Former Governor of Bihar','Won Nobel Prize','Cricket player','Film actor','a','Ram Nath Kovind: Former Governor of Bihar.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the President of India from 2022 to Present?','Droupadi Murmu','Jawaharlal Nehru','Indira Gandhi','Rajendra Prasad','a','Droupadi Murmu was President from 2022 to Present. First tribal President of India.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about Droupadi Murmu?','First tribal President of India','Won Nobel Prize','Cricket player','Film actor','a','Droupadi Murmu: First tribal President of India.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1947 to 1964?','Jawaharlal Nehru','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Jawaharlal Nehru was PM from 1947 to 1964. First PM, served longest term.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Jawaharlal Nehru?','First PM, served longest term','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Jawaharlal Nehru: First PM, served longest term.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1964 to 1966?','Lal Bahadur Shastri','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Lal Bahadur Shastri was PM from 1964 to 1966. Gave slogan Jai Jawan Jai Kisan.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Lal Bahadur Shastri?','Gave slogan Jai Jawan Jai Kisan','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Lal Bahadur Shastri: Gave slogan Jai Jawan Jai Kisan.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1966 to 1977?','Indira Gandhi','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Indira Gandhi was PM from 1966 to 1977. First woman PM, imposed Emergency.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Indira Gandhi?','First woman PM, imposed Emergency','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Indira Gandhi: First woman PM, imposed Emergency.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1977 to 1979?','Morarji Desai','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Morarji Desai was PM from 1977 to 1979. First non-Congress PM.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Morarji Desai?','First non-Congress PM','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Morarji Desai: First non-Congress PM.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1984 to 1989?','Rajiv Gandhi','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Rajiv Gandhi was PM from 1984 to 1989. Youngest PM at age 40.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Rajiv Gandhi?','Youngest PM at age 40','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Rajiv Gandhi: Youngest PM at age 40.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1991 to 1996?','P V Narasimha Rao','Rajendra Prasad','Sardar Patel','Morarji Desai','a','P V Narasimha Rao was PM from 1991 to 1996. Father of Indian economic reforms.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM P V Narasimha Rao?','Father of Indian economic reforms','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','P V Narasimha Rao: Father of Indian economic reforms.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 1998 to 2004?','Atal Bihari Vajpayee','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Atal Bihari Vajpayee was PM from 1998 to 2004. First BJP PM to complete full term.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Atal Bihari Vajpayee?','First BJP PM to complete full term','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Atal Bihari Vajpayee: First BJP PM to complete full term.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 2004 to 2014?','Manmohan Singh','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Manmohan Singh was PM from 2004 to 2014. FM during 1991 reforms, two full terms as PM.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Manmohan Singh?','FM during 1991 reforms, two full terms as PM','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Manmohan Singh: FM during 1991 reforms, two full terms as PM.','Polity','Indian Polity','hard','APSC'],
+
+  ['Who was the Prime Minister of India from 2014 to Present?','Narendra Modi','Rajendra Prasad','Sardar Patel','Morarji Desai','a','Narendra Modi was PM from 2014 to Present. Longest serving non-Congress PM.','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is notable about PM Narendra Modi?','Longest serving non-Congress PM','Won Bharat Ratna before PM','Was a scientist','Was a cricketer','a','Narendra Modi: Longest serving non-Congress PM.','Polity','Indian Polity','hard','APSC'],
+
+  ['How many members are in the Rajya Sabha?','245','250','552','233','a','Rajya Sabha has 245 members (233 elected + 12 nominated).','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['How many members are in the Lok Sabha?','543','552','250','245','a','Lok Sabha has 543 elected members.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['What is the tenure of a Rajya Sabha member?','6 years','5 years','4 years','Life','a','Rajya Sabha members serve 6-year terms.','Polity','Indian Polity','easy','APSC'],
+
+  ['What is the tenure of the Lok Sabha?','5 years','6 years','4 years','Life','a','Lok Sabha has a 5-year term.','Polity','Indian Polity','easy','APSC,ADRE'],
+
+  ['Who is the ex-officio Chairman of the Rajya Sabha?','Vice President of India','President of India','Prime Minister','Speaker of Lok Sabha','a','The Vice President is the ex-officio Chairman of Rajya Sabha.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['Who presides over the Lok Sabha?','Speaker','President','Prime Minister','Vice President','a','The Speaker presides over the Lok Sabha.','Polity','Indian Polity','easy','APSC,ADRE'],
+
+  ['How many sessions does Parliament have in a year?','3','2','4','5','a','Parliament has 3 sessions: Budget, Monsoon, and Winter.','Polity','Indian Polity','easy','APSC'],
+
+  ['What is the minimum age to become a member of the Lok Sabha?','25 years','30 years','21 years','18 years','a','Minimum age for Lok Sabha membership is 25 years.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['What is the minimum age to become a member of the Rajya Sabha?','30 years','25 years','35 years','21 years','a','Minimum age for Rajya Sabha membership is 30 years.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['How many judges are in the Supreme Court of India including the CJI?','34','31','33','35','a','The Supreme Court has 34 judges including the Chief Justice.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['What is the retirement age of a Supreme Court judge?','65 years','62 years','60 years','68 years','a','Supreme Court judges retire at 65.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['What is the retirement age of a High Court judge?','62 years','65 years','60 years','68 years','a','High Court judges retire at 62.','Polity','Indian Polity','medium','APSC'],
+
+  ['Which Article deals with the writ jurisdiction of the Supreme Court?','Article 32','Article 14','Article 21','Article 226','a','Article 32 gives the right to constitutional remedies.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['Which Article deals with the writ jurisdiction of High Courts?','Article 226','Article 32','Article 14','Article 21','a','Article 226 gives High Courts writ jurisdiction.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['How many High Courts are there in India?','25','28','24','30','a','There are 25 High Courts in India.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['The Guwahati High Court has jurisdiction over which states?','Assam, Nagaland, Mizoram, and Arunachal Pradesh','Assam only','All Northeast states','Assam and Manipur','a','Guwahati High Court covers Assam, Nagaland, Mizoram, and Arunachal Pradesh.','Polity','Indian Polity','medium','APSC,ADRE'],
+
+  ['Who is the head of the Election Commission of India?','Chief Election Commissioner','President','Prime Minister','Chief Justice','a','The Chief Election Commissioner heads the ECI.','Polity','Indian Polity','easy','APSC,ADRE'],
+
+  ['How many members does the Election Commission have?','3','1','2','5','a','Election Commission has 3 members (1 CEC + 2 ECs).','Polity','Indian Polity','medium','APSC'],
+
+  ['What is the tenure of the Chief Election Commissioner?','6 years or age 65','5 years','4 years','Life','a','CEC serves 6 years or until age 65, whichever is earlier.','Polity','Indian Polity','hard','APSC'],
+
+  ['Which Article deals with the Election Commission?','Article 324','Article 14','Article 21','Article 32','a','Article 324 establishes the Election Commission.','Polity','Indian Polity','hard','APSC,UPSC'],
+
+  ['When did the Indus Valley Civilization flourish in India?','2500 BCE','1000 BCE','500 CE','1500 CE','a','Indus Valley Civilization (2500 BCE): Bronze Age civilization. Center: Harappa and Mohenjo-daro.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Indus Valley Civilization?','Bronze Age civilization','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Indus Valley Civilization: Bronze Age civilization.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Vedic Period flourish in India?','1500 BCE','1000 BCE','500 CE','1500 CE','a','Vedic Period (1500 BCE): Composition of Vedas. Center: Northern India.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Vedic Period?','Composition of Vedas','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Vedic Period: Composition of Vedas.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Buddhism founded flourish in India?','6th century BCE','1000 BCE','500 CE','1500 CE','a','Buddhism founded (6th century BCE): Siddhartha Gautama became Buddha. Center: Bihar.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Buddhism founded?','Siddhartha Gautama became Buddha','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Buddhism founded: Siddhartha Gautama became Buddha.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Mauryan Empire flourish in India?','322 BCE','1000 BCE','500 CE','1500 CE','a','Mauryan Empire (322 BCE): Founded by Chandragupta Maurya. Center: Pataliputra.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Mauryan Empire?','Founded by Chandragupta Maurya','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Mauryan Empire: Founded by Chandragupta Maurya.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Ashoka the Great flourish in India?','268 BCE','1000 BCE','500 CE','1500 CE','a','Ashoka the Great (268 BCE): Spread Buddhism across Asia. Center: Pataliputra.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Ashoka the Great?','Spread Buddhism across Asia','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Ashoka the Great: Spread Buddhism across Asia.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Gupta Empire flourish in India?','320 CE','1000 BCE','500 CE','1500 CE','a','Gupta Empire (320 CE): Golden Age of India. Center: Pataliputra.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Gupta Empire?','Golden Age of India','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Gupta Empire: Golden Age of India.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Harsha Dynasty flourish in India?','606 CE','1000 BCE','500 CE','1500 CE','a','Harsha Dynasty (606 CE): Harshavardhana was the last great Hindu emperor. Center: Kannauj.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Harsha Dynasty?','Harshavardhana was the last great Hindu emperor','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Harsha Dynasty: Harshavardhana was the last great Hindu emperor.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Chola Dynasty flourish in India?','9th century CE','1000 BCE','500 CE','1500 CE','a','Chola Dynasty (9th century CE): Naval power and South Indian art. Center: Tamil Nadu.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Chola Dynasty?','Naval power and South Indian art','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Chola Dynasty: Naval power and South Indian art.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Delhi Sultanate flourish in India?','1206 CE','1000 BCE','500 CE','1500 CE','a','Delhi Sultanate (1206 CE): Founded by Qutb-ud-din Aibak. Center: Delhi.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Delhi Sultanate?','Founded by Qutb-ud-din Aibak','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Delhi Sultanate: Founded by Qutb-ud-din Aibak.','History','Indian History','easy','APSC,ADRE'],
+
+  ['When did the Mughal Empire flourish in India?','1526 CE','1000 BCE','500 CE','1500 CE','a','Mughal Empire (1526 CE): Founded by Babur after Battle of Panipat. Center: Delhi.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the significance of the Mughal Empire?','Founded by Babur after Battle of Panipat','Built Taj Mahal','Founded Indian National Congress','Started Quit India Movement','a','Mughal Empire: Founded by Babur after Battle of Panipat.','History','Indian History','easy','APSC,ADRE'],
+
+  ['What is Babur known for?','Founder of Mughal Empire, won Battle of Panipat','Founded the Indian Constitution','Won Battle of Plassey','Led freedom movement','a','Babur (1526-1530): Founder of Mughal Empire, won Battle of Panipat.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the Mughal emperor who reigned 1526-1530?','Babur','Akbar','Babur','Shah Jahan','a','Babur reigned from 1526-1530.','History','Indian History','hard','APSC'],
+
+  ['What is Humayun known for?','Lost and regained the throne, died falling from library stairs','Founded the Indian Constitution','Won Battle of Plassey','Led freedom movement','a','Humayun (1530-1540,1555-1556): Lost and regained the throne, died falling from library stairs.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the Mughal emperor who reigned 1530-1540,1555-1556?','Humayun','Akbar','Babur','Shah Jahan','a','Humayun reigned from 1530-1540,1555-1556.','History','Indian History','hard','APSC'],
+
+  ['What is Akbar known for?','Greatest Mughal, started Din-i-Ilahi, abolished Jizya','Founded the Indian Constitution','Won Battle of Plassey','Led freedom movement','a','Akbar (1556-1605): Greatest Mughal, started Din-i-Ilahi, abolished Jizya.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the Mughal emperor who reigned 1556-1605?','Akbar','Akbar','Babur','Shah Jahan','a','Akbar reigned from 1556-1605.','History','Indian History','hard','APSC'],
+
+  ['What is Jahangir known for?','Continued Akbar policies, married Nur Jahan','Founded the Indian Constitution','Won Battle of Plassey','Led freedom movement','a','Jahangir (1605-1627): Continued Akbar policies, married Nur Jahan.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the Mughal emperor who reigned 1605-1627?','Jahangir','Akbar','Babur','Shah Jahan','a','Jahangir reigned from 1605-1627.','History','Indian History','hard','APSC'],
+
+  ['What is Shah Jahan known for?','Built Taj Mahal, Red Fort, Jama Masjid','Founded the Indian Constitution','Won Battle of Plassey','Led freedom movement','a','Shah Jahan (1628-1658): Built Taj Mahal, Red Fort, Jama Masjid.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the Mughal emperor who reigned 1628-1658?','Shah Jahan','Akbar','Babur','Shah Jahan','a','Shah Jahan reigned from 1628-1658.','History','Indian History','hard','APSC'],
+
+  ['What is Aurangzeb known for?','Last great Mughal, longest reign, expanded empire to maximum','Founded the Indian Constitution','Won Battle of Plassey','Led freedom movement','a','Aurangzeb (1658-1707): Last great Mughal, longest reign, expanded empire to maximum.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the Mughal emperor who reigned 1658-1707?','Aurangzeb','Akbar','Babur','Shah Jahan','a','Aurangzeb reigned from 1658-1707.','History','Indian History','hard','APSC'],
+
+  ['What happened in Indian history in 1857?','First War of Indian Independence / Sepoy Mutiny','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1857: First War of Indian Independence / Sepoy Mutiny. Mangal Pandey started it at Barrackpore.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: First War of Indian Independence / Sepoy Mutiny?','1857','1850','1900','1950','a','First War of Indian Independence / Sepoy Mutiny occurred in 1857.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1885?','Indian National Congress founded','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1885: Indian National Congress founded. Founded by A O Hume in Bombay.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Indian National Congress founded?','1885','1850','1900','1950','a','Indian National Congress founded occurred in 1885.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1905?','Partition of Bengal','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1905: Partition of Bengal. Led to Swadeshi Movement.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Partition of Bengal?','1905','1850','1900','1950','a','Partition of Bengal occurred in 1905.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1906?','Muslim League founded','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1906: Muslim League founded. Founded in Dhaka by Aga Khan.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Muslim League founded?','1906','1850','1900','1950','a','Muslim League founded occurred in 1906.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1919?','Jallianwala Bagh Massacre','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1919: Jallianwala Bagh Massacre. General Dyer fired on unarmed crowd in Amritsar.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Jallianwala Bagh Massacre?','1919','1850','1900','1950','a','Jallianwala Bagh Massacre occurred in 1919.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1920?','Non-Cooperation Movement','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1920: Non-Cooperation Movement. Led by Gandhi after Jallianwala Bagh.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Non-Cooperation Movement?','1920','1850','1900','1950','a','Non-Cooperation Movement occurred in 1920.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1930?','Civil Disobedience Movement / Dandi March','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1930: Civil Disobedience Movement / Dandi March. Gandhi marched 240 miles to make salt.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Civil Disobedience Movement / Dandi March?','1930','1850','1900','1950','a','Civil Disobedience Movement / Dandi March occurred in 1930.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1942?','Quit India Movement','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1942: Quit India Movement. Gandhi gave the call Do or Die.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Quit India Movement?','1942','1850','1900','1950','a','Quit India Movement occurred in 1942.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1947?','India gained independence','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1947: India gained independence. August 15, 1947 — partition of India and Pakistan.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: India gained independence?','1947','1850','1900','1950','a','India gained independence occurred in 1947.','History','Indian History','hard','APSC,UPSC'],
+
+  ['What happened in Indian history in 1950?','Constitution of India came into effect','Battle of Panipat','First Anglo-Mysore War','Salt Satyagraha','a','In 1950: Constitution of India came into effect. January 26, 1950 — Republic Day.','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['In which year did the following occur: Constitution of India came into effect?','1950','1850','1900','1950','a','Constitution of India came into effect occurred in 1950.','History','Indian History','hard','APSC,UPSC'],
+
+  ['When did the French Revolution take place?','1789','1600','2000','1500','a','French Revolution (1789): Fall of Bastille, rise of democracy in France.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the French Revolution known for?','Fall of Bastille, rise of democracy in France','Discovery of sea route to India','First printing press','Magna Carta','a','French Revolution: Fall of Bastille, rise of democracy in France.','History','World History','easy','APSC'],
+
+  ['When did the American Revolution take place?','1776','1600','2000','1500','a','American Revolution (1776): Declaration of Independence on July 4.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the American Revolution known for?','Declaration of Independence on July 4','Discovery of sea route to India','First printing press','Magna Carta','a','American Revolution: Declaration of Independence on July 4.','History','World History','easy','APSC'],
+
+  ['When did the World War I take place?','1914-1918','1600','2000','1500','a','World War I (1914-1918): Triggered by assassination of Archduke Franz Ferdinand.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the World War I known for?','Triggered by assassination of Archduke Franz Ferdinand','Discovery of sea route to India','First printing press','Magna Carta','a','World War I: Triggered by assassination of Archduke Franz Ferdinand.','History','World History','easy','APSC'],
+
+  ['When did the World War II take place?','1939-1945','1600','2000','1500','a','World War II (1939-1945): Started with German invasion of Poland.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the World War II known for?','Started with German invasion of Poland','Discovery of sea route to India','First printing press','Magna Carta','a','World War II: Started with German invasion of Poland.','History','World History','easy','APSC'],
+
+  ['When did the Russian Revolution take place?','1917','1600','2000','1500','a','Russian Revolution (1917): Bolsheviks led by Lenin overthrew the Tsar.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the Russian Revolution known for?','Bolsheviks led by Lenin overthrew the Tsar','Discovery of sea route to India','First printing press','Magna Carta','a','Russian Revolution: Bolsheviks led by Lenin overthrew the Tsar.','History','World History','easy','APSC'],
+
+  ['When did the Industrial Revolution take place?','1760-1840','1600','2000','1500','a','Industrial Revolution (1760-1840): Started in Britain, transformed manufacturing.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the Industrial Revolution known for?','Started in Britain, transformed manufacturing','Discovery of sea route to India','First printing press','Magna Carta','a','Industrial Revolution: Started in Britain, transformed manufacturing.','History','World History','easy','APSC'],
+
+  ['When did the Renaissance take place?','14th-17th century','1600','2000','1500','a','Renaissance (14th-17th century): Cultural rebirth starting in Italy.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the Renaissance known for?','Cultural rebirth starting in Italy','Discovery of sea route to India','First printing press','Magna Carta','a','Renaissance: Cultural rebirth starting in Italy.','History','World History','easy','APSC'],
+
+  ['When did the Cold War take place?','1947-1991','1600','2000','1500','a','Cold War (1947-1991): US vs USSR ideological conflict, ended with fall of Berlin Wall.','History','World History','medium','APSC,ADRE,UPSC'],
+
+  ['What is the Cold War known for?','US vs USSR ideological conflict, ended with fall of Berlin Wall','Discovery of sea route to India','First printing press','Magna Carta','a','Cold War: US vs USSR ideological conflict, ended with fall of Berlin Wall.','History','World History','easy','APSC'],
+  ['What is the capital of Andhra Pradesh?','Amaravati','Mumbai','Delhi','Chennai','a','Amaravati is the capital of Andhra Pradesh.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Andhra Pradesh?','Telugu','English','Hindi','Sanskrit','a','Telugu is the official language of Andhra Pradesh.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Andhra Pradesh located?','Coastal','Deccan Plateau','Thar Desert','Coastal Plains','a','Andhra Pradesh is in the Coastal region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Arunachal Pradesh?','Itanagar','Mumbai','Delhi','Chennai','a','Itanagar is the capital of Arunachal Pradesh.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Arunachal Pradesh?','English','English','Hindi','Sanskrit','a','English is the official language of Arunachal Pradesh.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Arunachal Pradesh located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Arunachal Pradesh is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the official language of Assam?','Assamese','English','Hindi','Sanskrit','a','Assamese is the official language of Assam.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Assam located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Assam is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Bihar?','Patna','Mumbai','Delhi','Chennai','a','Patna is the capital of Bihar.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Bihar?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Bihar.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Bihar located?','Gangetic Plain','Deccan Plateau','Thar Desert','Coastal Plains','a','Bihar is in the Gangetic Plain region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Chhattisgarh?','Raipur','Mumbai','Delhi','Chennai','a','Raipur is the capital of Chhattisgarh.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Chhattisgarh?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Chhattisgarh.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Chhattisgarh located?','Central','Deccan Plateau','Thar Desert','Coastal Plains','a','Chhattisgarh is in the Central region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Goa?','Panaji','Mumbai','Delhi','Chennai','a','Panaji is the capital of Goa.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Goa?','Konkani','English','Hindi','Sanskrit','a','Konkani is the official language of Goa.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Goa located?','Coastal','Deccan Plateau','Thar Desert','Coastal Plains','a','Goa is in the Coastal region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Gujarat?','Gandhinagar','Mumbai','Delhi','Chennai','a','Gandhinagar is the capital of Gujarat.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Gujarat?','Gujarati','English','Hindi','Sanskrit','a','Gujarati is the official language of Gujarat.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Gujarat located?','Western','Deccan Plateau','Thar Desert','Coastal Plains','a','Gujarat is in the Western region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Haryana?','Chandigarh','Mumbai','Delhi','Chennai','a','Chandigarh is the capital of Haryana.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Haryana?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Haryana.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Haryana located?','Northern','Deccan Plateau','Thar Desert','Coastal Plains','a','Haryana is in the Northern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Himachal Pradesh?','Shimla','Mumbai','Delhi','Chennai','a','Shimla is the capital of Himachal Pradesh.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Himachal Pradesh?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Himachal Pradesh.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Himachal Pradesh located?','Himalayan','Deccan Plateau','Thar Desert','Coastal Plains','a','Himachal Pradesh is in the Himalayan region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Jharkhand?','Ranchi','Mumbai','Delhi','Chennai','a','Ranchi is the capital of Jharkhand.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Jharkhand?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Jharkhand.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Jharkhand located?','Central','Deccan Plateau','Thar Desert','Coastal Plains','a','Jharkhand is in the Central region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Karnataka?','Bengaluru','Mumbai','Delhi','Chennai','a','Bengaluru is the capital of Karnataka.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Karnataka?','Kannada','English','Hindi','Sanskrit','a','Kannada is the official language of Karnataka.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Karnataka located?','Southern','Deccan Plateau','Thar Desert','Coastal Plains','a','Karnataka is in the Southern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Kerala?','Thiruvananthapuram','Mumbai','Delhi','Chennai','a','Thiruvananthapuram is the capital of Kerala.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Kerala?','Malayalam','English','Hindi','Sanskrit','a','Malayalam is the official language of Kerala.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Kerala located?','Southern','Deccan Plateau','Thar Desert','Coastal Plains','a','Kerala is in the Southern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Madhya Pradesh?','Bhopal','Mumbai','Delhi','Chennai','a','Bhopal is the capital of Madhya Pradesh.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Madhya Pradesh?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Madhya Pradesh.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Madhya Pradesh located?','Central','Deccan Plateau','Thar Desert','Coastal Plains','a','Madhya Pradesh is in the Central region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Maharashtra?','Mumbai','Mumbai','Delhi','Chennai','a','Mumbai is the capital of Maharashtra.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Maharashtra?','Marathi','English','Hindi','Sanskrit','a','Marathi is the official language of Maharashtra.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Maharashtra located?','Western','Deccan Plateau','Thar Desert','Coastal Plains','a','Maharashtra is in the Western region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Manipur?','Imphal','Mumbai','Delhi','Chennai','a','Imphal is the capital of Manipur.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Manipur?','Meitei','English','Hindi','Sanskrit','a','Meitei is the official language of Manipur.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Manipur located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Manipur is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Meghalaya?','Shillong','Mumbai','Delhi','Chennai','a','Shillong is the capital of Meghalaya.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Meghalaya?','English','English','Hindi','Sanskrit','a','English is the official language of Meghalaya.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Meghalaya located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Meghalaya is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Mizoram?','Aizawl','Mumbai','Delhi','Chennai','a','Aizawl is the capital of Mizoram.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Mizoram?','Mizo','English','Hindi','Sanskrit','a','Mizo is the official language of Mizoram.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Mizoram located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Mizoram is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Nagaland?','Kohima','Mumbai','Delhi','Chennai','a','Kohima is the capital of Nagaland.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Nagaland?','English','English','Hindi','Sanskrit','a','English is the official language of Nagaland.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Nagaland located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Nagaland is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Odisha?','Bhubaneswar','Mumbai','Delhi','Chennai','a','Bhubaneswar is the capital of Odisha.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Odisha?','Odia','English','Hindi','Sanskrit','a','Odia is the official language of Odisha.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Odisha located?','Eastern','Deccan Plateau','Thar Desert','Coastal Plains','a','Odisha is in the Eastern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Punjab?','Chandigarh','Mumbai','Delhi','Chennai','a','Chandigarh is the capital of Punjab.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Punjab?','Punjabi','English','Hindi','Sanskrit','a','Punjabi is the official language of Punjab.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Punjab located?','Northern','Deccan Plateau','Thar Desert','Coastal Plains','a','Punjab is in the Northern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Rajasthan?','Jaipur','Mumbai','Delhi','Chennai','a','Jaipur is the capital of Rajasthan.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Rajasthan?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Rajasthan.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Rajasthan located?','Northern','Deccan Plateau','Thar Desert','Coastal Plains','a','Rajasthan is in the Northern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Sikkim?','Gangtok','Mumbai','Delhi','Chennai','a','Gangtok is the capital of Sikkim.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Sikkim?','Nepali','English','Hindi','Sanskrit','a','Nepali is the official language of Sikkim.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Sikkim located?','Himalayan','Deccan Plateau','Thar Desert','Coastal Plains','a','Sikkim is in the Himalayan region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Tamil Nadu?','Chennai','Mumbai','Delhi','Chennai','a','Chennai is the capital of Tamil Nadu.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Tamil Nadu?','Tamil','English','Hindi','Sanskrit','a','Tamil is the official language of Tamil Nadu.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Tamil Nadu located?','Southern','Deccan Plateau','Thar Desert','Coastal Plains','a','Tamil Nadu is in the Southern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Telangana?','Hyderabad','Mumbai','Delhi','Chennai','a','Hyderabad is the capital of Telangana.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Telangana?','Telugu','English','Hindi','Sanskrit','a','Telugu is the official language of Telangana.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Telangana located?','Southern','Deccan Plateau','Thar Desert','Coastal Plains','a','Telangana is in the Southern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Tripura?','Agartala','Mumbai','Delhi','Chennai','a','Agartala is the capital of Tripura.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Tripura?','Bengali','English','Hindi','Sanskrit','a','Bengali is the official language of Tripura.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Tripura located?','Northeast','Deccan Plateau','Thar Desert','Coastal Plains','a','Tripura is in the Northeast region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Uttar Pradesh?','Lucknow','Mumbai','Delhi','Chennai','a','Lucknow is the capital of Uttar Pradesh.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Uttar Pradesh?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Uttar Pradesh.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Uttar Pradesh located?','Gangetic Plain','Deccan Plateau','Thar Desert','Coastal Plains','a','Uttar Pradesh is in the Gangetic Plain region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Uttarakhand?','Dehradun','Mumbai','Delhi','Chennai','a','Dehradun is the capital of Uttarakhand.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of Uttarakhand?','Hindi','English','Hindi','Sanskrit','a','Hindi is the official language of Uttarakhand.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is Uttarakhand located?','Himalayan','Deccan Plateau','Thar Desert','Coastal Plains','a','Uttarakhand is in the Himalayan region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of West Bengal?','Kolkata','Mumbai','Delhi','Chennai','a','Kolkata is the capital of West Bengal.','Geography','Indian Geography','easy','APSC,ADRE,UPSC'],
+
+  ['What is the official language of West Bengal?','Bengali','English','Hindi','Sanskrit','a','Bengali is the official language of West Bengal.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['In which region of India is West Bengal located?','Eastern','Deccan Plateau','Thar Desert','Coastal Plains','a','West Bengal is in the Eastern region of India.','Geography','Indian Geography','easy','APSC'],
+
+  ['What is the capital of Andaman and Nicobar Islands?','Port Blair','Delhi','Mumbai','Shimla','a','Port Blair is the capital of Andaman and Nicobar Islands.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Chandigarh?','Chandigarh','Delhi','Mumbai','Shimla','a','Chandigarh is the capital of Chandigarh.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Dadra and Nagar Haveli and Daman and Diu?','Daman','Delhi','Mumbai','Shimla','a','Daman is the capital of Dadra and Nagar Haveli and Daman and Diu.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Delhi?','New Delhi','Delhi','Mumbai','Shimla','a','New Delhi is the capital of Delhi.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Jammu and Kashmir?','Srinagar/Jammu','Delhi','Mumbai','Shimla','a','Srinagar/Jammu is the capital of Jammu and Kashmir.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Ladakh?','Leh','Delhi','Mumbai','Shimla','a','Leh is the capital of Ladakh.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Lakshadweep?','Kavaratti','Delhi','Mumbai','Shimla','a','Kavaratti is the capital of Lakshadweep.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Puducherry?','Puducherry','Delhi','Mumbai','Shimla','a','Puducherry is the capital of Puducherry.','Geography','Indian Geography','medium','APSC'],
+
+  ['What is the capital of Afghanistan?','Kabul','New York','Sydney','Mumbai','a','Kabul is the capital of Afghanistan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Afghanistan located?','Asia','Antarctica','Arctic','Atlantic','a','Afghanistan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['On which continent is Australia located?','Oceania','Antarctica','Arctic','Atlantic','a','Australia is in Oceania.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Brazil?','Brasilia','New York','Sydney','Mumbai','a','Brasilia is the capital of Brazil.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Brazil located?','South America','Antarctica','Arctic','Atlantic','a','Brazil is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Canada?','Ottawa','New York','Sydney','Mumbai','a','Ottawa is the capital of Canada.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Canada located?','North America','Antarctica','Arctic','Atlantic','a','Canada is in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of China?','Beijing','New York','Sydney','Mumbai','a','Beijing is the capital of China.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is China located?','Asia','Antarctica','Arctic','Atlantic','a','China is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of France?','Paris','New York','Sydney','Mumbai','a','Paris is the capital of France.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is France located?','Europe','Antarctica','Arctic','Atlantic','a','France is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Germany?','Berlin','New York','Sydney','Mumbai','a','Berlin is the capital of Germany.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Germany located?','Europe','Antarctica','Arctic','Atlantic','a','Germany is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Japan?','Tokyo','New York','Sydney','Mumbai','a','Tokyo is the capital of Japan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Japan located?','Asia','Antarctica','Arctic','Atlantic','a','Japan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Nepal?','Kathmandu','New York','Sydney','Mumbai','a','Kathmandu is the capital of Nepal.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Nepal located?','Asia','Antarctica','Arctic','Atlantic','a','Nepal is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Pakistan?','Islamabad','New York','Sydney','Mumbai','a','Islamabad is the capital of Pakistan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Pakistan located?','Asia','Antarctica','Arctic','Atlantic','a','Pakistan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Russia?','Moscow','New York','Sydney','Mumbai','a','Moscow is the capital of Russia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Russia located?','Europe','Antarctica','Arctic','Atlantic','a','Russia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of South Africa?','Pretoria','New York','Sydney','Mumbai','a','Pretoria is the capital of South Africa.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is South Africa located?','Africa','Antarctica','Arctic','Atlantic','a','South Africa is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of United Kingdom?','London','New York','Sydney','Mumbai','a','London is the capital of United Kingdom.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is United Kingdom located?','Europe','Antarctica','Arctic','Atlantic','a','United Kingdom is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of United States?','Washington D.C.','New York','Sydney','Mumbai','a','Washington D.C. is the capital of United States.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is United States located?','North America','Antarctica','Arctic','Atlantic','a','United States is in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Bangladesh?','Dhaka','New York','Sydney','Mumbai','a','Dhaka is the capital of Bangladesh.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Bangladesh located?','Asia','Antarctica','Arctic','Atlantic','a','Bangladesh is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Bhutan?','Thimphu','New York','Sydney','Mumbai','a','Thimphu is the capital of Bhutan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Bhutan located?','Asia','Antarctica','Arctic','Atlantic','a','Bhutan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Myanmar?','Naypyidaw','New York','Sydney','Mumbai','a','Naypyidaw is the capital of Myanmar.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Myanmar located?','Asia','Antarctica','Arctic','Atlantic','a','Myanmar is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Sri Lanka?','Sri Jayawardenepura Kotte','New York','Sydney','Mumbai','a','Sri Jayawardenepura Kotte is the capital of Sri Lanka.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Sri Lanka located?','Asia','Antarctica','Arctic','Atlantic','a','Sri Lanka is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Thailand?','Bangkok','New York','Sydney','Mumbai','a','Bangkok is the capital of Thailand.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Thailand located?','Asia','Antarctica','Arctic','Atlantic','a','Thailand is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Vietnam?','Hanoi','New York','Sydney','Mumbai','a','Hanoi is the capital of Vietnam.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Vietnam located?','Asia','Antarctica','Arctic','Atlantic','a','Vietnam is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Indonesia?','Jakarta','New York','Sydney','Mumbai','a','Jakarta is the capital of Indonesia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Indonesia located?','Asia','Antarctica','Arctic','Atlantic','a','Indonesia is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Malaysia?','Kuala Lumpur','New York','Sydney','Mumbai','a','Kuala Lumpur is the capital of Malaysia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Malaysia located?','Asia','Antarctica','Arctic','Atlantic','a','Malaysia is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Singapore?','Singapore','New York','Sydney','Mumbai','a','Singapore is the capital of Singapore.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Singapore located?','Asia','Antarctica','Arctic','Atlantic','a','Singapore is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Saudi Arabia?','Riyadh','New York','Sydney','Mumbai','a','Riyadh is the capital of Saudi Arabia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Saudi Arabia located?','Asia','Antarctica','Arctic','Atlantic','a','Saudi Arabia is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Iran?','Tehran','New York','Sydney','Mumbai','a','Tehran is the capital of Iran.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Iran located?','Asia','Antarctica','Arctic','Atlantic','a','Iran is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Iraq?','Baghdad','New York','Sydney','Mumbai','a','Baghdad is the capital of Iraq.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Iraq located?','Asia','Antarctica','Arctic','Atlantic','a','Iraq is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Egypt?','Cairo','New York','Sydney','Mumbai','a','Cairo is the capital of Egypt.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Egypt located?','Africa','Antarctica','Arctic','Atlantic','a','Egypt is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Nigeria?','Abuja','New York','Sydney','Mumbai','a','Abuja is the capital of Nigeria.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Nigeria located?','Africa','Antarctica','Arctic','Atlantic','a','Nigeria is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Kenya?','Nairobi','New York','Sydney','Mumbai','a','Nairobi is the capital of Kenya.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Kenya located?','Africa','Antarctica','Arctic','Atlantic','a','Kenya is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Argentina?','Buenos Aires','New York','Sydney','Mumbai','a','Buenos Aires is the capital of Argentina.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Argentina located?','South America','Antarctica','Arctic','Atlantic','a','Argentina is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Mexico?','Mexico City','New York','Sydney','Mumbai','a','Mexico City is the capital of Mexico.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Mexico located?','North America','Antarctica','Arctic','Atlantic','a','Mexico is in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Italy?','Rome','New York','Sydney','Mumbai','a','Rome is the capital of Italy.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Italy located?','Europe','Antarctica','Arctic','Atlantic','a','Italy is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Spain?','Madrid','New York','Sydney','Mumbai','a','Madrid is the capital of Spain.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Spain located?','Europe','Antarctica','Arctic','Atlantic','a','Spain is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Greece?','Athens','New York','Sydney','Mumbai','a','Athens is the capital of Greece.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Greece located?','Europe','Antarctica','Arctic','Atlantic','a','Greece is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Switzerland?','Bern','New York','Sydney','Mumbai','a','Bern is the capital of Switzerland.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Switzerland located?','Europe','Antarctica','Arctic','Atlantic','a','Switzerland is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Sweden?','Stockholm','New York','Sydney','Mumbai','a','Stockholm is the capital of Sweden.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Sweden located?','Europe','Antarctica','Arctic','Atlantic','a','Sweden is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Norway?','Oslo','New York','Sydney','Mumbai','a','Oslo is the capital of Norway.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Norway located?','Europe','Antarctica','Arctic','Atlantic','a','Norway is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Finland?','Helsinki','New York','Sydney','Mumbai','a','Helsinki is the capital of Finland.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Finland located?','Europe','Antarctica','Arctic','Atlantic','a','Finland is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Poland?','Warsaw','New York','Sydney','Mumbai','a','Warsaw is the capital of Poland.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Poland located?','Europe','Antarctica','Arctic','Atlantic','a','Poland is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Turkey?','Ankara','New York','Sydney','Mumbai','a','Ankara is the capital of Turkey.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Turkey located?','Asia/Europe','Antarctica','Arctic','Atlantic','a','Turkey is in Asia/Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of New Zealand?','Wellington','New York','Sydney','Mumbai','a','Wellington is the capital of New Zealand.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is New Zealand located?','Oceania','Antarctica','Arctic','Atlantic','a','New Zealand is in Oceania.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of South Korea?','Seoul','New York','Sydney','Mumbai','a','Seoul is the capital of South Korea.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is South Korea located?','Asia','Antarctica','Arctic','Atlantic','a','South Korea is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of North Korea?','Pyongyang','New York','Sydney','Mumbai','a','Pyongyang is the capital of North Korea.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is North Korea located?','Asia','Antarctica','Arctic','Atlantic','a','North Korea is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Philippines?','Manila','New York','Sydney','Mumbai','a','Manila is the capital of Philippines.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Philippines located?','Asia','Antarctica','Arctic','Atlantic','a','Philippines is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Ethiopia?','Addis Ababa','New York','Sydney','Mumbai','a','Addis Ababa is the capital of Ethiopia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Ethiopia located?','Africa','Antarctica','Arctic','Atlantic','a','Ethiopia is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Morocco?','Rabat','New York','Sydney','Mumbai','a','Rabat is the capital of Morocco.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Morocco located?','Africa','Antarctica','Arctic','Atlantic','a','Morocco is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Portugal?','Lisbon','New York','Sydney','Mumbai','a','Lisbon is the capital of Portugal.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Portugal located?','Europe','Antarctica','Arctic','Atlantic','a','Portugal is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Netherlands?','Amsterdam','New York','Sydney','Mumbai','a','Amsterdam is the capital of Netherlands.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Netherlands located?','Europe','Antarctica','Arctic','Atlantic','a','Netherlands is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Belgium?','Brussels','New York','Sydney','Mumbai','a','Brussels is the capital of Belgium.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Belgium located?','Europe','Antarctica','Arctic','Atlantic','a','Belgium is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Austria?','Vienna','New York','Sydney','Mumbai','a','Vienna is the capital of Austria.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Austria located?','Europe','Antarctica','Arctic','Atlantic','a','Austria is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Hungary?','Budapest','New York','Sydney','Mumbai','a','Budapest is the capital of Hungary.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Hungary located?','Europe','Antarctica','Arctic','Atlantic','a','Hungary is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Czech Republic?','Prague','New York','Sydney','Mumbai','a','Prague is the capital of Czech Republic.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Czech Republic located?','Europe','Antarctica','Arctic','Atlantic','a','Czech Republic is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Denmark?','Copenhagen','New York','Sydney','Mumbai','a','Copenhagen is the capital of Denmark.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Denmark located?','Europe','Antarctica','Arctic','Atlantic','a','Denmark is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Ireland?','Dublin','New York','Sydney','Mumbai','a','Dublin is the capital of Ireland.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Ireland located?','Europe','Antarctica','Arctic','Atlantic','a','Ireland is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Croatia?','Zagreb','New York','Sydney','Mumbai','a','Zagreb is the capital of Croatia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Croatia located?','Europe','Antarctica','Arctic','Atlantic','a','Croatia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Romania?','Bucharest','New York','Sydney','Mumbai','a','Bucharest is the capital of Romania.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Romania located?','Europe','Antarctica','Arctic','Atlantic','a','Romania is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Bulgaria?','Sofia','New York','Sydney','Mumbai','a','Sofia is the capital of Bulgaria.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Bulgaria located?','Europe','Antarctica','Arctic','Atlantic','a','Bulgaria is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Ukraine?','Kyiv','New York','Sydney','Mumbai','a','Kyiv is the capital of Ukraine.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Ukraine located?','Europe','Antarctica','Arctic','Atlantic','a','Ukraine is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Chile?','Santiago','New York','Sydney','Mumbai','a','Santiago is the capital of Chile.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Chile located?','South America','Antarctica','Arctic','Atlantic','a','Chile is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Peru?','Lima','New York','Sydney','Mumbai','a','Lima is the capital of Peru.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Peru located?','South America','Antarctica','Arctic','Atlantic','a','Peru is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Colombia?','Bogota','New York','Sydney','Mumbai','a','Bogota is the capital of Colombia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Colombia located?','South America','Antarctica','Arctic','Atlantic','a','Colombia is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Venezuela?','Caracas','New York','Sydney','Mumbai','a','Caracas is the capital of Venezuela.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Venezuela located?','South America','Antarctica','Arctic','Atlantic','a','Venezuela is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Algeria?','Algiers','New York','Sydney','Mumbai','a','Algiers is the capital of Algeria.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Algeria located?','Africa','Antarctica','Arctic','Atlantic','a','Algeria is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Ghana?','Accra','New York','Sydney','Mumbai','a','Accra is the capital of Ghana.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Ghana located?','Africa','Antarctica','Arctic','Atlantic','a','Ghana is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Uganda?','Kampala','New York','Sydney','Mumbai','a','Kampala is the capital of Uganda.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Uganda located?','Africa','Antarctica','Arctic','Atlantic','a','Uganda is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Tanzania?','Dodoma','New York','Sydney','Mumbai','a','Dodoma is the capital of Tanzania.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Tanzania located?','Africa','Antarctica','Arctic','Atlantic','a','Tanzania is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Zimbabwe?','Harare','New York','Sydney','Mumbai','a','Harare is the capital of Zimbabwe.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Zimbabwe located?','Africa','Antarctica','Arctic','Atlantic','a','Zimbabwe is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Cambodia?','Phnom Penh','New York','Sydney','Mumbai','a','Phnom Penh is the capital of Cambodia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Cambodia located?','Asia','Antarctica','Arctic','Atlantic','a','Cambodia is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Laos?','Vientiane','New York','Sydney','Mumbai','a','Vientiane is the capital of Laos.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Laos located?','Asia','Antarctica','Arctic','Atlantic','a','Laos is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Mongolia?','Ulaanbaatar','New York','Sydney','Mumbai','a','Ulaanbaatar is the capital of Mongolia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Mongolia located?','Asia','Antarctica','Arctic','Atlantic','a','Mongolia is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Kazakhstan?','Nur-Sultan','New York','Sydney','Mumbai','a','Nur-Sultan is the capital of Kazakhstan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Kazakhstan located?','Asia','Antarctica','Arctic','Atlantic','a','Kazakhstan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Uzbekistan?','Tashkent','New York','Sydney','Mumbai','a','Tashkent is the capital of Uzbekistan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Uzbekistan located?','Asia','Antarctica','Arctic','Atlantic','a','Uzbekistan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Qatar?','Doha','New York','Sydney','Mumbai','a','Doha is the capital of Qatar.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Qatar located?','Asia','Antarctica','Arctic','Atlantic','a','Qatar is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of UAE?','Abu Dhabi','New York','Sydney','Mumbai','a','Abu Dhabi is the capital of UAE.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is UAE located?','Asia','Antarctica','Arctic','Atlantic','a','UAE is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Oman?','Muscat','New York','Sydney','Mumbai','a','Muscat is the capital of Oman.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Oman located?','Asia','Antarctica','Arctic','Atlantic','a','Oman is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Kuwait?','Kuwait City','New York','Sydney','Mumbai','a','Kuwait City is the capital of Kuwait.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Kuwait located?','Asia','Antarctica','Arctic','Atlantic','a','Kuwait is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Israel?','Jerusalem','New York','Sydney','Mumbai','a','Jerusalem is the capital of Israel.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Israel located?','Asia','Antarctica','Arctic','Atlantic','a','Israel is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Lebanon?','Beirut','New York','Sydney','Mumbai','a','Beirut is the capital of Lebanon.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Lebanon located?','Asia','Antarctica','Arctic','Atlantic','a','Lebanon is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Jordan?','Amman','New York','Sydney','Mumbai','a','Amman is the capital of Jordan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Jordan located?','Asia','Antarctica','Arctic','Atlantic','a','Jordan is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Libya?','Tripoli','New York','Sydney','Mumbai','a','Tripoli is the capital of Libya.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Libya located?','Africa','Antarctica','Arctic','Atlantic','a','Libya is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Sudan?','Khartoum','New York','Sydney','Mumbai','a','Khartoum is the capital of Sudan.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Sudan located?','Africa','Antarctica','Arctic','Atlantic','a','Sudan is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Tunisia?','Tunis','New York','Sydney','Mumbai','a','Tunis is the capital of Tunisia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Tunisia located?','Africa','Antarctica','Arctic','Atlantic','a','Tunisia is in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Iceland?','Reykjavik','New York','Sydney','Mumbai','a','Reykjavik is the capital of Iceland.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Iceland located?','Europe','Antarctica','Arctic','Atlantic','a','Iceland is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Latvia?','Riga','New York','Sydney','Mumbai','a','Riga is the capital of Latvia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Latvia located?','Europe','Antarctica','Arctic','Atlantic','a','Latvia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Lithuania?','Vilnius','New York','Sydney','Mumbai','a','Vilnius is the capital of Lithuania.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Lithuania located?','Europe','Antarctica','Arctic','Atlantic','a','Lithuania is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Estonia?','Tallinn','New York','Sydney','Mumbai','a','Tallinn is the capital of Estonia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Estonia located?','Europe','Antarctica','Arctic','Atlantic','a','Estonia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Slovakia?','Bratislava','New York','Sydney','Mumbai','a','Bratislava is the capital of Slovakia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Slovakia located?','Europe','Antarctica','Arctic','Atlantic','a','Slovakia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Slovenia?','Ljubljana','New York','Sydney','Mumbai','a','Ljubljana is the capital of Slovenia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Slovenia located?','Europe','Antarctica','Arctic','Atlantic','a','Slovenia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Bosnia and Herzegovina?','Sarajevo','New York','Sydney','Mumbai','a','Sarajevo is the capital of Bosnia and Herzegovina.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Bosnia and Herzegovina located?','Europe','Antarctica','Arctic','Atlantic','a','Bosnia and Herzegovina is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Serbia?','Belgrade','New York','Sydney','Mumbai','a','Belgrade is the capital of Serbia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Serbia located?','Europe','Antarctica','Arctic','Atlantic','a','Serbia is in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Costa Rica?','San Jose','New York','Sydney','Mumbai','a','San Jose is the capital of Costa Rica.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Costa Rica located?','North America','Antarctica','Arctic','Atlantic','a','Costa Rica is in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Panama?','Panama City','New York','Sydney','Mumbai','a','Panama City is the capital of Panama.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Panama located?','North America','Antarctica','Arctic','Atlantic','a','Panama is in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Uruguay?','Montevideo','New York','Sydney','Mumbai','a','Montevideo is the capital of Uruguay.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Uruguay located?','South America','Antarctica','Arctic','Atlantic','a','Uruguay is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Ecuador?','Quito','New York','Sydney','Mumbai','a','Quito is the capital of Ecuador.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Ecuador located?','South America','Antarctica','Arctic','Atlantic','a','Ecuador is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Bolivia?','Sucre','New York','Sydney','Mumbai','a','Sucre is the capital of Bolivia.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Bolivia located?','South America','Antarctica','Arctic','Atlantic','a','Bolivia is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Paraguay?','Asuncion','New York','Sydney','Mumbai','a','Asuncion is the capital of Paraguay.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Paraguay located?','South America','Antarctica','Arctic','Atlantic','a','Paraguay is in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Maldives?','Male','New York','Sydney','Mumbai','a','Male is the capital of Maldives.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Maldives located?','Asia','Antarctica','Arctic','Atlantic','a','Maldives is in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the capital of Fiji?','Suva','New York','Sydney','Mumbai','a','Suva is the capital of Fiji.','Geography','World Geography','easy','APSC,ADRE,UPSC'],
+
+  ['On which continent is Fiji located?','Oceania','Antarctica','Arctic','Atlantic','a','Fiji is in Oceania.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Nile river?','6650 km','500 km','10000 km','100 km','a','The Nile river is 6650 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Nile river empty?','Mediterranean Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Nile river empties into the Mediterranean Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Nile river flow?','Africa','Antarctica','Australia','Europe','a','The Nile river flows through Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Amazon river?','6400 km','500 km','10000 km','100 km','a','The Amazon river is 6400 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Amazon river empty?','Atlantic Ocean','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Amazon river empties into the Atlantic Ocean.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Amazon river flow?','South America','Antarctica','Australia','Europe','a','The Amazon river flows through South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Yangtze river?','6300 km','500 km','10000 km','100 km','a','The Yangtze river is 6300 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Yangtze river empty?','East China Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Yangtze river empties into the East China Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Yangtze river flow?','Asia','Antarctica','Australia','Europe','a','The Yangtze river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Mississippi river?','6275 km','500 km','10000 km','100 km','a','The Mississippi river is 6275 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Mississippi river empty?','Gulf of Mexico','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Mississippi river empties into the Gulf of Mexico.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Mississippi river flow?','North America','Antarctica','Australia','Europe','a','The Mississippi river flows through North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Yenisei river?','5539 km','500 km','10000 km','100 km','a','The Yenisei river is 5539 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Yenisei river empty?','Kara Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Yenisei river empties into the Kara Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Yenisei river flow?','Asia','Antarctica','Australia','Europe','a','The Yenisei river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Yellow River river?','5464 km','500 km','10000 km','100 km','a','The Yellow River river is 5464 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Yellow River river empty?','Bohai Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Yellow River river empties into the Bohai Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Yellow River river flow?','Asia','Antarctica','Australia','Europe','a','The Yellow River river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Ob river?','5410 km','500 km','10000 km','100 km','a','The Ob river is 5410 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Ob river empty?','Gulf of Ob','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Ob river empties into the Gulf of Ob.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Ob river flow?','Asia','Antarctica','Australia','Europe','a','The Ob river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Parana river?','4880 km','500 km','10000 km','100 km','a','The Parana river is 4880 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Parana river empty?','Rio de la Plata','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Parana river empties into the Rio de la Plata.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Parana river flow?','South America','Antarctica','Australia','Europe','a','The Parana river flows through South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Congo river?','4700 km','500 km','10000 km','100 km','a','The Congo river is 4700 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Congo river empty?','Atlantic Ocean','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Congo river empties into the Atlantic Ocean.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Congo river flow?','Africa','Antarctica','Australia','Europe','a','The Congo river flows through Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Amur river?','4480 km','500 km','10000 km','100 km','a','The Amur river is 4480 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Amur river empty?','Sea of Okhotsk','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Amur river empties into the Sea of Okhotsk.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Amur river flow?','Asia','Antarctica','Australia','Europe','a','The Amur river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Lena river?','4400 km','500 km','10000 km','100 km','a','The Lena river is 4400 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Lena river empty?','Laptev Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Lena river empties into the Laptev Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Lena river flow?','Asia','Antarctica','Australia','Europe','a','The Lena river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Mekong river?','4350 km','500 km','10000 km','100 km','a','The Mekong river is 4350 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Mekong river empty?','South China Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Mekong river empties into the South China Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Mekong river flow?','Asia','Antarctica','Australia','Europe','a','The Mekong river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Niger river?','4180 km','500 km','10000 km','100 km','a','The Niger river is 4180 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Niger river empty?','Gulf of Guinea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Niger river empties into the Gulf of Guinea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Niger river flow?','Africa','Antarctica','Australia','Europe','a','The Niger river flows through Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Murray river?','2508 km','500 km','10000 km','100 km','a','The Murray river is 2508 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Murray river empty?','Southern Ocean','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Murray river empties into the Southern Ocean.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Murray river flow?','Oceania','Antarctica','Australia','Europe','a','The Murray river flows through Oceania.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Volga river?','3530 km','500 km','10000 km','100 km','a','The Volga river is 3530 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Volga river empty?','Caspian Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Volga river empties into the Caspian Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Volga river flow?','Europe','Antarctica','Australia','Europe','a','The Volga river flows through Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Danube river?','2860 km','500 km','10000 km','100 km','a','The Danube river is 2860 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Danube river empty?','Black Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Danube river empties into the Black Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Danube river flow?','Europe','Antarctica','Australia','Europe','a','The Danube river flows through Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Rhine river?','1230 km','500 km','10000 km','100 km','a','The Rhine river is 1230 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Rhine river empty?','North Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Rhine river empties into the North Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Rhine river flow?','Europe','Antarctica','Australia','Europe','a','The Rhine river flows through Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Thames river?','346 km','500 km','10000 km','100 km','a','The Thames river is 346 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Thames river empty?','North Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Thames river empties into the North Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Thames river flow?','Europe','Antarctica','Australia','Europe','a','The Thames river flows through Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Ganga river?','2525 km','500 km','10000 km','100 km','a','The Ganga river is 2525 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Ganga river empty?','Bay of Bengal','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Ganga river empties into the Bay of Bengal.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Ganga river flow?','Asia','Antarctica','Australia','Europe','a','The Ganga river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Indus river?','3180 km','500 km','10000 km','100 km','a','The Indus river is 3180 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Indus river empty?','Arabian Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Indus river empties into the Arabian Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Indus river flow?','Asia','Antarctica','Australia','Europe','a','The Indus river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Godavari river?','1465 km','500 km','10000 km','100 km','a','The Godavari river is 1465 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Godavari river empty?','Bay of Bengal','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Godavari river empties into the Bay of Bengal.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Godavari river flow?','Asia','Antarctica','Australia','Europe','a','The Godavari river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Krishna river?','1400 km','500 km','10000 km','100 km','a','The Krishna river is 1400 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Krishna river empty?','Bay of Bengal','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Krishna river empties into the Bay of Bengal.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Krishna river flow?','Asia','Antarctica','Australia','Europe','a','The Krishna river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Narmada river?','1312 km','500 km','10000 km','100 km','a','The Narmada river is 1312 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Narmada river empty?','Arabian Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Narmada river empties into the Arabian Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Narmada river flow?','Asia','Antarctica','Australia','Europe','a','The Narmada river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Tapi river?','724 km','500 km','10000 km','100 km','a','The Tapi river is 724 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Tapi river empty?','Arabian Sea','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Tapi river empties into the Arabian Sea.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Tapi river flow?','Asia','Antarctica','Australia','Europe','a','The Tapi river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Kaveri river?','800 km','500 km','10000 km','100 km','a','The Kaveri river is 800 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Kaveri river empty?','Bay of Bengal','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Kaveri river empties into the Bay of Bengal.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Kaveri river flow?','Asia','Antarctica','Australia','Europe','a','The Kaveri river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the length of the Yamuna river?','1376 km','500 km','10000 km','100 km','a','The Yamuna river is 1376 km long.','Geography','World Geography','hard','APSC,ADRE'],
+
+  ['Where does the Yamuna river empty?','Ganga at Allahabad','Pacific Ocean','Indian Ocean','Arctic Ocean','a','The Yamuna river empties into the Ganga at Allahabad.','Geography','World Geography','medium','APSC,ADRE'],
+
+  ['On which continent does the Yamuna river flow?','Asia','Antarctica','Australia','Europe','a','The Yamuna river flows through Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Himalayas?','Mount Everest','Mount Everest','K2','Mont Blanc','a','The highest peak in the Himalayas is Mount Everest.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Mount Everest?','8849 meters','5000 meters','3000 meters','10000 meters','a','Mount Everest is 8849 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Himalayas located?','Asia','Australia','Africa','Antarctica','a','The Himalayas are in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Andes?','Aconcagua','Mount Everest','K2','Mont Blanc','a','The highest peak in the Andes is Aconcagua.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Aconcagua?','6961 meters','5000 meters','3000 meters','10000 meters','a','Aconcagua is 6961 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Andes located?','South America','Australia','Africa','Antarctica','a','The Andes are in South America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Alps?','Mont Blanc','Mount Everest','K2','Mont Blanc','a','The highest peak in the Alps is Mont Blanc.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Mont Blanc?','4808 meters','5000 meters','3000 meters','10000 meters','a','Mont Blanc is 4808 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Alps located?','Europe','Australia','Africa','Antarctica','a','The Alps are in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Rockies?','Mount Elbert','Mount Everest','K2','Mont Blanc','a','The highest peak in the Rockies is Mount Elbert.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Mount Elbert?','4401 meters','5000 meters','3000 meters','10000 meters','a','Mount Elbert is 4401 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Rockies located?','North America','Australia','Africa','Antarctica','a','The Rockies are in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Caucasus?','Mount Elbrus','Mount Everest','K2','Mont Blanc','a','The highest peak in the Caucasus is Mount Elbrus.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Mount Elbrus?','5642 meters','5000 meters','3000 meters','10000 meters','a','Mount Elbrus is 5642 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Caucasus located?','Europe/Asia','Australia','Africa','Antarctica','a','The Caucasus are in Europe/Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Ural Mountains?','Mount Narodnaya','Mount Everest','K2','Mont Blanc','a','The highest peak in the Ural Mountains is Mount Narodnaya.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Mount Narodnaya?','1895 meters','5000 meters','3000 meters','10000 meters','a','Mount Narodnaya is 1895 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Ural Mountains located?','Europe/Asia','Australia','Africa','Antarctica','a','The Ural Mountains are in Europe/Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Atlas Mountains?','Toubkal','Mount Everest','K2','Mont Blanc','a','The highest peak in the Atlas Mountains is Toubkal.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Toubkal?','4167 meters','5000 meters','3000 meters','10000 meters','a','Toubkal is 4167 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Atlas Mountains located?','Africa','Australia','Africa','Antarctica','a','The Atlas Mountains are in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Drakensberg?','Thabana Ntlenyana','Mount Everest','K2','Mont Blanc','a','The highest peak in the Drakensberg is Thabana Ntlenyana.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Thabana Ntlenyana?','3482 meters','5000 meters','3000 meters','10000 meters','a','Thabana Ntlenyana is 3482 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Drakensberg located?','Africa','Australia','Africa','Antarctica','a','The Drakensberg are in Africa.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Pyrenees?','Aneto','Mount Everest','K2','Mont Blanc','a','The highest peak in the Pyrenees is Aneto.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Aneto?','3404 meters','5000 meters','3000 meters','10000 meters','a','Aneto is 3404 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Pyrenees located?','Europe','Australia','Africa','Antarctica','a','The Pyrenees are in Europe.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Appalachians?','Mount Mitchell','Mount Everest','K2','Mont Blanc','a','The highest peak in the Appalachians is Mount Mitchell.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Mount Mitchell?','2037 meters','5000 meters','3000 meters','10000 meters','a','Mount Mitchell is 2037 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Appalachians located?','North America','Australia','Africa','Antarctica','a','The Appalachians are in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Alaska Range?','Denali','Mount Everest','K2','Mont Blanc','a','The highest peak in the Alaska Range is Denali.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Denali?','6190 meters','5000 meters','3000 meters','10000 meters','a','Denali is 6190 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Alaska Range located?','North America','Australia','Africa','Antarctica','a','The Alaska Range are in North America.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Tian Shan?','Jengish Chokusu','Mount Everest','K2','Mont Blanc','a','The highest peak in the Tian Shan is Jengish Chokusu.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Jengish Chokusu?','7439 meters','5000 meters','3000 meters','10000 meters','a','Jengish Chokusu is 7439 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Tian Shan located?','Asia','Australia','Africa','Antarctica','a','The Tian Shan are in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Karakoram?','K2','Mount Everest','K2','Mont Blanc','a','The highest peak in the Karakoram is K2.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of K2?','8611 meters','5000 meters','3000 meters','10000 meters','a','K2 is 8611 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Karakoram located?','Asia','Australia','Africa','Antarctica','a','The Karakoram are in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Hindu Kush?','Tirich Mir','Mount Everest','K2','Mont Blanc','a','The highest peak in the Hindu Kush is Tirich Mir.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Tirich Mir?','7708 meters','5000 meters','3000 meters','10000 meters','a','Tirich Mir is 7708 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Hindu Kush located?','Asia','Australia','Africa','Antarctica','a','The Hindu Kush are in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the highest peak in the Pamir Mountains?','Ismoil Somoni Peak','Mount Everest','K2','Mont Blanc','a','The highest peak in the Pamir Mountains is Ismoil Somoni Peak.','Geography','World Geography','medium','APSC,ADRE,UPSC'],
+
+  ['What is the height of Ismoil Somoni Peak?','7495 meters','5000 meters','3000 meters','10000 meters','a','Ismoil Somoni Peak is 7495 meters high.','Geography','World Geography','hard','APSC'],
+
+  ['On which continent are the Pamir Mountains located?','Asia','Australia','Africa','Antarctica','a','The Pamir Mountains are in Asia.','Geography','World Geography','easy','APSC'],
+
+  ['What is the SI unit of energy?','Joule','Newton','Watt','Pascal','a','Joule (J) is the SI unit of energy.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the SI unit of power?','Watt','Joule','Newton','Ampere','a','Watt (W) is the SI unit of power.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the SI unit of electric current?','Ampere','Volt','Ohm','Watt','a','Ampere (A) is the SI unit of electric current.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the SI unit of voltage?','Volt','Ampere','Watt','Ohm','a','Volt (V) is the SI unit of voltage.','Science','Physics','easy','APSC'],
+
+  ['What is the SI unit of resistance?','Ohm','Volt','Ampere','Watt','a','Ohm is the SI unit of electrical resistance.','Science','Physics','medium','APSC'],
+
+  ['What is the acceleration due to gravity on Earth?','9.8 m/s²','8.9 m/s²','10.8 m/s²','9.0 m/s²','a','g = 9.8 m/s² on Earth surface.','Science','Physics','medium','APSC,ADRE'],
+
+  ['Who proposed the theory of relativity?','Albert Einstein','Isaac Newton','Galileo Galilei','Niels Bohr','a','Einstein proposed special and general relativity.','Science','Physics','easy','APSC,ADRE'],
+
+  ['Who formulated the laws of motion?','Isaac Newton','Albert Einstein','Galileo Galilei','Johannes Kepler','a','Newton formulated three laws of motion.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the first law of thermodynamics?','Energy is conserved','Entropy increases','Absolute zero','Energy equals mass times speed of light','a','First law: Energy can neither be created nor destroyed.','Science','Physics','medium','APSC'],
+
+  ['What is the second law of thermodynamics?','Entropy of an isolated system always increases','Energy is conserved','Every action has equal reaction','Force equals mass times acceleration','a','Second law: Entropy always increases.','Science','Physics','hard','APSC'],
+
+  ['What is Newton third law?','Every action has an equal and opposite reaction','Force equals mass times acceleration','An object in motion stays in motion','Energy is conserved','a','Third law: For every action there is an equal and opposite reaction.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the unit of frequency?','Hertz','Newton','Joule','Pascal','a','Hertz (Hz) is the unit of frequency.','Science','Physics','easy','APSC'],
+
+  ['What is the unit of pressure?','Pascal','Newton','Joule','Watt','a','Pascal (Pa) is the SI unit of pressure.','Science','Physics','medium','APSC,ADRE'],
+
+  ['What is the unit of magnetic field?','Tesla','Newton','Watt','Joule','a','Tesla (T) is the SI unit of magnetic field.','Science','Physics','hard','APSC'],
+
+  ['What is the charge of an electron?','Negative','Positive','Neutral','Variable','a','Electron carries a negative charge of -1.6e-19 C.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the atomic number of hydrogen?','1','2','3','4','a','Hydrogen has atomic number 1.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the atomic number of carbon?','6','8','12','14','a','Carbon has atomic number 6.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the atomic number of oxygen?','8','6','16','12','a','Oxygen has atomic number 8.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the atomic number of gold?','79','47','29','82','a','Gold has atomic number 79.','Science','Physics','medium','APSC'],
+
+  ['What is the atomic number of iron?','26','56','30','24','a','Iron has atomic number 26.','Science','Physics','medium','APSC'],
+
+  ['What is the most abundant gas in Earth atmosphere?','Nitrogen','Oxygen','Carbon dioxide','Argon','a','Nitrogen makes up about 78% of Earth atmosphere.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the freezing point of water at sea level?','0°C','10°C','-10°C','32°C','a','Water freezes at 0°C at sea level.','Science','Physics','easy','APSC,ADRE'],
+
+  ['What is the speed of sound in air at 20°C?','343 m/s','300 m/s','500 m/s','1500 m/s','a','Sound travels at 343 m/s in air at 20°C.','Science','Physics','medium','APSC'],
+
+  ['What is the value of Avogadro number?','6.022 × 10²³','3.14 × 10²³','9.8 × 10²³','1.6 × 10⁻¹⁹','a','Avogadro number is 6.022 × 10²³.','Science','Physics','hard','APSC'],
+
+  ['What is the value of Planck constant?','6.626 × 10⁻³⁴ J·s','9.8 × 10⁻³⁴','3.14 × 10⁻³⁴','1.6 × 10⁻¹⁹','a','Planck constant h = 6.626 × 10⁻³⁴ J·s.','Science','Physics','hard','APSC'],
+
+  ['What is the chemical symbol for silver?','Ag','Si','Sl','Sv','a','Ag from Latin Argentum.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the chemical symbol for iron?','Fe','Ir','I','Fn','a','Fe from Latin Ferrum.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the chemical symbol for copper?','Cu','Co','Cp','C','a','Cu from Latin Cuprum.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the chemical symbol for potassium?','K','Pt','Po','P','a','K from Latin Kalium.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol for mercury?','Hg','Mc','Mr','M','a','Hg from Latin Hydrargyrum.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical symbol for lead?','Pb','Le','Ld','P','a','Pb from Latin Plumbum.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical symbol for tungsten?','W','Tg','Tu','T','a','W from German Wolfram.','Science','Chemistry','hard','APSC'],
+
+  ['What is the chemical formula for carbon dioxide?','CO2','CO','C2O','C2O2','a','CO2.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the chemical formula for sulfuric acid?','H2SO4','HSO4','H2S','H2SO3','a','H2SO4.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical formula for hydrochloric acid?','HCl','HCl2','H2Cl','ClH2','a','HCl.','Science','Chemistry','medium','APSC'],
+
+  ['What is the chemical formula for methane?','CH4','CH3','C2H6','C2H4','a','CH4.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the chemical formula for ammonia?','NH3','NH4','N2H4','NO3','a','NH3.','Science','Chemistry','medium','APSC'],
+
+  ['What is the pH of pure water?','7','0','14','1','a','Pure water has pH 7 (neutral).','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the pH of blood in human body?','7.4','6.4','8.4','5.4','a','Blood pH is approximately 7.4.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the most common isotope of carbon?','Carbon-12','Carbon-14','Carbon-13','Carbon-11','a','Carbon-12 is the most common isotope (~99%).','Science','Chemistry','hard','APSC'],
+
+  ['What type of bond is formed when electrons are shared?','Covalent bond','Ionic bond','Metallic bond','Hydrogen bond','a','Covalent bonds involve electron sharing.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What type of bond is formed when electrons are transferred?','Ionic bond','Covalent bond','Metallic bond','Hydrogen bond','a','Ionic bonds involve electron transfer.','Science','Chemistry','medium','APSC'],
+
+  ['What is the hardest natural substance known?','Diamond','Gold','Iron','Quartz','a','Diamond is the hardest natural substance.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['Which gas is known as laughing gas?','Nitrous oxide (N2O)','Nitrogen dioxide','Nitric oxide','Nitrogen','a','N2O is laughing gas.','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['Which gas is used in electric bulbs?','Argon','Oxygen','Hydrogen','Nitrogen','a','Argon is used in bulbs to prevent filament oxidation.','Science','Chemistry','medium','APSC'],
+
+  ['Which non-metal is liquid at room temperature?','Bromine','Mercury','Iodine','Chlorine','a','Bromine is the only liquid non-metal at room temperature.','Science','Chemistry','hard','APSC'],
+
+  ['What is the most electronegative element?','Fluorine','Oxygen','Chlorine','Nitrogen','a','Fluorine is the most electronegative element.','Science','Chemistry','hard','APSC'],
+
+  ['What is the lightest element?','Hydrogen','Helium','Lithium','Carbon','a','Hydrogen is the lightest element.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the heaviest naturally occurring element?','Uranium','Plutonium','Lead','Gold','a','Uranium (atomic number 92) is the heaviest naturally occurring element.','Science','Chemistry','hard','APSC'],
+
+  ['What is dry ice?','Solid carbon dioxide','Solid water','Solid nitrogen','Solid oxygen','a','Dry ice is solid CO2.','Science','Chemistry','easy','APSC,ADRE'],
+
+  ['What is the chemical formula for baking soda?','NaHCO3','Na2CO3','NaOH','NaCl','a','Baking soda is sodium bicarbonate (NaHCO3).','Science','Chemistry','medium','APSC,ADRE'],
+
+  ['What is the basic unit of life?','Cell','Atom','Molecule','Organ','a','The cell is the basic structural and functional unit of life.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which organ purifies blood in human body?','Kidney','Liver','Heart','Lung','a','Kidneys filter waste from blood.','Science','Biology','easy','APSC,ADRE'],
+
+  ['How many chambers does the human heart have?','4','2','3','5','a','Heart has 2 atria and 2 ventricles.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What is the largest organ in human body?','Skin','Liver','Brain','Lungs','a','Skin is the largest organ by surface area.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What is the largest internal organ in human body?','Liver','Heart','Brain','Kidneys','a','Liver is the largest internal organ.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What pigment gives blood its red color?','Hemoglobin','Melanin','Chlorophyll','Carotene','a','Hemoglobin carries oxygen and gives blood its red color.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What pigment gives plants their green color?','Chlorophyll','Hemoglobin','Melanin','Carotene','a','Chlorophyll enables photosynthesis.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What is the process by which plants make food?','Photosynthesis','Respiration','Digestion','Transpiration','a','Photosynthesis converts CO2 and water into glucose using sunlight.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What is the genetic material in living organisms?','DNA','RNA','Protein','Lipid','a','DNA carries genetic information.','Science','Biology','easy','APSC,ADRE'],
+
+  ['How many pairs of chromosomes do humans have?','23 pairs','46 pairs','24 pairs','22 pairs','a','Humans have 23 pairs (46 total) of chromosomes.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which vitamin helps in blood clotting?','Vitamin K','Vitamin C','Vitamin A','Vitamin D','a','Vitamin K is essential for blood clotting.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which vitamin prevents scurvy?','Vitamin C','Vitamin A','Vitamin D','Vitamin B','a','Vitamin C deficiency causes scurvy.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which vitamin prevents rickets?','Vitamin D','Vitamin A','Vitamin C','Vitamin B','a','Vitamin D deficiency causes rickets.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which vitamin prevents night blindness?','Vitamin A','Vitamin B','Vitamin C','Vitamin D','a','Vitamin A deficiency causes night blindness.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What is the normal human body temperature?','37°C or 98.6°F','35°C or 95°F','39°C or 102°F','36°C or 96.8°F','a','Normal body temperature is 37°C.','Science','Biology','easy','APSC,ADRE'],
+
+  ['How many bones are in the adult human body?','206','300','150','250','a','Adults have 206 bones.','Science','Biology','medium','APSC,ADRE'],
+
+  ['How many teeth does an adult human have?','32','28','30','36','a','Adults have 32 teeth including wisdom teeth.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Which blood group is the universal donor?','O negative','AB positive','A positive','B negative','a','O- can donate to all blood types.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which blood group is the universal recipient?','AB positive','O negative','A negative','B positive','a','AB+ can receive from all blood types.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the largest bone in the human body?','Femur','Tibia','Skull','Spine','a','Femur (thigh bone) is the largest bone.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the smallest bone in the human body?','Stapes','Femur','Rib','Patella','a','Stapes in the middle ear is the smallest bone.','Science','Biology','hard','APSC'],
+
+  ['Which part of the brain controls balance?','Cerebellum','Cerebrum','Medulla','Hypothalamus','a','Cerebellum controls balance and coordination.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which part of the brain controls breathing?','Medulla oblongata','Cerebrum','Cerebellum','Thalamus','a','Medulla controls breathing and heart rate.','Science','Biology','hard','APSC'],
+
+  ['What is the function of white blood cells?','Fight infection','Carry oxygen','Clot blood','Digest food','a','WBCs fight infections.','Science','Biology','easy','APSC,ADRE'],
+
+  ['What is the function of platelets?','Blood clotting','Carry oxygen','Fight infection','Produce antibodies','a','Platelets help in blood clotting.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which hormone regulates blood sugar?','Insulin','Adrenaline','Thyroxine','Testosterone','a','Insulin from pancreas regulates blood glucose.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which hormone is called the fight or flight hormone?','Adrenaline','Insulin','Thyroxine','Estrogen','a','Adrenaline (epinephrine) triggers fight or flight response.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Which gland is called the master gland?','Pituitary gland','Thyroid gland','Adrenal gland','Pancreas','a','Pituitary controls other endocrine glands.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the largest gland in the human body?','Liver','Pancreas','Thyroid','Pituitary','a','Liver is the largest gland.','Science','Biology','medium','APSC,ADRE'],
+
+  ['How many lobes does the human liver have?','2','3','4','5','a','Liver has right and left lobes.','Science','Biology','hard','APSC'],
+
+  ['What is the longest bone in the human body?','Femur','Tibia','Humerus','Fibula','a','Femur is the longest bone.','Science','Biology','medium','APSC'],
+
+  ['What is the scientific name of humans?','Homo sapiens','Homo erectus','Homo habilis','Pan troglodytes','a','Humans are Homo sapiens.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Who is known as the father of genetics?','Gregor Mendel','Charles Darwin','Louis Pasteur','James Watson','a','Mendel discovered inheritance through pea plants.','Science','Biology','medium','APSC,ADRE'],
+
+  ['Who proposed the theory of evolution by natural selection?','Charles Darwin','Gregor Mendel','Louis Pasteur','Alexander Fleming','a','Darwin proposed evolution in On the Origin of Species.','Science','Biology','easy','APSC,ADRE'],
+
+  ['Who developed the first vaccine?','Edward Jenner','Louis Pasteur','Alexander Fleming','Robert Koch','a','Jenner developed smallpox vaccine in 1796.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the building block of proteins?','Amino acids','Nucleotides','Fatty acids','Monosaccharides','a','Proteins are made of amino acids.','Science','Biology','medium','APSC,ADRE'],
+
+  ['What is the building block of nucleic acids?','Nucleotides','Amino acids','Fatty acids','Glucose','a','DNA and RNA are made of nucleotides.','Science','Biology','hard','APSC'],
+
+  ['What is the sum of 436 and 760?','1196','324','331360','1195','a','436 + 760 = 1196','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 20 and 849?','869','829','16980','868','a','20 + 849 = 869','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 855 minus 832?','23','1687','711360','24','a','855 - 832 = 23','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 855 and 832?','1687','23','711360','1686','a','855 + 832 = 1687','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 315 and 885?','1200','570','278775','1199','a','315 + 885 = 1200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 387 and 964?','1351','577','373068','1350','a','387 + 964 = 1351','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 208 and 286?','494','78','59488','493','a','208 + 286 = 494','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 589 minus 456?','133','1045','268584','134','a','589 - 456 = 133','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 589 and 456?','1045','133','268584','1044','a','589 + 456 = 1045','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 175 and 392?','567','217','68600','566','a','175 + 392 = 567','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 137 and 905?','1042','768','123985','1041','a','137 + 905 = 1042','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 453 minus 277?','176','730','125481','177','a','453 - 277 = 176','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 453 and 277?','730','176','125481','729','a','453 + 277 = 730','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 585 and 652?','1237','67','381420','1236','a','585 + 652 = 1237','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 188 and 636?','824','448','119568','823','a','188 + 636 = 824','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 576 minus 201?','375','777','115776','376','a','576 - 201 = 375','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 576 and 201?','777','375','115776','776','a','576 + 201 = 777','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 373 and 765?','1138','392','285345','1137','a','373 + 765 = 1138','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 991 minus 760?','231','1751','753160','232','a','991 - 760 = 231','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 991 and 760?','1751','231','753160','1750','a','991 + 760 = 1751','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 103 and 553?','656','450','56959','655','a','103 + 553 = 656','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 763 minus 432?','331','1195','329616','332','a','763 - 432 = 331','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 763 and 432?','1195','331','329616','1194','a','763 + 432 = 1195','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 609 minus 526?','83','1135','320334','84','a','609 - 526 = 83','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 609 and 526?','1135','83','320334','1134','a','609 + 526 = 1135','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 180 minus 161?','19','341','28980','20','a','180 - 161 = 19','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 180 and 161?','341','19','28980','340','a','180 + 161 = 341','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 220 and 746?','966','526','164120','965','a','220 + 746 = 966','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 89 and 204?','293','115','18156','292','a','89 + 204 = 293','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 867 minus 359?','508','1226','311253','509','a','867 - 359 = 508','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 867 and 359?','1226','508','311253','1225','a','867 + 359 = 1226','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 339 minus 34?','305','373','11526','306','a','339 - 34 = 305','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 339 and 34?','373','305','11526','372','a','339 + 34 = 373','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 479 minus 357?','122','836','171003','123','a','479 - 357 = 122','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 479 and 357?','836','122','171003','835','a','479 + 357 = 836','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 37 and 532?','569','495','19684','568','a','37 + 532 = 569','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 717 and 772?','1489','55','553524','1488','a','717 + 772 = 1489','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 435 minus 13?','422','448','5655','423','a','435 - 13 = 422','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 435 and 13?','5655','448','422','5656','a','435 × 13 = 5655','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 435 and 13?','448','422','5655','447','a','435 + 13 = 448','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 16 and 972?','988','956','15552','987','a','16 + 972 = 988','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 689 and 901?','1590','212','620789','1589','a','689 + 901 = 1590','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 177 and 799?','976','622','141423','975','a','177 + 799 = 976','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 604 minus 193?','411','797','116572','412','a','604 - 193 = 411','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 604 and 193?','797','411','116572','796','a','604 + 193 = 797','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 303 minus 111?','192','414','33633','193','a','303 - 111 = 192','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 303 and 111?','414','192','33633','413','a','303 + 111 = 414','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 678 minus 434?','244','1112','294252','245','a','678 - 434 = 244','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 678 and 434?','1112','244','294252','1111','a','678 + 434 = 1112','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 118 and 916?','1034','798','108088','1033','a','118 + 916 = 1034','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 707 minus 601?','106','1308','424907','107','a','707 - 601 = 106','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 707 and 601?','1308','106','424907','1307','a','707 + 601 = 1308','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 196 and 764?','960','568','149744','959','a','196 + 764 = 960','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 394 minus 248?','146','642','97712','147','a','394 - 248 = 146','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 394 and 248?','642','146','97712','641','a','394 + 248 = 642','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 993 minus 546?','447','1539','542178','448','a','993 - 546 = 447','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 993 and 546?','1539','447','542178','1538','a','993 + 546 = 1539','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 620 and 736?','1356','116','456320','1355','a','620 + 736 = 1356','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 945 minus 854?','91','1799','807030','92','a','945 - 854 = 91','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 945 and 854?','1799','91','807030','1798','a','945 + 854 = 1799','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 347 and 836?','1183','489','290092','1182','a','347 + 836 = 1183','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 51 and 247?','298','196','12597','297','a','51 + 247 = 298','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 132 and 904?','1036','772','119328','1035','a','132 + 904 = 1036','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 521 minus 231?','290','752','120351','291','a','521 - 231 = 290','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 521 and 231?','752','290','120351','751','a','521 + 231 = 752','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 764 and 831?','1595','67','634884','1594','a','764 + 831 = 1595','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 784 minus 578?','206','1362','453152','207','a','784 - 578 = 206','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 784 and 578?','1362','206','453152','1361','a','784 + 578 = 1362','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 695 minus 200?','495','895','139000','496','a','695 - 200 = 495','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 695 and 200?','895','495','139000','894','a','695 + 200 = 895','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 273 and 612?','885','339','167076','884','a','273 + 612 = 885','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 454 and 540?','994','86','245160','993','a','454 + 540 = 994','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 948 and 991?','1939','43','939468','1938','a','948 + 991 = 1939','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 142 minus 52?','90','194','7384','91','a','142 - 52 = 90','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 142 and 52?','7384','194','90','7385','a','142 × 52 = 7384','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 142 and 52?','194','90','7384','193','a','142 + 52 = 194','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 178 and 318?','496','140','56604','495','a','178 + 318 = 496','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 895 minus 862?','33','1757','771490','34','a','895 - 862 = 33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 895 and 862?','1757','33','771490','1756','a','895 + 862 = 1757','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 19 and 163?','3097','182','144','3098','a','19 × 163 = 3097','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 19 and 163?','182','144','3097','181','a','19 + 163 = 182','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 998 minus 244?','754','1242','243512','755','a','998 - 244 = 754','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 998 and 244?','1242','754','243512','1241','a','998 + 244 = 1242','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 368 and 562?','930','194','206816','929','a','368 + 562 = 930','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 360 minus 170?','190','530','61200','191','a','360 - 170 = 190','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 360 and 170?','530','190','61200','529','a','360 + 170 = 530','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 405 minus 341?','64','746','138105','65','a','405 - 341 = 64','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 405 and 341?','746','64','138105','745','a','405 + 341 = 746','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 23 and 60?','1380','83','37','1381','a','23 × 60 = 1380','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 23 and 60?','83','37','1380','82','a','23 + 60 = 83','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 72 and 738?','810','666','53136','809','a','72 + 738 = 810','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 465 minus 90?','375','555','41850','376','a','465 - 90 = 375','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 465 and 90?','555','375','41850','554','a','465 + 90 = 555','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 407 and 828?','1235','421','336996','1234','a','407 + 828 = 1235','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 952 minus 193?','759','1145','183736','760','a','952 - 193 = 759','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 952 and 193?','1145','759','183736','1144','a','952 + 193 = 1145','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 817 minus 21?','796','838','17157','797','a','817 - 21 = 796','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 817 and 21?','838','796','17157','837','a','817 + 21 = 838','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 800 minus 739?','61','1539','591200','62','a','800 - 739 = 61','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 800 and 739?','1539','61','591200','1538','a','800 + 739 = 1539','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 386 minus 230?','156','616','88780','157','a','386 - 230 = 156','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 386 and 230?','616','156','88780','615','a','386 + 230 = 616','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 704 minus 534?','170','1238','375936','171','a','704 - 534 = 170','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 704 and 534?','1238','170','375936','1237','a','704 + 534 = 1238','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 789 minus 134?','655','923','105726','656','a','789 - 134 = 655','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 789 and 134?','923','655','105726','922','a','789 + 134 = 923','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 502 and 646?','1148','144','324292','1147','a','502 + 646 = 1148','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 73 minus 24?','49','97','1752','50','a','73 - 24 = 49','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 73 and 24?','1752','97','49','1753','a','73 × 24 = 1752','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 73 and 24?','97','49','1752','96','a','73 + 24 = 97','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 651 minus 513?','138','1164','333963','139','a','651 - 513 = 138','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 651 and 513?','1164','138','333963','1163','a','651 + 513 = 1164','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 343 and 800?','1143','457','274400','1142','a','343 + 800 = 1143','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 634 and 999?','1633','365','633366','1632','a','634 + 999 = 1633','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 440 and 954?','1394','514','419760','1393','a','440 + 954 = 1394','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 985 minus 573?','412','1558','564405','413','a','985 - 573 = 412','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 985 and 573?','1558','412','564405','1557','a','985 + 573 = 1558','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 216 and 383?','599','167','82728','598','a','216 + 383 = 599','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 797 minus 688?','109','1485','548336','110','a','797 - 688 = 109','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 797 and 688?','1485','109','548336','1484','a','797 + 688 = 1485','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 725 minus 132?','593','857','95700','594','a','725 - 132 = 593','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 725 and 132?','857','593','95700','856','a','725 + 132 = 857','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 579 minus 163?','416','742','94377','417','a','579 - 163 = 416','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 579 and 163?','742','416','94377','741','a','579 + 163 = 742','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 91 and 516?','607','425','46956','606','a','91 + 516 = 607','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 178 and 923?','1101','745','164294','1100','a','178 + 923 = 1101','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 353 minus 246?','107','599','86838','108','a','353 - 246 = 107','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 353 and 246?','599','107','86838','598','a','353 + 246 = 599','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 218 minus 177?','41','395','38586','42','a','218 - 177 = 41','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 218 and 177?','395','41','38586','394','a','218 + 177 = 395','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 176 and 305?','481','129','53680','480','a','176 + 305 = 481','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 163 and 560?','723','397','91280','722','a','163 + 560 = 723','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 102 and 542?','644','440','55284','643','a','102 + 542 = 644','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 722 minus 13?','709','735','9386','710','a','722 - 13 = 709','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 722 and 13?','9386','735','709','9387','a','722 × 13 = 9386','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 722 and 13?','735','709','9386','734','a','722 + 13 = 735','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 160 minus 13?','147','173','2080','148','a','160 - 13 = 147','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 160 and 13?','2080','173','147','2081','a','160 × 13 = 2080','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 160 and 13?','173','147','2080','172','a','160 + 13 = 173','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 683 minus 517?','166','1200','353111','167','a','683 - 517 = 166','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 683 and 517?','1200','166','353111','1199','a','683 + 517 = 1200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 917 minus 199?','718','1116','182483','719','a','917 - 199 = 718','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 917 and 199?','1116','718','182483','1115','a','917 + 199 = 1116','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 865 minus 632?','233','1497','546680','234','a','865 - 632 = 233','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 865 and 632?','1497','233','546680','1496','a','865 + 632 = 1497','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 966 minus 827?','139','1793','798882','140','a','966 - 827 = 139','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 966 and 827?','1793','139','798882','1792','a','966 + 827 = 1793','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 881 minus 108?','773','989','95148','774','a','881 - 108 = 773','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 881 and 108?','989','773','95148','988','a','881 + 108 = 989','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 280 and 527?','807','247','147560','806','a','280 + 527 = 807','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 778 minus 425?','353','1203','330650','354','a','778 - 425 = 353','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 778 and 425?','1203','353','330650','1202','a','778 + 425 = 1203','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 77 and 819?','896','742','63063','895','a','77 + 819 = 896','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 779 and 987?','1766','208','768873','1765','a','779 + 987 = 1766','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 481 minus 436?','45','917','209716','46','a','481 - 436 = 45','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 481 and 436?','917','45','209716','916','a','481 + 436 = 917','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 196 and 259?','455','63','50764','454','a','196 + 259 = 455','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 950 minus 909?','41','1859','863550','42','a','950 - 909 = 41','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 950 and 909?','1859','41','863550','1858','a','950 + 909 = 1859','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 198 minus 37?','161','235','7326','162','a','198 - 37 = 161','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 198 and 37?','7326','235','161','7327','a','198 × 37 = 7326','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 198 and 37?','235','161','7326','234','a','198 + 37 = 235','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 391 minus 348?','43','739','136068','44','a','391 - 348 = 43','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 391 and 348?','739','43','136068','738','a','391 + 348 = 739','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 190 and 414?','604','224','78660','603','a','190 + 414 = 604','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 192 and 192?','384','0','36864','383','a','192 + 192 = 384','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 595 and 706?','1301','111','420070','1300','a','595 + 706 = 1301','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 853 minus 540?','313','1393','460620','314','a','853 - 540 = 313','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 853 and 540?','1393','313','460620','1392','a','853 + 540 = 1393','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 924 minus 264?','660','1188','243936','661','a','924 - 264 = 660','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 924 and 264?','1188','660','243936','1187','a','924 + 264 = 1188','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 993 minus 433?','560','1426','429969','561','a','993 - 433 = 560','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 993 and 433?','1426','560','429969','1425','a','993 + 433 = 1426','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 535 and 718?','1253','183','384130','1252','a','535 + 718 = 1253','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 437 minus 342?','95','779','149454','96','a','437 - 342 = 95','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 437 and 342?','779','95','149454','778','a','437 + 342 = 779','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 133 minus 79?','54','212','10507','55','a','133 - 79 = 54','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 133 and 79?','212','54','10507','211','a','133 + 79 = 212','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 669 minus 481?','188','1150','321789','189','a','669 - 481 = 188','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 669 and 481?','1150','188','321789','1149','a','669 + 481 = 1150','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 771 minus 209?','562','980','161139','563','a','771 - 209 = 562','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 771 and 209?','980','562','161139','979','a','771 + 209 = 980','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 653 minus 646?','7','1299','421838','8','a','653 - 646 = 7','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 653 and 646?','1299','7','421838','1298','a','653 + 646 = 1299','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 594 minus 216?','378','810','128304','379','a','594 - 216 = 378','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 594 and 216?','810','378','128304','809','a','594 + 216 = 810','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 777 minus 148?','629','925','114996','630','a','777 - 148 = 629','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 777 and 148?','925','629','114996','924','a','777 + 148 = 925','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 553 and 925?','1478','372','511525','1477','a','553 + 925 = 1478','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 248 and 348?','596','100','86304','595','a','248 + 348 = 596','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 591 minus 309?','282','900','182619','283','a','591 - 309 = 282','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 591 and 309?','900','282','182619','899','a','591 + 309 = 900','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 138 and 561?','699','423','77418','698','a','138 + 561 = 699','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 532 and 720?','1252','188','383040','1251','a','532 + 720 = 1252','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 799 minus 697?','102','1496','556903','103','a','799 - 697 = 102','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 799 and 697?','1496','102','556903','1495','a','799 + 697 = 1496','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 922 minus 827?','95','1749','762494','96','a','922 - 827 = 95','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 922 and 827?','1749','95','762494','1748','a','922 + 827 = 1749','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 70 and 276?','346','206','19320','345','a','70 + 276 = 346','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 805 minus 447?','358','1252','359835','359','a','805 - 447 = 358','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 805 and 447?','1252','358','359835','1251','a','805 + 447 = 1252','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 55 and 382?','437','327','21010','436','a','55 + 382 = 437','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 828 minus 539?','289','1367','446292','290','a','828 - 539 = 289','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 828 and 539?','1367','289','446292','1366','a','828 + 539 = 1367','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 558 and 597?','1155','39','333126','1154','a','558 + 597 = 1155','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 120 and 654?','774','534','78480','773','a','120 + 654 = 774','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 787 minus 79?','708','866','62173','709','a','787 - 79 = 708','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 787 and 79?','866','708','62173','865','a','787 + 79 = 866','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 169 and 390?','559','221','65910','558','a','169 + 390 = 559','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 911 minus 735?','176','1646','669585','177','a','911 - 735 = 176','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 911 and 735?','1646','176','669585','1645','a','911 + 735 = 1646','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 660 minus 46?','614','706','30360','615','a','660 - 46 = 614','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 660 and 46?','706','614','30360','705','a','660 + 46 = 706','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 291 and 774?','1065','483','225234','1064','a','291 + 774 = 1065','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 464 and 712?','1176','248','330368','1175','a','464 + 712 = 1176','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 387 and 421?','808','34','162927','807','a','387 + 421 = 808','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 324 and 469?','793','145','151956','792','a','324 + 469 = 793','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 635 minus 280?','355','915','177800','356','a','635 - 280 = 355','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 635 and 280?','915','355','177800','914','a','635 + 280 = 915','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 329 and 764?','1093','435','251356','1092','a','329 + 764 = 1093','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 514 minus 501?','13','1015','257514','14','a','514 - 501 = 13','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 514 and 501?','1015','13','257514','1014','a','514 + 501 = 1015','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 61 and 281?','342','220','17141','341','a','61 + 281 = 342','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 466 minus 40?','426','506','18640','427','a','466 - 40 = 426','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 466 and 40?','506','426','18640','505','a','466 + 40 = 506','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 234 and 363?','597','129','84942','596','a','234 + 363 = 597','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 149 and 953?','1102','804','141997','1101','a','149 + 953 = 1102','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 12 and 702?','8424','714','690','8425','a','12 × 702 = 8424','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 12 and 702?','714','690','8424','713','a','12 + 702 = 714','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 650 and 833?','1483','183','541450','1482','a','650 + 833 = 1483','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 966 minus 95?','871','1061','91770','872','a','966 - 95 = 871','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 966 and 95?','1061','871','91770','1060','a','966 + 95 = 1061','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 41 and 123?','5043','164','82','5044','a','41 × 123 = 5043','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 41 and 123?','164','82','5043','163','a','41 + 123 = 164','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 626 and 903?','1529','277','565278','1528','a','626 + 903 = 1529','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 202 and 893?','1095','691','180386','1094','a','202 + 893 = 1095','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 416 and 512?','928','96','212992','927','a','416 + 512 = 928','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 196 and 289?','485','93','56644','484','a','196 + 289 = 485','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 367 minus 223?','144','590','81841','145','a','367 - 223 = 144','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 367 and 223?','590','144','81841','589','a','367 + 223 = 590','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 933 minus 317?','616','1250','295761','617','a','933 - 317 = 616','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 933 and 317?','1250','616','295761','1249','a','933 + 317 = 1250','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 752 minus 332?','420','1084','249664','421','a','752 - 332 = 420','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 752 and 332?','1084','420','249664','1083','a','752 + 332 = 1084','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 876 minus 407?','469','1283','356532','470','a','876 - 407 = 469','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 876 and 407?','1283','469','356532','1282','a','876 + 407 = 1283','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 87 and 641?','728','554','55767','727','a','87 + 641 = 728','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 318 and 387?','705','69','123066','704','a','318 + 387 = 705','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 812 and 895?','1707','83','726740','1706','a','812 + 895 = 1707','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 51 and 439?','490','388','22389','489','a','51 + 439 = 490','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 204 minus 174?','30','378','35496','31','a','204 - 174 = 30','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 204 and 174?','378','30','35496','377','a','204 + 174 = 378','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 93 and 156?','249','63','14508','248','a','93 + 156 = 249','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 847 minus 323?','524','1170','273581','525','a','847 - 323 = 524','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 847 and 323?','1170','524','273581','1169','a','847 + 323 = 1170','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 247 and 350?','597','103','86450','596','a','247 + 350 = 597','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 444 minus 215?','229','659','95460','230','a','444 - 215 = 229','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 444 and 215?','659','229','95460','658','a','444 + 215 = 659','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the product of 24 and 163?','3912','187','139','3913','a','24 × 163 = 3912','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the sum of 24 and 163?','187','139','3912','186','a','24 + 163 = 187','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 126 and 984?','1110','858','123984','1109','a','126 + 984 = 1110','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 536 minus 42?','494','578','22512','495','a','536 - 42 = 494','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 536 and 42?','578','494','22512','577','a','536 + 42 = 578','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 820 minus 359?','461','1179','294380','462','a','820 - 359 = 461','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 820 and 359?','1179','461','294380','1178','a','820 + 359 = 1179','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 411 minus 337?','74','748','138507','75','a','411 - 337 = 74','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 411 and 337?','748','74','138507','747','a','411 + 337 = 748','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 897 minus 51?','846','948','45747','847','a','897 - 51 = 846','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 897 and 51?','948','846','45747','947','a','897 + 51 = 948','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 257 minus 112?','145','369','28784','146','a','257 - 112 = 145','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 257 and 112?','369','145','28784','368','a','257 + 112 = 369','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 506 minus 162?','344','668','81972','345','a','506 - 162 = 344','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 506 and 162?','668','344','81972','667','a','506 + 162 = 668','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 602 minus 221?','381','823','133042','382','a','602 - 221 = 381','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 602 and 221?','823','381','133042','822','a','602 + 221 = 823','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 275 and 593?','868','318','163075','867','a','275 + 593 = 868','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 555 minus 377?','178','932','209235','179','a','555 - 377 = 178','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 555 and 377?','932','178','209235','931','a','555 + 377 = 932','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 172 and 769?','941','597','132268','940','a','172 + 769 = 941','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 300 minus 48?','252','348','14400','253','a','300 - 48 = 252','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 300 and 48?','348','252','14400','347','a','300 + 48 = 348','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 886 and 902?','1788','16','799172','1787','a','886 + 902 = 1788','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 103 and 106?','209','3','10918','208','a','103 + 106 = 209','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 550 minus 222?','328','772','122100','329','a','550 - 222 = 328','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 550 and 222?','772','328','122100','771','a','550 + 222 = 772','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 572 minus 526?','46','1098','300872','47','a','572 - 526 = 46','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 572 and 526?','1098','46','300872','1097','a','572 + 526 = 1098','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 683 and 994?','1677','311','678902','1676','a','683 + 994 = 1677','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 429 and 546?','975','117','234234','974','a','429 + 546 = 975','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 25 and 806?','831','781','20150','830','a','25 + 806 = 831','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 542 minus 165?','377','707','89430','378','a','542 - 165 = 377','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 542 and 165?','707','377','89430','706','a','542 + 165 = 707','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 612 minus 554?','58','1166','339048','59','a','612 - 554 = 58','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 612 and 554?','1166','58','339048','1165','a','612 + 554 = 1166','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 343 and 612?','955','269','209916','954','a','343 + 612 = 955','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 790 and 810?','1600','20','639900','1599','a','790 + 810 = 1600','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 931 minus 177?','754','1108','164787','755','a','931 - 177 = 754','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 931 and 177?','1108','754','164787','1107','a','931 + 177 = 1108','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 478 minus 434?','44','912','207452','45','a','478 - 434 = 44','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 478 and 434?','912','44','207452','911','a','478 + 434 = 912','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 460 minus 35?','425','495','16100','426','a','460 - 35 = 425','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 460 and 35?','495','425','16100','494','a','460 + 35 = 495','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 390 and 688?','1078','298','268320','1077','a','390 + 688 = 1078','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 38 and 898?','936','860','34124','935','a','38 + 898 = 936','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 407 minus 372?','35','779','151404','36','a','407 - 372 = 35','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 407 and 372?','779','35','151404','778','a','407 + 372 = 779','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 700 and 845?','1545','145','591500','1544','a','700 + 845 = 1545','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 563 and 683?','1246','120','384529','1245','a','563 + 683 = 1246','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 618 minus 27?','591','645','16686','592','a','618 - 27 = 591','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 618 and 27?','645','591','16686','644','a','618 + 27 = 645','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 336 and 491?','827','155','164976','826','a','336 + 491 = 827','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 458 minus 56?','402','514','25648','403','a','458 - 56 = 402','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the sum of 458 and 56?','514','402','25648','513','a','458 + 56 = 514','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 30% of 600?','180','570','210','20','a','30% of 600 = 180','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 25% of 800?','200','775','225','32','a','25% of 800 = 200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 40% of 250?','100','210','140','6','a','40% of 250 = 100','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 1500?','1125','1425','1200','20','a','75% of 1500 = 1125','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 100?','75','25','150','1','a','75% of 100 = 75','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 200?','100','150','150','4','a','50% of 200 = 100','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 200?','20','190','30','20','a','10% of 200 = 20','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 15% of 1500?','225','1485','240','100','a','15% of 1500 = 225','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 5% of 100?','5','95','10','20','a','5% of 100 = 5','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 500?','100','480','120','25','a','20% of 500 = 100','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 1200?','120','1190','130','120','a','10% of 1200 = 120','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 1000?','500','950','550','20','a','50% of 1000 = 500','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 5% of 1000?','50','995','55','200','a','5% of 1000 = 50','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 800?','160','780','180','40','a','20% of 800 = 160','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 30% of 400?','120','370','150','13','a','30% of 400 = 120','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 15% of 2500?','375','2485','390','166','a','15% of 2500 = 375','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 800?','600','725','675','10','a','75% of 800 = 600','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 1200?','240','1180','260','60','a','20% of 1200 = 240','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 2000?','1000','1950','1050','40','a','50% of 2000 = 1000','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 250?','50','230','70','12','a','20% of 250 = 50','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 1200?','900','1125','975','16','a','75% of 1200 = 900','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 1200?','960','1120','1040','15','a','80% of 1200 = 960','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 15% of 400?','60','385','75','26','a','15% of 400 = 60','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 2000?','1800','1910','1890','22','a','90% of 2000 = 1800','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 2000?','400','1980','420','100','a','20% of 2000 = 400','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 25% of 200?','50','175','75','8','a','25% of 200 = 50','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 1500?','300','1480','320','75','a','20% of 1500 = 300','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 25% of 400?','100','375','125','16','a','25% of 400 = 100','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 400?','200','350','250','8','a','50% of 400 = 200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 600?','540','510','630','6','a','90% of 600 = 540','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 2500?','1250','2450','1300','50','a','50% of 2500 = 1250','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 40% of 2000?','800','1960','840','50','a','40% of 2000 = 800','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 60% of 5000?','3000','4940','3060','83','a','60% of 5000 = 3000','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 60% of 200?','120','140','180','3','a','60% of 200 = 120','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 60% of 100?','60','40','120','1','a','60% of 100 = 60','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 600?','120','580','140','30','a','20% of 600 = 120','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 800?','400','750','450','16','a','50% of 800 = 400','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 2000?','200','1990','210','200','a','10% of 2000 = 200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 30% of 200?','60','170','90','6','a','30% of 200 = 60','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 40% of 500?','200','460','240','12','a','40% of 500 = 200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 1500?','150','1490','160','150','a','10% of 1500 = 150','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 2500?','1875','2425','1950','33','a','75% of 2500 = 1875','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 1500?','1200','1420','1280','18','a','80% of 1500 = 1200','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 15% of 3000?','450','2985','465','200','a','15% of 3000 = 450','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 5% of 2000?','100','1995','105','400','a','5% of 2000 = 100','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 1200?','1080','1110','1170','13','a','90% of 1200 = 1080','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 25% of 2500?','625','2475','650','100','a','25% of 2500 = 625','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 50% of 100?','50','50','100','2','a','50% of 100 = 50','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 3000?','2400','2920','2480','37','a','80% of 3000 = 2400','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 5% of 500?','25','495','30','100','a','5% of 500 = 25','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 40% of 2500?','1000','2460','1040','62','a','40% of 2500 = 1000','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 25% of 1200?','300','1175','325','48','a','25% of 1200 = 300','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 400?','40','390','50','40','a','10% of 400 = 40','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 3000?','600','2980','620','150','a','20% of 3000 = 600','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 60% of 500?','300','440','360','8','a','60% of 500 = 300','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 250?','187','175','262','3','a','75% of 250 = 187','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 25% of 1500?','375','1475','400','60','a','25% of 1500 = 375','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 20% of 100?','20','80','40','5','a','20% of 100 = 20','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 40% of 800?','320','760','360','20','a','40% of 800 = 320','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 2000?','1500','1925','1575','26','a','75% of 2000 = 1500','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 800?','640','720','720','10','a','80% of 800 = 640','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 60% of 1500?','900','1440','960','25','a','60% of 1500 = 900','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 200?','160','120','240','2','a','80% of 200 = 160','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 1000?','900','910','990','11','a','90% of 1000 = 900','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 1000?','800','920','880','12','a','80% of 1000 = 800','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 100?','90','10','180','1','a','90% of 100 = 90','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 200?','180','110','270','2','a','90% of 200 = 180','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 5000?','500','4990','510','500','a','10% of 5000 = 500','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 80% of 500?','400','420','480','6','a','80% of 500 = 400','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 40% of 600?','240','560','280','15','a','40% of 600 = 240','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 10% of 1000?','100','990','110','100','a','10% of 1000 = 100','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 90% of 800?','720','710','810','8','a','90% of 800 = 720','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is 75% of 400?','300','325','375','5','a','75% of 400 = 300','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square of 11?','121','132','110','143','a','11² = 121','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 12?','144','156','132','168','a','12² = 144','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 13?','169','182','156','195','a','13² = 169','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 14?','196','210','182','224','a','14² = 196','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 15?','225','240','210','255','a','15² = 225','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 16?','256','272','240','288','a','16² = 256','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 17?','289','306','272','323','a','17² = 289','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 18?','324','342','306','360','a','18² = 324','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 19?','361','380','342','399','a','19² = 361','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 20?','400','420','380','440','a','20² = 400','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 21?','441','462','420','483','a','21² = 441','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 22?','484','506','462','528','a','22² = 484','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 23?','529','552','506','575','a','23² = 529','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 24?','576','600','552','624','a','24² = 576','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 25?','625','650','600','675','a','25² = 625','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 26?','676','702','650','728','a','26² = 676','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 27?','729','756','702','783','a','27² = 729','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 28?','784','812','756','840','a','28² = 784','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 29?','841','870','812','899','a','29² = 841','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 30?','900','930','870','960','a','30² = 900','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 31?','961','992','930','1023','a','31² = 961','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 32?','1024','1056','992','1088','a','32² = 1024','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 33?','1089','1122','1056','1155','a','33² = 1089','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 34?','1156','1190','1122','1224','a','34² = 1156','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 35?','1225','1260','1190','1295','a','35² = 1225','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 36?','1296','1332','1260','1368','a','36² = 1296','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 37?','1369','1406','1332','1443','a','37² = 1369','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 38?','1444','1482','1406','1520','a','38² = 1444','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 39?','1521','1560','1482','1599','a','39² = 1521','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 40?','1600','1640','1560','1680','a','40² = 1600','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 41?','1681','1722','1640','1763','a','41² = 1681','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 42?','1764','1806','1722','1848','a','42² = 1764','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 43?','1849','1892','1806','1935','a','43² = 1849','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 44?','1936','1980','1892','2024','a','44² = 1936','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 45?','2025','2070','1980','2115','a','45² = 2025','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 46?','2116','2162','2070','2208','a','46² = 2116','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 47?','2209','2256','2162','2303','a','47² = 2209','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 48?','2304','2352','2256','2400','a','48² = 2304','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square of 49?','2401','2450','2352','2499','a','49² = 2401','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the square root of 4?','2','3','1','4','a','√4 = 2','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 9?','3','4','2','5','a','√9 = 3','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 16?','4','5','3','6','a','√16 = 4','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 25?','5','6','4','7','a','√25 = 5','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 36?','6','7','5','8','a','√36 = 6','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 49?','7','8','6','9','a','√49 = 7','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 64?','8','9','7','10','a','√64 = 8','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 81?','9','10','8','11','a','√81 = 9','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 100?','10','11','9','12','a','√100 = 10','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 121?','11','12','10','13','a','√121 = 11','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 169?','13','14','12','15','a','√169 = 13','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 196?','14','15','13','16','a','√196 = 14','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 225?','15','16','14','17','a','√225 = 15','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 256?','16','17','15','18','a','√256 = 16','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 289?','17','18','16','19','a','√289 = 17','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 324?','18','19','17','20','a','√324 = 18','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 361?','19','20','18','21','a','√361 = 19','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the square root of 400?','20','21','19','22','a','√400 = 20','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the cube of 2?','8','10','6','12','a','2³ = 8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 3?','27','30','24','36','a','3³ = 27','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 4?','64','68','60','80','a','4³ = 64','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 5?','125','130','120','150','a','5³ = 125','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 6?','216','222','210','252','a','6³ = 216','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 7?','343','350','336','392','a','7³ = 343','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 8?','512','520','504','576','a','8³ = 512','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 9?','729','738','720','810','a','9³ = 729','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 10?','1000','1010','990','1100','a','10³ = 1000','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 11?','1331','1342','1320','1452','a','11³ = 1331','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 12?','1728','1740','1716','1872','a','12³ = 1728','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 13?','2197','2210','2184','2366','a','13³ = 2197','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 14?','2744','2758','2730','2940','a','14³ = 2744','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 15?','3375','3390','3360','3600','a','15³ = 3375','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 16?','4096','4112','4080','4352','a','16³ = 4096','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 17?','4913','4930','4896','5202','a','17³ = 4913','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 18?','5832','5850','5814','6156','a','18³ = 5832','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 19?','6859','6878','6840','7220','a','19³ = 6859','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the cube of 20?','8000','8020','7980','8400','a','20³ = 8000','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the HCF of 10 and 45?','5','55','35','90','a','HCF(10,45) = 5','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 10 and 45?','90','450','55','5','a','LCM(10,45) = 90','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 6 and 16?','2','22','10','48','a','HCF(6,16) = 2','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 6 and 16?','48','96','22','2','a','LCM(6,16) = 48','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 15 and 9?','3','24','6','45','a','HCF(15,9) = 3','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 15 and 9?','45','135','24','3','a','LCM(15,9) = 45','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 20 and 9?','1','29','11','180','a','HCF(20,9) = 1','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 20 and 9?','180','180','29','1','a','LCM(20,9) = 180','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 15 and 16?','1','31','1','240','a','HCF(15,16) = 1','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 15 and 16?','240','240','31','1','a','LCM(15,16) = 240','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 40 and 36?','4','76','4','360','a','HCF(40,36) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 40 and 36?','360','1440','76','4','a','LCM(40,36) = 360','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 18 and 20?','2','38','2','180','a','HCF(18,20) = 2','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 18 and 20?','180','360','38','2','a','LCM(18,20) = 180','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 12 and 60?','12','72','48','60','a','HCF(12,60) = 12','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 12 and 60?','60','720','72','12','a','LCM(12,60) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 36 and 24?','12','60','12','72','a','HCF(36,24) = 12','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 36 and 24?','72','864','60','12','a','LCM(36,24) = 72','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 40 and 20?','20','60','20','40','a','HCF(40,20) = 20','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 40 and 20?','40','800','60','20','a','LCM(40,20) = 40','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 24 and 9?','3','33','15','72','a','HCF(24,9) = 3','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 24 and 9?','72','216','33','3','a','LCM(24,9) = 72','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 36 and 16?','4','52','20','144','a','HCF(36,16) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 36 and 16?','144','576','52','4','a','LCM(36,16) = 144','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 48 and 36?','12','84','12','144','a','HCF(48,36) = 12','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 48 and 36?','144','1728','84','12','a','LCM(48,36) = 144','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 15 and 30?','15','45','15','30','a','HCF(15,30) = 15','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 15 and 30?','30','450','45','15','a','LCM(15,30) = 30','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 10 and 24?','2','34','14','120','a','HCF(10,24) = 2','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 10 and 24?','120','240','34','2','a','LCM(10,24) = 120','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 24 and 60?','12','84','36','120','a','HCF(24,60) = 12','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 24 and 60?','120','1440','84','12','a','LCM(24,60) = 120','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 6 and 24?','6','30','18','24','a','HCF(6,24) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 6 and 24?','24','144','30','6','a','LCM(6,24) = 24','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 60 and 16?','4','76','44','240','a','HCF(60,16) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 60 and 16?','240','960','76','4','a','LCM(60,16) = 240','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 12 and 20?','4','32','8','60','a','HCF(12,20) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 12 and 20?','60','240','32','4','a','LCM(12,20) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 24 and 12?','12','36','12','24','a','HCF(24,12) = 12','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 24 and 12?','24','288','36','12','a','LCM(24,12) = 24','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 36 and 30?','6','66','6','180','a','HCF(36,30) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 36 and 30?','180','1080','66','6','a','LCM(36,30) = 180','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 18 and 24?','6','42','6','72','a','HCF(18,24) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 18 and 24?','72','432','42','6','a','LCM(18,24) = 72','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 15 and 36?','3','51','21','180','a','HCF(15,36) = 3','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 15 and 36?','180','540','51','3','a','LCM(15,36) = 180','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 18 and 6?','6','24','12','18','a','HCF(18,6) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 18 and 6?','18','108','24','6','a','LCM(18,6) = 18','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 10 and 9?','1','19','1','90','a','HCF(10,9) = 1','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 10 and 9?','90','90','19','1','a','LCM(10,9) = 90','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 30 and 4?','2','34','26','60','a','HCF(30,4) = 2','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 30 and 4?','60','120','34','2','a','LCM(30,4) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 60 and 60?','60','120','0','60','a','HCF(60,60) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 60 and 60?','60','3600','120','60','a','LCM(60,60) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 40 and 6?','2','46','34','120','a','HCF(40,6) = 2','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 40 and 6?','120','240','46','2','a','LCM(40,6) = 120','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 60 and 20?','20','80','40','60','a','HCF(60,20) = 20','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 60 and 20?','60','1200','80','20','a','LCM(60,20) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 10 and 16?','2','26','6','80','a','HCF(10,16) = 2','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 10 and 16?','80','160','26','2','a','LCM(10,16) = 80','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 8 and 12?','4','20','4','24','a','HCF(8,12) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 8 and 12?','24','96','20','4','a','LCM(8,12) = 24','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 40 and 12?','4','52','28','120','a','HCF(40,12) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 40 and 12?','120','480','52','4','a','LCM(40,12) = 120','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 6 and 6?','6','12','0','6','a','HCF(6,6) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 6 and 6?','6','36','12','6','a','LCM(6,6) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 18 and 15?','3','33','3','90','a','HCF(18,15) = 3','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 18 and 15?','90','270','33','3','a','LCM(18,15) = 90','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 36 and 12?','12','48','24','36','a','HCF(36,12) = 12','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 36 and 12?','36','432','48','12','a','LCM(36,12) = 36','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 40 and 30?','10','70','10','120','a','HCF(40,30) = 10','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 40 and 30?','120','1200','70','10','a','LCM(40,30) = 120','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 36 and 15?','3','51','21','180','a','HCF(36,15) = 3','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 36 and 15?','180','540','51','3','a','LCM(36,15) = 180','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 36 and 36?','36','72','0','36','a','HCF(36,36) = 36','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 36 and 36?','36','1296','72','36','a','LCM(36,36) = 36','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 6 and 36?','6','42','30','36','a','HCF(6,36) = 6','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 6 and 36?','36','216','42','6','a','LCM(6,36) = 36','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 8 and 36?','4','44','28','72','a','HCF(8,36) = 4','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 8 and 36?','72','288','44','4','a','LCM(8,36) = 72','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 24 and 24?','24','48','0','24','a','HCF(24,24) = 24','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 24 and 24?','24','576','48','24','a','LCM(24,24) = 24','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 40 and 16?','8','56','24','80','a','HCF(40,16) = 8','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 40 and 16?','80','640','56','8','a','LCM(40,16) = 80','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 12 and 15?','3','27','3','60','a','HCF(12,15) = 3','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 12 and 15?','60','180','27','3','a','LCM(12,15) = 60','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the HCF of 8 and 9?','1','17','1','72','a','HCF(8,9) = 1','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['What is the LCM of 8 and 9?','72','72','17','1','a','LCM(8,9) = 72','Mathematics','Number Theory','medium','APSC,ADRE'],
+
+  ['How many sides does a triangle have?','3','4','5','6','a','Answer: 3','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['How many sides does a quadrilateral have?','4','3','5','6','a','Answer: 4','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['How many sides does a pentagon have?','5','4','6','7','a','Answer: 5','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['How many sides does a hexagon have?','6','5','7','8','a','Answer: 6','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['How many sides does an octagon have?','8','6','10','12','a','Answer: 8','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['How many sides does a decagon have?','10','8','12','6','a','Answer: 10','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the sum of interior angles of a triangle?','180°','360°','90°','270°','a','Answer: 180°','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the sum of interior angles of a quadrilateral?','360°','180°','540°','90°','a','Answer: 360°','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the sum of interior angles of a pentagon?','540°','360°','180°','720°','a','Answer: 540°','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the sum of interior angles of a hexagon?','720°','540°','360°','900°','a','Answer: 720°','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a rectangle with length l and breadth b?','l × b','2(l+b)','l + b','l² + b²','a','Answer: l × b','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the perimeter of a rectangle with length l and breadth b?','2(l + b)','l × b','l + b','l²','a','Answer: 2(l + b)','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a circle with radius r?','πr²','2πr','πr','r²','a','Answer: πr²','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the circumference of a circle with radius r?','2πr','πr²','πr','r²','a','Answer: 2πr','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the area of a triangle with base b and height h?','½bh','bh','2bh','b+h','a','Answer: ½bh','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the volume of a cube with side s?','s³','6s²','s²','4s²','a','Answer: s³','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the volume of a sphere with radius r?','4/3πr³','4πr²','πr³','2πr²','a','Answer: 4/3πr³','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the surface area of a cube with side s?','6s²','s³','4s²','s²','a','Answer: 6s²','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the surface area of a sphere with radius r?','4πr²','4/3πr³','πr²','2πr','a','Answer: 4πr²','Mathematics','Geometry','medium','APSC,ADRE'],
+
+  ['What is the value of pi (π) approximately?','3.14','3.41','2.14','4.13','a','Answer: 3.14','Mathematics','Geometry','medium','APSC,ADRE'],
+  ['Who won the Nobel Prize in Physics 2024?','John Hopfield and Geoffrey Hinton','A random scientist','An athlete','A musician','a','Nobel Prize in Physics 2024: AI and machine learning.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Nobel Prize in Chemistry 2024?','David Baker, Demis Hassabis and John Jumper','A random scientist','An athlete','A musician','a','Nobel Prize in Chemistry 2024: Protein design and prediction.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Nobel Prize in Medicine 2024?','Victor Ambros and Gary Ruvkun','A random scientist','An athlete','A musician','a','Nobel Prize in Medicine 2024: Discovery of microRNA.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Nobel Prize in Literature 2024?','Han Kang','A random scientist','An athlete','A musician','a','Nobel Prize in Literature 2024: First South Korean and first Asian woman to win.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Nobel Peace Prize 2024?','Nihon Hidankyo','A random scientist','An athlete','A musician','a','Nobel Peace Prize 2024: Japanese atomic bomb survivors organization.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Nobel Prize in Economics 2024?','Daron Acemoglu, Simon Johnson and James Robinson','A random scientist','An athlete','A musician','a','Nobel Prize in Economics 2024: Institutional differences between nations.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Bharat Ratna 2024?','Karpoori Thakur','A random scientist','An athlete','A musician','a','Bharat Ratna 2024: Former Bihar Chief Minister, social justice champion.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Bharat Ratna 2024 (posthumous)?','L K Advani, M S Swaminathan, P V Narasimha Rao, Chaudhary Charan Singh, Karpoori Thakur','A random scientist','An athlete','A musician','a','Bharat Ratna 2024 (posthumous): Five recipients announced in 2024.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Padma Vibhushan 2024?','5 recipients','A random scientist','An athlete','A musician','a','Padma Vibhushan 2024: Second highest civilian award.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Padma Bhushan 2024?','13 recipients','A random scientist','An athlete','A musician','a','Padma Bhushan 2024: Third highest civilian award.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Padma Shri 2024?','113 recipients','A random scientist','An athlete','A musician','a','Padma Shri 2024: Fourth highest civilian award.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['Who won the Cricket World Cup 2023?','Australia','India','England','New Zealand','a','Australia won the Cricket World Cup 2023.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Cricket World Cup 2019?','England','India','Australia','New Zealand','a','England won the Cricket World Cup 2019.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Cricket World Cup 2011?','India','Sri Lanka','Australia','Pakistan','a','India won the Cricket World Cup 2011.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the FIFA World Cup 2022?','Argentina','France','Brazil','Germany','a','Argentina won the FIFA World Cup 2022.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the FIFA World Cup 2018?','France','Croatia','Brazil','Belgium','a','France won the FIFA World Cup 2018.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the FIFA World Cup 2014?','Germany','Argentina','Brazil','Netherlands','a','Germany won the FIFA World Cup 2014.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Olympics 2024 Location?','Paris','Tokyo','Los Angeles','London','a','Paris won the Olympics 2024 Location.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Olympics 2020 Location?','Tokyo','Paris','Rio','London','a','Tokyo won the Olympics 2020 Location.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Olympics 2016 Location?','Rio de Janeiro','Tokyo','London','Beijing','a','Rio de Janeiro won the Olympics 2016 Location.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Olympics 2028 Location?','Los Angeles','Paris','Brisbane','Tokyo','a','Los Angeles won the Olympics 2028 Location.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Commonwealth Games 2022?','Birmingham','Gold Coast','Delhi','Glasgow','a','Birmingham won the Commonwealth Games 2022.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the T20 World Cup 2024?','India','South Africa','Australia','England','a','India won the T20 World Cup 2024.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the T20 World Cup 2022?','England','Pakistan','India','Australia','a','England won the T20 World Cup 2022.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Asian Games 2023 Location?','Hangzhou, China','Jakarta','Incheon','Doha','a','Hangzhou, China won the Asian Games 2023 Location.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who won the Hockey World Cup 2023?','Germany','Belgium','India','Australia','a','Germany won the Hockey World Cup 2023.','General Knowledge','World GK','medium','APSC,ADRE'],
+
+  ['Who wrote the book "Wings of Fire"?','A P J Abdul Kalam','Some other author','Another author','Unknown','a','"Wings of Fire" by A P J Abdul Kalam. Autobiography.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Wings of Fire" about?','Autobiography','Space travel','Cooking recipes','Sports training','a','"Wings of Fire": Autobiography.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "India 2020"?','A P J Abdul Kalam','Some other author','Another author','Unknown','a','"India 2020" by A P J Abdul Kalam. Vision for India.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "India 2020" about?','Vision for India','Space travel','Cooking recipes','Sports training','a','"India 2020": Vision for India.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "The Discovery of India"?','Jawaharlal Nehru','Some other author','Another author','Unknown','a','"The Discovery of India" by Jawaharlal Nehru. Indian history and culture.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "The Discovery of India" about?','Indian history and culture','Space travel','Cooking recipes','Sports training','a','"The Discovery of India": Indian history and culture.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Gitanjali"?','Rabindranath Tagore','Some other author','Another author','Unknown','a','"Gitanjali" by Rabindranath Tagore. Poetry collection, Nobel Prize 1913.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Gitanjali" about?','Poetry collection, Nobel Prize 1913','Space travel','Cooking recipes','Sports training','a','"Gitanjali": Poetry collection, Nobel Prize 1913.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "The God of Small Things"?','Arundhati Roy','Some other author','Another author','Unknown','a','"The God of Small Things" by Arundhati Roy. Booker Prize 1997.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "The God of Small Things" about?','Booker Prize 1997','Space travel','Cooking recipes','Sports training','a','"The God of Small Things": Booker Prize 1997.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "A Suitable Boy"?','Vikram Seth','Some other author','Another author','Unknown','a','"A Suitable Boy" by Vikram Seth. Longest English novel by an Indian author.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "A Suitable Boy" about?','Longest English novel by an Indian author','Space travel','Cooking recipes','Sports training','a','"A Suitable Boy": Longest English novel by an Indian author.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Midnight Children"?','Salman Rushdie','Some other author','Another author','Unknown','a','"Midnight Children" by Salman Rushdie. Booker Prize 1981.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Midnight Children" about?','Booker Prize 1981','Space travel','Cooking recipes','Sports training','a','"Midnight Children": Booker Prize 1981.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "The White Tiger"?','Aravind Adiga','Some other author','Another author','Unknown','a','"The White Tiger" by Aravind Adiga. Booker Prize 2008.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "The White Tiger" about?','Booker Prize 2008','Space travel','Cooking recipes','Sports training','a','"The White Tiger": Booker Prize 2008.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Train to Pakistan"?','Khushwant Singh','Some other author','Another author','Unknown','a','"Train to Pakistan" by Khushwant Singh. Partition novel.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Train to Pakistan" about?','Partition novel','Space travel','Cooking recipes','Sports training','a','"Train to Pakistan": Partition novel.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "A Fine Balance"?','Rohinton Mistry','Some other author','Another author','Unknown','a','"A Fine Balance" by Rohinton Mistry. Set during Emergency period.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "A Fine Balance" about?','Set during Emergency period','Space travel','Cooking recipes','Sports training','a','"A Fine Balance": Set during Emergency period.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "The Inheritance of Loss"?','Kiran Desai','Some other author','Another author','Unknown','a','"The Inheritance of Loss" by Kiran Desai. Booker Prize 2006.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "The Inheritance of Loss" about?','Booker Prize 2006','Space travel','Cooking recipes','Sports training','a','"The Inheritance of Loss": Booker Prize 2006.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Interpreter of Maladies"?','Jhumpa Lahiri','Some other author','Another author','Unknown','a','"Interpreter of Maladies" by Jhumpa Lahiri. Pulitzer Prize 2000.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Interpreter of Maladies" about?','Pulitzer Prize 2000','Space travel','Cooking recipes','Sports training','a','"Interpreter of Maladies": Pulitzer Prize 2000.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Geetanjali"?','Rabindranath Tagore','Some other author','Another author','Unknown','a','"Geetanjali" by Rabindranath Tagore. Nobel Prize in Literature 1913.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Geetanjali" about?','Nobel Prize in Literature 1913','Space travel','Cooking recipes','Sports training','a','"Geetanjali": Nobel Prize in Literature 1913.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Hind Swaraj"?','Mahatma Gandhi','Some other author','Another author','Unknown','a','"Hind Swaraj" by Mahatma Gandhi. Indian self-rule.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Hind Swaraj" about?','Indian self-rule','Space travel','Cooking recipes','Sports training','a','"Hind Swaraj": Indian self-rule.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "My Experiments with Truth"?','Mahatma Gandhi','Some other author','Another author','Unknown','a','"My Experiments with Truth" by Mahatma Gandhi. Autobiography.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "My Experiments with Truth" about?','Autobiography','Space travel','Cooking recipes','Sports training','a','"My Experiments with Truth": Autobiography.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Arthashastra"?','Kautilya/Chanakya','Some other author','Another author','Unknown','a','"Arthashastra" by Kautilya/Chanakya. Treatise on statecraft and economics.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Arthashastra" about?','Treatise on statecraft and economics','Space travel','Cooking recipes','Sports training','a','"Arthashastra": Treatise on statecraft and economics.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Meghaduta"?','Kalidasa','Some other author','Another author','Unknown','a','"Meghaduta" by Kalidasa. Sanskrit poem about a cloud messenger.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Meghaduta" about?','Sanskrit poem about a cloud messenger','Space travel','Cooking recipes','Sports training','a','"Meghaduta": Sanskrit poem about a cloud messenger.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Rig Veda"?','Ancient sages','Some other author','Another author','Unknown','a','"Rig Veda" by Ancient sages. Oldest of the four Vedas.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Rig Veda" about?','Oldest of the four Vedas','Space travel','Cooking recipes','Sports training','a','"Rig Veda": Oldest of the four Vedas.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "The Argumentative Indian"?','Amartya Sen','Some other author','Another author','Unknown','a','"The Argumentative Indian" by Amartya Sen. Essays on Indian culture and identity.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "The Argumentative Indian" about?','Essays on Indian culture and identity','Space travel','Cooking recipes','Sports training','a','"The Argumentative Indian": Essays on Indian culture and identity.','General Knowledge','Persons','hard','APSC'],
+
+  ['Who wrote the book "Ignited Minds"?','A P J Abdul Kalam','Some other author','Another author','Unknown','a','"Ignited Minds" by A P J Abdul Kalam. Vision for transforming India.','General Knowledge','Persons','medium','APSC,ADRE'],
+
+  ['What is the book "Ignited Minds" about?','Vision for transforming India','Space travel','Cooking recipes','Sports training','a','"Ignited Minds": Vision for transforming India.','General Knowledge','Persons','hard','APSC'],
+
+  ['When was United Nations established?','1945','1950','2000','2010','a','United Nations was established in 1945.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of United Nations?','New York','New York','London','Tokyo','a','United Nations HQ is in New York.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of United Nations?','Maintaining international peace and security','Space exploration','Sports events','Film production','a','United Nations: Maintaining international peace and security.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was World Health Organization established?','1948','1950','2000','2010','a','World Health Organization was established in 1948.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of World Health Organization?','Geneva','New York','London','Tokyo','a','World Health Organization HQ is in Geneva.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of World Health Organization?','International public health','Space exploration','Sports events','Film production','a','World Health Organization: International public health.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was UNESCO established?','1945','1950','2000','2010','a','UNESCO was established in 1945.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of UNESCO?','Paris','New York','London','Tokyo','a','UNESCO HQ is in Paris.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of UNESCO?','Education, science, and culture','Space exploration','Sports events','Film production','a','UNESCO: Education, science, and culture.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was World Bank established?','1944','1950','2000','2010','a','World Bank was established in 1944.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of World Bank?','Washington D.C.','New York','London','Tokyo','a','World Bank HQ is in Washington D.C..','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of World Bank?','Financial and technical assistance','Space exploration','Sports events','Film production','a','World Bank: Financial and technical assistance.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was IMF established?','1944','1950','2000','2010','a','IMF was established in 1944.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of IMF?','Washington D.C.','New York','London','Tokyo','a','IMF HQ is in Washington D.C..','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of IMF?','International monetary cooperation','Space exploration','Sports events','Film production','a','IMF: International monetary cooperation.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was WTO established?','1995','1950','2000','2010','a','WTO was established in 1995.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of WTO?','Geneva','New York','London','Tokyo','a','WTO HQ is in Geneva.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of WTO?','International trade rules','Space exploration','Sports events','Film production','a','WTO: International trade rules.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was IAEA established?','1957','1950','2000','2010','a','IAEA was established in 1957.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of IAEA?','Vienna','New York','London','Tokyo','a','IAEA HQ is in Vienna.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of IAEA?','Peaceful use of nuclear energy','Space exploration','Sports events','Film production','a','IAEA: Peaceful use of nuclear energy.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was NATO established?','1949','1950','2000','2010','a','NATO was established in 1949.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of NATO?','Brussels','New York','London','Tokyo','a','NATO HQ is in Brussels.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of NATO?','Military alliance','Space exploration','Sports events','Film production','a','NATO: Military alliance.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was SAARC established?','1985','1950','2000','2010','a','SAARC was established in 1985.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of SAARC?','Kathmandu','New York','London','Tokyo','a','SAARC HQ is in Kathmandu.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of SAARC?','South Asian regional cooperation','Space exploration','Sports events','Film production','a','SAARC: South Asian regional cooperation.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was ASEAN established?','1967','1950','2000','2010','a','ASEAN was established in 1967.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of ASEAN?','Jakarta','New York','London','Tokyo','a','ASEAN HQ is in Jakarta.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of ASEAN?','Southeast Asian cooperation','Space exploration','Sports events','Film production','a','ASEAN: Southeast Asian cooperation.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was BRICS established?','2009','1950','2000','2010','a','BRICS was established in 2009.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of BRICS?','Varies','New York','London','Tokyo','a','BRICS HQ is in Varies.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of BRICS?','Economic cooperation among major emerging economies','Space exploration','Sports events','Film production','a','BRICS: Economic cooperation among major emerging economies.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was G20 established?','1999','1950','2000','2010','a','G20 was established in 1999.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of G20?','Varies','New York','London','Tokyo','a','G20 HQ is in Varies.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of G20?','International economic cooperation','Space exploration','Sports events','Film production','a','G20: International economic cooperation.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was European Union established?','1993','1950','2000','2010','a','European Union was established in 1993.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of European Union?','Brussels','New York','London','Tokyo','a','European Union HQ is in Brussels.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of European Union?','Political and economic union','Space exploration','Sports events','Film production','a','European Union: Political and economic union.','General Knowledge','World GK','medium','APSC'],
+
+  ['When was African Union established?','2002','1950','2000','2010','a','African Union was established in 2002.','General Knowledge','World GK','medium','APSC,ADRE,UPSC'],
+
+  ['Where is the headquarters of African Union?','Addis Ababa','New York','London','Tokyo','a','African Union HQ is in Addis Ababa.','General Knowledge','World GK','easy','APSC,ADRE'],
+
+  ['What is the primary purpose of African Union?','Continental unity','Space exploration','Sports events','Film production','a','African Union: Continental unity.','General Knowledge','World GK','medium','APSC'],
+
+  ['What is a synonym for "abundant"?','plentiful','scarce','limited','empty','a','Synonym of "abundant" is "plentiful".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "abundant"?','plentiful','scarce','limited','empty','a','"plentiful" is a synonym of "abundant".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "benevolent"?','kind','cruel','mean','selfish','a','Synonym of "benevolent" is "kind".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "benevolent"?','kind','cruel','mean','selfish','a','"kind" is a synonym of "benevolent".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "candid"?','honest','deceitful','secretive','shy','a','Synonym of "candid" is "honest".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "candid"?','honest','deceitful','secretive','shy','a','"honest" is a synonym of "candid".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "diligent"?','hardworking','lazy','careless','slow','a','Synonym of "diligent" is "hardworking".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "diligent"?','hardworking','lazy','careless','slow','a','"hardworking" is a synonym of "diligent".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "ephemeral"?','short-lived','permanent','eternal','long-lasting','a','Synonym of "ephemeral" is "short-lived".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "ephemeral"?','short-lived','permanent','eternal','long-lasting','a','"short-lived" is a synonym of "ephemeral".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "frugal"?','thrifty','wasteful','extravagant','generous','a','Synonym of "frugal" is "thrifty".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "frugal"?','thrifty','wasteful','extravagant','generous','a','"thrifty" is a synonym of "frugal".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "gregarious"?','sociable','shy','introverted','solitary','a','Synonym of "gregarious" is "sociable".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "gregarious"?','sociable','shy','introverted','solitary','a','"sociable" is a synonym of "gregarious".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "haughty"?','arrogant','humble','modest','shy','a','Synonym of "haughty" is "arrogant".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "haughty"?','arrogant','humble','modest','shy','a','"arrogant" is a synonym of "haughty".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "impetuous"?','rash','cautious','careful','deliberate','a','Synonym of "impetuous" is "rash".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "impetuous"?','rash','cautious','careful','deliberate','a','"rash" is a synonym of "impetuous".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "jovial"?','merry','sad','serious','gloomy','a','Synonym of "jovial" is "merry".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "jovial"?','merry','sad','serious','gloomy','a','"merry" is a synonym of "jovial".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "lucid"?','clear','confusing','dark','unclear','a','Synonym of "lucid" is "clear".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "lucid"?','clear','confusing','dark','unclear','a','"clear" is a synonym of "lucid".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "meticulous"?','careful','careless','sloppy','rushed','a','Synonym of "meticulous" is "careful".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "meticulous"?','careful','careless','sloppy','rushed','a','"careful" is a synonym of "meticulous".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "novice"?','beginner','expert','master','professional','a','Synonym of "novice" is "beginner".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "novice"?','beginner','expert','master','professional','a','"beginner" is a synonym of "novice".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "obstinate"?','stubborn','flexible','agreeable','compliant','a','Synonym of "obstinate" is "stubborn".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "obstinate"?','stubborn','flexible','agreeable','compliant','a','"stubborn" is a synonym of "obstinate".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "prudent"?','wise','foolish','reckless','careless','a','Synonym of "prudent" is "wise".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "prudent"?','wise','foolish','reckless','careless','a','"wise" is a synonym of "prudent".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "quaint"?','charming','modern','ugly','ordinary','a','Synonym of "quaint" is "charming".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "quaint"?','charming','modern','ugly','ordinary','a','"charming" is a synonym of "quaint".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "resilient"?','tough','fragile','weak','delicate','a','Synonym of "resilient" is "tough".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "resilient"?','tough','fragile','weak','delicate','a','"tough" is a synonym of "resilient".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "scrupulous"?','thorough','careless','negligent','lazy','a','Synonym of "scrupulous" is "thorough".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "scrupulous"?','thorough','careless','negligent','lazy','a','"thorough" is a synonym of "scrupulous".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "tenacious"?','persistent','weak','fickle','giving up','a','Synonym of "tenacious" is "persistent".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "tenacious"?','persistent','weak','fickle','giving up','a','"persistent" is a synonym of "tenacious".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "ubiquitous"?','everywhere','nowhere','rare','hidden','a','Synonym of "ubiquitous" is "everywhere".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "ubiquitous"?','everywhere','nowhere','rare','hidden','a','"everywhere" is a synonym of "ubiquitous".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "vibrant"?','energetic','dull','lifeless','boring','a','Synonym of "vibrant" is "energetic".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "vibrant"?','energetic','dull','lifeless','boring','a','"energetic" is a synonym of "vibrant".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "wary"?','cautious','bold','reckless','careless','a','Synonym of "wary" is "cautious".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "wary"?','cautious','bold','reckless','careless','a','"cautious" is a synonym of "wary".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "zealous"?','enthusiastic','bored','indifferent','apathetic','a','Synonym of "zealous" is "enthusiastic".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "zealous"?','enthusiastic','bored','indifferent','apathetic','a','"enthusiastic" is a synonym of "zealous".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "apprehensive"?','anxious','calm','confident','relaxed','a','Synonym of "apprehensive" is "anxious".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "apprehensive"?','anxious','calm','confident','relaxed','a','"anxious" is a synonym of "apprehensive".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "ardent"?','passionate','cold','indifferent','uninterested','a','Synonym of "ardent" is "passionate".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "ardent"?','passionate','cold','indifferent','uninterested','a','"passionate" is a synonym of "ardent".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "astute"?','sharp','dull','slow','ignorant','a','Synonym of "astute" is "sharp".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "astute"?','sharp','dull','slow','ignorant','a','"sharp" is a synonym of "astute".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "auspicious"?','favorable','unlucky','unfortunate','bad','a','Synonym of "auspicious" is "favorable".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "auspicious"?','favorable','unlucky','unfortunate','bad','a','"favorable" is a synonym of "auspicious".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "banal"?','boring','original','exciting','novel','a','Synonym of "banal" is "boring".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "banal"?','boring','original','exciting','novel','a','"boring" is a synonym of "banal".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "callous"?','insensitive','caring','kind','gentle','a','Synonym of "callous" is "insensitive".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "callous"?','insensitive','caring','kind','gentle','a','"insensitive" is a synonym of "callous".','English','Vocabulary','medium','APSC'],
+
+  ['What is a synonym for "cogent"?','convincing','weak','unconvincing','flimsy','a','Synonym of "cogent" is "convincing".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['Which word means the same as "cogent"?','convincing','weak','unconvincing','flimsy','a','"convincing" is a synonym of "cogent".','English','Vocabulary','medium','APSC'],
+
+  ['What is an antonym for "generous"?','stingy','kind','giving','charitable','a','Antonym of "generous" is "stingy".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "victory"?','defeat','win','success','triumph','a','Antonym of "victory" is "defeat".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "ancient"?','modern','old','historic','classical','a','Antonym of "ancient" is "modern".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "fragile"?','durable','breakable','delicate','brittle','a','Antonym of "fragile" is "durable".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "permit"?','forbid','allow','authorize','sanction','a','Antonym of "permit" is "forbid".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "ascend"?','descend','climb','rise','mount','a','Antonym of "ascend" is "descend".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "bold"?','timid','brave','courageous','fearless','a','Antonym of "bold" is "timid".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "brilliant"?','dull','bright','smart','clever','a','Antonym of "brilliant" is "dull".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "concise"?','verbose','brief','short','terse','a','Antonym of "concise" is "verbose".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "diligent"?','lazy','hardworking','industrious','energetic','a','Antonym of "diligent" is "lazy".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "eager"?','indifferent','enthusiastic','keen','willing','a','Antonym of "eager" is "indifferent".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "frequent"?','rare','common','regular','recurring','a','Antonym of "frequent" is "rare".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "genuine"?','fake','real','authentic','true','a','Antonym of "genuine" is "fake".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "humble"?','arrogant','modest','meek','polite','a','Antonym of "humble" is "arrogant".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "innocent"?','guilty','pure','blameless','sinless','a','Antonym of "innocent" is "guilty".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "jeopardy"?','safety','danger','risk','peril','a','Antonym of "jeopardy" is "safety".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "kindle"?','extinguish','light','ignite','start','a','Antonym of "kindle" is "extinguish".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "luminous"?','dim','bright','glowing','radiant','a','Antonym of "luminous" is "dim".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "miser"?','spendthrift','cheapskate','hoarder','economizer','a','Antonym of "miser" is "spendthrift".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is an antonym for "novel"?','familiar','new','original','fresh','a','Antonym of "novel" is "familiar".','English','Vocabulary','easy','APSC,ADRE'],
+
+  ['What is the past tense of "go"?','went','goed','gone','going','a','Irregular: go-went-gone.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past tense of "eat"?','ate','eated','eaten','eating','a','Irregular: eat-ate-eaten.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past tense of "drink"?','drank','drinked','drunk','drinking','a','Irregular: drink-drank-drunk.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past tense of "swim"?','swam','swimmed','swum','swimming','a','Irregular: swim-swam-swum.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past tense of "fly"?','flew','flied','flown','flying','a','Irregular: fly-flew-flown.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past tense of "take"?','took','taked','taken','taking','a','Irregular: take-took-taken.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past tense of "begin"?','began','begun','begined','beginning','a','Irregular: begin-began-begun.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past participle of "see"?','seen','saw','seed','seeing','a','Irregular: see-saw-seen.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the past participle of "do"?','done','did','doed','doing','a','Irregular: do-did-done.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the comparative form of "good"?','better','gooder','more good','best','a','Irregular: good-better-best.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the superlative form of "good"?','best','goodest','most good','better','a','Irregular: good-better-best.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the comparative form of "bad"?','worse','badder','more bad','worst','a','Irregular: bad-worse-worst.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the superlative form of "bad"?','worst','baddest','most bad','worse','a','Irregular: bad-worse-worst.','English','Grammar','easy','APSC,ADRE'],
+
+  ['Which is a correct sentence?','She has been studying since morning','She have been studying since morning','She study since morning','She studying since morning','a','Present perfect continuous: has been + verb-ing.','English','Grammar','easy','APSC,ADRE'],
+
+  ['Choose the correct article: "___ honest man"','an','a','the','no article','a','Use "an" before vowel sound (honest has silent h).','English','Grammar','easy','APSC,ADRE'],
+
+  ['Choose the correct article: "___ university"','a','an','the','no article','a','Use "a" before consonant sound (university starts with "yu" sound).','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "child"?','children','childs','childes','childer','a','Irregular plural: child-children.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "mouse"?','mice','mouses','mousen','meese','a','Irregular plural: mouse-mice.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "tooth"?','teeth','tooths','tooth','toothes','a','Irregular plural: tooth-teeth.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "foot"?','feet','foots','feets','footes','a','Irregular plural: foot-feet.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "goose"?','geese','gooses','geeses','goose','a','Irregular plural: goose-geese.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "man"?','men','mans','mans','mens','a','Irregular plural: man-men.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "woman"?','women','womans','womans','womens','a','Irregular plural: woman-women.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What is the plural of "ox"?','oxen','oxs','oxes','ox','a','Irregular plural: ox-oxen.','English','Grammar','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 10, 16, 22, ?','28','34','22','29','a','Arithmetic series with common difference 6.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 17, 29, 41, 53, ?','65','77','53','66','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 8, 15, 22, 29, ?','36','43','29','37','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 14, 19, 24, 29, ?','34','39','29','35','a','Arithmetic series with common difference 5.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 9, 17, 25, 33, ?','41','49','33','42','a','Arithmetic series with common difference 8.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 20, 31, 42, 53, ?','64','75','53','65','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 17, 32, 47, 62, ?','77','92','62','78','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 7, 9, 11, 13, ?','15','17','13','16','a','Arithmetic series with common difference 2.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 11, 21, 31, 41, ?','51','61','41','52','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 13, 26, 39, 52, ?','65','78','52','66','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 19, 25, 31, 37, ?','43','49','37','44','a','Arithmetic series with common difference 6.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 9, 19, 29, 39, ?','49','59','39','50','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 6, 19, 32, 45, ?','58','71','45','59','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 7, 20, 33, 46, ?','59','72','46','60','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 11, 14, 17, 20, ?','23','26','20','24','a','Arithmetic series with common difference 3.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 5, 9, 13, 17, ?','21','25','17','22','a','Arithmetic series with common difference 4.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 9, 20, 31, 42, ?','53','64','42','54','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 6, 16, 26, 36, ?','46','56','36','47','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 8, 21, 34, 47, ?','60','73','47','61','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 14, 24, 34, 44, ?','54','64','44','55','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 13, 25, 37, 49, ?','61','73','49','62','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 20, 30, 40, 50, ?','60','70','50','61','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 5, 13, 21, 29, ?','37','45','29','38','a','Arithmetic series with common difference 8.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 13, 15, 17, 19, ?','21','23','19','22','a','Arithmetic series with common difference 2.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 12, 23, 34, ?','45','56','34','46','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 13, 25, 37, ?','49','61','37','50','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 14, 27, 40, 53, ?','66','79','53','67','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 5, 7, 9, ?','11','13','9','12','a','Arithmetic series with common difference 2.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 19, 29, 39, 49, ?','59','69','49','60','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 20, 32, 44, 56, ?','68','80','56','69','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 10, 25, 40, 55, ?','70','85','55','71','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 17, 32, 47, ?','62','77','47','63','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 12, 14, 16, 18, ?','20','22','18','21','a','Arithmetic series with common difference 2.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 15, 26, 37, ?','48','59','37','49','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 13, 28, 43, 58, ?','73','88','58','74','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 10, 23, 36, 49, ?','62','75','49','63','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 16, 30, 44, ?','58','72','44','59','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 17, 20, 23, 26, ?','29','32','26','30','a','Arithmetic series with common difference 3.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 9, 21, 33, 45, ?','57','69','45','58','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 19, 28, 37, 46, ?','55','64','46','56','a','Arithmetic series with common difference 9.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 7, 16, 25, 34, ?','43','52','34','44','a','Arithmetic series with common difference 9.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 9, 16, 23, ?','30','37','23','31','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 6, 13, 20, 27, ?','34','41','27','35','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 17, 31, 45, 59, ?','73','87','59','74','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 15, 19, 23, 27, ?','31','35','27','32','a','Arithmetic series with common difference 4.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 7, 19, 31, 43, ?','55','67','43','56','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 19, 21, 23, 25, ?','27','29','25','28','a','Arithmetic series with common difference 2.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 10, 24, 38, 52, ?','66','80','52','67','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 19, 34, 49, ?','64','79','49','65','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 11, 18, 25, 32, ?','39','46','32','40','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 10, 18, 26, ?','34','42','26','35','a','Arithmetic series with common difference 8.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 15, 27, 39, ?','51','63','39','52','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 8, 19, 30, 41, ?','52','63','41','53','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 13, 23, 33, 43, ?','53','63','43','54','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 16, 22, 28, 34, ?','40','46','34','41','a','Arithmetic series with common difference 6.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 20, 34, 48, 62, ?','76','90','62','77','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 12, 21, 30, ?','39','48','30','40','a','Arithmetic series with common difference 9.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 14, 28, 42, 56, ?','70','84','56','71','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 17, 30, 43, ?','56','69','43','57','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 8, 20, 32, 44, ?','56','68','44','57','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 16, 27, 38, 49, ?','60','71','49','61','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 7, 14, 21, 28, ?','35','42','28','36','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 6, 17, 28, 39, ?','50','61','39','51','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 12, 15, 18, 21, ?','24','27','21','25','a','Arithmetic series with common difference 3.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 12, 26, 40, 54, ?','68','82','54','69','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 8, 10, 12, 14, ?','16','18','14','17','a','Arithmetic series with common difference 2.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 13, 18, 23, 28, ?','33','38','28','34','a','Arithmetic series with common difference 5.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 18, 28, 38, 48, ?','58','68','48','59','a','Arithmetic series with common difference 10.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 9, 22, 35, 48, ?','61','74','48','62','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 18, 21, 24, 27, ?','30','33','27','31','a','Arithmetic series with common difference 3.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 19, 26, 33, 40, ?','47','54','40','48','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 6, 10, 14, 18, ?','22','26','18','23','a','Arithmetic series with common difference 4.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 13, 22, 31, ?','40','49','31','41','a','Arithmetic series with common difference 9.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 18, 25, 32, 39, ?','46','53','39','47','a','Arithmetic series with common difference 7.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 11, 16, 21, 26, ?','31','36','26','32','a','Arithmetic series with common difference 5.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 6, 20, 34, 48, ?','62','76','48','63','a','Arithmetic series with common difference 14.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 16, 31, 46, 61, ?','76','91','61','77','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 14, 18, 22, 26, ?','30','34','26','31','a','Arithmetic series with common difference 4.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 14, 27, 40, ?','53','66','40','54','a','Arithmetic series with common difference 13.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 18, 33, 48, 63, ?','78','93','63','79','a','Arithmetic series with common difference 15.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 16, 19, 22, 25, ?','28','31','25','29','a','Arithmetic series with common difference 3.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 5, 9, 13, ?','17','21','13','18','a','Arithmetic series with common difference 4.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 12, 18, 24, 30, ?','36','42','30','37','a','Arithmetic series with common difference 6.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 17, 22, 27, 32, ?','37','42','32','38','a','Arithmetic series with common difference 5.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 11, 23, 35, 47, ?','59','71','47','60','a','Arithmetic series with common difference 12.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 14, 25, 36, ?','47','58','36','48','a','Arithmetic series with common difference 11.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the series: 5, 20, 80, 320, ?','1280','1284','1276','2560','a','Geometric series with common ratio 4.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 16, 64, 256, ?','1024','1028','1020','2048','a','Geometric series with common ratio 4.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 9, 27, 81, ?','243','246','240','486','a','Geometric series with common ratio 3.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 4, 16, 64, ?','256','260','252','512','a','Geometric series with common ratio 4.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 5, 10, 20, 40, ?','80','82','78','160','a','Geometric series with common ratio 2.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 3, 9, 27, ?','81','84','78','162','a','Geometric series with common ratio 3.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 12, 48, 192, ?','768','772','764','1536','a','Geometric series with common ratio 4.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 6, 18, 54, ?','162','165','159','324','a','Geometric series with common ratio 3.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 8, 16, 32, ?','64','66','62','128','a','Geometric series with common ratio 2.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 4, 8, 16, ?','32','34','30','64','a','Geometric series with common ratio 2.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 5, 15, 45, 135, ?','405','408','402','810','a','Geometric series with common ratio 3.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 3, 6, 12, 24, ?','48','50','46','96','a','Geometric series with common ratio 2.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 2, 8, 32, 128, ?','512','516','508','1024','a','Geometric series with common ratio 4.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 4, 12, 36, 108, ?','324','327','321','648','a','Geometric series with common ratio 3.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: 1, 2, 4, 8, ?','16','18','14','32','a','Geometric series with common ratio 2.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the alphabet series: A, B, C, D, ?','E','F','D','G','a','Alphabet series starting from A.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the alphabet series: B, C, D, E, ?','F','G','E','H','a','Alphabet series starting from B.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the alphabet series: C, D, E, F, ?','G','H','F','I','a','Alphabet series starting from C.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the alphabet series: D, E, F, G, ?','H','I','G','J','a','Alphabet series starting from D.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['What comes next in the alphabet series: E, F, G, H, ?','I','J','H','K','a','Alphabet series starting from E.','Reasoning','Series','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Apple, Banana, Carrot, Mango','Carrot','Some other item','Another item','Yet another','a','Carrot is the odd one out because it is vegetable among fruits.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Dog, Cat, Cow, Rose','Rose','Some other item','Another item','Yet another','a','Rose is the odd one out because it is plant among animals.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Red, Blue, Green, Table','Table','Some other item','Another item','Yet another','a','Table is the odd one out because it is not a color.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: January, March, May, Sunday','Sunday','Some other item','Another item','Yet another','a','Sunday is the odd one out because it is not a month.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Delhi, Mumbai, Chennai, Ganga','Ganga','Some other item','Another item','Yet another','a','Ganga is the odd one out because it is river not city.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Tiger, Lion, Leopard, Eagle','Eagle','Some other item','Another item','Yet another','a','Eagle is the odd one out because it is bird not mammal.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Mathematics, Physics, Chemistry, History','History','Some other item','Another item','Yet another','a','History is the odd one out because it is not a science.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Rupee, Dollar, Euro, Kilogram','Kilogram','Some other item','Another item','Yet another','a','Kilogram is the odd one out because it is unit not currency.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Rose, Lotus, Marigold, Oak','Oak','Some other item','Another item','Yet another','a','Oak is the odd one out because it is tree not flower.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out:  Cricket, Football, Hockey, Chess','Chess','Some other item','Another item','Yet another','a','Chess is the odd one out because it is indoor game.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Sun, Moon, Mars, Telescope','Telescope','Some other item','Another item','Yet another','a','Telescope is the odd one out because it is instrument not celestial body.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Book, Pen, Pencil, Water','Water','Some other item','Another item','Yet another','a','Water is the odd one out because it is not a stationery item.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Doctor, Engineer, Teacher, River','River','Some other item','Another item','Yet another','a','River is the odd one out because it is not a profession.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Gold, Silver, Iron, Wood','Wood','Some other item','Another item','Yet another','a','Wood is the odd one out because it is not a metal.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['Find the odd one out: Sparrow, Crow, Pigeon, Bat','Bat','Some other item','Another item','Yet another','a','Bat is the odd one out because it is mammal not bird.','Reasoning','Classification','easy','APSC,ADRE'],
+
+  ['What is the main cause of global warming?','Greenhouse gas emissions','Solar flares','Volcanic eruptions','Earth orbit changes','a','CO2 and other greenhouse gases trap heat.','Environment','Climate Change','easy','APSC,ADRE'],
+
+  ['Which gas is the primary contributor to the greenhouse effect?','Carbon dioxide','Oxygen','Nitrogen','Helium','a','CO2 is the primary greenhouse gas.','Environment','Climate Change','easy','APSC,ADRE'],
+
+  ['What is the Kyoto Protocol about?','Reducing greenhouse gas emissions','Nuclear disarmament','Free trade','Human rights','a','Kyoto Protocol (1997) aims to reduce emissions.','Environment','Climate Change','medium','APSC,ADRE'],
+
+  ['What is the Paris Agreement about?','Limiting global temperature rise to below 2°C','Nuclear non-proliferation','Maritime boundaries','Space exploration','a','Paris Agreement (2015) targets limiting warming to 1.5-2°C.','Environment','Climate Change','medium','APSC,ADRE'],
+
+  ['What is an ecosystem?','A community of living organisms and their environment','A single species','A weather pattern','A geographic region','a','Ecosystems include biotic and abiotic components.','Environment','Ecology','easy','APSC,ADRE'],
+
+  ['What is deforestation?','Clearing of forests','Planting trees','Conserving forests','Forest management','a','Deforestation removes tree cover, contributing to climate change.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['What is the ozone layer?','A layer in the stratosphere that absorbs UV radiation','A weather phenomenon','A type of cloud','A part of the ocean','a','Ozone layer protects Earth from harmful UV rays.','Environment','Pollution','medium','APSC,ADRE'],
+
+  ['Which substance depletes the ozone layer?','Chlorofluorocarbons (CFCs)','Oxygen','Nitrogen','Carbon dioxide','a','CFCs break down ozone molecules.','Environment','Pollution','medium','APSC,ADRE'],
+
+  ['What is acid rain caused by?','Sulfur and nitrogen oxides','Pure water','Wind','Sunlight','a','Acid rain results from SO2 and NOx emissions.','Environment','Pollution','medium','APSC,ADRE'],
+
+  ['What is the water cycle?','The continuous movement of water on, above, and below Earth surface','A type of storm','Ocean currents','Water treatment','a','Water cycle includes evaporation, condensation, and precipitation.','Environment','Ecology','easy','APSC,ADRE'],
+
+  ['What is the largest rainforest in the world?','Amazon Rainforest','Congo Rainforest','Daintree Rainforest','Madagascar Rainforest','a','Amazon is the largest rainforest.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['What is soil erosion?','Removal of topsoil by water, wind, or human activity','Addition of soil','Soil formation','Soil fertilization','a','Erosion degrades soil quality.','Environment','Conservation','medium','APSC,ADRE'],
+
+  ['What is desertification?','Process where fertile land becomes desert','Creating deserts artificially','Sandstorm','Desert tourism','a','Desertification is caused by overgrazing, deforestation, and climate change.','Environment','Conservation','medium','APSC,ADRE'],
+
+  ['What are fossil fuels?','Fuels formed from ancient organic matter','Fuels from recent plants','Solar energy','Wind energy','a','Coal, oil, and natural gas are fossil fuels.','Environment','Pollution','easy','APSC,ADRE'],
+
+  ['What is renewable energy?','Energy from sources that naturally replenish','Energy from fossil fuels','Energy from nuclear fission','Energy from burning wood','a','Solar, wind, hydro, and geothermal are renewable.','Environment','Conservation','easy','APSC,ADRE'],
+
+  ['How many Ramsar Sites does India have as of 2026?','101','50','75','150','a','India has 101 Ramsar Sites as of 2026.','Environment','Conservation','hard','APSC,ADRE'],
+
+  ['What is the Ramsar Convention?','An international treaty for wetland conservation','A climate treaty','A biodiversity treaty','A trade agreement','a','Ramsar Convention (1971) protects wetlands.','Environment','Conservation','medium','APSC,ADRE'],
+
+  ['What is carbon footprint?','Total greenhouse gas emissions caused by an individual or organization','A carbon measurement device','A type of carbon','A carbon storage method','a','Carbon footprint measures climate impact.','Environment','Climate Change','medium','APSC,ADRE'],
+
+  ['What does ROM stand for?','Read Only Memory','Random Only Memory','Read Output Memory','Run Only Memory','a','ROM is non-volatile memory.','Computer','Hardware','easy','APSC,ADRE'],
+
+  ['What does URL stand for?','Uniform Resource Locator','Universal Resource Locator','Uniform Reference Locator','Universal Reference Locator','a','URL is a web address.','Computer','Software','easy','APSC,ADRE'],
+
+  ['What does HTTPS stand for?','HyperText Transfer Protocol Secure','HyperText Transfer Protocol Standard','High Transfer Protocol Secure','HyperText Transmission Protocol Secure','a','HTTPS is encrypted HTTP.','Computer','Software','medium','APSC,ADRE'],
+
+  ['What does DNS stand for?','Domain Name System','Digital Name System','Domain Network System','Data Name System','a','DNS translates domain names to IP addresses.','Computer','Software','medium','APSC'],
+
+  ['What does IP stand for in networking?','Internet Protocol','Internal Protocol','International Protocol','Internet Provider','a','IP addresses identify devices on a network.','Computer','Hardware','easy','APSC,ADRE'],
+
+  ['Who is the co-founder of Microsoft?','Bill Gates and Paul Allen','Steve Jobs and Steve Wozniak','Larry Page and Sergey Brin','Mark Zuckerberg','a','Microsoft was founded in 1975.','Computer','Persons','easy','APSC,ADRE'],
+
+  ['Who is the co-founder of Apple?','Steve Jobs and Steve Wozniak','Bill Gates and Paul Allen','Larry Page and Sergey Brin','Tim Cook','a','Apple was founded in 1976.','Computer','Persons','easy','APSC,ADRE'],
+
+  ['Who founded Google?','Larry Page and Sergey Brin','Bill Gates and Paul Allen','Steve Jobs and Steve Wozniak','Mark Zuckerberg','a','Google was founded in 1998.','Computer','Persons','easy','APSC,ADRE'],
+
+  ['Who founded Facebook?','Mark Zuckerberg','Bill Gates','Steve Jobs','Larry Page','a','Facebook was founded in 2004.','Computer','Persons','easy','APSC,ADRE'],
+
+  ['What is the binary system?','A number system with base 2','A number system with base 10','A number system with base 8','A number system with base 16','a','Binary uses only 0 and 1.','Computer','Hardware','medium','APSC,ADRE'],
+
+  ['How many bits are in a byte?','8','4','16','32','a','1 byte = 8 bits.','Computer','Hardware','easy','APSC,ADRE'],
+
+  ['How many bytes are in a kilobyte?','1024','1000','512','2048','a','1 KB = 1024 bytes.','Computer','Hardware','medium','APSC,ADRE'],
+
+  ['What is an operating system?','Software that manages computer hardware and software','A hardware component','A type of virus','A web browser','a','Examples: Windows, Linux, macOS.','Computer','Software','easy','APSC,ADRE'],
+
+  ['Which company developed the Android operating system?','Google','Microsoft','Apple','Samsung','a','Android is a mobile OS by Google.','Computer','Software','easy','APSC,ADRE'],
+
+  ['Which company developed the iOS operating system?','Apple','Google','Microsoft','Samsung','a','iOS is Apple mobile OS.','Computer','Software','easy','APSC,ADRE'],
+
+  ['What is artificial intelligence?','Simulation of human intelligence by machines','Natural human intelligence','Computer hardware only','A type of software','a','AI includes machine learning, NLP, and robotics.','Computer','Software','medium','APSC,ADRE'],
+
+  ['What is malware?','Software designed to harm or exploit computer systems','A type of hardware','A web browser','An operating system','a','Malware includes viruses, worms, and trojans.','Computer','Software','medium','APSC'],
+
+  ['What does HTML stand for?','HyperText Markup Language','High Tech Modern Language','Hyper Text Modern Language','High Transfer Markup Language','a','HTML is the standard markup language for web pages.','Computer','Software','easy','APSC,ADRE'],
+
+  ['What does CSS stand for?','Cascading Style Sheets','Computer Style Sheets','Creative Style Sheets','Colorful Style Sheets','a','CSS is used for styling web pages.','Computer','Software','medium','APSC'],
+
+  ['What does SQL stand for?','Structured Query Language','Simple Query Language','Standard Query Language','System Query Language','a','SQL is used for database management.','Computer','Software','medium','APSC'],
+
+  ['What is a firewall?','A network security system that monitors and filters traffic','A physical wall in a computer','A type of virus','A web browser','a','Firewalls protect against unauthorized access.','Computer','Hardware','medium','APSC'],
+
+  ['What is a VPN?','Virtual Private Network','Very Private Network','Virtual Public Network','Verified Private Network','a','VPN provides secure remote access.','Computer','Software','medium','APSC'],
+
+  ['What is the internet?','A global network of interconnected computers','A single computer','A type of software','A hardware component','a','Internet connects billions of devices worldwide.','Computer','Software','easy','APSC,ADRE'],
+
+  ['What is GDP?','Gross Domestic Product','General Domestic Product','Gross Domestic Profit','General Domestic Profit','a','GDP measures the total economic output of a country.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is inflation?','A general increase in prices and fall in purchasing power','A decrease in prices','A type of tax','A type of subsidy','a','Inflation reduces purchasing power.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is deflation?','A general decrease in prices','An increase in prices','A type of investment','A type of loan','a','Deflation is the opposite of inflation.','Economy','Indian Economy','medium','APSC'],
+
+  ['What is the RBI?','Reserve Bank of India','Rural Bank of India','Regional Bank of India','Revenue Bank of India','a','RBI is the central bank of India.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was the Reserve Bank of India established?','1935','1947','1950','1969','a','RBI was established on April 1, 1935.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Who is the current Governor of RBI?','Sanjay Malhotra','Shaktikanta Das','Urjit Patel','Raghuram Rajan','a','Sanjay Malhotra became RBI Governor in December 2024.','Economy','Indian Economy','hard','APSC'],
+
+  ['What is the repo rate?','The rate at which RBI lends to commercial banks','The rate at which banks lend to RBI','The rate at which banks lend to public','The rate at which RBI borrows from public','a','Repo rate is RBI lending rate.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is CRR?','Cash Reserve Ratio','Credit Reserve Ratio','Cash Return Ratio','Credit Return Ratio','a','CRR is the percentage of deposits banks must keep with RBI.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is SLR?','Statutory Liquidity Ratio','Statutory Legal Ratio','Standard Liquidity Ratio','System Liquidity Ratio','a','SLR is the percentage of deposits banks must maintain in liquid assets.','Economy','Indian Economy','hard','APSC'],
+
+  ['What is GST?','Goods and Services Tax','General Sales Tax','Government Sales Tax','Goods and Sales Tax','a','GST replaced multiple indirect taxes.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['When was GST implemented in India?','July 1, 2017','April 1, 2017','January 1, 2017','October 1, 2017','a','GST was implemented on July 1, 2017.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is FDI?','Foreign Direct Investment','Foreign Domestic Investment','Financial Direct Investment','Foreign Direct Income','a','FDI is investment by foreign entities in domestic companies.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the currency of India?','Indian Rupee','Indian Dollar','Indian Pound','Indian Euro','a','Indian currency is the Rupee (₹).','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is a monopoly?','A market structure with one seller','A market with many sellers','A market with no sellers','A market with government control','a','Monopoly has a single seller dominating the market.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is a budget?','An estimate of income and expenditure','A type of tax','A type of loan','A type of investment','a','Budget is an annual financial statement.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['Who presents the Union Budget in Parliament?','Finance Minister','Prime Minister','President','RBI Governor','a','The Finance Minister presents the budget.','Economy','Indian Economy','easy','APSC,ADRE'],
+
+  ['What is the fiscal year in India?','April 1 to March 31','January 1 to December 31','July 1 to June 30','October 1 to September 30','a','Indian fiscal year runs from April to March.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is NABARD?','National Bank for Agriculture and Rural Development','National Bank for Agricultural Research and Development','National Agriculture and Rural Development Bank','National Bank for Agriculture and Regional Development','a','NABARD provides credit for agriculture.','Economy','Indian Economy','hard','APSC'],
+
+  ['What is SEBI?','Securities and Exchange Board of India','Stock Exchange Board of India','Securities and Equity Board of India','Stock and Exchange Board of India','a','SEBI regulates the securities market.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is direct tax?','A tax paid directly to the government by the taxpayer','A tax on goods and services','A tax on imports','A tax on exports','a','Income tax is a direct tax.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is indirect tax?','A tax on goods and services','A tax on income','A tax on property','A tax on profits','a','GST is an indirect tax.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the monetary policy?','Policy related to money supply and interest rates','Policy related to government spending','Policy related to taxation','Policy related to trade','a','Monetary policy is controlled by RBI.','Economy','Indian Economy','hard','APSC'],
+
+  ['What is fiscal policy?','Policy related to government spending and taxation','Policy related to money supply','Policy related to interest rates','Policy related to exchange rates','a','Fiscal policy is controlled by the government.','Economy','Indian Economy','hard','APSC'],
+
+  ['What is demonetization?','Removal of a currency unit from circulation','Printing new currency','Devaluing currency','Increasing currency supply','a','India demonetized ₹500 and ₹1000 notes in 2016.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['When was demonetization announced in India?','November 8, 2016','November 8, 2017','January 1, 2016','October 8, 2016','a','PM Modi announced demonetization on Nov 8, 2016.','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Which Article of the Indian Constitution deals with the Right to Education?','Article 21A','Article 21','Article 20','Article 22','a','Article 21A was added by 86th Amendment (2002).','Polity','Indian Polity','medium','APSC,PYQ'],
+
+  ['The Right to Education was made a fundamental right by which amendment?','86th Amendment','42nd Amendment','44th Amendment','73rd Amendment','a','86th Amendment (2002) added Article 21A.','Polity','Indian Polity','medium','APSC,PYQ'],
+
+  ['Which schedule of the Indian Constitution deals with Anti-Defection Law?','Tenth Schedule','First Schedule','Sixth Schedule','Eighth Schedule','a','Tenth Schedule was added by 52nd Amendment.','Polity','Indian Polity','hard','APSC,PYQ'],
+
+  ['Who was the Chairman of the Drafting Committee of the Constituent Assembly?','Dr B R Ambedkar','Jawaharlal Nehru','Rajendra Prasad','Sardar Patel','a','Ambedkar headed the Drafting Committee.','Polity','Indian Polity','easy','APSC,ADRE,PYQ'],
+
+  ['How many members were in the Constituent Assembly of India?','389','250','500','300','a','The Constituent Assembly had 389 members.','Polity','Indian Polity','hard','APSC,PYQ'],
+
+  ['When was the Constitution of India adopted?','November 26, 1949','January 26, 1950','August 15, 1947','December 9, 1946','a','Adopted on Nov 26, 1949, came into effect on Jan 26, 1950.','Polity','Indian Polity','medium','APSC,ADRE,PYQ'],
+
+  ['Which Article allows the Parliament to amend the Constitution?','Article 368','Article 14','Article 32','Article 21','a','Article 368 deals with constitutional amendments.','Polity','Indian Polity','hard','APSC,UPSC,PYQ'],
+
+  ['The concept of Directive Principles of State Policy was borrowed from which country?','Ireland','United Kingdom','United States','Australia','a','DPSPs were borrowed from the Irish Constitution.','Polity','Indian Polity','medium','APSC,UPSC,PYQ'],
+
+  ['The idea of Concurrent List was borrowed from which country?','Australia','United Kingdom','United States','Canada','a','Concurrent List was borrowed from Australia.','Polity','Indian Polity','hard','APSC,UPSC,PYQ'],
+
+  ['The concept of Federation with a strong Centre was borrowed from which country?','Canada','United States','Australia','United Kingdom','a','India borrowed federal structure from Canada.','Polity','Indian Polity','hard','APSC,UPSC,PYQ'],
+
+  ['Which river is known as the lifeline of Assam?','Brahmaputra','Barak','Subansiri','Dhansiri','a','Brahmaputra flows through the entire length of Assam.','Assam GK','Assam Geography','easy','ADRE,PYQ'],
+
+  ['The Treaty of Yandaboo was signed between the British and which kingdom?','Burmese Empire','Ahom Kingdom','Mughal Empire','Koch Kingdom','a','Treaty of Yandaboo (1826) was signed with Burma.','History','Indian History','medium','ADRE,PYQ'],
+
+  ['Which is the largest district of Assam by area?','Karbi Anglong','Dibrugarh','Tinsukia','Sonitpur','a','Karbi Anglong is the largest district by area.','Assam GK','Assam Geography','medium','ADRE,PYQ'],
+
+  ['Majuli island is situated in which river?','Brahmaputra','Barak','Subansiri','Dhansiri','a','Majuli is in the Brahmaputra river.','Assam GK','Assam Geography','easy','ADRE,PYQ'],
+
+  ['Who was the first Governor of Assam after independence?','Sir Akbar Hydri','Sir Andrew Clow','Bhim Sen Sachar','J D Das','a','Sir Akbar Hydri was the first Governor.','Assam GK','Assam Polity','hard','ADRE,PYQ'],
+
+  ['Which is the state flower of Assam?','Foxtail Orchid (Rhynchostylis retusa)','Lotus','Rose','Sunflower','a','Foxtail Orchid is the state flower of Assam.','Assam GK','Assam GK','medium','ADRE,PYQ'],
+
+  ['The Digboi oil refinery was established in which year?','1901','1889','1911','1925','a','Digboi refinery was established in 1901.','Assam GK','Assam Economy','hard','ADRE,PYQ'],
+
+  ['Which Bihu is known as the festival of harvest?','Magh Bihu','Rongali Bihu','Kati Bihu','None','a','Magh Bihu (Bhogali Bihu) is the harvest festival.','Assam GK','Assam Culture','easy','ADRE,PYQ'],
+
+  ['Srimanta Sankardeva was born in which year?','1449','1440','1450','1469','a','Sankardeva was born in 1449 at Bordowa, Nagaon.','Assam GK','Assam Culture','hard','ADRE,PYQ'],
+
+  ['Which Ahom king is known as the founder of Ahom kingdom?','Chao Lung Sukapha','Suhungmung','Rudra Singha','Praudh Singha','a','Sukapha founded the Ahom kingdom in 1228.','Assam GK','Assam History','easy','ADRE,PYQ'],
+
+  ['Which movement was launched by Gandhi against the Rowlatt Act?','Rowlatt Satyagraha','Quit India Movement','Civil Disobedience Movement','Non-Cooperation Movement','a','Rowlatt Satyagraha (1919) was against the Rowlatt Act.','History','Indian History','medium','UPSC,PYQ'],
+
+  ['The Dandi March was started from which place?','Sabarmati Ashram','Dandi','Wardha','Porbandar','a','Gandhi started the march from Sabarmati Ashram.','History','Indian History','medium','UPSC,APSC,PYQ'],
+
+  ['Who gave the slogan "Give me blood and I shall give you freedom"?','Subhash Chandra Bose','Bhagat Singh','Mahatma Gandhi','Jawaharlal Nehru','a','Subhash Chandra Bose gave this slogan.','History','Indian History','easy','UPSC,APSC,ADRE,PYQ'],
+
+  ['The First Round Table Conference was held in which year?','1930','1931','1932','1929','a','First RTC was held in London in 1930.','History','Indian History','hard','UPSC,PYQ'],
+
+  ['The Government of India Act 1935 was based on which report?','Simon Commission Report','Nehru Report','August Offer','Cabinet Mission','a','Based on the Simon Commission recommendations.','Polity','Indian Polity','hard','UPSC,APSC,PYQ'],
+
+  ['Who was the first Indian woman to win the Nobel Prize?','Mother Teresa','Indira Gandhi','Sarojini Naidu','Arundhati Roy','a','Mother Teresa won Nobel Peace Prize in 1979.','General Knowledge','Persons','medium','UPSC,APSC,ADRE,PYQ'],
+
+  ['The Kuka Movement was associated with which state?','Punjab','Assam','Bengal','Maharashtra','a','Kuka Movement was in Punjab in the 1870s.','History','Indian History','hard','UPSC,PYQ'],
+
+  ['The Santhal Rebellion took place in which year?','1855','1857','1875','1895','a','Santhal Rebellion was led by Sido and Kanhu in 1855.','History','Indian History','hard','UPSC,APSC,PYQ'],
+
+  ['The Lucknow Pact was signed between Congress and Muslim League in which year?','1916','1915','1917','1920','a','Lucknow Pact (1916) brought Congress and League together.','History','Indian History','medium','UPSC,APSC,PYQ'],
+
+  ['The Poona Pact was signed between Gandhi and whose representative?','B R Ambedkar','Subhash Chandra Bose','Jinnah','Nehru','a','Poona Pact (1932) was between Gandhi and Ambedkar.','History','Indian History','medium','UPSC,APSC,PYQ'],
+
+  ['Which movement was started after the Jallianwala Bagh massacre?','Non-Cooperation Movement','Quit India Movement','Civil Disobedience Movement','Khilafat Movement','a','Non-Cooperation Movement (1920) followed Jallianwala Bagh.','History','Indian History','medium','UPSC,APSC,ADRE,PYQ'],
+
+  ['The Cabinet Mission came to India in which year?','1946','1945','1947','1944','a','Cabinet Mission (1946) proposed a framework for independence.','History','Indian History','medium','UPSC,APSC,PYQ'],
+
+  ['The oldest Veda is which one?','Rig Veda','Sama Veda','Yajur Veda','Atharva Veda','a','Rig Veda is the oldest of the four Vedas.','History','Indian History','easy','SSC,APSC,ADRE,PYQ'],
+
+  ['The capital of the Mauryan Empire was?','Pataliputra','Delhi','Ujjain','Kannauj','a','Pataliputra (modern Patna) was the Mauryan capital.','History','Indian History','easy','SSC,APSC,ADRE,PYQ'],
+
+  ['The famous Dandi March was associated with which protest?','Salt Tax','Land Tax','Income Tax','Trade Tax','a','Dandi March protested the British salt tax.','History','Indian History','medium','SSC,APSC,ADRE,PYQ'],
+
+  ['The Taj Mahal was built by which Mughal emperor?','Shah Jahan','Akbar','Humayun','Aurangzeb','a','Shah Jahan built it in memory of Mumtaz Mahal.','History','Indian History','easy','SSC,APSC,ADRE,PYQ'],
+
+  ['The Lal Qila (Red Fort) was built by which Mughal emperor?','Shah Jahan','Akbar','Humayun','Jahangir','a','Shah Jahan built Red Fort in Delhi.','History','Indian History','medium','SSC,APSC,PYQ'],
+
+  ['The Battle of Plassey was fought in which year?','1757','1764','1772','1857','a','Battle of Plassey (1757) — British defeated Siraj-ud-daula.','History','Indian History','medium','SSC,APSC,ADRE,PYQ'],
+
+  ['The Battle of Buxar was fought in which year?','1764','1757','1772','1857','a','Battle of Buxar (1764) — British defeated combined Indian forces.','History','Indian History','medium','SSC,APSC,PYQ'],
+
+  ['The Doctrine of Lapse was introduced by whom?','Lord Dalhousie','Lord Curzon','Lord Wellesley','Lord Bentinck','a','Dalhousie introduced Doctrine of Lapse.','History','Indian History','medium','SSC,APSC,ADRE,PYQ'],
+  ['What is the average of 127, 238, and 238?','201.0','202.0','200.0','402','a','Average = (127+238+238)/3 = 201.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 198, 304, and 148?','216.67','217.67','215.67','433','a','Average = (198+304+148)/3 = 216.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 435, 182, and 285?','300.67','301.67','299.67','601','a','Average = (435+182+285)/3 = 300.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 395, 30, and 482?','302.33','303.33','301.33','605','a','Average = (395+30+482)/3 = 302.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 238, 477, and 352?','355.67','356.67','354.67','711','a','Average = (238+477+352)/3 = 355.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 328, 290, and 209?','275.67','276.67','274.67','551','a','Average = (328+290+209)/3 = 275.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 317, 157, and 458?','310.67','311.67','309.67','621','a','Average = (317+157+458)/3 = 310.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 71, 485, and 68?','208.0','209.0','207.0','416','a','Average = (71+485+68)/3 = 208.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 364, 49, and 464?','292.33','293.33','291.33','585','a','Average = (364+49+464)/3 = 292.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 180, 63, and 448?','230.33','231.33','229.33','461','a','Average = (180+63+448)/3 = 230.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 388, 487, and 477?','450.67','451.67','449.67','901','a','Average = (388+487+477)/3 = 450.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 10, 438, and 339?','262.33','263.33','261.33','525','a','Average = (10+438+339)/3 = 262.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 305, 183, and 157?','215.0','216.0','214.0','430','a','Average = (305+183+157)/3 = 215.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 309, 146, and 64?','173.0','174.0','172.0','346','a','Average = (309+146+64)/3 = 173.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 332, 351, and 455?','379.33','380.33','378.33','759','a','Average = (332+351+455)/3 = 379.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 117, 169, and 266?','184.0','185.0','183.0','368','a','Average = (117+169+266)/3 = 184.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 74, 426, and 425?','308.33','309.33','307.33','617','a','Average = (74+426+425)/3 = 308.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 430, 222, and 310?','320.67','321.67','319.67','641','a','Average = (430+222+310)/3 = 320.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 421, 27, and 188?','212.0','213.0','211.0','424','a','Average = (421+27+188)/3 = 212.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 322, 85, and 305?','237.33','238.33','236.33','475','a','Average = (322+85+305)/3 = 237.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 279, 49, and 289?','205.67','206.67','204.67','411','a','Average = (279+49+289)/3 = 205.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 289, 348, and 150?','262.33','263.33','261.33','525','a','Average = (289+348+150)/3 = 262.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 454, 406, and 363?','407.67','408.67','406.67','815','a','Average = (454+406+363)/3 = 407.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 264, 58, and 290?','204.0','205.0','203.0','408','a','Average = (264+58+290)/3 = 204.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 240, 96, and 15?','117.0','118.0','116.0','234','a','Average = (240+96+15)/3 = 117.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 234, 141, and 121?','165.33','166.33','164.33','331','a','Average = (234+141+121)/3 = 165.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 347, 298, and 206?','283.67','284.67','282.67','567','a','Average = (347+298+206)/3 = 283.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 55, 202, and 101?','119.33','120.33','118.33','239','a','Average = (55+202+101)/3 = 119.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 425, 497, and 255?','392.33','393.33','391.33','785','a','Average = (425+497+255)/3 = 392.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 391, 42, and 284?','239.0','240.0','238.0','478','a','Average = (391+42+284)/3 = 239.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 211, 463, and 297?','323.67','324.67','322.67','647','a','Average = (211+463+297)/3 = 323.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 486, 173, and 166?','275.0','276.0','274.0','550','a','Average = (486+173+166)/3 = 275.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 106, 58, and 98?','87.33','88.33','86.33','175','a','Average = (106+58+98)/3 = 87.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 73, 293, and 436?','267.33','268.33','266.33','535','a','Average = (73+293+436)/3 = 267.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 308, 27, and 13?','116.0','117.0','115.0','232','a','Average = (308+27+13)/3 = 116.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 251, 310, and 461?','340.67','341.67','339.67','681','a','Average = (251+310+461)/3 = 340.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 145, 341, and 146?','210.67','211.67','209.67','421','a','Average = (145+341+146)/3 = 210.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 433, 15, and 96?','181.33','182.33','180.33','363','a','Average = (433+15+96)/3 = 181.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 367, 71, and 421?','286.33','287.33','285.33','573','a','Average = (367+71+421)/3 = 286.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 472, 338, and 264?','358.0','359.0','357.0','716','a','Average = (472+338+264)/3 = 358.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 207, 73, and 344?','208.0','209.0','207.0','416','a','Average = (207+73+344)/3 = 208.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 349, 264, and 428?','347.0','348.0','346.0','694','a','Average = (349+264+428)/3 = 347.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 217, 226, and 214?','219.0','220.0','218.0','438','a','Average = (217+226+214)/3 = 219.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 237, 185, and 311?','244.33','245.33','243.33','489','a','Average = (237+185+311)/3 = 244.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 357, 337, and 331?','341.67','342.67','340.67','683','a','Average = (357+337+331)/3 = 341.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 291, 192, and 356?','279.67','280.67','278.67','559','a','Average = (291+192+356)/3 = 279.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 287, 319, and 269?','291.67','292.67','290.67','583','a','Average = (287+319+269)/3 = 291.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 36, 322, and 422?','260.0','261.0','259.0','520','a','Average = (36+322+422)/3 = 260.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 37, 463, and 430?','310.0','311.0','309.0','620','a','Average = (37+463+430)/3 = 310.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 201, 156, and 470?','275.67','276.67','274.67','551','a','Average = (201+156+470)/3 = 275.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 307, 437, and 487?','410.33','411.33','409.33','821','a','Average = (307+437+487)/3 = 410.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 271, 366, and 232?','289.67','290.67','288.67','579','a','Average = (271+366+232)/3 = 289.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 87, 357, and 157?','200.33','201.33','199.33','401','a','Average = (87+357+157)/3 = 200.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 370, 348, and 260?','326.0','327.0','325.0','652','a','Average = (370+348+260)/3 = 326.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 360, 475, and 473?','436.0','437.0','435.0','872','a','Average = (360+475+473)/3 = 436.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 436, 481, and 212?','376.33','377.33','375.33','753','a','Average = (436+481+212)/3 = 376.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 16, 451, and 153?','206.67','207.67','205.67','413','a','Average = (16+451+153)/3 = 206.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 260, 193, and 274?','242.33','243.33','241.33','485','a','Average = (260+193+274)/3 = 242.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 337, 254, and 91?','227.33','228.33','226.33','455','a','Average = (337+254+91)/3 = 227.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 80, 176, and 51?','102.33','103.33','101.33','205','a','Average = (80+176+51)/3 = 102.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 481, 155, and 146?','260.67','261.67','259.67','521','a','Average = (481+155+146)/3 = 260.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 164, 228, and 90?','160.67','161.67','159.67','321','a','Average = (164+228+90)/3 = 160.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 470, 295, and 313?','359.33','360.33','358.33','719','a','Average = (470+295+313)/3 = 359.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 237, 301, and 95?','211.0','212.0','210.0','422','a','Average = (237+301+95)/3 = 211.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 54, 246, and 405?','235.0','236.0','234.0','470','a','Average = (54+246+405)/3 = 235.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 46, 183, and 59?','96.0','97.0','95.0','192','a','Average = (46+183+59)/3 = 96.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 207, 485, and 351?','347.67','348.67','346.67','695','a','Average = (207+485+351)/3 = 347.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 318, 391, and 113?','274.0','275.0','273.0','548','a','Average = (318+391+113)/3 = 274.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 324, 76, and 339?','246.33','247.33','245.33','493','a','Average = (324+76+339)/3 = 246.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 454, 64, and 318?','278.67','279.67','277.67','557','a','Average = (454+64+318)/3 = 278.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 161, 246, and 349?','252.0','253.0','251.0','504','a','Average = (161+246+349)/3 = 252.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 298, 231, and 286?','271.67','272.67','270.67','543','a','Average = (298+231+286)/3 = 271.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 358, 389, and 413?','386.67','387.67','385.67','773','a','Average = (358+389+413)/3 = 386.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 202, 31, and 15?','82.67','83.67','81.67','165','a','Average = (202+31+15)/3 = 82.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 112, 477, and 188?','259.0','260.0','258.0','518','a','Average = (112+477+188)/3 = 259.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 82, 461, and 94?','212.33','213.33','211.33','425','a','Average = (82+461+94)/3 = 212.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 229, 264, and 391?','294.67','295.67','293.67','589','a','Average = (229+264+391)/3 = 294.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 194, 410, and 149?','251.0','252.0','250.0','502','a','Average = (194+410+149)/3 = 251.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 356, 417, and 41?','271.33','272.33','270.33','543','a','Average = (356+417+41)/3 = 271.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 432, 345, and 222?','333.0','334.0','332.0','666','a','Average = (432+345+222)/3 = 333.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 250, 138, and 42?','143.33','144.33','142.33','287','a','Average = (250+138+42)/3 = 143.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 179, 40, and 337?','185.33','186.33','184.33','371','a','Average = (179+40+337)/3 = 185.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 152, 360, and 456?','322.67','323.67','321.67','645','a','Average = (152+360+456)/3 = 322.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 274, 24, and 75?','124.33','125.33','123.33','249','a','Average = (274+24+75)/3 = 124.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 324, 453, and 45?','274.0','275.0','273.0','548','a','Average = (324+453+45)/3 = 274.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 415, 57, and 484?','318.67','319.67','317.67','637','a','Average = (415+57+484)/3 = 318.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 306, 101, and 347?','251.33','252.33','250.33','503','a','Average = (306+101+347)/3 = 251.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 298, 475, and 484?','419.0','420.0','418.0','838','a','Average = (298+475+484)/3 = 419.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 261, 168, and 108?','179.0','180.0','178.0','358','a','Average = (261+168+108)/3 = 179.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 154, 264, and 39?','152.33','153.33','151.33','305','a','Average = (154+264+39)/3 = 152.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 465, 367, and 290?','374.0','375.0','373.0','748','a','Average = (465+367+290)/3 = 374.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 415, 177, and 478?','356.67','357.67','355.67','713','a','Average = (415+177+478)/3 = 356.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 114, 444, and 448?','335.33','336.33','334.33','671','a','Average = (114+444+448)/3 = 335.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 402, 474, and 453?','443.0','444.0','442.0','886','a','Average = (402+474+453)/3 = 443.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 450, 243, and 137?','276.67','277.67','275.67','553','a','Average = (450+243+137)/3 = 276.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 403, 470, and 307?','393.33','394.33','392.33','787','a','Average = (403+470+307)/3 = 393.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 207, 382, and 351?','313.33','314.33','312.33','627','a','Average = (207+382+351)/3 = 313.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 335, 120, and 28?','161.0','162.0','160.0','322','a','Average = (335+120+28)/3 = 161.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 457, 149, and 205?','270.33','271.33','269.33','541','a','Average = (457+149+205)/3 = 270.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 331, 138, and 253?','240.67','241.67','239.67','481','a','Average = (331+138+253)/3 = 240.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 208, 159, and 229?','198.67','199.67','197.67','397','a','Average = (208+159+229)/3 = 198.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 120, 82, and 21?','74.33','75.33','73.33','149','a','Average = (120+82+21)/3 = 74.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 16, 134, and 337?','162.33','163.33','161.33','325','a','Average = (16+134+337)/3 = 162.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 281, 92, and 257?','210.0','211.0','209.0','420','a','Average = (281+92+257)/3 = 210.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 217, 266, and 212?','231.67','232.67','230.67','463','a','Average = (217+266+212)/3 = 231.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 44, 237, and 255?','178.67','179.67','177.67','357','a','Average = (44+237+255)/3 = 178.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 189, 14, and 393?','198.67','199.67','197.67','397','a','Average = (189+14+393)/3 = 198.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 147, 112, and 296?','185.0','186.0','184.0','370','a','Average = (147+112+296)/3 = 185.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 221, 263, and 436?','306.67','307.67','305.67','613','a','Average = (221+263+436)/3 = 306.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 239, 406, and 282?','309.0','310.0','308.0','618','a','Average = (239+406+282)/3 = 309.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 369, 223, and 243?','278.33','279.33','277.33','557','a','Average = (369+223+243)/3 = 278.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 399, 33, and 273?','235.0','236.0','234.0','470','a','Average = (399+33+273)/3 = 235.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 329, 90, and 336?','251.67','252.67','250.67','503','a','Average = (329+90+336)/3 = 251.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 483, 149, and 157?','263.0','264.0','262.0','526','a','Average = (483+149+157)/3 = 263.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 389, 372, and 489?','416.67','417.67','415.67','833','a','Average = (389+372+489)/3 = 416.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 211, 183, and 189?','194.33','195.33','193.33','389','a','Average = (211+183+189)/3 = 194.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 407, 436, and 177?','340.0','341.0','339.0','680','a','Average = (407+436+177)/3 = 340.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 92, 98, and 417?','202.33','203.33','201.33','405','a','Average = (92+98+417)/3 = 202.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 42, 424, and 176?','214.0','215.0','213.0','428','a','Average = (42+424+176)/3 = 214.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 303, 442, and 189?','311.33','312.33','310.33','623','a','Average = (303+442+189)/3 = 311.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 200, 77, and 103?','126.67','127.67','125.67','253','a','Average = (200+77+103)/3 = 126.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 226, 238, and 199?','221.0','222.0','220.0','442','a','Average = (226+238+199)/3 = 221.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 447, 458, and 402?','435.67','436.67','434.67','871','a','Average = (447+458+402)/3 = 435.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 413, 321, and 428?','387.33','388.33','386.33','775','a','Average = (413+321+428)/3 = 387.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 154, 70, and 421?','215.0','216.0','214.0','430','a','Average = (154+70+421)/3 = 215.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 262, 40, and 319?','207.0','208.0','206.0','414','a','Average = (262+40+319)/3 = 207.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 465, 277, and 257?','333.0','334.0','332.0','666','a','Average = (465+277+257)/3 = 333.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 80, 176, and 495?','250.33','251.33','249.33','501','a','Average = (80+176+495)/3 = 250.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 371, 398, and 353?','374.0','375.0','373.0','748','a','Average = (371+398+353)/3 = 374.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 409, 241, and 425?','358.33','359.33','357.33','717','a','Average = (409+241+425)/3 = 358.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 252, 332, and 193?','259.0','260.0','258.0','518','a','Average = (252+332+193)/3 = 259.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 201, 116, and 271?','196.0','197.0','195.0','392','a','Average = (201+116+271)/3 = 196.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 482, 246, and 15?','247.67','248.67','246.67','495','a','Average = (482+246+15)/3 = 247.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 361, 400, and 82?','281.0','282.0','280.0','562','a','Average = (361+400+82)/3 = 281.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 361, 391, and 263?','338.33','339.33','337.33','677','a','Average = (361+391+263)/3 = 338.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 82, 469, and 127?','226.0','227.0','225.0','452','a','Average = (82+469+127)/3 = 226.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 132, 45, and 378?','185.0','186.0','184.0','370','a','Average = (132+45+378)/3 = 185.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 428, 304, and 169?','300.33','301.33','299.33','601','a','Average = (428+304+169)/3 = 300.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 260, 294, and 348?','300.67','301.67','299.67','601','a','Average = (260+294+348)/3 = 300.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 170, 405, and 333?','302.67','303.67','301.67','605','a','Average = (170+405+333)/3 = 302.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 309, 352, and 273?','311.33','312.33','310.33','623','a','Average = (309+352+273)/3 = 311.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 48, 151, and 384?','194.33','195.33','193.33','389','a','Average = (48+151+384)/3 = 194.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 338, 481, and 383?','400.67','401.67','399.67','801','a','Average = (338+481+383)/3 = 400.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 63, 387, and 166?','205.33','206.33','204.33','411','a','Average = (63+387+166)/3 = 205.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 356, 113, and 55?','174.67','175.67','173.67','349','a','Average = (356+113+55)/3 = 174.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 204, 349, and 301?','284.67','285.67','283.67','569','a','Average = (204+349+301)/3 = 284.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 10, 18, and 244?','90.67','91.67','89.67','181','a','Average = (10+18+244)/3 = 90.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 239, 225, and 224?','229.33','230.33','228.33','459','a','Average = (239+225+224)/3 = 229.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 333, 337, and 26?','232.0','233.0','231.0','464','a','Average = (333+337+26)/3 = 232.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 440, 168, and 456?','354.67','355.67','353.67','709','a','Average = (440+168+456)/3 = 354.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 251, 100, and 69?','140.0','141.0','139.0','280','a','Average = (251+100+69)/3 = 140.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 439, 333, and 351?','374.33','375.33','373.33','749','a','Average = (439+333+351)/3 = 374.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 103, 165, and 258?','175.33','176.33','174.33','351','a','Average = (103+165+258)/3 = 175.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 202, 101, and 163?','155.33','156.33','154.33','311','a','Average = (202+101+163)/3 = 155.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 354, 28, and 214?','198.67','199.67','197.67','397','a','Average = (354+28+214)/3 = 198.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 466, 317, and 349?','377.33','378.33','376.33','755','a','Average = (466+317+349)/3 = 377.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 234, 82, and 371?','229.0','230.0','228.0','458','a','Average = (234+82+371)/3 = 229.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 413, 324, and 401?','379.33','380.33','378.33','759','a','Average = (413+324+401)/3 = 379.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 98, 84, and 375?','185.67','186.67','184.67','371','a','Average = (98+84+375)/3 = 185.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 86, 12, and 299?','132.33','133.33','131.33','265','a','Average = (86+12+299)/3 = 132.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 16, 227, and 444?','229.0','230.0','228.0','458','a','Average = (16+227+444)/3 = 229.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 262, 449, and 282?','331.0','332.0','330.0','662','a','Average = (262+449+282)/3 = 331.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 452, 361, and 55?','289.33','290.33','288.33','579','a','Average = (452+361+55)/3 = 289.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 311, 102, and 351?','254.67','255.67','253.67','509','a','Average = (311+102+351)/3 = 254.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 99, 472, and 208?','259.67','260.67','258.67','519','a','Average = (99+472+208)/3 = 259.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 245, 330, and 59?','211.33','212.33','210.33','423','a','Average = (245+330+59)/3 = 211.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 183, 434, and 412?','343.0','344.0','342.0','686','a','Average = (183+434+412)/3 = 343.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 358, 18, and 478?','284.67','285.67','283.67','569','a','Average = (358+18+478)/3 = 284.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 294, 448, and 287?','343.0','344.0','342.0','686','a','Average = (294+448+287)/3 = 343.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 198, 148, and 364?','236.67','237.67','235.67','473','a','Average = (198+148+364)/3 = 236.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 467, 72, and 339?','292.67','293.67','291.67','585','a','Average = (467+72+339)/3 = 292.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 324, 284, and 99?','235.67','236.67','234.67','471','a','Average = (324+284+99)/3 = 235.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 467, 180, and 57?','234.67','235.67','233.67','469','a','Average = (467+180+57)/3 = 234.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 226, 426, and 478?','376.67','377.67','375.67','753','a','Average = (226+426+478)/3 = 376.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 397, 74, and 398?','289.67','290.67','288.67','579','a','Average = (397+74+398)/3 = 289.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 408, 49, and 387?','281.33','282.33','280.33','563','a','Average = (408+49+387)/3 = 281.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 345, 76, and 126?','182.33','183.33','181.33','365','a','Average = (345+76+126)/3 = 182.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 415, 192, and 373?','326.67','327.67','325.67','653','a','Average = (415+192+373)/3 = 326.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 428, 415, and 165?','336.0','337.0','335.0','672','a','Average = (428+415+165)/3 = 336.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 500, 451, and 119?','356.67','357.67','355.67','713','a','Average = (500+451+119)/3 = 356.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 418, 283, and 274?','325.0','326.0','324.0','650','a','Average = (418+283+274)/3 = 325.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 439, 57, and 71?','189.0','190.0','188.0','378','a','Average = (439+57+71)/3 = 189.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 468, 408, and 38?','304.67','305.67','303.67','609','a','Average = (468+408+38)/3 = 304.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 268, 31, and 224?','174.33','175.33','173.33','349','a','Average = (268+31+224)/3 = 174.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 381, 313, and 201?','298.33','299.33','297.33','597','a','Average = (381+313+201)/3 = 298.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 214, 281, and 279?','258.0','259.0','257.0','516','a','Average = (214+281+279)/3 = 258.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 78, 425, and 21?','174.67','175.67','173.67','349','a','Average = (78+425+21)/3 = 174.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 78, 368, and 43?','163.0','164.0','162.0','326','a','Average = (78+368+43)/3 = 163.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 409, 383, and 466?','419.33','420.33','418.33','839','a','Average = (409+383+466)/3 = 419.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 106, 149, and 18?','91.0','92.0','90.0','182','a','Average = (106+149+18)/3 = 91.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 235, 275, and 307?','272.33','273.33','271.33','545','a','Average = (235+275+307)/3 = 272.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 346, 444, and 285?','358.33','359.33','357.33','717','a','Average = (346+444+285)/3 = 358.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 453, 365, and 158?','325.33','326.33','324.33','651','a','Average = (453+365+158)/3 = 325.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 134, 36, and 354?','174.67','175.67','173.67','349','a','Average = (134+36+354)/3 = 174.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 292, 192, and 378?','287.33','288.33','286.33','575','a','Average = (292+192+378)/3 = 287.33','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 126, 376, and 167?','223.0','224.0','222.0','446','a','Average = (126+376+167)/3 = 223.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 356, 486, and 309?','383.67','384.67','382.67','767','a','Average = (356+486+309)/3 = 383.67','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 335, 204, and 382?','307.0','308.0','306.0','614','a','Average = (335+204+382)/3 = 307.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 185, 85, and 336?','202.0','203.0','201.0','404','a','Average = (185+85+336)/3 = 202.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['What is the average of 238, 201, and 482?','307.0','308.0','306.0','614','a','Average = (238+201+482)/3 = 307.0','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:15 and their sum is 25, what is the first number?','10','15','25','5','a','First number = 10 × (25)/(10+15) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:9 and their sum is 29, what is the first number?','20','9','29','11','a','First number = 20 × (29)/(20+9) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:13 and their sum is 33, what is the first number?','20','13','33','7','a','First number = 20 × (33)/(20+13) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:16 and their sum is 35, what is the first number?','19','16','35','3','a','First number = 19 × (35)/(19+16) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 2:6 and their sum is 8, what is the first number?','2','6','8','4','a','First number = 2 × (8)/(2+6) = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:2 and their sum is 9, what is the first number?','7','2','9','5','a','First number = 7 × (9)/(7+2) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:24 and their sum is 33, what is the first number?','9','24','33','15','a','First number = 9 × (33)/(9+24) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:13 and their sum is 28, what is the first number?','15','13','28','2','a','First number = 15 × (28)/(15+13) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 16:23 and their sum is 39, what is the first number?','16','23','39','7','a','First number = 16 × (39)/(16+23) = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:2 and their sum is 7, what is the first number?','5','2','7','3','a','First number = 5 × (7)/(5+2) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:24 and their sum is 37, what is the first number?','13','24','37','11','a','First number = 13 × (37)/(13+24) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 2:8 and their sum is 10, what is the first number?','2','8','10','6','a','First number = 2 × (10)/(2+8) = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:23 and their sum is 36, what is the first number?','13','23','36','10','a','First number = 13 × (36)/(13+23) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:15 and their sum is 24, what is the first number?','9','15','24','6','a','First number = 9 × (24)/(9+15) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:8 and their sum is 20, what is the first number?','12','8','20','4','a','First number = 12 × (20)/(12+8) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:29 and their sum is 35, what is the first number?','6','29','35','23','a','First number = 6 × (35)/(6+29) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:13 and their sum is 17, what is the first number?','4','13','17','9','a','First number = 4 × (17)/(4+13) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 2:21 and their sum is 23, what is the first number?','2','21','23','19','a','First number = 2 × (23)/(2+21) = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 11:23 and their sum is 34, what is the first number?','11','23','34','12','a','First number = 11 × (34)/(11+23) = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 2:16 and their sum is 18, what is the first number?','2','16','18','14','a','First number = 2 × (18)/(2+16) = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:9 and their sum is 17, what is the first number?','8','9','17','1','a','First number = 8 × (17)/(8+9) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:12 and their sum is 18, what is the first number?','6','12','18','6','a','First number = 6 × (18)/(6+12) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:8 and their sum is 13, what is the first number?','5','8','13','3','a','First number = 5 × (13)/(5+8) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 17:27 and their sum is 44, what is the first number?','17','27','44','10','a','First number = 17 × (44)/(17+27) = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:26 and their sum is 36, what is the first number?','10','26','36','16','a','First number = 10 × (36)/(10+26) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:25 and their sum is 39, what is the first number?','14','25','39','11','a','First number = 14 × (39)/(14+25) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:7 and their sum is 17, what is the first number?','10','7','17','3','a','First number = 10 × (17)/(10+7) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 17:28 and their sum is 45, what is the first number?','17','28','45','11','a','First number = 17 × (45)/(17+28) = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:4 and their sum is 8, what is the first number?','4','4','8','0','a','First number = 4 × (8)/(4+4) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:20 and their sum is 33, what is the first number?','13','20','33','7','a','First number = 13 × (33)/(13+20) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 11:26 and their sum is 37, what is the first number?','11','26','37','15','a','First number = 11 × (37)/(11+26) = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:8 and their sum is 15, what is the first number?','7','8','15','1','a','First number = 7 × (15)/(7+8) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:6 and their sum is 12, what is the first number?','6','6','12','0','a','First number = 6 × (12)/(6+6) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:21 and their sum is 35, what is the first number?','14','21','35','7','a','First number = 14 × (35)/(14+21) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 11:2 and their sum is 13, what is the first number?','11','2','13','9','a','First number = 11 × (13)/(11+2) = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:11 and their sum is 23, what is the first number?','12','11','23','1','a','First number = 12 × (23)/(12+11) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:27 and their sum is 34, what is the first number?','7','27','34','20','a','First number = 7 × (34)/(7+27) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 18:14 and their sum is 32, what is the first number?','18','14','32','4','a','First number = 18 × (32)/(18+14) = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 2:28 and their sum is 30, what is the first number?','2','28','30','26','a','First number = 2 × (30)/(2+28) = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:3 and their sum is 22, what is the first number?','19','3','22','16','a','First number = 19 × (22)/(19+3) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:3 and their sum is 16, what is the first number?','13','3','16','10','a','First number = 13 × (16)/(13+3) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:7 and their sum is 27, what is the first number?','20','7','27','13','a','First number = 20 × (27)/(20+7) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:7 and their sum is 22, what is the first number?','15','7','22','8','a','First number = 15 × (22)/(15+7) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:17 and their sum is 32, what is the first number?','15','17','32','2','a','First number = 15 × (32)/(15+17) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 2:14 and their sum is 16, what is the first number?','2','14','16','12','a','First number = 2 × (16)/(2+14) = 2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:11 and their sum is 31, what is the first number?','20','11','31','9','a','First number = 20 × (31)/(20+11) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:16 and their sum is 31, what is the first number?','15','16','31','1','a','First number = 15 × (31)/(15+16) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 3:12 and their sum is 15, what is the first number?','3','12','15','9','a','First number = 3 × (15)/(3+12) = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:4 and their sum is 19, what is the first number?','15','4','19','11','a','First number = 15 × (19)/(15+4) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:25 and their sum is 30, what is the first number?','5','25','30','20','a','First number = 5 × (30)/(5+25) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:27 and their sum is 41, what is the first number?','14','27','41','13','a','First number = 14 × (41)/(14+27) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:9 and their sum is 28, what is the first number?','19','9','28','10','a','First number = 19 × (28)/(19+9) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:17 and their sum is 21, what is the first number?','4','17','21','13','a','First number = 4 × (21)/(4+17) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:13 and their sum is 20, what is the first number?','7','13','20','6','a','First number = 7 × (20)/(7+13) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:15 and their sum is 30, what is the first number?','15','15','30','0','a','First number = 15 × (30)/(15+15) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:4 and their sum is 17, what is the first number?','13','4','17','9','a','First number = 13 × (17)/(13+4) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 16:14 and their sum is 30, what is the first number?','16','14','30','2','a','First number = 16 × (30)/(16+14) = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:3 and their sum is 7, what is the first number?','4','3','7','1','a','First number = 4 × (7)/(4+3) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:20 and their sum is 26, what is the first number?','6','20','26','14','a','First number = 6 × (26)/(6+20) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:21 and their sum is 40, what is the first number?','19','21','40','2','a','First number = 19 × (40)/(19+21) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:9 and their sum is 19, what is the first number?','10','9','19','1','a','First number = 10 × (19)/(10+9) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:16 and their sum is 30, what is the first number?','14','16','30','2','a','First number = 14 × (30)/(14+16) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:7 and their sum is 20, what is the first number?','13','7','20','6','a','First number = 13 × (20)/(13+7) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 18:4 and their sum is 22, what is the first number?','18','4','22','14','a','First number = 18 × (22)/(18+4) = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:30 and their sum is 50, what is the first number?','20','30','50','10','a','First number = 20 × (50)/(20+30) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:20 and their sum is 35, what is the first number?','15','20','35','5','a','First number = 15 × (35)/(15+20) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:5 and their sum is 9, what is the first number?','4','5','9','1','a','First number = 4 × (9)/(4+5) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:27 and their sum is 35, what is the first number?','8','27','35','19','a','First number = 8 × (35)/(8+27) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 17:16 and their sum is 33, what is the first number?','17','16','33','1','a','First number = 17 × (33)/(17+16) = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:8 and their sum is 22, what is the first number?','14','8','22','6','a','First number = 14 × (22)/(14+8) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:16 and their sum is 29, what is the first number?','13','16','29','3','a','First number = 13 × (29)/(13+16) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:17 and their sum is 29, what is the first number?','12','17','29','5','a','First number = 12 × (29)/(12+17) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:20 and their sum is 29, what is the first number?','9','20','29','11','a','First number = 9 × (29)/(9+20) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:12 and their sum is 31, what is the first number?','19','12','31','7','a','First number = 19 × (31)/(19+12) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 16:4 and their sum is 20, what is the first number?','16','4','20','12','a','First number = 16 × (20)/(16+4) = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:9 and their sum is 18, what is the first number?','9','9','18','0','a','First number = 9 × (18)/(9+9) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 18:11 and their sum is 29, what is the first number?','18','11','29','7','a','First number = 18 × (29)/(18+11) = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:13 and their sum is 32, what is the first number?','19','13','32','6','a','First number = 19 × (32)/(19+13) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 11:5 and their sum is 16, what is the first number?','11','5','16','6','a','First number = 11 × (16)/(11+5) = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:17 and their sum is 36, what is the first number?','19','17','36','2','a','First number = 19 × (36)/(19+17) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:23 and their sum is 32, what is the first number?','9','23','32','14','a','First number = 9 × (32)/(9+23) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:10 and their sum is 25, what is the first number?','15','10','25','5','a','First number = 15 × (25)/(15+10) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:11 and their sum is 17, what is the first number?','6','11','17','5','a','First number = 6 × (17)/(6+11) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:30 and their sum is 44, what is the first number?','14','30','44','16','a','First number = 14 × (44)/(14+30) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:13 and their sum is 25, what is the first number?','12','13','25','1','a','First number = 12 × (25)/(12+13) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:14 and their sum is 29, what is the first number?','15','14','29','1','a','First number = 15 × (29)/(15+14) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 17:11 and their sum is 28, what is the first number?','17','11','28','6','a','First number = 17 × (28)/(17+11) = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:29 and their sum is 48, what is the first number?','19','29','48','10','a','First number = 19 × (48)/(19+29) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:3 and their sum is 8, what is the first number?','5','3','8','2','a','First number = 5 × (8)/(5+3) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:22 and their sum is 28, what is the first number?','6','22','28','16','a','First number = 6 × (28)/(6+22) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 17:5 and their sum is 22, what is the first number?','17','5','22','12','a','First number = 17 × (22)/(17+5) = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:14 and their sum is 22, what is the first number?','8','14','22','6','a','First number = 8 × (22)/(8+14) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:6 and their sum is 11, what is the first number?','5','6','11','1','a','First number = 5 × (11)/(5+6) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:10 and their sum is 23, what is the first number?','13','10','23','3','a','First number = 13 × (23)/(13+10) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:25 and their sum is 35, what is the first number?','10','25','35','15','a','First number = 10 × (35)/(10+25) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:17 and their sum is 26, what is the first number?','9','17','26','8','a','First number = 9 × (26)/(9+17) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:22 and their sum is 27, what is the first number?','5','22','27','17','a','First number = 5 × (27)/(5+22) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:14 and their sum is 28, what is the first number?','14','14','28','0','a','First number = 14 × (28)/(14+14) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:25 and their sum is 32, what is the first number?','7','25','32','18','a','First number = 7 × (32)/(7+25) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:10 and their sum is 18, what is the first number?','8','10','18','2','a','First number = 8 × (18)/(8+10) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:24 and their sum is 36, what is the first number?','12','24','36','12','a','First number = 12 × (36)/(12+24) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:27 and their sum is 31, what is the first number?','4','27','31','23','a','First number = 4 × (31)/(4+27) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:23 and their sum is 42, what is the first number?','19','23','42','4','a','First number = 19 × (42)/(19+23) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:18 and their sum is 31, what is the first number?','13','18','31','5','a','First number = 13 × (31)/(13+18) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:3 and their sum is 15, what is the first number?','12','3','15','9','a','First number = 12 × (15)/(12+3) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:4 and their sum is 23, what is the first number?','19','4','23','15','a','First number = 19 × (23)/(19+4) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 16:26 and their sum is 42, what is the first number?','16','26','42','10','a','First number = 16 × (42)/(16+26) = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:15 and their sum is 22, what is the first number?','7','15','22','8','a','First number = 7 × (22)/(7+15) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:16 and their sum is 28, what is the first number?','12','16','28','4','a','First number = 12 × (28)/(12+16) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:26 and their sum is 38, what is the first number?','12','26','38','14','a','First number = 12 × (38)/(12+26) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 11:4 and their sum is 15, what is the first number?','11','4','15','7','a','First number = 11 × (15)/(11+4) = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 3:18 and their sum is 21, what is the first number?','3','18','21','15','a','First number = 3 × (21)/(3+18) = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:20 and their sum is 25, what is the first number?','5','20','25','15','a','First number = 5 × (25)/(5+20) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:18 and their sum is 32, what is the first number?','14','18','32','4','a','First number = 14 × (32)/(14+18) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 18:5 and their sum is 23, what is the first number?','18','5','23','13','a','First number = 18 × (23)/(18+5) = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:21 and their sum is 31, what is the first number?','10','21','31','11','a','First number = 10 × (31)/(10+21) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 17:29 and their sum is 46, what is the first number?','17','29','46','12','a','First number = 17 × (46)/(17+29) = 17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:6 and their sum is 10, what is the first number?','4','6','10','2','a','First number = 4 × (10)/(4+6) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:18 and their sum is 27, what is the first number?','9','18','27','9','a','First number = 9 × (27)/(9+18) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:6 and their sum is 20, what is the first number?','14','6','20','8','a','First number = 14 × (20)/(14+6) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:7 and their sum is 14, what is the first number?','7','7','14','0','a','First number = 7 × (14)/(7+7) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:8 and their sum is 17, what is the first number?','9','8','17','1','a','First number = 9 × (17)/(9+8) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:18 and their sum is 37, what is the first number?','19','18','37','1','a','First number = 19 × (37)/(19+18) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:25 and their sum is 44, what is the first number?','19','25','44','6','a','First number = 19 × (44)/(19+25) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 16:10 and their sum is 26, what is the first number?','16','10','26','6','a','First number = 16 × (26)/(16+10) = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:21 and their sum is 28, what is the first number?','7','21','28','14','a','First number = 7 × (28)/(7+21) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 18:15 and their sum is 33, what is the first number?','18','15','33','3','a','First number = 18 × (33)/(18+15) = 18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:8 and their sum is 27, what is the first number?','19','8','27','11','a','First number = 19 × (27)/(19+8) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 10:4 and their sum is 14, what is the first number?','10','4','14','6','a','First number = 10 × (14)/(10+4) = 10','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:21 and their sum is 25, what is the first number?','4','21','25','17','a','First number = 4 × (25)/(4+21) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:18 and their sum is 22, what is the first number?','4','18','22','14','a','First number = 4 × (22)/(4+18) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:13 and their sum is 21, what is the first number?','8','13','21','5','a','First number = 8 × (21)/(8+13) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 3:4 and their sum is 7, what is the first number?','3','4','7','1','a','First number = 3 × (7)/(3+4) = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:27 and their sum is 42, what is the first number?','15','27','42','12','a','First number = 15 × (42)/(15+27) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 16:6 and their sum is 22, what is the first number?','16','6','22','10','a','First number = 16 × (22)/(16+6) = 16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:24 and their sum is 43, what is the first number?','19','24','43','5','a','First number = 19 × (43)/(19+24) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:28 and their sum is 36, what is the first number?','8','28','36','20','a','First number = 8 × (36)/(8+28) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:4 and their sum is 18, what is the first number?','14','4','18','10','a','First number = 14 × (18)/(14+4) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:17 and their sum is 31, what is the first number?','14','17','31','3','a','First number = 14 × (31)/(14+17) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 3:16 and their sum is 19, what is the first number?','3','16','19','13','a','First number = 3 × (19)/(3+16) = 3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:3 and their sum is 17, what is the first number?','14','3','17','11','a','First number = 14 × (17)/(14+3) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:10 and their sum is 30, what is the first number?','20','10','30','10','a','First number = 20 × (30)/(20+10) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 11:12 and their sum is 23, what is the first number?','11','12','23','1','a','First number = 11 × (23)/(11+12) = 11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:12 and their sum is 17, what is the first number?','5','12','17','7','a','First number = 5 × (17)/(5+12) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:5 and their sum is 19, what is the first number?','14','5','19','9','a','First number = 14 × (19)/(14+5) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 14:20 and their sum is 34, what is the first number?','14','20','34','6','a','First number = 14 × (34)/(14+20) = 14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:9 and their sum is 15, what is the first number?','6','9','15','3','a','First number = 6 × (15)/(6+9) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:22 and their sum is 31, what is the first number?','9','22','31','13','a','First number = 9 × (31)/(9+22) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 5:15 and their sum is 20, what is the first number?','5','15','20','10','a','First number = 5 × (20)/(5+15) = 5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:9 and their sum is 22, what is the first number?','13','9','22','4','a','First number = 13 × (22)/(13+9) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 9:19 and their sum is 28, what is the first number?','9','19','28','10','a','First number = 9 × (28)/(9+19) = 9','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:10 and their sum is 17, what is the first number?','7','10','17','3','a','First number = 7 × (17)/(7+10) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:7 and their sum is 13, what is the first number?','6','7','13','1','a','First number = 6 × (13)/(6+7) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 12:9 and their sum is 21, what is the first number?','12','9','21','3','a','First number = 12 × (21)/(12+9) = 12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:15 and their sum is 19, what is the first number?','4','15','19','11','a','First number = 4 × (19)/(4+15) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:22 and their sum is 42, what is the first number?','20','22','42','2','a','First number = 20 × (42)/(20+22) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:28 and their sum is 35, what is the first number?','7','28','35','21','a','First number = 7 × (35)/(7+28) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 4:29 and their sum is 33, what is the first number?','4','29','33','25','a','First number = 4 × (33)/(4+29) = 4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 6:27 and their sum is 33, what is the first number?','6','27','33','21','a','First number = 6 × (33)/(6+27) = 6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 7:12 and their sum is 19, what is the first number?','7','12','19','5','a','First number = 7 × (19)/(7+12) = 7','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:11 and their sum is 30, what is the first number?','19','11','30','8','a','First number = 19 × (30)/(19+11) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:22 and their sum is 37, what is the first number?','15','22','37','7','a','First number = 15 × (37)/(15+22) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 13:17 and their sum is 30, what is the first number?','13','17','30','4','a','First number = 13 × (30)/(13+17) = 13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 15:8 and their sum is 23, what is the first number?','15','8','23','7','a','First number = 15 × (23)/(15+8) = 15','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 19:2 and their sum is 21, what is the first number?','19','2','21','17','a','First number = 19 × (21)/(19+2) = 19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:26 and their sum is 46, what is the first number?','20','26','46','6','a','First number = 20 × (46)/(20+26) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 8:12 and their sum is 20, what is the first number?','8','12','20','4','a','First number = 8 × (20)/(8+12) = 8','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['If the ratio of two numbers is 20:18 and their sum is 38, what is the first number?','20','18','38','2','a','First number = 20 × (38)/(20+18) = 20','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2155 is sold for Rs.4059. What is the profit percentage?','88.35%','93.35%','83.35%','176.7%','a','Profit = 1904, Profit% = (1904/2155)×100 = 88.35%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.851 is sold for Rs.2691. What is the profit percentage?','216.22%','221.22%','211.22%','432.44%','a','Profit = 1840, Profit% = (1840/851)×100 = 216.22%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4165 is sold for Rs.5705. What is the profit percentage?','36.97%','41.97%','31.97%','73.94%','a','Profit = 1540, Profit% = (1540/4165)×100 = 36.97%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4455 is sold for Rs.4658. What is the profit percentage?','4.56%','9.559999999999999%','-0.4400000000000004%','9.12%','a','Profit = 203, Profit% = (203/4455)×100 = 4.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3428 is sold for Rs.5267. What is the profit percentage?','53.65%','58.65%','48.65%','107.3%','a','Profit = 1839, Profit% = (1839/3428)×100 = 53.65%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2797 is sold for Rs.3689. What is the profit percentage?','31.89%','36.89%','26.89%','63.78%','a','Profit = 892, Profit% = (892/2797)×100 = 31.89%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.264 is sold for Rs.2258. What is the profit percentage?','755.3%','760.3%','750.3%','1510.6%','a','Profit = 1994, Profit% = (1994/264)×100 = 755.3%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.531 is sold for Rs.1432. What is the profit percentage?','169.68%','174.68%','164.68%','339.36%','a','Profit = 901, Profit% = (901/531)×100 = 169.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.436 is sold for Rs.1058. What is the profit percentage?','142.66%','147.66%','137.66%','285.32%','a','Profit = 622, Profit% = (622/436)×100 = 142.66%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1249 is sold for Rs.2206. What is the profit percentage?','76.62%','81.62%','71.62%','153.24%','a','Profit = 957, Profit% = (957/1249)×100 = 76.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1772 is sold for Rs.2756. What is the profit percentage?','55.53%','60.53%','50.53%','111.06%','a','Profit = 984, Profit% = (984/1772)×100 = 55.53%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.958 is sold for Rs.2771. What is the profit percentage?','189.25%','194.25%','184.25%','378.5%','a','Profit = 1813, Profit% = (1813/958)×100 = 189.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1114 is sold for Rs.1759. What is the profit percentage?','57.9%','62.9%','52.9%','115.8%','a','Profit = 645, Profit% = (645/1114)×100 = 57.9%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.583 is sold for Rs.1615. What is the profit percentage?','177.02%','182.02%','172.02%','354.04%','a','Profit = 1032, Profit% = (1032/583)×100 = 177.02%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2667 is sold for Rs.3287. What is the profit percentage?','23.25%','28.25%','18.25%','46.5%','a','Profit = 620, Profit% = (620/2667)×100 = 23.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.718 is sold for Rs.2334. What is the profit percentage?','225.07%','230.07%','220.07%','450.14%','a','Profit = 1616, Profit% = (1616/718)×100 = 225.07%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.353 is sold for Rs.1024. What is the profit percentage?','190.08%','195.08%','185.08%','380.16%','a','Profit = 671, Profit% = (671/353)×100 = 190.08%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1598 is sold for Rs.3529. What is the profit percentage?','120.84%','125.84%','115.84%','241.68%','a','Profit = 1931, Profit% = (1931/1598)×100 = 120.84%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3536 is sold for Rs.4283. What is the profit percentage?','21.13%','26.13%','16.13%','42.26%','a','Profit = 747, Profit% = (747/3536)×100 = 21.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1377 is sold for Rs.2653. What is the profit percentage?','92.67%','97.67%','87.67%','185.34%','a','Profit = 1276, Profit% = (1276/1377)×100 = 92.67%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.747 is sold for Rs.955. What is the profit percentage?','27.84%','32.84%','22.84%','55.68%','a','Profit = 208, Profit% = (208/747)×100 = 27.84%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3361 is sold for Rs.3552. What is the profit percentage?','5.68%','10.68%','0.6799999999999997%','11.36%','a','Profit = 191, Profit% = (191/3361)×100 = 5.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1341 is sold for Rs.2957. What is the profit percentage?','120.51%','125.51%','115.51%','241.02%','a','Profit = 1616, Profit% = (1616/1341)×100 = 120.51%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3076 is sold for Rs.4797. What is the profit percentage?','55.95%','60.95%','50.95%','111.9%','a','Profit = 1721, Profit% = (1721/3076)×100 = 55.95%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2503 is sold for Rs.4018. What is the profit percentage?','60.53%','65.53%','55.53%','121.06%','a','Profit = 1515, Profit% = (1515/2503)×100 = 60.53%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2980 is sold for Rs.4033. What is the profit percentage?','35.34%','40.34%','30.340000000000003%','70.68%','a','Profit = 1053, Profit% = (1053/2980)×100 = 35.34%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2127 is sold for Rs.2962. What is the profit percentage?','39.26%','44.26%','34.26%','78.52%','a','Profit = 835, Profit% = (835/2127)×100 = 39.26%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.170 is sold for Rs.1238. What is the profit percentage?','628.24%','633.24%','623.24%','1256.48%','a','Profit = 1068, Profit% = (1068/170)×100 = 628.24%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4050 is sold for Rs.5791. What is the profit percentage?','42.99%','47.99%','37.99%','85.98%','a','Profit = 1741, Profit% = (1741/4050)×100 = 42.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3387 is sold for Rs.5297. What is the profit percentage?','56.39%','61.39%','51.39%','112.78%','a','Profit = 1910, Profit% = (1910/3387)×100 = 56.39%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1731 is sold for Rs.2039. What is the profit percentage?','17.79%','22.79%','12.79%','35.58%','a','Profit = 308, Profit% = (308/1731)×100 = 17.79%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.720 is sold for Rs.733. What is the profit percentage?','1.81%','6.8100000000000005%','-3.19%','3.62%','a','Profit = 13, Profit% = (13/720)×100 = 1.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3482 is sold for Rs.5294. What is the profit percentage?','52.04%','57.04%','47.04%','104.08%','a','Profit = 1812, Profit% = (1812/3482)×100 = 52.04%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1291 is sold for Rs.2727. What is the profit percentage?','111.23%','116.23%','106.23%','222.46%','a','Profit = 1436, Profit% = (1436/1291)×100 = 111.23%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3028 is sold for Rs.3351. What is the profit percentage?','10.67%','15.67%','5.67%','21.34%','a','Profit = 323, Profit% = (323/3028)×100 = 10.67%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4883 is sold for Rs.5817. What is the profit percentage?','19.13%','24.13%','14.129999999999999%','38.26%','a','Profit = 934, Profit% = (934/4883)×100 = 19.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4989 is sold for Rs.5662. What is the profit percentage?','13.49%','18.490000000000002%','8.49%','26.98%','a','Profit = 673, Profit% = (673/4989)×100 = 13.49%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4997 is sold for Rs.6257. What is the profit percentage?','25.22%','30.22%','20.22%','50.44%','a','Profit = 1260, Profit% = (1260/4997)×100 = 25.22%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4430 is sold for Rs.6009. What is the profit percentage?','35.64%','40.64%','30.64%','71.28%','a','Profit = 1579, Profit% = (1579/4430)×100 = 35.64%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1713 is sold for Rs.2730. What is the profit percentage?','59.37%','64.37%','54.37%','118.74%','a','Profit = 1017, Profit% = (1017/1713)×100 = 59.37%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1725 is sold for Rs.2955. What is the profit percentage?','71.3%','76.3%','66.3%','142.6%','a','Profit = 1230, Profit% = (1230/1725)×100 = 71.3%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4854 is sold for Rs.6131. What is the profit percentage?','26.31%','31.31%','21.31%','52.62%','a','Profit = 1277, Profit% = (1277/4854)×100 = 26.31%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1713 is sold for Rs.2096. What is the profit percentage?','22.36%','27.36%','17.36%','44.72%','a','Profit = 383, Profit% = (383/1713)×100 = 22.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2215 is sold for Rs.2403. What is the profit percentage?','8.49%','13.49%','3.49%','16.98%','a','Profit = 188, Profit% = (188/2215)×100 = 8.49%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4504 is sold for Rs.4795. What is the profit percentage?','6.46%','11.46%','1.46%','12.92%','a','Profit = 291, Profit% = (291/4504)×100 = 6.46%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1735 is sold for Rs.3612. What is the profit percentage?','108.18%','113.18%','103.18%','216.36%','a','Profit = 1877, Profit% = (1877/1735)×100 = 108.18%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2870 is sold for Rs.3984. What is the profit percentage?','38.82%','43.82%','33.82%','77.64%','a','Profit = 1114, Profit% = (1114/2870)×100 = 38.82%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3152 is sold for Rs.4485. What is the profit percentage?','42.29%','47.29%','37.29%','84.58%','a','Profit = 1333, Profit% = (1333/3152)×100 = 42.29%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3544 is sold for Rs.4980. What is the profit percentage?','40.52%','45.52%','35.52%','81.04%','a','Profit = 1436, Profit% = (1436/3544)×100 = 40.52%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4309 is sold for Rs.5774. What is the profit percentage?','34.0%','39.0%','29.0%','68.0%','a','Profit = 1465, Profit% = (1465/4309)×100 = 34.0%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1852 is sold for Rs.2293. What is the profit percentage?','23.81%','28.81%','18.81%','47.62%','a','Profit = 441, Profit% = (441/1852)×100 = 23.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1175 is sold for Rs.2513. What is the profit percentage?','113.87%','118.87%','108.87%','227.74%','a','Profit = 1338, Profit% = (1338/1175)×100 = 113.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1494 is sold for Rs.3494. What is the profit percentage?','133.87%','138.87%','128.87%','267.74%','a','Profit = 2000, Profit% = (2000/1494)×100 = 133.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1925 is sold for Rs.2094. What is the profit percentage?','8.78%','13.78%','3.7799999999999994%','17.56%','a','Profit = 169, Profit% = (169/1925)×100 = 8.78%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4830 is sold for Rs.5398. What is the profit percentage?','11.76%','16.759999999999998%','6.76%','23.52%','a','Profit = 568, Profit% = (568/4830)×100 = 11.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2294 is sold for Rs.2716. What is the profit percentage?','18.4%','23.4%','13.399999999999999%','36.8%','a','Profit = 422, Profit% = (422/2294)×100 = 18.4%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2200 is sold for Rs.3239. What is the profit percentage?','47.23%','52.23%','42.23%','94.46%','a','Profit = 1039, Profit% = (1039/2200)×100 = 47.23%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2307 is sold for Rs.3743. What is the profit percentage?','62.25%','67.25%','57.25%','124.5%','a','Profit = 1436, Profit% = (1436/2307)×100 = 62.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3737 is sold for Rs.5675. What is the profit percentage?','51.86%','56.86%','46.86%','103.72%','a','Profit = 1938, Profit% = (1938/3737)×100 = 51.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4667 is sold for Rs.5629. What is the profit percentage?','20.61%','25.61%','15.61%','41.22%','a','Profit = 962, Profit% = (962/4667)×100 = 20.61%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3589 is sold for Rs.3728. What is the profit percentage?','3.87%','8.870000000000001%','-1.13%','7.74%','a','Profit = 139, Profit% = (139/3589)×100 = 3.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.878 is sold for Rs.939. What is the profit percentage?','6.95%','11.95%','1.9500000000000002%','13.9%','a','Profit = 61, Profit% = (61/878)×100 = 6.95%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2865 is sold for Rs.4597. What is the profit percentage?','60.45%','65.45%','55.45%','120.9%','a','Profit = 1732, Profit% = (1732/2865)×100 = 60.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1253 is sold for Rs.3252. What is the profit percentage?','159.54%','164.54%','154.54%','319.08%','a','Profit = 1999, Profit% = (1999/1253)×100 = 159.54%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.863 is sold for Rs.2655. What is the profit percentage?','207.65%','212.65%','202.65%','415.3%','a','Profit = 1792, Profit% = (1792/863)×100 = 207.65%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1854 is sold for Rs.3752. What is the profit percentage?','102.37%','107.37%','97.37%','204.74%','a','Profit = 1898, Profit% = (1898/1854)×100 = 102.37%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4917 is sold for Rs.5615. What is the profit percentage?','14.2%','19.2%','9.2%','28.4%','a','Profit = 698, Profit% = (698/4917)×100 = 14.2%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2317 is sold for Rs.3409. What is the profit percentage?','47.13%','52.13%','42.13%','94.26%','a','Profit = 1092, Profit% = (1092/2317)×100 = 47.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2181 is sold for Rs.3381. What is the profit percentage?','55.02%','60.02%','50.02%','110.04%','a','Profit = 1200, Profit% = (1200/2181)×100 = 55.02%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.371 is sold for Rs.1423. What is the profit percentage?','283.56%','288.56%','278.56%','567.12%','a','Profit = 1052, Profit% = (1052/371)×100 = 283.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3637 is sold for Rs.4961. What is the profit percentage?','36.4%','41.4%','31.4%','72.8%','a','Profit = 1324, Profit% = (1324/3637)×100 = 36.4%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2034 is sold for Rs.3768. What is the profit percentage?','85.25%','90.25%','80.25%','170.5%','a','Profit = 1734, Profit% = (1734/2034)×100 = 85.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2331 is sold for Rs.2497. What is the profit percentage?','7.12%','12.120000000000001%','2.12%','14.24%','a','Profit = 166, Profit% = (166/2331)×100 = 7.12%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2474 is sold for Rs.3988. What is the profit percentage?','61.2%','66.2%','56.2%','122.4%','a','Profit = 1514, Profit% = (1514/2474)×100 = 61.2%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1826 is sold for Rs.3114. What is the profit percentage?','70.54%','75.54%','65.54%','141.08%','a','Profit = 1288, Profit% = (1288/1826)×100 = 70.54%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2551 is sold for Rs.4342. What is the profit percentage?','70.21%','75.21%','65.21%','140.42%','a','Profit = 1791, Profit% = (1791/2551)×100 = 70.21%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3499 is sold for Rs.5145. What is the profit percentage?','47.04%','52.04%','42.04%','94.08%','a','Profit = 1646, Profit% = (1646/3499)×100 = 47.04%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1386 is sold for Rs.2526. What is the profit percentage?','82.25%','87.25%','77.25%','164.5%','a','Profit = 1140, Profit% = (1140/1386)×100 = 82.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1658 is sold for Rs.3541. What is the profit percentage?','113.57%','118.57%','108.57%','227.14%','a','Profit = 1883, Profit% = (1883/1658)×100 = 113.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4438 is sold for Rs.4775. What is the profit percentage?','7.59%','12.59%','2.59%','15.18%','a','Profit = 337, Profit% = (337/4438)×100 = 7.59%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4955 is sold for Rs.6634. What is the profit percentage?','33.88%','38.88%','28.880000000000003%','67.76%','a','Profit = 1679, Profit% = (1679/4955)×100 = 33.88%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.511 is sold for Rs.2326. What is the profit percentage?','355.19%','360.19%','350.19%','710.38%','a','Profit = 1815, Profit% = (1815/511)×100 = 355.19%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1125 is sold for Rs.2202. What is the profit percentage?','95.73%','100.73%','90.73%','191.46%','a','Profit = 1077, Profit% = (1077/1125)×100 = 95.73%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4050 is sold for Rs.4968. What is the profit percentage?','22.67%','27.67%','17.67%','45.34%','a','Profit = 918, Profit% = (918/4050)×100 = 22.67%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.836 is sold for Rs.1216. What is the profit percentage?','45.45%','50.45%','40.45%','90.9%','a','Profit = 380, Profit% = (380/836)×100 = 45.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.929 is sold for Rs.1319. What is the profit percentage?','41.98%','46.98%','36.98%','83.96%','a','Profit = 390, Profit% = (390/929)×100 = 41.98%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.686 is sold for Rs.738. What is the profit percentage?','7.58%','12.58%','2.58%','15.16%','a','Profit = 52, Profit% = (52/686)×100 = 7.58%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3582 is sold for Rs.3840. What is the profit percentage?','7.2%','12.2%','2.2%','14.4%','a','Profit = 258, Profit% = (258/3582)×100 = 7.2%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3875 is sold for Rs.5338. What is the profit percentage?','37.75%','42.75%','32.75%','75.5%','a','Profit = 1463, Profit% = (1463/3875)×100 = 37.75%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.110 is sold for Rs.1222. What is the profit percentage?','1010.91%','1015.91%','1005.91%','2021.82%','a','Profit = 1112, Profit% = (1112/110)×100 = 1010.91%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1836 is sold for Rs.3292. What is the profit percentage?','79.3%','84.3%','74.3%','158.6%','a','Profit = 1456, Profit% = (1456/1836)×100 = 79.3%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.504 is sold for Rs.1355. What is the profit percentage?','168.85%','173.85%','163.85%','337.7%','a','Profit = 851, Profit% = (851/504)×100 = 168.85%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2275 is sold for Rs.3861. What is the profit percentage?','69.71%','74.71%','64.71%','139.42%','a','Profit = 1586, Profit% = (1586/2275)×100 = 69.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1993 is sold for Rs.3817. What is the profit percentage?','91.52%','96.52%','86.52%','183.04%','a','Profit = 1824, Profit% = (1824/1993)×100 = 91.52%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1353 is sold for Rs.2656. What is the profit percentage?','96.3%','101.3%','91.3%','192.6%','a','Profit = 1303, Profit% = (1303/1353)×100 = 96.3%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1131 is sold for Rs.2893. What is the profit percentage?','155.79%','160.79%','150.79%','311.58%','a','Profit = 1762, Profit% = (1762/1131)×100 = 155.79%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4262 is sold for Rs.5735. What is the profit percentage?','34.56%','39.56%','29.560000000000002%','69.12%','a','Profit = 1473, Profit% = (1473/4262)×100 = 34.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3092 is sold for Rs.3683. What is the profit percentage?','19.11%','24.11%','14.11%','38.22%','a','Profit = 591, Profit% = (591/3092)×100 = 19.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2938 is sold for Rs.3848. What is the profit percentage?','30.97%','35.97%','25.97%','61.94%','a','Profit = 910, Profit% = (910/2938)×100 = 30.97%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3413 is sold for Rs.4004. What is the profit percentage?','17.32%','22.32%','12.32%','34.64%','a','Profit = 591, Profit% = (591/3413)×100 = 17.32%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2498 is sold for Rs.3009. What is the profit percentage?','20.46%','25.46%','15.46%','40.92%','a','Profit = 511, Profit% = (511/2498)×100 = 20.46%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1565 is sold for Rs.2577. What is the profit percentage?','64.66%','69.66%','59.66%','129.32%','a','Profit = 1012, Profit% = (1012/1565)×100 = 64.66%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.714 is sold for Rs.1134. What is the profit percentage?','58.82%','63.82%','53.82%','117.64%','a','Profit = 420, Profit% = (420/714)×100 = 58.82%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2808 is sold for Rs.3654. What is the profit percentage?','30.13%','35.129999999999995%','25.13%','60.26%','a','Profit = 846, Profit% = (846/2808)×100 = 30.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1634 is sold for Rs.3264. What is the profit percentage?','99.76%','104.76%','94.76%','199.52%','a','Profit = 1630, Profit% = (1630/1634)×100 = 99.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4506 is sold for Rs.5654. What is the profit percentage?','25.48%','30.48%','20.48%','50.96%','a','Profit = 1148, Profit% = (1148/4506)×100 = 25.48%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.874 is sold for Rs.2700. What is the profit percentage?','208.92%','213.92%','203.92%','417.84%','a','Profit = 1826, Profit% = (1826/874)×100 = 208.92%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3342 is sold for Rs.4218. What is the profit percentage?','26.21%','31.21%','21.21%','52.42%','a','Profit = 876, Profit% = (876/3342)×100 = 26.21%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2922 is sold for Rs.4730. What is the profit percentage?','61.88%','66.88%','56.88%','123.76%','a','Profit = 1808, Profit% = (1808/2922)×100 = 61.88%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.238 is sold for Rs.965. What is the profit percentage?','305.46%','310.46%','300.46%','610.92%','a','Profit = 727, Profit% = (727/238)×100 = 305.46%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4907 is sold for Rs.6021. What is the profit percentage?','22.7%','27.7%','17.7%','45.4%','a','Profit = 1114, Profit% = (1114/4907)×100 = 22.7%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1647 is sold for Rs.2670. What is the profit percentage?','62.11%','67.11%','57.11%','124.22%','a','Profit = 1023, Profit% = (1023/1647)×100 = 62.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3766 is sold for Rs.4265. What is the profit percentage?','13.25%','18.25%','8.25%','26.5%','a','Profit = 499, Profit% = (499/3766)×100 = 13.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4785 is sold for Rs.6410. What is the profit percentage?','33.96%','38.96%','28.96%','67.92%','a','Profit = 1625, Profit% = (1625/4785)×100 = 33.96%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.498 is sold for Rs.2215. What is the profit percentage?','344.78%','349.78%','339.78%','689.56%','a','Profit = 1717, Profit% = (1717/498)×100 = 344.78%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4196 is sold for Rs.4844. What is the profit percentage?','15.44%','20.439999999999998%','10.44%','30.88%','a','Profit = 648, Profit% = (648/4196)×100 = 15.44%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.524 is sold for Rs.1564. What is the profit percentage?','198.47%','203.47%','193.47%','396.94%','a','Profit = 1040, Profit% = (1040/524)×100 = 198.47%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4551 is sold for Rs.6498. What is the profit percentage?','42.78%','47.78%','37.78%','85.56%','a','Profit = 1947, Profit% = (1947/4551)×100 = 42.78%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3439 is sold for Rs.4157. What is the profit percentage?','20.88%','25.88%','15.879999999999999%','41.76%','a','Profit = 718, Profit% = (718/3439)×100 = 20.88%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4878 is sold for Rs.6820. What is the profit percentage?','39.81%','44.81%','34.81%','79.62%','a','Profit = 1942, Profit% = (1942/4878)×100 = 39.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4820 is sold for Rs.6110. What is the profit percentage?','26.76%','31.76%','21.76%','53.52%','a','Profit = 1290, Profit% = (1290/4820)×100 = 26.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2591 is sold for Rs.3693. What is the profit percentage?','42.53%','47.53%','37.53%','85.06%','a','Profit = 1102, Profit% = (1102/2591)×100 = 42.53%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2920 is sold for Rs.3305. What is the profit percentage?','13.18%','18.18%','8.18%','26.36%','a','Profit = 385, Profit% = (385/2920)×100 = 13.18%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4167 is sold for Rs.4692. What is the profit percentage?','12.6%','17.6%','7.6%','25.2%','a','Profit = 525, Profit% = (525/4167)×100 = 12.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.491 is sold for Rs.728. What is the profit percentage?','48.27%','53.27%','43.27%','96.54%','a','Profit = 237, Profit% = (237/491)×100 = 48.27%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2875 is sold for Rs.3126. What is the profit percentage?','8.73%','13.73%','3.7300000000000004%','17.46%','a','Profit = 251, Profit% = (251/2875)×100 = 8.73%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2950 is sold for Rs.4937. What is the profit percentage?','67.36%','72.36%','62.36%','134.72%','a','Profit = 1987, Profit% = (1987/2950)×100 = 67.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4339 is sold for Rs.4484. What is the profit percentage?','3.34%','8.34%','-1.6600000000000001%','6.68%','a','Profit = 145, Profit% = (145/4339)×100 = 3.34%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.501 is sold for Rs.929. What is the profit percentage?','85.43%','90.43%','80.43%','170.86%','a','Profit = 428, Profit% = (428/501)×100 = 85.43%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2498 is sold for Rs.3970. What is the profit percentage?','58.93%','63.93%','53.93%','117.86%','a','Profit = 1472, Profit% = (1472/2498)×100 = 58.93%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2219 is sold for Rs.3509. What is the profit percentage?','58.13%','63.13%','53.13%','116.26%','a','Profit = 1290, Profit% = (1290/2219)×100 = 58.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3690 is sold for Rs.5327. What is the profit percentage?','44.36%','49.36%','39.36%','88.72%','a','Profit = 1637, Profit% = (1637/3690)×100 = 44.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.444 is sold for Rs.1086. What is the profit percentage?','144.59%','149.59%','139.59%','289.18%','a','Profit = 642, Profit% = (642/444)×100 = 144.59%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4995 is sold for Rs.6381. What is the profit percentage?','27.75%','32.75%','22.75%','55.5%','a','Profit = 1386, Profit% = (1386/4995)×100 = 27.75%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3149 is sold for Rs.4223. What is the profit percentage?','34.11%','39.11%','29.11%','68.22%','a','Profit = 1074, Profit% = (1074/3149)×100 = 34.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3200 is sold for Rs.3888. What is the profit percentage?','21.5%','26.5%','16.5%','43.0%','a','Profit = 688, Profit% = (688/3200)×100 = 21.5%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1127 is sold for Rs.2138. What is the profit percentage?','89.71%','94.71%','84.71%','179.42%','a','Profit = 1011, Profit% = (1011/1127)×100 = 89.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4500 is sold for Rs.4900. What is the profit percentage?','8.89%','13.89%','3.8900000000000006%','17.78%','a','Profit = 400, Profit% = (400/4500)×100 = 8.89%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2472 is sold for Rs.3065. What is the profit percentage?','23.99%','28.99%','18.99%','47.98%','a','Profit = 593, Profit% = (593/2472)×100 = 23.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1429 is sold for Rs.1967. What is the profit percentage?','37.65%','42.65%','32.65%','75.3%','a','Profit = 538, Profit% = (538/1429)×100 = 37.65%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.705 is sold for Rs.2415. What is the profit percentage?','242.55%','247.55%','237.55%','485.1%','a','Profit = 1710, Profit% = (1710/705)×100 = 242.55%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3370 is sold for Rs.3861. What is the profit percentage?','14.57%','19.57%','9.57%','29.14%','a','Profit = 491, Profit% = (491/3370)×100 = 14.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.450 is sold for Rs.1186. What is the profit percentage?','163.56%','168.56%','158.56%','327.12%','a','Profit = 736, Profit% = (736/450)×100 = 163.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4732 is sold for Rs.6006. What is the profit percentage?','26.92%','31.92%','21.92%','53.84%','a','Profit = 1274, Profit% = (1274/4732)×100 = 26.92%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2725 is sold for Rs.3566. What is the profit percentage?','30.86%','35.86%','25.86%','61.72%','a','Profit = 841, Profit% = (841/2725)×100 = 30.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3100 is sold for Rs.4819. What is the profit percentage?','55.45%','60.45%','50.45%','110.9%','a','Profit = 1719, Profit% = (1719/3100)×100 = 55.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.329 is sold for Rs.1742. What is the profit percentage?','429.48%','434.48%','424.48%','858.96%','a','Profit = 1413, Profit% = (1413/329)×100 = 429.48%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3272 is sold for Rs.4652. What is the profit percentage?','42.18%','47.18%','37.18%','84.36%','a','Profit = 1380, Profit% = (1380/3272)×100 = 42.18%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3604 is sold for Rs.3710. What is the profit percentage?','2.94%','7.9399999999999995%','-2.06%','5.88%','a','Profit = 106, Profit% = (106/3604)×100 = 2.94%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4427 is sold for Rs.5938. What is the profit percentage?','34.13%','39.13%','29.130000000000003%','68.26%','a','Profit = 1511, Profit% = (1511/4427)×100 = 34.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3603 is sold for Rs.4471. What is the profit percentage?','24.09%','29.09%','19.09%','48.18%','a','Profit = 868, Profit% = (868/3603)×100 = 24.09%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2708 is sold for Rs.3460. What is the profit percentage?','27.77%','32.769999999999996%','22.77%','55.54%','a','Profit = 752, Profit% = (752/2708)×100 = 27.77%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1386 is sold for Rs.3217. What is the profit percentage?','132.11%','137.11%','127.11000000000001%','264.22%','a','Profit = 1831, Profit% = (1831/1386)×100 = 132.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3915 is sold for Rs.4172. What is the profit percentage?','6.56%','11.559999999999999%','1.5599999999999996%','13.12%','a','Profit = 257, Profit% = (257/3915)×100 = 6.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4270 is sold for Rs.4318. What is the profit percentage?','1.12%','6.12%','-3.88%','2.24%','a','Profit = 48, Profit% = (48/4270)×100 = 1.12%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4302 is sold for Rs.4531. What is the profit percentage?','5.32%','10.32%','0.3200000000000003%','10.64%','a','Profit = 229, Profit% = (229/4302)×100 = 5.32%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3559 is sold for Rs.4300. What is the profit percentage?','20.82%','25.82%','15.82%','41.64%','a','Profit = 741, Profit% = (741/3559)×100 = 20.82%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1376 is sold for Rs.2276. What is the profit percentage?','65.41%','70.41%','60.41%','130.82%','a','Profit = 900, Profit% = (900/1376)×100 = 65.41%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1129 is sold for Rs.2120. What is the profit percentage?','87.78%','92.78%','82.78%','175.56%','a','Profit = 991, Profit% = (991/1129)×100 = 87.78%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2125 is sold for Rs.2213. What is the profit percentage?','4.14%','9.14%','-0.8600000000000003%','8.28%','a','Profit = 88, Profit% = (88/2125)×100 = 4.14%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.838 is sold for Rs.2100. What is the profit percentage?','150.6%','155.6%','145.6%','301.2%','a','Profit = 1262, Profit% = (1262/838)×100 = 150.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1992 is sold for Rs.2674. What is the profit percentage?','34.24%','39.24%','29.240000000000002%','68.48%','a','Profit = 682, Profit% = (682/1992)×100 = 34.24%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3062 is sold for Rs.4482. What is the profit percentage?','46.37%','51.37%','41.37%','92.74%','a','Profit = 1420, Profit% = (1420/3062)×100 = 46.37%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.388 is sold for Rs.1607. What is the profit percentage?','314.18%','319.18%','309.18%','628.36%','a','Profit = 1219, Profit% = (1219/388)×100 = 314.18%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3093 is sold for Rs.4015. What is the profit percentage?','29.81%','34.81%','24.81%','59.62%','a','Profit = 922, Profit% = (922/3093)×100 = 29.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1224 is sold for Rs.3087. What is the profit percentage?','152.21%','157.21%','147.21%','304.42%','a','Profit = 1863, Profit% = (1863/1224)×100 = 152.21%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4629 is sold for Rs.5030. What is the profit percentage?','8.66%','13.66%','3.66%','17.32%','a','Profit = 401, Profit% = (401/4629)×100 = 8.66%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.300 is sold for Rs.1150. What is the profit percentage?','283.33%','288.33%','278.33%','566.66%','a','Profit = 850, Profit% = (850/300)×100 = 283.33%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2113 is sold for Rs.4086. What is the profit percentage?','93.37%','98.37%','88.37%','186.74%','a','Profit = 1973, Profit% = (1973/2113)×100 = 93.37%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2307 is sold for Rs.3411. What is the profit percentage?','47.85%','52.85%','42.85%','95.7%','a','Profit = 1104, Profit% = (1104/2307)×100 = 47.85%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1686 is sold for Rs.2628. What is the profit percentage?','55.87%','60.87%','50.87%','111.74%','a','Profit = 942, Profit% = (942/1686)×100 = 55.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.894 is sold for Rs.2791. What is the profit percentage?','212.19%','217.19%','207.19%','424.38%','a','Profit = 1897, Profit% = (1897/894)×100 = 212.19%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1325 is sold for Rs.2315. What is the profit percentage?','74.72%','79.72%','69.72%','149.44%','a','Profit = 990, Profit% = (990/1325)×100 = 74.72%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4043 is sold for Rs.5227. What is the profit percentage?','29.29%','34.29%','24.29%','58.58%','a','Profit = 1184, Profit% = (1184/4043)×100 = 29.29%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4485 is sold for Rs.5721. What is the profit percentage?','27.56%','32.56%','22.56%','55.12%','a','Profit = 1236, Profit% = (1236/4485)×100 = 27.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4001 is sold for Rs.4664. What is the profit percentage?','16.57%','21.57%','11.57%','33.14%','a','Profit = 663, Profit% = (663/4001)×100 = 16.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2290 is sold for Rs.3807. What is the profit percentage?','66.24%','71.24%','61.239999999999995%','132.48%','a','Profit = 1517, Profit% = (1517/2290)×100 = 66.24%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3363 is sold for Rs.5035. What is the profit percentage?','49.72%','54.72%','44.72%','99.44%','a','Profit = 1672, Profit% = (1672/3363)×100 = 49.72%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1550 is sold for Rs.2591. What is the profit percentage?','67.16%','72.16%','62.16%','134.32%','a','Profit = 1041, Profit% = (1041/1550)×100 = 67.16%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.928 is sold for Rs.2820. What is the profit percentage?','203.88%','208.88%','198.88%','407.76%','a','Profit = 1892, Profit% = (1892/928)×100 = 203.88%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3084 is sold for Rs.3316. What is the profit percentage?','7.52%','12.52%','2.5199999999999996%','15.04%','a','Profit = 232, Profit% = (232/3084)×100 = 7.52%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3421 is sold for Rs.3588. What is the profit percentage?','4.88%','9.879999999999999%','-0.1200000000000001%','9.76%','a','Profit = 167, Profit% = (167/3421)×100 = 4.88%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3828 is sold for Rs.5273. What is the profit percentage?','37.75%','42.75%','32.75%','75.5%','a','Profit = 1445, Profit% = (1445/3828)×100 = 37.75%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.255 is sold for Rs.1791. What is the profit percentage?','602.35%','607.35%','597.35%','1204.7%','a','Profit = 1536, Profit% = (1536/255)×100 = 602.35%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4796 is sold for Rs.5711. What is the profit percentage?','19.08%','24.08%','14.079999999999998%','38.16%','a','Profit = 915, Profit% = (915/4796)×100 = 19.08%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1178 is sold for Rs.1236. What is the profit percentage?','4.92%','9.92%','-0.08000000000000007%','9.84%','a','Profit = 58, Profit% = (58/1178)×100 = 4.92%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1841 is sold for Rs.2257. What is the profit percentage?','22.6%','27.6%','17.6%','45.2%','a','Profit = 416, Profit% = (416/1841)×100 = 22.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.211 is sold for Rs.1438. What is the profit percentage?','581.52%','586.52%','576.52%','1163.04%','a','Profit = 1227, Profit% = (1227/211)×100 = 581.52%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3006 is sold for Rs.3177. What is the profit percentage?','5.69%','10.690000000000001%','0.6900000000000004%','11.38%','a','Profit = 171, Profit% = (171/3006)×100 = 5.69%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3524 is sold for Rs.5253. What is the profit percentage?','49.06%','54.06%','44.06%','98.12%','a','Profit = 1729, Profit% = (1729/3524)×100 = 49.06%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3617 is sold for Rs.5615. What is the profit percentage?','55.24%','60.24%','50.24%','110.48%','a','Profit = 1998, Profit% = (1998/3617)×100 = 55.24%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2114 is sold for Rs.2216. What is the profit percentage?','4.82%','9.82%','-0.17999999999999972%','9.64%','a','Profit = 102, Profit% = (102/2114)×100 = 4.82%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1839 is sold for Rs.2237. What is the profit percentage?','21.64%','26.64%','16.64%','43.28%','a','Profit = 398, Profit% = (398/1839)×100 = 21.64%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2400 is sold for Rs.2919. What is the profit percentage?','21.62%','26.62%','16.62%','43.24%','a','Profit = 519, Profit% = (519/2400)×100 = 21.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1283 is sold for Rs.1551. What is the profit percentage?','20.89%','25.89%','15.89%','41.78%','a','Profit = 268, Profit% = (268/1283)×100 = 20.89%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.137 is sold for Rs.1196. What is the profit percentage?','772.99%','777.99%','767.99%','1545.98%','a','Profit = 1059, Profit% = (1059/137)×100 = 772.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4620 is sold for Rs.5445. What is the profit percentage?','17.86%','22.86%','12.86%','35.72%','a','Profit = 825, Profit% = (825/4620)×100 = 17.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3150 is sold for Rs.4786. What is the profit percentage?','51.94%','56.94%','46.94%','103.88%','a','Profit = 1636, Profit% = (1636/3150)×100 = 51.94%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1699 is sold for Rs.3002. What is the profit percentage?','76.69%','81.69%','71.69%','153.38%','a','Profit = 1303, Profit% = (1303/1699)×100 = 76.69%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1753 is sold for Rs.3654. What is the profit percentage?','108.44%','113.44%','103.44%','216.88%','a','Profit = 1901, Profit% = (1901/1753)×100 = 108.44%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4643 is sold for Rs.4426. What is the loss percentage?','4.67%','9.67%','-0.33000000000000007%','9.34%','a','Loss = 217, Loss% = (217/4643)×100 = 4.67%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3853 is sold for Rs.2454. What is the loss percentage?','36.31%','41.31%','31.310000000000002%','72.62%','a','Loss = 1399, Loss% = (1399/3853)×100 = 36.31%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3053 is sold for Rs.2413. What is the loss percentage?','20.96%','25.96%','15.96%','41.92%','a','Loss = 640, Loss% = (640/3053)×100 = 20.96%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2330 is sold for Rs.1216. What is the loss percentage?','47.81%','52.81%','42.81%','95.62%','a','Loss = 1114, Loss% = (1114/2330)×100 = 47.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4546 is sold for Rs.3186. What is the loss percentage?','29.92%','34.92%','24.92%','59.84%','a','Loss = 1360, Loss% = (1360/4546)×100 = 29.92%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1418 is sold for Rs.638. What is the loss percentage?','55.01%','60.01%','50.01%','110.02%','a','Loss = 780, Loss% = (780/1418)×100 = 55.01%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4152 is sold for Rs.3541. What is the loss percentage?','14.72%','19.72%','9.72%','29.44%','a','Loss = 611, Loss% = (611/4152)×100 = 14.72%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2682 is sold for Rs.921. What is the loss percentage?','65.66%','70.66%','60.66%','131.32%','a','Loss = 1761, Loss% = (1761/2682)×100 = 65.66%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1896 is sold for Rs.1714. What is the loss percentage?','9.6%','14.6%','4.6%','19.2%','a','Loss = 182, Loss% = (182/1896)×100 = 9.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3158 is sold for Rs.1516. What is the loss percentage?','51.99%','56.99%','46.99%','103.98%','a','Loss = 1642, Loss% = (1642/3158)×100 = 51.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1130 is sold for Rs.448. What is the loss percentage?','60.35%','65.35%','55.35%','120.7%','a','Loss = 682, Loss% = (682/1130)×100 = 60.35%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1362 is sold for Rs.376. What is the loss percentage?','72.39%','77.39%','67.39%','144.78%','a','Loss = 986, Loss% = (986/1362)×100 = 72.39%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2921 is sold for Rs.2529. What is the loss percentage?','13.42%','18.42%','8.42%','26.84%','a','Loss = 392, Loss% = (392/2921)×100 = 13.42%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1171 is sold for Rs.261. What is the loss percentage?','77.71%','82.71%','72.71%','155.42%','a','Loss = 910, Loss% = (910/1171)×100 = 77.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2895 is sold for Rs.2390. What is the loss percentage?','17.44%','22.44%','12.440000000000001%','34.88%','a','Loss = 505, Loss% = (505/2895)×100 = 17.44%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2715 is sold for Rs.2486. What is the loss percentage?','8.43%','13.43%','3.4299999999999997%','16.86%','a','Loss = 229, Loss% = (229/2715)×100 = 8.43%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.399 is sold for Rs.74. What is the loss percentage?','81.45%','86.45%','76.45%','162.9%','a','Loss = 325, Loss% = (325/399)×100 = 81.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3725 is sold for Rs.2388. What is the loss percentage?','35.89%','40.89%','30.89%','71.78%','a','Loss = 1337, Loss% = (1337/3725)×100 = 35.89%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2716 is sold for Rs.2446. What is the loss percentage?','9.94%','14.94%','4.9399999999999995%','19.88%','a','Loss = 270, Loss% = (270/2716)×100 = 9.94%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1519 is sold for Rs.1009. What is the loss percentage?','33.57%','38.57%','28.57%','67.14%','a','Loss = 510, Loss% = (510/1519)×100 = 33.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1398 is sold for Rs.1288. What is the loss percentage?','7.87%','12.870000000000001%','2.87%','15.74%','a','Loss = 110, Loss% = (110/1398)×100 = 7.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1932 is sold for Rs.1804. What is the loss percentage?','6.63%','11.629999999999999%','1.63%','13.26%','a','Loss = 128, Loss% = (128/1932)×100 = 6.63%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2590 is sold for Rs.828. What is the loss percentage?','68.03%','73.03%','63.03%','136.06%','a','Loss = 1762, Loss% = (1762/2590)×100 = 68.03%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2873 is sold for Rs.1451. What is the loss percentage?','49.5%','54.5%','44.5%','99.0%','a','Loss = 1422, Loss% = (1422/2873)×100 = 49.5%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.288 is sold for Rs.171. What is the loss percentage?','40.62%','45.62%','35.62%','81.24%','a','Loss = 117, Loss% = (117/288)×100 = 40.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.383 is sold for Rs.167. What is the loss percentage?','56.4%','61.4%','51.4%','112.8%','a','Loss = 216, Loss% = (216/383)×100 = 56.4%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1398 is sold for Rs.701. What is the loss percentage?','49.86%','54.86%','44.86%','99.72%','a','Loss = 697, Loss% = (697/1398)×100 = 49.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3631 is sold for Rs.3438. What is the loss percentage?','5.32%','10.32%','0.3200000000000003%','10.64%','a','Loss = 193, Loss% = (193/3631)×100 = 5.32%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1113 is sold for Rs.193. What is the loss percentage?','82.66%','87.66%','77.66%','165.32%','a','Loss = 920, Loss% = (920/1113)×100 = 82.66%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2503 is sold for Rs.2160. What is the loss percentage?','13.7%','18.7%','8.7%','27.4%','a','Loss = 343, Loss% = (343/2503)×100 = 13.7%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3649 is sold for Rs.3543. What is the loss percentage?','2.9%','7.9%','-2.1%','5.8%','a','Loss = 106, Loss% = (106/3649)×100 = 2.9%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1476 is sold for Rs.1140. What is the loss percentage?','22.76%','27.76%','17.76%','45.52%','a','Loss = 336, Loss% = (336/1476)×100 = 22.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3810 is sold for Rs.2946. What is the loss percentage?','22.68%','27.68%','17.68%','45.36%','a','Loss = 864, Loss% = (864/3810)×100 = 22.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1855 is sold for Rs.1566. What is the loss percentage?','15.58%','20.58%','10.58%','31.16%','a','Loss = 289, Loss% = (289/1855)×100 = 15.58%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.132 is sold for Rs.122. What is the loss percentage?','7.58%','12.58%','2.58%','15.16%','a','Loss = 10, Loss% = (10/132)×100 = 7.58%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3585 is sold for Rs.2254. What is the loss percentage?','37.13%','42.13%','32.13%','74.26%','a','Loss = 1331, Loss% = (1331/3585)×100 = 37.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2639 is sold for Rs.1010. What is the loss percentage?','61.73%','66.72999999999999%','56.73%','123.46%','a','Loss = 1629, Loss% = (1629/2639)×100 = 61.73%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1629 is sold for Rs.947. What is the loss percentage?','41.87%','46.87%','36.87%','83.74%','a','Loss = 682, Loss% = (682/1629)×100 = 41.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3951 is sold for Rs.3105. What is the loss percentage?','21.41%','26.41%','16.41%','42.82%','a','Loss = 846, Loss% = (846/3951)×100 = 21.41%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3496 is sold for Rs.1517. What is the loss percentage?','56.61%','61.61%','51.61%','113.22%','a','Loss = 1979, Loss% = (1979/3496)×100 = 56.61%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.795 is sold for Rs.537. What is the loss percentage?','32.45%','37.45%','27.450000000000003%','64.9%','a','Loss = 258, Loss% = (258/795)×100 = 32.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3055 is sold for Rs.2626. What is the loss percentage?','14.04%','19.04%','9.04%','28.08%','a','Loss = 429, Loss% = (429/3055)×100 = 14.04%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2347 is sold for Rs.2154. What is the loss percentage?','8.22%','13.22%','3.2200000000000006%','16.44%','a','Loss = 193, Loss% = (193/2347)×100 = 8.22%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3501 is sold for Rs.2573. What is the loss percentage?','26.51%','31.51%','21.51%','53.02%','a','Loss = 928, Loss% = (928/3501)×100 = 26.51%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2474 is sold for Rs.1356. What is the loss percentage?','45.19%','50.19%','40.19%','90.38%','a','Loss = 1118, Loss% = (1118/2474)×100 = 45.19%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3154 is sold for Rs.1299. What is the loss percentage?','58.81%','63.81%','53.81%','117.62%','a','Loss = 1855, Loss% = (1855/3154)×100 = 58.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2941 is sold for Rs.1319. What is the loss percentage?','55.15%','60.15%','50.15%','110.3%','a','Loss = 1622, Loss% = (1622/2941)×100 = 55.15%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4169 is sold for Rs.3374. What is the loss percentage?','19.07%','24.07%','14.07%','38.14%','a','Loss = 795, Loss% = (795/4169)×100 = 19.07%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3928 is sold for Rs.3277. What is the loss percentage?','16.57%','21.57%','11.57%','33.14%','a','Loss = 651, Loss% = (651/3928)×100 = 16.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.849 is sold for Rs.530. What is the loss percentage?','37.57%','42.57%','32.57%','75.14%','a','Loss = 319, Loss% = (319/849)×100 = 37.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4236 is sold for Rs.2691. What is the loss percentage?','36.47%','41.47%','31.47%','72.94%','a','Loss = 1545, Loss% = (1545/4236)×100 = 36.47%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1943 is sold for Rs.974. What is the loss percentage?','49.87%','54.87%','44.87%','99.74%','a','Loss = 969, Loss% = (969/1943)×100 = 49.87%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2679 is sold for Rs.1330. What is the loss percentage?','50.35%','55.35%','45.35%','100.7%','a','Loss = 1349, Loss% = (1349/2679)×100 = 50.35%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1667 is sold for Rs.1448. What is the loss percentage?','13.14%','18.14%','8.14%','26.28%','a','Loss = 219, Loss% = (219/1667)×100 = 13.14%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.288 is sold for Rs.121. What is the loss percentage?','57.99%','62.99%','52.99%','115.98%','a','Loss = 167, Loss% = (167/288)×100 = 57.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3123 is sold for Rs.2897. What is the loss percentage?','7.24%','12.24%','2.24%','14.48%','a','Loss = 226, Loss% = (226/3123)×100 = 7.24%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4609 is sold for Rs.3809. What is the loss percentage?','17.36%','22.36%','12.36%','34.72%','a','Loss = 800, Loss% = (800/4609)×100 = 17.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4019 is sold for Rs.3786. What is the loss percentage?','5.8%','10.8%','0.7999999999999998%','11.6%','a','Loss = 233, Loss% = (233/4019)×100 = 5.8%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2039 is sold for Rs.599. What is the loss percentage?','70.62%','75.62%','65.62%','141.24%','a','Loss = 1440, Loss% = (1440/2039)×100 = 70.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1002 is sold for Rs.895. What is the loss percentage?','10.68%','15.68%','5.68%','21.36%','a','Loss = 107, Loss% = (107/1002)×100 = 10.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3503 is sold for Rs.1903. What is the loss percentage?','45.68%','50.68%','40.68%','91.36%','a','Loss = 1600, Loss% = (1600/3503)×100 = 45.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4089 is sold for Rs.3698. What is the loss percentage?','9.56%','14.56%','4.5600000000000005%','19.12%','a','Loss = 391, Loss% = (391/4089)×100 = 9.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.178 is sold for Rs.124. What is the loss percentage?','30.34%','35.34%','25.34%','60.68%','a','Loss = 54, Loss% = (54/178)×100 = 30.34%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.392 is sold for Rs.29. What is the loss percentage?','92.6%','97.6%','87.6%','185.2%','a','Loss = 363, Loss% = (363/392)×100 = 92.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2357 is sold for Rs.390. What is the loss percentage?','83.45%','88.45%','78.45%','166.9%','a','Loss = 1967, Loss% = (1967/2357)×100 = 83.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2658 is sold for Rs.806. What is the loss percentage?','69.68%','74.68%','64.68%','139.36%','a','Loss = 1852, Loss% = (1852/2658)×100 = 69.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3415 is sold for Rs.2325. What is the loss percentage?','31.92%','36.92%','26.92%','63.84%','a','Loss = 1090, Loss% = (1090/3415)×100 = 31.92%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4893 is sold for Rs.3346. What is the loss percentage?','31.62%','36.620000000000005%','26.62%','63.24%','a','Loss = 1547, Loss% = (1547/4893)×100 = 31.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4043 is sold for Rs.2209. What is the loss percentage?','45.36%','50.36%','40.36%','90.72%','a','Loss = 1834, Loss% = (1834/4043)×100 = 45.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1839 is sold for Rs.19. What is the loss percentage?','98.97%','103.97%','93.97%','197.94%','a','Loss = 1820, Loss% = (1820/1839)×100 = 98.97%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.133 is sold for Rs.92. What is the loss percentage?','30.83%','35.83%','25.83%','61.66%','a','Loss = 41, Loss% = (41/133)×100 = 30.83%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2043 is sold for Rs.781. What is the loss percentage?','61.77%','66.77000000000001%','56.77%','123.54%','a','Loss = 1262, Loss% = (1262/2043)×100 = 61.77%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3228 is sold for Rs.1373. What is the loss percentage?','57.47%','62.47%','52.47%','114.94%','a','Loss = 1855, Loss% = (1855/3228)×100 = 57.47%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2654 is sold for Rs.1743. What is the loss percentage?','34.33%','39.33%','29.33%','68.66%','a','Loss = 911, Loss% = (911/2654)×100 = 34.33%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1379 is sold for Rs.1123. What is the loss percentage?','18.56%','23.56%','13.559999999999999%','37.12%','a','Loss = 256, Loss% = (256/1379)×100 = 18.56%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.190 is sold for Rs.126. What is the loss percentage?','33.68%','38.68%','28.68%','67.36%','a','Loss = 64, Loss% = (64/190)×100 = 33.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1991 is sold for Rs.859. What is the loss percentage?','56.86%','61.86%','51.86%','113.72%','a','Loss = 1132, Loss% = (1132/1991)×100 = 56.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3719 is sold for Rs.2999. What is the loss percentage?','19.36%','24.36%','14.36%','38.72%','a','Loss = 720, Loss% = (720/3719)×100 = 19.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4788 is sold for Rs.4117. What is the loss percentage?','14.01%','19.009999999999998%','9.01%','28.02%','a','Loss = 671, Loss% = (671/4788)×100 = 14.01%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.661 is sold for Rs.235. What is the loss percentage?','64.45%','69.45%','59.45%','128.9%','a','Loss = 426, Loss% = (426/661)×100 = 64.45%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1856 is sold for Rs.379. What is the loss percentage?','79.58%','84.58%','74.58%','159.16%','a','Loss = 1477, Loss% = (1477/1856)×100 = 79.58%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2839 is sold for Rs.2320. What is the loss percentage?','18.28%','23.28%','13.280000000000001%','36.56%','a','Loss = 519, Loss% = (519/2839)×100 = 18.28%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.596 is sold for Rs.256. What is the loss percentage?','57.05%','62.05%','52.05%','114.1%','a','Loss = 340, Loss% = (340/596)×100 = 57.05%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.387 is sold for Rs.110. What is the loss percentage?','71.58%','76.58%','66.58%','143.16%','a','Loss = 277, Loss% = (277/387)×100 = 71.58%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1327 is sold for Rs.498. What is the loss percentage?','62.47%','67.47%','57.47%','124.94%','a','Loss = 829, Loss% = (829/1327)×100 = 62.47%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2208 is sold for Rs.2009. What is the loss percentage?','9.01%','14.01%','4.01%','18.02%','a','Loss = 199, Loss% = (199/2208)×100 = 9.01%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2074 is sold for Rs.1709. What is the loss percentage?','17.6%','22.6%','12.600000000000001%','35.2%','a','Loss = 365, Loss% = (365/2074)×100 = 17.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3295 is sold for Rs.1937. What is the loss percentage?','41.21%','46.21%','36.21%','82.42%','a','Loss = 1358, Loss% = (1358/3295)×100 = 41.21%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.259 is sold for Rs.54. What is the loss percentage?','79.15%','84.15%','74.15%','158.3%','a','Loss = 205, Loss% = (205/259)×100 = 79.15%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3333 is sold for Rs.2325. What is the loss percentage?','30.24%','35.239999999999995%','25.24%','60.48%','a','Loss = 1008, Loss% = (1008/3333)×100 = 30.24%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.525 is sold for Rs.495. What is the loss percentage?','5.71%','10.71%','0.71%','11.42%','a','Loss = 30, Loss% = (30/525)×100 = 5.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.622 is sold for Rs.287. What is the loss percentage?','53.86%','58.86%','48.86%','107.72%','a','Loss = 335, Loss% = (335/622)×100 = 53.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1233 is sold for Rs.702. What is the loss percentage?','43.07%','48.07%','38.07%','86.14%','a','Loss = 531, Loss% = (531/1233)×100 = 43.07%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4385 is sold for Rs.4356. What is the loss percentage?','0.66%','5.66%','-4.34%','1.32%','a','Loss = 29, Loss% = (29/4385)×100 = 0.66%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3310 is sold for Rs.3279. What is the loss percentage?','0.94%','5.9399999999999995%','-4.0600000000000005%','1.88%','a','Loss = 31, Loss% = (31/3310)×100 = 0.94%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4826 is sold for Rs.4787. What is the loss percentage?','0.81%','5.8100000000000005%','-4.1899999999999995%','1.62%','a','Loss = 39, Loss% = (39/4826)×100 = 0.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2979 is sold for Rs.1933. What is the loss percentage?','35.11%','40.11%','30.11%','70.22%','a','Loss = 1046, Loss% = (1046/2979)×100 = 35.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.351 is sold for Rs.74. What is the loss percentage?','78.92%','83.92%','73.92%','157.84%','a','Loss = 277, Loss% = (277/351)×100 = 78.92%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3762 is sold for Rs.3329. What is the loss percentage?','11.51%','16.509999999999998%','6.51%','23.02%','a','Loss = 433, Loss% = (433/3762)×100 = 11.51%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2575 is sold for Rs.2190. What is the loss percentage?','14.95%','19.95%','9.95%','29.9%','a','Loss = 385, Loss% = (385/2575)×100 = 14.95%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2758 is sold for Rs.2119. What is the loss percentage?','23.17%','28.17%','18.17%','46.34%','a','Loss = 639, Loss% = (639/2758)×100 = 23.17%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1968 is sold for Rs.40. What is the loss percentage?','97.97%','102.97%','92.97%','195.94%','a','Loss = 1928, Loss% = (1928/1968)×100 = 97.97%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4049 is sold for Rs.2124. What is the loss percentage?','47.54%','52.54%','42.54%','95.08%','a','Loss = 1925, Loss% = (1925/4049)×100 = 47.54%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3042 is sold for Rs.2803. What is the loss percentage?','7.86%','12.86%','2.8600000000000003%','15.72%','a','Loss = 239, Loss% = (239/3042)×100 = 7.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1056 is sold for Rs.848. What is the loss percentage?','19.7%','24.7%','14.7%','39.4%','a','Loss = 208, Loss% = (208/1056)×100 = 19.7%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3445 is sold for Rs.2709. What is the loss percentage?','21.36%','26.36%','16.36%','42.72%','a','Loss = 736, Loss% = (736/3445)×100 = 21.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2036 is sold for Rs.2011. What is the loss percentage?','1.23%','6.23%','-3.77%','2.46%','a','Loss = 25, Loss% = (25/2036)×100 = 1.23%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.122 is sold for Rs.30. What is the loss percentage?','75.41%','80.41%','70.41%','150.82%','a','Loss = 92, Loss% = (92/122)×100 = 75.41%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.939 is sold for Rs.615. What is the loss percentage?','34.5%','39.5%','29.5%','69.0%','a','Loss = 324, Loss% = (324/939)×100 = 34.5%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1331 is sold for Rs.638. What is the loss percentage?','52.07%','57.07%','47.07%','104.14%','a','Loss = 693, Loss% = (693/1331)×100 = 52.07%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1239 is sold for Rs.89. What is the loss percentage?','92.82%','97.82%','87.82%','185.64%','a','Loss = 1150, Loss% = (1150/1239)×100 = 92.82%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.657 is sold for Rs.387. What is the loss percentage?','41.1%','46.1%','36.1%','82.2%','a','Loss = 270, Loss% = (270/657)×100 = 41.1%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2752 is sold for Rs.2477. What is the loss percentage?','9.99%','14.99%','4.99%','19.98%','a','Loss = 275, Loss% = (275/2752)×100 = 9.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3002 is sold for Rs.2017. What is the loss percentage?','32.81%','37.81%','27.810000000000002%','65.62%','a','Loss = 985, Loss% = (985/3002)×100 = 32.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3201 is sold for Rs.1513. What is the loss percentage?','52.73%','57.73%','47.73%','105.46%','a','Loss = 1688, Loss% = (1688/3201)×100 = 52.73%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.119 is sold for Rs.32. What is the loss percentage?','73.11%','78.11%','68.11%','146.22%','a','Loss = 87, Loss% = (87/119)×100 = 73.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2161 is sold for Rs.1399. What is the loss percentage?','35.26%','40.26%','30.259999999999998%','70.52%','a','Loss = 762, Loss% = (762/2161)×100 = 35.26%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1924 is sold for Rs.402. What is the loss percentage?','79.11%','84.11%','74.11%','158.22%','a','Loss = 1522, Loss% = (1522/1924)×100 = 79.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1266 is sold for Rs.1020. What is the loss percentage?','19.43%','24.43%','14.43%','38.86%','a','Loss = 246, Loss% = (246/1266)×100 = 19.43%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1624 is sold for Rs.638. What is the loss percentage?','60.71%','65.71000000000001%','55.71%','121.42%','a','Loss = 986, Loss% = (986/1624)×100 = 60.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3929 is sold for Rs.2060. What is the loss percentage?','47.57%','52.57%','42.57%','95.14%','a','Loss = 1869, Loss% = (1869/3929)×100 = 47.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.120 is sold for Rs.103. What is the loss percentage?','14.17%','19.17%','9.17%','28.34%','a','Loss = 17, Loss% = (17/120)×100 = 14.17%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1688 is sold for Rs.165. What is the loss percentage?','90.23%','95.23%','85.23%','180.46%','a','Loss = 1523, Loss% = (1523/1688)×100 = 90.23%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3366 is sold for Rs.2014. What is the loss percentage?','40.17%','45.17%','35.17%','80.34%','a','Loss = 1352, Loss% = (1352/3366)×100 = 40.17%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2238 is sold for Rs.2181. What is the loss percentage?','2.55%','7.55%','-2.45%','5.1%','a','Loss = 57, Loss% = (57/2238)×100 = 2.55%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1935 is sold for Rs.1675. What is the loss percentage?','13.44%','18.439999999999998%','8.44%','26.88%','a','Loss = 260, Loss% = (260/1935)×100 = 13.44%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2183 is sold for Rs.1886. What is the loss percentage?','13.61%','18.61%','8.61%','27.22%','a','Loss = 297, Loss% = (297/2183)×100 = 13.61%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1301 is sold for Rs.941. What is the loss percentage?','27.67%','32.67%','22.67%','55.34%','a','Loss = 360, Loss% = (360/1301)×100 = 27.67%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3294 is sold for Rs.2223. What is the loss percentage?','32.51%','37.51%','27.509999999999998%','65.02%','a','Loss = 1071, Loss% = (1071/3294)×100 = 32.51%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1627 is sold for Rs.537. What is the loss percentage?','66.99%','71.99%','61.989999999999995%','133.98%','a','Loss = 1090, Loss% = (1090/1627)×100 = 66.99%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3026 is sold for Rs.1077. What is the loss percentage?','64.41%','69.41%','59.41%','128.82%','a','Loss = 1949, Loss% = (1949/3026)×100 = 64.41%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2108 is sold for Rs.1016. What is the loss percentage?','51.8%','56.8%','46.8%','103.6%','a','Loss = 1092, Loss% = (1092/2108)×100 = 51.8%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2827 is sold for Rs.1012. What is the loss percentage?','64.2%','69.2%','59.2%','128.4%','a','Loss = 1815, Loss% = (1815/2827)×100 = 64.2%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.925 is sold for Rs.326. What is the loss percentage?','64.76%','69.76%','59.760000000000005%','129.52%','a','Loss = 599, Loss% = (599/925)×100 = 64.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4399 is sold for Rs.4110. What is the loss percentage?','6.57%','11.57%','1.5700000000000003%','13.14%','a','Loss = 289, Loss% = (289/4399)×100 = 6.57%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4681 is sold for Rs.3274. What is the loss percentage?','30.06%','35.06%','25.06%','60.12%','a','Loss = 1407, Loss% = (1407/4681)×100 = 30.06%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1723 is sold for Rs.1236. What is the loss percentage?','28.26%','33.260000000000005%','23.26%','56.52%','a','Loss = 487, Loss% = (487/1723)×100 = 28.26%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4464 is sold for Rs.4285. What is the loss percentage?','4.01%','9.01%','-0.9900000000000002%','8.02%','a','Loss = 179, Loss% = (179/4464)×100 = 4.01%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4967 is sold for Rs.3862. What is the loss percentage?','22.25%','27.25%','17.25%','44.5%','a','Loss = 1105, Loss% = (1105/4967)×100 = 22.25%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.645 is sold for Rs.97. What is the loss percentage?','84.96%','89.96%','79.96%','169.92%','a','Loss = 548, Loss% = (548/645)×100 = 84.96%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4019 is sold for Rs.3183. What is the loss percentage?','20.8%','25.8%','15.8%','41.6%','a','Loss = 836, Loss% = (836/4019)×100 = 20.8%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3387 is sold for Rs.3162. What is the loss percentage?','6.64%','11.64%','1.6399999999999997%','13.28%','a','Loss = 225, Loss% = (225/3387)×100 = 6.64%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1155 is sold for Rs.865. What is the loss percentage?','25.11%','30.11%','20.11%','50.22%','a','Loss = 290, Loss% = (290/1155)×100 = 25.11%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1422 is sold for Rs.1406. What is the loss percentage?','1.13%','6.13%','-3.87%','2.26%','a','Loss = 16, Loss% = (16/1422)×100 = 1.13%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4048 is sold for Rs.2830. What is the loss percentage?','30.09%','35.09%','25.09%','60.18%','a','Loss = 1218, Loss% = (1218/4048)×100 = 30.09%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4163 is sold for Rs.3118. What is the loss percentage?','25.1%','30.1%','20.1%','50.2%','a','Loss = 1045, Loss% = (1045/4163)×100 = 25.1%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1144 is sold for Rs.1071. What is the loss percentage?','6.38%','11.379999999999999%','1.38%','12.76%','a','Loss = 73, Loss% = (73/1144)×100 = 6.38%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2148 is sold for Rs.1115. What is the loss percentage?','48.09%','53.09%','43.09%','96.18%','a','Loss = 1033, Loss% = (1033/2148)×100 = 48.09%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3909 is sold for Rs.2373. What is the loss percentage?','39.29%','44.29%','34.29%','78.58%','a','Loss = 1536, Loss% = (1536/3909)×100 = 39.29%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1387 is sold for Rs.1304. What is the loss percentage?','5.98%','10.98%','0.9800000000000004%','11.96%','a','Loss = 83, Loss% = (83/1387)×100 = 5.98%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.989 is sold for Rs.260. What is the loss percentage?','73.71%','78.71%','68.71%','147.42%','a','Loss = 729, Loss% = (729/989)×100 = 73.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.829 is sold for Rs.509. What is the loss percentage?','38.6%','43.6%','33.6%','77.2%','a','Loss = 320, Loss% = (320/829)×100 = 38.6%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3644 is sold for Rs.3493. What is the loss percentage?','4.14%','9.14%','-0.8600000000000003%','8.28%','a','Loss = 151, Loss% = (151/3644)×100 = 4.14%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3236 is sold for Rs.1974. What is the loss percentage?','39.0%','44.0%','34.0%','78.0%','a','Loss = 1262, Loss% = (1262/3236)×100 = 39.0%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3599 is sold for Rs.2490. What is the loss percentage?','30.81%','35.81%','25.81%','61.62%','a','Loss = 1109, Loss% = (1109/3599)×100 = 30.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4710 is sold for Rs.3296. What is the loss percentage?','30.02%','35.019999999999996%','25.02%','60.04%','a','Loss = 1414, Loss% = (1414/4710)×100 = 30.02%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3262 is sold for Rs.1894. What is the loss percentage?','41.94%','46.94%','36.94%','83.88%','a','Loss = 1368, Loss% = (1368/3262)×100 = 41.94%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.590 is sold for Rs.144. What is the loss percentage?','75.59%','80.59%','70.59%','151.18%','a','Loss = 446, Loss% = (446/590)×100 = 75.59%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2537 is sold for Rs.2496. What is the loss percentage?','1.62%','6.62%','-3.38%','3.24%','a','Loss = 41, Loss% = (41/2537)×100 = 1.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1911 is sold for Rs.807. What is the loss percentage?','57.77%','62.77%','52.77%','115.54%','a','Loss = 1104, Loss% = (1104/1911)×100 = 57.77%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4455 is sold for Rs.3913. What is the loss percentage?','12.17%','17.17%','7.17%','24.34%','a','Loss = 542, Loss% = (542/4455)×100 = 12.17%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.815 is sold for Rs.471. What is the loss percentage?','42.21%','47.21%','37.21%','84.42%','a','Loss = 344, Loss% = (344/815)×100 = 42.21%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.511 is sold for Rs.129. What is the loss percentage?','74.76%','79.76%','69.76%','149.52%','a','Loss = 382, Loss% = (382/511)×100 = 74.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3798 is sold for Rs.3632. What is the loss percentage?','4.37%','9.370000000000001%','-0.6299999999999999%','8.74%','a','Loss = 166, Loss% = (166/3798)×100 = 4.37%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1022 is sold for Rs.520. What is the loss percentage?','49.12%','54.12%','44.12%','98.24%','a','Loss = 502, Loss% = (502/1022)×100 = 49.12%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2293 is sold for Rs.2072. What is the loss percentage?','9.64%','14.64%','4.640000000000001%','19.28%','a','Loss = 221, Loss% = (221/2293)×100 = 9.64%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.403 is sold for Rs.329. What is the loss percentage?','18.36%','23.36%','13.36%','36.72%','a','Loss = 74, Loss% = (74/403)×100 = 18.36%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1258 is sold for Rs.505. What is the loss percentage?','59.86%','64.86%','54.86%','119.72%','a','Loss = 753, Loss% = (753/1258)×100 = 59.86%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2740 is sold for Rs.2428. What is the loss percentage?','11.39%','16.39%','6.390000000000001%','22.78%','a','Loss = 312, Loss% = (312/2740)×100 = 11.39%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.208 is sold for Rs.43. What is the loss percentage?','79.33%','84.33%','74.33%','158.66%','a','Loss = 165, Loss% = (165/208)×100 = 79.33%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.289 is sold for Rs.183. What is the loss percentage?','36.68%','41.68%','31.68%','73.36%','a','Loss = 106, Loss% = (106/289)×100 = 36.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3157 is sold for Rs.1166. What is the loss percentage?','63.07%','68.07%','58.07%','126.14%','a','Loss = 1991, Loss% = (1991/3157)×100 = 63.07%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1807 is sold for Rs.1310. What is the loss percentage?','27.5%','32.5%','22.5%','55.0%','a','Loss = 497, Loss% = (497/1807)×100 = 27.5%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1759 is sold for Rs.1516. What is the loss percentage?','13.81%','18.810000000000002%','8.81%','27.62%','a','Loss = 243, Loss% = (243/1759)×100 = 13.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1155 is sold for Rs.880. What is the loss percentage?','23.81%','28.81%','18.81%','47.62%','a','Loss = 275, Loss% = (275/1155)×100 = 23.81%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.456 is sold for Rs.103. What is the loss percentage?','77.41%','82.41%','72.41%','154.82%','a','Loss = 353, Loss% = (353/456)×100 = 77.41%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.916 is sold for Rs.195. What is the loss percentage?','78.71%','83.71%','73.71%','157.42%','a','Loss = 721, Loss% = (721/916)×100 = 78.71%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2797 is sold for Rs.1984. What is the loss percentage?','29.07%','34.07%','24.07%','58.14%','a','Loss = 813, Loss% = (813/2797)×100 = 29.07%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.815 is sold for Rs.272. What is the loss percentage?','66.63%','71.63%','61.629999999999995%','133.26%','a','Loss = 543, Loss% = (543/815)×100 = 66.63%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1533 is sold for Rs.486. What is the loss percentage?','68.3%','73.3%','63.3%','136.6%','a','Loss = 1047, Loss% = (1047/1533)×100 = 68.3%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4314 is sold for Rs.3938. What is the loss percentage?','8.72%','13.72%','3.7200000000000006%','17.44%','a','Loss = 376, Loss% = (376/4314)×100 = 8.72%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4311 is sold for Rs.3249. What is the loss percentage?','24.63%','29.63%','19.63%','49.26%','a','Loss = 1062, Loss% = (1062/4311)×100 = 24.63%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4953 is sold for Rs.4770. What is the loss percentage?','3.69%','8.69%','-1.31%','7.38%','a','Loss = 183, Loss% = (183/4953)×100 = 3.69%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4001 is sold for Rs.2073. What is the loss percentage?','48.19%','53.19%','43.19%','96.38%','a','Loss = 1928, Loss% = (1928/4001)×100 = 48.19%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1224 is sold for Rs.720. What is the loss percentage?','41.18%','46.18%','36.18%','82.36%','a','Loss = 504, Loss% = (504/1224)×100 = 41.18%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3969 is sold for Rs.2546. What is the loss percentage?','35.85%','40.85%','30.85%','71.7%','a','Loss = 1423, Loss% = (1423/3969)×100 = 35.85%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4164 is sold for Rs.3855. What is the loss percentage?','7.42%','12.42%','2.42%','14.84%','a','Loss = 309, Loss% = (309/4164)×100 = 7.42%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.201 is sold for Rs.111. What is the loss percentage?','44.78%','49.78%','39.78%','89.56%','a','Loss = 90, Loss% = (90/201)×100 = 44.78%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3886 is sold for Rs.2377. What is the loss percentage?','38.83%','43.83%','33.83%','77.66%','a','Loss = 1509, Loss% = (1509/3886)×100 = 38.83%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1858 is sold for Rs.1535. What is the loss percentage?','17.38%','22.38%','12.379999999999999%','34.76%','a','Loss = 323, Loss% = (323/1858)×100 = 17.38%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1537 is sold for Rs.434. What is the loss percentage?','71.76%','76.76%','66.76%','143.52%','a','Loss = 1103, Loss% = (1103/1537)×100 = 71.76%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.4053 is sold for Rs.2515. What is the loss percentage?','37.95%','42.95%','32.95%','75.9%','a','Loss = 1538, Loss% = (1538/4053)×100 = 37.95%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1462 is sold for Rs.224. What is the loss percentage?','84.68%','89.68%','79.68%','169.36%','a','Loss = 1238, Loss% = (1238/1462)×100 = 84.68%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2429 is sold for Rs.1946. What is the loss percentage?','19.88%','24.88%','14.879999999999999%','39.76%','a','Loss = 483, Loss% = (483/2429)×100 = 19.88%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3730 is sold for Rs.2140. What is the loss percentage?','42.63%','47.63%','37.63%','85.26%','a','Loss = 1590, Loss% = (1590/3730)×100 = 42.63%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3743 is sold for Rs.3083. What is the loss percentage?','17.63%','22.63%','12.629999999999999%','35.26%','a','Loss = 660, Loss% = (660/3743)×100 = 17.63%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.2484 is sold for Rs.1619. What is the loss percentage?','34.82%','39.82%','29.82%','69.64%','a','Loss = 865, Loss% = (865/2484)×100 = 34.82%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.3294 is sold for Rs.1645. What is the loss percentage?','50.06%','55.06%','45.06%','100.12%','a','Loss = 1649, Loss% = (1649/3294)×100 = 50.06%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.364 is sold for Rs.181. What is the loss percentage?','50.27%','55.27%','45.27%','100.54%','a','Loss = 183, Loss% = (183/364)×100 = 50.27%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A product bought for Rs.1063 is sold for Rs.695. What is the loss percentage?','34.62%','39.62%','29.619999999999997%','69.24%','a','Loss = 368, Loss% = (368/1063)×100 = 34.62%','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.36372 at 9% per annum for 2 years?','Rs.6546.96','Rs.6646.96','Rs.6446.96','Rs.13093.92','a','SI = P×R×T/100 = 36372×9×2/100 = 6546.96','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19421 at 3% per annum for 4 years?','Rs.2330.52','Rs.2430.52','Rs.2230.52','Rs.4661.04','a','SI = P×R×T/100 = 19421×3×4/100 = 2330.52','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.12129 at 6% per annum for 2 years?','Rs.1455.48','Rs.1555.48','Rs.1355.48','Rs.2910.96','a','SI = P×R×T/100 = 12129×6×2/100 = 1455.48','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.1454 at 6% per annum for 15 years?','Rs.1308.6','Rs.1408.6','Rs.1208.6','Rs.2617.2','a','SI = P×R×T/100 = 1454×6×15/100 = 1308.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.6998 at 7% per annum for 2 years?','Rs.979.72','Rs.1079.72','Rs.879.72','Rs.1959.44','a','SI = P×R×T/100 = 6998×7×2/100 = 979.72','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15526 at 5% per annum for 2 years?','Rs.1552.6','Rs.1652.6','Rs.1452.6','Rs.3105.2','a','SI = P×R×T/100 = 15526×5×2/100 = 1552.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.25426 at 5% per annum for 20 years?','Rs.25426.0','Rs.25526.0','Rs.25326.0','Rs.50852.0','a','SI = P×R×T/100 = 25426×5×20/100 = 25426.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.9858 at 3% per annum for 1 years?','Rs.295.74','Rs.395.74','Rs.195.74','Rs.591.48','a','SI = P×R×T/100 = 9858×3×1/100 = 295.74','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31479 at 7% per annum for 1 years?','Rs.2203.53','Rs.2303.53','Rs.2103.53','Rs.4407.06','a','SI = P×R×T/100 = 31479×7×1/100 = 2203.53','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.29378 at 3% per annum for 4 years?','Rs.3525.36','Rs.3625.36','Rs.3425.36','Rs.7050.72','a','SI = P×R×T/100 = 29378×3×4/100 = 3525.36','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19970 at 6% per annum for 10 years?','Rs.11982.0','Rs.12082.0','Rs.11882.0','Rs.23964.0','a','SI = P×R×T/100 = 19970×6×10/100 = 11982.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.13272 at 9% per annum for 15 years?','Rs.17917.2','Rs.18017.2','Rs.17817.2','Rs.35834.4','a','SI = P×R×T/100 = 13272×9×15/100 = 17917.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.7925 at 3% per annum for 10 years?','Rs.2377.5','Rs.2477.5','Rs.2277.5','Rs.4755.0','a','SI = P×R×T/100 = 7925×3×10/100 = 2377.5','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31932 at 4% per annum for 4 years?','Rs.5109.12','Rs.5209.12','Rs.5009.12','Rs.10218.24','a','SI = P×R×T/100 = 31932×4×4/100 = 5109.12','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.39051 at 9% per annum for 3 years?','Rs.10543.77','Rs.10643.77','Rs.10443.77','Rs.21087.54','a','SI = P×R×T/100 = 39051×9×3/100 = 10543.77','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.7663 at 3% per annum for 4 years?','Rs.919.56','Rs.1019.56','Rs.819.56','Rs.1839.12','a','SI = P×R×T/100 = 7663×3×4/100 = 919.56','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.14879 at 3% per annum for 20 years?','Rs.8927.4','Rs.9027.4','Rs.8827.4','Rs.17854.8','a','SI = P×R×T/100 = 14879×3×20/100 = 8927.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11685 at 12% per annum for 5 years?','Rs.7011.0','Rs.7111.0','Rs.6911.0','Rs.14022.0','a','SI = P×R×T/100 = 11685×12×5/100 = 7011.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11800 at 3% per annum for 5 years?','Rs.1770.0','Rs.1870.0','Rs.1670.0','Rs.3540.0','a','SI = P×R×T/100 = 11800×3×5/100 = 1770.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.32100 at 6% per annum for 4 years?','Rs.7704.0','Rs.7804.0','Rs.7604.0','Rs.15408.0','a','SI = P×R×T/100 = 32100×6×4/100 = 7704.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.10936 at 6% per annum for 5 years?','Rs.3280.8','Rs.3380.8','Rs.3180.8','Rs.6561.6','a','SI = P×R×T/100 = 10936×6×5/100 = 3280.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11671 at 6% per annum for 1 years?','Rs.700.26','Rs.800.26','Rs.600.26','Rs.1400.52','a','SI = P×R×T/100 = 11671×6×1/100 = 700.26','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.27386 at 8% per annum for 3 years?','Rs.6572.64','Rs.6672.64','Rs.6472.64','Rs.13145.28','a','SI = P×R×T/100 = 27386×8×3/100 = 6572.64','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.44502 at 10% per annum for 1 years?','Rs.4450.2','Rs.4550.2','Rs.4350.2','Rs.8900.4','a','SI = P×R×T/100 = 44502×10×1/100 = 4450.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.9304 at 15% per annum for 15 years?','Rs.20934.0','Rs.21034.0','Rs.20834.0','Rs.41868.0','a','SI = P×R×T/100 = 9304×15×15/100 = 20934.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.34749 at 3% per annum for 3 years?','Rs.3127.41','Rs.3227.41','Rs.3027.41','Rs.6254.82','a','SI = P×R×T/100 = 34749×3×3/100 = 3127.41','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.34476 at 9% per annum for 20 years?','Rs.62056.8','Rs.62156.8','Rs.61956.8','Rs.124113.6','a','SI = P×R×T/100 = 34476×9×20/100 = 62056.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.12068 at 9% per annum for 10 years?','Rs.10861.2','Rs.10961.2','Rs.10761.2','Rs.21722.4','a','SI = P×R×T/100 = 12068×9×10/100 = 10861.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.9310 at 10% per annum for 4 years?','Rs.3724.0','Rs.3824.0','Rs.3624.0','Rs.7448.0','a','SI = P×R×T/100 = 9310×10×4/100 = 3724.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.46845 at 15% per annum for 4 years?','Rs.28107.0','Rs.28207.0','Rs.28007.0','Rs.56214.0','a','SI = P×R×T/100 = 46845×15×4/100 = 28107.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.30566 at 12% per annum for 3 years?','Rs.11003.76','Rs.11103.76','Rs.10903.76','Rs.22007.52','a','SI = P×R×T/100 = 30566×12×3/100 = 11003.76','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.46980 at 4% per annum for 10 years?','Rs.18792.0','Rs.18892.0','Rs.18692.0','Rs.37584.0','a','SI = P×R×T/100 = 46980×4×10/100 = 18792.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15266 at 12% per annum for 20 years?','Rs.36638.4','Rs.36738.4','Rs.36538.4','Rs.73276.8','a','SI = P×R×T/100 = 15266×12×20/100 = 36638.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31304 at 3% per annum for 1 years?','Rs.939.12','Rs.1039.12','Rs.839.12','Rs.1878.24','a','SI = P×R×T/100 = 31304×3×1/100 = 939.12','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.14998 at 9% per annum for 4 years?','Rs.5399.28','Rs.5499.28','Rs.5299.28','Rs.10798.56','a','SI = P×R×T/100 = 14998×9×4/100 = 5399.28','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19825 at 4% per annum for 1 years?','Rs.793.0','Rs.893.0','Rs.693.0','Rs.1586.0','a','SI = P×R×T/100 = 19825×4×1/100 = 793.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.41742 at 3% per annum for 2 years?','Rs.2504.52','Rs.2604.52','Rs.2404.52','Rs.5009.04','a','SI = P×R×T/100 = 41742×3×2/100 = 2504.52','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.45547 at 3% per annum for 15 years?','Rs.20496.15','Rs.20596.15','Rs.20396.15','Rs.40992.3','a','SI = P×R×T/100 = 45547×3×15/100 = 20496.15','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.16203 at 9% per annum for 2 years?','Rs.2916.54','Rs.3016.54','Rs.2816.54','Rs.5833.08','a','SI = P×R×T/100 = 16203×9×2/100 = 2916.54','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.6348 at 10% per annum for 2 years?','Rs.1269.6','Rs.1369.6','Rs.1169.6','Rs.2539.2','a','SI = P×R×T/100 = 6348×10×2/100 = 1269.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.3182 at 15% per annum for 4 years?','Rs.1909.2','Rs.2009.2','Rs.1809.2','Rs.3818.4','a','SI = P×R×T/100 = 3182×15×4/100 = 1909.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.1199 at 8% per annum for 1 years?','Rs.95.92','Rs.195.92000000000002','Rs.-4.079999999999998','Rs.191.84','a','SI = P×R×T/100 = 1199×8×1/100 = 95.92','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.47139 at 12% per annum for 20 years?','Rs.113133.6','Rs.113233.6','Rs.113033.6','Rs.226267.2','a','SI = P×R×T/100 = 47139×12×20/100 = 113133.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.8527 at 3% per annum for 10 years?','Rs.2558.1','Rs.2658.1','Rs.2458.1','Rs.5116.2','a','SI = P×R×T/100 = 8527×3×10/100 = 2558.1','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.21267 at 7% per annum for 4 years?','Rs.5954.76','Rs.6054.76','Rs.5854.76','Rs.11909.52','a','SI = P×R×T/100 = 21267×7×4/100 = 5954.76','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.47670 at 7% per annum for 20 years?','Rs.66738.0','Rs.66838.0','Rs.66638.0','Rs.133476.0','a','SI = P×R×T/100 = 47670×7×20/100 = 66738.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.8249 at 8% per annum for 10 years?','Rs.6599.2','Rs.6699.2','Rs.6499.2','Rs.13198.4','a','SI = P×R×T/100 = 8249×8×10/100 = 6599.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.10604 at 12% per annum for 1 years?','Rs.1272.48','Rs.1372.48','Rs.1172.48','Rs.2544.96','a','SI = P×R×T/100 = 10604×12×1/100 = 1272.48','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.39672 at 5% per annum for 5 years?','Rs.9918.0','Rs.10018.0','Rs.9818.0','Rs.19836.0','a','SI = P×R×T/100 = 39672×5×5/100 = 9918.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11401 at 7% per annum for 4 years?','Rs.3192.28','Rs.3292.28','Rs.3092.28','Rs.6384.56','a','SI = P×R×T/100 = 11401×7×4/100 = 3192.28','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.47017 at 6% per annum for 2 years?','Rs.5642.04','Rs.5742.04','Rs.5542.04','Rs.11284.08','a','SI = P×R×T/100 = 47017×6×2/100 = 5642.04','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11769 at 15% per annum for 5 years?','Rs.8826.75','Rs.8926.75','Rs.8726.75','Rs.17653.5','a','SI = P×R×T/100 = 11769×15×5/100 = 8826.75','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.40018 at 9% per annum for 3 years?','Rs.10804.86','Rs.10904.86','Rs.10704.86','Rs.21609.72','a','SI = P×R×T/100 = 40018×9×3/100 = 10804.86','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.7416 at 8% per annum for 10 years?','Rs.5932.8','Rs.6032.8','Rs.5832.8','Rs.11865.6','a','SI = P×R×T/100 = 7416×8×10/100 = 5932.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.23002 at 12% per annum for 20 years?','Rs.55204.8','Rs.55304.8','Rs.55104.8','Rs.110409.6','a','SI = P×R×T/100 = 23002×12×20/100 = 55204.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.46901 at 6% per annum for 2 years?','Rs.5628.12','Rs.5728.12','Rs.5528.12','Rs.11256.24','a','SI = P×R×T/100 = 46901×6×2/100 = 5628.12','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.27106 at 10% per annum for 5 years?','Rs.13553.0','Rs.13653.0','Rs.13453.0','Rs.27106.0','a','SI = P×R×T/100 = 27106×10×5/100 = 13553.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.2498 at 3% per annum for 1 years?','Rs.74.94','Rs.174.94','Rs.-25.060000000000002','Rs.149.88','a','SI = P×R×T/100 = 2498×3×1/100 = 74.94','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.4659 at 7% per annum for 10 years?','Rs.3261.3','Rs.3361.3','Rs.3161.3','Rs.6522.6','a','SI = P×R×T/100 = 4659×7×10/100 = 3261.3','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.3632 at 15% per annum for 5 years?','Rs.2724.0','Rs.2824.0','Rs.2624.0','Rs.5448.0','a','SI = P×R×T/100 = 3632×15×5/100 = 2724.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.35507 at 3% per annum for 10 years?','Rs.10652.1','Rs.10752.1','Rs.10552.1','Rs.21304.2','a','SI = P×R×T/100 = 35507×3×10/100 = 10652.1','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.17111 at 6% per annum for 20 years?','Rs.20533.2','Rs.20633.2','Rs.20433.2','Rs.41066.4','a','SI = P×R×T/100 = 17111×6×20/100 = 20533.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.35213 at 12% per annum for 2 years?','Rs.8451.12','Rs.8551.12','Rs.8351.12','Rs.16902.24','a','SI = P×R×T/100 = 35213×12×2/100 = 8451.12','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.40179 at 8% per annum for 3 years?','Rs.9642.96','Rs.9742.96','Rs.9542.96','Rs.19285.92','a','SI = P×R×T/100 = 40179×8×3/100 = 9642.96','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11220 at 12% per annum for 15 years?','Rs.20196.0','Rs.20296.0','Rs.20096.0','Rs.40392.0','a','SI = P×R×T/100 = 11220×12×15/100 = 20196.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19704 at 5% per annum for 5 years?','Rs.4926.0','Rs.5026.0','Rs.4826.0','Rs.9852.0','a','SI = P×R×T/100 = 19704×5×5/100 = 4926.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.16239 at 9% per annum for 2 years?','Rs.2923.02','Rs.3023.02','Rs.2823.02','Rs.5846.04','a','SI = P×R×T/100 = 16239×9×2/100 = 2923.02','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.10600 at 10% per annum for 15 years?','Rs.15900.0','Rs.16000.0','Rs.15800.0','Rs.31800.0','a','SI = P×R×T/100 = 10600×10×15/100 = 15900.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.17850 at 10% per annum for 4 years?','Rs.7140.0','Rs.7240.0','Rs.7040.0','Rs.14280.0','a','SI = P×R×T/100 = 17850×10×4/100 = 7140.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.36726 at 6% per annum for 1 years?','Rs.2203.56','Rs.2303.56','Rs.2103.56','Rs.4407.12','a','SI = P×R×T/100 = 36726×6×1/100 = 2203.56','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.34262 at 3% per annum for 2 years?','Rs.2055.72','Rs.2155.72','Rs.1955.7199999999998','Rs.4111.44','a','SI = P×R×T/100 = 34262×3×2/100 = 2055.72','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.48720 at 6% per annum for 10 years?','Rs.29232.0','Rs.29332.0','Rs.29132.0','Rs.58464.0','a','SI = P×R×T/100 = 48720×6×10/100 = 29232.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42212 at 12% per annum for 4 years?','Rs.20261.76','Rs.20361.76','Rs.20161.76','Rs.40523.52','a','SI = P×R×T/100 = 42212×12×4/100 = 20261.76','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.22440 at 9% per annum for 5 years?','Rs.10098.0','Rs.10198.0','Rs.9998.0','Rs.20196.0','a','SI = P×R×T/100 = 22440×9×5/100 = 10098.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.21789 at 7% per annum for 2 years?','Rs.3050.46','Rs.3150.46','Rs.2950.46','Rs.6100.92','a','SI = P×R×T/100 = 21789×7×2/100 = 3050.46','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.25768 at 10% per annum for 5 years?','Rs.12884.0','Rs.12984.0','Rs.12784.0','Rs.25768.0','a','SI = P×R×T/100 = 25768×10×5/100 = 12884.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.46506 at 8% per annum for 10 years?','Rs.37204.8','Rs.37304.8','Rs.37104.8','Rs.74409.6','a','SI = P×R×T/100 = 46506×8×10/100 = 37204.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.48918 at 8% per annum for 3 years?','Rs.11740.32','Rs.11840.32','Rs.11640.32','Rs.23480.64','a','SI = P×R×T/100 = 48918×8×3/100 = 11740.32','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.39465 at 12% per annum for 4 years?','Rs.18943.2','Rs.19043.2','Rs.18843.2','Rs.37886.4','a','SI = P×R×T/100 = 39465×12×4/100 = 18943.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.28227 at 5% per annum for 3 years?','Rs.4234.05','Rs.4334.05','Rs.4134.05','Rs.8468.1','a','SI = P×R×T/100 = 28227×5×3/100 = 4234.05','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.40531 at 4% per annum for 3 years?','Rs.4863.72','Rs.4963.72','Rs.4763.72','Rs.9727.44','a','SI = P×R×T/100 = 40531×4×3/100 = 4863.72','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.5050 at 7% per annum for 1 years?','Rs.353.5','Rs.453.5','Rs.253.5','Rs.707.0','a','SI = P×R×T/100 = 5050×7×1/100 = 353.5','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42768 at 5% per annum for 3 years?','Rs.6415.2','Rs.6515.2','Rs.6315.2','Rs.12830.4','a','SI = P×R×T/100 = 42768×5×3/100 = 6415.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11007 at 9% per annum for 10 years?','Rs.9906.3','Rs.10006.3','Rs.9806.3','Rs.19812.6','a','SI = P×R×T/100 = 11007×9×10/100 = 9906.3','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.1537 at 9% per annum for 20 years?','Rs.2766.6','Rs.2866.6','Rs.2666.6','Rs.5533.2','a','SI = P×R×T/100 = 1537×9×20/100 = 2766.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.4173 at 12% per annum for 15 years?','Rs.7511.4','Rs.7611.4','Rs.7411.4','Rs.15022.8','a','SI = P×R×T/100 = 4173×12×15/100 = 7511.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.36346 at 15% per annum for 10 years?','Rs.54519.0','Rs.54619.0','Rs.54419.0','Rs.109038.0','a','SI = P×R×T/100 = 36346×15×10/100 = 54519.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31651 at 6% per annum for 4 years?','Rs.7596.24','Rs.7696.24','Rs.7496.24','Rs.15192.48','a','SI = P×R×T/100 = 31651×6×4/100 = 7596.24','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.49944 at 15% per annum for 3 years?','Rs.22474.8','Rs.22574.8','Rs.22374.8','Rs.44949.6','a','SI = P×R×T/100 = 49944×15×3/100 = 22474.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15483 at 15% per annum for 2 years?','Rs.4644.9','Rs.4744.9','Rs.4544.9','Rs.9289.8','a','SI = P×R×T/100 = 15483×15×2/100 = 4644.9','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.26516 at 10% per annum for 2 years?','Rs.5303.2','Rs.5403.2','Rs.5203.2','Rs.10606.4','a','SI = P×R×T/100 = 26516×10×2/100 = 5303.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.18361 at 10% per annum for 4 years?','Rs.7344.4','Rs.7444.4','Rs.7244.4','Rs.14688.8','a','SI = P×R×T/100 = 18361×10×4/100 = 7344.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.32256 at 5% per annum for 20 years?','Rs.32256.0','Rs.32356.0','Rs.32156.0','Rs.64512.0','a','SI = P×R×T/100 = 32256×5×20/100 = 32256.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.33587 at 15% per annum for 15 years?','Rs.75570.75','Rs.75670.75','Rs.75470.75','Rs.151141.5','a','SI = P×R×T/100 = 33587×15×15/100 = 75570.75','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.36143 at 9% per annum for 5 years?','Rs.16264.35','Rs.16364.35','Rs.16164.35','Rs.32528.7','a','SI = P×R×T/100 = 36143×9×5/100 = 16264.35','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.45366 at 3% per annum for 20 years?','Rs.27219.6','Rs.27319.6','Rs.27119.6','Rs.54439.2','a','SI = P×R×T/100 = 45366×3×20/100 = 27219.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.23215 at 15% per annum for 15 years?','Rs.52233.75','Rs.52333.75','Rs.52133.75','Rs.104467.5','a','SI = P×R×T/100 = 23215×15×15/100 = 52233.75','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.23774 at 9% per annum for 10 years?','Rs.21396.6','Rs.21496.6','Rs.21296.6','Rs.42793.2','a','SI = P×R×T/100 = 23774×9×10/100 = 21396.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42322 at 8% per annum for 1 years?','Rs.3385.76','Rs.3485.76','Rs.3285.76','Rs.6771.52','a','SI = P×R×T/100 = 42322×8×1/100 = 3385.76','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11417 at 10% per annum for 3 years?','Rs.3425.1','Rs.3525.1','Rs.3325.1','Rs.6850.2','a','SI = P×R×T/100 = 11417×10×3/100 = 3425.1','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.30506 at 7% per annum for 5 years?','Rs.10677.1','Rs.10777.1','Rs.10577.1','Rs.21354.2','a','SI = P×R×T/100 = 30506×7×5/100 = 10677.1','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.26902 at 9% per annum for 5 years?','Rs.12105.9','Rs.12205.9','Rs.12005.9','Rs.24211.8','a','SI = P×R×T/100 = 26902×9×5/100 = 12105.9','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.13163 at 7% per annum for 1 years?','Rs.921.41','Rs.1021.41','Rs.821.41','Rs.1842.82','a','SI = P×R×T/100 = 13163×7×1/100 = 921.41','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.36311 at 12% per annum for 2 years?','Rs.8714.64','Rs.8814.64','Rs.8614.64','Rs.17429.28','a','SI = P×R×T/100 = 36311×12×2/100 = 8714.64','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.5777 at 15% per annum for 15 years?','Rs.12998.25','Rs.13098.25','Rs.12898.25','Rs.25996.5','a','SI = P×R×T/100 = 5777×15×15/100 = 12998.25','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.38992 at 9% per annum for 5 years?','Rs.17546.4','Rs.17646.4','Rs.17446.4','Rs.35092.8','a','SI = P×R×T/100 = 38992×9×5/100 = 17546.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.21808 at 7% per annum for 1 years?','Rs.1526.56','Rs.1626.56','Rs.1426.56','Rs.3053.12','a','SI = P×R×T/100 = 21808×7×1/100 = 1526.56','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.13554 at 10% per annum for 3 years?','Rs.4066.2','Rs.4166.2','Rs.3966.2','Rs.8132.4','a','SI = P×R×T/100 = 13554×10×3/100 = 4066.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15459 at 12% per annum for 1 years?','Rs.1855.08','Rs.1955.08','Rs.1755.08','Rs.3710.16','a','SI = P×R×T/100 = 15459×12×1/100 = 1855.08','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.33688 at 6% per annum for 15 years?','Rs.30319.2','Rs.30419.2','Rs.30219.2','Rs.60638.4','a','SI = P×R×T/100 = 33688×6×15/100 = 30319.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.40153 at 9% per annum for 2 years?','Rs.7227.54','Rs.7327.54','Rs.7127.54','Rs.14455.08','a','SI = P×R×T/100 = 40153×9×2/100 = 7227.54','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.29078 at 9% per annum for 1 years?','Rs.2617.02','Rs.2717.02','Rs.2517.02','Rs.5234.04','a','SI = P×R×T/100 = 29078×9×1/100 = 2617.02','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.17989 at 10% per annum for 1 years?','Rs.1798.9','Rs.1898.9','Rs.1698.9','Rs.3597.8','a','SI = P×R×T/100 = 17989×10×1/100 = 1798.9','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.18449 at 12% per annum for 2 years?','Rs.4427.76','Rs.4527.76','Rs.4327.76','Rs.8855.52','a','SI = P×R×T/100 = 18449×12×2/100 = 4427.76','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.10367 at 5% per annum for 5 years?','Rs.2591.75','Rs.2691.75','Rs.2491.75','Rs.5183.5','a','SI = P×R×T/100 = 10367×5×5/100 = 2591.75','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.9433 at 10% per annum for 20 years?','Rs.18866.0','Rs.18966.0','Rs.18766.0','Rs.37732.0','a','SI = P×R×T/100 = 9433×10×20/100 = 18866.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42613 at 9% per annum for 10 years?','Rs.38351.7','Rs.38451.7','Rs.38251.7','Rs.76703.4','a','SI = P×R×T/100 = 42613×9×10/100 = 38351.7','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.47396 at 8% per annum for 3 years?','Rs.11375.04','Rs.11475.04','Rs.11275.04','Rs.22750.08','a','SI = P×R×T/100 = 47396×8×3/100 = 11375.04','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.24402 at 4% per annum for 5 years?','Rs.4880.4','Rs.4980.4','Rs.4780.4','Rs.9760.8','a','SI = P×R×T/100 = 24402×4×5/100 = 4880.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15109 at 7% per annum for 1 years?','Rs.1057.63','Rs.1157.63','Rs.957.6300000000001','Rs.2115.26','a','SI = P×R×T/100 = 15109×7×1/100 = 1057.63','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.30392 at 12% per annum for 1 years?','Rs.3647.04','Rs.3747.04','Rs.3547.04','Rs.7294.08','a','SI = P×R×T/100 = 30392×12×1/100 = 3647.04','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19528 at 8% per annum for 3 years?','Rs.4686.72','Rs.4786.72','Rs.4586.72','Rs.9373.44','a','SI = P×R×T/100 = 19528×8×3/100 = 4686.72','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.13720 at 12% per annum for 20 years?','Rs.32928.0','Rs.33028.0','Rs.32828.0','Rs.65856.0','a','SI = P×R×T/100 = 13720×12×20/100 = 32928.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.4982 at 9% per annum for 15 years?','Rs.6725.7','Rs.6825.7','Rs.6625.7','Rs.13451.4','a','SI = P×R×T/100 = 4982×9×15/100 = 6725.7','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42849 at 8% per annum for 20 years?','Rs.68558.4','Rs.68658.4','Rs.68458.4','Rs.137116.8','a','SI = P×R×T/100 = 42849×8×20/100 = 68558.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.6916 at 12% per annum for 15 years?','Rs.12448.8','Rs.12548.8','Rs.12348.8','Rs.24897.6','a','SI = P×R×T/100 = 6916×12×15/100 = 12448.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.7110 at 7% per annum for 20 years?','Rs.9954.0','Rs.10054.0','Rs.9854.0','Rs.19908.0','a','SI = P×R×T/100 = 7110×7×20/100 = 9954.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.25000 at 8% per annum for 10 years?','Rs.20000.0','Rs.20100.0','Rs.19900.0','Rs.40000.0','a','SI = P×R×T/100 = 25000×8×10/100 = 20000.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15061 at 6% per annum for 5 years?','Rs.4518.3','Rs.4618.3','Rs.4418.3','Rs.9036.6','a','SI = P×R×T/100 = 15061×6×5/100 = 4518.3','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.21769 at 12% per annum for 3 years?','Rs.7836.84','Rs.7936.84','Rs.7736.84','Rs.15673.68','a','SI = P×R×T/100 = 21769×12×3/100 = 7836.84','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.24386 at 15% per annum for 5 years?','Rs.18289.5','Rs.18389.5','Rs.18189.5','Rs.36579.0','a','SI = P×R×T/100 = 24386×15×5/100 = 18289.5','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42076 at 5% per annum for 3 years?','Rs.6311.4','Rs.6411.4','Rs.6211.4','Rs.12622.8','a','SI = P×R×T/100 = 42076×5×3/100 = 6311.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.22523 at 10% per annum for 2 years?','Rs.4504.6','Rs.4604.6','Rs.4404.6','Rs.9009.2','a','SI = P×R×T/100 = 22523×10×2/100 = 4504.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.17391 at 12% per annum for 20 years?','Rs.41738.4','Rs.41838.4','Rs.41638.4','Rs.83476.8','a','SI = P×R×T/100 = 17391×12×20/100 = 41738.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.9556 at 3% per annum for 3 years?','Rs.860.04','Rs.960.04','Rs.760.04','Rs.1720.08','a','SI = P×R×T/100 = 9556×3×3/100 = 860.04','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.44260 at 4% per annum for 4 years?','Rs.7081.6','Rs.7181.6','Rs.6981.6','Rs.14163.2','a','SI = P×R×T/100 = 44260×4×4/100 = 7081.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.49159 at 7% per annum for 5 years?','Rs.17205.65','Rs.17305.65','Rs.17105.65','Rs.34411.3','a','SI = P×R×T/100 = 49159×7×5/100 = 17205.65','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.16819 at 7% per annum for 5 years?','Rs.5886.65','Rs.5986.65','Rs.5786.65','Rs.11773.3','a','SI = P×R×T/100 = 16819×7×5/100 = 5886.65','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.33359 at 6% per annum for 3 years?','Rs.6004.62','Rs.6104.62','Rs.5904.62','Rs.12009.24','a','SI = P×R×T/100 = 33359×6×3/100 = 6004.62','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.23323 at 7% per annum for 5 years?','Rs.8163.05','Rs.8263.05','Rs.8063.05','Rs.16326.1','a','SI = P×R×T/100 = 23323×7×5/100 = 8163.05','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.8847 at 3% per annum for 20 years?','Rs.5308.2','Rs.5408.2','Rs.5208.2','Rs.10616.4','a','SI = P×R×T/100 = 8847×3×20/100 = 5308.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.35123 at 10% per annum for 10 years?','Rs.35123.0','Rs.35223.0','Rs.35023.0','Rs.70246.0','a','SI = P×R×T/100 = 35123×10×10/100 = 35123.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.37914 at 6% per annum for 1 years?','Rs.2274.84','Rs.2374.84','Rs.2174.84','Rs.4549.68','a','SI = P×R×T/100 = 37914×6×1/100 = 2274.84','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.10087 at 6% per annum for 2 years?','Rs.1210.44','Rs.1310.44','Rs.1110.44','Rs.2420.88','a','SI = P×R×T/100 = 10087×6×2/100 = 1210.44','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.1469 at 3% per annum for 15 years?','Rs.661.05','Rs.761.05','Rs.561.05','Rs.1322.1','a','SI = P×R×T/100 = 1469×3×15/100 = 661.05','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.25405 at 12% per annum for 3 years?','Rs.9145.8','Rs.9245.8','Rs.9045.8','Rs.18291.6','a','SI = P×R×T/100 = 25405×12×3/100 = 9145.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.13590 at 4% per annum for 10 years?','Rs.5436.0','Rs.5536.0','Rs.5336.0','Rs.10872.0','a','SI = P×R×T/100 = 13590×4×10/100 = 5436.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.37771 at 4% per annum for 4 years?','Rs.6043.36','Rs.6143.36','Rs.5943.36','Rs.12086.72','a','SI = P×R×T/100 = 37771×4×4/100 = 6043.36','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19401 at 5% per annum for 2 years?','Rs.1940.1','Rs.2040.1','Rs.1840.1','Rs.3880.2','a','SI = P×R×T/100 = 19401×5×2/100 = 1940.1','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31458 at 6% per annum for 4 years?','Rs.7549.92','Rs.7649.92','Rs.7449.92','Rs.15099.84','a','SI = P×R×T/100 = 31458×6×4/100 = 7549.92','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.40151 at 5% per annum for 4 years?','Rs.8030.2','Rs.8130.2','Rs.7930.2','Rs.16060.4','a','SI = P×R×T/100 = 40151×5×4/100 = 8030.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.27206 at 9% per annum for 2 years?','Rs.4897.08','Rs.4997.08','Rs.4797.08','Rs.9794.16','a','SI = P×R×T/100 = 27206×9×2/100 = 4897.08','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.30368 at 6% per annum for 1 years?','Rs.1822.08','Rs.1922.08','Rs.1722.08','Rs.3644.16','a','SI = P×R×T/100 = 30368×6×1/100 = 1822.08','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.45712 at 15% per annum for 20 years?','Rs.137136.0','Rs.137236.0','Rs.137036.0','Rs.274272.0','a','SI = P×R×T/100 = 45712×15×20/100 = 137136.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.29665 at 8% per annum for 20 years?','Rs.47464.0','Rs.47564.0','Rs.47364.0','Rs.94928.0','a','SI = P×R×T/100 = 29665×8×20/100 = 47464.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.6970 at 8% per annum for 3 years?','Rs.1672.8','Rs.1772.8','Rs.1572.8','Rs.3345.6','a','SI = P×R×T/100 = 6970×8×3/100 = 1672.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.8572 at 12% per annum for 15 years?','Rs.15429.6','Rs.15529.6','Rs.15329.6','Rs.30859.2','a','SI = P×R×T/100 = 8572×12×15/100 = 15429.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.41142 at 15% per annum for 1 years?','Rs.6171.3','Rs.6271.3','Rs.6071.3','Rs.12342.6','a','SI = P×R×T/100 = 41142×15×1/100 = 6171.3','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31464 at 5% per annum for 5 years?','Rs.7866.0','Rs.7966.0','Rs.7766.0','Rs.15732.0','a','SI = P×R×T/100 = 31464×5×5/100 = 7866.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.40919 at 12% per annum for 10 years?','Rs.49102.8','Rs.49202.8','Rs.49002.8','Rs.98205.6','a','SI = P×R×T/100 = 40919×12×10/100 = 49102.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.11636 at 3% per annum for 1 years?','Rs.349.08','Rs.449.08','Rs.249.07999999999998','Rs.698.16','a','SI = P×R×T/100 = 11636×3×1/100 = 349.08','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.33860 at 15% per annum for 10 years?','Rs.50790.0','Rs.50890.0','Rs.50690.0','Rs.101580.0','a','SI = P×R×T/100 = 33860×15×10/100 = 50790.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.43351 at 3% per annum for 4 years?','Rs.5202.12','Rs.5302.12','Rs.5102.12','Rs.10404.24','a','SI = P×R×T/100 = 43351×3×4/100 = 5202.12','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15244 at 8% per annum for 15 years?','Rs.18292.8','Rs.18392.8','Rs.18192.8','Rs.36585.6','a','SI = P×R×T/100 = 15244×8×15/100 = 18292.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.14545 at 10% per annum for 4 years?','Rs.5818.0','Rs.5918.0','Rs.5718.0','Rs.11636.0','a','SI = P×R×T/100 = 14545×10×4/100 = 5818.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.8926 at 7% per annum for 15 years?','Rs.9372.3','Rs.9472.3','Rs.9272.3','Rs.18744.6','a','SI = P×R×T/100 = 8926×7×15/100 = 9372.3','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.41216 at 5% per annum for 3 years?','Rs.6182.4','Rs.6282.4','Rs.6082.4','Rs.12364.8','a','SI = P×R×T/100 = 41216×5×3/100 = 6182.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.4463 at 5% per annum for 3 years?','Rs.669.45','Rs.769.45','Rs.569.45','Rs.1338.9','a','SI = P×R×T/100 = 4463×5×3/100 = 669.45','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.34990 at 9% per annum for 10 years?','Rs.31491.0','Rs.31591.0','Rs.31391.0','Rs.62982.0','a','SI = P×R×T/100 = 34990×9×10/100 = 31491.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.20821 at 5% per annum for 15 years?','Rs.15615.75','Rs.15715.75','Rs.15515.75','Rs.31231.5','a','SI = P×R×T/100 = 20821×5×15/100 = 15615.75','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.23679 at 9% per annum for 2 years?','Rs.4262.22','Rs.4362.22','Rs.4162.22','Rs.8524.44','a','SI = P×R×T/100 = 23679×9×2/100 = 4262.22','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.24518 at 10% per annum for 5 years?','Rs.12259.0','Rs.12359.0','Rs.12159.0','Rs.24518.0','a','SI = P×R×T/100 = 24518×10×5/100 = 12259.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.23731 at 6% per annum for 20 years?','Rs.28477.2','Rs.28577.2','Rs.28377.2','Rs.56954.4','a','SI = P×R×T/100 = 23731×6×20/100 = 28477.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.3689 at 7% per annum for 4 years?','Rs.1032.92','Rs.1132.92','Rs.932.9200000000001','Rs.2065.84','a','SI = P×R×T/100 = 3689×7×4/100 = 1032.92','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.12762 at 5% per annum for 20 years?','Rs.12762.0','Rs.12862.0','Rs.12662.0','Rs.25524.0','a','SI = P×R×T/100 = 12762×5×20/100 = 12762.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.46200 at 3% per annum for 1 years?','Rs.1386.0','Rs.1486.0','Rs.1286.0','Rs.2772.0','a','SI = P×R×T/100 = 46200×3×1/100 = 1386.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.18266 at 9% per annum for 5 years?','Rs.8219.7','Rs.8319.7','Rs.8119.700000000001','Rs.16439.4','a','SI = P×R×T/100 = 18266×9×5/100 = 8219.7','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.17291 at 3% per annum for 3 years?','Rs.1556.19','Rs.1656.19','Rs.1456.19','Rs.3112.38','a','SI = P×R×T/100 = 17291×3×3/100 = 1556.19','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19777 at 4% per annum for 10 years?','Rs.7910.8','Rs.8010.8','Rs.7810.8','Rs.15821.6','a','SI = P×R×T/100 = 19777×4×10/100 = 7910.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.31707 at 8% per annum for 10 years?','Rs.25365.6','Rs.25465.6','Rs.25265.6','Rs.50731.2','a','SI = P×R×T/100 = 31707×8×10/100 = 25365.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.3732 at 12% per annum for 20 years?','Rs.8956.8','Rs.9056.8','Rs.8856.8','Rs.17913.6','a','SI = P×R×T/100 = 3732×12×20/100 = 8956.8','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.45394 at 7% per annum for 15 years?','Rs.47663.7','Rs.47763.7','Rs.47563.7','Rs.95327.4','a','SI = P×R×T/100 = 45394×7×15/100 = 47663.7','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.24885 at 12% per annum for 15 years?','Rs.44793.0','Rs.44893.0','Rs.44693.0','Rs.89586.0','a','SI = P×R×T/100 = 24885×12×15/100 = 44793.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.37028 at 8% per annum for 1 years?','Rs.2962.24','Rs.3062.24','Rs.2862.24','Rs.5924.48','a','SI = P×R×T/100 = 37028×8×1/100 = 2962.24','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.9757 at 8% per annum for 15 years?','Rs.11708.4','Rs.11808.4','Rs.11608.4','Rs.23416.8','a','SI = P×R×T/100 = 9757×8×15/100 = 11708.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.1953 at 3% per annum for 2 years?','Rs.117.18','Rs.217.18','Rs.17.180000000000007','Rs.234.36','a','SI = P×R×T/100 = 1953×3×2/100 = 117.18','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.28657 at 7% per annum for 1 years?','Rs.2005.99','Rs.2105.99','Rs.1905.99','Rs.4011.98','a','SI = P×R×T/100 = 28657×7×1/100 = 2005.99','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.35025 at 15% per annum for 20 years?','Rs.105075.0','Rs.105175.0','Rs.104975.0','Rs.210150.0','a','SI = P×R×T/100 = 35025×15×20/100 = 105075.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.10537 at 10% per annum for 15 years?','Rs.15805.5','Rs.15905.5','Rs.15705.5','Rs.31611.0','a','SI = P×R×T/100 = 10537×10×15/100 = 15805.5','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.42265 at 6% per annum for 3 years?','Rs.7607.7','Rs.7707.7','Rs.7507.7','Rs.15215.4','a','SI = P×R×T/100 = 42265×6×3/100 = 7607.7','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.38945 at 12% per annum for 20 years?','Rs.93468.0','Rs.93568.0','Rs.93368.0','Rs.186936.0','a','SI = P×R×T/100 = 38945×12×20/100 = 93468.0','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.28382 at 7% per annum for 5 years?','Rs.9933.7','Rs.10033.7','Rs.9833.7','Rs.19867.4','a','SI = P×R×T/100 = 28382×7×5/100 = 9933.7','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.1968 at 9% per annum for 2 years?','Rs.354.24','Rs.454.24','Rs.254.24','Rs.708.48','a','SI = P×R×T/100 = 1968×9×2/100 = 354.24','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.16810 at 12% per annum for 2 years?','Rs.4034.4','Rs.4134.4','Rs.3934.4','Rs.8068.8','a','SI = P×R×T/100 = 16810×12×2/100 = 4034.4','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.24011 at 8% per annum for 15 years?','Rs.28813.2','Rs.28913.2','Rs.28713.2','Rs.57626.4','a','SI = P×R×T/100 = 24011×8×15/100 = 28813.2','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.22887 at 8% per annum for 1 years?','Rs.1830.96','Rs.1930.96','Rs.1730.96','Rs.3661.92','a','SI = P×R×T/100 = 22887×8×1/100 = 1830.96','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.15513 at 9% per annum for 2 years?','Rs.2792.34','Rs.2892.34','Rs.2692.34','Rs.5584.68','a','SI = P×R×T/100 = 15513×9×2/100 = 2792.34','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.45643 at 12% per annum for 2 years?','Rs.10954.32','Rs.11054.32','Rs.10854.32','Rs.21908.64','a','SI = P×R×T/100 = 45643×12×2/100 = 10954.32','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.33914 at 8% per annum for 5 years?','Rs.13565.6','Rs.13665.6','Rs.13465.6','Rs.27131.2','a','SI = P×R×T/100 = 33914×8×5/100 = 13565.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the simple interest on Rs.19743 at 5% per annum for 4 years?','Rs.3948.6','Rs.4048.6','Rs.3848.6','Rs.7897.2','a','SI = P×R×T/100 = 19743×5×4/100 = 3948.6','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is 808 divided by 695 (rounded to 2 decimal places)?','1.16','2.16','0.16','2.32','a','808 / 695 = 1.16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 248 divided by 33 (rounded to 2 decimal places)?','7.52','8.52','6.52','15.04','a','248 / 33 = 7.52','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 709 divided by 626 (rounded to 2 decimal places)?','1.13','2.13','0.13','2.26','a','709 / 626 = 1.13','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 978 divided by 910 (rounded to 2 decimal places)?','1.07','2.07','0.07','2.14','a','978 / 910 = 1.07','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 914 divided by 359 (rounded to 2 decimal places)?','2.55','3.55','1.55','5.1','a','914 / 359 = 2.55','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 251 divided by 138 (rounded to 2 decimal places)?','1.82','2.82','0.82','3.64','a','251 / 138 = 1.82','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 494 divided by 446 (rounded to 2 decimal places)?','1.11','2.11','0.11','2.22','a','494 / 446 = 1.11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 386 divided by 381 (rounded to 2 decimal places)?','1.01','2.01','0.01','2.02','a','386 / 381 = 1.01','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 853 divided by 403 (rounded to 2 decimal places)?','2.12','3.12','1.12','4.24','a','853 / 403 = 2.12','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 861 divided by 728 (rounded to 2 decimal places)?','1.18','2.18','0.18','2.36','a','861 / 728 = 1.18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 438 divided by 81 (rounded to 2 decimal places)?','5.41','6.41','4.41','10.82','a','438 / 81 = 5.41','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 147 divided by 19 (rounded to 2 decimal places)?','7.74','8.74','6.74','15.48','a','147 / 19 = 7.74','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 851 divided by 147 (rounded to 2 decimal places)?','5.79','6.79','4.79','11.58','a','851 / 147 = 5.79','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 572 divided by 130 (rounded to 2 decimal places)?','4.4','5.4','3.4','8.8','a','572 / 130 = 4.4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 897 divided by 413 (rounded to 2 decimal places)?','2.17','3.17','1.17','4.34','a','897 / 413 = 2.17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 779 divided by 658 (rounded to 2 decimal places)?','1.18','2.18','0.18','2.36','a','779 / 658 = 1.18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 725 divided by 136 (rounded to 2 decimal places)?','5.33','6.33','4.33','10.66','a','725 / 136 = 5.33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 391 divided by 64 (rounded to 2 decimal places)?','6.11','7.11','5.11','12.22','a','391 / 64 = 6.11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 986 divided by 822 (rounded to 2 decimal places)?','1.2','2.2','0.2','2.4','a','986 / 822 = 1.2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 722 divided by 635 (rounded to 2 decimal places)?','1.14','2.14','0.14','2.28','a','722 / 635 = 1.14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 813 divided by 596 (rounded to 2 decimal places)?','1.36','2.36','0.36','2.72','a','813 / 596 = 1.36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 898 divided by 48 (rounded to 2 decimal places)?','18.71','19.71','17.71','37.42','a','898 / 48 = 18.71','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 664 divided by 611 (rounded to 2 decimal places)?','1.09','2.09','0.09','2.18','a','664 / 611 = 1.09','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 916 divided by 859 (rounded to 2 decimal places)?','1.07','2.07','0.07','2.14','a','916 / 859 = 1.07','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 461 divided by 54 (rounded to 2 decimal places)?','8.54','9.54','7.54','17.08','a','461 / 54 = 8.54','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 850 divided by 365 (rounded to 2 decimal places)?','2.33','3.33','1.33','4.66','a','850 / 365 = 2.33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 969 divided by 422 (rounded to 2 decimal places)?','2.3','3.3','1.3','4.6','a','969 / 422 = 2.3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 998 divided by 99 (rounded to 2 decimal places)?','10.08','11.08','9.08','20.16','a','998 / 99 = 10.08','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 961 divided by 792 (rounded to 2 decimal places)?','1.21','2.21','0.21','2.42','a','961 / 792 = 1.21','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 904 divided by 490 (rounded to 2 decimal places)?','1.84','2.84','0.84','3.68','a','904 / 490 = 1.84','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 307 divided by 290 (rounded to 2 decimal places)?','1.06','2.06','0.06','2.12','a','307 / 290 = 1.06','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 741 divided by 494 (rounded to 2 decimal places)?','1.5','2.5','0.5','3.0','a','741 / 494 = 1.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 833 divided by 716 (rounded to 2 decimal places)?','1.16','2.16','0.16','2.32','a','833 / 716 = 1.16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 820 divided by 780 (rounded to 2 decimal places)?','1.05','2.05','0.05','2.1','a','820 / 780 = 1.05','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 673 divided by 310 (rounded to 2 decimal places)?','2.17','3.17','1.17','4.34','a','673 / 310 = 2.17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 648 divided by 273 (rounded to 2 decimal places)?','2.37','3.37','1.37','4.74','a','648 / 273 = 2.37','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 154 divided by 149 (rounded to 2 decimal places)?','1.03','2.03','0.03','2.06','a','154 / 149 = 1.03','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 588 divided by 268 (rounded to 2 decimal places)?','2.19','3.19','1.19','4.38','a','588 / 268 = 2.19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 515 divided by 55 (rounded to 2 decimal places)?','9.36','10.36','8.36','18.72','a','515 / 55 = 9.36','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 999 divided by 444 (rounded to 2 decimal places)?','2.25','3.25','1.25','4.5','a','999 / 444 = 2.25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 278 divided by 202 (rounded to 2 decimal places)?','1.38','2.38','0.38','2.76','a','278 / 202 = 1.38','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 628 divided by 155 (rounded to 2 decimal places)?','4.05','5.05','3.05','8.1','a','628 / 155 = 4.05','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 949 divided by 620 (rounded to 2 decimal places)?','1.53','2.53','0.53','3.06','a','949 / 620 = 1.53','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 261 divided by 68 (rounded to 2 decimal places)?','3.84','4.84','2.84','7.68','a','261 / 68 = 3.84','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 665 divided by 92 (rounded to 2 decimal places)?','7.23','8.23','6.23','14.46','a','665 / 92 = 7.23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 717 divided by 366 (rounded to 2 decimal places)?','1.96','2.96','0.96','3.92','a','717 / 366 = 1.96','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 933 divided by 501 (rounded to 2 decimal places)?','1.86','2.86','0.86','3.72','a','933 / 501 = 1.86','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 906 divided by 724 (rounded to 2 decimal places)?','1.25','2.25','0.25','2.5','a','906 / 724 = 1.25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 175 divided by 163 (rounded to 2 decimal places)?','1.07','2.07','0.07','2.14','a','175 / 163 = 1.07','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 221 divided by 11 (rounded to 2 decimal places)?','20.09','21.09','19.09','40.18','a','221 / 11 = 20.09','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 878 divided by 355 (rounded to 2 decimal places)?','2.47','3.47','1.47','4.94','a','878 / 355 = 2.47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 222 divided by 27 (rounded to 2 decimal places)?','8.22','9.22','7.22','16.44','a','222 / 27 = 8.22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 715 divided by 647 (rounded to 2 decimal places)?','1.11','2.11','0.11','2.22','a','715 / 647 = 1.11','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 992 divided by 766 (rounded to 2 decimal places)?','1.3','2.3','0.3','2.6','a','992 / 766 = 1.3','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 685 divided by 314 (rounded to 2 decimal places)?','2.18','3.18','1.18','4.36','a','685 / 314 = 2.18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 263 divided by 174 (rounded to 2 decimal places)?','1.51','2.51','0.51','3.02','a','263 / 174 = 1.51','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 590 divided by 400 (rounded to 2 decimal places)?','1.48','2.48','0.48','2.96','a','590 / 400 = 1.48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 928 divided by 405 (rounded to 2 decimal places)?','2.29','3.29','1.29','4.58','a','928 / 405 = 2.29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 754 divided by 643 (rounded to 2 decimal places)?','1.17','2.17','0.17','2.34','a','754 / 643 = 1.17','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 915 divided by 748 (rounded to 2 decimal places)?','1.22','2.22','0.22','2.44','a','915 / 748 = 1.22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 576 divided by 72 (rounded to 2 decimal places)?','8.0','9.0','7.0','16.0','a','576 / 72 = 8.0','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 758 divided by 497 (rounded to 2 decimal places)?','1.53','2.53','0.53','3.06','a','758 / 497 = 1.53','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 735 divided by 266 (rounded to 2 decimal places)?','2.76','3.76','1.76','5.52','a','735 / 266 = 2.76','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 760 divided by 263 (rounded to 2 decimal places)?','2.89','3.89','1.89','5.78','a','760 / 263 = 2.89','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 982 divided by 932 (rounded to 2 decimal places)?','1.05','2.05','0.05','2.1','a','982 / 932 = 1.05','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 822 divided by 677 (rounded to 2 decimal places)?','1.21','2.21','0.21','2.42','a','822 / 677 = 1.21','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 671 divided by 127 (rounded to 2 decimal places)?','5.28','6.28','4.28','10.56','a','671 / 127 = 5.28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 498 divided by 436 (rounded to 2 decimal places)?','1.14','2.14','0.14','2.28','a','498 / 436 = 1.14','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 589 divided by 101 (rounded to 2 decimal places)?','5.83','6.83','4.83','11.66','a','589 / 101 = 5.83','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 341 divided by 98 (rounded to 2 decimal places)?','3.48','4.48','2.48','6.96','a','341 / 98 = 3.48','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 831 divided by 332 (rounded to 2 decimal places)?','2.5','3.5','1.5','5.0','a','831 / 332 = 2.5','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 540 divided by 331 (rounded to 2 decimal places)?','1.63','2.63','0.63','3.26','a','540 / 331 = 1.63','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 391 divided by 159 (rounded to 2 decimal places)?','2.46','3.46','1.46','4.92','a','391 / 159 = 2.46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 942 divided by 146 (rounded to 2 decimal places)?','6.45','7.45','5.45','12.9','a','942 / 146 = 6.45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 431 divided by 207 (rounded to 2 decimal places)?','2.08','3.08','1.08','4.16','a','431 / 207 = 2.08','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 667 divided by 359 (rounded to 2 decimal places)?','1.86','2.86','0.86','3.72','a','667 / 359 = 1.86','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 729 divided by 558 (rounded to 2 decimal places)?','1.31','2.31','0.31','2.62','a','729 / 558 = 1.31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 270 divided by 148 (rounded to 2 decimal places)?','1.82','2.82','0.82','3.64','a','270 / 148 = 1.82','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 899 divided by 366 (rounded to 2 decimal places)?','2.46','3.46','1.46','4.92','a','899 / 366 = 2.46','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 660 divided by 331 (rounded to 2 decimal places)?','1.99','2.99','0.99','3.98','a','660 / 331 = 1.99','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 989 divided by 170 (rounded to 2 decimal places)?','5.82','6.82','4.82','11.64','a','989 / 170 = 5.82','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 895 divided by 426 (rounded to 2 decimal places)?','2.1','3.1','1.1','4.2','a','895 / 426 = 2.1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 726 divided by 330 (rounded to 2 decimal places)?','2.2','3.2','1.2','4.4','a','726 / 330 = 2.2','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 250 divided by 203 (rounded to 2 decimal places)?','1.23','2.23','0.23','2.46','a','250 / 203 = 1.23','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 821 divided by 634 (rounded to 2 decimal places)?','1.29','2.29','0.29','2.58','a','821 / 634 = 1.29','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 910 divided by 744 (rounded to 2 decimal places)?','1.22','2.22','0.22','2.44','a','910 / 744 = 1.22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 420 divided by 397 (rounded to 2 decimal places)?','1.06','2.06','0.06','2.12','a','420 / 397 = 1.06','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 785 divided by 735 (rounded to 2 decimal places)?','1.07','2.07','0.07','2.14','a','785 / 735 = 1.07','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 926 divided by 650 (rounded to 2 decimal places)?','1.42','2.42','0.42','2.84','a','926 / 650 = 1.42','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 899 divided by 818 (rounded to 2 decimal places)?','1.1','2.1','0.1','2.2','a','899 / 818 = 1.1','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 924 divided by 41 (rounded to 2 decimal places)?','22.54','23.54','21.54','45.08','a','924 / 41 = 22.54','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 677 divided by 383 (rounded to 2 decimal places)?','1.77','2.77','0.77','3.54','a','677 / 383 = 1.77','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 951 divided by 797 (rounded to 2 decimal places)?','1.19','2.19','0.19','2.38','a','951 / 797 = 1.19','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 659 divided by 332 (rounded to 2 decimal places)?','1.98','2.98','0.98','3.96','a','659 / 332 = 1.98','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 999 divided by 428 (rounded to 2 decimal places)?','2.33','3.33','1.33','4.66','a','999 / 428 = 2.33','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 792 divided by 410 (rounded to 2 decimal places)?','1.93','2.93','0.93','3.86','a','792 / 410 = 1.93','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 749 divided by 698 (rounded to 2 decimal places)?','1.07','2.07','0.07','2.14','a','749 / 698 = 1.07','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 976 divided by 452 (rounded to 2 decimal places)?','2.16','3.16','1.16','4.32','a','976 / 452 = 2.16','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 795 divided by 605 (rounded to 2 decimal places)?','1.31','2.31','0.31','2.62','a','795 / 605 = 1.31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 624 divided by 431 (rounded to 2 decimal places)?','1.45','2.45','0.45','2.9','a','624 / 431 = 1.45','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 958 divided by 87 (rounded to 2 decimal places)?','11.01','12.01','10.01','22.02','a','958 / 87 = 11.01','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 847 divided by 413 (rounded to 2 decimal places)?','2.05','3.05','1.05','4.1','a','847 / 413 = 2.05','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 943 divided by 890 (rounded to 2 decimal places)?','1.06','2.06','0.06','2.12','a','943 / 890 = 1.06','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 445 divided by 171 (rounded to 2 decimal places)?','2.6','3.6','1.6','5.2','a','445 / 171 = 2.6','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 988 divided by 274 (rounded to 2 decimal places)?','3.61','4.61','2.61','7.22','a','988 / 274 = 3.61','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 841 divided by 602 (rounded to 2 decimal places)?','1.4','2.4','0.4','2.8','a','841 / 602 = 1.4','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 697 divided by 302 (rounded to 2 decimal places)?','2.31','3.31','1.31','4.62','a','697 / 302 = 2.31','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 693 divided by 39 (rounded to 2 decimal places)?','17.77','18.77','16.77','35.54','a','693 / 39 = 17.77','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 589 divided by 587 (rounded to 2 decimal places)?','1.0','2.0','0.0','2.0','a','589 / 587 = 1.0','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is 786 divided by 668 (rounded to 2 decimal places)?','1.18','2.18','0.18','2.36','a','786 / 668 = 1.18','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the percentage increase from 17 to 26?','52.94%','57.94%','47.94%','105.88%','a','Increase% = ((26-17)/17)×100 = 52.94%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 7 to 17?','142.86%','147.86%','137.86%','285.72%','a','Increase% = ((17-7)/7)×100 = 142.86%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 12 to 17?','41.67%','46.67%','36.67%','83.34%','a','Increase% = ((17-12)/12)×100 = 41.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 24 to 34?','41.67%','46.67%','36.67%','83.34%','a','Increase% = ((34-24)/24)×100 = 41.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 36 to 49?','36.11%','41.11%','31.11%','72.22%','a','Increase% = ((49-36)/36)×100 = 36.11%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 36 to 48?','33.33%','38.33%','28.33%','66.66%','a','Increase% = ((48-36)/36)×100 = 33.33%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 25 to 48?','92.0%','97.0%','87.0%','184.0%','a','Increase% = ((48-25)/25)×100 = 92.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 10 to 32?','220.0%','225.0%','215.0%','440.0%','a','Increase% = ((32-10)/10)×100 = 220.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 12 to 18?','50.0%','55.0%','45.0%','100.0%','a','Increase% = ((18-12)/12)×100 = 50.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 12 to 44?','266.67%','271.67%','261.67%','533.34%','a','Increase% = ((44-12)/12)×100 = 266.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 34 to 50?','47.06%','52.06%','42.06%','94.12%','a','Increase% = ((50-34)/34)×100 = 47.06%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 12 to 15?','25.0%','30.0%','20.0%','50.0%','a','Increase% = ((15-12)/12)×100 = 25.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 22 to 50?','127.27%','132.26999999999998%','122.27%','254.54%','a','Increase% = ((50-22)/22)×100 = 127.27%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 16 to 43?','168.75%','173.75%','163.75%','337.5%','a','Increase% = ((43-16)/16)×100 = 168.75%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 13 to 27?','107.69%','112.69%','102.69%','215.38%','a','Increase% = ((27-13)/13)×100 = 107.69%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 17 to 37?','117.65%','122.65%','112.65%','235.3%','a','Increase% = ((37-17)/17)×100 = 117.65%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 18 to 26?','44.44%','49.44%','39.44%','88.88%','a','Increase% = ((26-18)/18)×100 = 44.44%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 4 to 11?','175.0%','180.0%','170.0%','350.0%','a','Increase% = ((11-4)/4)×100 = 175.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 13 to 40?','207.69%','212.69%','202.69%','415.38%','a','Increase% = ((40-13)/13)×100 = 207.69%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 33 to 47?','42.42%','47.42%','37.42%','84.84%','a','Increase% = ((47-33)/33)×100 = 42.42%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 19 to 27?','42.11%','47.11%','37.11%','84.22%','a','Increase% = ((27-19)/19)×100 = 42.11%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 6 to 28?','366.67%','371.67%','361.67%','733.34%','a','Increase% = ((28-6)/6)×100 = 366.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 37 to 41?','10.81%','15.81%','5.8100000000000005%','21.62%','a','Increase% = ((41-37)/37)×100 = 10.81%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 21 to 34?','61.9%','66.9%','56.9%','123.8%','a','Increase% = ((34-21)/21)×100 = 61.9%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 15 to 22?','46.67%','51.67%','41.67%','93.34%','a','Increase% = ((22-15)/15)×100 = 46.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 3 to 50?','1566.67%','1571.67%','1561.67%','3133.34%','a','Increase% = ((50-3)/3)×100 = 1566.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 5 to 31?','520.0%','525.0%','515.0%','1040.0%','a','Increase% = ((31-5)/5)×100 = 520.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 26 to 49?','88.46%','93.46%','83.46%','176.92%','a','Increase% = ((49-26)/26)×100 = 88.46%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 17 to 38?','123.53%','128.53%','118.53%','247.06%','a','Increase% = ((38-17)/17)×100 = 123.53%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 25 to 26?','4.0%','9.0%','-1.0%','8.0%','a','Increase% = ((26-25)/25)×100 = 4.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 11 to 44?','300.0%','305.0%','295.0%','600.0%','a','Increase% = ((44-11)/11)×100 = 300.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 10 to 23?','130.0%','135.0%','125.0%','260.0%','a','Increase% = ((23-10)/10)×100 = 130.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 45 to 46?','2.22%','7.220000000000001%','-2.78%','4.44%','a','Increase% = ((46-45)/45)×100 = 2.22%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 15 to 24?','60.0%','65.0%','55.0%','120.0%','a','Increase% = ((24-15)/15)×100 = 60.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 4 to 29?','625.0%','630.0%','620.0%','1250.0%','a','Increase% = ((29-4)/4)×100 = 625.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 7 to 8?','14.29%','19.29%','9.29%','28.58%','a','Increase% = ((8-7)/7)×100 = 14.29%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 22 to 49?','122.73%','127.73%','117.73%','245.46%','a','Increase% = ((49-22)/22)×100 = 122.73%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 17 to 36?','111.76%','116.76%','106.76%','223.52%','a','Increase% = ((36-17)/17)×100 = 111.76%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 33 to 39?','18.18%','23.18%','13.18%','36.36%','a','Increase% = ((39-33)/33)×100 = 18.18%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 23 to 24?','4.35%','9.35%','-0.6500000000000004%','8.7%','a','Increase% = ((24-23)/23)×100 = 4.35%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 21 to 50?','138.1%','143.1%','133.1%','276.2%','a','Increase% = ((50-21)/21)×100 = 138.1%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 9 to 37?','311.11%','316.11%','306.11%','622.22%','a','Increase% = ((37-9)/9)×100 = 311.11%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 20 to 34?','70.0%','75.0%','65.0%','140.0%','a','Increase% = ((34-20)/20)×100 = 70.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 18 to 46?','155.56%','160.56%','150.56%','311.12%','a','Increase% = ((46-18)/18)×100 = 155.56%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 42 to 49?','16.67%','21.67%','11.670000000000002%','33.34%','a','Increase% = ((49-42)/42)×100 = 16.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 3 to 14?','366.67%','371.67%','361.67%','733.34%','a','Increase% = ((14-3)/3)×100 = 366.67%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 35 to 38?','8.57%','13.57%','3.5700000000000003%','17.14%','a','Increase% = ((38-35)/35)×100 = 8.57%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 29 to 50?','72.41%','77.41%','67.41%','144.82%','a','Increase% = ((50-29)/29)×100 = 72.41%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 6 to 8?','33.33%','38.33%','28.33%','66.66%','a','Increase% = ((8-6)/6)×100 = 33.33%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 22 to 43?','95.45%','100.45%','90.45%','190.9%','a','Increase% = ((43-22)/22)×100 = 95.45%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 19 to 33?','73.68%','78.68%','68.68%','147.36%','a','Increase% = ((33-19)/19)×100 = 73.68%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 6 to 27?','350.0%','355.0%','345.0%','700.0%','a','Increase% = ((27-6)/6)×100 = 350.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 24 to 30?','25.0%','30.0%','20.0%','50.0%','a','Increase% = ((30-24)/24)×100 = 25.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 10 to 16?','60.0%','65.0%','55.0%','120.0%','a','Increase% = ((16-10)/10)×100 = 60.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 25 to 49?','96.0%','101.0%','91.0%','192.0%','a','Increase% = ((49-25)/25)×100 = 96.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 2 to 22?','1000.0%','1005.0%','995.0%','2000.0%','a','Increase% = ((22-2)/2)×100 = 1000.0%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 15 to 32?','113.33%','118.33%','108.33%','226.66%','a','Increase% = ((32-15)/15)×100 = 113.33%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['What is the percentage increase from 15 to 23?','53.33%','58.33%','48.33%','106.66%','a','Increase% = ((23-15)/15)×100 = 53.33%','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['Find the missing number: 47, 56, ?, 98','89','99','79','94','a','The pattern increases by varying amounts. Next is 89.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 86, 98, ?, 167','126','136','116','131','a','The pattern increases by varying amounts. Next is 126.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 74, 110, ?, 157','111','121','101','116','a','The pattern increases by varying amounts. Next is 111.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 59, 68, ?, 162','112','122','102','117','a','The pattern increases by varying amounts. Next is 112.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 7, 29, ?, 61','41','51','31','46','a','The pattern increases by varying amounts. Next is 41.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 60, 107, ?, 170','143','153','133','148','a','The pattern increases by varying amounts. Next is 143.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 73, 118, ?, 199','168','178','158','173','a','The pattern increases by varying amounts. Next is 168.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 60, 62, ?, 104','72','82','62','77','a','The pattern increases by varying amounts. Next is 72.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 15, 19, ?, 80','41','51','31','46','a','The pattern increases by varying amounts. Next is 41.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 84, 89, ?, 112','91','101','81','96','a','The pattern increases by varying amounts. Next is 91.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 22, 50, ?, 94','56','66','46','61','a','The pattern increases by varying amounts. Next is 56.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 49, 62, ?, 103','74','84','64','79','a','The pattern increases by varying amounts. Next is 74.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 26, 57, ?, 91','69','79','59','74','a','The pattern increases by varying amounts. Next is 69.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 50, 57, ?, 121','82','92','72','87','a','The pattern increases by varying amounts. Next is 82.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 6, 22, ?, 50','44','54','34','49','a','The pattern increases by varying amounts. Next is 44.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 60, 106, ?, 152','122','132','112','127','a','The pattern increases by varying amounts. Next is 122.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 109, ?, 181','133','143','123','138','a','The pattern increases by varying amounts. Next is 133.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 85, 122, ?, 153','125','135','115','130','a','The pattern increases by varying amounts. Next is 125.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 93, 132, ?, 161','151','161','141','156','a','The pattern increases by varying amounts. Next is 151.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 99, 110, ?, 182','141','151','131','146','a','The pattern increases by varying amounts. Next is 141.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 13, 37, ?, 118','82','92','72','87','a','The pattern increases by varying amounts. Next is 82.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 97, 129, ?, 163','138','148','128','143','a','The pattern increases by varying amounts. Next is 138.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 37, 83, ?, 110','84','94','74','89','a','The pattern increases by varying amounts. Next is 84.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 79, 126, ?, 155','153','163','143','158','a','The pattern increases by varying amounts. Next is 153.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 47, 86, ?, 141','115','125','105','120','a','The pattern increases by varying amounts. Next is 115.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 70, 96, ?, 129','110','120','100','115','a','The pattern increases by varying amounts. Next is 110.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 69, 105, ?, 181','148','158','138','153','a','The pattern increases by varying amounts. Next is 148.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 37, 79, ?, 107','82','92','72','87','a','The pattern increases by varying amounts. Next is 82.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 25, 49, ?, 123','84','94','74','89','a','The pattern increases by varying amounts. Next is 84.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 32, 79, ?, 105','93','103','83','98','a','The pattern increases by varying amounts. Next is 93.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 85, 133, ?, 171','158','168','148','163','a','The pattern increases by varying amounts. Next is 158.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 21, 44, ?, 129','86','96','76','91','a','The pattern increases by varying amounts. Next is 86.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 98, 106, ?, 165','138','148','128','143','a','The pattern increases by varying amounts. Next is 138.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 6, 49, ?, 115','78','88','68','83','a','The pattern increases by varying amounts. Next is 78.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 91, 128, ?, 186','164','174','154','169','a','The pattern increases by varying amounts. Next is 164.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 63, 111, ?, 170','161','171','151','166','a','The pattern increases by varying amounts. Next is 161.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 90, 125, ?, 168','141','151','131','146','a','The pattern increases by varying amounts. Next is 141.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 85, 115, ?, 135','128','138','118','133','a','The pattern increases by varying amounts. Next is 128.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 21, 35, ?, 56','48','58','38','53','a','The pattern increases by varying amounts. Next is 48.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 42, 74, ?, 115','103','113','93','108','a','The pattern increases by varying amounts. Next is 103.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 40, 47, ?, 88','79','89','69','84','a','The pattern increases by varying amounts. Next is 79.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 26, 44, ?, 79','46','56','36','51','a','The pattern increases by varying amounts. Next is 46.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 31, 63, ?, 142','101','111','91','106','a','The pattern increases by varying amounts. Next is 101.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 45, 80, ?, 143','107','117','97','112','a','The pattern increases by varying amounts. Next is 107.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 55, 98, ?, 131','129','139','119','134','a','The pattern increases by varying amounts. Next is 129.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 44, 85, ?, 122','94','104','84','99','a','The pattern increases by varying amounts. Next is 94.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 90, 95, ?, 162','126','136','116','131','a','The pattern increases by varying amounts. Next is 126.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 68, 81, ?, 168','122','132','112','127','a','The pattern increases by varying amounts. Next is 122.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 55, 61, ?, 140','90','100','80','95','a','The pattern increases by varying amounts. Next is 90.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 19, 46, ?, 72','57','67','47','62','a','The pattern increases by varying amounts. Next is 57.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 43, 46, ?, 107','92','102','82','97','a','The pattern increases by varying amounts. Next is 92.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 42, 66, ?, 134','85','95','75','90','a','The pattern increases by varying amounts. Next is 85.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 69, 97, ?, 144','116','126','106','121','a','The pattern increases by varying amounts. Next is 116.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 46, 54, ?, 91','77','87','67','82','a','The pattern increases by varying amounts. Next is 77.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 59, 61, ?, 115','76','86','66','81','a','The pattern increases by varying amounts. Next is 76.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 61, 101, ?, 142','131','141','121','136','a','The pattern increases by varying amounts. Next is 131.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 43, 50, ?, 86','55','65','45','60','a','The pattern increases by varying amounts. Next is 55.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 59, 97, ?, 153','115','125','105','120','a','The pattern increases by varying amounts. Next is 115.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 86, 110, ?, 159','133','143','123','138','a','The pattern increases by varying amounts. Next is 133.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 72, 91, ?, 164','115','125','105','120','a','The pattern increases by varying amounts. Next is 115.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 84, 91, ?, 162','122','132','112','127','a','The pattern increases by varying amounts. Next is 122.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 98, 108, ?, 149','115','125','105','120','a','The pattern increases by varying amounts. Next is 115.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 96, 110, ?, 118','113','123','103','118','a','The pattern increases by varying amounts. Next is 113.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 93, 95, ?, 147','104','114','94','109','a','The pattern increases by varying amounts. Next is 104.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 19, 64, ?, 95','74','84','64','79','a','The pattern increases by varying amounts. Next is 74.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 86, 129, ?, 176','172','182','162','177','a','The pattern increases by varying amounts. Next is 172.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 86, 88, ?, 111','90','100','80','95','a','The pattern increases by varying amounts. Next is 90.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 33, 72, ?, 117','85','95','75','90','a','The pattern increases by varying amounts. Next is 85.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 90, 99, ?, 160','120','130','110','125','a','The pattern increases by varying amounts. Next is 120.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 55, 62, ?, 146','108','118','98','113','a','The pattern increases by varying amounts. Next is 108.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 103, ?, 192','145','155','135','150','a','The pattern increases by varying amounts. Next is 145.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 84, 111, ?, 169','150','160','140','155','a','The pattern increases by varying amounts. Next is 150.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 61, 102, ?, 150','104','114','94','109','a','The pattern increases by varying amounts. Next is 104.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 39, 64, ?, 106','93','103','83','98','a','The pattern increases by varying amounts. Next is 93.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 75, 116, ?, 179','143','153','133','148','a','The pattern increases by varying amounts. Next is 143.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 83, 89, ?, 138','92','102','82','97','a','The pattern increases by varying amounts. Next is 92.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 9, 20, ?, 63','41','51','31','46','a','The pattern increases by varying amounts. Next is 41.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 40, 41, ?, 76','49','59','39','54','a','The pattern increases by varying amounts. Next is 49.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 14, 34, ?, 92','84','94','74','89','a','The pattern increases by varying amounts. Next is 84.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 91, 139, ?, 184','173','183','163','178','a','The pattern increases by varying amounts. Next is 173.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 139, ?, 190','160','170','150','165','a','The pattern increases by varying amounts. Next is 160.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 8, 30, ?, 102','53','63','43','58','a','The pattern increases by varying amounts. Next is 53.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 39, 82, ?, 165','122','132','112','127','a','The pattern increases by varying amounts. Next is 122.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 4, 37, ?, 54','46','56','36','51','a','The pattern increases by varying amounts. Next is 46.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 38, 45, ?, 78','61','71','51','66','a','The pattern increases by varying amounts. Next is 61.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 34, 81, ?, 132','118','128','108','123','a','The pattern increases by varying amounts. Next is 118.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 70, 117, ?, 214','165','175','155','170','a','The pattern increases by varying amounts. Next is 165.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 67, 92, ?, 156','113','123','103','118','a','The pattern increases by varying amounts. Next is 113.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 92, 112, ?, 163','121','131','111','126','a','The pattern increases by varying amounts. Next is 121.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 30, 78, ?, 163','126','136','116','131','a','The pattern increases by varying amounts. Next is 126.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 102, ?, 179','131','141','121','136','a','The pattern increases by varying amounts. Next is 131.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 17, 36, ?, 76','42','52','32','47','a','The pattern increases by varying amounts. Next is 42.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 62, 70, ?, 125','76','86','66','81','a','The pattern increases by varying amounts. Next is 76.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 23, 56, ?, 113','75','85','65','80','a','The pattern increases by varying amounts. Next is 75.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 25, 66, ?, 126','116','126','106','121','a','The pattern increases by varying amounts. Next is 116.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 88, 122, ?, 174','172','182','162','177','a','The pattern increases by varying amounts. Next is 172.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 36, 50, ?, 81','71','81','61','76','a','The pattern increases by varying amounts. Next is 71.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 57, 64, ?, 105','86','96','76','91','a','The pattern increases by varying amounts. Next is 86.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 142, ?, 209','166','176','156','171','a','The pattern increases by varying amounts. Next is 166.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 27, 58, ?, 109','64','74','54','69','a','The pattern increases by varying amounts. Next is 64.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 87, 115, ?, 176','156','166','146','161','a','The pattern increases by varying amounts. Next is 156.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 100, 105, ?, 170','149','159','139','154','a','The pattern increases by varying amounts. Next is 149.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 22, 40, ?, 85','65','75','55','70','a','The pattern increases by varying amounts. Next is 65.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 4, 51, ?, 120','87','97','77','92','a','The pattern increases by varying amounts. Next is 87.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 74, 96, ?, 122','120','130','110','125','a','The pattern increases by varying amounts. Next is 120.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 6, 29, ?, 70','36','46','26','41','a','The pattern increases by varying amounts. Next is 36.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 63, 102, ?, 140','110','120','100','115','a','The pattern increases by varying amounts. Next is 110.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 99, 110, ?, 175','127','137','117','132','a','The pattern increases by varying amounts. Next is 127.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 91, 115, ?, 196','164','174','154','169','a','The pattern increases by varying amounts. Next is 164.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 65, 72, ?, 112','73','83','63','78','a','The pattern increases by varying amounts. Next is 73.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 11, 27, ?, 63','53','63','43','58','a','The pattern increases by varying amounts. Next is 53.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 33, 82, ?, 171','132','142','122','137','a','The pattern increases by varying amounts. Next is 132.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 62, 106, ?, 167','142','152','132','147','a','The pattern increases by varying amounts. Next is 142.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 25, 62, ?, 116','96','106','86','101','a','The pattern increases by varying amounts. Next is 96.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 28, 33, ?, 107','72','82','62','77','a','The pattern increases by varying amounts. Next is 72.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 29, 46, ?, 99','65','75','55','70','a','The pattern increases by varying amounts. Next is 65.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 29, 40, ?, 93','81','91','71','86','a','The pattern increases by varying amounts. Next is 81.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 58, 72, ?, 126','94','104','84','99','a','The pattern increases by varying amounts. Next is 94.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 73, 123, ?, 186','136','146','126','141','a','The pattern increases by varying amounts. Next is 136.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 8, 28, ?, 63','59','69','49','64','a','The pattern increases by varying amounts. Next is 59.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 88, 99, ?, 152','146','156','136','151','a','The pattern increases by varying amounts. Next is 146.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 79, 85, ?, 127','105','115','95','110','a','The pattern increases by varying amounts. Next is 105.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 99, 139, ?, 200','172','182','162','177','a','The pattern increases by varying amounts. Next is 172.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 15, 43, ?, 116','90','100','80','95','a','The pattern increases by varying amounts. Next is 90.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 41, 56, ?, 147','98','108','88','103','a','The pattern increases by varying amounts. Next is 98.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 78, 85, ?, 116','86','96','76','91','a','The pattern increases by varying amounts. Next is 86.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 21, 41, ?, 89','65','75','55','70','a','The pattern increases by varying amounts. Next is 65.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 34, 53, ?, 108','61','71','51','66','a','The pattern increases by varying amounts. Next is 61.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 57, 93, ?, 159','128','138','118','133','a','The pattern increases by varying amounts. Next is 128.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 85, 110, ?, 119','115','125','105','120','a','The pattern increases by varying amounts. Next is 115.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 28, 45, ?, 92','58','68','48','63','a','The pattern increases by varying amounts. Next is 58.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 91, 98, ?, 113','112','122','102','117','a','The pattern increases by varying amounts. Next is 112.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 26, 48, ?, 86','50','60','40','55','a','The pattern increases by varying amounts. Next is 50.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 100, ?, 190','146','156','136','151','a','The pattern increases by varying amounts. Next is 146.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 96, 146, ?, 187','185','195','175','190','a','The pattern increases by varying amounts. Next is 185.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 20, 59, ?, 97','88','98','78','93','a','The pattern increases by varying amounts. Next is 88.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 10, 39, ?, 88','65','75','55','70','a','The pattern increases by varying amounts. Next is 65.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 62, 84, ?, 97','90','100','80','95','a','The pattern increases by varying amounts. Next is 90.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 88, 104, ?, 169','147','157','137','152','a','The pattern increases by varying amounts. Next is 147.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 78, 128, ?, 172','129','139','119','134','a','The pattern increases by varying amounts. Next is 129.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 82, 121, ?, 162','158','168','148','163','a','The pattern increases by varying amounts. Next is 158.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 32, 38, ?, 91','69','79','59','74','a','The pattern increases by varying amounts. Next is 69.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 67, 106, ?, 158','156','166','146','161','a','The pattern increases by varying amounts. Next is 156.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 79, 110, ?, 163','126','136','116','131','a','The pattern increases by varying amounts. Next is 126.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 55, 79, ?, 150','113','123','103','118','a','The pattern increases by varying amounts. Next is 113.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 128, ?, 185','172','182','162','177','a','The pattern increases by varying amounts. Next is 172.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 57, 71, ?, 121','101','111','91','106','a','The pattern increases by varying amounts. Next is 101.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 29, 65, ?, 114','66','76','56','71','a','The pattern increases by varying amounts. Next is 66.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 1, 37, ?, 68','47','57','37','52','a','The pattern increases by varying amounts. Next is 47.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 5, 11, ?, 54','18','28','8','23','a','The pattern increases by varying amounts. Next is 18.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 22, 49, ?, 110','96','106','86','101','a','The pattern increases by varying amounts. Next is 96.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 1, 14, ?, 57','19','29','9','24','a','The pattern increases by varying amounts. Next is 19.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 1, 20, ?, 73','36','46','26','41','a','The pattern increases by varying amounts. Next is 36.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 3, 30, ?, 95','60','70','50','65','a','The pattern increases by varying amounts. Next is 60.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 80, 124, ?, 141','130','140','120','135','a','The pattern increases by varying amounts. Next is 130.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 12, 14, ?, 64','60','70','50','65','a','The pattern increases by varying amounts. Next is 60.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 1, 15, ?, 81','31','41','21','36','a','The pattern increases by varying amounts. Next is 31.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 64, 79, ?, 122','120','130','110','125','a','The pattern increases by varying amounts. Next is 120.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 43, 89, ?, 150','119','129','109','124','a','The pattern increases by varying amounts. Next is 119.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 61, 111, ?, 161','155','165','145','160','a','The pattern increases by varying amounts. Next is 155.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 93, 103, ?, 170','146','156','136','151','a','The pattern increases by varying amounts. Next is 146.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 22, 53, ?, 74','59','69','49','64','a','The pattern increases by varying amounts. Next is 59.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 99, 110, ?, 127','118','128','108','123','a','The pattern increases by varying amounts. Next is 118.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 69, 110, ?, 146','128','138','118','133','a','The pattern increases by varying amounts. Next is 128.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 21, 60, ?, 121','79','89','69','84','a','The pattern increases by varying amounts. Next is 79.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 34, 83, ?, 118','109','119','99','114','a','The pattern increases by varying amounts. Next is 109.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 18, 47, ?, 95','94','104','84','99','a','The pattern increases by varying amounts. Next is 94.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 54, 68, ?, 165','118','128','108','123','a','The pattern increases by varying amounts. Next is 118.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 2, 27, ?, 69','59','69','49','64','a','The pattern increases by varying amounts. Next is 59.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 81, 84, ?, 127','123','133','113','128','a','The pattern increases by varying amounts. Next is 123.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 42, 50, ?, 92','79','89','69','84','a','The pattern increases by varying amounts. Next is 79.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 21, 47, ?, 76','67','77','57','72','a','The pattern increases by varying amounts. Next is 67.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 55, 60, ?, 108','87','97','77','92','a','The pattern increases by varying amounts. Next is 87.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 85, 124, ?, 194','160','170','150','165','a','The pattern increases by varying amounts. Next is 160.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 43, 84, ?, 179','133','143','123','138','a','The pattern increases by varying amounts. Next is 133.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 76, 82, ?, 121','103','113','93','108','a','The pattern increases by varying amounts. Next is 103.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 17, 60, ?, 152','109','119','99','114','a','The pattern increases by varying amounts. Next is 109.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 16, 19, ?, 87','60','70','50','65','a','The pattern increases by varying amounts. Next is 60.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 16, 23, ?, 96','47','57','37','52','a','The pattern increases by varying amounts. Next is 47.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 5, 50, ?, 99','65','75','55','70','a','The pattern increases by varying amounts. Next is 65.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 83, 115, ?, 184','150','160','140','155','a','The pattern increases by varying amounts. Next is 150.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 43, 80, ?, 144','97','107','87','102','a','The pattern increases by varying amounts. Next is 97.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 1, 38, ?, 62','55','65','45','60','a','The pattern increases by varying amounts. Next is 55.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 49, 88, ?, 139','107','117','97','112','a','The pattern increases by varying amounts. Next is 107.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 62, 110, ?, 153','126','136','116','131','a','The pattern increases by varying amounts. Next is 126.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 73, 111, ?, 150','118','128','108','123','a','The pattern increases by varying amounts. Next is 118.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 23, 52, ?, 65','62','72','52','67','a','The pattern increases by varying amounts. Next is 62.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 63, 67, ?, 86','71','81','61','76','a','The pattern increases by varying amounts. Next is 71.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 63, 105, ?, 148','146','156','136','151','a','The pattern increases by varying amounts. Next is 146.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 87, 131, ?, 212','173','183','163','178','a','The pattern increases by varying amounts. Next is 173.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 33, 80, ?, 123','112','122','102','117','a','The pattern increases by varying amounts. Next is 112.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 8, 33, ?, 59','43','53','33','48','a','The pattern increases by varying amounts. Next is 43.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 98, 135, ?, 221','173','183','163','178','a','The pattern increases by varying amounts. Next is 173.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 95, 124, ?, 157','133','143','123','138','a','The pattern increases by varying amounts. Next is 133.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 21, 40, ?, 83','42','52','32','47','a','The pattern increases by varying amounts. Next is 42.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 71, 75, ?, 104','76','86','66','81','a','The pattern increases by varying amounts. Next is 76.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 22, 66, ?, 109','83','93','73','88','a','The pattern increases by varying amounts. Next is 83.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 62, 111, ?, 189','143','153','133','148','a','The pattern increases by varying amounts. Next is 143.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 8, 29, ?, 107','65','75','55','70','a','The pattern increases by varying amounts. Next is 65.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['Find the missing number: 74, 83, ?, 156','115','125','105','120','a','The pattern increases by varying amounts. Next is 115.','Reasoning','Series','medium','APSC,ADRE'],
+
+  ['What comes next in the series: P, U, Z, E, ?','J','K','I','L','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: D, I, N, S, ?','X','Y','W','Z','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: L, P, T, X, ?','B','C','A','D','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: T, V, X, Z, ?','B','C','A','D','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: H, K, N, Q, ?','T','U','S','V','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: Q, U, Y, C, ?','G','H','F','I','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: M, O, Q, S, ?','U','V','T','W','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: B, D, F, H, ?','J','K','I','L','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: A, E, I, M, ?','Q','R','P','S','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: C, E, G, I, ?','K','L','J','M','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: I, L, O, R, ?','U','V','T','W','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: K, O, S, W, ?','A','B','Z','C','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: K, M, O, Q, ?','S','T','R','U','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: S, V, Y, B, ?','E','F','D','G','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: K, P, U, Z, ?','E','F','D','G','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: Q, T, W, Z, ?','C','D','B','E','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: C, H, M, R, ?','W','X','V','Y','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: A, F, K, P, ?','U','V','T','W','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: N, S, X, C, ?','H','I','G','J','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: L, N, P, R, ?','T','U','S','V','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: O, R, U, X, ?','A','B','Z','C','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: H, M, R, W, ?','B','C','A','D','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: R, V, Z, D, ?','H','I','G','J','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: E, G, I, K, ?','M','N','L','O','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: S, U, W, Y, ?','A','B','Z','C','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: P, T, X, B, ?','F','G','E','H','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: M, P, S, V, ?','Y','Z','X','A','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: T, Y, D, I, ?','N','O','M','P','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: O, Q, S, U, ?','W','X','V','Y','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: F, K, P, U, ?','Z','A','Y','B','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: T, X, B, F, ?','J','K','I','L','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: T, W, Z, C, ?','F','G','E','H','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: S, W, A, E, ?','I','J','H','K','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: J, M, P, S, ?','V','W','U','X','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: B, E, H, K, ?','N','O','M','P','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: H, J, L, N, ?','P','Q','O','R','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: R, W, B, G, ?','L','M','K','N','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: K, N, Q, T, ?','W','X','V','Y','a','Alphabet series with skip 3.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: B, F, J, N, ?','R','S','Q','T','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: I, K, M, O, ?','Q','R','P','S','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: P, R, T, V, ?','X','Y','W','Z','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: F, J, N, R, ?','V','W','U','X','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: D, H, L, P, ?','T','U','S','V','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: M, Q, U, Y, ?','C','D','B','E','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: Q, V, A, F, ?','K','L','J','M','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: U, W, Y, A, ?','C','D','B','E','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: J, L, N, P, ?','R','S','Q','T','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: E, I, M, Q, ?','U','V','T','W','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: L, Q, V, A, ?','F','G','E','H','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: A, C, E, G, ?','I','J','H','K','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: N, P, R, T, ?','V','W','U','X','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: C, G, K, O, ?','S','T','R','U','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: U, Y, C, G, ?','K','L','J','M','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: G, K, O, S, ?','W','X','V','Y','a','Alphabet series with skip 4.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: R, T, V, X, ?','Z','A','Y','B','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: G, L, Q, V, ?','A','B','Z','C','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: F, H, J, L, ?','N','O','M','P','a','Alphabet series with skip 2.','Reasoning','Series','hard','APSC'],
+
+  ['What comes next in the series: B, G, L, Q, ?','V','W','U','X','a','Alphabet series with skip 5.','Reasoning','Series','hard','APSC'],
+
+  ['How many districts are there in Maharashtra?','27','10','50','100','a','Maharashtra has 27 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Maharashtra have?','8','20','1','50','a','Maharashtra has 8 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Maharashtra?','Western Ghats','Himalayas','Coastal Plains','Desert','a','Maharashtra features the Western Ghats.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Karnataka?','31','10','50','100','a','Karnataka has 31 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Karnataka have?','7','20','1','50','a','Karnataka has 7 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Karnataka?','Western Ghats','Himalayas','Coastal Plains','Desert','a','Karnataka features the Western Ghats.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Tamil Nadu?','38','10','50','100','a','Tamil Nadu has 38 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Tamil Nadu have?','10','20','1','50','a','Tamil Nadu has 10 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Tamil Nadu?','Eastern Ghats','Himalayas','Coastal Plains','Desert','a','Tamil Nadu features the Eastern Ghats.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Kerala?','14','10','50','100','a','Kerala has 14 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Kerala have?','6','20','1','50','a','Kerala has 6 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Kerala?','Western Ghats','Himalayas','Coastal Plains','Desert','a','Kerala features the Western Ghats.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Andhra Pradesh?','26','10','50','100','a','Andhra Pradesh has 26 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Andhra Pradesh have?','5','20','1','50','a','Andhra Pradesh has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Andhra Pradesh?','Eastern Ghats','Himalayas','Coastal Plains','Desert','a','Andhra Pradesh features the Eastern Ghats.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Telangana?','33','10','50','100','a','Telangana has 33 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Telangana have?','3','20','1','50','a','Telangana has 3 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Telangana?','Deccan Plateau','Himalayas','Coastal Plains','Desert','a','Telangana features the Deccan Plateau.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Gujarat?','33','10','50','100','a','Gujarat has 33 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Gujarat have?','4','20','1','50','a','Gujarat has 4 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Gujarat?','Kutch Desert','Himalayas','Coastal Plains','Desert','a','Gujarat features the Kutch Desert.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Rajasthan?','33','10','50','100','a','Rajasthan has 33 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Rajasthan have?','7','20','1','50','a','Rajasthan has 7 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Rajasthan?','Thar Desert','Himalayas','Coastal Plains','Desert','a','Rajasthan features the Thar Desert.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Uttar Pradesh?','75','10','50','100','a','Uttar Pradesh has 75 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Uttar Pradesh have?','8','20','1','50','a','Uttar Pradesh has 8 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Uttar Pradesh?','Gangetic Plain','Himalayas','Coastal Plains','Desert','a','Uttar Pradesh features the Gangetic Plain.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Madhya Pradesh?','55','10','50','100','a','Madhya Pradesh has 55 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Madhya Pradesh have?','10','20','1','50','a','Madhya Pradesh has 10 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Madhya Pradesh?','Vindhya Range','Himalayas','Coastal Plains','Desert','a','Madhya Pradesh features the Vindhya Range.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Bihar?','38','10','50','100','a','Bihar has 38 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Bihar have?','9','20','1','50','a','Bihar has 9 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Bihar?','Gangetic Plain','Himalayas','Coastal Plains','Desert','a','Bihar features the Gangetic Plain.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in West Bengal?','23','10','50','100','a','West Bengal has 23 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does West Bengal have?','5','20','1','50','a','West Bengal has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in West Bengal?','Ganges Delta','Himalayas','Coastal Plains','Desert','a','West Bengal features the Ganges Delta.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Odisha?','30','10','50','100','a','Odisha has 30 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Odisha have?','5','20','1','50','a','Odisha has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Odisha?','Eastern Ghats','Himalayas','Coastal Plains','Desert','a','Odisha features the Eastern Ghats.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Punjab?','23','10','50','100','a','Punjab has 23 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Punjab have?','4','20','1','50','a','Punjab has 4 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Punjab?','Indo-Gangetic Plain','Himalayas','Coastal Plains','Desert','a','Punjab features the Indo-Gangetic Plain.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Haryana?','22','10','50','100','a','Haryana has 22 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Haryana have?','6','20','1','50','a','Haryana has 6 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Haryana?','Indo-Gangetic Plain','Himalayas','Coastal Plains','Desert','a','Haryana features the Indo-Gangetic Plain.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Chhattisgarh?','33','10','50','100','a','Chhattisgarh has 33 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Chhattisgarh have?','5','20','1','50','a','Chhattisgarh has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Chhattisgarh?','Chota Nagpur Plateau','Himalayas','Coastal Plains','Desert','a','Chhattisgarh features the Chota Nagpur Plateau.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Jharkhand?','24','10','50','100','a','Jharkhand has 24 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Jharkhand have?','5','20','1','50','a','Jharkhand has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Jharkhand?','Chota Nagpur Plateau','Himalayas','Coastal Plains','Desert','a','Jharkhand features the Chota Nagpur Plateau.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Uttarakhand?','13','10','50','100','a','Uttarakhand has 13 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Uttarakhand have?','5','20','1','50','a','Uttarakhand has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Uttarakhand?','Himalayas','Himalayas','Coastal Plains','Desert','a','Uttarakhand features the Himalayas.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Himachal Pradesh?','12','10','50','100','a','Himachal Pradesh has 12 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Himachal Pradesh have?','4','20','1','50','a','Himachal Pradesh has 4 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Himachal Pradesh?','Himalayas','Himalayas','Coastal Plains','Desert','a','Himachal Pradesh features the Himalayas.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many districts are there in Assam?','35','10','50','100','a','Assam has 35 districts.','Geography','Indian Geography','medium','APSC,ADRE'],
+
+  ['How many Lok Sabha seats does Assam have?','5','20','1','50','a','Assam has 5 Lok Sabha seats.','Geography','Indian Geography','hard','APSC'],
+
+  ['Which geographical feature is prominent in Assam?','Brahmaputra Valley','Himalayas','Coastal Plains','Desert','a','Assam features the Brahmaputra Valley.','Geography','Indian Geography','medium','APSC'],
+
+  ['How many planets are in our solar system?','8','9','7','10','a','Answer: 8','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which is the largest planet in our solar system?','Jupiter','Earth','Mars','Venus','a','Answer: Jupiter','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which is the smallest planet in our solar system?','Mercury','Mars','Pluto','Venus','a','Answer: Mercury','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which planet is farthest from the Sun?','Neptune','Uranus','Saturn','Jupiter','a','Answer: Neptune','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which planet is known as the Blue Planet?','Earth','Neptune','Uranus','Jupiter','a','Answer: Earth','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which planet is known as the Morning Star?','Venus','Mercury','Mars','Jupiter','a','Answer: Venus','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which planet has the most moons?','Saturn','Earth','Mars','Jupiter','a','Answer: Saturn','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which is the hottest planet in our solar system?','Venus','Mercury','Earth','Mars','a','Answer: Venus','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which planet has rings around it?','Saturn','Earth','Mars','Mercury','a','Answer: Saturn','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['How long does Earth take to orbit the Sun?','365.25 days','24 hours','30 days','7 days','a','Answer: 365.25 days','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['How long does the Moon take to orbit the Earth?','27.3 days','30 days','365 days','24 hours','a','Answer: 27.3 days','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['What is a solar eclipse?','Moon passes between Sun and Earth','Earth passes between Sun and Moon','Sun passes between Moon and Earth','Moon passes between Earth and Mars','a','Answer: Moon passes between Sun and Earth','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['What is a lunar eclipse?','Earth passes between Sun and Moon','Moon passes between Sun and Earth','Sun passes between Earth and Moon','Earth passes between Moon and Mars','a','Answer: Earth passes between Sun and Moon','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which is the brightest star in the night sky?','Sirius','Polaris','Betelgeuse','Vega','a','Answer: Sirius','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['What galaxy is Earth in?','Milky Way','Andromeda','Whirlpool','Sombrero','a','Answer: Milky Way','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['How many light years away is the Sun from Earth?','8.3 light minutes','1 light year','100 light years','8.3 light years','a','Answer: 8.3 light minutes','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['What is a black hole?','A region of spacetime with gravity so strong nothing escapes','A hole in space','A dark planet','A dead star','a','Answer: A region of spacetime with gravity so strong nothing escapes','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Who was the first person to walk on the Moon?','Neil Armstrong','Buzz Aldrin','Yuri Gagarin','Michael Collins','a','Answer: Neil Armstrong','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['When did the first Moon landing occur?','1969','1959','1979','1965','a','Answer: 1969','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Who was the first human in space?','Yuri Gagarin','Neil Armstrong','Buzz Aldrin','John Glenn','a','Answer: Yuri Gagarin','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['In which year did Yuri Gagarin go to space?','1961','1969','1957','1971','a','Answer: 1961','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['What is the International Space Station (ISS)?','A habitable space station in low Earth orbit','A satellite','A space telescope','A rocket','a','Answer: A habitable space station in low Earth orbit','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which space agency sent humans to the Moon?','NASA','ISRO','ESA','Roscosmos','a','Answer: NASA','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['What is the name of India space agency?','ISRO','NASA','ESA','Roscosmos','a','Answer: ISRO','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['When was ISRO founded?','1969','1947','1980','1975','a','Answer: 1969','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Who was the first Indian in space?','Rakesh Sharma','Kalpana Chawla','Ravish Malhotra','Sunita Williams','a','Answer: Rakesh Sharma','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['In which year did Rakesh Sharma go to space?','1984','1980','1990','1975','a','Answer: 1984','Science','Astronomy','medium','APSC,ADRE'],
+
+  ['Which Article contains the Fundamental Duties?','Article 51A','Article 14','Article 21','Article 32','a','Answer: Article 51A','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['How many languages are in the Eighth Schedule?','22','18','15','25','a','Answer: 22','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which is the official language of the Supreme Court of India?','English','Hindi','Sanskrit','All Indian languages','a','Answer: English','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['How many types of emergencies are in the Indian Constitution?','3','2','4','5','a','Answer: 3','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['National emergency is declared under which Article?','Article 352','Article 356','Article 360','Article 365','a','Answer: Article 352','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['President Rule is imposed under which Article?','Article 356','Article 352','Article 360','Article 365','a','Answer: Article 356','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Financial emergency is declared under which Article?','Article 360','Article 352','Article 356','Article 365','a','Answer: Article 360','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is the minimum age to become President of India?','35 years','25 years','30 years','18 years','a','Answer: 35 years','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is the minimum age to become Vice President of India?','35 years','25 years','30 years','18 years','a','Answer: 35 years','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is the minimum age to become a Governor?','35 years','25 years','30 years','18 years','a','Answer: 35 years','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['How many members are nominated to the Rajya Sabha by the President?','12','10','15','20','a','Answer: 12','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['How many members are nominated to the Lok Sabha by the President?','2','12','0','5','a','Answer: 2','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['The quorum required for Lok Sabha proceedings is?','1/10 of total members','1/3 of total members','1/5 of total members','1/2 of total members','a','Answer: 1/10 of total members','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Who is the executive head of the Indian government?','President','Prime Minister','Speaker','Chief Justice','a','Answer: President','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Who is the real executive head of the Indian government?','Prime Minister','President','Speaker','Chief Justice','a','Answer: Prime Minister','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['How many DPSPs are there in Part IV of the Constitution?','20 to 25','10 to 15','30 to 35','5 to 10','a','Answer: 20 to 25','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which part of the Constitution contains DPSPs?','Part IV','Part III','Part V','Part I','a','Answer: Part IV','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['Which part contains Fundamental Rights?','Part III','Part IV','Part V','Part I','a','Answer: Part III','Polity','Indian Polity','medium','APSC,ADRE,UPSC'],
+
+  ['What is the full form of NITI Aayog?','National Institution for Transforming India','National Institute of Technology of India','National Integration and Trade Initiative','National Initiative for Technology and Innovation','a','Answer: National Institution for Transforming India','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['When was NITI Aayog established?','2015','2014','2016','2017','a','Answer: 2015','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What replaced the Planning Commission?','NITI Aayog','Finance Commission','Economic Advisory Council','Ministry of Planning','a','Answer: NITI Aayog','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['When was MGNREGA enacted?','2005','2004','2006','2007','a','Answer: 2005','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['How many days of employment does MGNREGA guarantee per year?','100 days','50 days','150 days','200 days','a','Answer: 100 days','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the full form of PMAY?','Pradhan Mantri Awas Yojana','Pradhan Mantri Aajeevika Yojana','Prime Minister Awas Yojana','Pradhan Mantri Agricultural Yojana','a','Answer: Pradhan Mantri Awas Yojana','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the full form of Ayushman Bharat?','National Health Protection Scheme','National Health Insurance Scheme','National Health and Wellness Scheme','National Health Awareness Scheme','a','Answer: National Health Protection Scheme','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the full form of UPI?','Unified Payments Interface','Universal Payments Interface','Unified Payment Initiative','Universal Payment Interface','a','Answer: Unified Payments Interface','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['Who launched the UPI system in India?','NPCI','RBI','Government of India','SEBI','a','Answer: NPCI','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the full form of NPCI?','National Payments Corporation of India','National Payments Council of India','National Payment Center of India','National Payment Commission of India','a','Answer: National Payments Corporation of India','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the full form of FDI?','Foreign Direct Investment','Financial Direct Investment','Foreign Domestic Investment','Financial Domestic Investment','a','Answer: Foreign Direct Investment','Economy','Indian Economy','medium','APSC,ADRE'],
+
+  ['What is the full form of GNP?','Gross National Product','General National Product','Gross National Profit','General National Profit','a','Answer: Gross National Product','Economy','Indian Economy','medium','APSC,ADRE'],
+  ['A can complete a work in 7 days and B can complete it in 15 days. How many days will they take working together?','4.77 days','22 days','7 days','15 days','a','Combined = 7×15/(7+15) = 4.77 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 26 days. How many days will they take working together?','10.28 days','43 days','17 days','26 days','a','Combined = 17×26/(17+26) = 10.28 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 30 days. How many days will they take working together?','10.85 days','47 days','17 days','30 days','a','Combined = 17×30/(17+30) = 10.85 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 9 days. How many days will they take working together?','6.81 days','37 days','9 days','28 days','a','Combined = 28×9/(28+9) = 6.81 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 12 days and B can complete it in 12 days. How many days will they take working together?','6.0 days','24 days','12 days','12 days','a','Combined = 12×12/(12+12) = 6.0 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 10 days. How many days will they take working together?','5.65 days','23 days','10 days','13 days','a','Combined = 13×10/(13+10) = 5.65 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 24 days and B can complete it in 19 days. How many days will they take working together?','10.6 days','43 days','19 days','24 days','a','Combined = 24×19/(24+19) = 10.6 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 4 days. How many days will they take working together?','2.0 days','8 days','4 days','4 days','a','Combined = 4×4/(4+4) = 2.0 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 8 days. How many days will they take working together?','2.67 days','12 days','4 days','8 days','a','Combined = 4×8/(4+8) = 2.67 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 15 days and B can complete it in 15 days. How many days will they take working together?','7.5 days','30 days','15 days','15 days','a','Combined = 15×15/(15+15) = 7.5 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 21 days. How many days will they take working together?','2.62 days','24 days','3 days','21 days','a','Combined = 3×21/(3+21) = 2.62 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 6 days. How many days will they take working together?','4.88 days','32 days','6 days','26 days','a','Combined = 26×6/(26+6) = 4.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 7 days and B can complete it in 10 days. How many days will they take working together?','4.12 days','17 days','7 days','10 days','a','Combined = 7×10/(7+10) = 4.12 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 29 days. How many days will they take working together?','14.5 days','58 days','29 days','29 days','a','Combined = 29×29/(29+29) = 14.5 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 27 days. How many days will they take working together?','12.12 days','49 days','22 days','27 days','a','Combined = 22×27/(22+27) = 12.12 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 2 days. How many days will they take working together?','1.69 days','13 days','2 days','11 days','a','Combined = 11×2/(11+2) = 1.69 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 19 days. How many days will they take working together?','10.98 days','45 days','19 days','26 days','a','Combined = 26×19/(26+19) = 10.98 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 12 days and B can complete it in 13 days. How many days will they take working together?','6.24 days','25 days','12 days','13 days','a','Combined = 12×13/(12+13) = 6.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 10 days and B can complete it in 5 days. How many days will they take working together?','3.33 days','15 days','5 days','10 days','a','Combined = 10×5/(10+5) = 3.33 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 25 days and B can complete it in 27 days. How many days will they take working together?','12.98 days','52 days','25 days','27 days','a','Combined = 25×27/(25+27) = 12.98 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 2 days and B can complete it in 13 days. How many days will they take working together?','1.73 days','15 days','2 days','13 days','a','Combined = 2×13/(2+13) = 1.73 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 16 days. How many days will they take working together?','10.31 days','45 days','16 days','29 days','a','Combined = 29×16/(29+16) = 10.31 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 29 days. How many days will they take working together?','11.84 days','49 days','20 days','29 days','a','Combined = 20×29/(20+29) = 11.84 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 9 days and B can complete it in 22 days. How many days will they take working together?','6.39 days','31 days','9 days','22 days','a','Combined = 9×22/(9+22) = 6.39 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 19 days and B can complete it in 29 days. How many days will they take working together?','11.48 days','48 days','19 days','29 days','a','Combined = 19×29/(19+29) = 11.48 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 8 days. How many days will they take working together?','6.22 days','36 days','8 days','28 days','a','Combined = 28×8/(28+8) = 6.22 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 17 days. How many days will they take working together?','7.37 days','30 days','13 days','17 days','a','Combined = 13×17/(13+17) = 7.37 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 16 days. How many days will they take working together?','2.53 days','19 days','3 days','16 days','a','Combined = 3×16/(3+16) = 2.53 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 10 days and B can complete it in 9 days. How many days will they take working together?','4.74 days','19 days','9 days','10 days','a','Combined = 10×9/(10+9) = 4.74 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 27 days and B can complete it in 24 days. How many days will they take working together?','12.71 days','51 days','24 days','27 days','a','Combined = 27×24/(27+24) = 12.71 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 16 days and B can complete it in 15 days. How many days will they take working together?','7.74 days','31 days','15 days','16 days','a','Combined = 16×15/(16+15) = 7.74 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 27 days and B can complete it in 19 days. How many days will they take working together?','11.15 days','46 days','19 days','27 days','a','Combined = 27×19/(27+19) = 11.15 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 26 days. How many days will they take working together?','13.71 days','55 days','26 days','29 days','a','Combined = 29×26/(29+26) = 13.71 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 2 days and B can complete it in 23 days. How many days will they take working together?','1.84 days','25 days','2 days','23 days','a','Combined = 2×23/(2+23) = 1.84 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 30 days and B can complete it in 24 days. How many days will they take working together?','13.33 days','54 days','24 days','30 days','a','Combined = 30×24/(30+24) = 13.33 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 14 days. How many days will they take working together?','8.56 days','36 days','14 days','22 days','a','Combined = 22×14/(22+14) = 8.56 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 24 days. How many days will they take working together?','11.48 days','46 days','22 days','24 days','a','Combined = 22×24/(22+24) = 11.48 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 20 days. How many days will they take working together?','11.3 days','46 days','20 days','26 days','a','Combined = 26×20/(26+20) = 11.3 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 18 days and B can complete it in 17 days. How many days will they take working together?','8.74 days','35 days','17 days','18 days','a','Combined = 18×17/(18+17) = 8.74 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 15 days. How many days will they take working together?','8.57 days','35 days','15 days','20 days','a','Combined = 20×15/(20+15) = 8.57 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 10 days and B can complete it in 25 days. How many days will they take working together?','7.14 days','35 days','10 days','25 days','a','Combined = 10×25/(10+25) = 7.14 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 11 days. How many days will they take working together?','7.73 days','37 days','11 days','26 days','a','Combined = 26×11/(26+11) = 7.73 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 13 days. How many days will they take working together?','2.44 days','16 days','3 days','13 days','a','Combined = 3×13/(3+13) = 2.44 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 2 days. How many days will they take working together?','1.79 days','19 days','2 days','17 days','a','Combined = 17×2/(17+2) = 1.79 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 6 days. How many days will they take working together?','3.0 days','12 days','6 days','6 days','a','Combined = 6×6/(6+6) = 3.0 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 23 days and B can complete it in 13 days. How many days will they take working together?','8.31 days','36 days','13 days','23 days','a','Combined = 23×13/(23+13) = 8.31 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 10 days and B can complete it in 11 days. How many days will they take working together?','5.24 days','21 days','10 days','11 days','a','Combined = 10×11/(10+11) = 5.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 9 days. How many days will they take working together?','6.21 days','29 days','9 days','20 days','a','Combined = 20×9/(20+9) = 6.21 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 29 days. How many days will they take working together?','10.72 days','46 days','17 days','29 days','a','Combined = 17×29/(17+29) = 10.72 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 6 days. How many days will they take working together?','3.88 days','17 days','6 days','11 days','a','Combined = 11×6/(11+6) = 3.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 9 days and B can complete it in 19 days. How many days will they take working together?','6.11 days','28 days','9 days','19 days','a','Combined = 9×19/(9+19) = 6.11 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 24 days and B can complete it in 26 days. How many days will they take working together?','12.48 days','50 days','24 days','26 days','a','Combined = 24×26/(24+26) = 12.48 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 14 days and B can complete it in 12 days. How many days will they take working together?','6.46 days','26 days','12 days','14 days','a','Combined = 14×12/(14+12) = 6.46 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 2 days and B can complete it in 17 days. How many days will they take working together?','1.79 days','19 days','2 days','17 days','a','Combined = 2×17/(2+17) = 1.79 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 18 days and B can complete it in 19 days. How many days will they take working together?','9.24 days','37 days','18 days','19 days','a','Combined = 18×19/(18+19) = 9.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 21 days and B can complete it in 3 days. How many days will they take working together?','2.62 days','24 days','3 days','21 days','a','Combined = 21×3/(21+3) = 2.62 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 14 days. How many days will they take working together?','9.33 days','42 days','14 days','28 days','a','Combined = 28×14/(28+14) = 9.33 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 16 days and B can complete it in 12 days. How many days will they take working together?','6.86 days','28 days','12 days','16 days','a','Combined = 16×12/(16+12) = 6.86 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 15 days and B can complete it in 25 days. How many days will they take working together?','9.38 days','40 days','15 days','25 days','a','Combined = 15×25/(15+25) = 9.38 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 10 days. How many days will they take working together?','5.24 days','21 days','10 days','11 days','a','Combined = 11×10/(11+10) = 5.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 21 days and B can complete it in 23 days. How many days will they take working together?','10.98 days','44 days','21 days','23 days','a','Combined = 21×23/(21+23) = 10.98 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 24 days. How many days will they take working together?','4.8 days','30 days','6 days','24 days','a','Combined = 6×24/(6+24) = 4.8 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 25 days and B can complete it in 3 days. How many days will they take working together?','2.68 days','28 days','3 days','25 days','a','Combined = 25×3/(25+3) = 2.68 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 5 days and B can complete it in 4 days. How many days will they take working together?','2.22 days','9 days','4 days','5 days','a','Combined = 5×4/(5+4) = 2.22 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 8 days and B can complete it in 26 days. How many days will they take working together?','6.12 days','34 days','8 days','26 days','a','Combined = 8×26/(8+26) = 6.12 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 10 days. How many days will they take working together?','6.67 days','30 days','10 days','20 days','a','Combined = 20×10/(20+10) = 6.67 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 29 days. How many days will they take working together?','8.98 days','42 days','13 days','29 days','a','Combined = 13×29/(13+29) = 8.98 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 15 days and B can complete it in 18 days. How many days will they take working together?','8.18 days','33 days','15 days','18 days','a','Combined = 15×18/(15+18) = 8.18 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 20 days. How many days will they take working together?','9.19 days','37 days','17 days','20 days','a','Combined = 17×20/(17+20) = 9.19 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 9 days. How many days will they take working together?','4.95 days','20 days','9 days','11 days','a','Combined = 11×9/(11+9) = 4.95 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 14 days and B can complete it in 20 days. How many days will they take working together?','8.24 days','34 days','14 days','20 days','a','Combined = 14×20/(14+20) = 8.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 20 days. How many days will they take working together?','3.33 days','24 days','4 days','20 days','a','Combined = 4×20/(4+20) = 3.33 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 20 days. How many days will they take working together?','7.88 days','33 days','13 days','20 days','a','Combined = 13×20/(13+20) = 7.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 18 days. How many days will they take working together?','11.11 days','47 days','18 days','29 days','a','Combined = 29×18/(29+18) = 11.11 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 16 days and B can complete it in 22 days. How many days will they take working together?','9.26 days','38 days','16 days','22 days','a','Combined = 16×22/(16+22) = 9.26 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 22 days. How many days will they take working together?','10.48 days','42 days','20 days','22 days','a','Combined = 20×22/(20+22) = 10.48 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 14 days. How many days will they take working together?','4.2 days','20 days','6 days','14 days','a','Combined = 6×14/(6+14) = 4.2 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 20 days. How many days will they take working together?','11.84 days','49 days','20 days','29 days','a','Combined = 29×20/(29+20) = 11.84 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 3 days. How many days will they take working together?','1.71 days','7 days','3 days','4 days','a','Combined = 4×3/(4+3) = 1.71 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 16 days. How many days will they take working together?','9.9 days','42 days','16 days','26 days','a','Combined = 26×16/(26+16) = 9.9 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 11 days. How many days will they take working together?','3.88 days','17 days','6 days','11 days','a','Combined = 6×11/(6+11) = 3.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 24 days. How many days will they take working together?','3.43 days','28 days','4 days','24 days','a','Combined = 4×24/(4+24) = 3.43 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 20 days. How many days will they take working together?','2.61 days','23 days','3 days','20 days','a','Combined = 3×20/(3+20) = 2.61 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 26 days. How many days will they take working together?','11.3 days','46 days','20 days','26 days','a','Combined = 20×26/(20+26) = 11.3 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 24 days. How many days will they take working together?','8.43 days','37 days','13 days','24 days','a','Combined = 13×24/(13+24) = 8.43 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 5 days and B can complete it in 29 days. How many days will they take working together?','4.26 days','34 days','5 days','29 days','a','Combined = 5×29/(5+29) = 4.26 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 27 days. How many days will they take working together?','13.98 days','56 days','27 days','29 days','a','Combined = 29×27/(29+27) = 13.98 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 21 days and B can complete it in 2 days. How many days will they take working together?','1.83 days','23 days','2 days','21 days','a','Combined = 21×2/(21+2) = 1.83 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 5 days. How many days will they take working together?','4.24 days','33 days','5 days','28 days','a','Combined = 28×5/(28+5) = 4.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 5 days and B can complete it in 27 days. How many days will they take working together?','4.22 days','32 days','5 days','27 days','a','Combined = 5×27/(5+27) = 4.22 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 27 days. How many days will they take working together?','11.49 days','47 days','20 days','27 days','a','Combined = 20×27/(20+27) = 11.49 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 9 days and B can complete it in 3 days. How many days will they take working together?','2.25 days','12 days','3 days','9 days','a','Combined = 9×3/(9+3) = 2.25 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 13 days. How many days will they take working together?','3.06 days','17 days','4 days','13 days','a','Combined = 4×13/(4+13) = 3.06 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 21 days and B can complete it in 27 days. How many days will they take working together?','11.81 days','48 days','21 days','27 days','a','Combined = 21×27/(21+27) = 11.81 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 13 days. How many days will they take working together?','7.37 days','30 days','13 days','17 days','a','Combined = 17×13/(17+13) = 7.37 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 8 days and B can complete it in 24 days. How many days will they take working together?','6.0 days','32 days','8 days','24 days','a','Combined = 8×24/(8+24) = 6.0 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 12 days and B can complete it in 30 days. How many days will they take working together?','8.57 days','42 days','12 days','30 days','a','Combined = 12×30/(12+30) = 8.57 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 17 days. How many days will they take working together?','8.5 days','34 days','17 days','17 days','a','Combined = 17×17/(17+17) = 8.5 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 23 days and B can complete it in 8 days. How many days will they take working together?','5.94 days','31 days','8 days','23 days','a','Combined = 23×8/(23+8) = 5.94 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 23 days and B can complete it in 17 days. How many days will they take working together?','9.78 days','40 days','17 days','23 days','a','Combined = 23×17/(23+17) = 9.78 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 18 days and B can complete it in 13 days. How many days will they take working together?','7.55 days','31 days','13 days','18 days','a','Combined = 18×13/(18+13) = 7.55 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 7 days. How many days will they take working together?','5.31 days','29 days','7 days','22 days','a','Combined = 22×7/(22+7) = 5.31 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 21 days and B can complete it in 16 days. How many days will they take working together?','9.08 days','37 days','16 days','21 days','a','Combined = 21×16/(21+16) = 9.08 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 27 days. How many days will they take working together?','3.48 days','31 days','4 days','27 days','a','Combined = 4×27/(4+27) = 3.48 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 23 days. How many days will they take working together?','10.7 days','43 days','20 days','23 days','a','Combined = 20×23/(20+23) = 10.7 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 12 days and B can complete it in 22 days. How many days will they take working together?','7.76 days','34 days','12 days','22 days','a','Combined = 12×22/(12+22) = 7.76 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 25 days and B can complete it in 25 days. How many days will they take working together?','12.5 days','50 days','25 days','25 days','a','Combined = 25×25/(25+25) = 12.5 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 9 days and B can complete it in 27 days. How many days will they take working together?','6.75 days','36 days','9 days','27 days','a','Combined = 9×27/(9+27) = 6.75 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 20 days. How many days will they take working together?','11.67 days','48 days','20 days','28 days','a','Combined = 28×20/(28+20) = 11.67 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 9 days and B can complete it in 11 days. How many days will they take working together?','4.95 days','20 days','9 days','11 days','a','Combined = 9×11/(9+11) = 4.95 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 19 days and B can complete it in 10 days. How many days will they take working together?','6.55 days','29 days','10 days','19 days','a','Combined = 19×10/(19+10) = 6.55 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 19 days and B can complete it in 9 days. How many days will they take working together?','6.11 days','28 days','9 days','19 days','a','Combined = 19×9/(19+9) = 6.11 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 25 days and B can complete it in 9 days. How many days will they take working together?','6.62 days','34 days','9 days','25 days','a','Combined = 25×9/(25+9) = 6.62 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 10 days and B can complete it in 2 days. How many days will they take working together?','1.67 days','12 days','2 days','10 days','a','Combined = 10×2/(10+2) = 1.67 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 28 days. How many days will they take working together?','14.25 days','57 days','28 days','29 days','a','Combined = 29×28/(29+28) = 14.25 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 30 days. How many days will they take working together?','12.69 days','52 days','22 days','30 days','a','Combined = 22×30/(22+30) = 12.69 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 15 days and B can complete it in 29 days. How many days will they take working together?','9.89 days','44 days','15 days','29 days','a','Combined = 15×29/(15+29) = 9.89 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 7 days and B can complete it in 27 days. How many days will they take working together?','5.56 days','34 days','7 days','27 days','a','Combined = 7×27/(7+27) = 5.56 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 30 days and B can complete it in 2 days. How many days will they take working together?','1.88 days','32 days','2 days','30 days','a','Combined = 30×2/(30+2) = 1.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 27 days and B can complete it in 23 days. How many days will they take working together?','12.42 days','50 days','23 days','27 days','a','Combined = 27×23/(27+23) = 12.42 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 14 days and B can complete it in 27 days. How many days will they take working together?','9.22 days','41 days','14 days','27 days','a','Combined = 14×27/(14+27) = 9.22 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 27 days and B can complete it in 18 days. How many days will they take working together?','10.8 days','45 days','18 days','27 days','a','Combined = 27×18/(27+18) = 10.8 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 4 days. How many days will they take working together?','3.5 days','32 days','4 days','28 days','a','Combined = 28×4/(28+4) = 3.5 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 12 days and B can complete it in 29 days. How many days will they take working together?','8.49 days','41 days','12 days','29 days','a','Combined = 12×29/(12+29) = 8.49 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 5 days. How many days will they take working together?','3.44 days','16 days','5 days','11 days','a','Combined = 11×5/(11+5) = 3.44 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 22 days. How many days will they take working together?','7.33 days','33 days','11 days','22 days','a','Combined = 11×22/(11+22) = 7.33 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 8 days and B can complete it in 18 days. How many days will they take working together?','5.54 days','26 days','8 days','18 days','a','Combined = 8×18/(8+18) = 5.54 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 17 days. How many days will they take working together?','10.58 days','45 days','17 days','28 days','a','Combined = 28×17/(28+17) = 10.58 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 24 days. How many days will they take working together?','7.54 days','35 days','11 days','24 days','a','Combined = 11×24/(11+24) = 7.54 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 2 days. How many days will they take working together?','1.83 days','24 days','2 days','22 days','a','Combined = 22×2/(22+2) = 1.83 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 6 days. How many days will they take working together?','4.62 days','26 days','6 days','20 days','a','Combined = 20×6/(20+6) = 4.62 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 7 days and B can complete it in 22 days. How many days will they take working together?','5.31 days','29 days','7 days','22 days','a','Combined = 7×22/(7+22) = 5.31 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 22 days and B can complete it in 28 days. How many days will they take working together?','12.32 days','50 days','22 days','28 days','a','Combined = 22×28/(22+28) = 12.32 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 2 days and B can complete it in 11 days. How many days will they take working together?','1.69 days','13 days','2 days','11 days','a','Combined = 2×11/(2+11) = 1.69 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 2 days and B can complete it in 12 days. How many days will they take working together?','1.71 days','14 days','2 days','12 days','a','Combined = 2×12/(2+12) = 1.71 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 23 days and B can complete it in 12 days. How many days will they take working together?','7.89 days','35 days','12 days','23 days','a','Combined = 23×12/(23+12) = 7.89 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 27 days and B can complete it in 27 days. How many days will they take working together?','13.5 days','54 days','27 days','27 days','a','Combined = 27×27/(27+27) = 13.5 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 15 days. How many days will they take working together?','4.29 days','21 days','6 days','15 days','a','Combined = 6×15/(6+15) = 4.29 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 2 days. How many days will they take working together?','1.73 days','15 days','2 days','13 days','a','Combined = 13×2/(13+2) = 1.73 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 15 days. How many days will they take working together?','6.96 days','28 days','13 days','15 days','a','Combined = 13×15/(13+15) = 6.96 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 18 days and B can complete it in 24 days. How many days will they take working together?','10.29 days','42 days','18 days','24 days','a','Combined = 18×24/(18+24) = 10.29 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 5 days and B can complete it in 11 days. How many days will they take working together?','3.44 days','16 days','5 days','11 days','a','Combined = 5×11/(5+11) = 3.44 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 14 days and B can complete it in 5 days. How many days will they take working together?','3.68 days','19 days','5 days','14 days','a','Combined = 14×5/(14+5) = 3.68 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 21 days and B can complete it in 4 days. How many days will they take working together?','3.36 days','25 days','4 days','21 days','a','Combined = 21×4/(21+4) = 3.36 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 16 days and B can complete it in 27 days. How many days will they take working together?','10.05 days','43 days','16 days','27 days','a','Combined = 16×27/(16+27) = 10.05 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 29 days and B can complete it in 14 days. How many days will they take working together?','9.44 days','43 days','14 days','29 days','a','Combined = 29×14/(29+14) = 9.44 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 17 days and B can complete it in 14 days. How many days will they take working together?','7.68 days','31 days','14 days','17 days','a','Combined = 17×14/(17+14) = 7.68 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 15 days. How many days will they take working together?','6.35 days','26 days','11 days','15 days','a','Combined = 11×15/(11+15) = 6.35 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 12 days. How many days will they take working together?','2.4 days','15 days','3 days','12 days','a','Combined = 3×12/(3+12) = 2.4 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 2 days and B can complete it in 26 days. How many days will they take working together?','1.86 days','28 days','2 days','26 days','a','Combined = 2×26/(2+26) = 1.86 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 26 days. How many days will they take working together?','4.88 days','32 days','6 days','26 days','a','Combined = 6×26/(6+26) = 4.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 19 days and B can complete it in 14 days. How many days will they take working together?','8.06 days','33 days','14 days','19 days','a','Combined = 19×14/(19+14) = 8.06 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 16 days. How many days will they take working together?','8.89 days','36 days','16 days','20 days','a','Combined = 20×16/(20+16) = 8.89 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 5 days and B can complete it in 17 days. How many days will they take working together?','3.86 days','22 days','5 days','17 days','a','Combined = 5×17/(5+17) = 3.86 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 23 days and B can complete it in 3 days. How many days will they take working together?','2.65 days','26 days','3 days','23 days','a','Combined = 23×3/(23+3) = 2.65 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 7 days and B can complete it in 19 days. How many days will they take working together?','5.12 days','26 days','7 days','19 days','a','Combined = 7×19/(7+19) = 5.12 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 8 days and B can complete it in 19 days. How many days will they take working together?','5.63 days','27 days','8 days','19 days','a','Combined = 8×19/(8+19) = 5.63 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 21 days. How many days will they take working together?','11.62 days','47 days','21 days','26 days','a','Combined = 26×21/(26+21) = 11.62 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 4 days. How many days will they take working together?','1.71 days','7 days','3 days','4 days','a','Combined = 3×4/(3+4) = 1.71 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 6 days and B can complete it in 10 days. How many days will they take working together?','3.75 days','16 days','6 days','10 days','a','Combined = 6×10/(6+10) = 3.75 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 8 days and B can complete it in 28 days. How many days will they take working together?','6.22 days','36 days','8 days','28 days','a','Combined = 8×28/(8+28) = 6.22 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 8 days and B can complete it in 12 days. How many days will they take working together?','4.8 days','20 days','8 days','12 days','a','Combined = 8×12/(8+12) = 4.8 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 25 days and B can complete it in 17 days. How many days will they take working together?','10.12 days','42 days','17 days','25 days','a','Combined = 25×17/(25+17) = 10.12 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 12 days. How many days will they take working together?','6.24 days','25 days','12 days','13 days','a','Combined = 13×12/(13+12) = 6.24 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 3 days. How many days will they take working together?','2.61 days','23 days','3 days','20 days','a','Combined = 20×3/(20+3) = 2.61 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 14 days and B can complete it in 17 days. How many days will they take working together?','7.68 days','31 days','14 days','17 days','a','Combined = 14×17/(14+17) = 7.68 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 13 days and B can complete it in 6 days. How many days will they take working together?','4.11 days','19 days','6 days','13 days','a','Combined = 13×6/(13+6) = 4.11 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 15 days and B can complete it in 13 days. How many days will they take working together?','6.96 days','28 days','13 days','15 days','a','Combined = 15×13/(15+13) = 6.96 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 30 days and B can complete it in 8 days. How many days will they take working together?','6.32 days','38 days','8 days','30 days','a','Combined = 30×8/(30+8) = 6.32 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 28 days and B can complete it in 24 days. How many days will they take working together?','12.92 days','52 days','24 days','28 days','a','Combined = 28×24/(28+24) = 12.92 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 20 days and B can complete it in 13 days. How many days will they take working together?','7.88 days','33 days','13 days','20 days','a','Combined = 20×13/(20+13) = 7.88 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 24 days and B can complete it in 14 days. How many days will they take working together?','8.84 days','38 days','14 days','24 days','a','Combined = 24×14/(24+14) = 8.84 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 30 days and B can complete it in 20 days. How many days will they take working together?','12.0 days','50 days','20 days','30 days','a','Combined = 30×20/(30+20) = 12.0 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 4 days and B can complete it in 9 days. How many days will they take working together?','2.77 days','13 days','4 days','9 days','a','Combined = 4×9/(4+9) = 2.77 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 11 days and B can complete it in 28 days. How many days will they take working together?','7.9 days','39 days','11 days','28 days','a','Combined = 11×28/(11+28) = 7.9 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 24 days and B can complete it in 18 days. How many days will they take working together?','10.29 days','42 days','18 days','24 days','a','Combined = 24×18/(24+18) = 10.29 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 3 days and B can complete it in 29 days. How many days will they take working together?','2.72 days','32 days','3 days','29 days','a','Combined = 3×29/(3+29) = 2.72 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A can complete a work in 26 days and B can complete it in 18 days. How many days will they take working together?','10.64 days','44 days','18 days','26 days','a','Combined = 26×18/(26+18) = 10.64 days','Mathematics','Arithmetic','hard','APSC,ADRE'],
+
+  ['A car travels at 98 km/h for 7 hours. What distance does it cover?','686 km','696 km','676 km','1372 km','a','Distance = Speed × Time = 98 × 7 = 686 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 23 km/h for 3 hours. What distance does it cover?','69 km','79 km','59 km','138 km','a','Distance = Speed × Time = 23 × 3 = 69 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 44 km/h for 5 hours. What distance does it cover?','220 km','230 km','210 km','440 km','a','Distance = Speed × Time = 44 × 5 = 220 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 43 km/h for 3 hours. What distance does it cover?','129 km','139 km','119 km','258 km','a','Distance = Speed × Time = 43 × 3 = 129 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 85 km/h for 4 hours. What distance does it cover?','340 km','350 km','330 km','680 km','a','Distance = Speed × Time = 85 × 4 = 340 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 54 km/h for 9 hours. What distance does it cover?','486 km','496 km','476 km','972 km','a','Distance = Speed × Time = 54 × 9 = 486 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 74 km/h for 1 hours. What distance does it cover?','74 km','84 km','64 km','148 km','a','Distance = Speed × Time = 74 × 1 = 74 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 114 km/h for 5 hours. What distance does it cover?','570 km','580 km','560 km','1140 km','a','Distance = Speed × Time = 114 × 5 = 570 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 78 km/h for 10 hours. What distance does it cover?','780 km','790 km','770 km','1560 km','a','Distance = Speed × Time = 78 × 10 = 780 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 24 km/h for 6 hours. What distance does it cover?','144 km','154 km','134 km','288 km','a','Distance = Speed × Time = 24 × 6 = 144 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 33 km/h for 10 hours. What distance does it cover?','330 km','340 km','320 km','660 km','a','Distance = Speed × Time = 33 × 10 = 330 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 75 km/h for 2 hours. What distance does it cover?','150 km','160 km','140 km','300 km','a','Distance = Speed × Time = 75 × 2 = 150 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 34 km/h for 7 hours. What distance does it cover?','238 km','248 km','228 km','476 km','a','Distance = Speed × Time = 34 × 7 = 238 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 85 km/h for 3 hours. What distance does it cover?','255 km','265 km','245 km','510 km','a','Distance = Speed × Time = 85 × 3 = 255 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 75 km/h for 10 hours. What distance does it cover?','750 km','760 km','740 km','1500 km','a','Distance = Speed × Time = 75 × 10 = 750 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 66 km/h for 10 hours. What distance does it cover?','660 km','670 km','650 km','1320 km','a','Distance = Speed × Time = 66 × 10 = 660 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 37 km/h for 10 hours. What distance does it cover?','370 km','380 km','360 km','740 km','a','Distance = Speed × Time = 37 × 10 = 370 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 92 km/h for 7 hours. What distance does it cover?','644 km','654 km','634 km','1288 km','a','Distance = Speed × Time = 92 × 7 = 644 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 104 km/h for 2 hours. What distance does it cover?','208 km','218 km','198 km','416 km','a','Distance = Speed × Time = 104 × 2 = 208 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 48 km/h for 10 hours. What distance does it cover?','480 km','490 km','470 km','960 km','a','Distance = Speed × Time = 48 × 10 = 480 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 59 km/h for 3 hours. What distance does it cover?','177 km','187 km','167 km','354 km','a','Distance = Speed × Time = 59 × 3 = 177 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 70 km/h for 7 hours. What distance does it cover?','490 km','500 km','480 km','980 km','a','Distance = Speed × Time = 70 × 7 = 490 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 109 km/h for 6 hours. What distance does it cover?','654 km','664 km','644 km','1308 km','a','Distance = Speed × Time = 109 × 6 = 654 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 25 km/h for 8 hours. What distance does it cover?','200 km','210 km','190 km','400 km','a','Distance = Speed × Time = 25 × 8 = 200 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 43 km/h for 2 hours. What distance does it cover?','86 km','96 km','76 km','172 km','a','Distance = Speed × Time = 43 × 2 = 86 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 103 km/h for 2 hours. What distance does it cover?','206 km','216 km','196 km','412 km','a','Distance = Speed × Time = 103 × 2 = 206 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 26 km/h for 9 hours. What distance does it cover?','234 km','244 km','224 km','468 km','a','Distance = Speed × Time = 26 × 9 = 234 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 76 km/h for 7 hours. What distance does it cover?','532 km','542 km','522 km','1064 km','a','Distance = Speed × Time = 76 × 7 = 532 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 52 km/h for 1 hours. What distance does it cover?','52 km','62 km','42 km','104 km','a','Distance = Speed × Time = 52 × 1 = 52 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 106 km/h for 7 hours. What distance does it cover?','742 km','752 km','732 km','1484 km','a','Distance = Speed × Time = 106 × 7 = 742 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 100 km/h for 2 hours. What distance does it cover?','200 km','210 km','190 km','400 km','a','Distance = Speed × Time = 100 × 2 = 200 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 98 km/h for 9 hours. What distance does it cover?','882 km','892 km','872 km','1764 km','a','Distance = Speed × Time = 98 × 9 = 882 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 71 km/h for 2 hours. What distance does it cover?','142 km','152 km','132 km','284 km','a','Distance = Speed × Time = 71 × 2 = 142 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 94 km/h for 7 hours. What distance does it cover?','658 km','668 km','648 km','1316 km','a','Distance = Speed × Time = 94 × 7 = 658 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 77 km/h for 3 hours. What distance does it cover?','231 km','241 km','221 km','462 km','a','Distance = Speed × Time = 77 × 3 = 231 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 110 km/h for 6 hours. What distance does it cover?','660 km','670 km','650 km','1320 km','a','Distance = Speed × Time = 110 × 6 = 660 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 112 km/h for 9 hours. What distance does it cover?','1008 km','1018 km','998 km','2016 km','a','Distance = Speed × Time = 112 × 9 = 1008 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 86 km/h for 4 hours. What distance does it cover?','344 km','354 km','334 km','688 km','a','Distance = Speed × Time = 86 × 4 = 344 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 106 km/h for 1 hours. What distance does it cover?','106 km','116 km','96 km','212 km','a','Distance = Speed × Time = 106 × 1 = 106 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 119 km/h for 5 hours. What distance does it cover?','595 km','605 km','585 km','1190 km','a','Distance = Speed × Time = 119 × 5 = 595 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 116 km/h for 1 hours. What distance does it cover?','116 km','126 km','106 km','232 km','a','Distance = Speed × Time = 116 × 1 = 116 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 105 km/h for 10 hours. What distance does it cover?','1050 km','1060 km','1040 km','2100 km','a','Distance = Speed × Time = 105 × 10 = 1050 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 58 km/h for 6 hours. What distance does it cover?','348 km','358 km','338 km','696 km','a','Distance = Speed × Time = 58 × 6 = 348 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 92 km/h for 3 hours. What distance does it cover?','276 km','286 km','266 km','552 km','a','Distance = Speed × Time = 92 × 3 = 276 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 54 km/h for 3 hours. What distance does it cover?','162 km','172 km','152 km','324 km','a','Distance = Speed × Time = 54 × 3 = 162 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 34 km/h for 1 hours. What distance does it cover?','34 km','44 km','24 km','68 km','a','Distance = Speed × Time = 34 × 1 = 34 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 97 km/h for 9 hours. What distance does it cover?','873 km','883 km','863 km','1746 km','a','Distance = Speed × Time = 97 × 9 = 873 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 73 km/h for 8 hours. What distance does it cover?','584 km','594 km','574 km','1168 km','a','Distance = Speed × Time = 73 × 8 = 584 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 74 km/h for 8 hours. What distance does it cover?','592 km','602 km','582 km','1184 km','a','Distance = Speed × Time = 74 × 8 = 592 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 117 km/h for 5 hours. What distance does it cover?','585 km','595 km','575 km','1170 km','a','Distance = Speed × Time = 117 × 5 = 585 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 24 km/h for 5 hours. What distance does it cover?','120 km','130 km','110 km','240 km','a','Distance = Speed × Time = 24 × 5 = 120 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 42 km/h for 3 hours. What distance does it cover?','126 km','136 km','116 km','252 km','a','Distance = Speed × Time = 42 × 3 = 126 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 102 km/h for 6 hours. What distance does it cover?','612 km','622 km','602 km','1224 km','a','Distance = Speed × Time = 102 × 6 = 612 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 81 km/h for 1 hours. What distance does it cover?','81 km','91 km','71 km','162 km','a','Distance = Speed × Time = 81 × 1 = 81 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 45 km/h for 9 hours. What distance does it cover?','405 km','415 km','395 km','810 km','a','Distance = Speed × Time = 45 × 9 = 405 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 101 km/h for 3 hours. What distance does it cover?','303 km','313 km','293 km','606 km','a','Distance = Speed × Time = 101 × 3 = 303 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 56 km/h for 6 hours. What distance does it cover?','336 km','346 km','326 km','672 km','a','Distance = Speed × Time = 56 × 6 = 336 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 113 km/h for 2 hours. What distance does it cover?','226 km','236 km','216 km','452 km','a','Distance = Speed × Time = 113 × 2 = 226 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 40 km/h for 8 hours. What distance does it cover?','320 km','330 km','310 km','640 km','a','Distance = Speed × Time = 40 × 8 = 320 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 92 km/h for 2 hours. What distance does it cover?','184 km','194 km','174 km','368 km','a','Distance = Speed × Time = 92 × 2 = 184 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 50 km/h for 2 hours. What distance does it cover?','100 km','110 km','90 km','200 km','a','Distance = Speed × Time = 50 × 2 = 100 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 72 km/h for 4 hours. What distance does it cover?','288 km','298 km','278 km','576 km','a','Distance = Speed × Time = 72 × 4 = 288 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 73 km/h for 3 hours. What distance does it cover?','219 km','229 km','209 km','438 km','a','Distance = Speed × Time = 73 × 3 = 219 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 63 km/h for 8 hours. What distance does it cover?','504 km','514 km','494 km','1008 km','a','Distance = Speed × Time = 63 × 8 = 504 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 66 km/h for 9 hours. What distance does it cover?','594 km','604 km','584 km','1188 km','a','Distance = Speed × Time = 66 × 9 = 594 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 107 km/h for 5 hours. What distance does it cover?','535 km','545 km','525 km','1070 km','a','Distance = Speed × Time = 107 × 5 = 535 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 29 km/h for 2 hours. What distance does it cover?','58 km','68 km','48 km','116 km','a','Distance = Speed × Time = 29 × 2 = 58 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 23 km/h for 2 hours. What distance does it cover?','46 km','56 km','36 km','92 km','a','Distance = Speed × Time = 23 × 2 = 46 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 30 km/h for 5 hours. What distance does it cover?','150 km','160 km','140 km','300 km','a','Distance = Speed × Time = 30 × 5 = 150 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 35 km/h for 5 hours. What distance does it cover?','175 km','185 km','165 km','350 km','a','Distance = Speed × Time = 35 × 5 = 175 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 105 km/h for 7 hours. What distance does it cover?','735 km','745 km','725 km','1470 km','a','Distance = Speed × Time = 105 × 7 = 735 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 93 km/h for 7 hours. What distance does it cover?','651 km','661 km','641 km','1302 km','a','Distance = Speed × Time = 93 × 7 = 651 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 60 km/h for 7 hours. What distance does it cover?','420 km','430 km','410 km','840 km','a','Distance = Speed × Time = 60 × 7 = 420 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 21 km/h for 4 hours. What distance does it cover?','84 km','94 km','74 km','168 km','a','Distance = Speed × Time = 21 × 4 = 84 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 38 km/h for 7 hours. What distance does it cover?','266 km','276 km','256 km','532 km','a','Distance = Speed × Time = 38 × 7 = 266 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 49 km/h for 4 hours. What distance does it cover?','196 km','206 km','186 km','392 km','a','Distance = Speed × Time = 49 × 4 = 196 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 22 km/h for 8 hours. What distance does it cover?','176 km','186 km','166 km','352 km','a','Distance = Speed × Time = 22 × 8 = 176 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 22 km/h for 10 hours. What distance does it cover?','220 km','230 km','210 km','440 km','a','Distance = Speed × Time = 22 × 10 = 220 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 60 km/h for 4 hours. What distance does it cover?','240 km','250 km','230 km','480 km','a','Distance = Speed × Time = 60 × 4 = 240 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 112 km/h for 4 hours. What distance does it cover?','448 km','458 km','438 km','896 km','a','Distance = Speed × Time = 112 × 4 = 448 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 51 km/h for 4 hours. What distance does it cover?','204 km','214 km','194 km','408 km','a','Distance = Speed × Time = 51 × 4 = 204 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 75 km/h for 5 hours. What distance does it cover?','375 km','385 km','365 km','750 km','a','Distance = Speed × Time = 75 × 5 = 375 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 47 km/h for 4 hours. What distance does it cover?','188 km','198 km','178 km','376 km','a','Distance = Speed × Time = 47 × 4 = 188 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 113 km/h for 7 hours. What distance does it cover?','791 km','801 km','781 km','1582 km','a','Distance = Speed × Time = 113 × 7 = 791 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 69 km/h for 4 hours. What distance does it cover?','276 km','286 km','266 km','552 km','a','Distance = Speed × Time = 69 × 4 = 276 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 105 km/h for 3 hours. What distance does it cover?','315 km','325 km','305 km','630 km','a','Distance = Speed × Time = 105 × 3 = 315 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 37 km/h for 6 hours. What distance does it cover?','222 km','232 km','212 km','444 km','a','Distance = Speed × Time = 37 × 6 = 222 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 32 km/h for 9 hours. What distance does it cover?','288 km','298 km','278 km','576 km','a','Distance = Speed × Time = 32 × 9 = 288 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 115 km/h for 3 hours. What distance does it cover?','345 km','355 km','335 km','690 km','a','Distance = Speed × Time = 115 × 3 = 345 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 98 km/h for 1 hours. What distance does it cover?','98 km','108 km','88 km','196 km','a','Distance = Speed × Time = 98 × 1 = 98 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 82 km/h for 9 hours. What distance does it cover?','738 km','748 km','728 km','1476 km','a','Distance = Speed × Time = 82 × 9 = 738 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 72 km/h for 1 hours. What distance does it cover?','72 km','82 km','62 km','144 km','a','Distance = Speed × Time = 72 × 1 = 72 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 114 km/h for 7 hours. What distance does it cover?','798 km','808 km','788 km','1596 km','a','Distance = Speed × Time = 114 × 7 = 798 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 108 km/h for 1 hours. What distance does it cover?','108 km','118 km','98 km','216 km','a','Distance = Speed × Time = 108 × 1 = 108 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 114 km/h for 1 hours. What distance does it cover?','114 km','124 km','104 km','228 km','a','Distance = Speed × Time = 114 × 1 = 114 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 54 km/h for 7 hours. What distance does it cover?','378 km','388 km','368 km','756 km','a','Distance = Speed × Time = 54 × 7 = 378 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 114 km/h for 3 hours. What distance does it cover?','342 km','352 km','332 km','684 km','a','Distance = Speed × Time = 114 × 3 = 342 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 108 km/h for 8 hours. What distance does it cover?','864 km','874 km','854 km','1728 km','a','Distance = Speed × Time = 108 × 8 = 864 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 47 km/h for 1 hours. What distance does it cover?','47 km','57 km','37 km','94 km','a','Distance = Speed × Time = 47 × 1 = 47 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 21 km/h for 2 hours. What distance does it cover?','42 km','52 km','32 km','84 km','a','Distance = Speed × Time = 21 × 2 = 42 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 79 km/h for 9 hours. What distance does it cover?','711 km','721 km','701 km','1422 km','a','Distance = Speed × Time = 79 × 9 = 711 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 29 km/h for 7 hours. What distance does it cover?','203 km','213 km','193 km','406 km','a','Distance = Speed × Time = 29 × 7 = 203 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 70 km/h for 8 hours. What distance does it cover?','560 km','570 km','550 km','1120 km','a','Distance = Speed × Time = 70 × 8 = 560 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 47 km/h for 9 hours. What distance does it cover?','423 km','433 km','413 km','846 km','a','Distance = Speed × Time = 47 × 9 = 423 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 35 km/h for 3 hours. What distance does it cover?','105 km','115 km','95 km','210 km','a','Distance = Speed × Time = 35 × 3 = 105 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 26 km/h for 10 hours. What distance does it cover?','260 km','270 km','250 km','520 km','a','Distance = Speed × Time = 26 × 10 = 260 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 71 km/h for 6 hours. What distance does it cover?','426 km','436 km','416 km','852 km','a','Distance = Speed × Time = 71 × 6 = 426 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 55 km/h for 8 hours. What distance does it cover?','440 km','450 km','430 km','880 km','a','Distance = Speed × Time = 55 × 8 = 440 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 107 km/h for 6 hours. What distance does it cover?','642 km','652 km','632 km','1284 km','a','Distance = Speed × Time = 107 × 6 = 642 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 57 km/h for 9 hours. What distance does it cover?','513 km','523 km','503 km','1026 km','a','Distance = Speed × Time = 57 × 9 = 513 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 97 km/h for 6 hours. What distance does it cover?','582 km','592 km','572 km','1164 km','a','Distance = Speed × Time = 97 × 6 = 582 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 63 km/h for 6 hours. What distance does it cover?','378 km','388 km','368 km','756 km','a','Distance = Speed × Time = 63 × 6 = 378 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 94 km/h for 3 hours. What distance does it cover?','282 km','292 km','272 km','564 km','a','Distance = Speed × Time = 94 × 3 = 282 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 66 km/h for 5 hours. What distance does it cover?','330 km','340 km','320 km','660 km','a','Distance = Speed × Time = 66 × 5 = 330 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 77 km/h for 7 hours. What distance does it cover?','539 km','549 km','529 km','1078 km','a','Distance = Speed × Time = 77 × 7 = 539 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 101 km/h for 8 hours. What distance does it cover?','808 km','818 km','798 km','1616 km','a','Distance = Speed × Time = 101 × 8 = 808 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 104 km/h for 4 hours. What distance does it cover?','416 km','426 km','406 km','832 km','a','Distance = Speed × Time = 104 × 4 = 416 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 67 km/h for 6 hours. What distance does it cover?','402 km','412 km','392 km','804 km','a','Distance = Speed × Time = 67 × 6 = 402 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 93 km/h for 8 hours. What distance does it cover?','744 km','754 km','734 km','1488 km','a','Distance = Speed × Time = 93 × 8 = 744 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 102 km/h for 2 hours. What distance does it cover?','204 km','214 km','194 km','408 km','a','Distance = Speed × Time = 102 × 2 = 204 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 112 km/h for 10 hours. What distance does it cover?','1120 km','1130 km','1110 km','2240 km','a','Distance = Speed × Time = 112 × 10 = 1120 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 107 km/h for 4 hours. What distance does it cover?','428 km','438 km','418 km','856 km','a','Distance = Speed × Time = 107 × 4 = 428 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 84 km/h for 1 hours. What distance does it cover?','84 km','94 km','74 km','168 km','a','Distance = Speed × Time = 84 × 1 = 84 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 116 km/h for 8 hours. What distance does it cover?','928 km','938 km','918 km','1856 km','a','Distance = Speed × Time = 116 × 8 = 928 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 43 km/h for 7 hours. What distance does it cover?','301 km','311 km','291 km','602 km','a','Distance = Speed × Time = 43 × 7 = 301 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 106 km/h for 9 hours. What distance does it cover?','954 km','964 km','944 km','1908 km','a','Distance = Speed × Time = 106 × 9 = 954 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 82 km/h for 2 hours. What distance does it cover?','164 km','174 km','154 km','328 km','a','Distance = Speed × Time = 82 × 2 = 164 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 119 km/h for 6 hours. What distance does it cover?','714 km','724 km','704 km','1428 km','a','Distance = Speed × Time = 119 × 6 = 714 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 20 km/h for 10 hours. What distance does it cover?','200 km','210 km','190 km','400 km','a','Distance = Speed × Time = 20 × 10 = 200 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 26 km/h for 1 hours. What distance does it cover?','26 km','36 km','16 km','52 km','a','Distance = Speed × Time = 26 × 1 = 26 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 58 km/h for 8 hours. What distance does it cover?','464 km','474 km','454 km','928 km','a','Distance = Speed × Time = 58 × 8 = 464 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 47 km/h for 7 hours. What distance does it cover?','329 km','339 km','319 km','658 km','a','Distance = Speed × Time = 47 × 7 = 329 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 59 km/h for 2 hours. What distance does it cover?','118 km','128 km','108 km','236 km','a','Distance = Speed × Time = 59 × 2 = 118 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 32 km/h for 10 hours. What distance does it cover?','320 km','330 km','310 km','640 km','a','Distance = Speed × Time = 32 × 10 = 320 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 41 km/h for 2 hours. What distance does it cover?','82 km','92 km','72 km','164 km','a','Distance = Speed × Time = 41 × 2 = 82 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 117 km/h for 6 hours. What distance does it cover?','702 km','712 km','692 km','1404 km','a','Distance = Speed × Time = 117 × 6 = 702 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 50 km/h for 9 hours. What distance does it cover?','450 km','460 km','440 km','900 km','a','Distance = Speed × Time = 50 × 9 = 450 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 40 km/h for 3 hours. What distance does it cover?','120 km','130 km','110 km','240 km','a','Distance = Speed × Time = 40 × 3 = 120 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 78 km/h for 5 hours. What distance does it cover?','390 km','400 km','380 km','780 km','a','Distance = Speed × Time = 78 × 5 = 390 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 29 km/h for 3 hours. What distance does it cover?','87 km','97 km','77 km','174 km','a','Distance = Speed × Time = 29 × 3 = 87 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 55 km/h for 4 hours. What distance does it cover?','220 km','230 km','210 km','440 km','a','Distance = Speed × Time = 55 × 4 = 220 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 66 km/h for 3 hours. What distance does it cover?','198 km','208 km','188 km','396 km','a','Distance = Speed × Time = 66 × 3 = 198 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 60 km/h for 2 hours. What distance does it cover?','120 km','130 km','110 km','240 km','a','Distance = Speed × Time = 60 × 2 = 120 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 27 km/h for 4 hours. What distance does it cover?','108 km','118 km','98 km','216 km','a','Distance = Speed × Time = 27 × 4 = 108 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 76 km/h for 8 hours. What distance does it cover?','608 km','618 km','598 km','1216 km','a','Distance = Speed × Time = 76 × 8 = 608 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 102 km/h for 5 hours. What distance does it cover?','510 km','520 km','500 km','1020 km','a','Distance = Speed × Time = 102 × 5 = 510 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 54 km/h for 10 hours. What distance does it cover?','540 km','550 km','530 km','1080 km','a','Distance = Speed × Time = 54 × 10 = 540 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 118 km/h for 6 hours. What distance does it cover?','708 km','718 km','698 km','1416 km','a','Distance = Speed × Time = 118 × 6 = 708 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 93 km/h for 10 hours. What distance does it cover?','930 km','940 km','920 km','1860 km','a','Distance = Speed × Time = 93 × 10 = 930 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 35 km/h for 8 hours. What distance does it cover?','280 km','290 km','270 km','560 km','a','Distance = Speed × Time = 35 × 8 = 280 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 54 km/h for 5 hours. What distance does it cover?','270 km','280 km','260 km','540 km','a','Distance = Speed × Time = 54 × 5 = 270 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 53 km/h for 10 hours. What distance does it cover?','530 km','540 km','520 km','1060 km','a','Distance = Speed × Time = 53 × 10 = 530 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 41 km/h for 10 hours. What distance does it cover?','410 km','420 km','400 km','820 km','a','Distance = Speed × Time = 41 × 10 = 410 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 84 km/h for 4 hours. What distance does it cover?','336 km','346 km','326 km','672 km','a','Distance = Speed × Time = 84 × 4 = 336 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 69 km/h for 5 hours. What distance does it cover?','345 km','355 km','335 km','690 km','a','Distance = Speed × Time = 69 × 5 = 345 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 93 km/h for 2 hours. What distance does it cover?','186 km','196 km','176 km','372 km','a','Distance = Speed × Time = 93 × 2 = 186 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 40 km/h for 7 hours. What distance does it cover?','280 km','290 km','270 km','560 km','a','Distance = Speed × Time = 40 × 7 = 280 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 67 km/h for 2 hours. What distance does it cover?','134 km','144 km','124 km','268 km','a','Distance = Speed × Time = 67 × 2 = 134 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 95 km/h for 8 hours. What distance does it cover?','760 km','770 km','750 km','1520 km','a','Distance = Speed × Time = 95 × 8 = 760 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 71 km/h for 7 hours. What distance does it cover?','497 km','507 km','487 km','994 km','a','Distance = Speed × Time = 71 × 7 = 497 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 64 km/h for 6 hours. What distance does it cover?','384 km','394 km','374 km','768 km','a','Distance = Speed × Time = 64 × 6 = 384 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 25 km/h for 10 hours. What distance does it cover?','250 km','260 km','240 km','500 km','a','Distance = Speed × Time = 25 × 10 = 250 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 103 km/h for 7 hours. What distance does it cover?','721 km','731 km','711 km','1442 km','a','Distance = Speed × Time = 103 × 7 = 721 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 37 km/h for 2 hours. What distance does it cover?','74 km','84 km','64 km','148 km','a','Distance = Speed × Time = 37 × 2 = 74 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 83 km/h for 5 hours. What distance does it cover?','415 km','425 km','405 km','830 km','a','Distance = Speed × Time = 83 × 5 = 415 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 40 km/h for 4 hours. What distance does it cover?','160 km','170 km','150 km','320 km','a','Distance = Speed × Time = 40 × 4 = 160 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 24 km/h for 1 hours. What distance does it cover?','24 km','34 km','14 km','48 km','a','Distance = Speed × Time = 24 × 1 = 24 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 43 km/h for 6 hours. What distance does it cover?','258 km','268 km','248 km','516 km','a','Distance = Speed × Time = 43 × 6 = 258 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 88 km/h for 2 hours. What distance does it cover?','176 km','186 km','166 km','352 km','a','Distance = Speed × Time = 88 × 2 = 176 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 108 km/h for 2 hours. What distance does it cover?','216 km','226 km','206 km','432 km','a','Distance = Speed × Time = 108 × 2 = 216 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 72 km/h for 2 hours. What distance does it cover?','144 km','154 km','134 km','288 km','a','Distance = Speed × Time = 72 × 2 = 144 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 24 km/h for 7 hours. What distance does it cover?','168 km','178 km','158 km','336 km','a','Distance = Speed × Time = 24 × 7 = 168 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 45 km/h for 8 hours. What distance does it cover?','360 km','370 km','350 km','720 km','a','Distance = Speed × Time = 45 × 8 = 360 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 95 km/h for 10 hours. What distance does it cover?','950 km','960 km','940 km','1900 km','a','Distance = Speed × Time = 95 × 10 = 950 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 108 km/h for 4 hours. What distance does it cover?','432 km','442 km','422 km','864 km','a','Distance = Speed × Time = 108 × 4 = 432 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 87 km/h for 2 hours. What distance does it cover?','174 km','184 km','164 km','348 km','a','Distance = Speed × Time = 87 × 2 = 174 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 61 km/h for 10 hours. What distance does it cover?','610 km','620 km','600 km','1220 km','a','Distance = Speed × Time = 61 × 10 = 610 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 48 km/h for 5 hours. What distance does it cover?','240 km','250 km','230 km','480 km','a','Distance = Speed × Time = 48 × 5 = 240 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 64 km/h for 10 hours. What distance does it cover?','640 km','650 km','630 km','1280 km','a','Distance = Speed × Time = 64 × 10 = 640 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 29 km/h for 10 hours. What distance does it cover?','290 km','300 km','280 km','580 km','a','Distance = Speed × Time = 29 × 10 = 290 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 69 km/h for 9 hours. What distance does it cover?','621 km','631 km','611 km','1242 km','a','Distance = Speed × Time = 69 × 9 = 621 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 38 km/h for 1 hours. What distance does it cover?','38 km','48 km','28 km','76 km','a','Distance = Speed × Time = 38 × 1 = 38 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 64 km/h for 8 hours. What distance does it cover?','512 km','522 km','502 km','1024 km','a','Distance = Speed × Time = 64 × 8 = 512 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 120 km/h for 7 hours. What distance does it cover?','840 km','850 km','830 km','1680 km','a','Distance = Speed × Time = 120 × 7 = 840 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A car travels at 76 km/h for 5 hours. What distance does it cover?','380 km','390 km','370 km','760 km','a','Distance = Speed × Time = 76 × 5 = 380 km','Mathematics','Arithmetic','easy','APSC,ADRE'],
+
+  ['A train covers 868 km at a speed of 115 km/h. How long does it take?','7.55 hours','8.55 hours','6.55 hours','15.1 hours','a','Time = Distance/Speed = 868/115 = 7.55 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 386 km at a speed of 91 km/h. How long does it take?','4.24 hours','5.24 hours','3.24 hours','8.48 hours','a','Time = Distance/Speed = 386/91 = 4.24 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 150 km at a speed of 25 km/h. How long does it take?','6.0 hours','7.0 hours','5.0 hours','12.0 hours','a','Time = Distance/Speed = 150/25 = 6.0 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 869 km at a speed of 76 km/h. How long does it take?','11.43 hours','12.43 hours','10.43 hours','22.86 hours','a','Time = Distance/Speed = 869/76 = 11.43 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 968 km at a speed of 80 km/h. How long does it take?','12.1 hours','13.1 hours','11.1 hours','24.2 hours','a','Time = Distance/Speed = 968/80 = 12.1 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 917 km at a speed of 71 km/h. How long does it take?','12.92 hours','13.92 hours','11.92 hours','25.84 hours','a','Time = Distance/Speed = 917/71 = 12.92 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 122 km at a speed of 28 km/h. How long does it take?','4.36 hours','5.36 hours','3.3600000000000003 hours','8.72 hours','a','Time = Distance/Speed = 122/28 = 4.36 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 768 km at a speed of 33 km/h. How long does it take?','23.27 hours','24.27 hours','22.27 hours','46.54 hours','a','Time = Distance/Speed = 768/33 = 23.27 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 950 km at a speed of 83 km/h. How long does it take?','11.45 hours','12.45 hours','10.45 hours','22.9 hours','a','Time = Distance/Speed = 950/83 = 11.45 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 915 km at a speed of 101 km/h. How long does it take?','9.06 hours','10.06 hours','8.06 hours','18.12 hours','a','Time = Distance/Speed = 915/101 = 9.06 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 82 km at a speed of 30 km/h. How long does it take?','2.73 hours','3.73 hours','1.73 hours','5.46 hours','a','Time = Distance/Speed = 82/30 = 2.73 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 577 km at a speed of 54 km/h. How long does it take?','10.69 hours','11.69 hours','9.69 hours','21.38 hours','a','Time = Distance/Speed = 577/54 = 10.69 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 444 km at a speed of 53 km/h. How long does it take?','8.38 hours','9.38 hours','7.380000000000001 hours','16.76 hours','a','Time = Distance/Speed = 444/53 = 8.38 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 915 km at a speed of 27 km/h. How long does it take?','33.89 hours','34.89 hours','32.89 hours','67.78 hours','a','Time = Distance/Speed = 915/27 = 33.89 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 706 km at a speed of 95 km/h. How long does it take?','7.43 hours','8.43 hours','6.43 hours','14.86 hours','a','Time = Distance/Speed = 706/95 = 7.43 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 340 km at a speed of 106 km/h. How long does it take?','3.21 hours','4.21 hours','2.21 hours','6.42 hours','a','Time = Distance/Speed = 340/106 = 3.21 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 297 km at a speed of 102 km/h. How long does it take?','2.91 hours','3.91 hours','1.9100000000000001 hours','5.82 hours','a','Time = Distance/Speed = 297/102 = 2.91 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 318 km at a speed of 24 km/h. How long does it take?','13.25 hours','14.25 hours','12.25 hours','26.5 hours','a','Time = Distance/Speed = 318/24 = 13.25 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 992 km at a speed of 59 km/h. How long does it take?','16.81 hours','17.81 hours','15.809999999999999 hours','33.62 hours','a','Time = Distance/Speed = 992/59 = 16.81 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 627 km at a speed of 53 km/h. How long does it take?','11.83 hours','12.83 hours','10.83 hours','23.66 hours','a','Time = Distance/Speed = 627/53 = 11.83 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 124 km at a speed of 73 km/h. How long does it take?','1.7 hours','2.7 hours','0.7 hours','3.4 hours','a','Time = Distance/Speed = 124/73 = 1.7 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 73 km at a speed of 105 km/h. How long does it take?','0.7 hours','1.7 hours','-0.30000000000000004 hours','1.4 hours','a','Time = Distance/Speed = 73/105 = 0.7 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 867 km at a speed of 61 km/h. How long does it take?','14.21 hours','15.21 hours','13.21 hours','28.42 hours','a','Time = Distance/Speed = 867/61 = 14.21 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 947 km at a speed of 37 km/h. How long does it take?','25.59 hours','26.59 hours','24.59 hours','51.18 hours','a','Time = Distance/Speed = 947/37 = 25.59 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 177 km at a speed of 82 km/h. How long does it take?','2.16 hours','3.16 hours','1.1600000000000001 hours','4.32 hours','a','Time = Distance/Speed = 177/82 = 2.16 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 985 km at a speed of 53 km/h. How long does it take?','18.58 hours','19.58 hours','17.58 hours','37.16 hours','a','Time = Distance/Speed = 985/53 = 18.58 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 804 km at a speed of 99 km/h. How long does it take?','8.12 hours','9.12 hours','7.119999999999999 hours','16.24 hours','a','Time = Distance/Speed = 804/99 = 8.12 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 636 km at a speed of 119 km/h. How long does it take?','5.34 hours','6.34 hours','4.34 hours','10.68 hours','a','Time = Distance/Speed = 636/119 = 5.34 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 704 km at a speed of 74 km/h. How long does it take?','9.51 hours','10.51 hours','8.51 hours','19.02 hours','a','Time = Distance/Speed = 704/74 = 9.51 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 747 km at a speed of 55 km/h. How long does it take?','13.58 hours','14.58 hours','12.58 hours','27.16 hours','a','Time = Distance/Speed = 747/55 = 13.58 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 362 km at a speed of 27 km/h. How long does it take?','13.41 hours','14.41 hours','12.41 hours','26.82 hours','a','Time = Distance/Speed = 362/27 = 13.41 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 838 km at a speed of 120 km/h. How long does it take?','6.98 hours','7.98 hours','5.98 hours','13.96 hours','a','Time = Distance/Speed = 838/120 = 6.98 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 247 km at a speed of 57 km/h. How long does it take?','4.33 hours','5.33 hours','3.33 hours','8.66 hours','a','Time = Distance/Speed = 247/57 = 4.33 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 889 km at a speed of 61 km/h. How long does it take?','14.57 hours','15.57 hours','13.57 hours','29.14 hours','a','Time = Distance/Speed = 889/61 = 14.57 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 625 km at a speed of 37 km/h. How long does it take?','16.89 hours','17.89 hours','15.89 hours','33.78 hours','a','Time = Distance/Speed = 625/37 = 16.89 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 153 km at a speed of 85 km/h. How long does it take?','1.8 hours','2.8 hours','0.8 hours','3.6 hours','a','Time = Distance/Speed = 153/85 = 1.8 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 664 km at a speed of 20 km/h. How long does it take?','33.2 hours','34.2 hours','32.2 hours','66.4 hours','a','Time = Distance/Speed = 664/20 = 33.2 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 355 km at a speed of 51 km/h. How long does it take?','6.96 hours','7.96 hours','5.96 hours','13.92 hours','a','Time = Distance/Speed = 355/51 = 6.96 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 73 km at a speed of 95 km/h. How long does it take?','0.77 hours','1.77 hours','-0.22999999999999998 hours','1.54 hours','a','Time = Distance/Speed = 73/95 = 0.77 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 988 km at a speed of 87 km/h. How long does it take?','11.36 hours','12.36 hours','10.36 hours','22.72 hours','a','Time = Distance/Speed = 988/87 = 11.36 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 826 km at a speed of 37 km/h. How long does it take?','22.32 hours','23.32 hours','21.32 hours','44.64 hours','a','Time = Distance/Speed = 826/37 = 22.32 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 299 km at a speed of 109 km/h. How long does it take?','2.74 hours','3.74 hours','1.7400000000000002 hours','5.48 hours','a','Time = Distance/Speed = 299/109 = 2.74 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 69 km at a speed of 88 km/h. How long does it take?','0.78 hours','1.78 hours','-0.21999999999999997 hours','1.56 hours','a','Time = Distance/Speed = 69/88 = 0.78 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 474 km at a speed of 114 km/h. How long does it take?','4.16 hours','5.16 hours','3.16 hours','8.32 hours','a','Time = Distance/Speed = 474/114 = 4.16 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 442 km at a speed of 99 km/h. How long does it take?','4.46 hours','5.46 hours','3.46 hours','8.92 hours','a','Time = Distance/Speed = 442/99 = 4.46 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 751 km at a speed of 118 km/h. How long does it take?','6.36 hours','7.36 hours','5.36 hours','12.72 hours','a','Time = Distance/Speed = 751/118 = 6.36 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 166 km at a speed of 84 km/h. How long does it take?','1.98 hours','2.98 hours','0.98 hours','3.96 hours','a','Time = Distance/Speed = 166/84 = 1.98 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 597 km at a speed of 98 km/h. How long does it take?','6.09 hours','7.09 hours','5.09 hours','12.18 hours','a','Time = Distance/Speed = 597/98 = 6.09 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 225 km at a speed of 111 km/h. How long does it take?','2.03 hours','3.03 hours','1.0299999999999998 hours','4.06 hours','a','Time = Distance/Speed = 225/111 = 2.03 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 364 km at a speed of 110 km/h. How long does it take?','3.31 hours','4.3100000000000005 hours','2.31 hours','6.62 hours','a','Time = Distance/Speed = 364/110 = 3.31 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 684 km at a speed of 48 km/h. How long does it take?','14.25 hours','15.25 hours','13.25 hours','28.5 hours','a','Time = Distance/Speed = 684/48 = 14.25 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 515 km at a speed of 93 km/h. How long does it take?','5.54 hours','6.54 hours','4.54 hours','11.08 hours','a','Time = Distance/Speed = 515/93 = 5.54 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 692 km at a speed of 70 km/h. How long does it take?','9.89 hours','10.89 hours','8.89 hours','19.78 hours','a','Time = Distance/Speed = 692/70 = 9.89 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 379 km at a speed of 78 km/h. How long does it take?','4.86 hours','5.86 hours','3.8600000000000003 hours','9.72 hours','a','Time = Distance/Speed = 379/78 = 4.86 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 169 km at a speed of 47 km/h. How long does it take?','3.6 hours','4.6 hours','2.6 hours','7.2 hours','a','Time = Distance/Speed = 169/47 = 3.6 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 779 km at a speed of 39 km/h. How long does it take?','19.97 hours','20.97 hours','18.97 hours','39.94 hours','a','Time = Distance/Speed = 779/39 = 19.97 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 662 km at a speed of 50 km/h. How long does it take?','13.24 hours','14.24 hours','12.24 hours','26.48 hours','a','Time = Distance/Speed = 662/50 = 13.24 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 219 km at a speed of 91 km/h. How long does it take?','2.41 hours','3.41 hours','1.4100000000000001 hours','4.82 hours','a','Time = Distance/Speed = 219/91 = 2.41 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 573 km at a speed of 89 km/h. How long does it take?','6.44 hours','7.44 hours','5.44 hours','12.88 hours','a','Time = Distance/Speed = 573/89 = 6.44 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 979 km at a speed of 96 km/h. How long does it take?','10.2 hours','11.2 hours','9.2 hours','20.4 hours','a','Time = Distance/Speed = 979/96 = 10.2 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 172 km at a speed of 89 km/h. How long does it take?','1.93 hours','2.9299999999999997 hours','0.9299999999999999 hours','3.86 hours','a','Time = Distance/Speed = 172/89 = 1.93 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 977 km at a speed of 120 km/h. How long does it take?','8.14 hours','9.14 hours','7.140000000000001 hours','16.28 hours','a','Time = Distance/Speed = 977/120 = 8.14 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 289 km at a speed of 73 km/h. How long does it take?','3.96 hours','4.96 hours','2.96 hours','7.92 hours','a','Time = Distance/Speed = 289/73 = 3.96 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 274 km at a speed of 104 km/h. How long does it take?','2.63 hours','3.63 hours','1.63 hours','5.26 hours','a','Time = Distance/Speed = 274/104 = 2.63 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 197 km at a speed of 27 km/h. How long does it take?','7.3 hours','8.3 hours','6.3 hours','14.6 hours','a','Time = Distance/Speed = 197/27 = 7.3 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 581 km at a speed of 55 km/h. How long does it take?','10.56 hours','11.56 hours','9.56 hours','21.12 hours','a','Time = Distance/Speed = 581/55 = 10.56 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 406 km at a speed of 60 km/h. How long does it take?','6.77 hours','7.77 hours','5.77 hours','13.54 hours','a','Time = Distance/Speed = 406/60 = 6.77 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 207 km at a speed of 91 km/h. How long does it take?','2.27 hours','3.27 hours','1.27 hours','4.54 hours','a','Time = Distance/Speed = 207/91 = 2.27 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 342 km at a speed of 35 km/h. How long does it take?','9.77 hours','10.77 hours','8.77 hours','19.54 hours','a','Time = Distance/Speed = 342/35 = 9.77 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 935 km at a speed of 68 km/h. How long does it take?','13.75 hours','14.75 hours','12.75 hours','27.5 hours','a','Time = Distance/Speed = 935/68 = 13.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 411 km at a speed of 97 km/h. How long does it take?','4.24 hours','5.24 hours','3.24 hours','8.48 hours','a','Time = Distance/Speed = 411/97 = 4.24 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 127 km at a speed of 87 km/h. How long does it take?','1.46 hours','2.46 hours','0.45999999999999996 hours','2.92 hours','a','Time = Distance/Speed = 127/87 = 1.46 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 434 km at a speed of 80 km/h. How long does it take?','5.42 hours','6.42 hours','4.42 hours','10.84 hours','a','Time = Distance/Speed = 434/80 = 5.42 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 69 km at a speed of 38 km/h. How long does it take?','1.82 hours','2.8200000000000003 hours','0.8200000000000001 hours','3.64 hours','a','Time = Distance/Speed = 69/38 = 1.82 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 808 km at a speed of 40 km/h. How long does it take?','20.2 hours','21.2 hours','19.2 hours','40.4 hours','a','Time = Distance/Speed = 808/40 = 20.2 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 749 km at a speed of 111 km/h. How long does it take?','6.75 hours','7.75 hours','5.75 hours','13.5 hours','a','Time = Distance/Speed = 749/111 = 6.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 725 km at a speed of 111 km/h. How long does it take?','6.53 hours','7.53 hours','5.53 hours','13.06 hours','a','Time = Distance/Speed = 725/111 = 6.53 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 875 km at a speed of 89 km/h. How long does it take?','9.83 hours','10.83 hours','8.83 hours','19.66 hours','a','Time = Distance/Speed = 875/89 = 9.83 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 212 km at a speed of 31 km/h. How long does it take?','6.84 hours','7.84 hours','5.84 hours','13.68 hours','a','Time = Distance/Speed = 212/31 = 6.84 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 739 km at a speed of 63 km/h. How long does it take?','11.73 hours','12.73 hours','10.73 hours','23.46 hours','a','Time = Distance/Speed = 739/63 = 11.73 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 802 km at a speed of 56 km/h. How long does it take?','14.32 hours','15.32 hours','13.32 hours','28.64 hours','a','Time = Distance/Speed = 802/56 = 14.32 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 993 km at a speed of 107 km/h. How long does it take?','9.28 hours','10.28 hours','8.28 hours','18.56 hours','a','Time = Distance/Speed = 993/107 = 9.28 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 606 km at a speed of 25 km/h. How long does it take?','24.24 hours','25.24 hours','23.24 hours','48.48 hours','a','Time = Distance/Speed = 606/25 = 24.24 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 407 km at a speed of 74 km/h. How long does it take?','5.5 hours','6.5 hours','4.5 hours','11.0 hours','a','Time = Distance/Speed = 407/74 = 5.5 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 471 km at a speed of 58 km/h. How long does it take?','8.12 hours','9.12 hours','7.119999999999999 hours','16.24 hours','a','Time = Distance/Speed = 471/58 = 8.12 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 728 km at a speed of 42 km/h. How long does it take?','17.33 hours','18.33 hours','16.33 hours','34.66 hours','a','Time = Distance/Speed = 728/42 = 17.33 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 671 km at a speed of 41 km/h. How long does it take?','16.37 hours','17.37 hours','15.370000000000001 hours','32.74 hours','a','Time = Distance/Speed = 671/41 = 16.37 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 418 km at a speed of 82 km/h. How long does it take?','5.1 hours','6.1 hours','4.1 hours','10.2 hours','a','Time = Distance/Speed = 418/82 = 5.1 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 707 km at a speed of 87 km/h. How long does it take?','8.13 hours','9.13 hours','7.130000000000001 hours','16.26 hours','a','Time = Distance/Speed = 707/87 = 8.13 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 711 km at a speed of 69 km/h. How long does it take?','10.3 hours','11.3 hours','9.3 hours','20.6 hours','a','Time = Distance/Speed = 711/69 = 10.3 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 122 km at a speed of 107 km/h. How long does it take?','1.14 hours','2.1399999999999997 hours','0.1399999999999999 hours','2.28 hours','a','Time = Distance/Speed = 122/107 = 1.14 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 607 km at a speed of 44 km/h. How long does it take?','13.8 hours','14.8 hours','12.8 hours','27.6 hours','a','Time = Distance/Speed = 607/44 = 13.8 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 829 km at a speed of 65 km/h. How long does it take?','12.75 hours','13.75 hours','11.75 hours','25.5 hours','a','Time = Distance/Speed = 829/65 = 12.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 62 km at a speed of 47 km/h. How long does it take?','1.32 hours','2.3200000000000003 hours','0.32000000000000006 hours','2.64 hours','a','Time = Distance/Speed = 62/47 = 1.32 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 768 km at a speed of 67 km/h. How long does it take?','11.46 hours','12.46 hours','10.46 hours','22.92 hours','a','Time = Distance/Speed = 768/67 = 11.46 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 996 km at a speed of 65 km/h. How long does it take?','15.32 hours','16.32 hours','14.32 hours','30.64 hours','a','Time = Distance/Speed = 996/65 = 15.32 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 542 km at a speed of 104 km/h. How long does it take?','5.21 hours','6.21 hours','4.21 hours','10.42 hours','a','Time = Distance/Speed = 542/104 = 5.21 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 811 km at a speed of 67 km/h. How long does it take?','12.1 hours','13.1 hours','11.1 hours','24.2 hours','a','Time = Distance/Speed = 811/67 = 12.1 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 162 km at a speed of 25 km/h. How long does it take?','6.48 hours','7.48 hours','5.48 hours','12.96 hours','a','Time = Distance/Speed = 162/25 = 6.48 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 82 km at a speed of 70 km/h. How long does it take?','1.17 hours','2.17 hours','0.16999999999999993 hours','2.34 hours','a','Time = Distance/Speed = 82/70 = 1.17 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 773 km at a speed of 52 km/h. How long does it take?','14.87 hours','15.87 hours','13.87 hours','29.74 hours','a','Time = Distance/Speed = 773/52 = 14.87 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 890 km at a speed of 118 km/h. How long does it take?','7.54 hours','8.54 hours','6.54 hours','15.08 hours','a','Time = Distance/Speed = 890/118 = 7.54 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 65 km at a speed of 53 km/h. How long does it take?','1.23 hours','2.23 hours','0.22999999999999998 hours','2.46 hours','a','Time = Distance/Speed = 65/53 = 1.23 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 753 km at a speed of 65 km/h. How long does it take?','11.58 hours','12.58 hours','10.58 hours','23.16 hours','a','Time = Distance/Speed = 753/65 = 11.58 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 270 km at a speed of 102 km/h. How long does it take?','2.65 hours','3.65 hours','1.65 hours','5.3 hours','a','Time = Distance/Speed = 270/102 = 2.65 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 257 km at a speed of 25 km/h. How long does it take?','10.28 hours','11.28 hours','9.28 hours','20.56 hours','a','Time = Distance/Speed = 257/25 = 10.28 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 679 km at a speed of 52 km/h. How long does it take?','13.06 hours','14.06 hours','12.06 hours','26.12 hours','a','Time = Distance/Speed = 679/52 = 13.06 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 874 km at a speed of 26 km/h. How long does it take?','33.62 hours','34.62 hours','32.62 hours','67.24 hours','a','Time = Distance/Speed = 874/26 = 33.62 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 637 km at a speed of 62 km/h. How long does it take?','10.27 hours','11.27 hours','9.27 hours','20.54 hours','a','Time = Distance/Speed = 637/62 = 10.27 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 524 km at a speed of 26 km/h. How long does it take?','20.15 hours','21.15 hours','19.15 hours','40.3 hours','a','Time = Distance/Speed = 524/26 = 20.15 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 692 km at a speed of 104 km/h. How long does it take?','6.65 hours','7.65 hours','5.65 hours','13.3 hours','a','Time = Distance/Speed = 692/104 = 6.65 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 698 km at a speed of 69 km/h. How long does it take?','10.12 hours','11.12 hours','9.12 hours','20.24 hours','a','Time = Distance/Speed = 698/69 = 10.12 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 484 km at a speed of 45 km/h. How long does it take?','10.76 hours','11.76 hours','9.76 hours','21.52 hours','a','Time = Distance/Speed = 484/45 = 10.76 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 997 km at a speed of 109 km/h. How long does it take?','9.15 hours','10.15 hours','8.15 hours','18.3 hours','a','Time = Distance/Speed = 997/109 = 9.15 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 912 km at a speed of 71 km/h. How long does it take?','12.85 hours','13.85 hours','11.85 hours','25.7 hours','a','Time = Distance/Speed = 912/71 = 12.85 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 626 km at a speed of 55 km/h. How long does it take?','11.38 hours','12.38 hours','10.38 hours','22.76 hours','a','Time = Distance/Speed = 626/55 = 11.38 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 564 km at a speed of 48 km/h. How long does it take?','11.75 hours','12.75 hours','10.75 hours','23.5 hours','a','Time = Distance/Speed = 564/48 = 11.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 754 km at a speed of 86 km/h. How long does it take?','8.77 hours','9.77 hours','7.77 hours','17.54 hours','a','Time = Distance/Speed = 754/86 = 8.77 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 890 km at a speed of 33 km/h. How long does it take?','26.97 hours','27.97 hours','25.97 hours','53.94 hours','a','Time = Distance/Speed = 890/33 = 26.97 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 227 km at a speed of 50 km/h. How long does it take?','4.54 hours','5.54 hours','3.54 hours','9.08 hours','a','Time = Distance/Speed = 227/50 = 4.54 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 532 km at a speed of 58 km/h. How long does it take?','9.17 hours','10.17 hours','8.17 hours','18.34 hours','a','Time = Distance/Speed = 532/58 = 9.17 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 502 km at a speed of 57 km/h. How long does it take?','8.81 hours','9.81 hours','7.8100000000000005 hours','17.62 hours','a','Time = Distance/Speed = 502/57 = 8.81 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 782 km at a speed of 48 km/h. How long does it take?','16.29 hours','17.29 hours','15.29 hours','32.58 hours','a','Time = Distance/Speed = 782/48 = 16.29 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 568 km at a speed of 77 km/h. How long does it take?','7.38 hours','8.379999999999999 hours','6.38 hours','14.76 hours','a','Time = Distance/Speed = 568/77 = 7.38 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 804 km at a speed of 81 km/h. How long does it take?','9.93 hours','10.93 hours','8.93 hours','19.86 hours','a','Time = Distance/Speed = 804/81 = 9.93 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 644 km at a speed of 39 km/h. How long does it take?','16.51 hours','17.51 hours','15.510000000000002 hours','33.02 hours','a','Time = Distance/Speed = 644/39 = 16.51 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 303 km at a speed of 84 km/h. How long does it take?','3.61 hours','4.609999999999999 hours','2.61 hours','7.22 hours','a','Time = Distance/Speed = 303/84 = 3.61 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 302 km at a speed of 62 km/h. How long does it take?','4.87 hours','5.87 hours','3.87 hours','9.74 hours','a','Time = Distance/Speed = 302/62 = 4.87 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 441 km at a speed of 48 km/h. How long does it take?','9.19 hours','10.19 hours','8.19 hours','18.38 hours','a','Time = Distance/Speed = 441/48 = 9.19 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 96 km at a speed of 20 km/h. How long does it take?','4.8 hours','5.8 hours','3.8 hours','9.6 hours','a','Time = Distance/Speed = 96/20 = 4.8 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 85 km at a speed of 83 km/h. How long does it take?','1.02 hours','2.02 hours','0.020000000000000018 hours','2.04 hours','a','Time = Distance/Speed = 85/83 = 1.02 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 616 km at a speed of 114 km/h. How long does it take?','5.4 hours','6.4 hours','4.4 hours','10.8 hours','a','Time = Distance/Speed = 616/114 = 5.4 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 581 km at a speed of 28 km/h. How long does it take?','20.75 hours','21.75 hours','19.75 hours','41.5 hours','a','Time = Distance/Speed = 581/28 = 20.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 737 km at a speed of 44 km/h. How long does it take?','16.75 hours','17.75 hours','15.75 hours','33.5 hours','a','Time = Distance/Speed = 737/44 = 16.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 634 km at a speed of 65 km/h. How long does it take?','9.75 hours','10.75 hours','8.75 hours','19.5 hours','a','Time = Distance/Speed = 634/65 = 9.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 568 km at a speed of 98 km/h. How long does it take?','5.8 hours','6.8 hours','4.8 hours','11.6 hours','a','Time = Distance/Speed = 568/98 = 5.8 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 310 km at a speed of 20 km/h. How long does it take?','15.5 hours','16.5 hours','14.5 hours','31.0 hours','a','Time = Distance/Speed = 310/20 = 15.5 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 955 km at a speed of 21 km/h. How long does it take?','45.48 hours','46.48 hours','44.48 hours','90.96 hours','a','Time = Distance/Speed = 955/21 = 45.48 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 533 km at a speed of 91 km/h. How long does it take?','5.86 hours','6.86 hours','4.86 hours','11.72 hours','a','Time = Distance/Speed = 533/91 = 5.86 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 699 km at a speed of 60 km/h. How long does it take?','11.65 hours','12.65 hours','10.65 hours','23.3 hours','a','Time = Distance/Speed = 699/60 = 11.65 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 83 km at a speed of 43 km/h. How long does it take?','1.93 hours','2.9299999999999997 hours','0.9299999999999999 hours','3.86 hours','a','Time = Distance/Speed = 83/43 = 1.93 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 139 km at a speed of 62 km/h. How long does it take?','2.24 hours','3.24 hours','1.2400000000000002 hours','4.48 hours','a','Time = Distance/Speed = 139/62 = 2.24 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 992 km at a speed of 62 km/h. How long does it take?','16.0 hours','17.0 hours','15.0 hours','32.0 hours','a','Time = Distance/Speed = 992/62 = 16.0 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 901 km at a speed of 60 km/h. How long does it take?','15.02 hours','16.02 hours','14.02 hours','30.04 hours','a','Time = Distance/Speed = 901/60 = 15.02 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 123 km at a speed of 79 km/h. How long does it take?','1.56 hours','2.56 hours','0.56 hours','3.12 hours','a','Time = Distance/Speed = 123/79 = 1.56 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 374 km at a speed of 91 km/h. How long does it take?','4.11 hours','5.11 hours','3.1100000000000003 hours','8.22 hours','a','Time = Distance/Speed = 374/91 = 4.11 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 506 km at a speed of 101 km/h. How long does it take?','5.01 hours','6.01 hours','4.01 hours','10.02 hours','a','Time = Distance/Speed = 506/101 = 5.01 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 172 km at a speed of 85 km/h. How long does it take?','2.02 hours','3.02 hours','1.02 hours','4.04 hours','a','Time = Distance/Speed = 172/85 = 2.02 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 158 km at a speed of 113 km/h. How long does it take?','1.4 hours','2.4 hours','0.3999999999999999 hours','2.8 hours','a','Time = Distance/Speed = 158/113 = 1.4 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 160 km at a speed of 107 km/h. How long does it take?','1.5 hours','2.5 hours','0.5 hours','3.0 hours','a','Time = Distance/Speed = 160/107 = 1.5 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 715 km at a speed of 33 km/h. How long does it take?','21.67 hours','22.67 hours','20.67 hours','43.34 hours','a','Time = Distance/Speed = 715/33 = 21.67 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 486 km at a speed of 103 km/h. How long does it take?','4.72 hours','5.72 hours','3.7199999999999998 hours','9.44 hours','a','Time = Distance/Speed = 486/103 = 4.72 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 571 km at a speed of 49 km/h. How long does it take?','11.65 hours','12.65 hours','10.65 hours','23.3 hours','a','Time = Distance/Speed = 571/49 = 11.65 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 976 km at a speed of 65 km/h. How long does it take?','15.02 hours','16.02 hours','14.02 hours','30.04 hours','a','Time = Distance/Speed = 976/65 = 15.02 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 65 km at a speed of 105 km/h. How long does it take?','0.62 hours','1.62 hours','-0.38 hours','1.24 hours','a','Time = Distance/Speed = 65/105 = 0.62 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 790 km at a speed of 28 km/h. How long does it take?','28.21 hours','29.21 hours','27.21 hours','56.42 hours','a','Time = Distance/Speed = 790/28 = 28.21 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 975 km at a speed of 72 km/h. How long does it take?','13.54 hours','14.54 hours','12.54 hours','27.08 hours','a','Time = Distance/Speed = 975/72 = 13.54 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 547 km at a speed of 41 km/h. How long does it take?','13.34 hours','14.34 hours','12.34 hours','26.68 hours','a','Time = Distance/Speed = 547/41 = 13.34 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 233 km at a speed of 106 km/h. How long does it take?','2.2 hours','3.2 hours','1.2000000000000002 hours','4.4 hours','a','Time = Distance/Speed = 233/106 = 2.2 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 277 km at a speed of 100 km/h. How long does it take?','2.77 hours','3.77 hours','1.77 hours','5.54 hours','a','Time = Distance/Speed = 277/100 = 2.77 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 62 km at a speed of 37 km/h. How long does it take?','1.68 hours','2.6799999999999997 hours','0.6799999999999999 hours','3.36 hours','a','Time = Distance/Speed = 62/37 = 1.68 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 632 km at a speed of 76 km/h. How long does it take?','8.32 hours','9.32 hours','7.32 hours','16.64 hours','a','Time = Distance/Speed = 632/76 = 8.32 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 424 km at a speed of 80 km/h. How long does it take?','5.3 hours','6.3 hours','4.3 hours','10.6 hours','a','Time = Distance/Speed = 424/80 = 5.3 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 236 km at a speed of 97 km/h. How long does it take?','2.43 hours','3.43 hours','1.4300000000000002 hours','4.86 hours','a','Time = Distance/Speed = 236/97 = 2.43 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 181 km at a speed of 56 km/h. How long does it take?','3.23 hours','4.23 hours','2.23 hours','6.46 hours','a','Time = Distance/Speed = 181/56 = 3.23 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 814 km at a speed of 114 km/h. How long does it take?','7.14 hours','8.14 hours','6.14 hours','14.28 hours','a','Time = Distance/Speed = 814/114 = 7.14 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 684 km at a speed of 113 km/h. How long does it take?','6.05 hours','7.05 hours','5.05 hours','12.1 hours','a','Time = Distance/Speed = 684/113 = 6.05 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 207 km at a speed of 110 km/h. How long does it take?','1.88 hours','2.88 hours','0.8799999999999999 hours','3.76 hours','a','Time = Distance/Speed = 207/110 = 1.88 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 909 km at a speed of 62 km/h. How long does it take?','14.66 hours','15.66 hours','13.66 hours','29.32 hours','a','Time = Distance/Speed = 909/62 = 14.66 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 215 km at a speed of 109 km/h. How long does it take?','1.97 hours','2.9699999999999998 hours','0.97 hours','3.94 hours','a','Time = Distance/Speed = 215/109 = 1.97 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 258 km at a speed of 66 km/h. How long does it take?','3.91 hours','4.91 hours','2.91 hours','7.82 hours','a','Time = Distance/Speed = 258/66 = 3.91 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 985 km at a speed of 79 km/h. How long does it take?','12.47 hours','13.47 hours','11.47 hours','24.94 hours','a','Time = Distance/Speed = 985/79 = 12.47 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 440 km at a speed of 78 km/h. How long does it take?','5.64 hours','6.64 hours','4.64 hours','11.28 hours','a','Time = Distance/Speed = 440/78 = 5.64 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 797 km at a speed of 73 km/h. How long does it take?','10.92 hours','11.92 hours','9.92 hours','21.84 hours','a','Time = Distance/Speed = 797/73 = 10.92 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 964 km at a speed of 80 km/h. How long does it take?','12.05 hours','13.05 hours','11.05 hours','24.1 hours','a','Time = Distance/Speed = 964/80 = 12.05 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 271 km at a speed of 113 km/h. How long does it take?','2.4 hours','3.4 hours','1.4 hours','4.8 hours','a','Time = Distance/Speed = 271/113 = 2.4 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 144 km at a speed of 117 km/h. How long does it take?','1.23 hours','2.23 hours','0.22999999999999998 hours','2.46 hours','a','Time = Distance/Speed = 144/117 = 1.23 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 899 km at a speed of 61 km/h. How long does it take?','14.74 hours','15.74 hours','13.74 hours','29.48 hours','a','Time = Distance/Speed = 899/61 = 14.74 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 325 km at a speed of 103 km/h. How long does it take?','3.16 hours','4.16 hours','2.16 hours','6.32 hours','a','Time = Distance/Speed = 325/103 = 3.16 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 925 km at a speed of 43 km/h. How long does it take?','21.51 hours','22.51 hours','20.51 hours','43.02 hours','a','Time = Distance/Speed = 925/43 = 21.51 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 427 km at a speed of 111 km/h. How long does it take?','3.85 hours','4.85 hours','2.85 hours','7.7 hours','a','Time = Distance/Speed = 427/111 = 3.85 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 692 km at a speed of 97 km/h. How long does it take?','7.13 hours','8.129999999999999 hours','6.13 hours','14.26 hours','a','Time = Distance/Speed = 692/97 = 7.13 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 179 km at a speed of 105 km/h. How long does it take?','1.7 hours','2.7 hours','0.7 hours','3.4 hours','a','Time = Distance/Speed = 179/105 = 1.7 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 532 km at a speed of 73 km/h. How long does it take?','7.29 hours','8.29 hours','6.29 hours','14.58 hours','a','Time = Distance/Speed = 532/73 = 7.29 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 618 km at a speed of 67 km/h. How long does it take?','9.22 hours','10.22 hours','8.22 hours','18.44 hours','a','Time = Distance/Speed = 618/67 = 9.22 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 412 km at a speed of 31 km/h. How long does it take?','13.29 hours','14.29 hours','12.29 hours','26.58 hours','a','Time = Distance/Speed = 412/31 = 13.29 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 484 km at a speed of 105 km/h. How long does it take?','4.61 hours','5.61 hours','3.6100000000000003 hours','9.22 hours','a','Time = Distance/Speed = 484/105 = 4.61 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 459 km at a speed of 36 km/h. How long does it take?','12.75 hours','13.75 hours','11.75 hours','25.5 hours','a','Time = Distance/Speed = 459/36 = 12.75 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 580 km at a speed of 29 km/h. How long does it take?','20.0 hours','21.0 hours','19.0 hours','40.0 hours','a','Time = Distance/Speed = 580/29 = 20.0 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 882 km at a speed of 83 km/h. How long does it take?','10.63 hours','11.63 hours','9.63 hours','21.26 hours','a','Time = Distance/Speed = 882/83 = 10.63 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 744 km at a speed of 91 km/h. How long does it take?','8.18 hours','9.18 hours','7.18 hours','16.36 hours','a','Time = Distance/Speed = 744/91 = 8.18 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 616 km at a speed of 82 km/h. How long does it take?','7.51 hours','8.51 hours','6.51 hours','15.02 hours','a','Time = Distance/Speed = 616/82 = 7.51 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 349 km at a speed of 67 km/h. How long does it take?','5.21 hours','6.21 hours','4.21 hours','10.42 hours','a','Time = Distance/Speed = 349/67 = 5.21 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 257 km at a speed of 92 km/h. How long does it take?','2.79 hours','3.79 hours','1.79 hours','5.58 hours','a','Time = Distance/Speed = 257/92 = 2.79 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 100 km at a speed of 102 km/h. How long does it take?','0.98 hours','1.98 hours','-0.020000000000000018 hours','1.96 hours','a','Time = Distance/Speed = 100/102 = 0.98 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 291 km at a speed of 47 km/h. How long does it take?','6.19 hours','7.19 hours','5.19 hours','12.38 hours','a','Time = Distance/Speed = 291/47 = 6.19 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 769 km at a speed of 93 km/h. How long does it take?','8.27 hours','9.27 hours','7.27 hours','16.54 hours','a','Time = Distance/Speed = 769/93 = 8.27 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 346 km at a speed of 72 km/h. How long does it take?','4.81 hours','5.81 hours','3.8099999999999996 hours','9.62 hours','a','Time = Distance/Speed = 346/72 = 4.81 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 648 km at a speed of 62 km/h. How long does it take?','10.45 hours','11.45 hours','9.45 hours','20.9 hours','a','Time = Distance/Speed = 648/62 = 10.45 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['A train covers 747 km at a speed of 101 km/h. How long does it take?','7.4 hours','8.4 hours','6.4 hours','14.8 hours','a','Time = Distance/Speed = 747/101 = 7.4 hours','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.225 is divided in the ratio 10:4. What is the first share?','Rs.160','Rs.65','Rs.170','Rs.150','a','First share = 225 × 10/(10+4) = 160','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.250 is divided in the ratio 7:9. What is the first share?','Rs.109','Rs.141','Rs.119','Rs.99','a','First share = 250 × 7/(7+9) = 109','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.267 is divided in the ratio 2:4. What is the first share?','Rs.89','Rs.178','Rs.99','Rs.79','a','First share = 267 × 2/(2+4) = 89','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.628 is divided in the ratio 9:5. What is the first share?','Rs.403','Rs.225','Rs.413','Rs.393','a','First share = 628 × 9/(9+5) = 403','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.597 is divided in the ratio 10:10. What is the first share?','Rs.298','Rs.299','Rs.308','Rs.288','a','First share = 597 × 10/(10+10) = 298','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.155 is divided in the ratio 3:3. What is the first share?','Rs.77','Rs.78','Rs.87','Rs.67','a','First share = 155 × 3/(3+3) = 77','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.248 is divided in the ratio 10:5. What is the first share?','Rs.165','Rs.83','Rs.175','Rs.155','a','First share = 248 × 10/(10+5) = 165','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.314 is divided in the ratio 2:3. What is the first share?','Rs.125','Rs.189','Rs.135','Rs.115','a','First share = 314 × 2/(2+3) = 125','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.905 is divided in the ratio 7:5. What is the first share?','Rs.527','Rs.378','Rs.537','Rs.517','a','First share = 905 × 7/(7+5) = 527','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.984 is divided in the ratio 4:5. What is the first share?','Rs.437','Rs.547','Rs.447','Rs.427','a','First share = 984 × 4/(4+5) = 437','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.361 is divided in the ratio 2:2. What is the first share?','Rs.180','Rs.181','Rs.190','Rs.170','a','First share = 361 × 2/(2+2) = 180','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.484 is divided in the ratio 7:1. What is the first share?','Rs.423','Rs.61','Rs.433','Rs.413','a','First share = 484 × 7/(7+1) = 423','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.776 is divided in the ratio 4:10. What is the first share?','Rs.221','Rs.555','Rs.231','Rs.211','a','First share = 776 × 4/(4+10) = 221','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.127 is divided in the ratio 5:4. What is the first share?','Rs.70','Rs.57','Rs.80','Rs.60','a','First share = 127 × 5/(5+4) = 70','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.883 is divided in the ratio 10:10. What is the first share?','Rs.441','Rs.442','Rs.451','Rs.431','a','First share = 883 × 10/(10+10) = 441','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.282 is divided in the ratio 9:2. What is the first share?','Rs.230','Rs.52','Rs.240','Rs.220','a','First share = 282 × 9/(9+2) = 230','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.448 is divided in the ratio 2:10. What is the first share?','Rs.74','Rs.374','Rs.84','Rs.64','a','First share = 448 × 2/(2+10) = 74','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.550 is divided in the ratio 10:8. What is the first share?','Rs.305','Rs.245','Rs.315','Rs.295','a','First share = 550 × 10/(10+8) = 305','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.890 is divided in the ratio 1:8. What is the first share?','Rs.98','Rs.792','Rs.108','Rs.88','a','First share = 890 × 1/(1+8) = 98','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.420 is divided in the ratio 4:5. What is the first share?','Rs.186','Rs.234','Rs.196','Rs.176','a','First share = 420 × 4/(4+5) = 186','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.979 is divided in the ratio 8:5. What is the first share?','Rs.602','Rs.377','Rs.612','Rs.592','a','First share = 979 × 8/(8+5) = 602','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.500 is divided in the ratio 9:1. What is the first share?','Rs.450','Rs.50','Rs.460','Rs.440','a','First share = 500 × 9/(9+1) = 450','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.618 is divided in the ratio 3:1. What is the first share?','Rs.463','Rs.155','Rs.473','Rs.453','a','First share = 618 × 3/(3+1) = 463','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.623 is divided in the ratio 7:3. What is the first share?','Rs.436','Rs.187','Rs.446','Rs.426','a','First share = 623 × 7/(7+3) = 436','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.604 is divided in the ratio 3:6. What is the first share?','Rs.201','Rs.403','Rs.211','Rs.191','a','First share = 604 × 3/(3+6) = 201','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.542 is divided in the ratio 6:8. What is the first share?','Rs.232','Rs.310','Rs.242','Rs.222','a','First share = 542 × 6/(6+8) = 232','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.913 is divided in the ratio 9:2. What is the first share?','Rs.747','Rs.166','Rs.757','Rs.737','a','First share = 913 × 9/(9+2) = 747','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.226 is divided in the ratio 1:9. What is the first share?','Rs.22','Rs.204','Rs.32','Rs.12','a','First share = 226 × 1/(1+9) = 22','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.850 is divided in the ratio 10:4. What is the first share?','Rs.607','Rs.243','Rs.617','Rs.597','a','First share = 850 × 10/(10+4) = 607','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.950 is divided in the ratio 10:3. What is the first share?','Rs.730','Rs.220','Rs.740','Rs.720','a','First share = 950 × 10/(10+3) = 730','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.709 is divided in the ratio 10:1. What is the first share?','Rs.644','Rs.65','Rs.654','Rs.634','a','First share = 709 × 10/(10+1) = 644','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.742 is divided in the ratio 3:10. What is the first share?','Rs.171','Rs.571','Rs.181','Rs.161','a','First share = 742 × 3/(3+10) = 171','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.561 is divided in the ratio 8:7. What is the first share?','Rs.299','Rs.262','Rs.309','Rs.289','a','First share = 561 × 8/(8+7) = 299','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.701 is divided in the ratio 1:9. What is the first share?','Rs.70','Rs.631','Rs.80','Rs.60','a','First share = 701 × 1/(1+9) = 70','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.847 is divided in the ratio 6:7. What is the first share?','Rs.390','Rs.457','Rs.400','Rs.380','a','First share = 847 × 6/(6+7) = 390','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.299 is divided in the ratio 1:3. What is the first share?','Rs.74','Rs.225','Rs.84','Rs.64','a','First share = 299 × 1/(1+3) = 74','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.494 is divided in the ratio 8:6. What is the first share?','Rs.282','Rs.212','Rs.292','Rs.272','a','First share = 494 × 8/(8+6) = 282','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.797 is divided in the ratio 6:6. What is the first share?','Rs.398','Rs.399','Rs.408','Rs.388','a','First share = 797 × 6/(6+6) = 398','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.398 is divided in the ratio 2:7. What is the first share?','Rs.88','Rs.310','Rs.98','Rs.78','a','First share = 398 × 2/(2+7) = 88','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.479 is divided in the ratio 6:3. What is the first share?','Rs.319','Rs.160','Rs.329','Rs.309','a','First share = 479 × 6/(6+3) = 319','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.910 is divided in the ratio 6:3. What is the first share?','Rs.606','Rs.304','Rs.616','Rs.596','a','First share = 910 × 6/(6+3) = 606','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.154 is divided in the ratio 6:9. What is the first share?','Rs.61','Rs.93','Rs.71','Rs.51','a','First share = 154 × 6/(6+9) = 61','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.368 is divided in the ratio 10:4. What is the first share?','Rs.262','Rs.106','Rs.272','Rs.252','a','First share = 368 × 10/(10+4) = 262','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.676 is divided in the ratio 7:9. What is the first share?','Rs.295','Rs.381','Rs.305','Rs.285','a','First share = 676 × 7/(7+9) = 295','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.250 is divided in the ratio 3:1. What is the first share?','Rs.187','Rs.63','Rs.197','Rs.177','a','First share = 250 × 3/(3+1) = 187','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.137 is divided in the ratio 8:4. What is the first share?','Rs.91','Rs.46','Rs.101','Rs.81','a','First share = 137 × 8/(8+4) = 91','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.182 is divided in the ratio 5:10. What is the first share?','Rs.60','Rs.122','Rs.70','Rs.50','a','First share = 182 × 5/(5+10) = 60','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.460 is divided in the ratio 2:2. What is the first share?','Rs.230','Rs.230','Rs.240','Rs.220','a','First share = 460 × 2/(2+2) = 230','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.665 is divided in the ratio 1:4. What is the first share?','Rs.133','Rs.532','Rs.143','Rs.123','a','First share = 665 × 1/(1+4) = 133','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.708 is divided in the ratio 3:4. What is the first share?','Rs.303','Rs.405','Rs.313','Rs.293','a','First share = 708 × 3/(3+4) = 303','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.442 is divided in the ratio 2:3. What is the first share?','Rs.176','Rs.266','Rs.186','Rs.166','a','First share = 442 × 2/(2+3) = 176','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.896 is divided in the ratio 6:3. What is the first share?','Rs.597','Rs.299','Rs.607','Rs.587','a','First share = 896 × 6/(6+3) = 597','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.702 is divided in the ratio 3:9. What is the first share?','Rs.175','Rs.527','Rs.185','Rs.165','a','First share = 702 × 3/(3+9) = 175','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.948 is divided in the ratio 7:1. What is the first share?','Rs.829','Rs.119','Rs.839','Rs.819','a','First share = 948 × 7/(7+1) = 829','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.990 is divided in the ratio 8:6. What is the first share?','Rs.565','Rs.425','Rs.575','Rs.555','a','First share = 990 × 8/(8+6) = 565','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.254 is divided in the ratio 3:3. What is the first share?','Rs.127','Rs.127','Rs.137','Rs.117','a','First share = 254 × 3/(3+3) = 127','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.720 is divided in the ratio 2:4. What is the first share?','Rs.240','Rs.480','Rs.250','Rs.230','a','First share = 720 × 2/(2+4) = 240','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.868 is divided in the ratio 10:10. What is the first share?','Rs.434','Rs.434','Rs.444','Rs.424','a','First share = 868 × 10/(10+10) = 434','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.156 is divided in the ratio 3:2. What is the first share?','Rs.93','Rs.63','Rs.103','Rs.83','a','First share = 156 × 3/(3+2) = 93','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.771 is divided in the ratio 9:9. What is the first share?','Rs.385','Rs.386','Rs.395','Rs.375','a','First share = 771 × 9/(9+9) = 385','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.348 is divided in the ratio 10:7. What is the first share?','Rs.204','Rs.144','Rs.214','Rs.194','a','First share = 348 × 10/(10+7) = 204','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.581 is divided in the ratio 3:3. What is the first share?','Rs.290','Rs.291','Rs.300','Rs.280','a','First share = 581 × 3/(3+3) = 290','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.660 is divided in the ratio 8:7. What is the first share?','Rs.352','Rs.308','Rs.362','Rs.342','a','First share = 660 × 8/(8+7) = 352','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.184 is divided in the ratio 3:4. What is the first share?','Rs.78','Rs.106','Rs.88','Rs.68','a','First share = 184 × 3/(3+4) = 78','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.953 is divided in the ratio 10:1. What is the first share?','Rs.866','Rs.87','Rs.876','Rs.856','a','First share = 953 × 10/(10+1) = 866','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.687 is divided in the ratio 6:5. What is the first share?','Rs.374','Rs.313','Rs.384','Rs.364','a','First share = 687 × 6/(6+5) = 374','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.452 is divided in the ratio 10:9. What is the first share?','Rs.237','Rs.215','Rs.247','Rs.227','a','First share = 452 × 10/(10+9) = 237','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.600 is divided in the ratio 10:9. What is the first share?','Rs.315','Rs.285','Rs.325','Rs.305','a','First share = 600 × 10/(10+9) = 315','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.880 is divided in the ratio 1:9. What is the first share?','Rs.88','Rs.792','Rs.98','Rs.78','a','First share = 880 × 1/(1+9) = 88','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.102 is divided in the ratio 3:1. What is the first share?','Rs.76','Rs.26','Rs.86','Rs.66','a','First share = 102 × 3/(3+1) = 76','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.594 is divided in the ratio 10:10. What is the first share?','Rs.297','Rs.297','Rs.307','Rs.287','a','First share = 594 × 10/(10+10) = 297','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.474 is divided in the ratio 10:9. What is the first share?','Rs.249','Rs.225','Rs.259','Rs.239','a','First share = 474 × 10/(10+9) = 249','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.148 is divided in the ratio 5:6. What is the first share?','Rs.67','Rs.81','Rs.77','Rs.57','a','First share = 148 × 5/(5+6) = 67','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.849 is divided in the ratio 3:5. What is the first share?','Rs.318','Rs.531','Rs.328','Rs.308','a','First share = 849 × 3/(3+5) = 318','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.673 is divided in the ratio 9:9. What is the first share?','Rs.336','Rs.337','Rs.346','Rs.326','a','First share = 673 × 9/(9+9) = 336','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.164 is divided in the ratio 6:6. What is the first share?','Rs.82','Rs.82','Rs.92','Rs.72','a','First share = 164 × 6/(6+6) = 82','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.141 is divided in the ratio 1:2. What is the first share?','Rs.47','Rs.94','Rs.57','Rs.37','a','First share = 141 × 1/(1+2) = 47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.232 is divided in the ratio 6:4. What is the first share?','Rs.139','Rs.93','Rs.149','Rs.129','a','First share = 232 × 6/(6+4) = 139','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.868 is divided in the ratio 10:9. What is the first share?','Rs.456','Rs.412','Rs.466','Rs.446','a','First share = 868 × 10/(10+9) = 456','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.591 is divided in the ratio 7:4. What is the first share?','Rs.376','Rs.215','Rs.386','Rs.366','a','First share = 591 × 7/(7+4) = 376','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.176 is divided in the ratio 3:9. What is the first share?','Rs.44','Rs.132','Rs.54','Rs.34','a','First share = 176 × 3/(3+9) = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.652 is divided in the ratio 5:6. What is the first share?','Rs.296','Rs.356','Rs.306','Rs.286','a','First share = 652 × 5/(5+6) = 296','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.879 is divided in the ratio 5:2. What is the first share?','Rs.627','Rs.252','Rs.637','Rs.617','a','First share = 879 × 5/(5+2) = 627','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.614 is divided in the ratio 9:4. What is the first share?','Rs.425','Rs.189','Rs.435','Rs.415','a','First share = 614 × 9/(9+4) = 425','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.861 is divided in the ratio 6:8. What is the first share?','Rs.369','Rs.492','Rs.379','Rs.359','a','First share = 861 × 6/(6+8) = 369','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.404 is divided in the ratio 3:6. What is the first share?','Rs.134','Rs.270','Rs.144','Rs.124','a','First share = 404 × 3/(3+6) = 134','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.270 is divided in the ratio 4:10. What is the first share?','Rs.77','Rs.193','Rs.87','Rs.67','a','First share = 270 × 4/(4+10) = 77','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.324 is divided in the ratio 1:4. What is the first share?','Rs.64','Rs.260','Rs.74','Rs.54','a','First share = 324 × 1/(1+4) = 64','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.299 is divided in the ratio 10:6. What is the first share?','Rs.186','Rs.113','Rs.196','Rs.176','a','First share = 299 × 10/(10+6) = 186','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.613 is divided in the ratio 4:8. What is the first share?','Rs.204','Rs.409','Rs.214','Rs.194','a','First share = 613 × 4/(4+8) = 204','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.526 is divided in the ratio 3:6. What is the first share?','Rs.175','Rs.351','Rs.185','Rs.165','a','First share = 526 × 3/(3+6) = 175','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.349 is divided in the ratio 1:6. What is the first share?','Rs.49','Rs.300','Rs.59','Rs.39','a','First share = 349 × 1/(1+6) = 49','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.229 is divided in the ratio 1:8. What is the first share?','Rs.25','Rs.204','Rs.35','Rs.15','a','First share = 229 × 1/(1+8) = 25','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.286 is divided in the ratio 6:1. What is the first share?','Rs.245','Rs.41','Rs.255','Rs.235','a','First share = 286 × 6/(6+1) = 245','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.230 is divided in the ratio 8:10. What is the first share?','Rs.102','Rs.128','Rs.112','Rs.92','a','First share = 230 × 8/(8+10) = 102','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.723 is divided in the ratio 7:3. What is the first share?','Rs.506','Rs.217','Rs.516','Rs.496','a','First share = 723 × 7/(7+3) = 506','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.633 is divided in the ratio 2:8. What is the first share?','Rs.126','Rs.507','Rs.136','Rs.116','a','First share = 633 × 2/(2+8) = 126','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.995 is divided in the ratio 9:10. What is the first share?','Rs.471','Rs.524','Rs.481','Rs.461','a','First share = 995 × 9/(9+10) = 471','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.373 is divided in the ratio 5:3. What is the first share?','Rs.233','Rs.140','Rs.243','Rs.223','a','First share = 373 × 5/(5+3) = 233','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.241 is divided in the ratio 9:7. What is the first share?','Rs.135','Rs.106','Rs.145','Rs.125','a','First share = 241 × 9/(9+7) = 135','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.847 is divided in the ratio 2:9. What is the first share?','Rs.154','Rs.693','Rs.164','Rs.144','a','First share = 847 × 2/(2+9) = 154','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.209 is divided in the ratio 7:8. What is the first share?','Rs.97','Rs.112','Rs.107','Rs.87','a','First share = 209 × 7/(7+8) = 97','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.617 is divided in the ratio 6:5. What is the first share?','Rs.336','Rs.281','Rs.346','Rs.326','a','First share = 617 × 6/(6+5) = 336','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.613 is divided in the ratio 2:10. What is the first share?','Rs.102','Rs.511','Rs.112','Rs.92','a','First share = 613 × 2/(2+10) = 102','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.815 is divided in the ratio 7:3. What is the first share?','Rs.570','Rs.245','Rs.580','Rs.560','a','First share = 815 × 7/(7+3) = 570','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.448 is divided in the ratio 1:9. What is the first share?','Rs.44','Rs.404','Rs.54','Rs.34','a','First share = 448 × 1/(1+9) = 44','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.269 is divided in the ratio 5:3. What is the first share?','Rs.168','Rs.101','Rs.178','Rs.158','a','First share = 269 × 5/(5+3) = 168','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.845 is divided in the ratio 5:5. What is the first share?','Rs.422','Rs.423','Rs.432','Rs.412','a','First share = 845 × 5/(5+5) = 422','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.534 is divided in the ratio 6:9. What is the first share?','Rs.213','Rs.321','Rs.223','Rs.203','a','First share = 534 × 6/(6+9) = 213','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.696 is divided in the ratio 8:7. What is the first share?','Rs.371','Rs.325','Rs.381','Rs.361','a','First share = 696 × 8/(8+7) = 371','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.423 is divided in the ratio 4:1. What is the first share?','Rs.338','Rs.85','Rs.348','Rs.328','a','First share = 423 × 4/(4+1) = 338','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.753 is divided in the ratio 7:7. What is the first share?','Rs.376','Rs.377','Rs.386','Rs.366','a','First share = 753 × 7/(7+7) = 376','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.220 is divided in the ratio 5:2. What is the first share?','Rs.157','Rs.63','Rs.167','Rs.147','a','First share = 220 × 5/(5+2) = 157','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.557 is divided in the ratio 3:4. What is the first share?','Rs.238','Rs.319','Rs.248','Rs.228','a','First share = 557 × 3/(3+4) = 238','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.930 is divided in the ratio 2:7. What is the first share?','Rs.206','Rs.724','Rs.216','Rs.196','a','First share = 930 × 2/(2+7) = 206','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.268 is divided in the ratio 8:10. What is the first share?','Rs.119','Rs.149','Rs.129','Rs.109','a','First share = 268 × 8/(8+10) = 119','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.905 is divided in the ratio 7:9. What is the first share?','Rs.395','Rs.510','Rs.405','Rs.385','a','First share = 905 × 7/(7+9) = 395','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.244 is divided in the ratio 10:4. What is the first share?','Rs.174','Rs.70','Rs.184','Rs.164','a','First share = 244 × 10/(10+4) = 174','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.944 is divided in the ratio 2:6. What is the first share?','Rs.236','Rs.708','Rs.246','Rs.226','a','First share = 944 × 2/(2+6) = 236','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.485 is divided in the ratio 1:6. What is the first share?','Rs.69','Rs.416','Rs.79','Rs.59','a','First share = 485 × 1/(1+6) = 69','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.504 is divided in the ratio 9:7. What is the first share?','Rs.283','Rs.221','Rs.293','Rs.273','a','First share = 504 × 9/(9+7) = 283','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.774 is divided in the ratio 8:2. What is the first share?','Rs.619','Rs.155','Rs.629','Rs.609','a','First share = 774 × 8/(8+2) = 619','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.487 is divided in the ratio 4:2. What is the first share?','Rs.324','Rs.163','Rs.334','Rs.314','a','First share = 487 × 4/(4+2) = 324','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.389 is divided in the ratio 6:9. What is the first share?','Rs.155','Rs.234','Rs.165','Rs.145','a','First share = 389 × 6/(6+9) = 155','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.501 is divided in the ratio 1:7. What is the first share?','Rs.62','Rs.439','Rs.72','Rs.52','a','First share = 501 × 1/(1+7) = 62','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.469 is divided in the ratio 9:10. What is the first share?','Rs.222','Rs.247','Rs.232','Rs.212','a','First share = 469 × 9/(9+10) = 222','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.988 is divided in the ratio 2:8. What is the first share?','Rs.197','Rs.791','Rs.207','Rs.187','a','First share = 988 × 2/(2+8) = 197','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.175 is divided in the ratio 4:8. What is the first share?','Rs.58','Rs.117','Rs.68','Rs.48','a','First share = 175 × 4/(4+8) = 58','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.698 is divided in the ratio 3:1. What is the first share?','Rs.523','Rs.175','Rs.533','Rs.513','a','First share = 698 × 3/(3+1) = 523','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.806 is divided in the ratio 5:10. What is the first share?','Rs.268','Rs.538','Rs.278','Rs.258','a','First share = 806 × 5/(5+10) = 268','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.799 is divided in the ratio 10:6. What is the first share?','Rs.499','Rs.300','Rs.509','Rs.489','a','First share = 799 × 10/(10+6) = 499','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.875 is divided in the ratio 7:9. What is the first share?','Rs.382','Rs.493','Rs.392','Rs.372','a','First share = 875 × 7/(7+9) = 382','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.439 is divided in the ratio 8:4. What is the first share?','Rs.292','Rs.147','Rs.302','Rs.282','a','First share = 439 × 8/(8+4) = 292','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.857 is divided in the ratio 1:5. What is the first share?','Rs.142','Rs.715','Rs.152','Rs.132','a','First share = 857 × 1/(1+5) = 142','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.710 is divided in the ratio 4:5. What is the first share?','Rs.315','Rs.395','Rs.325','Rs.305','a','First share = 710 × 4/(4+5) = 315','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.493 is divided in the ratio 8:6. What is the first share?','Rs.281','Rs.212','Rs.291','Rs.271','a','First share = 493 × 8/(8+6) = 281','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.235 is divided in the ratio 7:7. What is the first share?','Rs.117','Rs.118','Rs.127','Rs.107','a','First share = 235 × 7/(7+7) = 117','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.447 is divided in the ratio 2:2. What is the first share?','Rs.223','Rs.224','Rs.233','Rs.213','a','First share = 447 × 2/(2+2) = 223','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.781 is divided in the ratio 6:10. What is the first share?','Rs.292','Rs.489','Rs.302','Rs.282','a','First share = 781 × 6/(6+10) = 292','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.936 is divided in the ratio 4:6. What is the first share?','Rs.374','Rs.562','Rs.384','Rs.364','a','First share = 936 × 4/(4+6) = 374','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.993 is divided in the ratio 3:2. What is the first share?','Rs.595','Rs.398','Rs.605','Rs.585','a','First share = 993 × 3/(3+2) = 595','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.924 is divided in the ratio 3:4. What is the first share?','Rs.396','Rs.528','Rs.406','Rs.386','a','First share = 924 × 3/(3+4) = 396','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.549 is divided in the ratio 2:3. What is the first share?','Rs.219','Rs.330','Rs.229','Rs.209','a','First share = 549 × 2/(2+3) = 219','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.625 is divided in the ratio 10:4. What is the first share?','Rs.446','Rs.179','Rs.456','Rs.436','a','First share = 625 × 10/(10+4) = 446','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.879 is divided in the ratio 2:9. What is the first share?','Rs.159','Rs.720','Rs.169','Rs.149','a','First share = 879 × 2/(2+9) = 159','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.826 is divided in the ratio 7:4. What is the first share?','Rs.525','Rs.301','Rs.535','Rs.515','a','First share = 826 × 7/(7+4) = 525','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.490 is divided in the ratio 10:1. What is the first share?','Rs.445','Rs.45','Rs.455','Rs.435','a','First share = 490 × 10/(10+1) = 445','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.855 is divided in the ratio 2:7. What is the first share?','Rs.190','Rs.665','Rs.200','Rs.180','a','First share = 855 × 2/(2+7) = 190','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.154 is divided in the ratio 4:9. What is the first share?','Rs.47','Rs.107','Rs.57','Rs.37','a','First share = 154 × 4/(4+9) = 47','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.442 is divided in the ratio 8:2. What is the first share?','Rs.353','Rs.89','Rs.363','Rs.343','a','First share = 442 × 8/(8+2) = 353','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.302 is divided in the ratio 5:8. What is the first share?','Rs.116','Rs.186','Rs.126','Rs.106','a','First share = 302 × 5/(5+8) = 116','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.978 is divided in the ratio 7:10. What is the first share?','Rs.402','Rs.576','Rs.412','Rs.392','a','First share = 978 × 7/(7+10) = 402','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.195 is divided in the ratio 4:6. What is the first share?','Rs.78','Rs.117','Rs.88','Rs.68','a','First share = 195 × 4/(4+6) = 78','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.310 is divided in the ratio 7:3. What is the first share?','Rs.217','Rs.93','Rs.227','Rs.207','a','First share = 310 × 7/(7+3) = 217','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.405 is divided in the ratio 10:5. What is the first share?','Rs.270','Rs.135','Rs.280','Rs.260','a','First share = 405 × 10/(10+5) = 270','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.989 is divided in the ratio 7:7. What is the first share?','Rs.494','Rs.495','Rs.504','Rs.484','a','First share = 989 × 7/(7+7) = 494','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.400 is divided in the ratio 5:6. What is the first share?','Rs.181','Rs.219','Rs.191','Rs.171','a','First share = 400 × 5/(5+6) = 181','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.501 is divided in the ratio 6:5. What is the first share?','Rs.273','Rs.228','Rs.283','Rs.263','a','First share = 501 × 6/(6+5) = 273','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.522 is divided in the ratio 10:2. What is the first share?','Rs.435','Rs.87','Rs.445','Rs.425','a','First share = 522 × 10/(10+2) = 435','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.434 is divided in the ratio 9:6. What is the first share?','Rs.260','Rs.174','Rs.270','Rs.250','a','First share = 434 × 9/(9+6) = 260','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.804 is divided in the ratio 10:3. What is the first share?','Rs.618','Rs.186','Rs.628','Rs.608','a','First share = 804 × 10/(10+3) = 618','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.166 is divided in the ratio 6:6. What is the first share?','Rs.83','Rs.83','Rs.93','Rs.73','a','First share = 166 × 6/(6+6) = 83','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.997 is divided in the ratio 2:3. What is the first share?','Rs.398','Rs.599','Rs.408','Rs.388','a','First share = 997 × 2/(2+3) = 398','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.527 is divided in the ratio 3:10. What is the first share?','Rs.121','Rs.406','Rs.131','Rs.111','a','First share = 527 × 3/(3+10) = 121','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.537 is divided in the ratio 1:6. What is the first share?','Rs.76','Rs.461','Rs.86','Rs.66','a','First share = 537 × 1/(1+6) = 76','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.238 is divided in the ratio 6:9. What is the first share?','Rs.95','Rs.143','Rs.105','Rs.85','a','First share = 238 × 6/(6+9) = 95','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.875 is divided in the ratio 9:10. What is the first share?','Rs.414','Rs.461','Rs.424','Rs.404','a','First share = 875 × 9/(9+10) = 414','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.796 is divided in the ratio 10:6. What is the first share?','Rs.497','Rs.299','Rs.507','Rs.487','a','First share = 796 × 10/(10+6) = 497','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.959 is divided in the ratio 3:10. What is the first share?','Rs.221','Rs.738','Rs.231','Rs.211','a','First share = 959 × 3/(3+10) = 221','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.374 is divided in the ratio 3:10. What is the first share?','Rs.86','Rs.288','Rs.96','Rs.76','a','First share = 374 × 3/(3+10) = 86','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.275 is divided in the ratio 3:1. What is the first share?','Rs.206','Rs.69','Rs.216','Rs.196','a','First share = 275 × 3/(3+1) = 206','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.868 is divided in the ratio 10:7. What is the first share?','Rs.510','Rs.358','Rs.520','Rs.500','a','First share = 868 × 10/(10+7) = 510','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.818 is divided in the ratio 10:7. What is the first share?','Rs.481','Rs.337','Rs.491','Rs.471','a','First share = 818 × 10/(10+7) = 481','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.556 is divided in the ratio 5:10. What is the first share?','Rs.185','Rs.371','Rs.195','Rs.175','a','First share = 556 × 5/(5+10) = 185','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.164 is divided in the ratio 6:9. What is the first share?','Rs.65','Rs.99','Rs.75','Rs.55','a','First share = 164 × 6/(6+9) = 65','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.166 is divided in the ratio 10:3. What is the first share?','Rs.127','Rs.39','Rs.137','Rs.117','a','First share = 166 × 10/(10+3) = 127','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.850 is divided in the ratio 7:4. What is the first share?','Rs.540','Rs.310','Rs.550','Rs.530','a','First share = 850 × 7/(7+4) = 540','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.114 is divided in the ratio 2:6. What is the first share?','Rs.28','Rs.86','Rs.38','Rs.18','a','First share = 114 × 2/(2+6) = 28','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.306 is divided in the ratio 1:6. What is the first share?','Rs.43','Rs.263','Rs.53','Rs.33','a','First share = 306 × 1/(1+6) = 43','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.282 is divided in the ratio 10:1. What is the first share?','Rs.256','Rs.26','Rs.266','Rs.246','a','First share = 282 × 10/(10+1) = 256','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.920 is divided in the ratio 3:6. What is the first share?','Rs.306','Rs.614','Rs.316','Rs.296','a','First share = 920 × 3/(3+6) = 306','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.991 is divided in the ratio 7:10. What is the first share?','Rs.408','Rs.583','Rs.418','Rs.398','a','First share = 991 × 7/(7+10) = 408','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.186 is divided in the ratio 3:1. What is the first share?','Rs.139','Rs.47','Rs.149','Rs.129','a','First share = 186 × 3/(3+1) = 139','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.986 is divided in the ratio 8:5. What is the first share?','Rs.606','Rs.380','Rs.616','Rs.596','a','First share = 986 × 8/(8+5) = 606','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.661 is divided in the ratio 3:4. What is the first share?','Rs.283','Rs.378','Rs.293','Rs.273','a','First share = 661 × 3/(3+4) = 283','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.698 is divided in the ratio 2:8. What is the first share?','Rs.139','Rs.559','Rs.149','Rs.129','a','First share = 698 × 2/(2+8) = 139','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.891 is divided in the ratio 8:7. What is the first share?','Rs.475','Rs.416','Rs.485','Rs.465','a','First share = 891 × 8/(8+7) = 475','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.824 is divided in the ratio 8:5. What is the first share?','Rs.507','Rs.317','Rs.517','Rs.497','a','First share = 824 × 8/(8+5) = 507','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.774 is divided in the ratio 5:8. What is the first share?','Rs.297','Rs.477','Rs.307','Rs.287','a','First share = 774 × 5/(5+8) = 297','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.957 is divided in the ratio 3:9. What is the first share?','Rs.239','Rs.718','Rs.249','Rs.229','a','First share = 957 × 3/(3+9) = 239','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.733 is divided in the ratio 8:1. What is the first share?','Rs.651','Rs.82','Rs.661','Rs.641','a','First share = 733 × 8/(8+1) = 651','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.361 is divided in the ratio 7:9. What is the first share?','Rs.157','Rs.204','Rs.167','Rs.147','a','First share = 361 × 7/(7+9) = 157','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.125 is divided in the ratio 8:8. What is the first share?','Rs.62','Rs.63','Rs.72','Rs.52','a','First share = 125 × 8/(8+8) = 62','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.566 is divided in the ratio 10:4. What is the first share?','Rs.404','Rs.162','Rs.414','Rs.394','a','First share = 566 × 10/(10+4) = 404','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.167 is divided in the ratio 6:1. What is the first share?','Rs.143','Rs.24','Rs.153','Rs.133','a','First share = 167 × 6/(6+1) = 143','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.539 is divided in the ratio 9:6. What is the first share?','Rs.323','Rs.216','Rs.333','Rs.313','a','First share = 539 × 9/(9+6) = 323','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.217 is divided in the ratio 8:1. What is the first share?','Rs.192','Rs.25','Rs.202','Rs.182','a','First share = 217 × 8/(8+1) = 192','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.478 is divided in the ratio 3:3. What is the first share?','Rs.239','Rs.239','Rs.249','Rs.229','a','First share = 478 × 3/(3+3) = 239','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.646 is divided in the ratio 3:8. What is the first share?','Rs.176','Rs.470','Rs.186','Rs.166','a','First share = 646 × 3/(3+8) = 176','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['Rs.383 is divided in the ratio 9:9. What is the first share?','Rs.191','Rs.192','Rs.201','Rs.181','a','First share = 383 × 9/(9+9) = 191','Mathematics','Arithmetic','medium','APSC,ADRE'],
+
+  ['What is the compound interest on Rs.32416 at 15% per annum for 2 years?','Rs.10454.16','Rs.9724.8','Rs.10554.16','Rs.10354.16','a','CI = P((1+R/100)^T - 1) = 10454.16','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.5473 at 20% per annum for 3 years?','Rs.3984.34','Rs.3283.8','Rs.4084.34','Rs.3884.34','a','CI = P((1+R/100)^T - 1) = 3984.34','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.8533 at 10% per annum for 1 years?','Rs.853.3','Rs.853.3','Rs.953.3','Rs.753.3','a','CI = P((1+R/100)^T - 1) = 853.3','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.31645 at 10% per annum for 2 years?','Rs.6645.45','Rs.6329.0','Rs.6745.45','Rs.6545.45','a','CI = P((1+R/100)^T - 1) = 6645.45','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.3479 at 20% per annum for 2 years?','Rs.1530.76','Rs.1391.6','Rs.1630.76','Rs.1430.76','a','CI = P((1+R/100)^T - 1) = 1530.76','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.24213 at 20% per annum for 3 years?','Rs.17627.06','Rs.14527.8','Rs.17727.06','Rs.17527.06','a','CI = P((1+R/100)^T - 1) = 17627.06','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.29942 at 10% per annum for 2 years?','Rs.6287.82','Rs.5988.4','Rs.6387.82','Rs.6187.82','a','CI = P((1+R/100)^T - 1) = 6287.82','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.41004 at 10% per annum for 3 years?','Rs.13572.32','Rs.12301.2','Rs.13672.32','Rs.13472.32','a','CI = P((1+R/100)^T - 1) = 13572.32','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.22518 at 20% per annum for 3 years?','Rs.16393.1','Rs.13510.8','Rs.16493.1','Rs.16293.099999999999','a','CI = P((1+R/100)^T - 1) = 16393.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.10865 at 5% per annum for 2 years?','Rs.1113.66','Rs.1086.5','Rs.1213.66','Rs.1013.6600000000001','a','CI = P((1+R/100)^T - 1) = 1113.66','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.27278 at 5% per annum for 3 years?','Rs.4299.69','Rs.4091.7','Rs.4399.69','Rs.4199.69','a','CI = P((1+R/100)^T - 1) = 4299.69','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.47496 at 15% per annum for 1 years?','Rs.7124.4','Rs.7124.4','Rs.7224.4','Rs.7024.4','a','CI = P((1+R/100)^T - 1) = 7124.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.35468 at 5% per annum for 1 years?','Rs.1773.4','Rs.1773.4','Rs.1873.4','Rs.1673.4','a','CI = P((1+R/100)^T - 1) = 1773.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.41875 at 20% per annum for 1 years?','Rs.8375.0','Rs.8375.0','Rs.8475.0','Rs.8275.0','a','CI = P((1+R/100)^T - 1) = 8375.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21226 at 15% per annum for 2 years?','Rs.6845.38','Rs.6367.8','Rs.6945.38','Rs.6745.38','a','CI = P((1+R/100)^T - 1) = 6845.38','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.32005 at 5% per annum for 1 years?','Rs.1600.25','Rs.1600.25','Rs.1700.25','Rs.1500.25','a','CI = P((1+R/100)^T - 1) = 1600.25','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44489 at 15% per annum for 1 years?','Rs.6673.35','Rs.6673.35','Rs.6773.35','Rs.6573.35','a','CI = P((1+R/100)^T - 1) = 6673.35','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.16788 at 20% per annum for 3 years?','Rs.12221.66','Rs.10072.8','Rs.12321.66','Rs.12121.66','a','CI = P((1+R/100)^T - 1) = 12221.66','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49114 at 20% per annum for 1 years?','Rs.9822.8','Rs.9822.8','Rs.9922.8','Rs.9722.8','a','CI = P((1+R/100)^T - 1) = 9822.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.27797 at 5% per annum for 1 years?','Rs.1389.85','Rs.1389.85','Rs.1489.85','Rs.1289.85','a','CI = P((1+R/100)^T - 1) = 1389.85','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.26534 at 10% per annum for 1 years?','Rs.2653.4','Rs.2653.4','Rs.2753.4','Rs.2553.4','a','CI = P((1+R/100)^T - 1) = 2653.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21182 at 10% per annum for 2 years?','Rs.4448.22','Rs.4236.4','Rs.4548.22','Rs.4348.22','a','CI = P((1+R/100)^T - 1) = 4448.22','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.7356 at 20% per annum for 2 years?','Rs.3236.64','Rs.2942.4','Rs.3336.64','Rs.3136.64','a','CI = P((1+R/100)^T - 1) = 3236.64','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.11080 at 20% per annum for 1 years?','Rs.2216.0','Rs.2216.0','Rs.2316.0','Rs.2116.0','a','CI = P((1+R/100)^T - 1) = 2216.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.20106 at 20% per annum for 2 years?','Rs.8846.64','Rs.8042.4','Rs.8946.64','Rs.8746.64','a','CI = P((1+R/100)^T - 1) = 8846.64','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.9701 at 20% per annum for 3 years?','Rs.7062.33','Rs.5820.6','Rs.7162.33','Rs.6962.33','a','CI = P((1+R/100)^T - 1) = 7062.33','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.20385 at 20% per annum for 1 years?','Rs.4077.0','Rs.4077.0','Rs.4177.0','Rs.3977.0','a','CI = P((1+R/100)^T - 1) = 4077.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.22157 at 15% per annum for 3 years?','Rs.11541.03','Rs.9970.65','Rs.11641.03','Rs.11441.03','a','CI = P((1+R/100)^T - 1) = 11541.03','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.47273 at 15% per annum for 2 years?','Rs.15245.54','Rs.14181.9','Rs.15345.54','Rs.15145.54','a','CI = P((1+R/100)^T - 1) = 15245.54','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46997 at 5% per annum for 1 years?','Rs.2349.85','Rs.2349.85','Rs.2449.85','Rs.2249.85','a','CI = P((1+R/100)^T - 1) = 2349.85','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28727 at 20% per annum for 3 years?','Rs.20913.26','Rs.17236.2','Rs.21013.26','Rs.20813.26','a','CI = P((1+R/100)^T - 1) = 20913.26','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.12245 at 10% per annum for 3 years?','Rs.4053.1','Rs.3673.5','Rs.4153.1','Rs.3953.1','a','CI = P((1+R/100)^T - 1) = 4053.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.17025 at 15% per annum for 1 years?','Rs.2553.75','Rs.2553.75','Rs.2653.75','Rs.2453.75','a','CI = P((1+R/100)^T - 1) = 2553.75','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21426 at 15% per annum for 1 years?','Rs.3213.9','Rs.3213.9','Rs.3313.9','Rs.3113.9','a','CI = P((1+R/100)^T - 1) = 3213.9','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.17238 at 15% per annum for 2 years?','Rs.5559.25','Rs.5171.4','Rs.5659.25','Rs.5459.25','a','CI = P((1+R/100)^T - 1) = 5559.25','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.8263 at 5% per annum for 1 years?','Rs.413.15','Rs.413.15','Rs.513.15','Rs.313.15','a','CI = P((1+R/100)^T - 1) = 413.15','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28999 at 15% per annum for 2 years?','Rs.9352.18','Rs.8699.7','Rs.9452.18','Rs.9252.18','a','CI = P((1+R/100)^T - 1) = 9352.18','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.18753 at 20% per annum for 3 years?','Rs.13652.18','Rs.11251.8','Rs.13752.18','Rs.13552.18','a','CI = P((1+R/100)^T - 1) = 13652.18','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44899 at 5% per annum for 2 years?','Rs.4602.15','Rs.4489.9','Rs.4702.15','Rs.4502.15','a','CI = P((1+R/100)^T - 1) = 4602.15','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.42090 at 10% per annum for 1 years?','Rs.4209.0','Rs.4209.0','Rs.4309.0','Rs.4109.0','a','CI = P((1+R/100)^T - 1) = 4209.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.20193 at 10% per annum for 2 years?','Rs.4240.53','Rs.4038.6','Rs.4340.53','Rs.4140.53','a','CI = P((1+R/100)^T - 1) = 4240.53','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.40124 at 20% per annum for 1 years?','Rs.8024.8','Rs.8024.8','Rs.8124.8','Rs.7924.8','a','CI = P((1+R/100)^T - 1) = 8024.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.14892 at 10% per annum for 2 years?','Rs.3127.32','Rs.2978.4','Rs.3227.32','Rs.3027.32','a','CI = P((1+R/100)^T - 1) = 3127.32','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44136 at 20% per annum for 3 years?','Rs.32131.01','Rs.26481.6','Rs.32231.01','Rs.32031.01','a','CI = P((1+R/100)^T - 1) = 32131.01','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.27969 at 20% per annum for 2 years?','Rs.12306.36','Rs.11187.6','Rs.12406.36','Rs.12206.36','a','CI = P((1+R/100)^T - 1) = 12306.36','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.13057 at 20% per annum for 1 years?','Rs.2611.4','Rs.2611.4','Rs.2711.4','Rs.2511.4','a','CI = P((1+R/100)^T - 1) = 2611.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.25938 at 5% per annum for 2 years?','Rs.2658.65','Rs.2593.8','Rs.2758.65','Rs.2558.65','a','CI = P((1+R/100)^T - 1) = 2658.65','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.22057 at 15% per annum for 3 years?','Rs.11488.94','Rs.9925.65','Rs.11588.94','Rs.11388.94','a','CI = P((1+R/100)^T - 1) = 11488.94','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.5622 at 10% per annum for 2 years?','Rs.1180.62','Rs.1124.4','Rs.1280.62','Rs.1080.62','a','CI = P((1+R/100)^T - 1) = 1180.62','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.1461 at 20% per annum for 3 years?','Rs.1063.61','Rs.876.6','Rs.1163.61','Rs.963.6099999999999','a','CI = P((1+R/100)^T - 1) = 1063.61','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.5278 at 5% per annum for 1 years?','Rs.263.9','Rs.263.9','Rs.363.9','Rs.163.89999999999998','a','CI = P((1+R/100)^T - 1) = 263.9','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44422 at 15% per annum for 2 years?','Rs.14326.09','Rs.13326.6','Rs.14426.09','Rs.14226.09','a','CI = P((1+R/100)^T - 1) = 14326.09','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.10377 at 15% per annum for 2 years?','Rs.3346.58','Rs.3113.1','Rs.3446.58','Rs.3246.58','a','CI = P((1+R/100)^T - 1) = 3346.58','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21455 at 15% per annum for 1 years?','Rs.3218.25','Rs.3218.25','Rs.3318.25','Rs.3118.25','a','CI = P((1+R/100)^T - 1) = 3218.25','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.30015 at 10% per annum for 3 years?','Rs.9934.97','Rs.9004.5','Rs.10034.97','Rs.9834.97','a','CI = P((1+R/100)^T - 1) = 9934.97','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.14588 at 15% per annum for 2 years?','Rs.4704.63','Rs.4376.4','Rs.4804.63','Rs.4604.63','a','CI = P((1+R/100)^T - 1) = 4704.63','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.1599 at 10% per annum for 2 years?','Rs.335.79','Rs.319.8','Rs.435.79','Rs.235.79000000000002','a','CI = P((1+R/100)^T - 1) = 335.79','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.22553 at 15% per annum for 2 years?','Rs.7273.34','Rs.6765.9','Rs.7373.34','Rs.7173.34','a','CI = P((1+R/100)^T - 1) = 7273.34','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.20134 at 10% per annum for 2 years?','Rs.4228.14','Rs.4026.8','Rs.4328.14','Rs.4128.14','a','CI = P((1+R/100)^T - 1) = 4228.14','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.39233 at 20% per annum for 2 years?','Rs.17262.52','Rs.15693.2','Rs.17362.52','Rs.17162.52','a','CI = P((1+R/100)^T - 1) = 17262.52','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.7177 at 20% per annum for 1 years?','Rs.1435.4','Rs.1435.4','Rs.1535.4','Rs.1335.4','a','CI = P((1+R/100)^T - 1) = 1435.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.32688 at 15% per annum for 1 years?','Rs.4903.2','Rs.4903.2','Rs.5003.2','Rs.4803.2','a','CI = P((1+R/100)^T - 1) = 4903.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.29415 at 20% per annum for 2 years?','Rs.12942.6','Rs.11766.0','Rs.13042.6','Rs.12842.6','a','CI = P((1+R/100)^T - 1) = 12942.6','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21772 at 5% per annum for 3 years?','Rs.3431.81','Rs.3265.8','Rs.3531.81','Rs.3331.81','a','CI = P((1+R/100)^T - 1) = 3431.81','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.9795 at 10% per annum for 2 years?','Rs.2056.95','Rs.1959.0','Rs.2156.95','Rs.1956.9499999999998','a','CI = P((1+R/100)^T - 1) = 2056.95','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21685 at 20% per annum for 2 years?','Rs.9541.4','Rs.8674.0','Rs.9641.4','Rs.9441.4','a','CI = P((1+R/100)^T - 1) = 9541.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46826 at 15% per annum for 3 years?','Rs.24390.49','Rs.21071.7','Rs.24490.49','Rs.24290.49','a','CI = P((1+R/100)^T - 1) = 24390.49','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28574 at 20% per annum for 2 years?','Rs.12572.56','Rs.11429.6','Rs.12672.56','Rs.12472.56','a','CI = P((1+R/100)^T - 1) = 12572.56','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.26510 at 10% per annum for 1 years?','Rs.2651.0','Rs.2651.0','Rs.2751.0','Rs.2551.0','a','CI = P((1+R/100)^T - 1) = 2651.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.19260 at 15% per annum for 1 years?','Rs.2889.0','Rs.2889.0','Rs.2989.0','Rs.2789.0','a','CI = P((1+R/100)^T - 1) = 2889.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49128 at 15% per annum for 3 years?','Rs.25589.55','Rs.22107.6','Rs.25689.55','Rs.25489.55','a','CI = P((1+R/100)^T - 1) = 25589.55','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.4619 at 5% per annum for 2 years?','Rs.473.45','Rs.461.9','Rs.573.45','Rs.373.45','a','CI = P((1+R/100)^T - 1) = 473.45','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.35456 at 15% per annum for 3 years?','Rs.18468.14','Rs.15955.2','Rs.18568.14','Rs.18368.14','a','CI = P((1+R/100)^T - 1) = 18468.14','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.17590 at 5% per annum for 2 years?','Rs.1802.98','Rs.1759.0','Rs.1902.98','Rs.1702.98','a','CI = P((1+R/100)^T - 1) = 1802.98','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.37974 at 15% per annum for 1 years?','Rs.5696.1','Rs.5696.1','Rs.5796.1','Rs.5596.1','a','CI = P((1+R/100)^T - 1) = 5696.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.45251 at 15% per annum for 2 years?','Rs.14593.45','Rs.13575.3','Rs.14693.45','Rs.14493.45','a','CI = P((1+R/100)^T - 1) = 14593.45','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.4042 at 20% per annum for 3 years?','Rs.2942.58','Rs.2425.2','Rs.3042.58','Rs.2842.58','a','CI = P((1+R/100)^T - 1) = 2942.58','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.3598 at 15% per annum for 1 years?','Rs.539.7','Rs.539.7','Rs.639.7','Rs.439.70000000000005','a','CI = P((1+R/100)^T - 1) = 539.7','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.10444 at 10% per annum for 1 years?','Rs.1044.4','Rs.1044.4','Rs.1144.4','Rs.944.4000000000001','a','CI = P((1+R/100)^T - 1) = 1044.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46848 at 15% per annum for 1 years?','Rs.7027.2','Rs.7027.2','Rs.7127.2','Rs.6927.2','a','CI = P((1+R/100)^T - 1) = 7027.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.26229 at 10% per annum for 3 years?','Rs.8681.8','Rs.7868.7','Rs.8781.8','Rs.8581.8','a','CI = P((1+R/100)^T - 1) = 8681.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.12951 at 10% per annum for 3 years?','Rs.4286.78','Rs.3885.3','Rs.4386.78','Rs.4186.78','a','CI = P((1+R/100)^T - 1) = 4286.78','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.3242 at 15% per annum for 2 years?','Rs.1045.54','Rs.972.6','Rs.1145.54','Rs.945.54','a','CI = P((1+R/100)^T - 1) = 1045.54','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49613 at 15% per annum for 3 years?','Rs.25842.17','Rs.22325.85','Rs.25942.17','Rs.25742.17','a','CI = P((1+R/100)^T - 1) = 25842.17','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.1921 at 10% per annum for 1 years?','Rs.192.1','Rs.192.1','Rs.292.1','Rs.92.1','a','CI = P((1+R/100)^T - 1) = 192.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49678 at 10% per annum for 2 years?','Rs.10432.38','Rs.9935.6','Rs.10532.38','Rs.10332.38','a','CI = P((1+R/100)^T - 1) = 10432.38','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.33316 at 10% per annum for 2 years?','Rs.6996.36','Rs.6663.2','Rs.7096.36','Rs.6896.36','a','CI = P((1+R/100)^T - 1) = 6996.36','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.43181 at 5% per annum for 3 years?','Rs.6806.41','Rs.6477.15','Rs.6906.41','Rs.6706.41','a','CI = P((1+R/100)^T - 1) = 6806.41','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.15704 at 10% per annum for 3 years?','Rs.5198.02','Rs.4711.2','Rs.5298.02','Rs.5098.02','a','CI = P((1+R/100)^T - 1) = 5198.02','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.20037 at 5% per annum for 2 years?','Rs.2053.79','Rs.2003.7','Rs.2153.79','Rs.1953.79','a','CI = P((1+R/100)^T - 1) = 2053.79','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.45246 at 15% per annum for 3 years?','Rs.23567.51','Rs.20360.7','Rs.23667.51','Rs.23467.51','a','CI = P((1+R/100)^T - 1) = 23567.51','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.43168 at 20% per annum for 2 years?','Rs.18993.92','Rs.17267.2','Rs.19093.92','Rs.18893.92','a','CI = P((1+R/100)^T - 1) = 18993.92','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.34794 at 15% per annum for 2 years?','Rs.11221.06','Rs.10438.2','Rs.11321.06','Rs.11121.06','a','CI = P((1+R/100)^T - 1) = 11221.06','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.18680 at 5% per annum for 3 years?','Rs.2944.44','Rs.2802.0','Rs.3044.44','Rs.2844.44','a','CI = P((1+R/100)^T - 1) = 2944.44','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.12672 at 5% per annum for 3 years?','Rs.1997.42','Rs.1900.8','Rs.2097.42','Rs.1897.42','a','CI = P((1+R/100)^T - 1) = 1997.42','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28259 at 20% per annum for 2 years?','Rs.12433.96','Rs.11303.6','Rs.12533.96','Rs.12333.96','a','CI = P((1+R/100)^T - 1) = 12433.96','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.38320 at 20% per annum for 2 years?','Rs.16860.8','Rs.15328.0','Rs.16960.8','Rs.16760.8','a','CI = P((1+R/100)^T - 1) = 16860.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.25905 at 20% per annum for 2 years?','Rs.11398.2','Rs.10362.0','Rs.11498.2','Rs.11298.2','a','CI = P((1+R/100)^T - 1) = 11398.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.1105 at 20% per annum for 2 years?','Rs.486.2','Rs.442.0','Rs.586.2','Rs.386.2','a','CI = P((1+R/100)^T - 1) = 486.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.18139 at 5% per annum for 3 years?','Rs.2859.16','Rs.2720.85','Rs.2959.16','Rs.2759.16','a','CI = P((1+R/100)^T - 1) = 2859.16','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.41426 at 5% per annum for 1 years?','Rs.2071.3','Rs.2071.3','Rs.2171.3','Rs.1971.3000000000002','a','CI = P((1+R/100)^T - 1) = 2071.3','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.9289 at 10% per annum for 2 years?','Rs.1950.69','Rs.1857.8','Rs.2050.69','Rs.1850.69','a','CI = P((1+R/100)^T - 1) = 1950.69','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21413 at 15% per annum for 1 years?','Rs.3211.95','Rs.3211.95','Rs.3311.95','Rs.3111.95','a','CI = P((1+R/100)^T - 1) = 3211.95','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.3771 at 20% per annum for 3 years?','Rs.2745.29','Rs.2262.6','Rs.2845.29','Rs.2645.29','a','CI = P((1+R/100)^T - 1) = 2745.29','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.14419 at 15% per annum for 1 years?','Rs.2162.85','Rs.2162.85','Rs.2262.85','Rs.2062.85','a','CI = P((1+R/100)^T - 1) = 2162.85','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.48891 at 5% per annum for 1 years?','Rs.2444.55','Rs.2444.55','Rs.2544.55','Rs.2344.55','a','CI = P((1+R/100)^T - 1) = 2444.55','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.26257 at 20% per annum for 3 years?','Rs.19115.1','Rs.15754.2','Rs.19215.1','Rs.19015.1','a','CI = P((1+R/100)^T - 1) = 19115.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28993 at 5% per annum for 2 years?','Rs.2971.78','Rs.2899.3','Rs.3071.78','Rs.2871.78','a','CI = P((1+R/100)^T - 1) = 2971.78','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.30576 at 5% per annum for 2 years?','Rs.3134.04','Rs.3057.6','Rs.3234.04','Rs.3034.04','a','CI = P((1+R/100)^T - 1) = 3134.04','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.33718 at 15% per annum for 2 years?','Rs.10874.05','Rs.10115.4','Rs.10974.05','Rs.10774.05','a','CI = P((1+R/100)^T - 1) = 10874.05','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28010 at 20% per annum for 3 years?','Rs.20391.28','Rs.16806.0','Rs.20491.28','Rs.20291.28','a','CI = P((1+R/100)^T - 1) = 20391.28','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.17512 at 10% per annum for 2 years?','Rs.3677.52','Rs.3502.4','Rs.3777.52','Rs.3577.52','a','CI = P((1+R/100)^T - 1) = 3677.52','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46158 at 10% per annum for 2 years?','Rs.9693.18','Rs.9231.6','Rs.9793.18','Rs.9593.18','a','CI = P((1+R/100)^T - 1) = 9693.18','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.3289 at 10% per annum for 2 years?','Rs.690.69','Rs.657.8','Rs.790.69','Rs.590.69','a','CI = P((1+R/100)^T - 1) = 690.69','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.4895 at 5% per annum for 2 years?','Rs.501.74','Rs.489.5','Rs.601.74','Rs.401.74','a','CI = P((1+R/100)^T - 1) = 501.74','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44636 at 20% per annum for 3 years?','Rs.32495.01','Rs.26781.6','Rs.32595.01','Rs.32395.01','a','CI = P((1+R/100)^T - 1) = 32495.01','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.7339 at 20% per annum for 2 years?','Rs.3229.16','Rs.2935.6','Rs.3329.16','Rs.3129.16','a','CI = P((1+R/100)^T - 1) = 3229.16','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.7819 at 10% per annum for 1 years?','Rs.781.9','Rs.781.9','Rs.881.9','Rs.681.9','a','CI = P((1+R/100)^T - 1) = 781.9','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49634 at 15% per annum for 2 years?','Rs.16006.96','Rs.14890.2','Rs.16106.96','Rs.15906.96','a','CI = P((1+R/100)^T - 1) = 16006.96','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46009 at 15% per annum for 1 years?','Rs.6901.35','Rs.6901.35','Rs.7001.35','Rs.6801.35','a','CI = P((1+R/100)^T - 1) = 6901.35','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.29032 at 5% per annum for 1 years?','Rs.1451.6','Rs.1451.6','Rs.1551.6','Rs.1351.6','a','CI = P((1+R/100)^T - 1) = 1451.6','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.12938 at 10% per annum for 3 years?','Rs.4282.48','Rs.3881.4','Rs.4382.48','Rs.4182.48','a','CI = P((1+R/100)^T - 1) = 4282.48','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.23143 at 20% per annum for 2 years?','Rs.10182.92','Rs.9257.2','Rs.10282.92','Rs.10082.92','a','CI = P((1+R/100)^T - 1) = 10182.92','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49749 at 15% per annum for 3 years?','Rs.25913.01','Rs.22387.05','Rs.26013.01','Rs.25813.01','a','CI = P((1+R/100)^T - 1) = 25913.01','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.1106 at 20% per annum for 1 years?','Rs.221.2','Rs.221.2','Rs.321.2','Rs.121.19999999999999','a','CI = P((1+R/100)^T - 1) = 221.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.6701 at 10% per annum for 3 years?','Rs.2218.03','Rs.2010.3','Rs.2318.03','Rs.2118.03','a','CI = P((1+R/100)^T - 1) = 2218.03','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.12343 at 5% per annum for 3 years?','Rs.1945.57','Rs.1851.45','Rs.2045.57','Rs.1845.57','a','CI = P((1+R/100)^T - 1) = 1945.57','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.5867 at 15% per annum for 3 years?','Rs.3055.97','Rs.2640.15','Rs.3155.97','Rs.2955.97','a','CI = P((1+R/100)^T - 1) = 3055.97','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.18812 at 20% per annum for 2 years?','Rs.8277.28','Rs.7524.8','Rs.8377.28','Rs.8177.280000000001','a','CI = P((1+R/100)^T - 1) = 8277.28','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.40727 at 10% per annum for 2 years?','Rs.8552.67','Rs.8145.4','Rs.8652.67','Rs.8452.67','a','CI = P((1+R/100)^T - 1) = 8552.67','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.22047 at 15% per annum for 2 years?','Rs.7110.16','Rs.6614.1','Rs.7210.16','Rs.7010.16','a','CI = P((1+R/100)^T - 1) = 7110.16','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.6220 at 20% per annum for 2 years?','Rs.2736.8','Rs.2488.0','Rs.2836.8','Rs.2636.8','a','CI = P((1+R/100)^T - 1) = 2736.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.42949 at 10% per annum for 3 years?','Rs.14216.12','Rs.12884.7','Rs.14316.12','Rs.14116.12','a','CI = P((1+R/100)^T - 1) = 14216.12','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44777 at 10% per annum for 2 years?','Rs.9403.17','Rs.8955.4','Rs.9503.17','Rs.9303.17','a','CI = P((1+R/100)^T - 1) = 9403.17','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.18764 at 15% per annum for 1 years?','Rs.2814.6','Rs.2814.6','Rs.2914.6','Rs.2714.6','a','CI = P((1+R/100)^T - 1) = 2814.6','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.26562 at 5% per annum for 1 years?','Rs.1328.1','Rs.1328.1','Rs.1428.1','Rs.1228.1','a','CI = P((1+R/100)^T - 1) = 1328.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.41539 at 20% per annum for 1 years?','Rs.8307.8','Rs.8307.8','Rs.8407.8','Rs.8207.8','a','CI = P((1+R/100)^T - 1) = 8307.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.29589 at 10% per annum for 2 years?','Rs.6213.69','Rs.5917.8','Rs.6313.69','Rs.6113.69','a','CI = P((1+R/100)^T - 1) = 6213.69','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21099 at 5% per annum for 2 years?','Rs.2162.65','Rs.2109.9','Rs.2262.65','Rs.2062.65','a','CI = P((1+R/100)^T - 1) = 2162.65','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.35897 at 5% per annum for 3 years?','Rs.5658.26','Rs.5384.55','Rs.5758.26','Rs.5558.26','a','CI = P((1+R/100)^T - 1) = 5658.26','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.40341 at 5% per annum for 2 years?','Rs.4134.95','Rs.4034.1','Rs.4234.95','Rs.4034.95','a','CI = P((1+R/100)^T - 1) = 4134.95','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.37776 at 15% per annum for 1 years?','Rs.5666.4','Rs.5666.4','Rs.5766.4','Rs.5566.4','a','CI = P((1+R/100)^T - 1) = 5666.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.38268 at 5% per annum for 3 years?','Rs.6031.99','Rs.5740.2','Rs.6131.99','Rs.5931.99','a','CI = P((1+R/100)^T - 1) = 6031.99','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.17158 at 15% per annum for 3 years?','Rs.8937.17','Rs.7721.1','Rs.9037.17','Rs.8837.17','a','CI = P((1+R/100)^T - 1) = 8937.17','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.45147 at 5% per annum for 1 years?','Rs.2257.35','Rs.2257.35','Rs.2357.35','Rs.2157.35','a','CI = P((1+R/100)^T - 1) = 2257.35','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.32432 at 5% per annum for 3 years?','Rs.5112.09','Rs.4864.8','Rs.5212.09','Rs.5012.09','a','CI = P((1+R/100)^T - 1) = 5112.09','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.31919 at 10% per annum for 2 years?','Rs.6702.99','Rs.6383.8','Rs.6802.99','Rs.6602.99','a','CI = P((1+R/100)^T - 1) = 6702.99','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.34596 at 15% per annum for 1 years?','Rs.5189.4','Rs.5189.4','Rs.5289.4','Rs.5089.4','a','CI = P((1+R/100)^T - 1) = 5189.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.45386 at 5% per annum for 1 years?','Rs.2269.3','Rs.2269.3','Rs.2369.3','Rs.2169.3','a','CI = P((1+R/100)^T - 1) = 2269.3','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.28174 at 5% per annum for 1 years?','Rs.1408.7','Rs.1408.7','Rs.1508.7','Rs.1308.7','a','CI = P((1+R/100)^T - 1) = 1408.7','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.7683 at 5% per annum for 3 years?','Rs.1211.03','Rs.1152.45','Rs.1311.03','Rs.1111.03','a','CI = P((1+R/100)^T - 1) = 1211.03','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.13758 at 15% per annum for 1 years?','Rs.2063.7','Rs.2063.7','Rs.2163.7','Rs.1963.6999999999998','a','CI = P((1+R/100)^T - 1) = 2063.7','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.10428 at 5% per annum for 2 years?','Rs.1068.87','Rs.1042.8','Rs.1168.87','Rs.968.8699999999999','a','CI = P((1+R/100)^T - 1) = 1068.87','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.3714 at 15% per annum for 3 years?','Rs.1934.53','Rs.1671.3','Rs.2034.53','Rs.1834.53','a','CI = P((1+R/100)^T - 1) = 1934.53','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.31365 at 5% per annum for 3 years?','Rs.4943.91','Rs.4704.75','Rs.5043.91','Rs.4843.91','a','CI = P((1+R/100)^T - 1) = 4943.91','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.45718 at 10% per annum for 3 years?','Rs.15132.66','Rs.13715.4','Rs.15232.66','Rs.15032.66','a','CI = P((1+R/100)^T - 1) = 15132.66','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46396 at 20% per annum for 2 years?','Rs.20414.24','Rs.18558.4','Rs.20514.24','Rs.20314.24','a','CI = P((1+R/100)^T - 1) = 20414.24','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.39655 at 5% per annum for 3 years?','Rs.6250.62','Rs.5948.25','Rs.6350.62','Rs.6150.62','a','CI = P((1+R/100)^T - 1) = 6250.62','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.10654 at 10% per annum for 1 years?','Rs.1065.4','Rs.1065.4','Rs.1165.4','Rs.965.4000000000001','a','CI = P((1+R/100)^T - 1) = 1065.4','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.5885 at 5% per annum for 3 years?','Rs.927.62','Rs.882.75','Rs.1027.62','Rs.827.62','a','CI = P((1+R/100)^T - 1) = 927.62','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.11359 at 20% per annum for 3 years?','Rs.8269.35','Rs.6815.4','Rs.8369.35','Rs.8169.35','a','CI = P((1+R/100)^T - 1) = 8269.35','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.45382 at 20% per annum for 2 years?','Rs.19968.08','Rs.18152.8','Rs.20068.08','Rs.19868.08','a','CI = P((1+R/100)^T - 1) = 19968.08','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.33264 at 5% per annum for 2 years?','Rs.3409.56','Rs.3326.4','Rs.3509.56','Rs.3309.56','a','CI = P((1+R/100)^T - 1) = 3409.56','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.5962 at 5% per annum for 1 years?','Rs.298.1','Rs.298.1','Rs.398.1','Rs.198.10000000000002','a','CI = P((1+R/100)^T - 1) = 298.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.4176 at 5% per annum for 2 years?','Rs.428.04','Rs.417.6','Rs.528.04','Rs.328.04','a','CI = P((1+R/100)^T - 1) = 428.04','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.35589 at 20% per annum for 3 years?','Rs.25908.79','Rs.21353.4','Rs.26008.79','Rs.25808.79','a','CI = P((1+R/100)^T - 1) = 25908.79','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.25532 at 10% per annum for 1 years?','Rs.2553.2','Rs.2553.2','Rs.2653.2','Rs.2453.2','a','CI = P((1+R/100)^T - 1) = 2553.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.2806 at 10% per annum for 2 years?','Rs.589.26','Rs.561.2','Rs.689.26','Rs.489.26','a','CI = P((1+R/100)^T - 1) = 589.26','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.48099 at 15% per annum for 1 years?','Rs.7214.85','Rs.7214.85','Rs.7314.85','Rs.7114.85','a','CI = P((1+R/100)^T - 1) = 7214.85','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.19298 at 10% per annum for 1 years?','Rs.1929.8','Rs.1929.8','Rs.2029.8','Rs.1829.8','a','CI = P((1+R/100)^T - 1) = 1929.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.13193 at 20% per annum for 1 years?','Rs.2638.6','Rs.2638.6','Rs.2738.6','Rs.2538.6','a','CI = P((1+R/100)^T - 1) = 2638.6','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.9128 at 15% per annum for 2 years?','Rs.2943.78','Rs.2738.4','Rs.3043.78','Rs.2843.78','a','CI = P((1+R/100)^T - 1) = 2943.78','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.8359 at 20% per annum for 1 years?','Rs.1671.8','Rs.1671.8','Rs.1771.8','Rs.1571.8','a','CI = P((1+R/100)^T - 1) = 1671.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.1062 at 10% per annum for 1 years?','Rs.106.2','Rs.106.2','Rs.206.2','Rs.6.200000000000003','a','CI = P((1+R/100)^T - 1) = 106.2','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.9686 at 15% per annum for 1 years?','Rs.1452.9','Rs.1452.9','Rs.1552.9','Rs.1352.9','a','CI = P((1+R/100)^T - 1) = 1452.9','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.17135 at 15% per annum for 3 years?','Rs.8925.19','Rs.7710.75','Rs.9025.19','Rs.8825.19','a','CI = P((1+R/100)^T - 1) = 8925.19','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.27699 at 10% per annum for 2 years?','Rs.5816.79','Rs.5539.8','Rs.5916.79','Rs.5716.79','a','CI = P((1+R/100)^T - 1) = 5816.79','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.33235 at 5% per annum for 2 years?','Rs.3406.59','Rs.3323.5','Rs.3506.59','Rs.3306.59','a','CI = P((1+R/100)^T - 1) = 3406.59','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.40025 at 5% per annum for 3 years?','Rs.6308.94','Rs.6003.75','Rs.6408.94','Rs.6208.94','a','CI = P((1+R/100)^T - 1) = 6308.94','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.33480 at 5% per annum for 1 years?','Rs.1674.0','Rs.1674.0','Rs.1774.0','Rs.1574.0','a','CI = P((1+R/100)^T - 1) = 1674.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.13110 at 15% per annum for 1 years?','Rs.1966.5','Rs.1966.5','Rs.2066.5','Rs.1866.5','a','CI = P((1+R/100)^T - 1) = 1966.5','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.11054 at 5% per annum for 2 years?','Rs.1133.04','Rs.1105.4','Rs.1233.04','Rs.1033.04','a','CI = P((1+R/100)^T - 1) = 1133.04','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44789 at 20% per annum for 1 years?','Rs.8957.8','Rs.8957.8','Rs.9057.8','Rs.8857.8','a','CI = P((1+R/100)^T - 1) = 8957.8','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.46352 at 10% per annum for 3 years?','Rs.15342.51','Rs.13905.6','Rs.15442.51','Rs.15242.51','a','CI = P((1+R/100)^T - 1) = 15342.51','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.47795 at 15% per annum for 3 years?','Rs.24895.22','Rs.21507.75','Rs.24995.22','Rs.24795.22','a','CI = P((1+R/100)^T - 1) = 24895.22','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.49334 at 20% per annum for 2 years?','Rs.21706.96','Rs.19733.6','Rs.21806.96','Rs.21606.96','a','CI = P((1+R/100)^T - 1) = 21706.96','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.16248 at 20% per annum for 2 years?','Rs.7149.12','Rs.6499.2','Rs.7249.12','Rs.7049.12','a','CI = P((1+R/100)^T - 1) = 7149.12','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.34043 at 20% per annum for 1 years?','Rs.6808.6','Rs.6808.6','Rs.6908.6','Rs.6708.6','a','CI = P((1+R/100)^T - 1) = 6808.6','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.21250 at 20% per annum for 3 years?','Rs.15470.0','Rs.12750.0','Rs.15570.0','Rs.15370.0','a','CI = P((1+R/100)^T - 1) = 15470.0','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.6589 at 15% per annum for 3 years?','Rs.3432.05','Rs.2965.05','Rs.3532.05','Rs.3332.05','a','CI = P((1+R/100)^T - 1) = 3432.05','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.25431 at 10% per annum for 2 years?','Rs.5340.51','Rs.5086.2','Rs.5440.51','Rs.5240.51','a','CI = P((1+R/100)^T - 1) = 5340.51','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.10728 at 20% per annum for 1 years?','Rs.2145.6','Rs.2145.6','Rs.2245.6','Rs.2045.6','a','CI = P((1+R/100)^T - 1) = 2145.6','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.33514 at 5% per annum for 1 years?','Rs.1675.7','Rs.1675.7','Rs.1775.7','Rs.1575.7','a','CI = P((1+R/100)^T - 1) = 1675.7','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.35401 at 15% per annum for 3 years?','Rs.18439.5','Rs.15930.45','Rs.18539.5','Rs.18339.5','a','CI = P((1+R/100)^T - 1) = 18439.5','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.30915 at 10% per annum for 1 years?','Rs.3091.5','Rs.3091.5','Rs.3191.5','Rs.2991.5','a','CI = P((1+R/100)^T - 1) = 3091.5','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.44939 at 10% per annum for 1 years?','Rs.4493.9','Rs.4493.9','Rs.4593.9','Rs.4393.9','a','CI = P((1+R/100)^T - 1) = 4493.9','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.40193 at 5% per annum for 3 years?','Rs.6335.42','Rs.6028.95','Rs.6435.42','Rs.6235.42','a','CI = P((1+R/100)^T - 1) = 6335.42','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.26941 at 20% per annum for 3 years?','Rs.19613.05','Rs.16164.6','Rs.19713.05','Rs.19513.05','a','CI = P((1+R/100)^T - 1) = 19613.05','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.48060 at 20% per annum for 3 years?','Rs.34987.68','Rs.28836.0','Rs.35087.68','Rs.34887.68','a','CI = P((1+R/100)^T - 1) = 34987.68','Mathematics','Arithmetic','hard','APSC'],
+
+  ['What is the compound interest on Rs.15961 at 10% per annum for 1 years?','Rs.1596.1','Rs.1596.1','Rs.1696.1','Rs.1496.1','a','CI = P((1+R/100)^T - 1) = 1596.1','Mathematics','Arithmetic','hard','APSC'],
+
+  ['Who founded the Indian National Congress?','A O Hume','Dadabhai Naoroji','W C Bonnerjee','Surendranath Banerjee','a','Answer: A O Hume','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Where was the first session of INC held?','Bombay (1885)','Calcutta (1885)','Madras (1885)','Delhi (1885)','a','Answer: Bombay (1885)','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the first President of INC?','W C Bonnerjee','A O Hume','Dadabhai Naoroji','Surendranath Banerjee','a','Answer: W C Bonnerjee','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who gave the slogan "Swaraj is my birthright"?','Bal Gangadhar Tilak','Mahatma Gandhi','Subhash Chandra Bose','Jawaharlal Nehru','a','Answer: Bal Gangadhar Tilak','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Muslim League?','Aga Khan III','Muhammad Ali Jinnah','Allama Iqbal','Liaquat Ali Khan','a','Answer: Aga Khan III','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Where was the Muslim League founded?','Dhaka (1906)','Lahore (1906)','Delhi (1906)','Calcutta (1906)','a','Answer: Dhaka (1906)','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the first Indian Governor-General of independent India?','C Rajagopalachari','Lord Mountbatten','Rajendra Prasad','Jawaharlal Nehru','a','Answer: C Rajagopalachari','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['When was the Partition of India announced?','June 3, 1947','August 15, 1947','July 4, 1947','May 3, 1947','a','Answer: June 3, 1947','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['The partition of Bengal in 1905 was done by which Viceroy?','Lord Curzon','Lord Minto','Lord Hardinge','Lord Reading','a','Answer: Lord Curzon','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Forward Bloc?','Subhash Chandra Bose','Jawaharlal Nehru','Bhagat Singh','Bal Gangadhar Tilak','a','Answer: Subhash Chandra Bose','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Indian National Army (Azad Hind Fauj)?','Subhash Chandra Bose','Mohan Singh','Rash Behari Bose','Jawaharlal Nehru','a','Answer: Subhash Chandra Bose','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['When was the Indian National Army formed?','1942','1940','1943','1945','a','Answer: 1942','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who gave the slogan "Inquilab Zindabad"?','Hasrat Mohani','Bhagat Singh','Subhash Chandra Bose','Mahatma Gandhi','a','Answer: Hasrat Mohani','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the youngest revolutionary to be hanged by the British?','Khudiram Bose','Bhagat Singh','Chandra Shekhar Azad','Rajguru','a','Answer: Khudiram Bose','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['When did the Salt March (Dandi March) begin?','March 12, 1930','April 6, 1930','January 26, 1930','March 1, 1930','a','Answer: March 12, 1930','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['How many days did the Dandi March last?','24 days','10 days','30 days','40 days','a','Answer: 24 days','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Arya Samaj?','Swami Dayananda Saraswati','Swami Vivekananda','Raja Ram Mohan Roy','Aurobindo Ghosh','a','Answer: Swami Dayananda Saraswati','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Brahmo Samaj?','Raja Ram Mohan Roy','Swami Dayananda Saraswati','Swami Vivekananda','Debendranath Tagore','a','Answer: Raja Ram Mohan Roy','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Ramakrishna Mission?','Swami Vivekananda','Ramakrishna Paramahansa','Swami Dayananda Saraswati','Aurobindo Ghosh','a','Answer: Swami Vivekananda','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Theosophical Society in India?','Annie Besant','Madame Blavatsky','Henry Steel Olcott','Aurobindo Ghosh','a','Answer: Annie Besant','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who founded the Aligarh Movement?','Sir Syed Ahmad Khan','Maulana Abul Kalam Azad','Muhammad Iqbal','Maulana Mohammad Ali','a','Answer: Sir Syed Ahmad Khan','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who said "Freedom is my birthright and I shall have it"?','Bal Gangadhar Tilak','Mahatma Gandhi','Subhash Chandra Bose','Jawaharlal Nehru','a','Answer: Bal Gangadhar Tilak','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the President of INC during the Quit India Movement?','Maulana Abul Kalam Azad','Jawaharlal Nehru','Sardar Patel','Mahatma Gandhi','a','Answer: Maulana Abul Kalam Azad','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the leader of the Bardoli Satyagraha?','Sardar Vallabhbhai Patel','Mahatma Gandhi','Jawaharlal Nehru','Rajendra Prasad','a','Answer: Sardar Vallabhbhai Patel','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['Who was the leader of the Champaran Satyagraha?','Mahatma Gandhi','Sardar Patel','Rajendra Prasad','Jawaharlal Nehru','a','Answer: Mahatma Gandhi','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['When did the Champaran Satyagraha take place?','1917','1918','1920','1922','a','Answer: 1917','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['When did the Kheda Satyagraha take place?','1918','1917','1920','1922','a','Answer: 1918','History','Indian History','medium','APSC,ADRE,UPSC'],
+
+  ['How many Rajya Sabha seats does Assam have?','7','5','10','12','a','Answer: 7','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['How many legislative assembly seats does Assam have?','126','100','150','200','a','Answer: 126','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Assam Legislative Assembly was constituted in which year?','1937','1947','1950','1952','a','Answer: 1937','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Who was the first Speaker of the Assam Legislative Assembly?','Bhabendra Nath Saikia','Gopinath Bordoloi','Bishnuram Medhi','Sarat Chandra Sinha','a','Answer: Bhabendra Nath Saikia','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Guwahati High Court was established in which year?','1948','1950','1955','1960','a','Answer: 1948','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Which is the first oil refinery in Asia?','Digboi Refinery','Numaligarh Refinery','Guwahati Refinery','Bongaigaon Refinery','a','Answer: Digboi Refinery','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Saraighat Bridge was inaugurated in which year?','1962','1960','1965','1958','a','Answer: 1962','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Bogibeel Bridge over the Brahmaputra connects which two districts?','Dibrugarh and Dhemaji','Guwahati and North Guwahati','Tezpur and Sonitpur','Jorhat and Majuli','a','Answer: Dibrugarh and Dhemaji','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Bogibeel Bridge was inaugurated in which year?','2018','2016','2020','2015','a','Answer: 2018','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Who composed the Assamese song "O Mur Apunar Desh"?','Lakshminath Bezbaroa','Bhupen Hazarika','Jyotiprasad Agarwala','Bishnuprasad Rabha','a','Answer: Lakshminath Bezbaroa','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['"O Mur Apunar Desh" was adopted as the state song in which year?','1927','1937','1947','1957','a','Answer: 1927','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Who is known as "Sudhakantha" of Assam?','Bhupen Hazarika','Bishnuprasad Rabha','Jyotiprasad Agarwala','Zubeen Garg','a','Answer: Bhupen Hazarika','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Gohain Dynasty ruled which region of Assam?','Western Assam','Eastern Assam','Southern Assam','Northern Assam','a','Answer: Western Assam','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Who wrote the Assamese epic "Burhi Aair Sadhu"?','Lakshminath Bezbaroa','Bhupen Hazarika','Jyotiprasad Agarwala','Birendra Kumar Bhattacharya','a','Answer: Lakshminath Bezbaroa','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['What is the traditional Assamese jewelry called?','Assamese Gaam Khaap','Gamkhaap','Thengia','Keru','a','Answer: Assamese Gaam Khaap','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Which festival marks the beginning of the agricultural season in Assam?','Rongali Bihu','Magh Bihu','Kati Bihu','Bhogali Bihu','a','Answer: Rongali Bihu','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Assam Agitation was led by which organization?','AASU (All Assam Students Union)','AGP','AASAA','AAMSU','a','Answer: AASU (All Assam Students Union)','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Who was the leader of the Assam Agitation?','Prafulla Kumar Mahanta','Gopinath Bordoloi','Tarun Gogoi','Hemanta Biswa Sarma','a','Answer: Prafulla Kumar Mahanta','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['When was the Assam Official Language Act passed?','1960','1950','1965','1970','a','Answer: 1960','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Which language was made the official language of Assam?','Assamese','Bengali','English','Bodo','a','Answer: Assamese','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['The Barak Valley region of Assam comprises how many districts?','3','2','4','5','a','Answer: 3','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['Which autonomous council is in the Bodoland region?','BTC (Bodoland Territorial Council)','KAC','DAC','AAC','a','Answer: BTC (Bodoland Territorial Council)','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['When was the BTC formed?','2003','2000','2005','2010','a','Answer: 2003','Assam GK','Assam GK','medium','APSC,ADRE'],
+
+  ['What does the idiom "a piece of cake" mean?','Something very easy','A type of dessert','A small amount','A celebration','a','Answer: Something very easy','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "break a leg" mean?','Good luck','To injure yourself','To run fast','To dance','a','Answer: Good luck','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "hit the books" mean?','To study hard','To fight','To read casually','To organize books','a','Answer: To study hard','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "let the cat out of the bag" mean?','To reveal a secret','To release an animal','To make a mistake','To go shopping','a','Answer: To reveal a secret','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "under the weather" mean?','Feeling ill','Caught in rain','Below average','In a bad mood','a','Answer: Feeling ill','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "cost an arm and a leg" mean?','Very expensive','Physical injury','Hard work','Long distance','a','Answer: Very expensive','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "once in a blue moon" mean?','Very rarely','At night','Once a month','Never','a','Answer: Very rarely','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "a dime a dozen" mean?','Very common','Very cheap','Very rare','Very valuable','a','Answer: Very common','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "feeling under the weather" mean?','Feeling sick','Feeling happy','Feeling cold','Feeling wet','a','Answer: Feeling sick','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to bite the bullet" mean?','To face a difficult situation bravely','To eat something hard','To be aggressive','To give up','a','Answer: To face a difficult situation bravely','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "spill the beans" mean?','To reveal a secret','To drop food','To make a mess','To cook','a','Answer: To reveal a secret','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "when pigs fly" mean?','Something that will never happen','To fly high','Impossible dreams','Never give up','a','Answer: Something that will never happen','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to cut corners" mean?','To do something poorly to save time or money','To turn sharply','To make a shortcut','To divide equally','a','Answer: To do something poorly to save time or money','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to add insult to injury" mean?','To worsen an already bad situation','To apologize','To get revenge','To make someone laugh','a','Answer: To worsen an already bad situation','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to burn the midnight oil" mean?','To work late into the night','To waste energy','To cook at night','To stay awake for fun','a','Answer: To work late into the night','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to kick the bucket" mean?','To die','To get angry','To start something','To give up','a','Answer: To die','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to be on cloud nine" mean?','To be extremely happy','To be confused','To be scared','To be high up','a','Answer: To be extremely happy','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to throw in the towel" mean?','To give up','To clean up','To fight','To finish','a','Answer: To give up','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to go the extra mile" mean?','To do more than required','To travel far','To run fast','To be generous','a','Answer: To do more than required','English','Vocabulary','medium','APSC,ADRE'],
+
+  ['What does the idiom "to miss the boat" mean?','To miss an opportunity','To be late for a trip','To forget something','To make a mistake','a','Answer: To miss an opportunity','English','Vocabulary','medium','APSC,ADRE'],
 
 ];
