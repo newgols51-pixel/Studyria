@@ -289,7 +289,7 @@ function showUpdateBanner(waitingSW) {
   banner.style.cssText = [
     'position:fixed', 'top:0', 'left:0', 'right:0', 'z-index:99999',
     'background:linear-gradient(135deg,#1a2540,#0d1830)',
-    'border-bottom:1px solid rgba(61,142,248,0.3)',
+    'border-bottom:1px solid rgba(125,17,34,0.3)',
     'padding:12px 16px', 'display:flex', 'align-items:center',
     'gap:12px', 'font-family:system-ui,sans-serif',
     'box-shadow:0 4px 24px rgba(0,0,0,0.5)',
@@ -297,11 +297,11 @@ function showUpdateBanner(waitingSW) {
 
   banner.innerHTML = `
     <div style="flex:1;min-width:0">
-      <div style="color:#e4e8f0;font-weight:600;font-size:.9rem">🚀 New Version Available</div>
+      <div style="color:#f1ece3;font-weight:600;font-size:.9rem">🚀 New Version Available</div>
       <div style="color:#7a8caa;font-size:.78rem;margin-top:2px">What's New: bug fixes, performance & Career Hub improvements.</div>
     </div>
     <button id="_pwaUpdateNow"
-      style="padding:8px 16px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap;flex-shrink:0">
+      style="padding:8px 16px;background:linear-gradient(135deg,#7d1122,#c99a3c);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap;flex-shrink:0">
       Update Now
     </button>
     <button id="_pwaUpdateLater"
@@ -359,7 +359,7 @@ function showRestartBanner() {
 
   banner.innerHTML = `
     <div style="flex:1">
-      <div style="color:#e4e8f0;font-weight:600;font-size:.9rem">✅ Restart App to Finish Update</div>
+      <div style="color:#f1ece3;font-weight:600;font-size:.9rem">✅ Restart App to Finish Update</div>
       <div style="color:#a7f3d0;font-size:.78rem;margin-top:2px">Update installed! Restart to use the new version.</div>
     </div>
     <button id="_pwaRestartNow"
@@ -474,7 +474,7 @@ function showInstallBanner() {
     'position:fixed', 'bottom:16px', 'left:50%', 'transform:translateX(-50%)',
     'z-index:99998', 'max-width:420px', 'width:calc(100% - 32px)',
     'background:linear-gradient(135deg,#0d1830,#121e38)',
-    'border:1px solid rgba(61,142,248,0.25)',
+    'border:1px solid rgba(125,17,34,0.25)',
     'border-radius:16px', 'padding:16px',
     'box-shadow:0 8px 40px rgba(0,0,0,0.6)',
     'font-family:system-ui,sans-serif',
@@ -498,7 +498,7 @@ function showInstallBanner() {
     <div style="display:flex;align-items:center;gap:12px">
       <div style="font-size:2rem;flex-shrink:0">📚</div>
       <div style="flex:1">
-        <div style="color:#e4e8f0;font-weight:700;font-size:.95rem">Download / Install Studyria App</div>
+        <div style="color:#f1ece3;font-weight:700;font-size:.95rem">Download / Install Studyria App</div>
         <div style="color:#7a8caa;font-size:.78rem;margin-top:2px">Offline access to your PDFs. No browser needed.</div>
       </div>
       <button id="_pwaInstallClose"
@@ -507,7 +507,7 @@ function showInstallBanner() {
     </div>
     <div style="display:flex;gap:8px;margin-top:12px">
       <button id="_pwaInstallConfirm"
-        style="flex:1;padding:10px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer">
+        style="flex:1;padding:10px;background:linear-gradient(135deg,#7d1122,#c99a3c);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer">
         ⬇ View & Install
       </button>
       <button id="_pwaInstallLater"
@@ -683,7 +683,7 @@ function showiOSInstallTip() {
     'position:fixed', 'bottom:0', 'left:0', 'right:0',
     'z-index:99999', 'padding:20px 20px 32px',
     'background:linear-gradient(0deg,#0d1830,#121e38)',
-    'border-top:1px solid rgba(61,142,248,0.25)',
+    'border-top:1px solid rgba(125,17,34,0.25)',
     'font-family:system-ui,sans-serif',
     'text-align:center',
     'box-shadow:0 -8px 40px rgba(0,0,0,0.6)',
@@ -691,17 +691,17 @@ function showiOSInstallTip() {
 
   tip.innerHTML = `
     <div style="font-size:1.5rem;margin-bottom:10px">📱</div>
-    <div style="color:#e4e8f0;font-weight:700;font-size:1rem;margin-bottom:6px">Install Studyria on iPhone</div>
+    <div style="color:#f1ece3;font-weight:700;font-size:1rem;margin-bottom:6px">Install Studyria on iPhone</div>
     <div style="color:#7a8caa;font-size:.85rem;line-height:1.6">
-      Tap <strong style="color:#3d8ef8">Share</strong> <span style="font-size:1rem">⬆</span> at the bottom of Safari,
-      then tap <strong style="color:#3d8ef8">"Add to Home Screen"</strong> 
+      Tap <strong style="color:#7d1122">Share</strong> <span style="font-size:1rem">⬆</span> at the bottom of Safari,
+      then tap <strong style="color:#7d1122">"Add to Home Screen"</strong> 
       <span style="font-size:1rem">➕</span>
     </div>
     <button onclick="document.getElementById('_pwaIOSTip').remove()"
-      style="margin-top:14px;padding:10px 24px;background:linear-gradient(135deg,#3d8ef8,#00c8e8);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">
+      style="margin-top:14px;padding:10px 24px;background:linear-gradient(135deg,#7d1122,#c99a3c);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer">
       Got it
     </button>
-    <div style="font-size:1.5rem;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);color:#3d8ef8">▼</div>
+    <div style="font-size:1.5rem;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);color:#7d1122">▼</div>
   `;
 
   document.body.appendChild(tip);

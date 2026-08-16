@@ -36,8 +36,8 @@
   --p3-gold:       #fbbf24;
   --p3-gold-light: #fde68a;
   --p3-gold-dark:  #d97706;
-  --p3-violet:     #a78bfa;
-  --p3-violet-d:   #7c3aed;
+  --p3-violet:     #c99a3c;
+  --p3-violet-d:   #7d1122;
   --p3-blue:       #7d1122;
   --p3-green:      #10d98e;
   --p3-bg-dark:    rgba(15, 10, 30, 0.96);
@@ -152,7 +152,7 @@
 }
 
 .prm-p3-badge--violet {
-  background: linear-gradient(135deg, #7c3aed, #a78bfa, #7c3aed);
+  background: linear-gradient(135deg, #7d1122, #c99a3c, #7d1122);
   background-size: 200% 100%;
   color: #fff;
   animation: prm-p3-shimmer 3s linear infinite;
@@ -240,7 +240,7 @@
 }
 
 .prm-p3-chip--violet {
-  color: #a78bfa;
+  color: #c99a3c;
   background: rgba(167,139,250,0.10);
   border-color: rgba(167,139,250,0.28);
 }

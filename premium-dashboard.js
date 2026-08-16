@@ -84,7 +84,7 @@
       '.prmdash-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); border-color: rgba(251,191,36,0.3); }',
       '.prmdash-card-cover { position: relative; height: 120px; overflow: hidden; }',
       '.prmdash-card-cover img { width: 100%; height: 100%; object-fit: cover; }',
-      '.prmdash-card-cover-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: linear-gradient(135deg, rgba(61,142,248,0.1), rgba(139,92,246,0.1)); }',
+      '.prmdash-card-cover-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: linear-gradient(135deg, rgba(125,17,34,0.1), rgba(139,92,246,0.1)); }',
       '.prmdash-card-badge { position: absolute; top: 6px; right: 6px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; font-size: .55rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; }',
       '.prmdash-card-body { padding: 8px 10px; }',
       '.prmdash-card-title { font-size: .74rem; font-weight: 600; color: var(--text1, #f0f4f8); line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }',

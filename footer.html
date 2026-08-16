@@ -10,14 +10,14 @@
 <style>
 /* ── STUDYRIA DESIGN TOKENS (mirror of index.html :root) ── */
 :root {
-  --color-accent:  #3d8ef8;
-  --color-accent2: #00c8e8;
+  --color-accent:  #7d1122;
+  --color-accent2: #c99a3c;
   --color-accent3: #f59e0b;
   --color-gold:    #f59e0b;
   --color-danger:  #ff4d6d;
   --color-success: #10d98e;
-  --grad-primary:  linear-gradient(135deg, #3d8ef8 0%, #00c8e8 100%);
-  --grad-hero:     linear-gradient(135deg, #3d8ef8 0%, #8b5cf6 50%, #00c8e8 100%);
+  --grad-primary:  linear-gradient(135deg, #7d1122 0%, #c99a3c 100%);
+  --grad-hero:     linear-gradient(135deg, #7d1122 0%, #8b5cf6 50%, #c99a3c 100%);
   --grad-success:  linear-gradient(135deg, #10d98e 0%, #06b6d4 100%);
   --radius:    14px;
   --radius-sm: 9px;
@@ -26,7 +26,7 @@
   --font-body:    "Inter", system-ui, sans-serif;
 
   /* Dark theme defaults */
-  --bg:  #080c14;
+  --bg:  #1a0a0a;
   --bg2: #0d1220;
   --bg3: #121929;
   --surface: rgba(255,255,255,0.03);
@@ -41,13 +41,13 @@
   --accent2: var(--color-accent2);
 }
 body.light {
-  --bg:  #f0f4fb;
+  --bg:  #faf7f2;
   --bg2: #ffffff;
   --bg3: #e4eaf6;
   --surface: rgba(0,0,0,0.035);
   --glass:   rgba(255,255,255,0.75);
   --glass-border: rgba(0,0,0,0.07);
-  --glass-border-hover: rgba(61,142,248,0.3);
+  --glass-border-hover: rgba(125,17,34,0.3);
   --text:  #0a1022;
   --text2: #4a5f80;
   --text3: #8fa0bb;
@@ -95,7 +95,7 @@ body.light .studyria-footer {
 .sf-orb-1 {
   width: 500px; height: 500px;
   top: -120px; left: -100px;
-  background: radial-gradient(circle, rgba(61,142,248,0.18) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(125,17,34,0.18) 0%, transparent 65%);
   animation: sfOrb 14s ease-in-out infinite;
 }
 .sf-orb-2 {
@@ -108,7 +108,7 @@ body.light .studyria-footer {
   width: 300px; height: 300px;
   top: 40%; left: 50%;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(0,200,232,0.09) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(201,154,60,0.09) 0%, transparent 65%);
   animation: sfOrb 22s ease-in-out infinite;
 }
 @keyframes sfOrb {
@@ -121,8 +121,8 @@ body.light .studyria-footer {
   height: 2px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(61,142,248,0.5) 30%,
-    rgba(0,200,232,0.6) 50%,
+    rgba(125,17,34,0.5) 30%,
+    rgba(201,154,60,0.6) 50%,
     rgba(139,92,246,0.5) 70%,
     transparent 100%);
 }
@@ -175,8 +175,8 @@ body.light .sf-newsletter { border-bottom-color: rgba(0,0,0,0.06); }
 }
 .sf-newsletter-input::placeholder { color: var(--text3); }
 .sf-newsletter-input:focus {
-  border-color: rgba(61,142,248,0.45);
-  box-shadow: 0 0 0 3px rgba(61,142,248,0.12);
+  border-color: rgba(125,17,34,0.45);
+  box-shadow: 0 0 0 3px rgba(125,17,34,0.12);
 }
 body.light .sf-newsletter-input { background: rgba(255,255,255,0.8); }
 .sf-newsletter-btn {
@@ -250,7 +250,7 @@ body.light .sf-newsletter-input { background: rgba(255,255,255,0.8); }
 }
 .sf-stat:hover {
   border-color: var(--glass-border-hover);
-  background: rgba(61,142,248,0.06);
+  background: rgba(125,17,34,0.06);
   transform: translateY(-2px);
 }
 .sf-stat-icon {
@@ -295,9 +295,9 @@ body.light .sf-newsletter-input { background: rgba(255,255,255,0.8); }
 .sf-social:hover {
   color: var(--text);
   border-color: var(--accent);
-  background: rgba(61,142,248,0.1);
+  background: rgba(125,17,34,0.1);
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(61,142,248,0.2);
+  box-shadow: 0 6px 20px rgba(125,17,34,0.2);
 }
 .sf-social svg { display: block; }
 
@@ -374,8 +374,8 @@ body.light .sf-newsletter-input { background: rgba(255,255,255,0.8); }
   transition: all .22s;
 }
 .sf-app-badge-btn:hover {
-  border-color: rgba(61,142,248,0.4);
-  background: rgba(61,142,248,0.08);
+  border-color: rgba(125,17,34,0.4);
+  background: rgba(125,17,34,0.08);
   transform: translateY(-2px);
 }
 .sf-app-badge-icon {
@@ -433,7 +433,7 @@ body.light .sf-bottom { border-top-color: rgba(0,0,0,0.06); }
   transition: color .18s, background .18s;
 }
 .sf-legal a:hover,
-.sf-legal span[onclick]:hover { color: var(--accent); background: rgba(61,142,248,0.08); }
+.sf-legal span[onclick]:hover { color: var(--accent); background: rgba(125,17,34,0.08); }
 .sf-legal-sep { color: var(--text3); font-size: .7rem; opacity: .4; }
 
 .sf-made-badge {
@@ -510,7 +510,7 @@ crossorigin="anonymous"></script>
           <!-- Quick stats -->
           <div class="sf-stats">
             <div class="sf-stat">
-              <div class="sf-stat-icon" style="background:rgba(61,142,248,0.12);">📚</div>
+              <div class="sf-stat-icon" style="background:rgba(125,17,34,0.12);">📚</div>
               <div class="sf-stat-label">
                 <span class="sf-stat-val">558+ Downloads</span>
                 <span class="sf-stat-sub">Free &amp; Premium</span>
