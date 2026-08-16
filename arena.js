@@ -841,28 +841,45 @@ async function finishBattle(){
   var total=S.battle.questions.length;
   var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
   var score=Math.round((S.battle.correct/total)*100);
-  
-  // Submit final results
-  var res=await api('completeMatch',{
+  var payload={
     matchId:S.matchId,userId:S.user.id,
     correct:S.battle.correct,wrong:S.battle.wrong,skipped:S.battle.skipped,
     score:score,totalTime:totalTime,
     topicBreakdown:S.battle.topicStats,
     answers:S.battle.answers
-  });
+  };
   
-  if(res.ok&&res.allCompleted){
+  // Submit final results — RETRY on failure. On flaky mobile connections a
+  // single failed submit used to permanently strand the match (server never
+  // learns this player finished, opponent's report shows 0s forever). Retry
+  // a few times with backoff before giving up.
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">📤 Submitting your result…</div><div class="arena-spinner"></div></div>');
+  var res=null;
+  for(var attempt=0;attempt<5;attempt++){
+    if(attempt>0)await new Promise(function(r){setTimeout(r,800*attempt);});
+    res=await api('completeMatch',payload);
+    if(res&&res.ok)break;
+  }
+  
+  if(res&&res.ok&&res.allCompleted){
     // Both players finished — show results using the FRESH match data we just got
     // back from completeMatch (avoids read-after-write replication lag from a
     // separate getMatch call right after this write)
     showResults(res.winner,res.match);
-  }else if(res.ok){
+  }else if(res&&res.ok){
     // Waiting for opponent
     showWaitingForOpponent();
   }else{
-    toast('Error: '+(res.error||''));
-    showResults({});
+    // All retries failed — likely a real connectivity problem. Do NOT fake a
+    // result screen with local-only data (that hides that the server never
+    // recorded this player's completion). Offer a manual retry instead.
+    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#e57373;margin-bottom:12px">⚠️ Couldn\'t submit your result</div><div style="color:rgba(245,233,224,0.6);margin-bottom:20px;font-size:14px">Check your connection and try again — your answers are saved locally.</div><button class="arena-btn primary" onclick="Arena.retrySubmit()">🔄 Retry Submit</button></div>');
+    S.screen='submitFailed';
   }
+}
+
+function retrySubmit(){
+  finishBattle();
 }
 
 function showWaitingForOpponent(){
@@ -1537,6 +1554,7 @@ window.Arena={
   acceptInvite:acceptInvite,
   rejectInvite:rejectInvite,
   forfeitWait:forfeitWait,
+  retrySubmit:retrySubmit,
   checkNowWait:checkNowWait,
   close:closeOverlay
 };
