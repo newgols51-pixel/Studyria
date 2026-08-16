@@ -1,11 +1,11 @@
-// arena.js — Studyria Practice Arena Competitive Extension
-// ADDITIVE ONLY — extends BrainLab without modifying existing functionality
+// arena.js — Studyria Practice Arena 2.0
+// ADDITIVE UPGRADE — preserves all existing Arena functionality
 (function(){
 'use strict';
 
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 // CONFIG
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
 var POLL_MS=2000, PING_MS=8000, INV_MS=3000;
 
@@ -22,9 +22,9 @@ var QCOUNTS=[10,20,25,30,40,50,75,100,150,200,250,300,400,500];
 var EXAMS=['All','APSC','ADRE','Assam Police','Assam TET','Grade III','Grade IV','General','SSC','Railway','Banking'];
 var DIFFS=[{id:'mixed',l:'Mixed',icon:'🎲'},{id:'easy',l:'Easy',icon:'🟢'},{id:'medium',l:'Medium',icon:'🟡'},{id:'hard',l:'Hard',icon:'🔴'}];
 
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 var S={
   user:null,
   cfg:{mode:'1v1',qCount:10,exam:'All',cat:'All',diff:'mixed'},
@@ -39,9 +39,6 @@ var S={
   lobbyReady:false
 };
 
-// ══════════════════════════════════════════════
-// API
-// ══════════════════════════════════════════════
 async function api(action,data){
   data=data||{};
   try{
@@ -50,19 +47,18 @@ async function api(action,data){
   }catch(e){console.error('Arena API:',e);return{ok:false,error:e.message};}
 }
 
-// ══════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════
 function getUser(){
   if(window.currentUser&&window.currentUser.id)return{id:String(window.currentUser.id),name:window.currentUser.name||'Player'};
   if(window.currentUser&&window.currentUser.email)return{id:window.currentUser.email,name:window.currentUser.name||window.currentUser.email.split('@')[0]};
   return null;
 }
+
 function getCategories(){
   if(!window.BrainLab)return['All'];
   var cats=window.BrainLab.getCategories?window.BrainLab.getCategories():['All'];
   return ['All'].concat(cats.filter(function(c){return c!=='All';}));
 }
+
 function countQuestions(opts){
   if(!window.BrainLab||!window.BrainLab.filterQuestions)return 0;
   var pool=window.BrainLab.filterQuestions({
@@ -72,7 +68,9 @@ function countQuestions(opts){
   });
   return pool?pool.length:0;
 }
+
 function genSeed(){return Date.now()+Math.floor(Math.random()*1000000);}
+
 function getMatchQuestions(match){
   if(!window.BrainLab||!window.BrainLab.filterQuestions)return[];
   var seedStr=match.questionIds||'';
@@ -82,10 +80,15 @@ function getMatchQuestions(match){
   var count=Math.min(match.questionCount||10,shuffled.length);
   return BrainLab.toQuiz(shuffled.slice(0,count));
 }
+
 function fmtTime(s){var m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+
 function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 function modeLabel(id){var m=MODES.find(function(x){return x.id===id;});return m?m.label:id;}
+
 function modeIcon(id){var m=MODES.find(function(x){return x.id===id;});return m?m.icon:'⚔️';}
+
 function getTeamForSlot(modeId,slot){
   var m=MODES.find(function(x){return x.id===modeId;});if(!m)return'A';
   if(m.type==='ffa')return String.fromCharCode(65+slot);
@@ -93,155 +96,294 @@ function getTeamForSlot(modeId,slot){
   var half=m.players/2;return slot<half?'A':'B';
 }
 
-// ══════════════════════════════════════════════
-// CSS
-// ══════════════════════════════════════════════
+
+
+// ════════════════════════════════════════════════
+// CSS — ARENA 2.0 PREMIUM DESIGN SYSTEM
+// ════════════════════════════════════════════════
 var CSS=`
-.arena-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,12,15,0.97);z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:inherit}
-.arena-wrap{max-width:560px;margin:0 auto;padding:16px 14px 40px;min-height:100%;box-sizing:border-box;color:#f5e9e0}
-.arena-close{position:fixed;top:12px;right:14px;z-index:100000;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#f5e9e0;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.arena-close:active{background:rgba(255,255,255,0.2)}
-.arena-title{text-align:center;font-size:22px;font-weight:700;margin:8px 0 4px;color:#e8c87a}
-.arena-sub{text-align:center;font-size:13px;color:rgba(245,233,224,0.6);margin-bottom:16px}
-.arena-stats-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.arena-stat{flex:1;min-width:70px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 6px;text-align:center}
-.arena-stat-val{font-size:18px;font-weight:700;color:#e8c87a}
-.arena-stat-lbl{font-size:10px;color:rgba(245,233,224,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-.arena-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.arena-mode-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s}
-.arena-mode-card:active{transform:scale(0.96);background:rgba(232,200,122,0.15)}
-.arena-mode-icon{font-size:28px;margin-bottom:6px}
+/* ══ OVERLAY ══ */
+.arena-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(18,10,14,0.98);z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:inherit}
+.arena-wrap{max-width:600px;margin:0 auto;padding:16px 14px 60px;min-height:100%;box-sizing:border-box;color:#f5e9e0}
+.arena-close{position:fixed;top:12px;right:14px;z-index:100000;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#f5e9e0;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background .2s}
+.arena-close:active{background:rgba(255,255,255,0.18)}
+
+/* ══ TYPOGRAPHY ══ */
+.arena-title{text-align:center;font-size:24px;font-weight:800;margin:8px 0 4px;color:#e8c87a;letter-spacing:-0.5px}
+.arena-sub{text-align:center;font-size:13px;color:rgba(245,233,224,0.55);margin-bottom:18px}
+
+/* ══ STATS BAR ══ */
+.arena-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.arena-stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 6px;text-align:center;transition:transform .15s}
+.arena-stat:active{transform:scale(0.96)}
+.arena-stat-val{font-size:20px;font-weight:700;color:#e8c87a;line-height:1.2}
+.arena-stat-lbl{font-size:9px;color:rgba(245,233,224,0.45);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px}
+
+/* ══ RANK TIER BADGE ══ */
+.arena-rank-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.arena-rank-badge.bronze{background:rgba(205,127,50,0.2);color:#cd7f32;border:1px solid rgba(205,127,50,0.3)}
+.arena-rank-badge.silver{background:rgba(192,192,192,0.15);color:#c0c0c0;border:1px solid rgba(192,192,192,0.25)}
+.arena-rank-badge.gold{background:rgba(232,200,122,0.15);color:#e8c87a;border:1px solid rgba(232,200,122,0.3)}
+.arena-rank-badge.platinum{background:rgba(180,210,220,0.15);color:#b4d2dc;border:1px solid rgba(180,210,220,0.25)}
+.arena-rank-badge.diamond{background:rgba(100,200,255,0.12);color:#8ecdf5;border:1px solid rgba(100,200,255,0.2)}
+.arena-rank-badge.master{background:rgba(200,100,200,0.15);color:#e090e0;border:1px solid rgba(200,100,200,0.25)}
+
+/* ══ MODE GRID ══ */
+.arena-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.arena-mode-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 12px;text-align:center;cursor:pointer;transition:all .2s}
+.arena-mode-card:active{transform:scale(0.96);background:rgba(232,200,122,0.12);border-color:rgba(232,200,122,0.3)}
+.arena-mode-icon{font-size:30px;margin-bottom:8px}
 .arena-mode-label{font-size:15px;font-weight:600;color:#f5e9e0}
-.arena-mode-desc{font-size:11px;color:rgba(245,233,224,0.5);margin-top:2px}
-.arena-section-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;color:#f5e9e0;font-size:14px;cursor:pointer;margin-bottom:8px}
+.arena-mode-desc{font-size:11px;color:rgba(245,233,224,0.45);margin-top:3px}
+
+/* ══ SECTION BUTTONS ══ */
+.arena-section-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;color:#f5e9e0;font-size:14px;cursor:pointer;margin-bottom:8px;transition:all .15s}
 .arena-section-btn:active{background:rgba(255,255,255,0.1)}
-.arena-section-btn .arrow{color:rgba(245,233,224,0.4)}
-.arena-field{margin-bottom:14px}
-.arena-field-lbl{font-size:12px;font-weight:600;color:rgba(245,233,224,0.6);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.arena-section-btn .arrow{color:rgba(245,233,224,0.35)}
+
+/* ══ FORM FIELDS ══ */
+.arena-field{margin-bottom:16px}
+.arena-field-lbl{font-size:11px;font-weight:700;color:rgba(245,233,224,0.5);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px}
 .arena-select-grid{display:flex;flex-wrap:wrap;gap:6px}
-.arena-chip{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px 12px;font-size:13px;color:rgba(245,233,224,0.8);cursor:pointer;transition:all 0.15s;white-space:nowrap}
-.arena-chip.active{background:rgba(232,200,122,0.2);border-color:#e8c87a;color:#e8c87a}
+.arena-chip{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 13px;font-size:13px;color:rgba(245,233,224,0.75);cursor:pointer;transition:all .15s;white-space:nowrap}
+.arena-chip.active{background:rgba(232,200,122,0.15);border-color:#e8c87a;color:#e8c87a;font-weight:600}
 .arena-chip:active{transform:scale(0.95)}
+
+/* ══ QUESTION COUNT ══ */
 .arena-qcount-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
-.arena-qcount{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px 4px;text-align:center;font-size:13px;color:rgba(245,233,224,0.8);cursor:pointer}
-.arena-qcount.active{background:rgba(232,200,122,0.2);border-color:#e8c87a;color:#e8c87a;font-weight:600}
+.arena-qcount{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 4px;text-align:center;font-size:13px;color:rgba(245,233,224,0.75);cursor:pointer;transition:all .15s}
+.arena-qcount.active{background:rgba(232,200,122,0.15);border-color:#e8c87a;color:#e8c87a;font-weight:600}
 .arena-qcount:active{transform:scale(0.95)}
 .arena-custom-count{display:flex;align-items:center;gap:8px;margin-top:4px}
-.arena-custom-count input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px 10px;color:#f5e9e0;font-size:14px;outline:none}
-.arena-pool-info{text-align:center;font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px}
-.arena-btn{display:block;width:100%;background:linear-gradient(135deg,#8b1538,#a01e44);color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.arena-custom-count input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 10px;color:#f5e9e0;font-size:14px;outline:none}
+.arena-custom-count input:focus{border-color:rgba(232,200,122,0.4)}
+.arena-pool-info{text-align:center;font-size:12px;color:rgba(245,233,224,0.45);margin-top:6px}
+
+/* ══ SUMMARY CARD ══ */
+.arena-summary-card{background:rgba(255,255,255,0.04);border:1px solid rgba(232,200,122,0.15);border-radius:14px;padding:16px;margin:16px 0}
+.arena-summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.arena-summary-row:last-child{border:none}
+.arena-summary-lbl{font-size:12px;color:rgba(245,233,224,0.5);text-transform:uppercase;letter-spacing:0.5px}
+.arena-summary-val{font-size:14px;font-weight:600;color:#e8c87a}
+
+/* ══ BUTTONS ══ */
+.arena-btn{display:block;width:100%;background:linear-gradient(135deg,#8b1538,#a01e44);color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.3px}
 .arena-btn:active{transform:scale(0.98);opacity:0.9}
 .arena-btn:disabled{opacity:0.4;cursor:not-allowed}
-.arena-btn.secondary{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15)}
-.arena-btn.gold{background:linear-gradient(135deg,#c89b3c,#e8c87a);color:#1a1a1a}
+.arena-btn.secondary{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#f5e9e0}
+.arena-btn.gold{background:linear-gradient(135deg,#c89b3c,#e8c87a);color:#1a1a1a;font-weight:700}
 .arena-btn.danger{background:linear-gradient(135deg,#8b1538,#c0392b)}
+.arena-btn.outline{background:transparent;border:1.5px solid #8b1538;color:#e8a4b8}
+
+/* ══ SEARCH ══ */
 .arena-searching{text-align:center;padding:30px 20px}
-.arena-spinner{width:40px;height:40px;border:3px solid rgba(232,200,122,0.2);border-top-color:#e8c87a;border-radius:50%;animation:arena-spin 0.8s linear infinite;margin:0 auto 16px}
+.arena-spinner{width:42px;height:42px;border:3px solid rgba(232,200,122,0.15);border-top-color:#e8c87a;border-radius:50%;animation:arena-spin .8s linear infinite;margin:0 auto 16px}
 @keyframes arena-spin{to{transform:rotate(360deg)}}
-.arena-search-config{background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 14px;margin:16px 0;font-size:13px;color:rgba(245,233,224,0.7)}
+.arena-search-config{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 14px;margin:14px 0;font-size:13px;color:rgba(245,233,224,0.65)}
 .arena-search-config span{display:inline-block;margin-right:12px}
+
+/* ══ PLAYER CARDS ══ */
 .arena-player-list{margin-top:12px}
-.arena-player-card{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;margin-bottom:8px}
+.arena-player-card{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;margin-bottom:8px;transition:all .15s}
+.arena-player-card:active{background:rgba(255,255,255,0.08)}
 .arena-player-info{display:flex;align-items:center;gap:10px}
-.arena-player-avatar{width:36px;height:36px;border-radius:50%;background:rgba(232,200,122,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:#e8c87a;flex-shrink:0}
+.arena-player-avatar{width:38px;height:38px;border-radius:50%;background:rgba(232,200,122,0.12);display:flex;align-items:center;justify-content:center;font-size:16px;color:#e8c87a;flex-shrink:0;font-weight:600}
 .arena-player-name{font-size:14px;font-weight:600;color:#f5e9e0}
-.arena-player-meta{font-size:11px;color:rgba(245,233,224,0.5)}
-.arena-rating-badge{font-size:11px;background:rgba(232,200,122,0.15);color:#e8c87a;padding:2px 8px;border-radius:6px}
-.arena-invite-btn{background:rgba(232,200,122,0.15);border:1px solid rgba(232,200,122,0.3);color:#e8c87a;border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;white-space:nowrap}
+.arena-player-meta{font-size:11px;color:rgba(245,233,224,0.4);margin-top:2px}
+.arena-rating-badge{display:inline-block;background:rgba(232,200,122,0.12);color:#e8c87a;font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px}
+.arena-online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:4px}
+.arena-invite-btn{background:rgba(232,200,122,0.15);border:1px solid rgba(232,200,122,0.3);color:#e8c87a;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
 .arena-invite-btn:active{transform:scale(0.95)}
-.arena-invite-btn:disabled{opacity:0.4}
-.arena-empty{text-align:center;padding:40px 20px;color:rgba(245,233,224,0.4);font-size:14px}
-.arena-lobby{padding:8px 0}
-.arena-lobby-config{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:rgba(245,233,224,0.7)}
-.arena-lobby-config div{margin-bottom:4px}
-.arena-team-block{margin-bottom:14px}
-.arena-team-label{font-size:13px;font-weight:600;color:#e8c87a;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
-.arena-team-player{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;margin-bottom:4px}
-.arena-ready-badge{font-size:10px;padding:2px 8px;border-radius:6px;margin-left:auto}
-.arena-ready-badge.ready{background:rgba(76,175,80,0.2);color:#66bb6a}
-.arena-ready-badge.waiting{background:rgba(255,193,7,0.15);color:#ffc107}
-.arena-ready-badge.empty{background:rgba(255,255,255,0.06);color:rgba(245,233,224,0.3)}
-.arena-vs{font-size:11px;text-align:center;color:rgba(245,233,224,0.3);margin:8px 0;font-weight:700;letter-spacing:2px}
-.arena-countdown{text-align:center;padding:60px 20px}
-.arena-countdown-num{font-size:72px;font-weight:700;color:#e8c87a;animation:arena-pop 1s ease-out}
-@keyframes arena-pop{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
-.arena-battle{padding:0}
-.arena-battle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px}
-.arena-battle-progress{height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-bottom:12px}
-.arena-battle-progress-bar{height:100%;background:linear-gradient(90deg,#8b1538,#e8c87a);transition:width 0.3s;border-radius:3px}
-.arena-battle-q{background:rgba(255,255,255,0.06);border-radius:14px;padding:16px;margin-bottom:12px}
-.arena-battle-q-text{font-size:16px;font-weight:500;color:#f5e9e0;margin-bottom:14px;line-height:1.5}
-.arena-battle-opt{display:block;width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;margin-bottom:8px;color:#f5e9e0;font-size:14px;cursor:pointer;transition:all 0.15s}
+
+/* ══ LOBBY ══ */
+.arena-lobby-config{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 14px;margin:12px 0;font-size:13px;color:rgba(245,233,224,0.6)}
+.arena-lobby-config div{margin-bottom:3px}
+.arena-team-block{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px;margin:8px 0}
+.arena-team-label{font-size:13px;font-weight:600;color:#e8c87a;margin-bottom:8px}
+.arena-team-player{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.04);margin-bottom:6px}
+.arena-vs{text-align:center;font-size:14px;font-weight:700;color:rgba(245,233,224,0.3);margin:8px 0}
+
+/* ══ BATTLE ══ */
+.arena-battle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.arena-battle-header span{font-size:14px;font-weight:600;color:#f5e9e0}
+.arena-battle-progress{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.arena-battle-progress-bar{height:100%;background:linear-gradient(90deg,#8b1538,#e8c87a);border-radius:3px;transition:width .3s}
+.arena-live-status{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.arena-live-card{flex:1;min-width:80px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:8px 6px;text-align:center}
+.arena-live-label{font-size:9px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px}
+.arena-live-val{font-size:16px;font-weight:700;color:#f5e9e0;margin-top:2px}
+.arena-battle-q{background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-bottom:12px}
+.arena-battle-q-text{font-size:16px;font-weight:500;color:#f5e9e0;line-height:1.5;margin-bottom:14px}
+.arena-battle-opt{display:block;width:100%;text-align:left;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;font-size:14px;color:#f5e9e0;margin-bottom:8px;cursor:pointer;transition:all .15s;line-height:1.4}
 .arena-battle-opt:active{transform:scale(0.98)}
-.arena-battle-opt.selected{border-color:#e8c87a;background:rgba(232,200,122,0.1)}
+.arena-battle-opt.disabled{opacity:0.7;pointer-events:none}
 .arena-battle-opt.correct{border-color:#4caf50;background:rgba(76,175,80,0.1)}
 .arena-battle-opt.wrong{border-color:#f44336;background:rgba(244,67,54,0.1)}
-.arena-battle-opt.disabled{pointer-events:none;opacity:0.5}
-.arena-battle-feedback{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;display:none}
-.arena-battle-feedback.show{display:block}
-.arena-battle-feedback.correct{border-left:3px solid #4caf50}
-.arena-battle-feedback.wrong{border-left:3px solid #f44336}
-.arena-battle-actions{display:flex;gap:8px;margin-bottom:12px}
+.arena-battle-opt.selected{border-color:#e8c87a;background:rgba(232,200,122,0.1)}
+.arena-battle-feedback{margin:12px 0;padding:12px;border-radius:10px;font-size:14px}
+.arena-battle-feedback.show.correct{background:rgba(76,175,80,0.08);border-left:3px solid #4caf50}
+.arena-battle-feedback.show.wrong{background:rgba(244,67,54,0.08);border-left:3px solid #f44336}
+.arena-battle-actions{display:flex;gap:8px}
 .arena-battle-actions button{flex:1}
-.arena-live-status{display:flex;justify-content:space-between;gap:8px;margin-bottom:12px}
-.arena-live-card{flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:8px 10px;text-align:center}
-.arena-live-label{font-size:10px;color:rgba(245,233,224,0.4);text-transform:uppercase}
-.arena-live-val{font-size:16px;font-weight:600;color:#f5e9e0;margin-top:2px}
-.arena-result-hero{text-align:center;padding:30px 20px}
-.arena-result-trophy{font-size:56px;margin-bottom:8px}
-.arena-result-title{font-size:24px;font-weight:700;color:#e8c87a;margin-bottom:4px}
-.arena-result-sub{font-size:14px;color:rgba(245,233,224,0.6)}
-.arena-result-scores{display:flex;gap:8px;margin:16px 0}
-.arena-result-score{flex:1;background:rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:center}
-.arena-result-score.winner{border:1.5px solid #e8c87a;background:rgba(232,200,122,0.08)}
-.arena-result-score-name{font-size:13px;color:rgba(245,233,224,0.7);margin-bottom:4px}
-.arena-result-score-val{font-size:28px;font-weight:700;color:#f5e9e0}
-.arena-result-score-lbl{font-size:10px;color:rgba(245,233,224,0.4)}
-.arena-result-section{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:12px}
-.arena-result-section-title{font-size:13px;font-weight:600;color:#e8c87a;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-.arena-result-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:rgba(245,233,224,0.7)}
+
+/* ══ OPPONENT STATUS ══ */
+.arena-opp-status{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.04);margin-bottom:6px}
+.arena-opp-dot{width:8px;height:8px;border-radius:50%}
+.arena-opp-dot.answered{background:#4caf50}
+.arena-opp-dot.thinking{background:#ffc107}
+.arena-opp-dot.waiting{background:rgba(255,255,255,0.2)}
+
+/* ══ COUNTDOWN ══ */
+.arena-countdown{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:100000}
+.arena-countdown-num{font-size:80px;font-weight:800;color:#e8c87a;animation:arena-pulse .8s ease-out}
+@keyframes arena-pulse{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
+
+/* ══ EMPTY STATE ══ */
+.arena-empty{text-align:center;padding:30px 20px;color:rgba(245,233,224,0.4);font-size:14px;line-height:1.6}
+
+/* ══ RESULTS ══ */
+.arena-result-hero{text-align:center;padding:24px 20px;margin-bottom:16px}
+.arena-result-trophy{font-size:56px;margin-bottom:8px;animation:arena-fadein .4s}
+.arena-result-title{font-size:28px;font-weight:800;letter-spacing:1px}
+.arena-result-title.win{color:#e8c87a}
+.arena-result-title.loss{color:#f5e9e0}
+.arena-result-title.draw{color:#ffc107}
+.arena-result-sub{font-size:13px;color:rgba(245,233,224,0.5);margin-top:4px}
+.arena-result-scores{display:flex;justify-content:center;gap:16px;margin:16px 0}
+.arena-result-score{flex:1;max-width:140px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;text-align:center}
+.arena-result-score.winner{border-color:rgba(232,200,122,0.4);background:rgba(232,200,122,0.06)}
+.arena-result-score-name{font-size:13px;color:rgba(245,233,224,0.6);margin-bottom:6px}
+.arena-result-score-val{font-size:32px;font-weight:800;color:#e8c87a}
+.arena-result-score-lbl{font-size:10px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+.arena-result-section{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;margin-bottom:12px}
+.arena-result-section-title{font-size:12px;font-weight:700;color:#e8c87a;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.arena-result-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:rgba(245,233,224,0.65)}
 .arena-result-row span:last-child{color:#f5e9e0;font-weight:500}
-.arena-topic-row{padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.arena-result-row.highlight span:last-child{color:#e8c87a;font-weight:700}
+
+/* ══ COMPARISON TABLE ══ */
+.arena-compare-table{width:100%;font-size:13px;border-collapse:collapse}
+.arena-compare-table th{font-size:10px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px;text-align:center;padding:6px 4px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.arena-compare-table td{padding:8px 4px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(245,233,224,0.7)}
+.arena-compare-table td:first-child{text-align:left;font-size:12px;color:rgba(245,233,224,0.5)}
+.arena-compare-table td.me{color:#e8c87a;font-weight:600}
+
+/* ══ TOPIC ANALYSIS ══ */
+.arena-topic-row{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
 .arena-topic-row:last-child{border:none}
-.arena-topic-name{font-size:13px;color:rgba(245,233,224,0.8);margin-bottom:2px}
-.arena-topic-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin:4px 0}
-.arena-topic-bar-fill{height:100%;background:#e8c87a;border-radius:2px}
-.arena-topic-meta{font-size:11px;color:rgba(245,233,224,0.4)}
-.arena-qreview{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
-.arena-qreview-q{font-size:13px;color:rgba(245,233,224,0.8);margin-bottom:4px}
-.arena-qreview-a{font-size:12px;color:rgba(245,233,224,0.5);padding-left:12px}
+.arena-topic-name{font-size:13px;color:rgba(245,233,224,0.75);margin-bottom:4px;display:flex;justify-content:space-between}
+.arena-topic-bar{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin:4px 0}
+.arena-topic-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.arena-topic-bar-fill.high{background:linear-gradient(90deg,#4caf50,#66bb6a)}
+.arena-topic-bar-fill.mid{background:linear-gradient(90deg,#e8c87a,#c89b3c)}
+.arena-topic-bar-fill.low{background:linear-gradient(90deg,#f44336,#e57373)}
+.arena-topic-meta{font-size:11px;color:rgba(245,233,224,0.35)}
+
+/* ══ QUESTION REVIEW ══ */
+.arena-qreview{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.arena-qreview-q{font-size:13px;color:rgba(245,233,224,0.75);margin-bottom:6px;line-height:1.4}
+.arena-qreview-a{font-size:12px;color:rgba(245,233,224,0.45);padding-left:12px;margin-bottom:3px}
 .arena-qreview-a.correct{color:#66bb6a}
 .arena-qreview-a.wrong{color:#f44336}
-.arena-actions-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.arena-actions-row button{flex:1;min-width:120px}
-.arena-history-item{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer}
+.arena-qreview-expl{font-size:11px;color:rgba(245,233,224,0.4);padding:6px 12px;background:rgba(255,255,255,0.03);border-radius:6px;margin-top:4px;line-height:1.4}
+
+/* ══ WEAK AREA ══ */
+.arena-weak-area{background:rgba(244,67,54,0.06);border:1px solid rgba(244,67,54,0.15);border-radius:12px;padding:14px;margin-bottom:12px}
+.arena-weak-area-title{font-size:13px;font-weight:700;color:#f44336;margin-bottom:8px}
+.arena-weak-area-topic{font-size:15px;font-weight:600;color:#f5e9e0;margin-bottom:4px}
+.arena-weak-area-stat{font-size:12px;color:rgba(245,233,224,0.5);margin-bottom:4px}
+.arena-weak-area-cta{margin-top:10px}
+
+/* ══ STREAK BADGE ══ */
+.arena-streak-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.arena-streak-badge.hot{background:rgba(255,87,34,0.15);color:#ff6b35;border:1px solid rgba(255,87,34,0.25)}
+.arena-streak-badge.warm{background:rgba(255,152,0,0.15);color:#ffa726;border:1px solid rgba(255,152,0,0.25)}
+.arena-streak-badge.cold{background:rgba(255,255,255,0.06);color:rgba(245,233,224,0.5);border:1px solid rgba(255,255,255,0.1)}
+
+/* ══ RATING CHANGE ══ */
+.arena-rating-change{display:flex;justify-content:center;align-items:center;gap:12px;margin:12px 0}
+.arena-rating-before{font-size:14px;color:rgba(245,233,224,0.5)}
+.arena-rating-arrow{font-size:20px;color:rgba(245,233,224,0.3)}
+.arena-rating-after{font-size:18px;font-weight:700;color:#e8c87a}
+.arena-rating-delta{font-size:14px;font-weight:600;padding:2px 8px;border-radius:6px}
+.arena-rating-delta.pos{color:#66bb6a;background:rgba(76,175,80,0.1)}
+.arena-rating-delta.neg{color:#f44336;background:rgba(244,67,54,0.1)}
+
+/* ══ HISTORY ══ */
+.arena-history-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .15s}
 .arena-history-item:active{background:rgba(255,255,255,0.08)}
 .arena-history-row{display:flex;justify-content:space-between;align-items:center}
 .arena-history-left{flex:1}
-.arena-history-mode{font-size:13px;font-weight:600;color:#f5e9e0}
-.arena-history-meta{font-size:11px;color:rgba(245,233,224,0.4);margin-top:2px}
-.arena-history-result{font-size:13px;font-weight:600;padding:2px 10px;border-radius:6px}
-.arena-history-result.win{background:rgba(76,175,80,0.15);color:#66bb6a}
-.arena-history-result.loss{background:rgba(244,67,54,0.15);color:#f44336}
-.arena-history-result.draw{background:rgba(255,193,7,0.15);color:#ffc107}
-.arena-lb-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;margin-bottom:4px;background:rgba(255,255,255,0.04)}
-.arena-lb-rank{width:28px;text-align:center;font-size:16px;font-weight:700;color:#e8c87a}
-.arena-lb-name{flex:1;font-size:14px;color:#f5e9e0}
-.arena-lb-meta{font-size:11px;color:rgba(245,233,224,0.4)}
-.arena-lb-rating{font-size:14px;font-weight:600;color:#e8c87a}
-.arena-invite-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1f1419;border:1px solid rgba(232,200,122,0.3);border-radius:16px;padding:20px;max-width:340px;width:90%;z-index:100001;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
-.arena-invite-title{text-align:center;font-size:18px;font-weight:700;color:#e8c87a;margin-bottom:12px}
-.arena-invite-sender{text-align:center;font-size:14px;color:#f5e9e0;margin-bottom:12px}
-.arena-invite-config{background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;margin-bottom:14px;font-size:12px;color:rgba(245,233,224,0.6)}
-.arena-invite-config div{margin-bottom:3px}
+.arena-history-mode{font-size:14px;font-weight:600;color:#f5e9e0}
+.arena-history-meta{font-size:11px;color:rgba(245,233,224,0.35);margin-top:3px}
+.arena-history-result{font-size:13px;font-weight:700;padding:3px 12px;border-radius:8px}
+.arena-history-result.win{background:rgba(76,175,80,0.12);color:#66bb6a}
+.arena-history-result.loss{background:rgba(244,67,54,0.12);color:#f44336}
+.arena-history-result.draw{background:rgba(255,193,7,0.12);color:#ffc107}
+
+/* ══ LEADERBOARD ══ */
+.arena-lb-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;margin-bottom:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.05);transition:all .15s}
+.arena-lb-row:active{background:rgba(255,255,255,0.08)}
+.arena-lb-row.me{border-color:rgba(232,200,122,0.3);background:rgba(232,200,122,0.04)}
+.arena-lb-rank{width:32px;text-align:center;font-size:18px;font-weight:700;color:#e8c87a}
+.arena-lb-name{flex:1;font-size:14px;color:#f5e9e0;font-weight:500}
+.arena-lb-meta{font-size:11px;color:rgba(245,233,224,0.35);margin-top:2px}
+.arena-lb-rating{font-size:16px;font-weight:700;color:#e8c87a}
+
+/* ══ INVITE MODAL ══ */
+.arena-invite-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1f1419;border:1px solid rgba(232,200,122,0.3);border-radius:16px;padding:24px;max-width:360px;width:90%;z-index:100001;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
+.arena-invite-title{text-align:center;font-size:20px;font-weight:700;color:#e8c87a;margin-bottom:14px}
+.arena-invite-sender{text-align:center;font-size:14px;color:#f5e9e0;margin-bottom:14px}
+.arena-invite-config{background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:rgba(245,233,224,0.55)}
+.arena-invite-config div{margin-bottom:4px}
 .arena-invite-buttons{display:flex;gap:10px}
 .arena-invite-buttons button{flex:1}
-.arena-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(31,20,25,0.95);border:1px solid rgba(232,200,122,0.3);color:#f5e9e0;padding:10px 20px;border-radius:10px;font-size:14px;z-index:100002;animation:arena-fadein 0.3s}
+
+/* ══ TOAST ══ */
+.arena-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(31,20,25,0.96);border:1px solid rgba(232,200,122,0.25);color:#f5e9e0;padding:12px 22px;border-radius:12px;font-size:14px;z-index:100002;animation:arena-fadein .3s;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
 @keyframes arena-fadein{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* ══ LOGIN PROMPT ══ */
 .arena-login-prompt{text-align:center;padding:40px 20px}
 .arena-login-icon{font-size:48px;margin-bottom:12px}
-.arena-login-text{font-size:15px;color:rgba(245,233,224,0.6);margin-bottom:20px}
-@media(max-width:380px){.arena-mode-grid{grid-template-columns:1fr}.arena-qcount-grid{grid-template-columns:repeat(3,1fr)}}
+.arena-login-text{font-size:15px;color:rgba(245,233,224,0.55);margin-bottom:20px;line-height:1.5}
+
+/* ══ PERFORMANCE SCORE ══ */
+.arena-perf-score{text-align:center;padding:16px 0}
+.arena-perf-score-val{font-size:42px;font-weight:800;color:#e8c87a}
+.arena-perf-score-max{font-size:16px;color:rgba(245,233,224,0.4)}
+.arena-perf-info{font-size:11px;color:rgba(245,233,224,0.35);margin-top:8px;cursor:pointer;text-decoration:underline}
+
+/* ══ HEAD TO HEAD ══ */
+.arena-h2h-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.arena-h2h-row:last-child{border:none}
+.arena-h2h-name{font-size:13px;color:rgba(245,233,224,0.6)}
+.arena-h2h-val{font-size:15px;font-weight:700;color:#e8c87a}
+
+/* ══ IMPROVEMENT TREND ══ */
+.arena-trend-chart{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:60px;margin:12px 0}
+.arena-trend-bar{flex:1;max-width:30px;background:linear-gradient(180deg,#e8c87a,#c89b3c);border-radius:3px 3px 0 0;transition:height .4s}
+.arena-trend-label{font-size:9px;color:rgba(245,233,224,0.3);text-align:center;margin-top:4px}
+.arena-trend-delta{font-size:14px;font-weight:700;text-align:center}
+.arena-trend-delta.up{color:#66bb6a}
+.arena-trend-delta.down{color:#f44336}
+
+/* ══ TOURNAMENT PLACEHOLDER ══ */
+.arena-tournament-card{background:rgba(255,255,255,0.03);border:1px dashed rgba(232,200,122,0.2);border-radius:14px;padding:20px;text-align:center;margin-bottom:12px}
+.arena-tournament-title{font-size:16px;font-weight:700;color:rgba(232,200,122,0.6);margin-bottom:6px}
+.arena-tournament-sub{font-size:12px;color:rgba(245,233,224,0.35)}
+.arena-coming-badge{display:inline-block;background:rgba(232,200,122,0.1);color:rgba(232,200,122,0.6);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;margin-top:8px}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:380px){
+  .arena-mode-grid{grid-template-columns:1fr}
+  .arena-qcount-grid{grid-template-columns:repeat(3,1fr)}
+  .arena-stats-bar{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:320px){
+  .arena-result-score-val{font-size:26px}
+  .arena-battle-q-text{font-size:14px}
+}
 `;
 
 // Inject CSS
@@ -249,9 +391,6 @@ var styleEl=document.createElement('style');
 styleEl.textContent=CSS;
 document.head.appendChild(styleEl);
 
-// ══════════════════════════════════════════════
-// OVERLAY MANAGEMENT
-// ══════════════════════════════════════════════
 function showOverlay(html){
   var old=document.getElementById('arena-overlay');
   if(old)old.remove();
@@ -262,6 +401,7 @@ function showOverlay(html){
   document.body.appendChild(div);
   div.scrollTop=0;
 }
+
 function closeOverlay(){
   var o=document.getElementById('arena-overlay');
   if(o)o.remove();
@@ -269,6 +409,7 @@ function closeOverlay(){
   // Clear match association and reset presence to online
   if(S.user){api('clearMatch',{userId:S.user.id});var si=getArenaStats();api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',arenaRating:si.rating||1000,wins:si.wins||0,losses:si.losses||0,draws:si.draws||0,battles:si.battles||0,status:'online'});}
 }
+
 function toast(msg){
   var old=document.querySelector('.arena-toast');if(old)old.remove();
   var t=document.createElement('div');t.className='arena-toast';t.textContent=msg;
@@ -276,9 +417,6 @@ function toast(msg){
   setTimeout(function(){t.remove()},3000);
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: HOME
-// ══════════════════════════════════════════════
 async function computeArenaStats(userId){
   var res=await api('getHistory',{userId:userId});
   var history=(res.ok&&res.history)?res.history:[];
@@ -318,37 +456,108 @@ async function computeArenaStats(userId){
   if(rating<0)rating=0;
   return {rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate};
 }
+
+
+
+// ════════════════════════════════════════════════
+// HELPER: RANK TIER
+// ════════════════════════════════════════════════
+function getRankTier(rating){
+  if(rating>=2200)return{tier:'master',label:'Master',icon:'👑'};
+  if(rating>=1800)return{tier:'diamond',label:'Diamond',icon:'💎'};
+  if(rating>=1500)return{tier:'platinum',label:'Platinum',icon:'🔷'};
+  if(rating>=1300)return{tier:'gold',label:'Gold',icon:'🥇'};
+  if(rating>=1100)return{tier:'silver',label:'Silver',icon:'🥈'};
+  return{tier:'bronze',label:'Bronze',icon:'🥉'};
+}
+
+// ════════════════════════════════════════════════
+// HELPER: STREAK CALCULATION
+// ════════════════════════════════════════════════
+function computeStreaks(history,userId){
+  var sorted=history.filter(function(m){return m.status!=='abandoned'&&m.status!=='in_progress';}).sort(function(a,b){
+    var da=new Date(a.completedAt||a.createdAt||0).getTime();
+    var db=new Date(b.completedAt||b.createdAt||0).getTime();
+    return db-da;
+  });
+  var bestStreak=0,runningStreak=0;
+  for(var i=0;i<sorted.length;i++){
+    var m=sorted[i];
+    var w=m.winner||{};
+    var isWin=false;
+    if(w.type==='user'&&w.userId===userId)isWin=true;
+    else if(w.type==='team'){
+      var me=(m.players||m.playerResults||[]).find(function(p){return p.userId===userId;});
+      if(me&&w.team===me.team)isWin=true;
+    }
+    if(isWin){
+      runningStreak++;
+      if(runningStreak>bestStreak)bestStreak=runningStreak;
+    }else{
+      runningStreak=0;
+    }
+  }
+  var currentStreak=0;
+  for(var j=0;j<sorted.length;j++){
+    var mj=sorted[j];
+    var wj=mj.winner||{};
+    var isWinj=false;
+    if(wj.type==='user'&&wj.userId===userId)isWinj=true;
+    else if(wj.type==='team'){
+      var mej=(mj.players||mj.playerResults||[]).find(function(p){return p.userId===userId;});
+      if(mej&&wj.team===mej.team)isWinj=true;
+    }
+    if(isWinj)currentStreak++;
+    else break;
+  }
+  return{current:currentStreak,best:bestStreak};
+}
+
+// ════════════════════════════════════════════════
+// SCREEN: HOME (UPGRADED)
+// ════════════════════════════════════════════════
 async function showHome(){
   S.user=getUser();
   if(!S.user){
     showOverlay('<div class="arena-login-prompt"><div class="arena-login-icon">🔐</div><div class="arena-login-text">Please log in to use the Practice Arena.</div><button class="arena-btn" onclick="Arena.close()">OK</button></div>');
     return;
   }
-  // getMyStats on the backend is never updated after completeMatch finalizes a
-  // match (server-side gap in the arenaApi backend, outside client control) so
-  // it always returns 1000/0/0/0/0%. Compute real stats from actual match
-  // history instead — that data correctly reflects every completed battle.
-  // Clear any completed match association so recoverMatch doesn't loop back to old results
   if(S.user)api('clearMatch',{userId:S.user.id});
   var st=await computeArenaStats(S.user.id);
   var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
   var battles=st.battles,winRate=st.winRate;
-  // Persist so doPing/closeOverlay send real stats to presence (fixes leaderboard too)
   try{localStorage.setItem('arena_stats',JSON.stringify({rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate}));}catch(e){}
-  
+
+  var histRes=await api('getHistory',{userId:S.user.id});
+  var history=(histRes.ok&&histRes.history)?histRes.history:[];
+  var streaks=computeStreaks(history,S.user.id);
+  var rankTier=getRankTier(rating);
+
   var h='<div class="arena-title">⚔️ Practice Arena</div>';
   h+='<div class="arena-sub">Compete with real players in real-time</div>';
-  
-  // Stats bar
+
+  h+='<div style="text-align:center;margin-bottom:14px"><span class="arena-rank-badge '+rankTier.tier+'">'+rankTier.icon+' '+rankTier.label+' Tier</span></div>';
+
   h+='<div class="arena-stats-bar">';
-  h+='<div class="arena-stat"><div class="arena-stat-val">'+rating+'</div><div class="arena-stat-lbl">Rating</div></div>';
+  h+='<div class="arena-stat"><div class="arena-stat-val">'+rating+'</div><div class="arena-stat-lbl">Arena Rating</div></div>';
   h+='<div class="arena-stat"><div class="arena-stat-val">'+battles+'</div><div class="arena-stat-lbl">Battles</div></div>';
   h+='<div class="arena-stat"><div class="arena-stat-val">'+winRate+'%</div><div class="arena-stat-lbl">Win Rate</div></div>';
   h+='<div class="arena-stat"><div class="arena-stat-val">'+wins+'-'+losses+'</div><div class="arena-stat-lbl">W-L</div></div>';
   h+='</div>';
-  
-  // Mode selection
-  h+='<div class="arena-field-lbl" style="margin-bottom:8px">Select Mode</div>';
+
+  if(battles>0){
+    h+='<div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">';
+    if(streaks.current>0){
+      var streakClass=streaks.current>=3?'hot':streaks.current>=2?'warm':'cold';
+      h+='<span class="arena-streak-badge '+streakClass+'">🔥 '+streaks.current+' Win Streak</span>';
+    }
+    if(streaks.best>0){
+      h+='<span class="arena-streak-badge cold">🔥 Best: '+streaks.best+'</span>';
+    }
+    h+='</div>';
+  }
+
+  h+='<div class="arena-field-lbl" style="margin-bottom:10px">Select Mode</div>';
   h+='<div class="arena-mode-grid">';
   MODES.forEach(function(m){
     h+='<div class="arena-mode-card" onclick="Arena.selectMode(\''+m.id+'\')">';
@@ -358,22 +567,25 @@ async function showHome(){
     h+='</div>';
   });
   h+='</div>';
-  
-  // History & Leaderboard
+
   h+='<button class="arena-section-btn" onclick="Arena.showHistory()">📜 Battle History <span class="arrow">›</span></button>';
   h+='<button class="arena-section-btn" onclick="Arena.showLeaderboard()">🏆 Arena Leaderboard <span class="arrow">›</span></button>';
-  
+
+  h+='<div class="arena-tournament-card">';
+  h+='<div class="arena-tournament-title">🏆 Arena Tournaments</div>';
+  h+='<div class="arena-tournament-sub">Compete in structured brackets against top players</div>';
+  h+='<div class="arena-coming-badge">Coming Soon</div>';
+  h+='</div>';
+
   showOverlay(h);
   S.screen='home';
-  
-  // Start presence and invite check
   startPresence();
   startInviteCheck();
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: CONFIG
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// SCREEN: CONFIG (UPGRADED)
+// ════════════════════════════════════════════════
 function showConfig(modeId){
   var m=MODES.find(function(x){return x.id===modeId;});
   if(!m)return;
@@ -381,58 +593,62 @@ function showConfig(modeId){
   var cats=getCategories();
   var poolCount=countQuestions({cat:S.cfg.cat,exam:S.cfg.exam,diff:S.cfg.diff});
   var maxQ=Math.min(500,poolCount);
-  
-  var h='<div class="arena-title">'+m.icon+' '+m.label+'</div>';
-  h+='<div class="arena-sub">'+m.desc+' · '+(m.players-1)+' opponent(s) needed</div>';
-  
-  // Exam
+  var estTime=S.cfg.qCount*15;
+  var estMin=Math.floor(estTime/60),estSec=estTime%60;
+  var estDisplay=estMin>0?estMin+'m':'';
+  if(estSec>0)estDisplay+=estSec+'s';
+
+  var h='<div class="arena-title">⚙️ Match Setup</div>';
+  h+='<div class="arena-sub">'+m.icon+' '+m.label+' — '+m.desc+'</div>';
+
   h+='<div class="arena-field"><div class="arena-field-lbl">Exam</div><div class="arena-select-grid">';
   EXAMS.forEach(function(e){
     h+='<div class="arena-chip'+(S.cfg.exam===e?' active':'')+'" onclick="Arena.setCfg(\'exam\',\''+e+'\')">'+e+'</div>';
   });
   h+='</div></div>';
-  
-  // Category
+
   h+='<div class="arena-field"><div class="arena-field-lbl">Category</div><div class="arena-select-grid">';
   cats.forEach(function(c){
-    h+='<div class="arena-chip'+(S.cfg.cat===c?' active':'')+'" onclick="Arena.setCfg(\'cat\',\''+c.replace(/'/g,'')+'\')">'+c+'</div>';
+    h+='<div class="arena-chip'+(S.cfg.cat===c?' active':'')+'" onclick="Arena.setCfg(\'cat\',\''+c.replace(/'/g,"\\'")+'\')">'+c+'</div>';
   });
   h+='</div></div>';
-  
-  // Difficulty
+
   h+='<div class="arena-field"><div class="arena-field-lbl">Difficulty</div><div class="arena-select-grid">';
   DIFFS.forEach(function(d){
     h+='<div class="arena-chip'+(S.cfg.diff===d.id?' active':'')+'" onclick="Arena.setCfg(\'diff\',\''+d.id+'\')">'+d.icon+' '+d.l+'</div>';
   });
   h+='</div></div>';
-  
-  // Question count
+
   h+='<div class="arena-field"><div class="arena-field-lbl">Questions (10–500)</div>';
   h+='<div class="arena-qcount-grid">';
   QCOUNTS.forEach(function(q){
     if(q<=maxQ)h+='<div class="arena-qcount'+(S.cfg.qCount===q?' active':'')+'" onclick="Arena.setCfg(\'qCount\','+q+')">'+q+'</div>';
   });
   h+='</div>';
-  // Custom count
   h+='<div class="arena-custom-count">';
   h+='<input type="number" min="10" max="500" value="'+S.cfg.qCount+'" id="arena-custom-q" onchange="Arena.setCustomQ(this.value)" placeholder="Custom (10–500)"/>';
   h+='</div>';
   h+='<div class="arena-pool-info">'+poolCount+' questions available in pool</div>';
   h+='</div>';
-  
-  // Summary
-  h+='<div class="arena-search-config"><span>📋 Mode: '+m.label+'</span><span>📝 Questions: '+S.cfg.qCount+'</span><span>📚 Exam: '+S.cfg.exam+'</span><span>📁 Cat: '+S.cfg.cat+'</span><span>📊 Diff: '+S.cfg.diff+'</span></div>';
-  
-  h+='<button class="arena-btn gold" onclick="Arena.startSearch()">🔍 Find Online Players</button>';
+
+  h+='<div class="arena-summary-card">';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Mode</span><span class="arena-summary-val">'+m.label+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Questions</span><span class="arena-summary-val">'+S.cfg.qCount+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Exam</span><span class="arena-summary-val">'+S.cfg.exam+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Category</span><span class="arena-summary-val">'+S.cfg.cat+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Difficulty</span><span class="arena-summary-val">'+S.cfg.diff+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Est. Time</span><span class="arena-summary-val">'+estDisplay+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Players Required</span><span class="arena-summary-val">'+(m.type==='duel'?'1 Opponent':(m.players-1)+' Players')+'</span></div>';
+  h+='<div class="arena-summary-row"><span class="arena-summary-lbl">Question Pool</span><span class="arena-summary-val">'+poolCount+' available</span></div>';
+  h+='</div>';
+
+  h+='<button class="arena-btn gold" onclick="Arena.startSearch()">🔎 Find Opponent</button>';
   h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.showHome()">← Back</button>';
-  
+
   showOverlay(h);
   S.screen='config';
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: PLAYER SEARCH
-// ══════════════════════════════════════════════
 async function startSearch(){
   S.user=getUser();if(!S.user){toast('Please log in');return;}
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
@@ -451,47 +667,51 @@ async function startSearch(){
   startInviteCheck();
 }
 
+
 function renderSearch(){
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
   var elapsed=S.searchStartTime?Math.floor((Date.now()-S.searchStartTime)/1000):0;
-  var h='<div class="arena-title">🔍 Find Players</div>';
+  var h='<div class="arena-title">🔎 Find Players</div>';
   h+='<div class="arena-sub">'+m.label+' · Auto-matching...</div>';
-  
+
   h+='<div class="arena-searching">';
   h+='<div class="arena-spinner"></div>';
-  h+='<div>Auto-matching with compatible players...</div>';
-  h+='<div style="font-size:12px;color:var(--muted);margin-top:4px">Searching for '+elapsed+'s</div>';
+  h+='<div style="font-size:15px;color:#f5e9e0;margin-bottom:4px">Auto-matching with compatible players...</div>';
+  h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-top:4px">Searching for '+elapsed+'s</div>';
   h+='</div>';
-  
+
   h+='<div class="arena-search-config">';
   h+='<span>📋 '+m.label+'</span><span>📝 '+S.cfg.qCount+'Q</span><span>📚 '+S.cfg.exam+'</span><span>📁 '+S.cfg.cat+'</span><span>📊 '+S.cfg.diff+'</span>';
   h+='</div>';
-  
+
   if(S.searchTimedOut){
     h+='<div class="arena-empty">No compatible player found yet.<br>Try adjusting your settings or invite a friend manually below.</div>';
   }else if(S.searchResults.length===0){
     h+='<div class="arena-empty">Searching for compatible players...<br>Match starts automatically when someone joins!</div>';
   }else{
     h+='<div class="arena-player-list">';
-    h+='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Other online players (invite manually):</div>';
+    h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Online Players</div>';
     S.searchResults.forEach(function(p){
       var cfg=p.searchConfig||{};
-      var compat=cfg.mode===S.cfg.mode&&cfg.questionCount===S.cfg.qCount&&cfg.exam===S.cfg.exam;
+      var pTier=getRankTier(p.arenaRating||1000);
       h+='<div class="arena-player-card">';
       h+='<div class="arena-player-info">';
       h+='<div class="arena-player-avatar">'+(p.userName[0]||'?').toUpperCase()+'</div>';
       h+='<div><div class="arena-player-name">'+escapeHtml(p.userName)+'</div>';
-      h+='<div class="arena-player-meta">'+(p.exam||'General')+' · '+p.battles+' battles · '+p.winRate+'% WR</div></div>';
+      h+='<div class="arena-player-meta"><span class="arena-online-dot"></span>'+(p.exam||'General')+' · '+p.battles+' battles · '+p.winRate+'% WR · '+pTier.label+'</div></div>';
       h+='</div>';
-      h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+p.arenaRating+'</div>';
+      h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+(p.arenaRating||1000)+'</div>';
+      if(cfg.mode){
+        h+='<div style="font-size:10px;color:rgba(245,233,224,0.3);margin-top:4px">'+modeLabel(cfg.mode)+' · '+(cfg.questionCount||10)+'Q</div>';
+      }
       h+='<button class="arena-invite-btn" style="margin-top:6px" data-userid="'+p.userId+'" data-username="'+escapeHtml(p.userName)+'" onclick="Arena.invitePlayer(this.dataset.userid,this.dataset.username)">Invite</button></div>';
       h+='</div>';
     });
     h+='</div>';
   }
-  
+
   h+='<button class="arena-btn secondary" style="margin-top:16px" onclick="Arena.cancelSearch()">Cancel Search</button>';
-  
+
   showOverlay(h);
 }
 
@@ -558,9 +778,7 @@ function cancelSearch(){
   showHome();
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: LOBBY
-// ══════════════════════════════════════════════
+
 async function showLobby(){
   if(!S.matchId){
     // Match ID from accepted invite
@@ -587,6 +805,7 @@ async function pollLobby(){
   }
 }
 
+
 function renderLobby(){
   var m=MODES.find(function(x){return x.id===S.match.mode;});
   var players=S.match.players.filter(function(p){return p.status!=='abandoned';});
@@ -594,7 +813,6 @@ function renderLobby(){
   var h='<div class="arena-title">⚔️ Arena Lobby</div>';
   h+='<div class="arena-sub">'+m.label+' · '+S.match.questionCount+' Questions</div>';
   
-  // Config
   h+='<div class="arena-lobby-config">';
   h+='<div>📋 Mode: '+m.label+'</div>';
   h+='<div>📝 Questions: '+S.match.questionCount+'</div>';
@@ -604,20 +822,17 @@ function renderLobby(){
   h+='</div>';
   
   if(m.type==='duel'){
-    // 1v1
     h+=renderLobbyPlayer(players[0],'You');
     h+='<div class="arena-vs">VS</div>';
     if(players[1])h+=renderLobbyPlayer(players[1],'Opponent');
-    else h+='<div class="arena-team-player"><div class="arena-player-avatar">?</div><div><div class="arena-player-name" style="color:rgba(245,233,224,0.3)">Waiting for opponent...</div></div><span class="arena-ready-badge empty">Pending</span></div>';
+    else h+='<div class="arena-team-player"><div class="arena-player-avatar">?</div><div><div class="arena-player-name" style="color:rgba(245,233,224,0.3)">Waiting for opponent...</div></div><span class="arena-streak-badge cold">Pending</span></div>';
   }else if(m.type==='ffa'){
-    // Free-for-all
     h+='<div class="arena-team-label">Players ('+players.length+'/'+m.players+')</div>';
     for(var i=0;i<m.players;i++){
       if(players[i])h+=renderLobbyPlayer(players[i],null);
-      else h+='<div class="arena-team-player"><div class="arena-player-avatar">?</div><div><div class="arena-player-name" style="color:rgba(245,233,224,0.3)">Waiting...</div></div><span class="arena-ready-badge empty">Pending</span></div>';
+      else h+='<div class="arena-team-player"><div class="arena-player-avatar">?</div><div><div class="arena-player-name" style="color:rgba(245,233,224,0.3)">Waiting...</div></div><span class="arena-streak-badge cold">Pending</span></div>';
     }
   }else{
-    // Team mode
     var teamA=players.filter(function(p){return p.team==='A';});
     var teamB=players.filter(function(p){return p.team==='B';});
     var teamASize=m.teamA,teamBSize=m.teamB;
@@ -633,7 +848,6 @@ function renderLobby(){
     h+='</div>';
   }
   
-  // Ready button
   var me=players.find(function(p){return p.userId===S.user.id;});
   var allReady=players.length>=m.players&&players.every(function(p){return p.ready;});
   
@@ -655,11 +869,12 @@ function renderLobbyPlayer(p,label){
   var isMe=p.userId===S.user.id;
   var readyClass=p.ready?'ready':'waiting';
   var readyText=p.ready?'✅ Ready':'⏳ Not Ready';
-  return '<div class="arena-team-player"><div class="arena-player-avatar">'+(p.userName[0]||'?').toUpperCase()+'</div><div><div class="arena-player-name">'+escapeHtml(p.userName)+(isMe?' (You)':'')+'</div><div class="arena-player-meta">⭐ Rating: '+((p.arenaRating)||1000)+'</div></div><span class="arena-ready-badge '+readyClass+'">'+readyText+'</span></div>';
+  var tier=getRankTier(p.arenaRating||1000);
+  return '<div class="arena-team-player"><div class="arena-player-avatar">'+(p.userName[0]||'?').toUpperCase()+'</div><div><div class="arena-player-name">'+escapeHtml(p.userName)+(isMe?' (You)':'')+'</div><div class="arena-player-meta">⭐ '+((p.arenaRating)||1000)+' · '+tier.label+'</div></div><span class="arena-streak-badge '+(p.ready?'warm':'cold')+'">'+readyText+'</span></div>';
 }
 
 function renderEmptySlot(){
-  return '<div class="arena-team-player"><div class="arena-player-avatar">?</div><div><div class="arena-player-name" style="color:rgba(245,233,224,0.3)">Waiting for player...</div></div><span class="arena-ready-badge empty">Empty</span></div>';
+  return '<div class="arena-team-player"><div class="arena-player-avatar">?</div><div><div class="arena-player-name" style="color:rgba(245,233,224,0.3)">Waiting for player...</div></div><span class="arena-streak-badge cold">Empty</span></div>';
 }
 
 async function setReady(ready){
@@ -684,9 +899,6 @@ async function leaveLobby(){
   showHome();
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: BATTLE
-// ══════════════════════════════════════════════
 async function startBattle(){
   stopTimer('poll');
   S.screen='battle';
@@ -723,6 +935,7 @@ function showCountdown(n){
   setTimeout(function(){showCountdown(n-1);},1000);
 }
 
+
 function renderBattle(){
   var idx=S.battle.qIdx;
   var q=S.battle.questions[idx];
@@ -734,29 +947,30 @@ function renderBattle(){
   h+='<div class="arena-battle-header"><span>Q'+(idx+1)+' / '+total+'</span><span id="arena-battle-timer">⏱ 0:00</span></div>';
   h+='<div class="arena-battle-progress"><div class="arena-battle-progress-bar" style="width:'+progress+'%"></div></div>';
   
-  // Live status
+  // Live stats
   h+='<div class="arena-live-status">';
   h+='<div class="arena-live-card"><div class="arena-live-label">Correct</div><div class="arena-live-val" id="arena-live-correct">'+S.battle.correct+'</div></div>';
   h+='<div class="arena-live-card"><div class="arena-live-label">Wrong</div><div class="arena-live-val" id="arena-live-wrong">'+S.battle.wrong+'</div></div>';
   h+='<div class="arena-live-card"><div class="arena-live-label">Skipped</div><div class="arena-live-val" id="arena-live-skipped">'+S.battle.skipped+'</div></div>';
   h+='</div>';
   
-  // Opponent status (if available)
+  // Opponent status (without revealing answers)
   if(S.match&&S.match.players){
     S.match.players.forEach(function(p){
       if(p.userId!==S.user.id&&p.status!=='abandoned'){
         var answered=p.answers?p.answers.length:0;
-        h+='<div class="arena-live-card" style="margin-bottom:8px"><div class="arena-live-label">'+escapeHtml(p.userName)+'</div><div class="arena-live-val" style="font-size:13px">'+answered+'/'+total+' answered</div></div>';
+        var dotClass=answered>idx?'answered':answered>0?'thinking':'waiting';
+        var statusText=answered>idx?'Answered':answered>0?'Thinking':'Not Started';
+        h+='<div class="arena-opp-status"><span class="arena-opp-dot '+dotClass+'"></span><span style="font-size:12px;color:rgba(245,233,224,0.5)">'+escapeHtml(p.userName)+': '+statusText+' ('+answered+'/'+total+')</span></div>';
       }
     });
   }
   
   // Question
   h+='<div class="arena-battle-q">';
-  h+='<div style="font-size:11px;color:rgba(232,200,122,0.6);margin-bottom:6px">'+escapeHtml(q.topic||q.category||'')+(q.difficulty?' · '+q.difficulty:'')+'</div>';
+  h+='<div style="font-size:11px;color:rgba(232,200,122,0.6);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">'+escapeHtml(q.topic||q.category||'')+(q.difficulty?' · '+q.difficulty:'')+'</div>';
   h+='<div class="arena-battle-q-text">'+escapeHtml(q.question_text)+'</div>';
   
-  // Options
   var opts=[{label:'A',text:q.option_a},{label:'B',text:q.option_b},{label:'C',text:q.option_c},{label:'D',text:q.option_d}];
   opts.forEach(function(o,i){
     h+='<button class="arena-battle-opt" id="arena-opt-'+i+'" onclick="Arena.answerQ('+i+')"><strong>'+o.label+'</strong> · '+escapeHtml(o.text)+'</button>';
@@ -764,10 +978,8 @@ function renderBattle(){
   
   h+='</div>';
   
-  // Feedback
   h+='<div class="arena-battle-feedback" id="arena-feedback"></div>';
   
-  // Actions
   h+='<div class="arena-battle-actions">';
   h+='<button class="arena-btn secondary" onclick="Arena.skipQ()">⏭ Skip</button>';
   h+='<button class="arena-btn" id="arena-next-btn" onclick="Arena.nextQ()" disabled>Next →</button>';
@@ -779,7 +991,6 @@ function renderBattle(){
   startBattleTimer();
 }
 
-var battleTimerInt=null;
 function startBattleTimer(){
   if(battleTimerInt)clearInterval(battleTimerInt);
   battleTimerInt=setInterval(function(){
@@ -986,6 +1197,7 @@ function forfeitWait(){
   stopTimer('poll');
   showResults({type:'user',userId:S.user.id,userName:S.user.name});
 }
+
 function checkNowWait(){
   toast('Checking...');
   waitingPoll();
@@ -1000,16 +1212,15 @@ async function leaveBattle(){
   showHome();
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: RESULTS
-// ══════════════════════════════════════════════
+
+
+// ════════════════════════════════════════════════
+// SCREEN: RESULTS (UPGRADED — Professional Order)
+// ════════════════════════════════════════════════
 async function showResults(winner,freshMatch){
   stopAllTimers();
   S.screen='results';
   
-  // Use the match we were just handed (fresh from completeMatch's own write) if
-  // available — avoids re-fetching via getMatch, which can race a DB replication
-  // lag right after our own write and return a stale/empty snapshot.
   if(freshMatch){
     S.match=freshMatch;
   }else{
@@ -1024,10 +1235,7 @@ async function showResults(winner,freshMatch){
   var total=S.battle.questions.length||S.match.questionCount;
   var totalTime=S.battle.totalTime||0;
   
-  // DEFENSIVE SAFETY NET: if the server's copy of MY row looks empty/stale
-  // (e.g. 0 correct+wrong) while we clearly played real questions locally,
-  // trust the local battle counters instead — they're always accurate for
-  // the current user regardless of any backend race or stale cache elsewhere.
+  // DEFENSIVE SAFETY NET
   if(me&&(me.correct||0)+(me.wrong||0)===0&&(S.battle.correct+S.battle.wrong)>0){
     var localScore=total?Math.round((S.battle.correct/total)*100):0;
     me=Object.assign({},me,{
@@ -1041,14 +1249,15 @@ async function showResults(winner,freshMatch){
   var isDraw=winner.type==='draw';
   var isTeamWin=winner.type==='team'&&me&&me.team===winner.team;
   
+  // ══ LAYER 1: RESULT HERO ══
   var h='<div class="arena-result-hero">';
   if(isWin||isTeamWin){
     h+='<div class="arena-result-trophy">🏆</div>';
-    h+='<div class="arena-result-title">YOU WIN!</div>';
+    h+='<div class="arena-result-title win">YOU WIN!</div>';
     h+='<div class="arena-result-sub">Congratulations on your victory!</div>';
   }else if(isDraw){
     h+='<div class="arena-result-trophy">🤝</div>';
-    h+='<div class="arena-result-title">DRAW</div>';
+    h+='<div class="arena-result-title draw">DRAW</div>';
     h+='<div class="arena-result-sub">Evenly matched!</div>';
   }else if(winner.type==='ffa'&&winner.ranking){
     var myRank=winner.ranking.findIndex(function(p){return p.userId===S.user.id;})+1;
@@ -1057,31 +1266,39 @@ async function showResults(winner,freshMatch){
     h+='<div class="arena-result-sub">Out of '+winner.ranking.length+' players</div>';
   }else{
     h+='<div class="arena-result-trophy">💪</div>';
-    h+='<div class="arena-result-title">YOU LOST</div>';
+    h+='<div class="arena-result-title loss">YOU LOST</div>';
     h+='<div class="arena-result-sub">Better luck next time!</div>';
   }
   h+='</div>';
   
-  // Scores
+  // ══ LAYER 2: SCORE COMPARISON ══
   if(winner.type==='ffa'&&winner.ranking){
-    // FFA ranking
     h+='<div class="arena-result-section"><div class="arena-result-section-title">🏆 Final Ranking</div>';
     winner.ranking.forEach(function(p,i){
       h+='<div class="arena-result-row"><span>'+(i+1)+'. '+escapeHtml(p.userName)+(p.userId===S.user.id?' (You)':'')+'</span><span>'+p.score+'% ('+p.correct+'C)</span></div>';
     });
     h+='</div>';
   }else if(m&&m.type==='team'){
-    // Team scores
     var teamA=players.filter(function(p){return p.team==='A';});
     var teamB=players.filter(function(p){return p.team==='B';});
     var scoreA=teamA.reduce(function(s,p){return s+(p.score||0);},0);
     var scoreB=teamB.reduce(function(s,p){return s+(p.score||0);},0);
     h+='<div class="arena-result-scores">';
-    h+='<div class="arena-result-score'+(winner.team==='A'?' winner':'')+'"><div class="arena-result-score-name">Team A</div><div class="arena-result-score-val">'+Math.round(scoreA/(teamA.length||1))+'%</div><div class="arena-result-score-lbl">Avg Score</div></div>';
-    h+='<div class="arena-result-score'+(winner.team==='B'?' winner':'')+'"><div class="arena-result-score-name">Team B</div><div class="arena-result-score-val">'+Math.round(scoreB/(teamB.length||1))+'%</div><div class="arena-result-score-lbl">Avg Score</div></div>';
+    h+='<div class="arena-result-score'+(winner.team==='A'?' winner':'')+'"><div class="arena-result-score-name">Team A</div><div class="arena-result-score-val">'+Math.round(scoreA/(teamA.length||1))+'</div><div class="arena-result-score-lbl">Avg Score</div></div>';
+    h+='<div class="arena-result-score'+(winner.team==='B'?' winner':'')+'"><div class="arena-result-score-name">Team B</div><div class="arena-result-score-val">'+Math.round(scoreB/(teamB.length||1))+'</div><div class="arena-result-score-lbl">Avg Score</div></div>';
+    h+='</div>';
+    // Team member breakdown
+    h+='<div class="arena-result-section"><div class="arena-result-section-title">👥 Team Breakdown</div>';
+    h+='<div style="margin-bottom:8px;font-size:12px;color:rgba(245,233,224,0.5);font-weight:600">Team A</div>';
+    teamA.forEach(function(p){
+      h+='<div class="arena-result-row"><span>'+escapeHtml(p.userName)+(p.userId===S.user.id?' (You)':'')+'</span><span>'+(p.score||0)+' pts · '+(p.correct||0)+'C</span></div>';
+    });
+    h+='<div style="margin:8px 0;font-size:12px;color:rgba(245,233,224,0.5);font-weight:600">Team B</div>';
+    teamB.forEach(function(p){
+      h+='<div class="arena-result-row"><span>'+escapeHtml(p.userName)+'</span><span>'+(p.score||0)+' pts · '+(p.correct||0)+'C</span></div>';
+    });
     h+='</div>';
   }else{
-    // 1v1
     var opp=players.find(function(p){return p.userId!==S.user.id;});
     h+='<div class="arena-result-scores">';
     h+='<div class="arena-result-score'+(isWin?' winner':'')+'"><div class="arena-result-score-name">You</div><div class="arena-result-score-val">'+(me?me.score||0:0)+'</div><div class="arena-result-score-lbl">Score</div></div>';
@@ -1089,130 +1306,196 @@ async function showResults(winner,freshMatch){
     h+='</div>';
   }
   
-  // Performance analysis
-  h+='<div class="arena-result-section"><div class="arena-result-section-title">📊 Your Performance</div>';
-  h+='<div class="arena-result-row"><span>Questions</span><span>'+total+'</span></div>';
-  h+='<div class="arena-result-row"><span>Correct</span><span>'+S.battle.correct+'</span></div>';
-  h+='<div class="arena-result-row"><span>Wrong</span><span>'+S.battle.wrong+'</span></div>';
-  h+='<div class="arena-result-row"><span>Skipped</span><span>'+S.battle.skipped+'</span></div>';
-  h+='<div class="arena-result-row"><span>Accuracy</span><span>'+Math.round((S.battle.correct/(S.battle.correct+S.battle.wrong||1))*100)+'%</span></div>';
-  h+='<div class="arena-result-row"><span>Total Time</span><span>'+fmtTime(totalTime)+'</span></div>';
-  h+='<div class="arena-result-row"><span>Avg Time/Q</span><span>'+fmtTime(totalTime/(total||1))+'s</span></div>';
+  // ══ LAYER 3: QUICK STATS ══
+  var myCorrect=me?(me.correct||S.battle.correct):S.battle.correct;
+  var myWrong=me?(me.wrong||S.battle.wrong):S.battle.wrong;
+  var mySkipped=me?(me.skipped||S.battle.skipped):S.battle.skipped;
+  var myAcc=total?Math.round((myCorrect/total)*100):0;
   
-  // Timing analysis
-  var times=S.battle.answers.filter(function(a){return a;}).map(function(a){return a.timeSpent;});
-  if(times.length){
-    var fastest=Math.min.apply(null,times);
-    var slowest=Math.max.apply(null,times);
-    var avgCorrect=S.battle.answers.filter(function(a){return a&&a.isCorrect;}).map(function(a){return a.timeSpent;});
-    var avgWrong=S.battle.answers.filter(function(a){return a&&!a.isCorrect;}).map(function(a){return a.timeSpent;});
-    h+='<div class="arena-result-row"><span>Fastest Answer</span><span>'+fastest+'s</span></div>';
-    h+='<div class="arena-result-row"><span>Slowest Answer</span><span>'+slowest+'s</span></div>';
-    if(avgCorrect.length)h+='<div class="arena-result-row"><span>Avg Time (Correct)</span><span>'+Math.round(avgCorrect.reduce(function(a,b){return a+b;},0)/avgCorrect.length)+'s</span></div>';
-    if(avgWrong.length)h+='<div class="arena-result-row"><span>Avg Time (Wrong)</span><span>'+Math.round(avgWrong.reduce(function(a,b){return a+b;},0)/avgWrong.length)+'s</span></div>';
+  h+='<div class="arena-result-section"><div class="arena-result-section-title">📊 Quick Stats</div>';
+  // Comparison table for 1v1
+  if(opp&&!m.type==='team'&&winner.type!=='ffa'){
+    h+='<table class="arena-compare-table"><thead><tr><th></th><th>You</th><th>'+escapeHtml(opp.userName)+'</th></tr></thead><tbody>';
+    h+='<tr><td>Score</td><td class="me">'+(me?me.score||0:0)+'</td><td>'+(opp.score||0)+'</td></tr>';
+    h+='<tr><td>Correct</td><td class="me">'+myCorrect+'</td><td>'+(opp.correct||0)+'</td></tr>';
+    h+='<tr><td>Accuracy</td><td class="me">'+myAcc+'%</td><td>'+((opp.correct||0)&&total?Math.round((opp.correct/total)*100):0)+'%</td></tr>';
+    var myTime=me?(me.totalTime||totalTime):totalTime;
+    var oppTime=opp?(opp.totalTime||0):0;
+    h+='<tr><td>Time</td><td class="me">'+fmtTime(myTime)+'</td><td>'+fmtTime(oppTime)+'</td></tr>';
+    h+='</tbody></table>';
+  }else{
+    h+='<div class="arena-result-row"><span>Questions</span><span>'+total+'</span></div>';
+    h+='<div class="arena-result-row"><span>Correct</span><span>'+myCorrect+'</span></div>';
+    h+='<div class="arena-result-row"><span>Wrong</span><span>'+myWrong+'</span></div>';
+    h+='<div class="arena-result-row"><span>Skipped</span><span>'+mySkipped+'</span></div>';
+    h+='<div class="arena-result-row highlight"><span>Accuracy</span><span>'+myAcc+'%</span></div>';
+    h+='<div class="arena-result-row"><span>Time</span><span>'+fmtTime(totalTime)+'</span></div>';
+  }
+  // Win reason
+  if(isWin||isTeamWin){
+    var reasonText=isWin?'Higher accuracy + faster completion':'Stronger team performance';
+    if(opp){
+      var myScore=me?me.score||0:0,oppScore=opp.score||0;
+      h+='<div style="margin-top:10px;padding:10px;background:rgba(76,175,80,0.06);border-radius:8px;font-size:13px;color:#66bb6a">🏆 You won by '+(myScore-oppScore)+' points — '+reasonText+'</div>';
+    }
+  }else if(!isDraw&&!isTeamWin&&winner.type!=='ffa'){
+    if(opp){
+      var oppScore=opp.score||0,myScore=me?me.score||0:0;
+      h+='<div style="margin-top:10px;padding:10px;background:rgba(244,67,54,0.06);border-radius:8px;font-size:13px;color:#f44336">💪 You lost by '+(oppScore-myScore)+' points. Keep practicing!</div>';
+    }
   }
   h+='</div>';
   
-  // Topic-wise analysis
-  var topics=Object.keys(S.battle.topicStats);
-  if(topics.length>1){
-    h+='<div class="arena-result-section"><div class="arena-result-section-title">📚 Topic Analysis</div>';
-    topics.forEach(function(t){
-      var s=S.battle.topicStats[t];
-      var acc=Math.round((s.correct/s.total)*100);
-      var avgT=Math.round(s.time/s.total);
+  // ══ LAYER 4: SPEED ANALYSIS ══
+  if(S.battle.answers.length>0){
+    var fastTime=Infinity,slowTime=0,allTimes=[];
+    S.battle.answers.forEach(function(a){
+      if(a&&a.timeSpent){
+        allTimes.push(a.timeSpent);
+        if(a.timeSpent<fastTime)fastTime=a.timeSpent;
+        if(a.timeSpent>slowTime)slowTime=a.timeSpent;
+      }
+    });
+    if(allTimes.length>0){
+      var avgTime=allTimes.reduce(function(s,t){return s+t;},0)/allTimes.length;
+      var correctTimes=S.battle.answers.filter(function(a){return a&&a.isCorrect;}).map(function(a){return a.timeSpent;});
+      var wrongTimes=S.battle.answers.filter(function(a){return a&&!a.isCorrect;}).map(function(a){return a.timeSpent;});
+      var avgCorrect=correctTimes.length?Math.round(correctTimes.reduce(function(s,t){return s+t;},0)/correctTimes.length*10)/10:0;
+      var avgWrong=wrongTimes.length?Math.round(wrongTimes.reduce(function(s,t){return s+t;},0)/wrongTimes.length*10)/10:0;
+      
+      h+='<div class="arena-result-section"><div class="arena-result-section-title">⚡ Speed Analysis</div>';
+      h+='<div class="arena-result-row"><span>Fastest Answer</span><span>'+fastTime+'s</span></div>';
+      h+='<div class="arena-result-row"><span>Average Time</span><span>'+Math.round(avgTime*10)/10+'s</span></div>';
+      h+='<div class="arena-result-row"><span>Slowest Answer</span><span>'+slowTime+'s</span></div>';
+      h+='<div class="arena-result-row"><span>Avg Correct Time</span><span>'+avgCorrect+'s</span></div>';
+      h+='<div class="arena-result-row"><span>Avg Wrong Time</span><span>'+avgWrong+'s</span></div>';
+      // Speed comparison
+      if(opp&&opp.totalTime){
+        var myTotal=totalTime||0;
+        if(myTotal<opp.totalTime){
+          var pct=Math.round((1-myTotal/opp.totalTime)*100);
+          h+='<div style="margin-top:8px;padding:8px;background:rgba(76,175,80,0.06);border-radius:6px;font-size:12px;color:#66bb6a">⚡ You were '+pct+'% faster than your opponent.</div>';
+        }else if(opp.totalTime<myTotal){
+          var pct2=Math.round((1-opp.totalTime/myTotal)*100);
+          h+='<div style="margin-top:8px;padding:8px;background:rgba(244,67,54,0.06);border-radius:6px;font-size:12px;color:#f44336">⏳ Opponent was '+pct2+'% faster than you.</div>';
+        }
+      }
+      h+='</div>';
+    }
+  }
+  
+  // ══ LAYER 5: TOPIC ANALYSIS ══
+  var topicStats=S.battle.topicStats;
+  var topicKeys=Object.keys(topicStats);
+  if(topicKeys.length>0){
+    // Find strongest and weakest
+    var sortedTopics=topicKeys.map(function(t){
+      var s=topicStats[t];
+      var acc=s.total>0?Math.round(s.correct/s.total*100):0;
+      return{topic:t,correct:s.correct,total:s.total,acc:acc,time:s.time,avgTime:s.total>0?Math.round(s.time/s.total*10)/10:0};
+    }).sort(function(a,b){return b.acc-a.acc;});
+    
+    var strongest=sortedTopics[0];
+    var weakest=sortedTopics[sortedTopics.length-1];
+    
+    // Strong area
+    if(strongest&&strongest.total>0&&strongest.acc>=50){
+      h+='<div class="arena-result-section"><div class="arena-result-section-title">🟢 Strong Areas</div>';
+      h+='<div style="font-size:15px;font-weight:600;color:#66bb6a;margin-bottom:4px">'+escapeHtml(strongest.topic)+'</div>';
+      h+='<div class="arena-topic-meta">'+strongest.correct+'/'+strongest.total+' correct · '+strongest.acc+'% accuracy</div>';
+      h+='</div>';
+    }
+    
+    // Full topic breakdown
+    h+='<div class="arena-result-section"><div class="arena-result-section-title">📊 Topic Analysis</div>';
+    sortedTopics.forEach(function(t){
+      var barClass=t.acc>=75?'high':t.acc>=50?'mid':'low';
       h+='<div class="arena-topic-row">';
-      h+='<div class="arena-topic-name">'+escapeHtml(t)+'</div>';
-      h+='<div class="arena-topic-bar"><div class="arena-topic-bar-fill" style="width:'+acc+'%"></div></div>';
-      h+='<div class="arena-topic-meta">Correct: '+s.correct+'/'+s.total+' · Accuracy: '+acc+'% · Avg: '+avgT+'s</div>';
+      h+='<div class="arena-topic-name"><span>'+escapeHtml(t.topic)+'</span><span>'+t.acc+'%</span></div>';
+      h+='<div class="arena-topic-bar"><div class="arena-topic-bar-fill '+barClass+'" style="width:'+t.acc+'%"></div></div>';
+      h+='<div class="arena-topic-meta">'+t.correct+' correct · '+(t.total-t.correct)+' wrong · '+t.avgTime+'s avg</div>';
       h+='</div>';
     });
     h+='</div>';
-  }
-  
-  // Head-to-head (1v1 only)
-  if(m&&m.type==='duel'){
-    var opp2=players.find(function(p){return p.userId!==S.user.id;});
-    if(opp2){
-      h+='<div class="arena-result-section"><div class="arena-result-section-title">🎯 Head-to-Head</div>';
-      var myAcc=me&&me.correct+me.wrong>0?Math.round((me.correct/(me.correct+me.wrong))*100):0;
-      var oppAcc=opp2.correct+opp2.wrong>0?Math.round((opp2.correct/(opp2.correct+opp2.wrong))*100):0;
-      h+='<div class="arena-result-row"><span>Accuracy — You</span><span>'+myAcc+'%</span></div>';
-      h+='<div class="arena-result-row"><span>Accuracy — '+escapeHtml(opp2.userName)+'</span><span>'+oppAcc+'%</span></div>';
-      h+='<div class="arena-result-row"><span>Correct — You</span><span>'+(me?me.correct:0)+'</span></div>';
-      h+='<div class="arena-result-row"><span>Correct — '+escapeHtml(opp2.userName)+'</span><span>'+opp2.correct+'</span></div>';
-      if(me&&opp2){
-        h+='<div class="arena-result-row"><span>Time — You</span><span>'+fmtTime(me.totalTime||totalTime)+'</span></div>';
-        h+='<div class="arena-result-row"><span>Time — '+escapeHtml(opp2.userName)+'</span><span>'+fmtTime(opp2.totalTime||0)+'</span></div>';
-      }
-      
-      // Why you won/lost
-      if(isWin){
-        h+='<div style="margin-top:10px;font-size:13px;color:#66bb6a">🏆 You won due to: '+(myAcc>oppAcc?'Higher accuracy':(me&&me.correct>opp2.correct?'More correct answers':'Better overall performance'))+'</div>';
-      }else if(!isDraw){
-        h+='<div style="margin-top:10px;font-size:13px;color:rgba(245,233,224,0.5)">Opponent won due to: '+(oppAcc>myAcc?'Higher accuracy':(opp2.correct>(me?me.correct:0)?'More correct answers':'Better overall performance'))+'</div>';
-      }
+    
+    // Weak area detection
+    if(weakest&&weakest.total>=2&&weakest.acc<50){
+      var avgAcc=sortedTopics.reduce(function(s,t){return s+t.acc;},0)/sortedTopics.length;
+      var issueText=weakest.acc<avgAcc?'Accuracy below your Arena average.':'Needs improvement.';
+      h+='<div class="arena-weak-area">';
+      h+='<div class="arena-weak-area-title">🔴 WEAK AREA</div>';
+      h+='<div class="arena-weak-area-topic">'+escapeHtml(weakest.topic)+'</div>';
+      h+='<div class="arena-weak-area-stat">'+weakest.correct+' / '+weakest.total+' correct</div>';
+      h+='<div class="arena-weak-area-stat">'+weakest.acc+'% accuracy</div>';
+      h+='<div class="arena-weak-area-stat" style="margin-top:6px">Issue: '+issueText+'</div>';
+      h+='<div class="arena-weak-area-cta"><button class="arena-btn gold" onclick="Arena.practiceWeakTopic(\''+weakest.topic.replace(/'/g,"\\'")+'\')">📚 Practice '+escapeHtml(weakest.topic)+' — 20 Questions</button></div>';
       h+='</div>';
     }
   }
   
-  // Weak Areas & Improvement Tips
-  var topicsArr=Object.keys(S.battle.topicStats).map(function(t){
-    var s=S.battle.topicStats[t];
-    return {topic:t,correct:s.correct,total:s.total,acc:Math.round((s.correct/s.total)*100),avgT:Math.round(s.time/s.total)};
-  });
-  if(topicsArr.length){
-    var weak=topicsArr.filter(function(t){return t.acc<60;}).sort(function(a,b){return a.acc-b.acc;});
-    var slow=topicsArr.filter(function(t){return t.avgT>20;}).sort(function(a,b){return b.avgT-a.avgT;});
-    var strong=topicsArr.filter(function(t){return t.acc>=80;}).sort(function(a,b){return b.acc-a.acc;});
-    h+='<div class="arena-result-section"><div class="arena-result-section-title">🎯 Weak Areas & What To Improve</div>';
-    if(weak.length){
-      weak.forEach(function(t){
-        h+='<div style="padding:10px 0;border-bottom:1px solid rgba(245,233,224,0.08)">';
-        h+='<div style="font-weight:600;color:#ef5350">⚠️ '+escapeHtml(t.topic)+' — '+t.acc+'% accuracy ('+t.correct+'/'+t.total+')</div>';
-        h+='<div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">Revise this topic. Try a focused practice set on '+escapeHtml(t.topic)+' before your next battle.</div>';
-        h+='</div>';
-      });
-    }else{
-      h+='<div style="padding:8px 0;color:#66bb6a;font-size:13px">✅ No weak topics — solid accuracy across the board!</div>';
-    }
-    if(slow.length){
-      h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(245,233,224,0.08)">';
-      h+='<div style="font-weight:600;color:#ffb74d">🐢 Slow topics (avg time per question)</div>';
-      slow.slice(0,3).forEach(function(t){
-        h+='<div style="font-size:12px;color:rgba(245,233,224,0.6);margin-top:4px">'+escapeHtml(t.topic)+' — '+t.avgT+'s/question. Practice more to build speed.</div>';
-      });
-      h+='</div>';
-    }
-    if(strong.length){
-      h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(245,233,224,0.08)">';
-      h+='<div style="font-weight:600;color:#66bb6a">💪 Your strongest topics</div>';
-      h+='<div style="font-size:12px;color:rgba(245,233,224,0.6);margin-top:4px">'+strong.slice(0,3).map(function(t){return escapeHtml(t.topic)+' ('+t.acc+'%)';}).join(' · ')+'</div>';
-      h+='</div>';
-    }
+  // ══ LAYER 6: PERFORMANCE SCORE ══
+  if(total>0){
+    var perfScore=Math.round(
+      (myAcc*0.4)+  // accuracy 40%
+      (Math.min(100,Math.round(myCorrect*100/Math.max(myCorrect+myWrong,1)))*0.3)+  // correctness 30%
+      (Math.min(100,Math.max(0,100-Math.round(totalTime/total)))*0.2)+  // speed 20%
+      (mySkipped===0?10:Math.max(0,10-mySkipped*2))*0.1  // consistency 10%
+    );
+    var perfGrade=perfScore>=80?'Excellent':perfScore>=60?'Good':perfScore>=40?'Average':'Needs Work';
+    h+='<div class="arena-result-section"><div class="arena-result-section-title">⭐ Arena Performance</div>';
+    h+='<div class="arena-perf-score"><span class="arena-perf-score-val">'+perfScore+'</span><span class="arena-perf-score-max"> / 100</span></div>';
+    h+='<div style="text-align:center;font-size:13px;color:rgba(245,233,224,0.6);margin-bottom:8px">'+perfGrade+'</div>';
+    h+='<div class="arena-perf-info" onclick="alert(\'Performance Score = Accuracy (40%) + Correctness (30%) + Speed (20%) + Consistency (10%)\')">How this score is calculated</div>';
     h+='</div>';
   }
   
-  // Question review
+  // ══ LAYER 7: RATING CHANGE ══
+  if(S.user){
+    var oldStats=getArenaStats();
+    var newRating=oldStats.rating||1000;
+    if(isWin||isTeamWin)newRating+=Math.round(15+Math.random()*10);
+    else if(!isDraw)newRating-=Math.round(10+Math.random()*8);
+    var delta=newRating-(oldStats.rating||1000);
+    if(delta!==0){
+      h+='<div class="arena-result-section"><div class="arena-result-section-title">🏅 Arena Rating</div>';
+      h+='<div class="arena-rating-change">';
+      h+='<div class="arena-rating-before">'+(oldStats.rating||1000)+'</div>';
+      h+='<div class="arena-rating-arrow">→</div>';
+      h+='<div class="arena-rating-after">'+newRating+'</div>';
+      h+='<div class="arena-rating-delta '+(delta>0?'pos':'neg')+'">'+(delta>0?'+':'')+delta+'</div>';
+      h+='</div>';
+      // Update stored rating
+      try{
+        var updated=Object.assign({},oldStats,{rating:newRating});
+        localStorage.setItem('arena_stats',JSON.stringify(updated));
+      }catch(e){}
+      h+='</div>';
+    }
+  }
+  
+  // ══ LAYER 8: QUESTION REVIEW ══
   h+='<div class="arena-result-section"><div class="arena-result-section-title">📝 Question Review</div>';
   S.battle.questions.slice(0,20).forEach(function(q,i){
     var a=S.battle.answers[i];
     var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
     var correctLabel=String.fromCharCode(65+correctIdx);
     h+='<div class="arena-qreview">';
-    h+='<div class="arena-qreview-q">Q'+(i+1)+'. '+escapeHtml(q.question_text).slice(0,100)+(q.question_text.length>100?'...':'')+'</div>';
-    if(a===null){
+    h+='<div class="arena-qreview-q">Q'+(i+1)+'. '+escapeHtml(q.question_text).slice(0,120)+(q.question_text.length>120?'...':'')+'</div>';
+    if(a===null||a===undefined){
       h+='<div class="arena-qreview-a">⏭ Skipped · Correct: '+correctLabel+'</div>';
     }else if(a){
       var userLabel=String.fromCharCode(65+a.selectedIdx);
       h+='<div class="arena-qreview-a '+(a.isCorrect?'correct':'wrong')+'">'+(a.isCorrect?'✅':'❌')+' Your answer: '+userLabel+' · Correct: '+correctLabel+' · '+a.timeSpent+'s</div>';
     }
+    if(q.explanation){
+      h+='<div class="arena-qreview-expl">💡 '+escapeHtml(q.explanation).slice(0,200)+(q.explanation.length>200?'...':'')+'</div>';
+    }
     h+='</div>';
   });
-  if(S.battle.questions.length>20)h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);text-align:center;padding:8px">Showing first 20 questions. '+S.battle.questions.length+' total.</div>';
+  if(S.battle.questions.length>20)h+='<div style="font-size:12px;color:rgba(245,233,224,0.35);text-align:center;padding:8px">Showing first 20 questions. '+S.battle.questions.length+' total.</div>';
   h+='</div>';
   
-  // Save session for performance integration
+  // Save session
   if(window.BrainLab){
     BrainLab.saveSession({
       id:'arena-'+S.matchId+'-'+Date.now(),
@@ -1224,7 +1507,7 @@ async function showResults(winner,freshMatch){
     });
   }
   
-  // Action buttons
+  // ══ LAYER 9: ACTION BUTTONS ══
   h+='<div class="arena-actions-row">';
   h+='<button class="arena-btn gold" onclick="Arena.rematch()">⚔️ Rematch</button>';
   h+='<button class="arena-btn secondary" onclick="Arena.reviewMistakes()">📚 Review Mistakes</button>';
@@ -1233,6 +1516,22 @@ async function showResults(winner,freshMatch){
   h+='</div>';
   
   showOverlay(h);
+}
+
+
+function practiceWeakTopic(topic){
+  Arena.close();
+  if(window.BrainLab){
+    var pool=BrainLab.filterQuestions({category:undefined,topic:topic,difficulty:undefined});
+    if(!pool||!pool.length){pool=BrainLab.filterQuestions({topic:topic});}
+    if(!pool||!pool.length){alert('No questions found for '+topic);return;}
+    var selected=BrainLab.selectQuestions(pool,Math.min(20,pool.length));
+    var qs=BrainLab.toQuiz(selected);
+    var sessionId='sess-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+    BrainLab._sessionId=sessionId;
+    BrainLab._sessionMeta={id:sessionId,mode:'practice',title:'Weak Topic: '+topic,topic:topic,total_questions:qs.length,started_at:new Date().toISOString()};
+    BrainLab._startPlayer({title:'Practice: '+topic,questions:qs,mode:'practice'});
+  }
 }
 
 function rematch(){
@@ -1264,9 +1563,7 @@ function practiceSimilar(){
   }
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: HISTORY
-// ══════════════════════════════════════════════
+
 async function showHistory(){
   S.user=getUser();if(!S.user){toast('Please log in');return;}
   var res=await api('getHistory',{userId:S.user.id});
@@ -1278,9 +1575,38 @@ async function showHistory(){
   if(!history.length){
     h+='<div class="arena-empty">No battles yet.<br>Start your first arena battle!</div>';
   }else{
+    // Head-to-Head: find most frequent opponent
+    var oppCounts={};
+    history.forEach(function(b){
+      var players=b.playerResults||b.players||[];
+      players.forEach(function(p){
+        if(p.userId!==S.user.id){
+          oppCounts[p.userId]={name:p.userName,count:(oppCounts[p.userId]?oppCounts[p.userId].count:0)+1};
+        }
+      });
+    });
+    var topOpps=Object.keys(oppCounts).sort(function(a,b){return oppCounts[b].count-oppCounts[a].count;});
+    if(topOpps.length>0&&oppCounts[topOpps[0]].count>=2){
+      var topOppId=topOpps[0];
+      var topOppName=oppCounts[topOppId].name;
+      var myWins=0,oppWins=0;
+      history.forEach(function(b){
+        var w=b.winner||{};
+        var players=b.playerResults||b.players||[];
+        var opp=players.find(function(p){return p.userId===topOppId;});
+        if(opp){
+          if(w.type==='user'&&w.userId===S.user.id)myWins++;
+          else if(w.type==='user'&&w.userId===topOppId)oppWins++;
+        }
+      });
+      h+='<div class="arena-result-section"><div class="arena-result-section-title">🤝 Head-to-Head</div>';
+      h+='<div class="arena-h2h-row"><span class="arena-h2h-name">You</span><span class="arena-h2h-val">'+myWins+' Wins</span></div>';
+      h+='<div class="arena-h2h-row"><span class="arena-h2h-name">'+escapeHtml(topOppName)+'</span><span class="arena-h2h-val">'+oppWins+' Wins</span></div>';
+      h+='<div class="arena-h2h-row"><span class="arena-h2h-name">Last '+Math.min(oppCounts[topOppId].count,6)+' matches</span><span class="arena-h2h-val">vs '+escapeHtml(topOppName)+'</span></div>';
+      h+='</div>';
+    }
+    
     history.slice().reverse().forEach(function(b){
-      // Live backend returns players/id/completedAt (not the originally-expected
-      // playerResults/matchId/createdAt) — support both shapes defensively.
       var matchId=b.matchId||b.id;
       var players=b.playerResults||b.players||[];
       var myResult=players.find(function(p){return p.userId===S.user.id;});
@@ -1292,7 +1618,7 @@ async function showHistory(){
       var resultText=isWin||isTeamWin?'WIN':isDraw?'DRAW':'LOSS';
       
       var when=b.createdAt||b.completedAt;
-      var date=when?(new Date(when).toLocaleDateString([],{month:'short',day:'numeric'})+' '+new Date(when).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})):'';
+      var date=when?(new Date(when).toLocaleDateString([],{month:'short',day:'numeric'})+' · '+new Date(when).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})):'';
       var oppNames=players.filter(function(p){return p.userId!==S.user.id;}).map(function(p){return p.userName;}).join(', ');
       var myAcc=myResult?(myResult.accuracy!==undefined?myResult.accuracy:(myResult.correct!==undefined&&b.questionCount?Math.round(myResult.correct/b.questionCount*100):null)):null;
       
@@ -1300,7 +1626,7 @@ async function showHistory(){
       h+='<div class="arena-history-row">';
       h+='<div class="arena-history-left">';
       h+='<div class="arena-history-mode">'+modeIcon(b.mode)+' '+modeLabel(b.mode)+' · '+b.questionCount+'Q</div>';
-      h+='<div class="arena-history-meta">'+date+' · vs '+escapeHtml(oppNames||'Unknown')+(myAcc!==null?' · '+myAcc+'%':'')+'</div>';
+      h+='<div class="arena-history-meta">'+date+' · vs '+escapeHtml(oppNames||'Unknown')+(myAcc!==null?' · '+myAcc+'% acc':'')+'</div>';
       h+='</div>';
       h+='<div class="arena-history-result '+resultClass+'">'+resultText+'</div>';
       h+='</div>';
@@ -1318,9 +1644,7 @@ function showHistoryDetail(matchId){
   toast('Battle detail: '+matchId);
 }
 
-// ══════════════════════════════════════════════
-// SCREEN: LEADERBOARD
-// ══════════════════════════════════════════════
+
 async function showLeaderboard(){
   var res=await api('getLeaderboard',{});
   var lb=res.ok?res.leaderboard:[];
@@ -1334,11 +1658,13 @@ async function showLeaderboard(){
     lb.forEach(function(p,i){
       var rank=i+1;
       var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
-      h+='<div class="arena-lb-row">';
+      var tier=getRankTier(p.arenaRating||1000);
+      var isMe=p.userId===S.user.id;
+      h+='<div class="arena-lb-row'+(isMe?' me':'')+'">';
       h+='<div class="arena-lb-rank">'+(medal||'#'+rank)+'</div>';
-      h+='<div><div class="arena-lb-name">'+escapeHtml(p.userName)+(p.userId===S.user.id?' (You)':'')+'</div>';
-      h+='<div class="arena-lb-meta">'+(p.exam||'General')+' · '+p.wins+'W-'+p.losses+'L · '+p.winRate+'% WR</div></div>';
-      h+='<div class="arena-lb-rating">'+p.arenaRating+'</div>';
+      h+='<div><div class="arena-lb-name">'+escapeHtml(p.userName)+(isMe?' (You)':'')+'</div>';
+      h+='<div class="arena-lb-meta">'+(p.exam||'General')+' · '+p.wins+'W-'+p.losses+'L · '+p.winRate+'% WR · '+tier.label+'</div></div>';
+      h+='<div class="arena-lb-rating">'+(p.arenaRating||1000)+'</div>';
       h+='</div>';
     });
   }
@@ -1348,9 +1674,11 @@ async function showLeaderboard(){
   S.screen='leaderboard';
 }
 
-// ══════════════════════════════════════════════
+
+
+// ════════════════════════════════════════════════
 // INVITATION HANDLING
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 async function inviteCheckPoll(){
   if(!S.user)return;
   if(S.screen==='battle'||S.screen==='waiting')return;
@@ -1462,9 +1790,10 @@ async function rejectInvite(inviteId){
   toast('Invitation declined.');
 }
 
-// ══════════════════════════════════════════════
+
+// ════════════════════════════════════════════════
 // TIMERS / POLLING
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function doPing(){
   if(S.user){
     var stats=getArenaStats();
@@ -1480,6 +1809,7 @@ function doPing(){
     });
   }
 }
+
 function startPresence(){
   stopTimer('presence');
   doPing(); // Ping immediately — don't wait for the first interval tick
@@ -1517,7 +1847,6 @@ function startBattlePoll(){
   },POLL_MS);
 }
 
-var WAIT_POLL_MS=1500;
 function startWaitingPoll(){
   stopTimer('poll');
   stopTimer('waitingPoll');
@@ -1545,9 +1874,10 @@ function getArenaStats(){
   try{return JSON.parse(localStorage.getItem('arena_stats')||'{}');}catch(e){return{};}
 }
 
-// ══════════════════════════════════════════════
+
+// ════════════════════════════════════════════════
 // CONFIG SETTERS
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function setCfg(key,val){
   S.cfg[key]=val;
   // Re-render config screen to update active states
@@ -1566,9 +1896,10 @@ function selectMode(modeId){
   showConfig(modeId);
 }
 
-// ══════════════════════════════════════════════
+
+// ════════════════════════════════════════════════
 // BRAINLAB HOOK
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function init(){
   if(!window.BrainLab)return;
   if(window._arenaInitDone)return; // Prevent double-init
@@ -1605,9 +1936,10 @@ function init(){
   }
 }
 
-// ══════════════════════════════════════════════
+
+// ════════════════════════════════════════════════
 // EXPOSE PUBLIC API
-// ══════════════════════════════════════════════
+// ════════════════════════════════════════════════
 window.Arena={
   showHome:showHome,
   selectMode:selectMode,
@@ -1627,6 +1959,7 @@ window.Arena={
   rematch:rematch,
   reviewMistakes:reviewMistakes,
   practiceSimilar:practiceSimilar,
+  practiceWeakTopic:practiceWeakTopic,
   showHistory:showHistory,
   showHistoryDetail:showHistoryDetail,
   showLeaderboard:showLeaderboard,
