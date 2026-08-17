@@ -2567,7 +2567,7 @@ function init(){
         '</div>'+
       '</div>'+
       '</a>';
-    c.innerHTML=c.innerHTML+bannerHTML;
+    c.innerHTML=bannerHTML+c.innerHTML;
   };
   
   // Re-render the arena section

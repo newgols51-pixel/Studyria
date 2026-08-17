@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v63'; // v63: fixed unquoted </a> syntax error in arena.js that broke entire script and prevented Arena promo banner from rendering
+const CACHE_VERSION = 'v64'; // v64: moved Arena promo banner above Quick 10/Quick 25 cards (was rendering below)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
