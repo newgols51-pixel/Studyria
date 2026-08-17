@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v67'; // v67: skip-lock — skipped questions now permanently locked, report counts correct
+const CACHE_VERSION = 'v68'; // v68: root-cause fix — bumped stale script query strings + hardened SW fetch with cache:no-store so the skip-lock fix actually reaches devices
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
@@ -198,7 +198,11 @@ async function navigationStrategy(event) {
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
-  const networkFetch = fetch(request).then(res => {
+  // IMPORTANT: force this fetch to bypass the browser/CDN HTTP cache.
+  // Without {cache:'no-store'}, a "fresh" fetch can still be silently
+  // served from HTTP cache under the same URL, so a code fix can go live
+  // on the server yet devices keep loading the old bytes indefinitely.
+  const networkFetch = fetch(request, { cache: 'no-store' }).then(res => {
     if (res && res.status === 200 && res.type !== 'opaque') cache.put(request, res.clone());
     return res;
   }).catch(() => null);
