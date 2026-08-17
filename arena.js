@@ -473,6 +473,26 @@ var CSS=`
     radial-gradient(ellipse 50% 60% at 15% 85%,rgba(201,154,60,0.08) 0%,transparent 55%);
   pointer-events:none;
 }
+.arena-promo-img-wrap{
+  display:block;
+  position:relative;
+  width:100%;
+  aspect-ratio:1590/989;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(201,154,60,0.35);
+  background:linear-gradient(135deg,#7d1122 0%,#930205 45%,#7d1122 100%);
+}
+.arena-promo-img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+@supports not (aspect-ratio:1590/989){
+  .arena-promo-img-wrap{height:auto;}
+  .arena-promo-img{height:auto;object-fit:cover;}
+}
 .arena-promo-grid{
   position:relative;
   display:grid;
@@ -2532,39 +2552,12 @@ function init(){
     origRender.call(this);
     
     // Premium Arena promo banner — entire banner is clickable via <a> wrapper
-    var bannerHTML='<a href="javascript:void(0)" class="arena-promo-banner" onclick="window.Arena.showHome()" role="button" aria-label="Enter Studyria Arena — real-time competitive learning">'+
-      '<div class="arena-promo-inner">'+
-        '<div class="arena-promo-grid">'+
-          '<div class="arena-promo-center">'+
-            '<div class="arena-promo-title"><span class="arena-promo-sword">⚔️</span> Studyria Arena</div>'+
-            '<div class="arena-promo-sub">Real-Time Competitive Learning</div>'+
-          '</div>'+
-          '<div class="arena-promo-side">'+
-            '<div class="arena-promo-avatar">🎓</div>'+
-            '<div class="arena-promo-avatar-label">You</div>'+
-          '</div>'+
-          '<div class="arena-promo-vs">VS</div>'+
-          '<div class="arena-promo-side" style="text-align:center">'+
-            '<div class="arena-promo-avatar">🧑‍🎓</div>'+
-            '<div class="arena-promo-avatar-label">Opponent</div>'+
-          '</div>'+
-          '<div class="arena-promo-modes">'+
-            '<span class="arena-promo-mode-pill">1v1</span>'+
-            '<span class="arena-promo-mode-pill">2v2</span>'+
-            '<span class="arena-promo-mode-pill">3v3</span>'+
-            '<span class="arena-promo-mode-pill">4v4</span>'+
-            '<span class="arena-promo-mode-pill">Free-for-All</span>'+
-          '</div>'+
-          '<div class="arena-promo-badges">'+
-            '<span class="arena-promo-badge"><span class="arena-promo-badge-icon">🏆</span> Rating</span>'+
-            '<span class="arena-promo-badge"><span class="arena-promo-badge-icon">🔥</span> Streaks</span>'+
-            '<span class="arena-promo-badge"><span class="arena-promo-badge-icon">⚡</span> Live Match</span>'+
-          '</div>'+
-          '<div class="arena-promo-footer">'+
-            '<div class="arena-promo-tagline">Practice smarter. Compete harder. Improve faster.</div>'+
-            '<span class="arena-promo-cta">Enter Arena <span class="arena-promo-cta-arrow">→</span></span>'+
-          '</div>'+
-        '</div>'+
+    var bannerHTML='<a href="javascript:void(0)" class="arena-promo-banner" onclick="window.Arena.showHome()" role="button" aria-label="Enter Studyria Arena — real-time competitive learning: 1v1, Team Battles and Free-for-All quiz battles">'+
+      '<div class="arena-promo-img-wrap">'+
+        '<picture>'+
+          '<source srcset="arena-banner.webp" type="image/webp">'+
+          '<img src="arena-banner.jpg" alt="Studyria Arena — Real Students, Real Battles. Battle. Learn. Improve. Win. 1v1, Team Battles and Free-for-All." width="1590" height="989" loading="lazy" decoding="async" class="arena-promo-img">'+
+        '</picture>'+
       '</div>'+
       '</a>';
     c.innerHTML=bannerHTML+c.innerHTML;

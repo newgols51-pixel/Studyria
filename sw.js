@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v64'; // v64: moved Arena promo banner above Quick 10/Quick 25 cards (was rendering below)
+const CACHE_VERSION = 'v65'; // v65: replaced Arena promo banner CSS mockup with real approved banner artwork (arena-banner.webp/jpg)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
