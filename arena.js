@@ -2566,7 +2566,7 @@ function init(){
           '</div>'+
         '</div>'+
       '</div>'+
-    </a>';
+      '</a>';
     c.innerHTML=c.innerHTML+bannerHTML;
   };
   
