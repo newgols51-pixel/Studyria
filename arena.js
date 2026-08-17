@@ -1587,7 +1587,7 @@ function renderBattle(){
   var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
   
   h+='<div class="arena-battle-q">';
-  h+='<div style="font-size:11px;color:rgba(232,200,122,0.6);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">'+escapeHtml(q.topic||q.category||'')+(q.difficulty?' · '+q.difficulty:'')+(isAnswered?' · 🔒 LOCKED':'')+'</div>';
+  h+='<div style="font-size:11px;color:rgba(232,200,122,0.6);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">'+escapeHtml(q.topic||q.category||'')+(q.difficulty?' · '+q.difficulty:'')+(isAnswered?' · 🔒 '+(existingAns.skipped?'SKIPPED':'LOCKED'):'')+'</div>';
   h+='<div class="arena-battle-q-text">'+escapeHtml(q.question_text)+'</div>';
   
   var opts=[{label:'A',text:q.option_a},{label:'B',text:q.option_b},{label:'C',text:q.option_c},{label:'D',text:q.option_d}];
@@ -1606,7 +1606,7 @@ function renderBattle(){
   
   h+='</div>';
   
-  h+='<div class="arena-battle-feedback" id="arena-feedback"'+(isAnswered?' class="show '+(existingAns.isCorrect?'correct':'wrong')+'"':'')+'>'+(isAnswered?(existingAns.isCorrect?'✅ Correct!':'❌ Wrong!')+'<br><span style="font-size:12px;color:rgba(245,233,224,0.6)">'+escapeHtml(q.explanation||'')+'</span>':'')+'</div>';
+  h+='<div class="arena-battle-feedback" id="arena-feedback"'+(isAnswered?' class="show '+(existingAns.skipped?'wrong':existingAns.isCorrect?'correct':'wrong')+'"':'')+'>'+(isAnswered?(existingAns.skipped?'⏭ Skipped':existingAns.isCorrect?'✅ Correct!':'❌ Wrong!')+'<br><span style="font-size:12px;color:rgba(245,233,224,0.6)">'+escapeHtml(q.explanation||'')+'</span>':'')+'</div>';
   
   h+='<div class="arena-battle-actions">';
   h+='<button class="arena-btn secondary" onclick="Arena.skipQ()"'+(isAnswered?' disabled':'')+'>⏭ Skip</button>';
@@ -1701,7 +1701,7 @@ function skipQ(){
   if(S.battle.answers[idx]!==undefined&&S.battle.answers[idx]!==null)return;
   try{ArenaAudio.play('skip');}catch(e){}
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
-  S.battle.answers[idx]=null;
+  S.battle.answers[idx]={skipped:true};
   S.battle.skipped++;
   var sEl=document.getElementById('arena-live-skipped');
   if(sEl)sEl.textContent=S.battle.skipped;
@@ -1744,7 +1744,7 @@ async function finishBattle(){
   // is why completeMatch was failing on every real battle. Convert to plain
   // letter strings here; skipped questions become an empty string.
   var answersForServer=S.battle.answers.map(function(a){
-    if(a===null||a===undefined)return '';
+    if(a===null||a===undefined||a.skipped)return '';
     return String.fromCharCode(97+a.selectedIdx);
   });
   var payload={
