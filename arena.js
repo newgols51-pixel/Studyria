@@ -7,6 +7,245 @@
 // CONFIG
 // ════════════════════════════════════════════════
 var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
+
+// ════════════════════════════════════════════════
+// ARENA AUDIO LAYER — Premium Web Audio SFX
+// Self-contained, zero external assets, zero dependencies.
+// All sounds synthesized via Web Audio API oscillators.
+// Audio failure NEVER breaks Arena functionality.
+// ════════════════════════════════════════════════
+var ArenaAudio=(function(){
+  var ctx=null,masterGain=null;
+  var settings={sfx:true,music:true,notifications:true,volume:0.7};
+  var lastPlayed={};
+  var searchPulseInt=null,timeWarnInt=null;
+
+  // Load saved settings
+  try{var s=JSON.parse(localStorage.getItem('arena_audio')||'{}');if(s)Object.assign(settings,s);}catch(e){}
+
+  function save(){try{localStorage.setItem('arena_audio',JSON.stringify(settings));}catch(e){}}
+
+  function initCtx(){
+    if(ctx)return;
+    try{
+      ctx=new (window.AudioContext||window.webkitAudioContext)();
+      masterGain=ctx.createGain();
+      masterGain.gain.value=settings.volume;
+      masterGain.connect(ctx.destination);
+    }catch(e){ctx=null;}
+  }
+
+  function resume(){
+    if(ctx&&ctx.state==='suspended'){try{ctx.resume();}catch(e){}}
+  }
+
+  function ensure(){try{initCtx();resume();}catch(e){}return ctx&&settings.sfx;}
+
+  // ── Core synthesis helpers ──
+  function tone(freq,dur,type,vol,attack,release){
+    if(!ctx||!settings.sfx)return;
+    type=type||'sine';vol=vol==null?0.3:vol;
+    attack=attack==null?0.005:attack;release=release==null?0.08:release;
+    dur=dur||0.15;
+    try{
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type=type;o.frequency.value=freq;
+      var t=ctx.currentTime;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(vol,t+attack);
+      g.gain.exponentialRampToValueAtTime(0.001,t+dur+release);
+      o.connect(g);g.connect(masterGain);
+      o.start(t);o.stop(t+dur+release+0.05);
+    }catch(e){}
+  }
+
+  function sweep(f1,f2,dur,type,vol){
+    if(!ctx||!settings.sfx)return;
+    type=type||'sine';vol=vol==null?0.2:vol;dur=dur||0.3;
+    try{
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type=type;
+      var t=ctx.currentTime;
+      o.frequency.setValueAtTime(f1,t);
+      o.frequency.exponentialRampToValueAtTime(Math.max(f2,1),t+dur);
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(vol,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,t+dur+0.1);
+      o.connect(g);g.connect(masterGain);
+      o.start(t);o.stop(t+dur+0.15);
+    }catch(e){}
+  }
+
+  function chord(freqs,dur,type,vol){
+    if(!ctx||!settings.sfx)return;
+    freqs.forEach(function(f){tone(f,dur,type,vol);});
+  }
+
+  function canPlay(key,cd){
+    var n=Date.now();
+    if(lastPlayed[key]&&n-lastPlayed[key]<(cd||200))return false;
+    lastPlayed[key]=n;return true;
+  }
+
+  // ── Sound effects ──
+  var sfx={
+    arenaOpen:function(){ // Premium intro whoosh
+      if(!ensure())return;
+      sweep(200,550,0.35,'sine',0.12);
+      setTimeout(function(){tone(780,0.08,'sine',0.06);},220);
+    },
+    searching:function(){ // Subtle search pulse
+      if(!ensure())return;
+      if(canPlay('search',2500)){tone(330,0.06,'sine',0.04);}
+    },
+    opponentFound:function(){ // Confirmation chime
+      if(!ensure())return;
+      tone(523,0.1,'sine',0.13);
+      setTimeout(function(){tone(659,0.12,'sine',0.13);},90);
+      setTimeout(function(){tone(784,0.18,'sine',0.1);},190);
+    },
+    matchStart:function(){ // Battle-start sting
+      if(!ensure())return;
+      sweep(150,380,0.18,'sawtooth',0.1);
+      setTimeout(function(){chord([523,659,784],0.18,'sine',0.08);},130);
+    },
+    countdownTick:function(){ // Soft tick per number
+      if(!ensure())return;
+      tone(580,0.07,'sine',0.07);
+    },
+    countdownGo:function(){ // GO tone
+      if(!ensure())return;
+      tone(880,0.12,'sine',0.13);
+      setTimeout(function(){tone(1175,0.18,'sine',0.1);},80);
+    },
+    answerSelect:function(){ // Tactile click
+      if(!ensure())return;
+      tone(1100,0.025,'sine',0.09);
+    },
+    correct:function(){ // Clean positive chime
+      if(!ensure())return;
+      tone(659,0.08,'sine',0.11);
+      setTimeout(function(){tone(880,0.12,'sine',0.09);},70);
+    },
+    wrong:function(){ // Soft low tone, non-harsh
+      if(!ensure())return;
+      tone(210,0.12,'sine',0.09);
+      setTimeout(function(){tone(175,0.18,'sine',0.07);},70);
+    },
+    skip:function(){ // Soft transition
+      if(!ensure())return;
+      sweep(400,300,0.08,'sine',0.07);
+    },
+    nextQuestion:function(){ // Tiny whoosh
+      if(!ensure())return;
+      if(canPlay('nextQ',300)){sweep(300,480,0.1,'sine',0.07);}
+    },
+    battleComplete:function(){ // Completion sound
+      if(!ensure())return;
+      chord([523,659,784],0.25,'sine',0.1);
+      setTimeout(function(){tone(1047,0.2,'sine',0.08);},170);
+    },
+    win:function(){ // Premium victory sting
+      if(!ensure())return;
+      tone(523,0.1,'sine',0.12);
+      setTimeout(function(){tone(659,0.1,'sine',0.12);},90);
+      setTimeout(function(){tone(784,0.1,'sine',0.12);},180);
+      setTimeout(function(){chord([523,659,784,1047],0.25,'sine',0.1);},270);
+    },
+    loss:function(){ // Subtle, calm
+      if(!ensure())return;
+      tone(440,0.13,'sine',0.09);
+      setTimeout(function(){tone(370,0.16,'sine',0.07);},110);
+      setTimeout(function(){tone(294,0.25,'sine',0.07);},230);
+    },
+    draw:function(){ // Neutral balanced
+      if(!ensure())return;
+      tone(523,0.12,'sine',0.09);
+      setTimeout(function(){tone(523,0.12,'sine',0.07);},160);
+    },
+    winStreak:function(){ // Ascending arpeggio
+      if(!ensure())return;
+      [523,659,784,1047,1319].forEach(function(f,i){
+        setTimeout(function(){tone(f,0.09,'sine',0.09);},i*55);
+      });
+    },
+    newRating:function(){ // Achievement sound
+      if(!ensure())return;
+      tone(784,0.08,'sine',0.1);
+      setTimeout(function(){tone(1047,0.12,'sine',0.1);},70);
+      setTimeout(function(){tone(1319,0.16,'sine',0.08);},160);
+    },
+    rematch:function(){ // Confirmation
+      if(!ensure())return;
+      tone(440,0.08,'sine',0.09);
+      setTimeout(function(){tone(660,0.12,'sine',0.09);},70);
+    }
+  };
+
+  // ── Search pulse (subtle ambient loop) ──
+  function startSearchPulse(){
+    stopSearchPulse();
+    if(!settings.sfx)return;
+    searchPulseInt=setInterval(function(){
+      try{if(settings.sfx){tone(280,0.05,'sine',0.03);}}catch(e){}
+    },3000);
+  }
+  function stopSearchPulse(){
+    if(searchPulseInt){clearInterval(searchPulseInt);searchPulseInt=null;}
+  }
+
+  // ── Time warning observer (separate interval, reads existing timer DOM) ──
+  var lastWarnSec=0;
+  function startTimeWarn(){
+    stopTimeWarn();
+    lastWarnSec=0;
+    if(!settings.sfx)return;
+    timeWarnInt=setInterval(function(){
+      try{
+        if(!settings.sfx)return;
+        var el=document.getElementById('arena-battle-timer');
+        if(!el)return;
+        var m=el.textContent.match(/(\d+):(\d+)/);
+        if(!m)return;
+        var sec=parseInt(m[1])*60+parseInt(m[2]);
+        // Warning at 30s and 45s per question, with cooldown
+        if((sec===30||sec===45)&&sec!==lastWarnSec){
+          lastWarnSec=sec;
+          tone(700,0.05,'sine',0.05);
+        }
+        if(sec<28)lastWarnSec=0; // Reset when below threshold
+      }catch(e){}
+    },1000);
+  }
+  function stopTimeWarn(){
+    if(timeWarnInt){clearInterval(timeWarnInt);timeWarnInt=null;}
+    lastWarnSec=0;
+  }
+
+  return {
+    play:function(name){try{if(sfx[name])sfx[name]();}catch(e){}},
+    startSearch:startSearchPulse,
+    stopSearch:stopSearchPulse,
+    startTimeWarn:startTimeWarn,
+    stopTimeWarn:stopTimeWarn,
+    getSettings:function(){return Object.assign({},settings);},
+    setSetting:function(k,v){
+      settings[k]=v;save();
+      if(k==='volume'&&masterGain){masterGain.gain.value=v;}
+      if(k==='sfx'&&!v){stopSearchPulse();stopTimeWarn();}
+    },
+    resume:function(){try{initCtx();resume();}catch(e){}},
+    cleanup:function(){stopSearchPulse();stopTimeWarn();lastPlayed={};}
+  };
+})();
+
+// Expose ArenaAudio globally for onclick handlers
+window.ArenaAudio=ArenaAudio;
+
+// ════════════════════════════════════════════════
+// END ARENA AUDIO LAYER
+// ════════════════════════════════════════════════
+
 var POLL_MS=2000, PING_MS=8000, INV_MS=3000, WAIT_POLL_MS=2000; // WAIT_POLL_MS was referenced in startWaitingPoll() but never declared — in strict mode this threw a ReferenceError the instant startWaitingPoll ran, which killed the auto-poll setInterval, the immediate waitingPoll() call, AND the visibilitychange/focus listener setup before any of them executed. Result: the 'waiting for opponent' screen never auto-refreshed — only the manual 'Check Now' button (which calls waitingPoll() directly, bypassing startWaitingPoll) worked. This declaration is the real, permanent fix.
 var battleTimerInt=null; // Battle question timer interval handle — MUST be declared (strict mode); missing var here previously caused ReferenceError on every Next/Skip/finish/leave click, silently breaking battle progression.
 
@@ -689,6 +928,7 @@ function closeOverlay(){
   var o=document.getElementById('arena-overlay');
   if(o)o.remove();
   stopAllTimers();
+  try{ArenaAudio.cleanup();}catch(e){}
   // Clear match association and reset presence to online
   if(S.user){api('clearMatch',{userId:S.user.id});var si=getArenaStats();api('ping',{userId:S.user.id,userName:S.user.name,exam:S.cfg.exam||'All',arenaRating:si.rating||1000,wins:si.wins||0,losses:si.losses||0,draws:si.draws||0,battles:si.battles||0,status:'online'});}
 }
@@ -865,6 +1105,31 @@ async function showHome(){
   h+='<div class="arena-weekly-meta"><span>'+weeklyMatches+'/10 matches</span><span>'+(weeklyPct>=100?'✅ Completed':'In Progress')+'</span></div>';
   h+='</div>';
 
+  // Arena Sound Settings
+  h+='<div class="arena-sound-settings">';
+  h+='<div class="arena-sound-title">🔊 Arena Sound Settings</div>';
+  h+='<div class="arena-sound-row" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(245,233,224,0.08)">';
+  h+='<span style="font-size:13px;color:rgba(245,233,224,0.8)">🔊 Sound Effects</span>';
+  h+='<label style="position:relative;display:inline-block;width:38px;height:20px;cursor:pointer"><input type="checkbox" id="arena-sfx-toggle" '+(ArenaAudio.getSettings().sfx?'checked':'')+' style="opacity:0;width:0;height:0" onchange="ArenaAudio.setSetting(\'sfx\',this.checked)"><span style="position:absolute;top:0;left:0;right:0;bottom:0;background:'+(ArenaAudio.getSettings().sfx?'#930205':'rgba(255,255,255,0.15)')+';border-radius:20px;transition:0.3s"><span style="position:absolute;height:14px;width:14px;left:'+(ArenaAudio.getSettings().sfx?'22px':'4px')+';bottom:3px;background:#fff;border-radius:50%;transition:0.3s"></span></span></label>';
+  h+='</div>';
+  h+='<div class="arena-sound-row" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(245,233,224,0.08)">';
+  h+='<span style="font-size:13px;color:rgba(245,233,224,0.8)">🎵 Music</span>';
+  h+='<label style="position:relative;display:inline-block;width:38px;height:20px;cursor:pointer"><input type="checkbox" id="arena-music-toggle" '+(ArenaAudio.getSettings().music?'checked':'')+' style="opacity:0;width:0;height:0" onchange="ArenaAudio.setSetting(\'music\',this.checked)"><span style="position:absolute;top:0;left:0;right:0;bottom:0;background:'+(ArenaAudio.getSettings().music?'#930205':'rgba(255,255,255,0.15)')+';border-radius:20px;transition:0.3s"><span style="position:absolute;height:14px;width:14px;left:'+(ArenaAudio.getSettings().music?'22px':'4px')+';bottom:3px;background:#fff;border-radius:50%;transition:0.3s"></span></span></label>';
+  h+='</div>';
+  h+='<div class="arena-sound-row" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(245,233,224,0.08)">';
+  h+='<span style="font-size:13px;color:rgba(245,233,224,0.8)">🔔 Battle Notifications</span>';
+  h+='<label style="position:relative;display:inline-block;width:38px;height:20px;cursor:pointer"><input type="checkbox" id="arena-notif-toggle" '+(ArenaAudio.getSettings().notifications?'checked':'')+' style="opacity:0;width:0;height:0" onchange="ArenaAudio.setSetting(\'notifications\',this.checked)"><span style="position:absolute;top:0;left:0;right:0;bottom:0;background:'+(ArenaAudio.getSettings().notifications?'#930205':'rgba(255,255,255,0.15)')+';border-radius:20px;transition:0.3s"><span style="position:absolute;height:14px;width:14px;left:'+(ArenaAudio.getSettings().notifications?'22px':'4px')+';bottom:3px;background:#fff;border-radius:50%;transition:0.3s"></span></span></label>';
+  h+='</div>';
+  h+='<div class="arena-sound-row" style="padding:8px 0">';
+  h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:rgba(245,233,224,0.8)">🔉 Master Volume</span><span style="font-size:12px;color:#e8c87a">'+Math.round(ArenaAudio.getSettings().volume*100)+'%</span></div>';
+  h+='<input type="range" min="0" max="100" value="'+Math.round(ArenaAudio.getSettings().volume*100)+'" oninput="ArenaAudio.setSetting(\'volume\',this.value/100)" style="width:100%;accent-color:#930205;cursor:pointer">';
+  h+='</div>';
+  h+='<div style="display:flex;gap:8px;margin-top:8px">';
+  h+='<button class="arena-btn secondary" style="flex:1;font-size:12px;padding:6px 10px" onclick="ArenaAudio.resume();ArenaAudio.play(\'matchStart\')">🔊 Test Sound</button>';
+  h+='<button class="arena-btn secondary" style="flex:1;font-size:12px;padding:6px 10px" onclick="ArenaAudio.setSetting(\'sfx\',true);ArenaAudio.setSetting(\'music\',true);ArenaAudio.setSetting(\'notifications\',true);ArenaAudio.setSetting(\'volume\',0.7);Arena.showHome()">🔄 Reset</button>';
+  h+='</div>';
+  h+='</div>';
+
   h+='<div class="arena-field-lbl" style="margin-bottom:10px">Select Mode</div>';
   h+='<div class="arena-mode-grid">';
   MODES.forEach(function(m){
@@ -887,6 +1152,7 @@ async function showHome(){
 
   showOverlay(h);
   S.screen='home';
+  try{ArenaAudio.play('arenaOpen');}catch(e){}
   startPresence();
   startInviteCheck();
 }
@@ -968,6 +1234,7 @@ async function startSearch(){
   S.matchId=null;
   S.searchResults=[];
   S.autoMatching=true;
+  try{ArenaAudio.play('searching');ArenaAudio.startSearch();}catch(e){}
   
   renderSearch();
   startPresence();
@@ -1037,6 +1304,7 @@ async function searchPoll(){
     S.matchId=res.matchId;
     S.match=res.match;
     S.autoMatching=false;
+    try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
     S.screen='lobby';
     showLobby();
     return;
@@ -1079,6 +1347,7 @@ function cancelSearch(){
     S.matchId=null;
   }
   S.autoMatching=false;
+  try{ArenaAudio.stopSearch();}catch(e){}
   if(S.user){
     api('ping',{userId:S.user.id,userName:S.user.name,status:'online',exam:S.cfg.exam||'All'});
   }
@@ -1203,6 +1472,7 @@ async function leaveLobby(){
   if(!confirm('Leave this arena lobby?'))return;
   await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
   S.matchId=null;S.match=null;
+  try{ArenaAudio.stopSearch();ArenaAudio.cleanup();}catch(e){}
   stopAllTimers();
   showHome();
 }
@@ -1231,14 +1501,17 @@ async function startBattle(){
   
   // Countdown
   showCountdown(3);
+  try{ArenaAudio.play('matchStart');}catch(e){}
 }
 
 function showCountdown(n){
   if(n<=0){
+    try{ArenaAudio.play('countdownGo');ArenaAudio.stopTimeWarn();ArenaAudio.startTimeWarn();}catch(e){}
     renderBattle();
     startBattlePoll();
     return;
   }
+  try{ArenaAudio.play('countdownTick');}catch(e){}
   showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">⚔️ BATTLE START</div><div class="arena-countdown-num">'+n+'</div></div>');
   setTimeout(function(){showCountdown(n-1);},1000);
 }
@@ -1319,6 +1592,7 @@ function answerQ(optIdx){
   var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
   var isCorrect=optIdx===correctIdx;
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
+  try{ArenaAudio.play('answerSelect');if(isCorrect)ArenaAudio.play('correct');else ArenaAudio.play('wrong');}catch(e){}
   
   // Submit to backend
   api('submitAnswer',{matchId:S.matchId,userId:S.user.id,questionIndex:idx,answer:String.fromCharCode(97+optIdx),timeSpent:timeSpent});
@@ -1366,6 +1640,7 @@ function answerQ(optIdx){
 }
 
 function skipQ(){
+  try{ArenaAudio.play('skip');}catch(e){}
   var idx=S.battle.qIdx;
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
   S.battle.answers[idx]=null;
@@ -1384,6 +1659,7 @@ function skipQ(){
 }
 
 function nextQ(){
+  try{ArenaAudio.play('nextQuestion');ArenaAudio.stopTimeWarn();}catch(e){}
   if(battleTimerInt)clearInterval(battleTimerInt);
   S.battle.totalTime+=Math.floor((Date.now()-S.battle.qStart)/1000);
   S.battle.qIdx++;
@@ -1398,6 +1674,7 @@ function nextQ(){
 async function finishBattle(){
   if(battleTimerInt)clearInterval(battleTimerInt);
   stopTimer('battlePoll');
+  try{ArenaAudio.stopTimeWarn();ArenaAudio.play('battleComplete');}catch(e){}
   
   // Calculate final stats
   var total=S.battle.questions.length;
@@ -1515,6 +1792,7 @@ async function leaveBattle(){
   if(!confirm('Leave Arena? Your progress will be saved as abandoned.'))return;
   await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
   if(battleTimerInt)clearInterval(battleTimerInt);
+  try{ArenaAudio.stopTimeWarn();ArenaAudio.cleanup();}catch(e){}
   stopAllTimers();
   S.matchId=null;S.match=null;
   showHome();
@@ -1556,6 +1834,7 @@ async function showResults(winner,freshMatch){
   var isWin=winner.type==='user'&&winner.userId===S.user.id;
   var isDraw=winner.type==='draw';
   var isTeamWin=winner.type==='team'&&me&&me.team===winner.team;
+  try{if(isWin||isTeamWin)ArenaAudio.play('win');else if(isDraw)ArenaAudio.play('draw');else ArenaAudio.play('loss');}catch(e){}
   var opp=players.find(function(p){return p.userId!==S.user.id;});
   
   // ══ LAYER 1: RESULT HERO ══
@@ -1818,10 +2097,21 @@ async function showResults(winner,freshMatch){
       try{
         var updated=Object.assign({},oldStats,{rating:newRating});
         localStorage.setItem('arena_stats',JSON.stringify(updated));
+        if(delta>0)ArenaAudio.play('newRating');
       }catch(e){}
       h+='</div>';
     }
   }
+  // Win streak sound — only on actual win, check streak from history
+  try{
+    if((isWin||isTeamWin)&&S.user){
+      var _streakRes=await api('getHistory',{userId:S.user.id});
+      if(_streakRes.ok&&_streakRes.history){
+        var _streaks=computeStreaks(_streakRes.history,S.user.id);
+        if(_streaks.current>=2){ArenaAudio.play('winStreak');}
+      }
+    }
+  }catch(e){}
   
   // ══ LAYER 7b: IMPROVEMENT TREND CHART ══
   if(S.user){
@@ -2029,6 +2319,7 @@ function practiceWeakTopic(topic){
 }
 
 function rematch(){
+  try{ArenaAudio.play('rematch');}catch(e){}
   // Create new match with same config
   if(S.user)api('clearMatch',{userId:S.user.id});
   S.matchId=null;S.match=null;
