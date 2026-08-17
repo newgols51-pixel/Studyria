@@ -6228,7 +6228,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="question-bank.js?v=20260816exp3" defer></script>
 <script src="brainlab.js?v=20260816fix7shuffle" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
-    <script src="arena.js?v=20260817regressionfix" defer></script>
+    <script src="arena.js?v=20260817ctamenu" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -8571,8 +8571,8 @@ function studyriaApp() {
       <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('home')">
         <span class="hm-icon">🏠</span><span class="hm-item-label">Home</span>
       </button>
-      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)">
-        <span class="hm-icon">🎯</span><span class="hm-item-label">APSC</span>
+      <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('brainlab');setTimeout(function(){var el=document.getElementById('bl-arena');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},400)">
+        <span class="hm-icon">⚔️</span><span class="hm-item-label">Arena Battle</span>
       </button>
       <button class="hamburger-item" onclick="mhCloseNavMenu();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)">
         <span class="hm-icon">🎯</span><span class="hm-item-label">ADRE</span>
@@ -8661,7 +8661,7 @@ function studyriaApp() {
       <!-- Nav links (matches homepage.html) -->
       <div class="nav-links">
         <button class="nav-link active" data-page="home" onclick="navigate('home')">Home</button>
-        <button class="nav-link" data-page="library" onclick="navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)">APSC</button>
+        <button class="nav-link" data-page="brainlab" onclick="navigate('brainlab');setTimeout(function(){var el=document.getElementById('bl-arena');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},400)">⚔️ Arena Battle</button>
         <button class="nav-link" data-page="library" onclick="navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)">ADRE</button>
         <button class="nav-link" data-page="free-materials" onclick="navigate('free-materials')">Free Materials</button>
         <button class="nav-link" data-page="library" onclick="navigate('library')">Categories</button>
@@ -8743,7 +8743,7 @@ function studyriaApp() {
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)"><span class="hp-menu-icon">📚</span> My Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library')"><span class="hp-menu-icon">📚</span> Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> ADRE</a>
-          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='APSC';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> APSC</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){var el=document.getElementById('bl-arena');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},400)"><span class="hp-menu-icon">⚔️</span> Arena Battle</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('free-materials')"><span class="hp-menu-icon">📚</span> Free Materials</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">📄</span> Free PDFs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)"><span class="hp-menu-icon">📝</span> Mock Tests</a>
