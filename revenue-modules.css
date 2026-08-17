@@ -578,6 +578,7 @@ body.light .rm-tab.active { color: #fff; }
 
 .rm-option:hover { border-color: var(--rm-border-hover); background: rgba(255,255,255,0.04); }
 
+.rm-option.locked { cursor: not-allowed; opacity: 0.85; }
 .rm-option.selected {
   border-color: var(--rm-accent);
   background: rgba(147,2,5,0.08);

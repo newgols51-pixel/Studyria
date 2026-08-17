@@ -261,6 +261,12 @@ _updateTimer:function(){var el=document.getElementById('bl-qp-timer');if(!el)ret
 selectAnswer:function(optIdx){
   var existing=this._answers[this._currentQIdx];
   if(existing!==undefined&&existing!==null)return;
+  // DOM-level belt-and-suspenders: if the option elements are marked locked,
+  // do not proceed even if the logic guard somehow missed (race condition,
+  // stale state, etc). This ensures an already-answered question can NEVER
+  // be re-answered through any code path.
+  var firstOpt=document.querySelector('.bl-qp-option');
+  if(firstOpt&&firstOpt.classList.contains('bl-qp-locked'))return;
   var q=this._currentQuiz.questions[this._currentQIdx];
   if(!q._shuffled)return;
   var s=this;

@@ -1581,29 +1581,46 @@ function renderBattle(){
     });
   }
   
-  // Question
+  // Question — check if already answered for review/lock mode
+  var existingAns=S.battle.answers[idx];
+  var isAnswered=(existingAns!==undefined&&existingAns!==null);
+  var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
+  
   h+='<div class="arena-battle-q">';
-  h+='<div style="font-size:11px;color:rgba(232,200,122,0.6);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">'+escapeHtml(q.topic||q.category||'')+(q.difficulty?' · '+q.difficulty:'')+'</div>';
+  h+='<div style="font-size:11px;color:rgba(232,200,122,0.6);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">'+escapeHtml(q.topic||q.category||'')+(q.difficulty?' · '+q.difficulty:'')+(isAnswered?' · 🔒 LOCKED':'')+'</div>';
   h+='<div class="arena-battle-q-text">'+escapeHtml(q.question_text)+'</div>';
   
   var opts=[{label:'A',text:q.option_a},{label:'B',text:q.option_b},{label:'C',text:q.option_c},{label:'D',text:q.option_d}];
   opts.forEach(function(o,i){
-    h+='<button class="arena-battle-opt" id="arena-opt-'+i+'" onclick="Arena.answerQ('+i+')"><strong>'+o.label+'</strong> · '+escapeHtml(o.text)+'</button>';
+    var cls='arena-battle-opt';
+    var clickAttr=' onclick="Arena.answerQ('+i+')"';
+    if(isAnswered){
+      cls+=' disabled';
+      clickAttr='';
+      if(i===correctIdx)cls+=' correct';
+      if(i===existingAns.selectedIdx&&!existingAns.isCorrect)cls+=' wrong';
+      if(i===existingAns.selectedIdx&&existingAns.isCorrect)cls+=' selected';
+    }
+    h+='<button class="'+cls+'" id="arena-opt-'+i+'"'+clickAttr+'><strong>'+o.label+'</strong> · '+escapeHtml(o.text)+'</button>';
   });
   
   h+='</div>';
   
-  h+='<div class="arena-battle-feedback" id="arena-feedback"></div>';
+  h+='<div class="arena-battle-feedback" id="arena-feedback"'+(isAnswered?' class="show '+(existingAns.isCorrect?'correct':'wrong')+'"':'')+'>'+(isAnswered?(existingAns.isCorrect?'✅ Correct!':'❌ Wrong!')+'<br><span style="font-size:12px;color:rgba(245,233,224,0.6)">'+escapeHtml(q.explanation||'')+'</span>':'')+'</div>';
   
   h+='<div class="arena-battle-actions">';
-  h+='<button class="arena-btn secondary" onclick="Arena.skipQ()">⏭ Skip</button>';
-  h+='<button class="arena-btn" id="arena-next-btn" onclick="Arena.nextQ()" disabled>Next →</button>';
+  h+='<button class="arena-btn secondary" onclick="Arena.skipQ()"'+(isAnswered?' disabled':'')+'>⏭ Skip</button>';
+  h+='<button class="arena-btn" id="arena-next-btn" onclick="Arena.nextQ()"'+(isAnswered?'':' disabled')+'>Next →</button>';
   h+='</div>';
   h+='<button class="arena-btn danger" style="margin-top:8px" onclick="Arena.leaveBattle()">Leave Battle</button>';
   h+='</div>';
   
   showOverlay(h);
-  startBattleTimer();
+  // Only start the per-question timer for unanswered questions.
+  // Already-answered questions are in review mode — their timing data is final.
+  if(!isAnswered){
+    startBattleTimer();
+  }
 }
 
 function startBattleTimer(){
@@ -1619,6 +1636,10 @@ function startBattleTimer(){
 
 function answerQ(optIdx){
   var idx=S.battle.qIdx;
+  // IDEMPOTENCY GUARD: If this question is already answered, do NOT allow
+  // re-answering. This prevents score manipulation, duplicate submissions,
+  // and answer changes via navigation or rapid clicking.
+  if(S.battle.answers[idx]!==undefined&&S.battle.answers[idx]!==null)return;
   var q=S.battle.questions[idx];
   if(!q)return;
   
@@ -1674,8 +1695,11 @@ function answerQ(optIdx){
 }
 
 function skipQ(){
-  try{ArenaAudio.play('skip');}catch(e){}
+  // GUARD: Do not skip an already-answered question. Skip is only for
+  // unanswered questions. This prevents erasing a submitted answer.
   var idx=S.battle.qIdx;
+  if(S.battle.answers[idx]!==undefined&&S.battle.answers[idx]!==null)return;
+  try{ArenaAudio.play('skip');}catch(e){}
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
   S.battle.answers[idx]=null;
   S.battle.skipped++;
