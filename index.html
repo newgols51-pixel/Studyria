@@ -6226,7 +6226,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260816exp3" defer></script>
-<script src="brainlab.js?v=20260816fix7shuffle" defer></script>
+<script src="brainlab.js?v=20260817tabs" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
     <script src="arena.js?v=20260817ctamenu" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
@@ -8746,7 +8746,10 @@ function studyriaApp() {
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){var el=document.getElementById('bl-arena');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},400)"><span class="hp-menu-icon">⚔️</span> Arena Battle</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('free-materials')"><span class="hp-menu-icon">📚</span> Free Materials</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">📄</span> Free PDFs</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('quiz');},400)"><span class="hp-menu-icon">🧩</span> Quizzes</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)"><span class="hp-menu-icon">📝</span> Mock Tests</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('pyq');},400)"><span class="hp-menu-icon">📋</span> PYQs</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mcq');},400)"><span class="hp-menu-icon">✅</span> MCQs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)"><span class="hp-menu-icon">📰</span> Current Affairs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library')"><span class="hp-menu-icon">📂</span> Categories</a>
 
