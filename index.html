@@ -6228,7 +6228,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="question-bank.js?v=20260816exp3" defer></script>
 <script src="brainlab.js?v=20260816fix7shuffle" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
-    <script src="arena.js?v=20260817fix1" defer></script>
+    <script src="arena.js?v=20260817arena2" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -18648,7 +18648,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     <!-- ── Horizontal Section Navigation ── -->
     <div class="bl-nav-wrap">
       <div class="bl-nav">
-        <a class="bl-nav-item active" data-target="bl-sec-challenge">⚡ Daily</a>
+        <a class="bl-nav-item active" data-target="bl-sec-arena">⚔ Arena</a>
+        <a class="bl-nav-item" data-target="bl-sec-challenge">⚡ Daily</a>
         <a class="bl-nav-item" data-target="bl-sec-continue">📚 Continue</a>
         <a class="bl-nav-item" data-target="bl-sec-quizzes">🧩 Quizzes</a>
         <a class="bl-nav-item" data-target="bl-sec-mocks">📝 Mock Tests</a>
@@ -18656,7 +18657,6 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
         <a class="bl-nav-item" data-target="bl-sec-affairs">📰 Affairs</a>
         <a class="bl-nav-item" data-target="bl-sec-pyq">📚 PYQ</a>
         <a class="bl-nav-item" data-target="bl-sec-mcqs">📋 MCQs</a>
-        <a class="bl-nav-item" data-target="bl-sec-arena">⚔ Arena</a>
         <a class="bl-nav-item" data-target="bl-sec-mistakes">🎯 Mistakes</a>
         <a class="bl-nav-item" data-target="bl-sec-performance">📊 Performance</a>
         <a class="bl-nav-item" data-target="bl-sec-leaderboard">🏆 Leaderboard</a>
@@ -18667,6 +18667,11 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 
     <!-- ── Quiz Player Area (shared, hidden until needed) ── -->
     <div id="bl-quiz-player-area" style="display:none"></div>
+
+    <!-- 00. Practice Arena — Premium Banner at top of BrainLab -->
+    <div class="bl-section" id="bl-sec-arena">
+      <div id="bl-arena"></div>
+    </div>
 
     <!-- 01. Daily Challenge -->
     <div class="bl-section" id="bl-sec-challenge">
@@ -18727,14 +18732,6 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
         <h3 class="bl-section-title"><span class="bl-section-emoji">📋</span> MCQs Practice</h3>
       </div>
       <div id="bl-mcqs"></div>
-    </div>
-
-    <!-- 07. Practice Arena -->
-    <div class="bl-section" id="bl-sec-arena">
-      <div class="bl-section-header">
-        <h3 class="bl-section-title"><span class="bl-section-emoji">⚔️</span> Practice Arena</h3>
-      </div>
-      <div id="bl-arena"></div>
     </div>
 
     <!-- 08. Mistake Review -->

@@ -433,6 +433,220 @@ var CSS=`
   .arena-result-score-val{font-size:26px}
   .arena-battle-q-text{font-size:14px}
 }
+
+/* ══ ARENA PROMO BANNER — Premium Cream + Maroon + Gold ══ */
+.arena-promo-banner{
+  position:relative;
+  display:block;
+  width:100%;
+  margin:0 0 20px;
+  padding:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+  text-decoration:none;
+  border-radius:18px;
+  overflow:hidden;
+  transition:transform .25s cubic-bezier(0.4,0,0.2,1),box-shadow .25s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.arena-promo-banner:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 36px rgba(125,17,34,0.18);
+}
+.arena-promo-banner:active{
+  transform:translateY(-1px) scale(0.995);
+}
+.arena-promo-inner{
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  background:linear-gradient(135deg,#7d1122 0%,#930205 45%,#7d1122 100%);
+  border:1px solid rgba(201,154,60,0.35);
+}
+.arena-promo-inner::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 20%,rgba(201,154,60,0.15) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 60% at 15% 85%,rgba(201,154,60,0.08) 0%,transparent 55%);
+  pointer-events:none;
+}
+.arena-promo-grid{
+  position:relative;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:8px;
+  padding:20px 20px 16px;
+}
+.arena-promo-side{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
+.arena-promo-avatar{
+  width:44px;height:44px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  border:2px solid rgba(201,154,60,0.4);
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(4px);
+}
+.arena-promo-avatar-label{
+  font-size:9px;
+  font-weight:600;
+  color:rgba(245,233,224,0.5);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.arena-promo-vs{
+  font-size:18px;
+  font-weight:800;
+  color:#c99a3c;
+  text-shadow:0 0 12px rgba(201,154,60,0.4);
+  font-style:italic;
+  font-family:'Playfair Display',Georgia,serif;
+  padding:0 4px;
+}
+.arena-promo-center{
+  grid-column:1/-1;
+  grid-row:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:4px;
+  padding:6px 10px;
+  z-index:2;
+}
+.arena-promo-title{
+  font-size:1.15rem;
+  font-weight:800;
+  color:#f5e9e0;
+  letter-spacing:0.5px;
+  font-family:'Playfair Display',Georgia,serif;
+  display:flex;align-items:center;gap:6px;
+  justify-content:center;
+}
+.arena-promo-title .arena-promo-sword{
+  font-size:1.2rem;
+}
+.arena-promo-sub{
+  font-size:0.72rem;
+  font-weight:600;
+  color:rgba(201,154,60,0.85);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+}
+.arena-promo-modes{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  flex-wrap:wrap;
+  padding:0 10px 4px;
+}
+.arena-promo-mode-pill{
+  font-size:0.65rem;
+  font-weight:700;
+  color:rgba(245,233,224,0.8);
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(201,154,60,0.2);
+  border-radius:6px;
+  padding:3px 8px;
+  letter-spacing:0.3px;
+}
+.arena-promo-footer{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px 14px;
+  gap:8px;
+}
+.arena-promo-tagline{
+  font-size:0.72rem;
+  color:rgba(245,233,224,0.6);
+  font-weight:500;
+  line-height:1.3;
+}
+.arena-promo-cta{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:0.78rem;
+  font-weight:700;
+  color:#7d1122;
+  background:linear-gradient(135deg,#c99a3c,#e8c87a);
+  border-radius:10px;
+  padding:8px 16px;
+  white-space:nowrap;
+  transition:all .2s;
+  box-shadow:0 2px 8px rgba(201,154,60,0.3);
+}
+.arena-promo-banner:hover .arena-promo-cta{
+  transform:scale(1.05);
+  box-shadow:0 4px 14px rgba(201,154,60,0.45);
+}
+.arena-promo-cta-arrow{
+  font-size:0.85rem;
+  transition:transform .2s;
+}
+.arena-promo-banner:hover .arena-promo-cta-arrow{
+  transform:translateX(3px);
+}
+.arena-promo-badges{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  padding:0 10px 6px;
+}
+.arena-promo-badge{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  font-size:0.65rem;
+  font-weight:600;
+  color:rgba(245,233,224,0.5);
+}
+.arena-promo-badge-icon{font-size:0.8rem}
+
+/* ══ RESPONSIVE BANNER ══ */
+@media(max-width:600px){
+  .arena-promo-grid{padding:16px 14px 12px}
+  .arena-promo-avatar{width:36px;height:36px;font-size:18px}
+  .arena-promo-vs{font-size:15px}
+  .arena-promo-title{font-size:1rem}
+  .arena-promo-sub{font-size:0.62rem;letter-spacing:1px}
+  .arena-promo-mode-pill{font-size:0.58rem;padding:2px 6px}
+  .arena-promo-tagline{font-size:0.66rem}
+  .arena-promo-cta{font-size:0.72rem;padding:7px 12px}
+  .arena-promo-footer{padding:8px 14px 12px}
+  .arena-promo-badges{gap:8px}
+  .arena-promo-badge{font-size:0.58rem}
+}
+@media(max-width:380px){
+  .arena-promo-grid{padding:14px 10px 10px}
+  .arena-promo-avatar{width:30px;height:30px;font-size:14px;border-width:1.5px}
+  .arena-promo-avatar-label{font-size:8px}
+  .arena-promo-vs{font-size:13px}
+  .arena-promo-title{font-size:0.88rem}
+  .arena-promo-title .arena-promo-sword{font-size:1rem}
+  .arena-promo-sub{font-size:0.55rem;letter-spacing:0.5px}
+  .arena-promo-mode-pill{font-size:0.52rem;padding:2px 5px}
+  .arena-promo-modes{gap:4px}
+  .arena-promo-tagline{font-size:0.6rem}
+  .arena-promo-cta{font-size:0.66rem;padding:6px 10px}
+  .arena-promo-footer{padding:6px 10px 10px}
+  .arena-promo-badges{gap:6px}
+  .arena-promo-badge{font-size:0.52rem}
+  .arena-promo-badge-icon{font-size:0.68rem}
+}
 `;
 
 // Inject CSS
@@ -2317,17 +2531,42 @@ function init(){
     // Call original to keep existing quick practice modes (this sets c.innerHTML = cards)
     origRender.call(this);
     
-    // Append competitive arena banner into innerHTML (not appendChild) to avoid duplicates
-    var bannerHTML='<div class="arena-comp-banner" style="margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(139,21,56,0.08),rgba(200,155,60,0.08));border:1px solid rgba(200,155,60,0.2);border-radius:14px;cursor:pointer" onclick="window.Arena.showHome()">'+
-      '<div style="display:flex;align-items:center;gap:12px">'+
-        '<div style="font-size:32px">⚔️</div>'+
-        '<div style="flex:1">'+
-          '<div style="font-size:16px;font-weight:600;color:#8b1538">Practice Arena — Competitive Mode</div>'+
-          '<div style="font-size:13px;color:#666;margin-top:2px">Battle real players in 1v1, team & free-for-all modes</div>'+
+    // Premium Arena promo banner — entire banner is clickable via <a> wrapper
+    var bannerHTML='<a href="javascript:void(0)" class="arena-promo-banner" onclick="window.Arena.showHome()" role="button" aria-label="Enter Studyria Arena — real-time competitive learning">'+
+      '<div class="arena-promo-inner">'+
+        '<div class="arena-promo-grid">'+
+          '<div class="arena-promo-center">'+
+            '<div class="arena-promo-title"><span class="arena-promo-sword">⚔️</span> Studyria Arena</div>'+
+            '<div class="arena-promo-sub">Real-Time Competitive Learning</div>'+
+          '</div>'+
+          '<div class="arena-promo-side">'+
+            '<div class="arena-promo-avatar">🎓</div>'+
+            '<div class="arena-promo-avatar-label">You</div>'+
+          '</div>'+
+          '<div class="arena-promo-vs">VS</div>'+
+          '<div class="arena-promo-side" style="text-align:center">'+
+            '<div class="arena-promo-avatar">🧑‍🎓</div>'+
+            '<div class="arena-promo-avatar-label">Opponent</div>'+
+          '</div>'+
+          '<div class="arena-promo-modes">'+
+            '<span class="arena-promo-mode-pill">1v1</span>'+
+            '<span class="arena-promo-mode-pill">2v2</span>'+
+            '<span class="arena-promo-mode-pill">3v3</span>'+
+            '<span class="arena-promo-mode-pill">4v4</span>'+
+            '<span class="arena-promo-mode-pill">Free-for-All</span>'+
+          '</div>'+
+          '<div class="arena-promo-badges">'+
+            '<span class="arena-promo-badge"><span class="arena-promo-badge-icon">🏆</span> Rating</span>'+
+            '<span class="arena-promo-badge"><span class="arena-promo-badge-icon">🔥</span> Streaks</span>'+
+            '<span class="arena-promo-badge"><span class="arena-promo-badge-icon">⚡</span> Live Match</span>'+
+          '</div>'+
+          '<div class="arena-promo-footer">'+
+            '<div class="arena-promo-tagline">Practice smarter. Compete harder. Improve faster.</div>'+
+            '<span class="arena-promo-cta">Enter Arena <span class="arena-promo-cta-arrow">→</span></span>'+
+          '</div>'+
         '</div>'+
-        '<div style="font-size:20px;color:#c89b3c">›</div>'+
       '</div>'+
-    '</div>';
+    </a>';
     c.innerHTML=c.innerHTML+bannerHTML;
   };
   
