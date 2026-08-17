@@ -728,6 +728,40 @@ var CSS=`
   height:100%;
   object-fit:contain;
 }
+.arena-promo-cta-overlay{
+  position:absolute;
+  bottom:6%;
+  left:50%;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:0.85rem;
+  font-weight:800;
+  color:#7d1122;
+  background:linear-gradient(135deg,#c99a3c,#e8c87a);
+  border-radius:20px;
+  padding:9px 22px;
+  white-space:nowrap;
+  transition:all .2s;
+  box-shadow:0 4px 14px rgba(201,154,60,0.45);
+  z-index:2;
+  letter-spacing:0.02em;
+}
+.arena-promo-banner:hover .arena-promo-cta-overlay{
+  transform:translateX(-50%) scale(1.06);
+  box-shadow:0 6px 20px rgba(201,154,60,0.55);
+}
+.arena-promo-cta-overlay .arena-promo-cta-arrow{
+  font-size:0.9rem;
+  transition:transform .2s;
+}
+.arena-promo-banner:hover .arena-promo-cta-overlay .arena-promo-cta-arrow{
+  transform:translateX(3px);
+}
+@media (max-width:480px){
+  .arena-promo-cta-overlay{font-size:0.72rem;padding:7px 16px;bottom:5%}
+}
 @supports not (aspect-ratio:1590/989){
   .arena-promo-img-wrap{height:auto;}
   .arena-promo-img{height:auto;object-fit:cover;}
@@ -2849,6 +2883,7 @@ function init(){
           '<source srcset="arena-banner.webp" type="image/webp">'+
           '<img src="arena-banner.jpg" alt="Studyria Arena — Real Students, Real Battles. Battle. Learn. Improve. Win. 1v1, Team Battles and Free-for-All." width="1590" height="989" loading="lazy" decoding="async" class="arena-promo-img">'+
         '</picture>'+
+        '<span class="arena-promo-cta-overlay">Enter Now <span class="arena-promo-cta-arrow">→</span></span>'+
       '</div>'+
       '</a>';
     c.innerHTML=bannerHTML+c.innerHTML;
