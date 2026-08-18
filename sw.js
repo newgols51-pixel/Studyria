@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v72'; // v70: BrainLab premium visual upgrade — SVG icon system, section-distinct hero icons, badge cards, unified design
+const CACHE_VERSION = 'v73'; // v70: BrainLab premium visual upgrade — SVG icon system, section-distinct hero icons, badge cards, unified design
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
