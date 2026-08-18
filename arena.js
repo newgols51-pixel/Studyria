@@ -1367,9 +1367,17 @@ async function searchPoll(){
     S.searchResults=searchRes.players;
   }
   
-  // Check timeout (2 minutes)
-  if(S.searchStartTime&&Date.now()-S.searchStartTime>50000){
-    S.searchTimedOut=true;
+  // Check timeout — 50 SECONDS exactly. At this threshold, auto-launch
+  // a fallback match against one of the 8 persistent Arena opponents.
+  // Do NOT show a dead-end message. Do NOT wait for another button press.
+  if(S.searchStartTime&&Date.now()-S.searchStartTime>50000&&!S._fallbackTriggered){
+    S._fallbackTriggered=true;
+    S.autoMatching=false;
+    stopTimer('search');
+    try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
+    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#f5e9e0;margin-bottom:12px">✅ Opponent Found</div><div style="color:rgba(245,233,224,0.6)">Preparing your battle...</div><div class="arena-spinner" style="margin-top:16px"></div></div>');
+    setTimeout(function(){startFallbackMatch();},1200);
+    return;
   }
   
   renderSearch();
