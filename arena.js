@@ -286,12 +286,24 @@ var S={
   lobbyReady:false
 };
 
-async function api(action,data){
+async function api(action,data,timeoutMs){
   data=data||{};
+  // Guard against indefinitely-hanging fetches on slow/flaky mobile connections.
+  // Without this, a single stalled request can freeze the UI forever (the
+  // 'Submitting your result' spinner bug) since browsers don't time out fetch
+  // on their own for slow-but-alive connections.
+  var ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
+  var timer=ctrl?setTimeout(function(){ctrl.abort();},timeoutMs||8000):null;
   try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},data))});
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},data)),signal:ctrl?ctrl.signal:undefined});
+    if(timer)clearTimeout(timer);
     return await res.json();
-  }catch(e){console.error('Arena API:',e);return{ok:false,error:e.message};}
+  }catch(e){
+    if(timer)clearTimeout(timer);
+    var msg=(e&&e.name==='AbortError')?'Request timed out':(e&&e.message)||'Network error';
+    console.error('Arena API:',msg);
+    return{ok:false,error:msg};
+  }
 }
 
 function getUser(){
@@ -2012,11 +2024,15 @@ async function finishBattle(){
   // single failed submit used to permanently strand the match (server never
   // learns this player finished, opponent's report shows 0s forever). Retry
   // a few times with backoff before giving up.
-  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">📤 Submitting your result…</div><div class="arena-spinner"></div></div>');
   var res=null;
+  // Fail fast per attempt (5s timeout) so a stalled connection cycles through
+  // retries quickly instead of hanging. Show attempt progress so the UI never
+  // looks frozen even on very slow connections.
   for(var attempt=0;attempt<5;attempt++){
-    if(attempt>0)await new Promise(function(r){setTimeout(r,800*attempt);});
-    res=await api('completeMatch',payload);
+    var attemptLabel=attempt>0?' (retry '+attempt+'/4)':'';
+    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">📤 Submitting your result…'+attemptLabel+'</div><div class="arena-spinner"></div></div>');
+    if(attempt>0)await new Promise(function(r){setTimeout(r,500*attempt);});
+    res=await api('completeMatch',payload,5000);
     if(res&&res.ok)break;
   }
   
