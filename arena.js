@@ -10,7 +10,7 @@ const S = {
     questionCount:10,opponents:[],matchOpponent:null,matchId:null,matchCode:null,
     questions:[],currentQ:0,userAnswers:[],userScore:0,userCorrect:0,
     opponentScore:0,opponentCorrect:0,opponentAnswers:[],timer:null,timeLeft:30,
-    matchStartTime:null,searchInterval:null,searchSeconds:0,soundEnabled:true,
+    matchStartTime:null,searchInterval:null,searchSeconds:0,soundEnabled:true,teamOpponents:null,
     stats:null,history:[],leaderboard:[],recentForm:[],currentStreak:0,bestStreak:0,rating:1000
 };
 
@@ -252,11 +252,13 @@ function precomputeOpponentAnswers(opponent,questions){
     return{answers,score,correct};
 }
 
-// ── BASE44 BACKEND (Unified Arena API) ────────────────────────────────
-// All Arena data operations go through a single Base44 backend function
-// which uses service role to read/write Base44 entities
+// ── DATA LAYER (localStorage + optional Base44 API sync) ─────────────
+// Primary: localStorage for instant offline-first persistence
+// Optional: Base44 backend for server-authoritative scoring (if app is public)
 
-const ARENA_FN_URL = 'https://api.base44.com/api/apps/6a56207ef04bee5f8f08d11f/functions/arenaApi';
+const ARENA_FN_URL = 'https://lyra-8f08d11f.base44.app/functions/arenaApi';
+const LS_KEY_STATS = 'studyria_arena_stats';
+const LS_KEY_HISTORY = 'studyria_arena_history';
 
 async function arenaCall(action, params = {}) {
     try {
@@ -265,31 +267,64 @@ async function arenaCall(action, params = {}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action, ...params })
         });
-        if (!res.ok) { console.warn('[Arena] API error:', res.status); return null; }
+        if (!res.ok) return null;
         return await res.json();
-    } catch (e) { console.warn('[Arena] API call failed:', e.message); return null; }
+    } catch (e) { return null; }
 }
 
 function getCurrentUser() {
-    // Studyria uses Supabase auth — get user from Studyria's global state
     if (window.currentUser && window.currentUser.uid) {
         return { id: window.currentUser.uid, name: window.currentUser.name || 'Player' };
     }
-    // Fallback: check localStorage
     const cached = localStorage.getItem('studyria_user');
     if (cached) { try { return JSON.parse(cached); } catch(e){} }
-    return null;
+    // Generate a stable anonymous ID for guests
+    let guestId = localStorage.getItem('studyria_arena_guest_id');
+    if (!guestId) {
+        guestId = 'guest-' + Math.random().toString(36).substr(2, 12);
+        localStorage.setItem('studyria_arena_guest_id', guestId);
+    }
+    return { id: guestId, name: 'Player' };
 }
 
+function lsGet(key, fallback) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch(e) { return fallback; }
+}
+
+function lsSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+// ── 8 PERMANENT OPPONENTS (static data — persistent profiles) ─────────
+const STATIC_OPPONENTS = [
+    {id:'opp1',name:'Rituraj Saikia',gender:'male',rating:1080,accuracy:72.5,difficulty_level:'medium',response_speed:3,strengths:['GK','Current Affairs'],weaknesses:['History','Polity'],recent_form:['W','W','L','W','W'],wins:10,losses:8,draws:2,matches:20,current_streak:3,best_streak:5,active:true},
+    {id:'opp2',name:'Parthajit Bora',gender:'male',rating:1120,accuracy:81.0,difficulty_level:'hard',response_speed:6,strengths:['Polity','History'],weaknesses:['Geography'],recent_form:['W','L','W','W','W'],wins:12,losses:5,draws:1,matches:18,current_streak:4,best_streak:7,active:true},
+    {id:'opp3',name:'Ankur Hazarika',gender:'male',rating:1050,accuracy:75.0,difficulty_level:'medium',response_speed:5,strengths:['History','Geography'],weaknesses:['Math'],recent_form:['L','W','W','L','W'],wins:10,losses:9,draws:2,matches:22,current_streak:1,best_streak:4,active:true},
+    {id:'opp4',name:'Debojit Dutta',gender:'male',rating:1150,accuracy:68.0,difficulty_level:'hard',response_speed:2,strengths:['GK','Geography'],weaknesses:['Polity','Science'],recent_form:['W','W','W','L','W'],wins:14,losses:6,draws:1,matches:21,current_streak:3,best_streak:6,active:true},
+    {id:'opp5',name:'Junali Saikia',gender:'female',rating:1030,accuracy:74.0,difficulty_level:'medium',response_speed:5,strengths:['Current Affairs','GK'],weaknesses:['Math'],recent_form:['W','L','W','W','L'],wins:9,losses:10,draws:1,matches:20,current_streak:0,best_streak:3,active:true},
+    {id:'opp6',name:'Nandita Bora',gender:'female',rating:1100,accuracy:83.0,difficulty_level:'hard',response_speed:7,strengths:['Assam GK','History'],weaknesses:['Geography'],recent_form:['W','W','W','W','W'],wins:13,losses:4,draws:0,matches:17,current_streak:5,best_streak:5,active:true},
+    {id:'opp7',name:'Priyanka Hazarika',gender:'female',rating:1060,accuracy:71.0,difficulty_level:'medium',response_speed:3,strengths:['Geography','Science'],weaknesses:['Polity'],recent_form:['L','W','L','W','W'],wins:11,losses:8,draws:2,matches:21,current_streak:2,best_streak:4,active:true},
+    {id:'opp8',name:'Mousumi Dutta',gender:'female',rating:1090,accuracy:78.0,difficulty_level:'medium',response_speed:6,strengths:['History','Polity'],weaknesses:['Current Affairs'],recent_form:['W','W','L','W','L'],wins:12,losses:7,draws:1,matches:20,current_streak:0,best_streak:4,active:true}
+];
+
 async function loadOpponents(){
+    // Try Base44 API first
     const res = await arenaCall('loadOpponents');
-    if (res && res.success && res.data && res.data.length > 0) S.opponents = res.data;
+    if (res && res.success && res.data && res.data.length > 0) {
+        S.opponents = res.data;
+    } else {
+        // Fallback: use static opponents
+        S.opponents = STATIC_OPPONENTS;
+    }
     return S.opponents;
 }
 
 async function loadUserStats(){
     const user = getCurrentUser();
     if (!user || !user.id) return null;
+    
+    // Try Base44 API first
     const res = await arenaCall('loadUserStats', { user_id: user.id });
     if (res && res.success && res.data) {
         S.stats = res.data;
@@ -297,6 +332,25 @@ async function loadUserStats(){
         S.currentStreak = res.data.current_streak || 0;
         S.bestStreak = res.data.best_streak || 0;
         S.recentForm = res.data.recent_form || [];
+        return S.stats;
+    }
+    
+    // Fallback: localStorage
+    const lsStats = lsGet(LS_KEY_STATS, null);
+    if (lsStats) {
+        S.stats = lsStats;
+        S.rating = lsStats.rating || 1000;
+        S.currentStreak = lsStats.current_streak || 0;
+        S.bestStreak = lsStats.best_streak || 0;
+        S.recentForm = lsStats.recent_form || [];
+    } else {
+        // Initialize new user stats
+        S.stats = { user_id: user.id, rating: 1000, matches: 0, wins: 0, losses: 0, draws: 0, current_streak: 0, best_streak: 0, recent_form: [] };
+        S.rating = 1000;
+        S.currentStreak = 0;
+        S.bestStreak = 0;
+        S.recentForm = [];
+        lsSet(LS_KEY_STATS, S.stats);
     }
     return S.stats;
 }
@@ -304,17 +358,68 @@ async function loadUserStats(){
 async function loadHistory(){
     const user = getCurrentUser();
     if (!user || !user.id) return [];
+    
+    // Try Base44 API first
     const res = await arenaCall('loadHistory', { user_id: user.id });
-    if (res && res.success && res.data) S.history = res.data;
+    if (res && res.success && res.data && res.data.length > 0) {
+        S.history = res.data;
+        return S.history;
+    }
+    
+    // Fallback: localStorage
+    S.history = lsGet(LS_KEY_HISTORY, []);
     return S.history;
 }
 
 async function loadLeaderboard(){
+    // Try Base44 API first
     const res = await arenaCall('loadLeaderboard');
-    if (res && res.success && res.data) S.leaderboard = res.data;
+    if (res && res.success && res.data && res.data.length > 0) {
+        S.leaderboard = res.data;
+        return S.leaderboard;
+    }
+    
+    // Fallback: build from AI opponents + user stats
+    const user = getCurrentUser();
+    const userStats = S.stats || lsGet(LS_KEY_STATS, null);
+    const board = STATIC_OPPONENTS.map(o => ({
+        name: o.name, rating: o.rating, matches: o.matches, wins: o.wins, current_streak: o.current_streak, is_ai: true
+    }));
+    if (userStats) {
+        board.push({
+            name: (user && user.name) || 'You', rating: userStats.rating || 1000, matches: userStats.matches || 0, wins: userStats.wins || 0, current_streak: userStats.current_streak || 0, is_ai: false, is_you: true
+        });
+    }
+    board.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    S.leaderboard = board;
     return S.leaderboard;
 }
 
+// ── ELO RATING (client-side fallback, same formula as server) ────────
+function calcElo(userRating, opponentRating, result) {
+    const expected = 1 / (1 + Math.pow(10, (opponentRating - userRating) / 400));
+    const K = 32;
+    const scoreVal = result === 'win' ? 1 : result === 'draw' ? 0.5 : 0;
+    const change = Math.round(K * (scoreVal - expected));
+    return { change, after: Math.max(100, userRating + change) };
+}
+
+// ── SAVE MATCH TO LOCALSTORAGE ───────────────────────────────────────
+function saveMatchToLocal(matchData) {
+    const history = lsGet(LS_KEY_HISTORY, []);
+    history.unshift(matchData);
+    lsSet(LS_KEY_HISTORY, history.slice(0, 50));
+    S.history = history.slice(0, 50);
+}
+
+function saveStatsToLocal(stats) {
+    lsSet(LS_KEY_STATS, stats);
+    S.stats = stats;
+    S.rating = stats.rating || 1000;
+    S.currentStreak = stats.current_streak || 0;
+    S.bestStreak = stats.best_streak || 0;
+    S.recentForm = stats.recent_form || [];
+}
 // ── MATCHMAKING ──────────────────────────────────────────────────────
 async function startMatchmaking(){
     S.page='matchmaking';S.searchSeconds=0;renderMatchmaking();
@@ -329,11 +434,36 @@ async function startMatchmaking(){
 function selectAIOpponent(){
     if(S.opponents.length===0){console.error('[Arena] No opponents');return;}
     const userRating=S.rating||1000;
-    let bestOpp=null;let bestDiff=Infinity;
-    if(Math.random()<0.7){
-        S.opponents.forEach(opp=>{const diff=Math.abs(opp.rating-userRating);if(diff<bestDiff){bestDiff=diff;bestOpp=opp;}});
-    }else{bestOpp=S.opponents[Math.floor(Math.random()*S.opponents.length)];}
-    S.matchOpponent=bestOpp;showOpponentFound(bestOpp);
+    const teamSize=getTeamSize(S.mode);
+    const isTeamMode=['2v2','3v3','4v4'].includes(S.mode);
+    
+    if(isTeamMode){
+        // Select multiple opponents for team modes
+        // Pick opponents closest to user rating first, then fill with random
+        const sorted=[...S.opponents].sort((a,b)=>Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating));
+        const shuffled=[...S.opponents].sort(()=>Math.random()-0.5);
+        // Mix: 50% closest, 50% random for variety
+        const pool=[...sorted.slice(0,4),...shuffled.slice(0,4)];
+        const unique=[];
+        const seen=new Set();
+        pool.forEach(o=>{if(!seen.has(o.id)&&unique.length<teamSize){seen.add(o.id);unique.push(o);}});
+        // Fill remaining from all opponents if needed
+        if(unique.length<teamSize){
+            S.opponents.forEach(o=>{if(!seen.has(o.id)&&unique.length<teamSize){seen.add(o.id);unique.push(o);}});
+        }
+        S.teamOpponents=unique;
+        S.matchOpponent=unique[0]; // Primary opponent for display
+        showOpponentFound(unique[0],unique);
+    }else{
+        // 1v1 or free-for-all: select single opponent
+        let bestOpp=null;let bestDiff=Infinity;
+        if(Math.random()<0.7){
+            S.opponents.forEach(opp=>{const diff=Math.abs(opp.rating-userRating);if(diff<bestDiff){bestDiff=diff;bestOpp=opp;}});
+        }else{bestOpp=S.opponents[Math.floor(Math.random()*S.opponents.length)];}
+        S.matchOpponent=bestOpp;
+        S.teamOpponents=null;
+        showOpponentFound(bestOpp);
+    }
 }
 
 function getTeamSize(mode){
@@ -349,6 +479,22 @@ async function createMatch(opponent){
         const matchCode='ARENA-'+Date.now()+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
         const questions=getQuestions(S.exam,S.category,S.difficulty,S.questionCount);
         const oppResults=precomputeOpponentAnswers(opponent,questions);
+        // For team modes, compute all team opponents' answers and sum scores
+        let teamResults=null;
+        if(S.teamOpponents&&S.teamOpponents.length>1){
+            teamResults=S.teamOpponents.map(o=>precomputeOpponentAnswers(o,questions));
+            // Use the combined score for team total
+            const teamScore=teamResults.reduce((s,r)=>s+r.score,0);
+            const teamCorrect=teamResults.reduce((s,r)=>s+r.correct,0);
+            S.opponentScore=teamScore;S.opponentCorrect=teamCorrect;
+            // Use primary opponent's answers for display, but total score
+            S.opponentAnswers=oppResults.answers;
+        } else {
+            S.opponentScore=oppResults.score;S.opponentCorrect=oppResults.correct;
+            S.opponentAnswers=oppResults.answers;
+        }
+        S.matchCode=matchCode;S.questions=questions;S.matchStartTime=Date.now();
+        // Try Base44 API first (server-authoritative)
         const res=await arenaCall('createMatch',{
             user_id:user.id,
             match_code:matchCode,mode:S.mode,
@@ -359,12 +505,17 @@ async function createMatch(opponent){
             opponent_answers:JSON.stringify(oppResults.answers.map(a=>({chosenIndex:a.chosenIndex,isCorrect:a.isCorrect,responseTime:a.responseTime,score:a.score}))),
             opponent_rating_before:opponent.rating
         });
-        if(!res||!res.success||!res.data)return null;
-        S.matchId=res.data.id;S.matchCode=matchCode;S.questions=questions;
-        S.opponentScore=oppResults.score;S.opponentCorrect=oppResults.correct;
-        S.opponentAnswers=oppResults.answers;S.matchStartTime=Date.now();
-        return res.data;
-    }catch(e){console.error('[Arena] Create match failed:',e.message);return null;}
+        if(res&&res.success&&res.data){
+            S.matchId=res.data.id;
+        } else {
+            // Fallback: generate local match ID
+            S.matchId='local-'+Date.now();
+        }
+        return {id:S.matchId,matchCode};
+    }catch(e){console.error('[Arena] Create match failed:',e.message);
+        S.matchId='local-'+Date.now();
+        return null;
+    }
 }
 
 async function startBattle(){
@@ -405,25 +556,62 @@ async function finishBattle(){
     S.page='result';
     const duration=Math.round((Date.now()-S.matchStartTime)/1000);
     const user=getCurrentUser();
+    const matchResult=S.userScore>S.opponentScore?'win':S.userScore<S.opponentScore?'loss':'draw';
     let result={
-        result:S.userScore>S.opponentScore?'win':S.userScore<S.opponentScore?'loss':'draw',
+        result:matchResult,
         rating_before:S.rating,rating_after:S.rating,rating_change:0,
         user_score:S.userScore,opponent_score:S.opponentScore,
         user_correct:S.userCorrect,opponent_correct:S.opponentCorrect,
         opponent_name:S.matchOpponent?S.matchOpponent.name:'Unknown'
     };
-    if(user&&S.matchId){
+    // Try Base44 API first (server-authoritative scoring)
+    if(user&&S.matchId&&S.matchId.indexOf('local-')!==0){
         const res=await arenaCall('finalizeMatch',{
             user_id:user.id,
             match_id:S.matchId,user_score:S.userScore,user_correct:S.userCorrect,
             user_answers:JSON.stringify(S.userAnswers),duration:duration
         });
-        if(res&&res.success){result=Object.assign(result,res);}
+        if(res&&res.success){
+            result=Object.assign(result,res);
+        }
     }
+    // If API didn't provide rating, calculate locally (same Elo formula)
+    if(result.rating_change===0){
+        const elo=calcElo(S.rating,S.matchOpponent?S.matchOpponent.rating:1000,matchResult);
+        result.rating_before=S.rating;
+        result.rating_after=elo.after;
+        result.rating_change=elo.change;
+    }
+    // Update local stats
     S.rating=result.rating_after||S.rating;
     if(result.result==='win')S.currentStreak++;else if(result.result==='loss')S.currentStreak=0;
+    S.bestStreak=Math.max(S.bestStreak,S.currentStreak);
+    const formLetter=result.result==='win'?'W':result.result==='loss'?'L':'D';
+    S.recentForm=[...S.recentForm,formLetter].slice(-10);
+    // Save to localStorage
+    const stats=lsGet(LS_KEY_STATS,{user_id:user?user.id:null,rating:1000,matches:0,wins:0,losses:0,draws:0,current_streak:0,best_streak:0,recent_form:[]});
+    stats.rating=result.rating_after;
+    stats.matches=(stats.matches||0)+1;
+    if(result.result==='win')stats.wins=(stats.wins||0)+1;
+    else if(result.result==='loss')stats.losses=(stats.losses||0)+1;
+    else stats.draws=(stats.draws||0)+1;
+    stats.current_streak=S.currentStreak;
+    stats.best_streak=S.bestStreak;
+    stats.recent_form=S.recentForm;
+    saveStatsToLocal(stats);
+    // Save match to history
+    saveMatchToLocal({
+        match_code:S.matchCode,mode:S.mode,result:result.result,
+        user_score:S.userScore,opponent_score:S.opponentScore,
+        user_correct:S.userCorrect,opponent_correct:S.opponentCorrect,
+        opponent_name:S.matchOpponent?S.matchOpponent.name:'Unknown',
+        rating_before:result.rating_before,rating_after:result.rating_after,rating_change:result.rating_change,
+        exam_type:S.exam,category:S.category,difficulty:S.difficulty,
+        question_count:S.questionCount,duration_seconds:duration,
+        created_date:new Date().toISOString()
+    });
     renderResult(result);
-    loadUserStats();loadHistory();
+    loadLeaderboard();
 }
 
 // ── SOUND ─────────────────────────────────────────────────────────────
@@ -584,11 +772,23 @@ function updateMatchmakingUI(){
     if(S.searchSeconds%10===0&&S.soundEnabled)playSound('tick');
 }
 
-function showOpponentFound(opponent){
+function showOpponentFound(opponent,teamMembers){
     const c=document.getElementById('arena-root');if(!c)return;
     const formDisplay=(opponent.recent_form&&opponent.recent_form.length>0)
         ?opponent.recent_form.slice(-5).map(r=>`<span style="width:28px;height:28px;border-radius:6px;background:${r==='W'?'var(--success)':r==='L'?'var(--danger)':'var(--text2)'};color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem">${r}</span>`).join('')
         :'<span style="color:var(--text2);font-size:.8rem">New to Arena</span>';
+    
+    // Show team members for team modes
+    let teamHTML='';
+    if(teamMembers&&teamMembers.length>1){
+        const teamSize=getTeamSize(S.mode);
+        teamHTML='<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--glass-border)">'+
+            '<div style="font-size:.7rem;color:var(--text2);margin-bottom:8px">TEAM OPPONENTS</div>'+
+            '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">'+
+            teamMembers.map(o=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--radius-sm);background:var(--bg2)"><div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700">${o.name.charAt(0)}</div><span style="font-size:.8rem">${o.name}</span></div>`).join('')+
+            '</div></div>';
+    }
+    
     c.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:24px">
         <div style="font-size:1.5rem;font-weight:700;color:var(--success);margin-bottom:24px">⚔️ OPPONENT FOUND</div>
         <div style="background:var(--glass);border:2px solid var(--accent);border-radius:var(--radius);padding:32px;text-align:center;max-width:400px;width:100%">
@@ -600,6 +800,7 @@ function showOpponentFound(opponent){
             </div>
             <div style="display:flex;justify-content:center;gap:4px;margin-bottom:8px">${formDisplay}</div>
             <div style="font-size:.7rem;color:var(--text2)">RECENT FORM</div>
+            ${teamHTML}
         </div>
         <div id="countdown" style="font-size:5rem;font-weight:800;color:var(--accent);margin:32px 0">3</div>
     </div>`;
@@ -665,7 +866,7 @@ function renderResult(result){
         <div style="display:flex;justify-content:space-around;align-items:flex-end;margin-bottom:32px">
             <div><div style="font-size:.8rem;color:var(--text2);margin-bottom:4px">YOU</div><div style="font-size:2.5rem;font-weight:800;color:var(--accent)">${result.user_score}</div></div>
             <div style="font-size:1.5rem;color:var(--text2);padding-bottom:8px">vs</div>
-            <div><div style="font-size:.8rem;color:var(--text2);margin-bottom:4px">${result.opponent_name||'OPPONENT'}</div><div style="font-size:2.5rem;font-weight:800;color:var(--danger)">${result.opponent_score}</div></div>
+            <div><div style="font-size:.8rem;color:var(--text2);margin-bottom:4px">${S.teamOpponents&&S.teamOpponents.length>1?'TEAM ('+S.teamOpponents.length+')':(result.opponent_name||'OPPONENT')}</div><div style="font-size:2.5rem;font-weight:800;color:var(--danger)">${result.opponent_score}</div></div>
         </div>
         <div style="display:flex;gap:12px;margin-bottom:24px">
             <div style="flex:1;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:16px">
@@ -725,7 +926,7 @@ function renderLeaderboard(c){
                 ${b.slice(0,50).map((p,i)=>{const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return `
                     <div style="display:flex;align-items:center;gap:16px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:12px 16px">
                         <div style="width:32px;text-align:center;font-weight:800;color:${i<3?'var(--gold)':'var(--text2)'}">${medal||i+1}</div>
-                        <div style="flex:1"><div style="font-weight:600">${p.user_id?p.user_id.substring(0,8):"Player"}</div><div style="font-size:.75rem;color:var(--text2)">${p.wins}W ${p.losses}L ${p.draws}D • 🔥 ${p.current_streak}</div></div>
+                        <div style="flex:1"><div style="font-weight:600">${p.is_you?'⭐ '+p.name:p.name||'Player'}</div><div style="font-size:.75rem;color:var(--text2)">${p.wins||0}W ${p.losses||0}L ${p.draws||0}D • 🔥 ${p.current_streak||0}</div></div>
                         <div style="text-align:right"><div style="font-weight:800;color:var(--accent)">${p.rating}</div><div style="font-size:.7rem;color:var(--text2)">RATING</div></div>
                     </div>`;}).join('')}
             </div>`}
@@ -768,18 +969,7 @@ function getWeakestTopic(wrong){
 window.ARENA = {
     init: async function() {
         await Promise.all([loadOpponents(), loadUserStats(), loadHistory(), loadLeaderboard()]);
-        if (S.opponents.length === 0) {
-            S.opponents = [
-                {id:'opp1',name:'Rituraj Saikia',gender:'male',rating:1080,accuracy:72.5,difficulty_level:'medium',response_speed:3,strengths:['GK','Current Affairs'],weaknesses:['History','Polity'],recent_form:['W','W','L','W','W']},
-                {id:'opp2',name:'Parthajit Bora',gender:'male',rating:1120,accuracy:81.0,difficulty_level:'hard',response_speed:6,strengths:['Polity','History'],weaknesses:['Geography'],recent_form:['W','L','W','W','W']},
-                {id:'opp3',name:'Ankur Hazarika',gender:'male',rating:1050,accuracy:75.0,difficulty_level:'medium',response_speed:5,strengths:['History','Geography'],weaknesses:['Math'],recent_form:['L','W','W','L','W']},
-                {id:'opp4',name:'Debojit Dutta',gender:'male',rating:1150,accuracy:68.0,difficulty_level:'hard',response_speed:2,strengths:['GK','Geography'],weaknesses:['Polity','Science'],recent_form:['W','W','W','L','W']},
-                {id:'opp5',name:'Junali Saikia',gender:'female',rating:1030,accuracy:74.0,difficulty_level:'medium',response_speed:5,strengths:['Current Affairs','GK'],weaknesses:['Math'],recent_form:['W','L','W','W','L']},
-                {id:'opp6',name:'Nandita Bora',gender:'female',rating:1100,accuracy:83.0,difficulty_level:'hard',response_speed:7,strengths:['Assam GK','History'],weaknesses:['Geography'],recent_form:['W','W','W','W','W']},
-                {id:'opp7',name:'Priyanka Hazarika',gender:'female',rating:1060,accuracy:71.0,difficulty_level:'medium',response_speed:3,strengths:['Geography','Science'],weaknesses:['Polity'],recent_form:['L','W','L','W','W']},
-                {id:'opp8',name:'Mousumi Dutta',gender:'female',rating:1090,accuracy:78.0,difficulty_level:'medium',response_speed:6,strengths:['History','Polity'],weaknesses:['Current Affairs'],recent_form:['W','W','L','W','L']}
-            ];
-        }
+        // STATIC_OPPONENTS used as fallback in loadOpponents() — no need to duplicate here
         render();
     },
     selectMode: function(m){S.mode=m;render();},
