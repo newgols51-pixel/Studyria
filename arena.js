@@ -280,6 +280,7 @@ var S={
   _botSim:null,
   _botSimTimer:null,
   _botCompleted:false,
+  _lobbyTimeout:null,
   pendingInvite:null,
   seed:null,
   lobbyReady:false
@@ -1393,7 +1394,9 @@ async function invitePlayer(toUserId,toUserName){
 
 function cancelSearch(){
   S._fallbackTriggered=false;
+  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
+  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(S.matchId){
     api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
     S.matchId=null;
@@ -1497,10 +1500,10 @@ async function startFallbackMatch(){
   S._isBotMatch=true;
   S._botProfile=res.botProfiles?res.botProfiles[0]:null;
   S._botSimQueued=false;
-  S.screen='lobby';
+  S.screen='battle'; // Go straight to battle, skip lobby
 
   // Show brief lobby then start battle
-  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#f5e9e0;margin-bottom:8px">⚔️ Match Ready</div><div style="color:rgba(245,233,224,0.6);margin-bottom:4px">Your Opponent: '+escapeHtml(bot.name)+'</div><div class="arena-rating-badge" style="margin-top:4px">⭐ '+bot.rating+'</div><div class="arena-spinner" style="margin-top:16px"></div></div>');
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#f5e9e0;margin-bottom:8px">⚔️ Opponent Found</div><div style="color:rgba(245,233,224,0.6);margin-bottom:4px">'+escapeHtml(bot.name)+' is ready!</div><div class="arena-rating-badge" style="margin-top:4px">⭐ '+bot.rating+' RP</div><div class="arena-spinner" style="margin-top:16px"></div></div>');
 
   setTimeout(function(){
     startBattle();
@@ -1742,6 +1745,7 @@ async function setReady(ready){
 }
 
 async function leaveLobby(){
+  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(!confirm('Leave this arena lobby?'))return;
   await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
   S.matchId=null;S.match=null;
@@ -1751,6 +1755,7 @@ async function leaveLobby(){
 }
 
 async function startBattle(){
+  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   stopTimer('poll');
   S.screen='battle';
   
@@ -3119,6 +3124,7 @@ function stopTimer(name){
 function stopAllTimers(){
   stopTimer('presence');stopTimer('poll');stopTimer('inviteCheck');stopTimer('search');
   if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
+  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(battleTimerInt){clearInterval(battleTimerInt);battleTimerInt=null;}
 }
 
