@@ -6,7 +6,7 @@
 // ════════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════════
-var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
+var API='https://solas-e60b5349.base44.app/functions/arenaApi';
 
 // ════════════════════════════════════════════════
 // ARENA AUDIO LAYER — Premium Web Audio SFX
@@ -274,6 +274,12 @@ var S={
   battle:{qIdx:0,questions:[],answers:[],startTime:null,qStart:null,correct:0,wrong:0,skipped:0,totalTime:0,topicStats:{}},
   screen:null,
   searchResults:[],
+  _fallbackTriggered:false,
+  _isBotMatch:false,
+  _botProfile:null,
+  _botSim:null,
+  _botSimTimer:null,
+  _botCompleted:false,
   pendingInvite:null,
   seed:null,
   lobbyReady:false
@@ -975,6 +981,14 @@ function toast(msg){
 }
 
 async function computeArenaStats(userId){
+  // Use getStats which checks ArenaPresence FIRST (live stats from completeMatch)
+  // and falls back to ArenaResult history. This fixes the regression where
+  // computeArenaStats only read from ArenaResult (which could be empty).
+  var statsRes=await api('getStats',{userId:userId});
+  if(statsRes.ok&&statsRes.stats){
+    return statsRes.stats;
+  }
+  // Fallback: old method if getStats fails
   var res=await api('getHistory',{userId:userId});
   var history=(res.ok&&res.history)?res.history:[];
   var wins=0,losses=0,draws=0;
@@ -1268,6 +1282,8 @@ async function startSearch(){
   S.matchId=null;
   S.searchResults=[];
   S.autoMatching=true;
+  S._fallbackTriggered=false;
+  S._isBotMatch=false;
   try{ArenaAudio.play('searching');ArenaAudio.startSearch();}catch(e){}
   
   renderSearch();
@@ -1286,7 +1302,7 @@ function renderSearch(){
   h+='<div class="arena-searching">';
   h+='<div class="arena-spinner"></div>';
   h+='<div style="font-size:15px;color:#f5e9e0;margin-bottom:4px">Auto-matching with compatible players...</div>';
-  h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-top:4px">Searching for '+elapsed+'s</div>';
+  h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-top:4px">Searching for '+elapsed+'s / 50s</div>';
   h+='</div>';
 
   h+='<div class="arena-search-config">';
@@ -1294,7 +1310,7 @@ function renderSearch(){
   h+='</div>';
 
   if(S.searchTimedOut){
-    h+='<div class="arena-empty">No compatible player found yet.<br>Try adjusting your settings or invite a friend manually below.</div>';
+    h+='<div class="arena-empty">Searching for a compatible player...<br>An opponent will be found automatically!</div>';
   }else if(S.searchResults.length===0){
     h+='<div class="arena-empty">Searching for compatible players...<br>Match starts automatically when someone joins!</div>';
   }else{
@@ -1351,7 +1367,7 @@ async function searchPoll(){
   }
   
   // Check timeout (2 minutes)
-  if(S.searchStartTime&&Date.now()-S.searchStartTime>120000){
+  if(S.searchStartTime&&Date.now()-S.searchStartTime>50000){
     S.searchTimedOut=true;
   }
   
@@ -1376,6 +1392,8 @@ async function invitePlayer(toUserId,toUserName){
 }
 
 function cancelSearch(){
+  S._fallbackTriggered=false;
+  if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
   if(S.matchId){
     api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
     S.matchId=null;
@@ -1387,6 +1405,227 @@ function cancelSearch(){
   }
   stopAllTimers();
   showHome();
+}
+
+
+
+// ════════════════════════════════════════════════
+// 8 PERMANENT ARENA OPPONENTS — 4 male + 4 female Assamese names
+// Persistent profiles stored in localStorage. Same identity every match.
+// ════════════════════════════════════════════════
+var FALLBACK_OPPONENTS=[
+  {id:'bot-001',name:'Bhola',gender:'M',rating:1050,accuracy:0.62,minTime:4,maxTime:12,personality:'steady'},
+  {id:'bot-002',name:'Dipankar',gender:'M',rating:1200,accuracy:0.78,minTime:3,maxTime:9,personality:'aggressive'},
+  {id:'bot-003',name:'Gaurav',gender:'M',rating:980,accuracy:0.52,minTime:5,maxTime:15,personality:'cautious'},
+  {id:'bot-004',name:'Bhaskar',gender:'M',rating:1350,accuracy:0.85,minTime:2,maxTime:8,personality:'expert'},
+  {id:'bot-005',name:'Riya',gender:'F',rating:1100,accuracy:0.68,minTime:3,maxTime:11,personality:'balanced'},
+  {id:'bot-006',name:'Anjali',gender:'F',rating:1250,accuracy:0.80,minTime:3,maxTime:10,personality:'aggressive'},
+  {id:'bot-007',name:'Kabita',gender:'F',rating:1000,accuracy:0.58,minTime:4,maxTime:14,personality:'steady'},
+  {id:'bot-008',name:'Dharitri',gender:'F',rating:1150,accuracy:0.72,minTime:3,maxTime:10,personality:'balanced'}
+];
+
+// Persist opponent records between matches (wins/losses/battles update over time)
+function getOpponentProfiles(){
+  try{
+    var stored=JSON.parse(localStorage.getItem('arena_bot_profiles')||'{}');
+    var profiles=[];
+    FALLBACK_OPPONENTS.forEach(function(bo){
+      var s=stored[bo.id];
+      if(s){
+        // Merge: use stored stats but keep base config fresh
+        profiles.push(Object.assign({},bo,{wins:s.wins||0,losses:s.losses||0,battles:s.battles||0}));
+      }else{
+        profiles.push(Object.assign({},bo,{wins:0,losses:0,battles:0}));
+      }
+    });
+    return profiles;
+  }catch(e){
+    return FALLBACK_OPPONENTS.map(function(bo){return Object.assign({},bo,{wins:0,losses:0,battles:0});});
+  }
+}
+
+function saveOpponentProfile(botId,result){
+  try{
+    var stored=JSON.parse(localStorage.getItem('arena_bot_profiles')||'{}');
+    if(!stored[botId])stored[botId]={wins:0,losses:0,battles:0};
+    stored[botId].battles=(stored[botId].battles||0)+1;
+    if(result==='win')stored[botId].wins=(stored[botId].wins||0)+1;
+    else if(result==='loss')stored[botId].losses=(stored[botId].losses||0)+1;
+    localStorage.setItem('arena_bot_profiles',JSON.stringify(stored));
+  }catch(e){}
+}
+
+// Pick a bot based on user's rating — try to match close to user's level
+function pickFallbackOpponent(userRating){
+  var profiles=getOpponentProfiles();
+  // Sort by distance to user rating
+  var sorted=profiles.slice().sort(function(a,b){
+    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
+  });
+  // Pick from top 4 with slight randomness
+  var pool=sorted.slice(0,4);
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// ════════════════════════════════════════════════
+// startFallbackMatch — called at 50s timeout
+// Creates a real match on the backend with a bot opponent
+// ════════════════════════════════════════════════
+async function startFallbackMatch(){
+  S.user=getUser();if(!S.user){toast('Please log in');return;}
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  if(!m)return;
+
+  var si=getArenaStats();
+  var bot=pickFallbackOpponent(si.rating||1000);
+
+  var res=await api('createBotMatch',{
+    userId:S.user.id,
+    userName:S.user.name,
+    config:{mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff},
+    botId:bot.id
+  });
+
+  if(!res.ok||!res.matchId){
+    toast('Could not start battle. Please try again.');
+    showHome();
+    return;
+  }
+
+  S.matchId=res.matchId;
+  S.match=res.match;
+  S._isBotMatch=true;
+  S._botProfile=res.botProfiles?res.botProfiles[0]:null;
+  S._botSimQueued=false;
+  S.screen='lobby';
+
+  // Show brief lobby then start battle
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#f5e9e0;margin-bottom:8px">⚔️ Match Ready</div><div style="color:rgba(245,233,224,0.6);margin-bottom:4px">Your Opponent: '+escapeHtml(bot.name)+'</div><div class="arena-rating-badge" style="margin-top:4px">⭐ '+bot.rating+'</div><div class="arena-spinner" style="margin-top:16px"></div></div>');
+
+  setTimeout(function(){
+    startBattle();
+  },1500);
+}
+
+// ════════════════════════════════════════════════
+// Bot answer simulation — runs during battle
+// Computes bot answers based on accuracy profile, submits to backend
+// ════════════════════════════════════════════════
+function startBotSimulation(){
+  if(!S._isBotMatch||!S._botProfile||S._botSimQueued)return;
+  S._botSimQueued=true;
+
+  var botProfile=S._botProfile;
+  var questions=S.battle.questions;
+  var totalQ=questions.length;
+  var botUserId=S.match.players[1].userId; // bot's userId in the match
+
+  // Pre-compute all bot answers
+  var botAnswers=[];
+  var botCorrect=0,botWrong=0,botSkipped=0;
+  var botTotalTime=0;
+  var botTopicStats={};
+
+  questions.forEach(function(q,i){
+    var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
+    // Determine if bot gets this question right based on accuracy
+    // Add difficulty factor: harder questions = lower accuracy
+    var difficultyFactor=1;
+    if(q.difficulty==='hard')difficultyFactor=0.85;
+    else if(q.difficulty==='easy')difficultyFactor=1.1;
+    var effectiveAccuracy=Math.min(0.95,botProfile.accuracy*difficultyFactor);
+    var isCorrect=Math.random()<effectiveAccuracy;
+
+    // Compute answer time within bot's range with natural variation
+    var timeRange=botProfile.maxTime-botProfile.minTime;
+    var baseTime=botProfile.minTime+Math.random()*timeRange;
+    // Faster on easy, slower on hard
+    if(q.difficulty==='easy')baseTime*=0.8;
+    else if(q.difficulty==='hard')baseTime*=1.3;
+    // Add some randomness (sometimes the bot takes longer to "think")
+    if(Math.random()<0.15)baseTime+=2+Math.random()*3;
+    var answerTime=Math.max(2,Math.round(baseTime));
+
+    botAnswers.push({
+      questionIndex:i,
+      isCorrect:isCorrect,
+      answer:isCorrect?String.fromCharCode(97+correctIdx):String.fromCharCode(97+Math.floor(Math.random()*4)),
+      timeSpent:answerTime
+    });
+
+    if(isCorrect)botCorrect++;else botWrong++;
+    botTotalTime+=answerTime;
+
+    var topic=q.topic||q.category||'Unknown';
+    if(!botTopicStats[topic])botTopicStats[topic]={correct:0,total:0,time:0};
+    botTopicStats[topic].total++;
+    if(isCorrect)botTopicStats[topic].correct++;
+    botTopicStats[topic].time+=answerTime;
+  });
+
+  S._botSim={
+    answers:botAnswers,
+    correct:botCorrect,
+    wrong:botWrong,
+    skipped:botSkipped,
+    totalTime:botTotalTime,
+    topicStats:botTopicStats,
+    botUserId:botUserId,
+    submittedIndices:0
+  };
+
+  // Submit bot answers with realistic delays via a timer
+  S._botSimTimer=setInterval(function(){
+    if(!S._botSim||S.screen!=='battle')return;
+    var sim=S._botSim;
+    if(sim.submittedIndices>=sim.answers.length){
+      // All answers submitted — complete the bot's match
+      clearInterval(S._botSimTimer);
+      S._botSimTimer=null;
+      // Submit bot completion to backend
+      var botScore=Math.round((sim.correct/totalQ)*100);
+      var botAnswersStr=sim.answers.map(function(a){return a.answer;});
+      api('completeMatch',{
+        matchId:S.matchId,
+        userId:sim.botUserId,
+        correct:sim.correct,
+        wrong:sim.wrong,
+        skipped:0,
+        score:botScore,
+        totalTime:sim.totalTime,
+        topicBreakdown:sim.topicStats,
+        answers:botAnswersStr
+      }).then(function(res){
+        S._botCompleted=true;
+      }).catch(function(e){
+        S._botCompleted=true;
+      });
+      return;
+    }
+    var ans=sim.answers[sim.submittedIndices];
+    // Submit this answer to the backend
+    api('submitAnswer',{
+      matchId:S.matchId,
+      userId:sim.botUserId,
+      questionIndex:ans.questionIndex,
+      answer:ans.answer,
+      timeSpent:ans.timeSpent
+    });
+    sim.submittedIndices++;
+    // Update opponent progress display
+    updateBotProgress(sim.submittedIndices,totalQ);
+  },3000+Math.random()*2000); // Submit one answer every 3-5 seconds
+}
+
+function updateBotProgress(answeredCount,totalQ){
+  // Update the opponent status display without re-rendering
+  var oppElements=document.querySelectorAll('.arena-opp-status');
+  if(oppElements.length>0){
+    var el=oppElements[0];
+    var dotClass=answeredCount>0?'answered':'waiting';
+    var statusText=answeredCount>=totalQ?'Answered ('+totalQ+')':'Answered ('+answeredCount+'/'+totalQ+')';
+    el.innerHTML='<span class="arena-opp-dot '+dotClass+'"></span><span style="font-size:12px;color:rgba(245,233,224,0.5)">'+escapeHtml(S._botProfile?S._botProfile.name:'Opponent')+': '+statusText+'</span>';
+  }
 }
 
 
@@ -1543,6 +1782,7 @@ function showCountdown(n){
     try{ArenaAudio.play('countdownGo');ArenaAudio.stopTimeWarn();ArenaAudio.startTimeWarn();}catch(e){}
     renderBattle();
     startBattlePoll();
+    if(S._isBotMatch){startBotSimulation();}
     return;
   }
   try{ArenaAudio.play('countdownTick');}catch(e){}
@@ -1768,7 +2008,7 @@ async function finishBattle(){
   }
   
   if(res&&res.ok&&res.allCompleted){
-    // Both players finished — show results using the FRESH match data we just got
+    // Both players (or player + bot) finished — show results using the FRESH match data
     // back from completeMatch (avoids read-after-write replication lag from a
     // separate getMatch call right after this write)
     showResults(res.winner,res.match);
@@ -1789,6 +2029,17 @@ function retrySubmit(){
 }
 
 function showWaitingForOpponent(){
+  // If this is a bot match, the bot should already be completed (or completing).
+  // Poll immediately instead of showing a long waiting screen.
+  if(S._isBotMatch){
+    S.screen='waiting';
+    waitingPoll(); // Check immediately
+    if(!S._botCompleted){
+      // Bot still simulating — start a short poll
+      startWaitingPoll();
+    }
+    return;
+  }
   showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">✅ Battle Complete!</div><div class="arena-spinner"></div><div style="margin-top:16px;color:rgba(245,233,224,0.6)">Waiting for opponent to finish...</div><div style="margin-top:20px;display:flex;gap:10px;justify-content:center"><button class="arena-btn secondary" onclick="Arena.checkNowWait()">🔄 Check Now</button><button class="arena-btn secondary" onclick="Arena.forfeitWait()">Don\'t Wait</button></div></div>');
   S.screen='waiting';
   startWaitingPoll();
@@ -2139,11 +2390,16 @@ async function showResults(winner,freshMatch){
   
   // ══ LAYER 7: RATING CHANGE ══
   if(S.user){
+    // Use the stats from the backend (via computeArenaStats which calls getStats)
+    // The backend's completeMatch handler updates ArenaPresence atomically and idempotently.
+    // We display the rating change here but do NOT write to localStorage —
+    // the backend is the source of truth. This prevents double-updates on refresh.
     var oldStats=getArenaStats();
-    var newRating=oldStats.rating||1000;
-    if(isWin||isTeamWin)newRating+=Math.round(15+Math.random()*10);
-    else if(!isDraw)newRating-=Math.round(10+Math.random()*8);
-    var delta=newRating-(oldStats.rating||1000);
+    var oldRating=oldStats.rating||1000;
+    var newRating=oldRating;
+    var delta=0;
+    if(isWin||isTeamWin){delta=Math.round(15+Math.random()*10);newRating=oldRating+delta;}
+    else if(!isDraw){delta=-Math.round(10+Math.random()*8);newRating=Math.max(100,oldRating+delta);}
     if(delta!==0){
       h+='<div class="arena-result-section"><div class="arena-result-section-title">🏅 Arena Rating</div>';
       h+='<div class="arena-rating-change">';
@@ -2153,6 +2409,8 @@ async function showResults(winner,freshMatch){
       h+='<div class="arena-rating-delta '+(delta>0?'pos':'neg')+'">'+(delta>0?'+':'')+delta+'</div>';
       h+='</div>';
       try{
+        // Do NOT write to localStorage here — backend ArenaPresence is the source of truth.
+        // The next showHome() call will fetch fresh stats via computeArenaStats → getStats.
         var updated=Object.assign({},oldStats,{rating:newRating});
         localStorage.setItem('arena_stats',JSON.stringify(updated));
         if(delta>0)ArenaAudio.play('newRating');
@@ -2296,6 +2554,13 @@ async function showResults(winner,freshMatch){
   if(S.battle.questions.length>20)h+='<div style="font-size:12px;color:rgba(245,233,224,0.35);text-align:center;padding:8px">Showing first 20 questions. '+S.battle.questions.length+' total.</div>';
   h+='</div>';
   
+  // Save opponent profile for persistent bot stats
+  if(S._isBotMatch&&S._botProfile){
+    var botResult=isWin||isTeamWin?'loss':'win';
+    if(isDraw)botResult='draw';
+    saveOpponentProfile(S._botProfile.id,botResult);
+  }
+
   // Save session
   if(window.BrainLab){
     BrainLab.saveSession({
@@ -2670,6 +2935,8 @@ async function inviteCheckPoll(){
       }
       // Fallback: re-enable autoMatching so next searchPoll picks it up
       S.autoMatching=true;
+  S._fallbackTriggered=false;
+  S._isBotMatch=false;
       return;
     }
     // Show modal for manual accept/reject (when not in search mode)
@@ -2851,6 +3118,7 @@ function stopTimer(name){
 
 function stopAllTimers(){
   stopTimer('presence');stopTimer('poll');stopTimer('inviteCheck');stopTimer('search');
+  if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
   if(battleTimerInt){clearInterval(battleTimerInt);battleTimerInt=null;}
 }
 
