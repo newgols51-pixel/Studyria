@@ -252,46 +252,66 @@ function precomputeOpponentAnswers(opponent,questions){
     return{answers,score,correct};
 }
 
-// ── SUPABASE HELPERS ──────────────────────────────────────────────────
-function getSB(){return window.supabaseClient||(typeof supabase!=='undefined'?supabase:null);}
+// ── BASE44 BACKEND (Unified Arena API) ────────────────────────────────
+// All Arena data operations go through a single Base44 backend function
+// which uses service role to read/write Base44 entities
+
+const ARENA_FN_URL = 'https://api.base44.com/api/apps/6a56207ef04bee5f8f08d11f/functions/arenaApi';
+
+async function arenaCall(action, params = {}) {
+    try {
+        const res = await fetch(ARENA_FN_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action, ...params })
+        });
+        if (!res.ok) { console.warn('[Arena] API error:', res.status); return null; }
+        return await res.json();
+    } catch (e) { console.warn('[Arena] API call failed:', e.message); return null; }
+}
+
+function getCurrentUser() {
+    // Studyria uses Supabase auth — get user from Studyria's global state
+    if (window.currentUser && window.currentUser.uid) {
+        return { id: window.currentUser.uid, name: window.currentUser.name || 'Player' };
+    }
+    // Fallback: check localStorage
+    const cached = localStorage.getItem('studyria_user');
+    if (cached) { try { return JSON.parse(cached); } catch(e){} }
+    return null;
+}
 
 async function loadOpponents(){
-    const sb=getSB();if(!sb)return S.opponents;
-    try{
-        const{data,error}=await sb.from('arena_opponents').select('*').eq('active',true);
-        if(error)throw error;
-        if(data&&data.length>0)S.opponents=data;
-    }catch(e){console.warn('[Arena] Could not load opponents:',e.message);}
+    const res = await arenaCall('loadOpponents');
+    if (res && res.success && res.data && res.data.length > 0) S.opponents = res.data;
     return S.opponents;
 }
 
 async function loadUserStats(){
-    const sb=getSB();if(!sb)return null;
-    try{
-        const{data:{user}}=await sb.auth.getUser();if(!user)return null;
-        await sb.rpc('arena_ensure_user_stats',{p_user_id:user.id});
-        const{data:stats,error}=await sb.from('arena_user_stats').select('*').eq('user_id',user.id).single();
-        if(!error&&stats){S.stats=stats;S.rating=stats.rating;S.currentStreak=stats.current_streak;S.bestStreak=stats.best_streak;S.recentForm=stats.recent_form||[];}
-    }catch(e){console.warn('[Arena] Could not load stats:',e.message);}
+    const user = getCurrentUser();
+    if (!user || !user.id) return null;
+    const res = await arenaCall('loadUserStats', { user_id: user.id });
+    if (res && res.success && res.data) {
+        S.stats = res.data;
+        S.rating = res.data.rating || 1000;
+        S.currentStreak = res.data.current_streak || 0;
+        S.bestStreak = res.data.best_streak || 0;
+        S.recentForm = res.data.recent_form || [];
+    }
     return S.stats;
 }
 
 async function loadHistory(){
-    const sb=getSB();if(!sb)return[];
-    try{
-        const{data:{user}}=await sb.auth.getUser();if(!user)return[];
-        const{data,error}=await sb.from('arena_battle_history').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
-        if(!error&&data)S.history=data;
-    }catch(e){console.warn('[Arena] Could not load history:',e.message);}
+    const user = getCurrentUser();
+    if (!user || !user.id) return [];
+    const res = await arenaCall('loadHistory', { user_id: user.id });
+    if (res && res.success && res.data) S.history = res.data;
     return S.history;
 }
 
 async function loadLeaderboard(){
-    const sb=getSB();if(!sb)return[];
-    try{
-        const{data,error}=await sb.from('arena_leaderboard').select('*').limit(50);
-        if(!error&&data)S.leaderboard=data;
-    }catch(e){console.warn('[Arena] Could not load leaderboard:',e.message);}
+    const res = await arenaCall('loadLeaderboard');
+    if (res && res.success && res.data) S.leaderboard = res.data;
     return S.leaderboard;
 }
 
@@ -324,27 +344,26 @@ function getTeamSize(mode){
 }
 
 async function createMatch(opponent){
-    const sb=getSB();if(!sb)return null;
     try{
-        const{data:{user}}=await sb.auth.getUser();if(!user)return null;
+        const user=getCurrentUser();if(!user||!user.id)return null;
         const matchCode='ARENA-'+Date.now()+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
         const questions=getQuestions(S.exam,S.category,S.difficulty,S.questionCount);
         const oppResults=precomputeOpponentAnswers(opponent,questions);
-        const matchData={
-            match_code:matchCode,mode:S.mode,status:'in_progress',
+        const res=await arenaCall('createMatch',{
+            user_id:user.id,
+            match_code:matchCode,mode:S.mode,
             question_count:S.questionCount,exam_type:S.exam,category:S.category,difficulty:S.difficulty,
-            questions:JSON.stringify(questions),host_id:user.id,
+            questions:JSON.stringify(questions),
             opponent_id:opponent.id,opponent_name:opponent.name,
             opponent_score:oppResults.score,opponent_correct:oppResults.correct,
             opponent_answers:JSON.stringify(oppResults.answers.map(a=>({chosenIndex:a.chosenIndex,isCorrect:a.isCorrect,responseTime:a.responseTime,score:a.score}))),
             opponent_rating_before:opponent.rating
-        };
-        const{data,error}=await sb.from('arena_matches').insert(matchData).select().single();
-        if(error)throw error;
-        S.matchId=data.id;S.matchCode=matchCode;S.questions=questions;
+        });
+        if(!res||!res.success||!res.data)return null;
+        S.matchId=res.data.id;S.matchCode=matchCode;S.questions=questions;
         S.opponentScore=oppResults.score;S.opponentCorrect=oppResults.correct;
         S.opponentAnswers=oppResults.answers;S.matchStartTime=Date.now();
-        return data;
+        return res.data;
     }catch(e){console.error('[Arena] Create match failed:',e.message);return null;}
 }
 
@@ -385,7 +404,7 @@ async function finishBattle(){
     if(S.timer)clearInterval(S.timer);
     S.page='result';
     const duration=Math.round((Date.now()-S.matchStartTime)/1000);
-    const sb=getSB();
+    const user=getCurrentUser();
     let result={
         result:S.userScore>S.opponentScore?'win':S.userScore<S.opponentScore?'loss':'draw',
         rating_before:S.rating,rating_after:S.rating,rating_change:0,
@@ -393,14 +412,13 @@ async function finishBattle(){
         user_correct:S.userCorrect,opponent_correct:S.opponentCorrect,
         opponent_name:S.matchOpponent?S.matchOpponent.name:'Unknown'
     };
-    if(sb&&S.matchId){
-        try{
-            const{data,error}=await sb.rpc('arena_finalize_match',{
-                p_match_id:S.matchId,p_user_score:S.userScore,p_user_correct:S.userCorrect,
-                p_user_answers:JSON.stringify(S.userAnswers),p_duration:duration
-            });
-            if(!error&&data&&data.success)result=data;
-        }catch(e){console.error('[Arena] Finalize failed:',e.message);}
+    if(user&&S.matchId){
+        const res=await arenaCall('finalizeMatch',{
+            user_id:user.id,
+            match_id:S.matchId,user_score:S.userScore,user_correct:S.userCorrect,
+            user_answers:JSON.stringify(S.userAnswers),duration:duration
+        });
+        if(res&&res.success){result=Object.assign(result,res);}
     }
     S.rating=result.rating_after||S.rating;
     if(result.result==='win')S.currentStreak++;else if(result.result==='loss')S.currentStreak=0;
@@ -707,7 +725,7 @@ function renderLeaderboard(c){
                 ${b.slice(0,50).map((p,i)=>{const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return `
                     <div style="display:flex;align-items:center;gap:16px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:12px 16px">
                         <div style="width:32px;text-align:center;font-weight:800;color:${i<3?'var(--gold)':'var(--text2)'}">${medal||i+1}</div>
-                        <div style="flex:1"><div style="font-weight:600">${p.display_name||'Player'}</div><div style="font-size:.75rem;color:var(--text2)">${p.wins}W ${p.losses}L ${p.draws}D • 🔥 ${p.current_streak}</div></div>
+                        <div style="flex:1"><div style="font-weight:600">${p.user_id?p.user_id.substring(0,8):"Player"}</div><div style="font-size:.75rem;color:var(--text2)">${p.wins}W ${p.losses}L ${p.draws}D • 🔥 ${p.current_streak}</div></div>
                         <div style="text-align:right"><div style="font-weight:800;color:var(--accent)">${p.rating}</div><div style="font-size:.7rem;color:var(--text2)">RATING</div></div>
                     </div>`;}).join('')}
             </div>`}
