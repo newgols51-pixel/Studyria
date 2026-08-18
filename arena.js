@@ -1179,6 +1179,10 @@ async function showHome(){
     renderBattle(); // Resume battle from saved state
     return;
   }
+  // Clean up any leftover bot state
+  S._isBotMatch=false;S._botProfile=null;S._botSim=null;
+  S._botFinished=false;S._botCompleted=false;S._botSimQueued=false;
+  if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
   if(S.user)api('clearMatch',{userId:S.user.id});
   var st;
   try{st=await computeArenaStats(S.user.id);}catch(e){console.error('[Arena] computeArenaStats failed:',e);st={}}
@@ -1832,13 +1836,13 @@ function updateBotProgress(answeredCount,totalQ){
   if(oppProgEl)oppProgEl.textContent=answeredCount+'/'+totalQ;
   // Update opponent live score
   var oppScoreEl=document.getElementById('arena-live-opp-score');
-  if(oppScoreEl&&S._botSim)oppScoreEl.textContent=S._botSim.correct*10;
+  if(oppScoreEl&&S._botSim)oppScoreEl.textContent=Math.round(S._botSim.correct/(S.battle.questions.length||1)*100);
   // Update score gap
   var gapEl=document.getElementById('arena-score-gap');
   var myScoreEl=document.getElementById('arena-live-my-score');
   if(gapEl&&myScoreEl&&S._botSim){
     var myS=parseInt(myScoreEl.textContent)||0;
-    var oppS=S._botSim.correct*10;
+    var oppS=Math.round(S._botSim.correct/(S.battle.questions.length||1)*100);
     var gap=myS-oppS;
     if(gap>0){gapEl.textContent='Leading +'+gap;gapEl.style.color='#66bb6a';}
     else if(gap<0){gapEl.textContent='Behind '+(-gap);gapEl.style.color='#ff4d6d';}
@@ -2033,11 +2037,11 @@ function renderBattle(){
     if(oppP)oppLiveName=oppP.userName||'Opponent';
   }
   // Estimate live score from correct answers (without speed bonus for real-time)
-  myLiveScore=S.battle.correct*10;
+  myLiveScore=Math.round(S.battle.correct/(S.battle.questions.length||1)*100);
   // Get opponent progress from bot sim or match data
-  if(S._botSim){oppLiveScore=S._botSim.submittedIndices>0?Math.round(S._botSim.correct*(10/S.battle.questions.length)*S.battle.questions.length/10):0;}
+  if(S._botSim){oppLiveScore=S._botSim.submittedIndices>0?Math.round(S._botSim.correct/(S.battle.questions.length||1)*100):0;}
   // Actually use bot sim correct count for live score
-  if(S._botSim){oppLiveScore=S._botSim.correct*10;}
+  if(S._botSim){oppLiveScore=Math.round(S._botSim.correct/(S.battle.questions.length||1)*100);}
   h+='<div class="arena-live-status" style="justify-content:space-between;align-items:center">';
   h+='<div class="arena-live-card" style="flex:1;text-align:center"><div class="arena-live-label">'+escapeHtml(S.user.name||'You')+'</div><div class="arena-live-val" id="arena-live-my-score">'+myLiveScore+'</div><div style="font-size:10px;color:rgba(245,233,224,0.4)">'+S.battle.correct+'C '+S.battle.wrong+'W</div></div>';
   // Score gap indicator
@@ -2212,13 +2216,13 @@ function answerQ(optIdx){
   if(cEl)cEl.textContent=S.battle.correct;
   if(wEl)wEl.textContent=S.battle.wrong;
   // Update live score bar
-  var myNewScore=S.battle.correct*10;
+  var myNewScore=Math.round(S.battle.correct/(S.battle.questions.length||1)*100);
   var myScoreEl=document.getElementById('arena-live-my-score');
   if(myScoreEl)myScoreEl.textContent=myNewScore;
   // Update score gap
   var oppScoreEl=document.getElementById('arena-live-opp-score');
   var gapEl=document.getElementById('arena-score-gap');
-  var oppNewScore=S._botSim?S._botSim.correct*10:0;
+  var oppNewScore=S._botSim?Math.round(S._botSim.correct/(S.battle.questions.length||1)*100):0;
   if(oppScoreEl)oppScoreEl.textContent=oppNewScore;
   if(gapEl){
     var newGap=myNewScore-oppNewScore;
@@ -2998,7 +3002,7 @@ async function showResults(winner,freshMatch){
   S.battle.questions.slice(0,20).forEach(function(q,i){
     var a=S.battle.answers[i];
     var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
-    var correctLabel=String.fromCharCode(65+correctIdx);
+    var correctLabel=correctIdx>=0?String.fromCharCode(65+correctIdx):'?';
     var qTopic=escapeHtml(q.topic||q.category||'').replace(/'/g,"\\'");
     h+='<div class="arena-qreview">';
     h+='<div class="arena-qreview-q">Q'+(i+1)+'. '+escapeHtml(q.question_text).slice(0,120)+(q.question_text.length>120?'...':'')+'</div>';
@@ -3114,6 +3118,14 @@ function practiceWeakTopic(topic){
 
 function rematch(){
   S._matchFinalized=false;
+  // Clear bot state from previous match
+  S._isBotMatch=false;
+  S._botProfile=null;
+  S._botSim=null;
+  S._botFinished=false;
+  S._botCompleted=false;
+  S._botSimQueued=false;
+  if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
   try{ArenaAudio.play('rematch');}catch(e){}
   // Create new match with same config
   if(S.user)api('clearMatch',{userId:S.user.id});
