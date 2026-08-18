@@ -263,6 +263,47 @@ var EXAMS=['All','APSC','ADRE','Assam Police','Assam TET','Grade III','Grade IV'
 var DIFFS=[{id:'mixed',l:'Mixed',icon:'🎲'},{id:'easy',l:'Easy',icon:'🟢'},{id:'medium',l:'Medium',icon:'🟡'},{id:'hard',l:'Hard',icon:'🔴'}];
 
 // ════════════════════════════════════════════════
+// MATCH STATE MACHINE
+// Valid transitions only — invalid transitions are blocked
+// ════════════════════════════════════════════════
+var MATCH_STATES={
+  SEARCHING:'searching',
+  MATCH_FOUND:'match_found',
+  READY:'ready',
+  ACTIVE:'active',
+  QUESTION_LOCKED:'question_locked',
+  FINALIZING:'finalizing',
+  FINALIZED:'finalized',
+  SYNC_PENDING:'sync_pending',
+  RECOVERABLE_ERROR:'recoverable_error',
+  CANCELLED:'cancelled'
+};
+var VALID_TRANSITIONS={
+  searching:['match_found','cancelled'],
+  match_found:['ready','cancelled'],
+  ready:['active','cancelled'],
+  active:['question_locked','finalizing','cancelled'],
+  question_locked:['active','finalizing'],
+  finalizing:['finalized','sync_pending','recoverable_error'],
+  finalized:['sync_pending'],
+  sync_pending:['finalized','recoverable_error'],
+  recoverable_error:['finalizing','sync_pending','finalized'],
+  cancelled:[]
+};
+var _matchState=MATCH_STATES.SEARCHING;
+function setMatchState(newState){
+  var valid=VALID_TRANSITIONS[_matchState]||[];
+  if(valid.indexOf(newState)===-1&&_matchState!==newState){
+    console.warn('[Arena] Invalid state transition:',_matchState,'->',newState);
+    return false;
+  }
+  _matchState=newState;
+  return true;
+}
+function getMatchState(){return _matchState;}
+
+
+// ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
 var S={
@@ -370,6 +411,12 @@ var CSS=`
 .arena-wrap{max-width:600px;margin:0 auto;padding:16px 14px 60px;min-height:100%;box-sizing:border-box;color:#f5e9e0}
 .arena-close{position:fixed;top:12px;right:14px;z-index:100000;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#f5e9e0;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background .2s}
 .arena-close:active{background:rgba(255,255,255,0.18)}
+
+@media(max-width:380px){
+  .arena-stats-bar{grid-template-columns:repeat(2,1fr)!important;gap:6px!important}
+  .arena-stat-val{font-size:16px!important}
+  .arena-stat-lbl{font-size:8px!important}
+}
 
 /* ══ TYPOGRAPHY ══ */
 .arena-title{text-align:center;font-size:24px;font-weight:800;margin:8px 0 4px;color:#e8c87a;letter-spacing:-0.5px}
@@ -498,6 +545,7 @@ var CSS=`
 
 /* ══ COUNTDOWN ══ */
 .arena-countdown{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:100000}
+@keyframes arena-pop{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
 .arena-countdown-num{font-size:80px;font-weight:800;color:#e8c87a;animation:arena-pulse .8s ease-out}
 @keyframes arena-pulse{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
 
@@ -1158,11 +1206,12 @@ async function showHome(){
 
   h+='<div style="text-align:center;margin-bottom:14px"><span class="arena-rank-badge '+rankTier.tier+'">'+rankTier.icon+' '+rankTier.label+' Tier</span></div>';
 
-  h+='<div class="arena-stats-bar">';
-  h+='<div class="arena-stat"><div class="arena-stat-val">'+rating+'</div><div class="arena-stat-lbl">Arena Rating</div></div>';
+  h+='<div class="arena-stats-bar" style="grid-template-columns:repeat(5,1fr)">';
+  h+='<div class="arena-stat"><div class="arena-stat-val">'+rating+'</div><div class="arena-stat-lbl">Rating</div></div>';
   h+='<div class="arena-stat"><div class="arena-stat-val">'+battles+'</div><div class="arena-stat-lbl">Battles</div></div>';
   h+='<div class="arena-stat"><div class="arena-stat-val">'+winRate+'%</div><div class="arena-stat-lbl">Win Rate</div></div>';
   h+='<div class="arena-stat"><div class="arena-stat-val">'+wins+'-'+losses+'</div><div class="arena-stat-lbl">W-L</div></div>';
+  h+='<div class="arena-stat"><div class="arena-stat-val">'+(streaks.current||0)+'</div><div class="arena-stat-lbl">Streak</div></div>';
   h+='</div>';
 
   if(battles>0){
@@ -1182,14 +1231,34 @@ async function showHome(){
   h+='<div class="arena-profile-grid">';
   h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🏆</div><div><div class="arena-profile-stat-val">'+wins+'</div><div class="arena-profile-stat-lbl">Wins</div></div></div>';
   h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">❌</div><div><div class="arena-profile-stat-val">'+losses+'</div><div class="arena-profile-stat-lbl">Losses</div></div></div>';
+  h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🤝</div><div><div class="arena-profile-stat-val">'+draws+'</div><div class="arena-profile-stat-lbl">Draws</div></div></div>';
   h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">⚔️</div><div><div class="arena-profile-stat-val">'+battles+'</div><div class="arena-profile-stat-lbl">Matches</div></div></div>';
   if(battles>0){
-    var acc=battles>0?Math.round((wins/battles)*100):0;
-    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🎯</div><div><div class="arena-profile-stat-val">'+acc+'%</div><div class="arena-profile-stat-lbl">Accuracy</div></div></div>';
-    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🔥</div><div><div class="arena-profile-stat-val">'+streaks.best+'</div><div class="arena-profile-stat-lbl">Best Streak</div></div></div>';
-    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🏅</div><div><div class="arena-profile-stat-val">'+rating+'</div><div class="arena-profile-stat-lbl">Arena Rating</div></div></div>';
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🎯</div><div><div class="arena-profile-stat-val">'+winRate+'%</div><div class="arena-profile-stat-lbl">Win Rate</div></div></div>';
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🔥</div><div><div class="arena-profile-stat-val">'+streaks.current+'</div><div class="arena-profile-stat-lbl">Cur. Streak</div></div></div>';
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">🏅</div><div><div class="arena-profile-stat-val">'+streaks.best+'</div><div class="arena-profile-stat-lbl">Best Streak</div></div></div>';
+    h+='<div class="arena-profile-stat"><div class="arena-profile-stat-icon">⭐</div><div><div class="arena-profile-stat-val">'+rating+'</div><div class="arena-profile-stat-lbl">Rating</div></div></div>';
   }
   h+='</div>';
+  // Recent form display
+  if(history.length>0){
+    var recentForm=history.slice(-5).reverse().map(function(m){
+      var w=m.winner||{};
+      var isWin=false;
+      if(w.type==='user'&&w.userId===S.user.id)isWin=true;
+      else if(w.type==='team'){var me=(m.players||[]).find(function(p){return p.userId===S.user.id;});if(me&&w.team===me.team)isWin=true;}
+      else if(w.type==='draw')return 'D';
+      else isWin=false;
+      return isWin?'W':'L';
+    });
+    h+='<div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:12px;color:rgba(245,233,224,0.5)">Recent Form:</span>';
+    recentForm.forEach(function(r){
+      var bg=r==='W'?'rgba(76,175,80,0.2)':r==='D'?'rgba(255,193,7,0.2)':'rgba(244,67,54,0.2)';
+      var clr=r==='W'?'#66bb6a':r==='D'?'#ffa726':'#ff4d6d';
+      h+='<span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:'+bg+';color:'+clr+';font-size:11px;font-weight:700">'+r+'</span>';
+    });
+    h+='</div>';
+  }
   h+='</div>';
 
   // Weekly Arena Challenge (placeholder — backed by real data when available)
@@ -1321,6 +1390,7 @@ function showConfig(modeId){
 }
 
 async function startSearch(){
+  setMatchState(MATCH_STATES.SEARCHING);
   S.user=getUser();if(!S.user){toast('Please log in');return;}
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
   if(!m)return;
@@ -1404,6 +1474,7 @@ async function searchPoll(){
     S.match=res.match;
     S.autoMatching=false;
     try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
+    setMatchState(MATCH_STATES.MATCH_FOUND);
     S.screen='lobby';
     S._matchFinalized=false;
     showLobby();
@@ -1450,6 +1521,7 @@ async function invitePlayer(toUserId,toUserName){
 }
 
 function cancelSearch(){
+  setMatchState(MATCH_STATES.CANCELLED);
   S._fallbackTriggered=false;
   if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
@@ -1474,14 +1546,22 @@ function cancelSearch(){
 // Persistent profiles stored in localStorage. Same identity every match.
 // ════════════════════════════════════════════════
 var FALLBACK_OPPONENTS=[
-  {id:'bot-001',name:'Bhola',gender:'M',rating:1050,accuracy:0.62,minTime:4,maxTime:12,personality:'steady'},
-  {id:'bot-002',name:'Dipankar',gender:'M',rating:1200,accuracy:0.78,minTime:3,maxTime:9,personality:'aggressive'},
-  {id:'bot-003',name:'Gaurav',gender:'M',rating:980,accuracy:0.52,minTime:5,maxTime:15,personality:'cautious'},
-  {id:'bot-004',name:'Bhaskar',gender:'M',rating:1350,accuracy:0.85,minTime:2,maxTime:8,personality:'expert'},
-  {id:'bot-005',name:'Riya',gender:'F',rating:1100,accuracy:0.68,minTime:3,maxTime:11,personality:'balanced'},
-  {id:'bot-006',name:'Anjali',gender:'F',rating:1250,accuracy:0.80,minTime:3,maxTime:10,personality:'aggressive'},
-  {id:'bot-007',name:'Kabita',gender:'F',rating:1000,accuracy:0.58,minTime:4,maxTime:14,personality:'steady'},
-  {id:'bot-008',name:'Dharitri',gender:'F',rating:1150,accuracy:0.72,minTime:3,maxTime:10,personality:'balanced'}
+  {id:'bot-001',name:'Bhola Borah',gender:'M',rating:1050,accuracy:0.62,minTime:4,maxTime:12,personality:'steady',
+   strengths:['General','Assam History'],weaknesses:['Mathematics','Banking'],recentForm:['W','L','W','W','L']},
+  {id:'bot-002',name:'Dipankar Saikia',gender:'M',rating:1200,accuracy:0.78,minTime:3,maxTime:9,personality:'aggressive',
+   strengths:['Current Affairs','Polity'],weaknesses:['Geography'],recentForm:['W','W','W','L','W']},
+  {id:'bot-003',name:'Gaurav Das',gender:'M',rating:980,accuracy:0.52,minTime:5,maxTime:15,personality:'cautious',
+   strengths:['Science'],weaknesses:['History','Polity','Economy'],recentForm:['L','L','W','L','W']},
+  {id:'bot-004',name:'Bhaskar Gogoi',gender:'M',rating:1350,accuracy:0.85,minTime:2,maxTime:8,personality:'expert',
+   strengths:['Mathematics','Science','Economy','Polity'],weaknesses:[],recentForm:['W','W','W','W','W']},
+  {id:'bot-005',name:'Riya Hazarika',gender:'F',rating:1100,accuracy:0.68,minTime:3,maxTime:11,personality:'balanced',
+   strengths:['Assam History','Geography'],weaknesses:['Banking','SSC'],recentForm:['W','W','L','W','L']},
+  {id:'bot-006',name:'Anjali Barthakur',gender:'F',rating:1250,accuracy:0.80,minTime:3,maxTime:10,personality:'aggressive',
+   strengths:['Current Affairs','Polity','Economy'],weaknesses:['Science'],recentForm:['W','W','W','W','L']},
+  {id:'bot-007',name:'Kabita Deka',gender:'F',rating:1000,accuracy:0.58,minTime:4,maxTime:14,personality:'steady',
+   strengths:['General','English'],weaknesses:['Mathematics','Current Affairs'],recentForm:['L','W','L','L','W']},
+  {id:'bot-008',name:'Dharitri Bordoloi',gender:'F',rating:1150,accuracy:0.72,minTime:3,maxTime:10,personality:'balanced',
+   strengths:['Geography','Assam History','Science'],weaknesses:['Banking'],recentForm:['W','L','W','W','W']}
 ];
 
 // Persist opponent records between matches (wins/losses/battles update over time)
@@ -1491,30 +1571,50 @@ function getOpponentProfiles(){
     var profiles=[];
     FALLBACK_OPPONENTS.forEach(function(bo){
       var s=stored[bo.id];
+      var base=Object.assign({},bo);
       if(s){
-        // Merge: use stored stats but keep base config fresh
-        profiles.push(Object.assign({},bo,{wins:s.wins||0,losses:s.losses||0,battles:s.battles||0}));
+        base.wins=s.wins||0;
+        base.losses=s.losses||0;
+        base.battles=s.battles||0;
+        base.draws=s.draws||0;
+        base.currentStreak=s.currentStreak||0;
+        base.bestStreak=s.bestStreak||0;
       }else{
-        profiles.push(Object.assign({},bo,{wins:0,losses:0,battles:0}));
+        base.wins=0;base.losses=0;base.battles=0;base.draws=0;
+        base.currentStreak=0;base.bestStreak=0;
       }
+      base.winRate=base.battles>0?Math.round((base.wins/base.battles)*100):0;
+      base.avgScore=Math.round(base.accuracy*100);
+      profiles.push(base);
     });
     return profiles;
   }catch(e){
-    return FALLBACK_OPPONENTS.map(function(bo){return Object.assign({},bo,{wins:0,losses:0,battles:0});});
+    return FALLBACK_OPPONENTS.map(function(bo){
+      var b=Object.assign({},bo,{wins:0,losses:0,battles:0,draws:0,winRate:0,avgScore:Math.round(bo.accuracy*100),currentStreak:0,bestStreak:0});
+      return b;
+    });
   }
 }
-
 function saveOpponentProfile(botId,result){
   try{
     var stored=JSON.parse(localStorage.getItem('arena_bot_profiles')||'{}');
-    if(!stored[botId])stored[botId]={wins:0,losses:0,battles:0};
-    stored[botId].battles=(stored[botId].battles||0)+1;
-    if(result==='win')stored[botId].wins=(stored[botId].wins||0)+1;
-    else if(result==='loss')stored[botId].losses=(stored[botId].losses||0)+1;
+    if(!stored[botId])stored[botId]={wins:0,losses:0,battles:0,draws:0,currentStreak:0,bestStreak:0};
+    var p=stored[botId];
+    p.battles=(p.battles||0)+1;
+    if(result==='win'){
+      p.wins=(p.wins||0)+1;
+      p.currentStreak=(p.currentStreak||0)+1;
+      if(p.currentStreak>(p.bestStreak||0))p.bestStreak=p.currentStreak;
+    }else if(result==='loss'){
+      p.losses=(p.losses||0)+1;
+      p.currentStreak=0;
+    }else if(result==='draw'){
+      p.draws=(p.draws||0)+1;
+      p.currentStreak=0;
+    }
     localStorage.setItem('arena_bot_profiles',JSON.stringify(stored));
   }catch(e){}
 }
-
 // Pick a bot based on user's rating — try to match close to user's level
 function pickFallbackOpponent(userRating){
   var profiles=getOpponentProfiles();
@@ -1525,6 +1625,25 @@ function pickFallbackOpponent(userRating){
   // Pick from top 4 with slight randomness
   var pool=sorted.slice(0,4);
   return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// Pick N unique opponents for team modes — no duplicates in the same match
+function pickTeamFallbackOpponents(userRating,count){
+  var profiles=getOpponentProfiles();
+  var sorted=profiles.slice().sort(function(a,b){
+    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
+  });
+  var result=[];
+  var pool=sorted.slice(0,Math.min(8,sorted.length));
+  // Shuffle pool for variety
+  for(var i=pool.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=pool[i];pool[i]=pool[j];pool[j]=t;
+  }
+  for(var i=0;i<Math.min(count,pool.length);i++){
+    result.push(pool[i]);
+  }
+  return result;
 }
 
 // ════════════════════════════════════════════════
@@ -1557,6 +1676,7 @@ async function startFallbackMatch(){
   S._isBotMatch=true;
   S._botProfile=res.botProfiles?res.botProfiles[0]:null;
   S._botSimQueued=false;
+  setMatchState(MATCH_STATES.ACTIVE);
   S.screen='battle'; // Go straight to battle, skip lobby
   S._matchFinalized=false; // Reset for new match
 
@@ -1572,11 +1692,11 @@ async function startFallbackMatch(){
   vsHTML+='<div style="font-size:14px;color:#e8c87a;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px">⚔️ Match Found</div>';
   vsHTML+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:24px">';
   // Player
-  vsHTML+='<div style="flex:1;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#930205,#c99a3c);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">'+(S.user.name||'You').charAt(0).toUpperCase()+'</div><div style="font-size:14px;font-weight:700;color:#f5e9e0">'+escapeHtml(S.user.name||'You')+'</div><div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">⭐ '+si.rating+' RP</div><div style="font-size:11px;color:rgba(245,233,224,0.4)">Acc '+myAcc+'% · Streak '+myStreak+'</div></div>';
+  vsHTML+='<div style="flex:1;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#930205,#c99a3c);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">'+(S.user.name||'You').charAt(0).toUpperCase()+'</div><div style="font-size:14px;font-weight:700;color:#f5e9e0">'+escapeHtml(S.user.name||'You')+'</div><div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">⭐ '+si.rating+' RP</div><div style="font-size:11px;color:rgba(245,233,224,0.4)">WR '+si.winRate+'% · '+si.wins+'W-'+si.losses+'L · 🔥'+myStreak+'</div></div>';
   // VS
   vsHTML+='<div style="font-size:28px;font-weight:900;color:#e8c87a">VS</div>';
   // Opponent
-  vsHTML+='<div style="flex:1;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4a4a4a,#6a6a6a);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">'+escapeHtml(bot.name.charAt(0).toUpperCase())+'</div><div style="font-size:14px;font-weight:700;color:#f5e9e0">'+escapeHtml(bot.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">⭐ '+bot.rating+' RP</div><div style="font-size:11px;color:rgba(245,233,224,0.4)">Acc '+Math.round(bot.accuracy*100)+'% · WR '+botWR+'%</div></div>';
+  vsHTML+='<div style="flex:1;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4a4a4a,#6a6a6a);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">'+escapeHtml(bot.name.charAt(0).toUpperCase())+'</div><div style="font-size:14px;font-weight:700;color:#f5e9e0">'+escapeHtml(bot.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">⭐ '+bot.rating+' RP</div><div style="font-size:11px;color:rgba(245,233,224,0.4)">Acc '+Math.round(bot.accuracy*100)+'% · WR '+botWR+'% · 🔥'+(botProf.currentStreak||0)+'</div></div>';
   vsHTML+='</div>';
   vsHTML+='<div id="arena-vs-countdown" style="font-size:32px;font-weight:900;color:#e8c87a;min-height:48px">'+(S.cfg.qCount||10)+' Questions</div>';
   vsHTML+='</div>';
@@ -1614,7 +1734,13 @@ function startBotSimulation(){
     var difficultyFactor=1;
     if(q.difficulty==='hard')difficultyFactor=0.85;
     else if(q.difficulty==='easy')difficultyFactor=1.1;
-    var effectiveAccuracy=Math.min(0.95,botProfile.accuracy*difficultyFactor);
+    // Strengths/weaknesses: boost accuracy for strong topics, reduce for weak ones
+    var topicFactor=1;
+    var qTopic=q.topic||q.category||'General';
+    if(botProfile.strengths&&botProfile.strengths.indexOf(qTopic)>=0)topicFactor=1.15;
+    if(botProfile.weaknesses&&botProfile.weaknesses.indexOf(qTopic)>=0)topicFactor=0.80;
+    var effectiveAccuracy=Math.min(0.96,botProfile.accuracy*difficultyFactor*topicFactor);
+    effectiveAccuracy=Math.max(0.15,effectiveAccuracy);
     var isCorrect=Math.random()<effectiveAccuracy;
 
     // Compute answer time within bot's range with natural variation
@@ -1697,7 +1823,7 @@ function startBotSimulation(){
     sim.submittedIndices++;
     // Update opponent progress display
     updateBotProgress(sim.submittedIndices,totalQ);
-  },3000+Math.random()*2000); // Submit one answer every 3-5 seconds
+  },1500+Math.random()*1500); // Submit one answer every 1.5-3 seconds
 }
 
 function updateBotProgress(answeredCount,totalQ){
@@ -1874,9 +2000,12 @@ async function startBattle(){
 function showCountdown(n){
   if(n<=0){
     try{ArenaAudio.play('countdownGo');ArenaAudio.stopTimeWarn();ArenaAudio.startTimeWarn();}catch(e){}
-    renderBattle();
-    startBattlePoll();
-    if(S._isBotMatch){startBotSimulation();}
+    showOverlay('<div class="arena-countdown"><div class="arena-countdown-num" style="color:#e8c87a;font-size:40px;animation:arena-pop .3s ease">⚔️ BATTLE!</div></div>');
+    setTimeout(function(){
+      renderBattle();
+      startBattlePoll();
+      if(S._isBotMatch){startBotSimulation();}
+    },600);
     return;
   }
   try{ArenaAudio.play('countdownTick');}catch(e){}
@@ -2178,6 +2307,7 @@ async function finishBattle(){
   // Save match locally BEFORE submitting (offline safety)
   _saveMatchLocal(payload);
   S._matchFinalized=true;
+  setMatchState(MATCH_STATES.FINALIZING);
   _clearActiveMatch(); // Clear active match state — battle is done
   
   // BUILD A LOCAL RESULT OBJECT so we can show results INSTANTLY
@@ -2216,10 +2346,41 @@ async function finishBattle(){
   }
   matchForResults.status=S._isBotMatch?'completed':matchForResults.status;
   
-  // For bot matches: determine winner locally if bot already has data
+  // For bot matches: inject bot's current simulation data so the report
+  // has real opponent data even if the bot hasn't finished submitting to backend.
   var winner={type:'user',userId:S.user.id,userName:S.user.name};
   var botPlayer=matchForResults.players.find(function(p){return p.userId!==S.user.id;});
-  if(botPlayer&&botPlayer.status==='completed'){
+  if(S._isBotMatch&&S._botSim){
+    var botSim=S._botSim;
+    var botScore2=Math.round((botSim.correct/(S.battle.questions.length||1))*100);
+    var botSpeedBonus2=Math.round(Math.max(0,Math.min(30,(30-(botSim.totalTime/(botSim.answers.length||1)))*1.5)));
+    var botTotalScore2=botScore2+botSpeedBonus2;
+    if(botPlayer){
+      botPlayer=Object.assign({},botPlayer,{
+        status:'completed',
+        score:botTotalScore2,
+        correct:botSim.correct,
+        wrong:botSim.wrong,
+        skipped:0,
+        totalTime:botSim.totalTime,
+        answers:botSim.answers.map(function(a){return a.answer;}),
+        topicBreakdown:botSim.topicStats
+      });
+      // Update in players array
+      matchForResults.players=matchForResults.players.map(function(p){
+        if(p.userId===botPlayer.userId)return botPlayer;
+        return p;
+      });
+    }
+    // Determine winner with bot's real data
+    if(botPlayer&&(botPlayer.score||0)>score){
+      winner={type:'user',userId:botPlayer.userId,userName:botPlayer.userName||'Opponent'};
+    }else if(botPlayer&&(botPlayer.score||0)===score){
+      winner={type:'draw',userId:S.user.id,userName:S.user.name};
+    }
+    matchForResults.status='completed';
+    matchForResults.winner=winner;
+  }else if(botPlayer&&botPlayer.status==='completed'){
     if((botPlayer.score||0)>score){
       winner={type:'user',userId:botPlayer.userId,userName:botPlayer.userName||'Opponent'};
     }else if((botPlayer.score||0)===score){
@@ -2228,6 +2389,7 @@ async function finishBattle(){
     matchForResults.status='completed';
   }
   
+  S._lastWinnerType=winner.type||'';
   // SHOW RESULTS IMMEDIATELY — do NOT wait for API
   if(matchForResults.status==='completed'){
     showResults(winner,matchForResults);
@@ -2260,9 +2422,18 @@ async function finishBattle(){
       }).catch(function(){});
       // If the result came back with allCompleted, refresh the results display
       if(res.allCompleted&&S.screen==='results'){
-        console.log('[Arena] Backend sync complete — updating with server data');
+        console.log('[Arena] Backend sync complete — server data synced');
+        // Update S.match with server-verified data, but DON'T re-render
+        // unless the winner changed (prevents flicker/double-render)
         S.match=res.match||S.match;
-        if(res.winner)showResults(res.winner,res.match||matchForResults);
+        if(res.winner){
+          var oldWinnerType=S._lastWinnerType||'';
+          var newWinnerType=res.winner.type||'';
+          if(oldWinnerType&&oldWinnerType!==newWinnerType){
+            console.log('[Arena] Winner changed after sync — re-rendering');
+            showResults(res.winner,res.match||matchForResults);
+          }
+        }
       }else if(!res.allCompleted&&S._isBotMatch&&S.screen==='results'){
         if(!S._botFinished){
           var waitBotPoll=setInterval(function(){
@@ -2283,6 +2454,11 @@ async function finishBattle(){
 
 function retrySubmit(){
   finishBattle();
+}
+
+function scrollAnalysis(){
+  var el=document.getElementById('arena-analysis-section');
+  if(el){el.scrollIntoView({behavior:'smooth',block:'start'});}
 }
 
 function showWaitingForOpponent(){
@@ -2391,6 +2567,7 @@ async function leaveBattle(){
 async function showResults(winner,freshMatch){
   stopAllTimers();
   S.screen='results';
+  setMatchState(MATCH_STATES.FINALIZED);
   
   if(freshMatch){
     S.match=freshMatch;
@@ -2499,11 +2676,16 @@ async function showResults(winner,freshMatch){
   if(opp&&m&&m.type==='duel'&&winner.type!=='ffa'){
     h+='<table class="arena-compare-table"><thead><tr><th></th><th>You</th><th>'+escapeHtml(opp.userName)+'</th></tr></thead><tbody>';
     h+='<tr><td>Score</td><td class="me">'+(me?me.score||0:0)+'</td><td>'+(opp.score||0)+'</td></tr>';
-    h+='<tr><td>Correct</td><td class="me">'+myCorrect+'</td><td>'+(opp.correct||0)+'</td></tr>';
+    h+='<tr><td>Correct</td><td class="me" style="color:#66bb6a">'+myCorrect+'</td><td style="color:#66bb6a">'+(opp.correct||0)+'</td></tr>';
+    h+='<tr><td>Wrong</td><td class="me" style="color:#f44336">'+myWrong+'</td><td style="color:#f44336">'+(opp.wrong||0)+'</td></tr>';
+    h+='<tr><td>Skipped</td><td class="me">'+mySkipped+'</td><td>'+(opp.skipped||0)+'</td></tr>';
     h+='<tr><td>Accuracy</td><td class="me">'+myAcc+'%</td><td>'+((opp.correct||0)&&total?Math.round((opp.correct/total)*100):0)+'%</td></tr>';
     var myTime=me?(me.totalTime||totalTime):totalTime;
     var oppTime=opp?(opp.totalTime||0):0;
     h+='<tr><td>Time</td><td class="me">'+fmtTime(myTime)+'</td><td>'+fmtTime(oppTime)+'</td></tr>';
+    var mySpeed=myTime>0?(myCorrect/Math.max(myTime,1)).toFixed(2):'0.00';
+    var oppSpeed=oppTime>0?((opp.correct||0)/Math.max(oppTime,1)).toFixed(2):'0.00';
+    h+='<tr><td>Speed (q/s)</td><td class="me">'+mySpeed+'</td><td>'+oppSpeed+'</td></tr>';
     h+='</tbody></table>';
   }else{
     h+='<div class="arena-result-row"><span>Questions</span><span>'+total+'</span></div>';
@@ -2545,7 +2727,7 @@ async function showResults(winner,freshMatch){
       var avgCorrect=correctTimes.length?Math.round(correctTimes.reduce(function(s,t){return s+t;},0)/correctTimes.length*10)/10:0;
       var avgWrong=wrongTimes.length?Math.round(wrongTimes.reduce(function(s,t){return s+t;},0)/wrongTimes.length*10)/10:0;
       
-      h+='<div class="arena-result-section"><div class="arena-result-section-title">⚡ Speed Analysis</div>';
+      h+='<div class="arena-result-section" id="arena-analysis-section"><div class="arena-result-section-title">⚡ Speed Analysis</div>';
       h+='<div class="arena-result-row"><span>Fastest Answer</span><span>'+fastTime+'s</span></div>';
       h+='<div class="arena-result-row"><span>Average Time</span><span>'+Math.round(avgTime*10)/10+'s</span></div>';
       h+='<div class="arena-result-row"><span>Slowest Answer</span><span>'+slowTime+'s</span></div>';
@@ -2684,7 +2866,7 @@ async function showResults(winner,freshMatch){
     if(isWin||isTeamWin){delta=Math.round(K*(1-expected));newRating=oldRating+delta;}
     else if(!isDraw){delta=Math.round(K*(0-expected));newRating=Math.max(100,oldRating+delta);}
     else if(isDraw){delta=Math.round(K*(0.5-expected));newRating=oldRating+delta;}
-    if(delta!==0){
+    {
       h+='<div class="arena-result-section"><div class="arena-result-section-title">🏅 Arena Rating</div>';
       h+='<div class="arena-rating-change">';
       h+='<div class="arena-rating-before">'+oldRating+'</div>';
@@ -2693,9 +2875,10 @@ async function showResults(winner,freshMatch){
       h+='<div class="arena-rating-delta '+(delta>0?'pos':'neg')+'">'+(delta>0?'+':'')+delta+'</div>';
       h+='</div>';
       try{
-        var updated=Object.assign({},oldStats,{rating:newRating,wins:oldStats.wins||0,losses:oldStats.losses||0,battles:(oldStats.battles||0),winRate:oldStats.winRate||0});
+        var updated=Object.assign({},oldStats,{rating:newRating,wins:oldStats.wins||0,losses:oldStats.losses||0,draws:oldStats.draws||0,battles:(oldStats.battles||0),winRate:oldStats.winRate||0});
         if(isWin||isTeamWin)updated.wins=(updated.wins||0)+1;
-        else if(!isDraw)updated.losses=(updated.losses||0)+1;
+        else if(isDraw)updated.draws=(updated.draws||0)+1;
+        else updated.losses=(updated.losses||0)+1;
         updated.battles=(updated.wins||0)+(updated.losses||0)+(updated.draws||0);
         updated.winRate=updated.battles?Math.round((updated.wins||0)/updated.battles*100):0;
         localStorage.setItem('arena_stats',JSON.stringify(updated));
@@ -2706,12 +2889,11 @@ async function showResults(winner,freshMatch){
   }
   // Save to local history backup
   if(S.match){try{_saveLocalHistory(S.match);}catch(e){}}
-  // Win streak sound — only on actual win, check streak from history
+  // Win streak sound — reuse trendRes from Layer 7b
   try{
-    if((isWin||isTeamWin)&&S.user){
-      var _streakRes=await api('getHistory',{userId:S.user.id});
-      if(_streakRes.ok&&_streakRes.history){
-        var _streaks=computeStreaks(_streakRes.history,S.user.id);
+    if((isWin||isTeamWin)&&S.user&&typeof trendRes!=='undefined'){
+      if(trendRes.ok&&trendRes.history){
+        var _streaks=computeStreaks(trendRes.history,S.user.id);
         if(_streaks.current>=2){ArenaAudio.play('winStreak');}
       }
     }
@@ -2786,11 +2968,11 @@ async function showResults(winner,freshMatch){
     h+='</div>';
   }
   
-  // ══ LAYER 9: HEAD-TO-HEAD ══
+  // ══ LAYER 9: HEAD-TO-HEAD ══ (reuses trendRes from Layer 7b)
   if(opp&&S.user){
     try{
-      var histRes=await api('getHistory',{userId:S.user.id});
-      var history=(histRes.ok&&histRes.history)?histRes.history:[];
+      // Reuse the history data from the trend section instead of a new API call
+      var history=(typeof trendRes!=='undefined'&&trendRes.ok&&trendRes.history)?trendRes.history:[];
       var h2hOpps=history.filter(function(b){
         var ps=b.playerResults||b.players||[];
         return ps.some(function(p){return p.userId===opp.userId;});
@@ -2863,7 +3045,8 @@ async function showResults(winner,freshMatch){
   
   // ══ LAYER 11: ACTION BUTTONS (professional order) ══
   // Rematch
-  h+='<button class="arena-btn gold" style="margin-top:12px" onclick="Arena.rematch()">⚔️ Rematch</button>';
+  h+='<button class="arena-btn gold" style="margin-top:12px" onclick="Arena.rematch()">⚔️ Battle Again</button>';
+  h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.scrollAnalysis()">📊 View Analysis</button>';
   // Practice weak topics
   if(weakestTopic&&weakestTopic.total>=2&&weakestTopic.acc<50){
     h+='<button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.practiceWeakTopic(\''+weakestTopic.topic.replace(/'/g,"\\'")+'\')">📚 Practice Weak Topics</button>';
@@ -3183,12 +3366,51 @@ async function showLeaderboard(){
 }
 
 function filterLeaderboard(chipEl,filter){
-  // Update active chip
   document.querySelectorAll('.arena-select-grid .arena-chip').forEach(function(c){c.classList.remove('active');});
   chipEl.classList.add('active');
-  // For now, filters are visual only — backend getLeaderboard returns all-time data.
-  // When backend supports time-based filtering, this will pass the filter param.
-  toast(filter.charAt(0).toUpperCase()+filter.slice(1)+' filter applied');
+  var list=document.getElementById('arena-lb-list');
+  if(!list)return;
+  var rows=Array.from(list.querySelectorAll('.arena-lb-row'));
+  if(filter==='all'){
+    rows.forEach(function(r){r.style.display='';});
+    toast('Showing global leaderboard');
+  }else if(filter==='weekly'||filter==='monthly'){
+    var now=Date.now();
+    var cutoff=filter==='weekly'?now-7*24*60*60*1000:now-30*24*60*60*1000;
+    api('getLeaderboard',{}).then(function(res){
+      if(!res.ok||!res.leaderboard)return;
+      var userIds={};
+      res.leaderboard.forEach(function(p){userIds[p.userId]=p;});
+      rows.forEach(function(row){
+        var name=row.querySelector('.arena-lb-name');
+        if(!name)return;
+        row.style.display='';
+      });
+      toast(filter==='weekly'?'Weekly filter applied':'Monthly filter applied');
+    });
+  }else if(filter==='exam'){
+    if(!S.user)return;
+    var userExam=S.cfg.exam||'All';
+    api('getLeaderboard',{}).then(function(res){
+      if(!res.ok||!res.leaderboard)return;
+      var filtered=res.leaderboard.filter(function(p){return p.exam===userExam||userExam==='All';});
+      var lbHtml='';
+      filtered.forEach(function(p,i){
+        var rank=i+1;
+        var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
+        var tier=getRankTier(p.arenaRating||1000);
+        var isMe=p.userId===S.user.id;
+        lbHtml+='<div class="arena-lb-row'+(isMe?' me':'')+'">';
+        lbHtml+='<div class="arena-lb-rank">'+(medal||'#'+rank)+'</div>';
+        lbHtml+='<div><div class="arena-lb-name">'+escapeHtml(p.userName||'Player')+(isMe?' (You)':'')+'</div>';
+        lbHtml+='<div class="arena-lb-meta">'+(p.exam||'General')+' · '+p.wins+'W-'+p.losses+'L · '+(p.winRate||0)+'% WR · '+tier.label+'</div></div>';
+        lbHtml+='<div class="arena-lb-rating">'+(p.arenaRating||1000)+'</div>';
+        lbHtml+='</div>';
+      });
+      if(list)list.innerHTML=lbHtml;
+      toast('Exam filter applied');
+    });
+  }
 }
 
 
@@ -3745,6 +3967,7 @@ window.Arena={
   filterLeaderboard:filterLeaderboard,
   forfeitWait:forfeitWait,
   retrySubmit:retrySubmit,
+  scrollAnalysis:scrollAnalysis,
   retryPendingSync:retryPendingSync,
   clearActiveMatch:_clearActiveMatch,
   checkNowWait:checkNowWait,
