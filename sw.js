@@ -31,11 +31,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v70'; // v70: BrainLab premium visual upgrade — SVG icon system, section-distinct hero icons, badge cards, unified design
+const CACHE_VERSION = 'v71'; // v70: BrainLab premium visual upgrade — SVG icon system, section-distinct hero icons, badge cards, unified design
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.13-new-logo-icon-cache-bust';
+const SW_BUILD      = '2026.08.18-arena-result-fix';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🧠 BrainLab expanded: 12 learning sections with quizzes, mock tests, flashcards, PYQ practice, study streak, and more. Complete learning hub redesign.';

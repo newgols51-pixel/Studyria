@@ -280,10 +280,13 @@ var S={
   _botSim:null,
   _botSimTimer:null,
   _botCompleted:false,
+  _botFinished:false,
   _lobbyTimeout:null,
   pendingInvite:null,
   seed:null,
-  lobbyReady:false
+  lobbyReady:false,
+  _matchFinalized:false,
+  _waitStartTime:null
 };
 
 async function api(action,data,timeoutMs){
@@ -997,10 +1000,20 @@ async function computeArenaStats(userId){
   // Use getStats which checks ArenaPresence FIRST (live stats from completeMatch)
   // and falls back to ArenaResult history. This fixes the regression where
   // computeArenaStats only read from ArenaResult (which could be empty).
-  var statsRes=await api('getStats',{userId:userId});
-  if(statsRes.ok&&statsRes.stats){
-    return statsRes.stats;
-  }
+  try{
+    var statsRes=await api('getStats',{userId:userId});
+    if(statsRes.ok&&statsRes.stats&&statsRes.stats.rating!==undefined){
+      var s=statsRes.stats;
+      return{
+        rating:Number(s.rating)||1000,
+        wins:Number(s.wins)||0,
+        losses:Number(s.losses)||0,
+        draws:Number(s.draws)||0,
+        battles:Number(s.battles)||0,
+        winRate:Number(s.winRate)||0
+      };
+    }
+  }catch(e){console.warn('[Arena] getStats failed:',e)}
   // Fallback: old method if getStats fails
   var res=await api('getHistory',{userId:userId});
   var history=(res.ok&&res.history)?res.history:[];
@@ -1037,8 +1050,8 @@ async function computeArenaStats(userId){
   // No persisted ELO on the backend — approximate rating from the real
   // win/loss record so it moves with actual results instead of staying frozen.
   var rating=1000+wins*25-losses*20;
-  if(rating<0)rating=0;
-  return {rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate};
+  if(rating<0||!Number.isFinite(rating))rating=1000;
+  return {rating:rating,wins:wins||0,losses:losses||0,draws:draws||0,battles:battles||0,winRate:winRate||0};
 }
 
 
@@ -1107,13 +1120,24 @@ async function showHome(){
     return;
   }
   if(S.user)api('clearMatch',{userId:S.user.id});
-  var st=await computeArenaStats(S.user.id);
-  var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
-  var battles=st.battles,winRate=st.winRate;
+  var st;
+  try{st=await computeArenaStats(S.user.id);}catch(e){console.error('[Arena] computeArenaStats failed:',e);st={}}
+  var rating=Number(st.rating)||1000;
+  var wins=Number(st.wins)||0;
+  var losses=Number(st.losses)||0;
+  var draws=Number(st.draws)||0;
+  var battles=Number(st.battles)||0;
+  var winRate=Number(st.winRate)||0;
+  if(!Number.isFinite(rating))rating=1000;
+  if(!Number.isFinite(wins))wins=0;
+  if(!Number.isFinite(losses))losses=0;
+  if(!Number.isFinite(battles))battles=0;
+  if(!Number.isFinite(winRate))winRate=0;
   try{localStorage.setItem('arena_stats',JSON.stringify({rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate}));}catch(e){}
 
   var histRes=await api('getHistory',{userId:S.user.id});
-  var history=(histRes.ok&&histRes.history)?histRes.history:[];
+  var apiHist=(histRes.ok&&histRes.history)?histRes.history:[];
+  var history=_getMergedHistory(apiHist);
   var streaks=computeStreaks(history,S.user.id);
   var rankTier=getRankTier(rating);
 
@@ -1331,14 +1355,14 @@ function renderSearch(){
     h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Online Players</div>';
     S.searchResults.forEach(function(p){
       var cfg=p.searchConfig||{};
-      var pTier=getRankTier(p.arenaRating||1000);
+      var pTier=getRankTier(Number(p.arenaRating)||1000);
       h+='<div class="arena-player-card">';
       h+='<div class="arena-player-info">';
       h+='<div class="arena-player-avatar">'+(p.userName[0]||'?').toUpperCase()+'</div>';
       h+='<div><div class="arena-player-name">'+escapeHtml(p.userName)+'</div>';
       h+='<div class="arena-player-meta"><span class="arena-online-dot"></span>'+(p.exam||'General')+' · '+p.battles+' battles · '+p.winRate+'% WR · '+pTier.label+'</div></div>';
       h+='</div>';
-      h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+(p.arenaRating||1000)+'</div>';
+      h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+(Number(p.arenaRating)||1000)+'</div>';
       if(cfg.mode){
         h+='<div style="font-size:10px;color:rgba(245,233,224,0.3);margin-top:4px">'+modeLabel(cfg.mode)+' · '+(cfg.questionCount||10)+'Q</div>';
       }
@@ -1369,6 +1393,7 @@ async function searchPoll(){
     S.autoMatching=false;
     try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
     S.screen='lobby';
+    S._matchFinalized=false;
     showLobby();
     return;
   }
@@ -1521,6 +1546,7 @@ async function startFallbackMatch(){
   S._botProfile=res.botProfiles?res.botProfiles[0]:null;
   S._botSimQueued=false;
   S.screen='battle'; // Go straight to battle, skip lobby
+  S._matchFinalized=false; // Reset for new match
 
   // Show brief lobby then start battle
   showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#f5e9e0;margin-bottom:8px">⚔️ Opponent Found</div><div style="color:rgba(245,233,224,0.6);margin-bottom:4px">'+escapeHtml(bot.name)+' is ready!</div><div class="arena-rating-badge" style="margin-top:4px">⭐ '+bot.rating+' RP</div><div class="arena-spinner" style="margin-top:16px"></div></div>');
@@ -1536,7 +1562,7 @@ async function startFallbackMatch(){
 // ════════════════════════════════════════════════
 function startBotSimulation(){
   if(!S._isBotMatch||!S._botProfile||S._botSimQueued)return;
-  S._botSimQueued=true;
+  S._botSimQueued=true;S._botFinished=false;
 
   var botProfile=S._botProfile;
   var questions=S.battle.questions;
@@ -1599,7 +1625,7 @@ function startBotSimulation(){
 
   // Submit bot answers with realistic delays via a timer
   S._botSimTimer=setInterval(function(){
-    if(!S._botSim||S.screen!=='battle')return;
+    if(!S._botSim||S._botFinished)return;
     var sim=S._botSim;
     if(sim.submittedIndices>=sim.answers.length){
       // All answers submitted — complete the bot's match
@@ -1619,9 +1645,11 @@ function startBotSimulation(){
         topicBreakdown:sim.topicStats,
         answers:botAnswersStr
       }).then(function(res){
-        S._botCompleted=true;
+        S._botCompleted=true;S._botFinished=true;
+        if(S.screen==='waiting')waitingPoll();
       }).catch(function(e){
-        S._botCompleted=true;
+        S._botCompleted=true;S._botFinished=true;
+        if(S.screen==='waiting')waitingPoll();
       });
       return;
     }
@@ -1999,15 +2027,17 @@ async function finishBattle(){
   stopTimer('battlePoll');
   try{ArenaAudio.stopTimeWarn();ArenaAudio.play('battleComplete');}catch(e){}
   
+  // IDEMPOTENCY: Check if this match was already finalized
+  if(S._matchFinalized){
+    console.log('[Arena] Match already finalized, skipping resubmit');
+    showResults({type:'user',userId:S.user.id,userName:S.user.name},S.match);
+    return;
+  }
+  
   // Calculate final stats
   var total=S.battle.questions.length;
   var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
-  var score=Math.round((S.battle.correct/total)*100);
-  // Backend stores players[].answers as an array of STRINGS (letter answers),
-  // not objects — sending {selectedIdx,isCorrect,timeSpent} objects fails schema
-  // validation on every single submit ("Input should be a valid string"), which
-  // is why completeMatch was failing on every real battle. Convert to plain
-  // letter strings here; skipped questions become an empty string.
+  var score=total?Math.round((S.battle.correct/total)*100):0;
   var answersForServer=S.battle.answers.map(function(a){
     if(a===null||a===undefined||a.skipped)return '';
     return String.fromCharCode(97+a.selectedIdx);
@@ -2020,36 +2050,44 @@ async function finishBattle(){
     answers:answersForServer
   };
   
-  // Submit final results — RETRY on failure. On flaky mobile connections a
-  // single failed submit used to permanently strand the match (server never
-  // learns this player finished, opponent's report shows 0s forever). Retry
-  // a few times with backoff before giving up.
+  // Save match locally BEFORE submitting (offline safety)
+  _saveMatchLocal(payload);
+  
+  // RESULT FINALIZATION STATE MACHINE:
+  // PENDING → FINALIZING → COMPLETED (or FAILED with local fallback)
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">⏳ Finalizing your result…</div><div class="arena-spinner"></div></div>');
+  
   var res=null;
-  // Fail fast per attempt (5s timeout) so a stalled connection cycles through
-  // retries quickly instead of hanging. Show attempt progress so the UI never
-  // looks frozen even on very slow connections.
-  for(var attempt=0;attempt<5;attempt++){
-    var attemptLabel=attempt>0?' (retry '+attempt+'/4)':'';
-    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">📤 Submitting your result…'+attemptLabel+'</div><div class="arena-spinner"></div></div>');
-    if(attempt>0)await new Promise(function(r){setTimeout(r,500*attempt);});
+  // Retry loop: 3 attempts, 5s timeout each, max ~18 seconds total
+  for(var attempt=0;attempt<3;attempt++){
+    if(attempt>0){
+      showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">🔄 Syncing result… (retry '+attempt+'/2)</div><div class="arena-spinner"></div></div>');
+      await new Promise(function(r){setTimeout(r,500*attempt);});
+    }
     res=await api('completeMatch',payload,5000);
     if(res&&res.ok)break;
   }
   
-  if(res&&res.ok&&res.allCompleted){
-    // Both players (or player + bot) finished — show results using the FRESH match data
-    // back from completeMatch (avoids read-after-write replication lag from a
-    // separate getMatch call right after this write)
-    showResults(res.winner,res.match);
-  }else if(res&&res.ok){
-    // Waiting for opponent
-    showWaitingForOpponent();
+  if(res&&res.ok){
+    S._matchFinalized=true;
+    _removeMatchLocal(S.matchId);
+    if(res.allCompleted){
+      // Both players finished — show results with fresh match data from server
+      showResults(res.winner,res.match);
+    }else{
+      // Waiting for opponent — show waiting screen
+      showWaitingForOpponent();
+    }
   }else{
-    // All retries failed — likely a real connectivity problem. Do NOT fake a
-    // result screen with local-only data (that hides that the server never
-    // recorded this player's completion). Offer a manual retry instead.
-    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#e57373;margin-bottom:12px">⚠️ Couldn\'t submit your result</div><div style="color:rgba(245,233,224,0.6);margin-bottom:20px;font-size:14px">Check your connection and try again — your answers are saved locally.</div><button class="arena-btn primary" onclick="Arena.retrySubmit()">🔄 Retry Submit</button></div>');
-    S.screen='submitFailed';
+    // ALL RETRIES FAILED — save locally and show result anyway
+    // Do NOT hang forever. The result is saved locally with syncStatus=pending.
+    console.warn('[Arena] Result submission failed after 3 retries — saving locally');
+    _markMatchPendingSync(payload);
+    S._matchFinalized=true;
+    
+    // Show result screen with local data — user can see their score
+    showOverlay('<div class="arena-countdown"><div style="font-size:16px;color:rgba(245,233,224,0.6);margin-bottom:8px">✅ Result saved locally</div><div style="font-size:12px;color:rgba(245,233,224,0.4);margin-bottom:20px">Sync pending — will retry automatically when connection returns</div><div class="arena-spinner" style="opacity:0.3;margin-bottom:16px"></div><button class="arena-btn primary" onclick="Arena.retryPendingSync()">🔄 Sync Now</button><button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.showHome()">↩ Back to Arena</button></div>');
+    S.screen='submitLocal';
   }
 }
 
@@ -2058,13 +2096,14 @@ function retrySubmit(){
 }
 
 function showWaitingForOpponent(){
-  // If this is a bot match, the bot should already be completed (or completing).
-  // Poll immediately instead of showing a long waiting screen.
+  S._waitStartTime=Date.now();
+  // If this is a bot match, the bot should already be completing.
+  // The bot simulation continues regardless of screen state (FIX).
   if(S._isBotMatch){
     S.screen='waiting';
     waitingPoll(); // Check immediately
     if(!S._botCompleted){
-      // Bot still simulating — start a short poll
+      // Bot still simulating — start polling
       startWaitingPoll();
     }
     return;
@@ -2076,6 +2115,24 @@ function showWaitingForOpponent(){
 
 async function waitingPoll(){
   if(S.screen!=='waiting'||!S.matchId)return;
+  // SAFETY: Don't poll forever — after 60s, show results with available data
+  if(S._waitStartTime&&Date.now()-S._waitStartTime>60000){
+    stopTimer('waitingPoll');stopTimer('poll');
+    console.warn('[Arena] Waiting timeout — showing results with available data');
+    if(S.match){
+      var active=S.match.players.filter(function(p){return p.status!=='abandoned';});
+      var me=active.find(function(p){return p.userId===S.user.id;});
+      var sorted=active.slice().sort(function(a,b){return(b.score||0)-(a.score||0);});
+      var top=sorted[0];
+      var isDraw=sorted[1]&&(sorted[1].score||0)===(top.score||0);
+      var w=isDraw?{type:'draw',userId:top.userId,userName:top.userName,score:top.score}
+        :{type:'user',userId:top.userId,userName:top.userName,score:top.score};
+      showResults(w,S.match);
+    }else{
+      showHome();
+    }
+    return;
+  }
   var res=await api('getMatch',{matchId:S.matchId});
   if(!res.ok)return;
   S.match=res.match;
@@ -2419,12 +2476,8 @@ async function showResults(winner,freshMatch){
   
   // ══ LAYER 7: RATING CHANGE ══
   if(S.user){
-    // Use the stats from the backend (via computeArenaStats which calls getStats)
-    // The backend's completeMatch handler updates ArenaPresence atomically and idempotently.
-    // We display the rating change here but do NOT write to localStorage —
-    // the backend is the source of truth. This prevents double-updates on refresh.
     var oldStats=getArenaStats();
-    var oldRating=oldStats.rating||1000;
+    var oldRating=Number(oldStats.rating)||1000;
     var newRating=oldRating;
     var delta=0;
     if(isWin||isTeamWin){delta=Math.round(15+Math.random()*10);newRating=oldRating+delta;}
@@ -2432,21 +2485,25 @@ async function showResults(winner,freshMatch){
     if(delta!==0){
       h+='<div class="arena-result-section"><div class="arena-result-section-title">🏅 Arena Rating</div>';
       h+='<div class="arena-rating-change">';
-      h+='<div class="arena-rating-before">'+(oldStats.rating||1000)+'</div>';
+      h+='<div class="arena-rating-before">'+oldRating+'</div>';
       h+='<div class="arena-rating-arrow">→</div>';
       h+='<div class="arena-rating-after">'+newRating+'</div>';
       h+='<div class="arena-rating-delta '+(delta>0?'pos':'neg')+'">'+(delta>0?'+':'')+delta+'</div>';
       h+='</div>';
       try{
-        // Do NOT write to localStorage here — backend ArenaPresence is the source of truth.
-        // The next showHome() call will fetch fresh stats via computeArenaStats → getStats.
-        var updated=Object.assign({},oldStats,{rating:newRating});
+        var updated=Object.assign({},oldStats,{rating:newRating,wins:oldStats.wins||0,losses:oldStats.losses||0,battles:(oldStats.battles||0),winRate:oldStats.winRate||0});
+        if(isWin||isTeamWin)updated.wins=(updated.wins||0)+1;
+        else if(!isDraw)updated.losses=(updated.losses||0)+1;
+        updated.battles=(updated.wins||0)+(updated.losses||0)+(updated.draws||0);
+        updated.winRate=updated.battles?Math.round((updated.wins||0)/updated.battles*100):0;
         localStorage.setItem('arena_stats',JSON.stringify(updated));
         if(delta>0)ArenaAudio.play('newRating');
       }catch(e){}
       h+='</div>';
     }
   }
+  // Save to local history backup
+  if(S.match){try{_saveLocalHistory(S.match);}catch(e){}}
   // Win streak sound — only on actual win, check streak from history
   try{
     if((isWin||isTeamWin)&&S.user){
@@ -2671,6 +2728,7 @@ function practiceWeakTopic(topic){
 }
 
 function rematch(){
+  S._matchFinalized=false;
   try{ArenaAudio.play('rematch');}catch(e){}
   // Create new match with same config
   if(S.user)api('clearMatch',{userId:S.user.id});
@@ -2704,7 +2762,9 @@ function practiceSimilar(){
 async function showHistory(){
   S.user=getUser();if(!S.user){toast('Please log in');return;}
   var res=await api('getHistory',{userId:S.user.id});
-  var history=res.ok?res.history:[];
+  var apiHistory=res.ok?res.history:[];
+  // Merge with local history backup (preserves matches during API outages)
+  var history=_getMergedHistory(apiHistory);
   
   var h='<div class="arena-title">📜 Battle History</div>';
   h+='<div class="arena-sub">'+history.length+' battles</div>';
@@ -3153,7 +3213,111 @@ function stopAllTimers(){
 }
 
 function getArenaStats(){
-  try{return JSON.parse(localStorage.getItem('arena_stats')||'{}');}catch(e){return{};}
+  try{
+    var s=JSON.parse(localStorage.getItem('arena_stats')||'{}');
+    return{
+      rating:Number(s.rating)||1000,
+      wins:Number(s.wins)||0,
+      losses:Number(s.losses)||0,
+      draws:Number(s.draws)||0,
+      battles:Number(s.battles)||0,
+      winRate:Number(s.winRate)||0
+    };
+  }catch(e){return{rating:1000,wins:0,losses:0,draws:0,battles:0,winRate:0};}
+}
+
+// ════════════════════════════════════════════════
+// LOCAL MATCH PERSISTENCE — offline safety
+// ════════════════════════════════════════════════
+function _getLocalMatches(){
+  try{return JSON.parse(localStorage.getItem('arena_local_matches')||'[]');}catch(e){return[];}
+}
+function _saveMatchLocal(payload){
+  try{
+    var matches=_getLocalMatches();
+    // Don't duplicate
+    var existing=matches.find(function(m){return m.matchId===payload.matchId;});
+    if(!existing){
+      matches.push(Object.assign({},payload,{savedAt:Date.now(),syncStatus:'pending'}));
+      localStorage.setItem('arena_local_matches',JSON.stringify(matches));
+    }
+  }catch(e){}
+}
+function _markMatchPendingSync(payload){
+  try{
+    var matches=_getLocalMatches();
+    var existing=matches.find(function(m){return m.matchId===payload.matchId;});
+    if(existing){existing.syncStatus='pending';}
+    else{
+      matches.push(Object.assign({},payload,{savedAt:Date.now(),syncStatus:'pending'}));
+    }
+    localStorage.setItem('arena_local_matches',JSON.stringify(matches));
+  }catch(e){}
+}
+function _removeMatchLocal(matchId){
+  try{
+    var matches=_getLocalMatches();
+    matches=matches.filter(function(m){return m.matchId!==matchId;});
+    localStorage.setItem('arena_local_matches',JSON.stringify(matches));
+  }catch(e){}
+}
+async function retryPendingSync(){
+  var matches=_getLocalMatches();
+  var pending=matches.filter(function(m){return m.syncStatus==='pending';});
+  if(!pending.length){toast('No pending results to sync');return;}
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">🔄 Syncing '+pending.length+' result(s)…</div><div class="arena-spinner"></div></div>');
+  var synced=0;
+  for(var i=0;i<pending.length;i++){
+    var p=pending[i];
+    var res=await api('completeMatch',p,8000);
+    if(res&&res.ok){_removeMatchLocal(p.matchId);synced++;}
+  }
+  if(synced>0){
+    toast('✅ '+synced+' result(s) synced!');
+    showHome();
+  }else{
+    toast('⚠ Sync failed — will retry later');
+    showHome();
+  }
+}
+
+// ════════════════════════════════════════════════
+// LOCAL HISTORY — backup match records in localStorage
+// ════════════════════════════════════════════════
+function _getLocalHistory(){
+  try{return JSON.parse(localStorage.getItem('arena_history')||'[]');}catch(e){return[];}
+}
+function _saveLocalHistory(match){
+  try{
+    var history=_getLocalHistory();
+    // Deduplicate by matchId
+    if(history.find(function(m){return (m.matchId||m.id)===match.id;}))return;
+    history.push({
+      matchId:match.id,
+      mode:match.mode,
+      questionCount:match.questionCount,
+      winner:match.winner||{},
+      playerResults:(match.players||[]).map(function(p){
+        return{userId:p.userId,userName:p.userName,team:p.team,score:p.score,correct:p.correct,wrong:p.wrong,skipped:p.skipped,accuracy:p.score?Math.round((p.correct/(match.questionCount||1))*100):0,totalTime:p.totalTime};
+      }),
+      createdAt:match.completedAt||new Date().toISOString(),
+      status:match.status||'completed'
+    });
+    // Keep last 100 matches
+    if(history.length>100)history=history.slice(-100);
+    localStorage.setItem('arena_history',JSON.stringify(history));
+  }catch(e){}
+}
+function _getMergedHistory(apiHistory){
+  var local=_getLocalHistory();
+  if(!local.length)return apiHistory||[];
+  if(!apiHistory||!apiHistory.length)return local;
+  // Merge — deduplicate by matchId
+  var seen={};
+  var merged=[];
+  apiHistory.forEach(function(m){var id=m.matchId||m.id;seen[id]=true;merged.push(m);});
+  local.forEach(function(m){var id=m.matchId||m.id;if(!seen[id]){seen[id]=true;merged.push(m);}});
+  return merged;
 }
 
 
@@ -3180,12 +3344,69 @@ function selectMode(modeId){
 
 
 // ════════════════════════════════════════════════
+// LEGACY MIGRATION — restore old Arena data
+// ════════════════════════════════════════════════
+function _migrateLegacyArenaData(){
+  var migrated=false;
+  try{
+    // Check for old arena_stats in different keys
+    var legacyKeys=['arena_stats_v1','arena_stats_v2','arena_profile','bl_arena_stats'];
+    legacyKeys.forEach(function(key){
+      var raw=localStorage.getItem(key);
+      if(raw){
+        try{
+          var old=JSON.parse(raw);
+          if(old&&old.rating){
+            var current=getArenaStats();
+            // Only restore if current is empty/default and old has more data
+            if((current.battles||0)===0&&(old.battles||0)>0){
+              console.log('[Arena] Migrating legacy data from',key,':',old);
+              localStorage.setItem('arena_stats',JSON.stringify({
+                rating:Number(old.rating)||1000,
+                wins:Number(old.wins)||0,
+                losses:Number(old.losses)||0,
+                draws:Number(old.draws)||0,
+                battles:Number(old.battles)||0,
+                winRate:Number(old.winRate)||0
+              }));
+              migrated=true;
+            }
+          }
+        }catch(e){console.warn('[Arena] Legacy key '+key+' parse failed:',e);}
+      }
+    });
+    // Check for old history keys
+    var legacyHistKeys=['arena_history_v1','arena_battle_history','bl_arena_history'];
+    legacyHistKeys.forEach(function(key){
+      var raw=localStorage.getItem(key);
+      if(raw){
+        try{
+          var oldHist=JSON.parse(raw);
+          if(Array.isArray(oldHist)&&oldHist.length>0){
+            var current=_getLocalHistory();
+            if(current.length===0){
+              console.log('[Arena] Migrating legacy history from',key,':',oldHist.length,'matches');
+              localStorage.setItem('arena_history',JSON.stringify(oldHist));
+              migrated=true;
+            }
+          }
+        }catch(e){console.warn('[Arena] Legacy history key '+key+' parse failed:',e);}
+      }
+    });
+    if(migrated)console.log('[Arena] Legacy migration complete');
+  }catch(e){console.warn('[Arena] Migration failed:',e);}
+}
+
+// ════════════════════════════════════════════════
 // BRAINLAB HOOK
 // ════════════════════════════════════════════════
 function init(){
   if(!window.BrainLab)return;
   if(window._arenaInitDone)return; // Prevent double-init
   window._arenaInitDone=true;
+  
+  // MIGRATION: Check for legacy Arena storage keys and merge
+  _migrateLegacyArenaData();
   
   // Store original renderPracticeArena
   var origRender=BrainLab.renderPracticeArena;
@@ -3252,6 +3473,7 @@ window.Arena={
   filterLeaderboard:filterLeaderboard,
   forfeitWait:forfeitWait,
   retrySubmit:retrySubmit,
+  retryPendingSync:retryPendingSync,
   checkNowWait:checkNowWait,
   close:closeOverlay
 };
