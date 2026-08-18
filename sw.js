@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v68'; // v68: root-cause fix — bumped stale script query strings + hardened SW fetch with cache:no-store so the skip-lock fix actually reaches devices
+const CACHE_VERSION = 'v69'; // v69: BrainLab hero banner swapped to new approved graphic; brainlab.css cache-bust
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
