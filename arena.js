@@ -1002,16 +1002,21 @@ async function computeArenaStats(userId){
   // computeArenaStats only read from ArenaResult (which could be empty).
   try{
     var statsRes=await api('getStats',{userId:userId});
-    if(statsRes.ok&&statsRes.stats&&statsRes.stats.rating!==undefined){
+    if(statsRes.ok&&statsRes.stats){
       var s=statsRes.stats;
-      return{
-        rating:Number(s.rating)||1000,
-        wins:Number(s.wins)||0,
-        losses:Number(s.losses)||0,
-        draws:Number(s.draws)||0,
-        battles:Number(s.battles)||0,
-        winRate:Number(s.winRate)||0
-      };
+      // Backend returns 'arenaRating' from ArenaPresence OR 'rating' from computed fallback.
+      // Handle BOTH field names to prevent undefined rating bug.
+      var ratingVal=s.arenaRating!==undefined?s.arenaRating:(s.rating!==undefined?s.rating:1000);
+      if(ratingVal!==undefined){
+        return{
+          rating:Number(ratingVal)||1000,
+          wins:Number(s.wins)||0,
+          losses:Number(s.losses)||0,
+          draws:Number(s.draws)||0,
+          battles:Number(s.battles)||0,
+          winRate:Number(s.winRate)||0
+        };
+      }
     }
   }catch(e){console.warn('[Arena] getStats failed:',e)}
   // Fallback: old method if getStats fails
@@ -2030,11 +2035,12 @@ async function finishBattle(){
   // IDEMPOTENCY: Check if this match was already finalized
   if(S._matchFinalized){
     console.log('[Arena] Match already finalized, skipping resubmit');
-    showResults({type:'user',userId:S.user.id,userName:S.user.name},S.match);
+    if(S.match)showResults({type:'user',userId:S.user.id,userName:S.user.name},S.match);
+    else showHome();
     return;
   }
   
-  // Calculate final stats
+  // Calculate final stats locally — we have ALL the data already
   var total=S.battle.questions.length;
   var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
   var score=total?Math.round((S.battle.correct/total)*100):0;
@@ -2052,43 +2058,105 @@ async function finishBattle(){
   
   // Save match locally BEFORE submitting (offline safety)
   _saveMatchLocal(payload);
+  S._matchFinalized=true;
   
-  // RESULT FINALIZATION STATE MACHINE:
-  // PENDING → FINALIZING → COMPLETED (or FAILED with local fallback)
-  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">⏳ Finalizing your result…</div><div class="arena-spinner"></div></div>');
+  // BUILD A LOCAL RESULT OBJECT so we can show results INSTANTLY
+  // without waiting for the API response. The API sync happens in
+  // the background — the user never waits for it.
+  var localMatch=S.match||{};
+  // Update local match with our results
+  var myPlayerData={
+    userId:S.user.id,
+    userName:S.user.name,
+    team:'A',
+    status:'completed',
+    ready:true,
+    score:score,
+    correct:S.battle.correct,
+    wrong:S.battle.wrong,
+    skipped:S.battle.skipped,
+    answers:answersForServer,
+    timing:[],
+    completedAt:new Date().toISOString(),
+    totalTime:totalTime,
+    topicBreakdown:S.battle.topicStats
+  };
   
-  var res=null;
-  // Retry loop: 3 attempts, 5s timeout each, max ~18 seconds total
-  for(var attempt=0;attempt<3;attempt++){
-    if(attempt>0){
-      showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">🔄 Syncing result… (retry '+attempt+'/2)</div><div class="arena-spinner"></div></div>');
-      await new Promise(function(r){setTimeout(r,500*attempt);});
-    }
-    res=await api('completeMatch',payload,5000);
-    if(res&&res.ok)break;
-  }
-  
-  if(res&&res.ok){
-    S._matchFinalized=true;
-    _removeMatchLocal(S.matchId);
-    if(res.allCompleted){
-      // Both players finished — show results with fresh match data from server
-      showResults(res.winner,res.match);
-    }else{
-      // Waiting for opponent — show waiting screen
-      showWaitingForOpponent();
-    }
+  // Build/merge match object
+  var matchForResults=Object.assign({},localMatch);
+  if(!matchForResults.players||!matchForResults.players.length){
+    matchForResults.players=[myPlayerData];
   }else{
-    // ALL RETRIES FAILED — save locally and show result anyway
-    // Do NOT hang forever. The result is saved locally with syncStatus=pending.
-    console.warn('[Arena] Result submission failed after 3 retries — saving locally');
-    _markMatchPendingSync(payload);
-    S._matchFinalized=true;
-    
-    // Show result screen with local data — user can see their score
-    showOverlay('<div class="arena-countdown"><div style="font-size:16px;color:rgba(245,233,224,0.6);margin-bottom:8px">✅ Result saved locally</div><div style="font-size:12px;color:rgba(245,233,224,0.4);margin-bottom:20px">Sync pending — will retry automatically when connection returns</div><div class="arena-spinner" style="opacity:0.3;margin-bottom:16px"></div><button class="arena-btn primary" onclick="Arena.retryPendingSync()">🔄 Sync Now</button><button class="arena-btn secondary" style="margin-top:8px" onclick="Arena.showHome()">↩ Back to Arena</button></div>');
-    S.screen='submitLocal';
+    matchForResults.players=matchForResults.players.map(function(p){
+      if(p.userId===S.user.id)return Object.assign({},p,myPlayerData);
+      return p;
+    });
   }
+  matchForResults.status=S._isBotMatch?'completed':matchForResults.status;
+  
+  // For bot matches: determine winner locally if bot already has data
+  var winner={type:'user',userId:S.user.id,userName:S.user.name};
+  var botPlayer=matchForResults.players.find(function(p){return p.userId!==S.user.id;});
+  if(botPlayer&&botPlayer.status==='completed'){
+    if((botPlayer.score||0)>score){
+      winner={type:'user',userId:botPlayer.userId,userName:botPlayer.userName||'Opponent'};
+    }else if((botPlayer.score||0)===score){
+      winner={type:'draw',userId:S.user.id,userName:S.user.name};
+    }
+    matchForResults.status='completed';
+  }
+  
+  // SHOW RESULTS IMMEDIATELY — do NOT wait for API
+  if(matchForResults.status==='completed'){
+    showResults(winner,matchForResults);
+  }else{
+    // For real player matches where opponent hasn't finished, show waiting
+    showWaitingForOpponent();
+  }
+  
+  // SYNC TO BACKEND IN BACKGROUND (fire-and-forget, non-blocking)
+  // This runs AFTER showResults — user already sees their result
+  api('completeMatch',payload,8000).then(function(res){
+    if(res&&res.ok){
+      _removeMatchLocal(S.matchId);
+      // Fetch fresh stats from server to update local cache
+      api('getStats',{userId:S.user.id},5000).then(function(statsRes){
+        if(statsRes.ok&&statsRes.stats){
+          var s=statsRes.stats;
+          var r=s.arenaRating!==undefined?s.arenaRating:s.rating;
+          if(r!==undefined){
+            try{localStorage.setItem('arena_stats',JSON.stringify({
+              rating:Number(r)||1000,
+              wins:Number(s.wins)||0,
+              losses:Number(s.losses)||0,
+              draws:Number(s.draws)||0,
+              battles:Number(s.battles)||0,
+              winRate:Number(s.winRate)||0
+            }));}catch(e){}
+          }
+        }
+      }).catch(function(){});
+      // If the result came back with allCompleted, refresh the results display
+      if(res.allCompleted&&S.screen==='results'){
+        console.log('[Arena] Backend sync complete — updating with server data');
+        S.match=res.match||S.match;
+        if(res.winner)showResults(res.winner,res.match||matchForResults);
+      }else if(!res.allCompleted&&S._isBotMatch&&S.screen==='results'){
+        if(!S._botFinished){
+          var waitBotPoll=setInterval(function(){
+            if(S._botFinished){clearInterval(waitBotPoll);waitingPoll();}
+          },2000);
+          setTimeout(function(){clearInterval(waitBotPoll);},30000);
+        }
+      }
+    }else{
+      console.warn('[Arena] Background sync failed, saved locally for retry');
+      _markMatchPendingSync(payload);
+    }
+  }).catch(function(e){
+    console.warn('[Arena] Background sync error:',e);
+    _markMatchPendingSync(payload);
+  });
 }
 
 function retrySubmit(){
@@ -2478,6 +2546,11 @@ async function showResults(winner,freshMatch){
   if(S.user){
     var oldStats=getArenaStats();
     var oldRating=Number(oldStats.rating)||1000;
+    // If server returned fresh match with updated player data, use server rating
+    if(freshMatch&&freshMatch.players){
+      var serverMe=freshMatch.players.find(function(p){return p.userId===S.user.id;});
+      // Server doesn't return rating in match data — use local stats for display
+    }
     var newRating=oldRating;
     var delta=0;
     if(isWin||isTeamWin){delta=Math.round(15+Math.random()*10);newRating=oldRating+delta;}
