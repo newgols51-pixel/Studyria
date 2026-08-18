@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v70'; // v70: BrainLab premium visual upgrade — SVG icon system, section-distinct hero icons, badge cards, unified design
+const CACHE_VERSION = 'v71'; // v71: Arena premium banner — CSS+SVG design with student avatars, VS element, mode pills, badges; fully responsive
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
