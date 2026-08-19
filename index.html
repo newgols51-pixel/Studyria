@@ -48312,23 +48312,45 @@ window.addEventListener('load', function() {
     fmFilter();
   };
 
-  // ── Hook into navigate() ──
-  var _origNavigate = window._realNavigate || window.navigate;
-  if (typeof _origNavigate === 'function' && !window._fmNavPatched) {
-    var _patchedNav = function(page) {
-      var result = _origNavigate.call(this, page);
+  // ── Init detection: MutationObserver on page visibility ──
+  function _fmCheckAndInit() {
+    var page = document.getElementById('page-free-materials');
+    if (page && page.classList.contains('active') && !fmState.loaded) {
+      window.fmInit();
+    }
+  }
+
+  // Hash change listener
+  window.addEventListener('hashchange', function() {
+    setTimeout(_fmCheckAndInit, 200);
+  });
+
+  // Check on load (multiple attempts to catch different timing)
+  setTimeout(_fmCheckAndInit, 500);
+  setTimeout(_fmCheckAndInit, 1500);
+  setTimeout(_fmCheckAndInit, 3000);
+
+  // MutationObserver: watch for page-free-materials becoming active
+  document.addEventListener('DOMContentLoaded', function() {
+    var fmPage = document.getElementById('page-free-materials');
+    if (fmPage && typeof MutationObserver !== 'undefined') {
+      var observer = new MutationObserver(function() { _fmCheckAndInit(); });
+      observer.observe(fmPage, { attributes: true, attributeFilter: ['class'] });
+    }
+    setTimeout(_fmCheckAndInit, 500);
+  });
+
+  // Also intercept navigate calls for free-materials
+  var _origNav = window.navigate || function(){};
+  if (!window._fmNavPatched) {
+    window.navigate = function(page) {
+      var result = _origNav.apply(this, arguments);
       if (page === 'free-materials') {
-        setTimeout(function() { window.fmInit(); }, 100);
+        setTimeout(_fmCheckAndInit, 100);
       }
       return result;
     };
-    window.navigate = _patchedNav;
     window._fmNavPatched = true;
-  }
-
-  // ── Init on hash load ──
-  if (location.hash === '#free-materials' || location.pathname === '/free-materials') {
-    setTimeout(function() { window.fmInit(); }, 300);
   }
 })();
 
