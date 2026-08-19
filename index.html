@@ -47986,7 +47986,7 @@ window.addEventListener('load', function() {
     { name: 'General Study Materials', icon: '📖', keywords: ['General', 'Study', 'Materials', 'NCERT', 'Textbook'] }
   ];
 
-  var fmState = { loaded: false, materials: [], filtered: [] };
+  var fmState = { loaded: false, initializing: false, materials: [], filtered: [] };
   window.fmState = fmState;
 
   // ── Load free materials (curated + Supabase) ──
@@ -48014,10 +48014,14 @@ window.addEventListener('load', function() {
       });
     });
 
-    // Try Supabase for any additional free PDFs
+    // Try Supabase for any additional free PDFs (with 5s timeout)
     if (window.supabaseClient) {
       try {
-        var res = await window.supabaseClient.from('pdfs').select('*').order('created_at', { ascending: false }).limit(200);
+        var sbPromise = window.supabaseClient.from('pdfs').select('*').order('created_at', { ascending: false }).limit(200);
+        var timeoutPromise = new Promise(function(_, reject) {
+          setTimeout(function() { reject(new Error('Supabase timeout')); }, 5000);
+        });
+        var res = await Promise.race([sbPromise, timeoutPromise]);
         if (!res.error && res.data) {
           var sbFree = res.data.filter(function(p) {
             var isFree = p.free || !p.price || Number(p.price) === 0;
@@ -48306,16 +48310,24 @@ window.addEventListener('load', function() {
 
   // ── Init ──
   window.fmInit = async function fmInit() {
-    await fmLoadMaterials();
-    fmRenderFeatured();
-    fmRenderCategories();
-    fmFilter();
+    if (fmState.loaded || fmState.initializing) return;
+    fmState.initializing = true;
+    try {
+      await fmLoadMaterials();
+      fmRenderFeatured();
+      fmRenderCategories();
+      fmFilter();
+    } catch(e) {
+      console.error('fmInit error:', e);
+    } finally {
+      fmState.initializing = false;
+    }
   };
 
   // ── Init detection: MutationObserver on page visibility ──
   function _fmCheckAndInit() {
     var page = document.getElementById('page-free-materials');
-    if (page && page.classList.contains('active') && !fmState.loaded) {
+    if (page && page.classList.contains('active') && !fmState.loaded && !fmState.initializing) {
       window.fmInit();
     }
   }
