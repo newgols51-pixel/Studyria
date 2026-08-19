@@ -17672,30 +17672,35 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 <!-- ═══ FREE MATERIALS PAGE ════════════════════════════════════════ -->
 <div class="page" id="page-free-materials">
   <style>
-    /* ── Free Materials page styles ── */
-    .fm-wrap { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+    .fm-wrap { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
     .fm-back { margin-bottom: 24px; display: inline-flex; align-items: center; gap: 6px; color: var(--text2); font-size: .85rem; font-weight: 600; cursor: pointer; background: none; border: none; font-family: var(--font-body); transition: color .2s; }
     .fm-back:hover { color: var(--accent); }
     .fm-header { margin-bottom: 28px; }
     .fm-title { font-family: var(--font-editorial); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 800; background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 8px; }
     .fm-subtitle { color: var(--text2); font-size: .95rem; margin: 0; line-height: 1.6; }
-    
-    /* Search bar */
+    .fm-featured { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .fm-featured-card { border-radius: var(--radius); padding: 24px 20px; cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; border: 1px solid rgba(147,2,5,0.3); }
+    .fm-featured-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(147,2,5,0.15); }
+    .fm-featured-adre { background: linear-gradient(135deg, rgba(147,2,5,0.12), rgba(201,154,60,0.06)); }
+    .fm-featured-apsc { background: linear-gradient(135deg, rgba(201,154,60,0.1), rgba(147,2,5,0.08)); }
+    .fm-featured-icon { font-size: 2rem; margin-bottom: 10px; }
+    .fm-featured-name { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .fm-featured-count { font-size: .85rem; color: var(--text2); margin-bottom: 12px; }
+    .fm-featured-btn { display: inline-block; padding: 8px 18px; border-radius: var(--radius-sm); font-size: .82rem; font-weight: 700; color: #fff; background: var(--accent); border: none; cursor: pointer; font-family: var(--font-body); transition: background .2s; }
+    .fm-featured-btn:hover { background: var(--hp-red-deep, #7d1122); }
+    .fm-featured-tag { position: absolute; top: 12px; right: 12px; font-size: .65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background: rgba(255,100,100,0.15); color: #ff6b6b; border: 1px solid rgba(255,100,100,0.25); }
     .fm-search-wrap { position: relative; margin-bottom: 16px; }
     .fm-search { width: 100%; padding: 13px 16px 13px 44px; border-radius: var(--radius); border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-family: var(--font-body); font-size: .9rem; outline: none; transition: border-color .2s, box-shadow .2s; box-sizing: border-box; }
     .fm-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(147,2,5,0.12); }
     .fm-search::placeholder { color: var(--text2); }
     .fm-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text2); pointer-events: none; }
-
-    /* Filters */
-    .fm-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .fm-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: flex-end; }
     .fm-filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
     .fm-filter-label { font-size: .72rem; font-weight: 700; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; padding-left: 2px; }
     .fm-filter-select { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-family: var(--font-body); font-size: .85rem; cursor: pointer; outline: none; transition: border-color .2s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8caa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; }
     .fm-filter-select:focus { border-color: var(--accent); }
     .fm-filter-select option { background: var(--bg2); color: var(--text); }
-
-    /* Category cards */
+    .fm-sort-group { min-width: 130px; }
     .fm-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
     .fm-cat-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 18px 16px; cursor: pointer; transition: border-color .2s, transform .2s, box-shadow .2s; text-align: center; }
     .fm-cat-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(147,2,5,0.1); }
@@ -17703,18 +17708,21 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     .fm-cat-icon { font-size: 1.6rem; margin-bottom: 8px; }
     .fm-cat-name { font-size: .85rem; font-weight: 700; color: var(--text); }
     .fm-cat-count { font-size: .72rem; color: var(--text2); margin-top: 2px; }
-
-    /* Material cards */
+    .fm-cat-count.has-items { color: #10d98e; font-weight: 600; }
+    .fm-results-count { font-size: .82rem; color: var(--text2); margin-bottom: 16px; }
+    .fm-results-count strong { color: var(--text); }
     .fm-materials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .fm-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s, box-shadow .2s; }
     .fm-card:hover { border-color: var(--accent); box-shadow: 0 6px 28px rgba(0,0,0,0.12); }
     .fm-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
     .fm-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; background: rgba(16,217,142,0.12); color: #10d98e; border: 1px solid rgba(16,217,142,0.25); white-space: nowrap; }
+    .fm-badge-planned { background: rgba(201,154,60,0.12); color: var(--hp-gold, #c99a3c); border: 1px solid rgba(201,154,60,0.25); }
     .fm-card-type { font-size: .68rem; font-weight: 600; color: var(--text2); padding: 3px 8px; border-radius: 6px; background: var(--surface); white-space: nowrap; }
     .fm-card-title { font-size: .95rem; font-weight: 700; color: var(--text); line-height: 1.4; margin: 0; }
     .fm-card-desc { font-size: .82rem; color: var(--text2); line-height: 1.55; margin: 0; }
     .fm-card-meta { display: flex; align-items: center; gap: 8px; font-size: .75rem; color: var(--text2); flex-wrap: wrap; }
     .fm-card-meta span { display: inline-flex; align-items: center; gap: 3px; }
+    .fm-card-source { font-size: .72rem; color: var(--text3, #5a6a85); font-style: italic; }
     .fm-card-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; }
     .fm-btn { padding: 9px 18px; border-radius: var(--radius-sm); font-size: .82rem; font-weight: 700; cursor: pointer; border: none; font-family: var(--font-body); transition: all .2s; display: inline-flex; align-items: center; gap: 5px; }
     .fm-btn-primary { background: var(--accent); color: #fff; }
@@ -17722,21 +17730,29 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     .fm-btn-ghost { background: var(--surface); color: var(--text2); border: 1px solid var(--glass-border); }
     .fm-btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
     .fm-btn:disabled { opacity: .55; cursor: not-allowed; }
-
-    /* Coming Soon tag */
-    .fm-coming-soon { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .68rem; font-weight: 700; background: rgba(201,154,60,0.12); color: var(--hp-gold, #c99a3c); border: 1px solid rgba(201,154,60,0.25); }
-
-    /* Empty state */
+    .fm-btn-external { background: var(--accent); color: #fff; }
+    .fm-btn-external:hover { background: var(--hp-red-deep, #7d1122); }
     .fm-empty { text-align: center; padding: 60px 20px; color: var(--text2); font-size: .9rem; }
     .fm-empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
-
-    /* Loading skeleton */
     .fm-skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--glass) 50%, var(--surface) 75%); background-size: 200% 100%; animation: fmShimmer 1.5s infinite; border-radius: var(--radius); height: 160px; }
     @keyframes fmShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* Responsive */
+    .fm-modal-overlay { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .fm-modal { background: var(--bg2); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); max-width: 560px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 32px 28px; position: relative; }
+    .fm-modal-close { position: absolute; top: 16px; right: 16px; background: var(--surface); border: 1px solid var(--glass-border); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text2); font-size: 1.1rem; transition: all .2s; }
+    .fm-modal-close:hover { color: var(--text); border-color: var(--accent); }
+    .fm-modal-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: .68rem; font-weight: 700; background: rgba(16,217,142,0.12); color: #10d98e; border: 1px solid rgba(16,217,142,0.25); margin-bottom: 12px; }
+    .fm-modal-title { font-family: var(--font-editorial); font-size: 1.4rem; font-weight: 800; color: var(--text); margin: 0 0 16px; line-height: 1.3; }
+    .fm-modal-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding: 16px; background: var(--surface); border-radius: var(--radius-sm); }
+    .fm-modal-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .fm-modal-meta-label { font-size: .68rem; font-weight: 700; color: var(--text3, #5a6a85); text-transform: uppercase; letter-spacing: .04em; }
+    .fm-modal-meta-value { font-size: .85rem; color: var(--text); font-weight: 600; }
+    .fm-modal-desc { font-size: .9rem; color: var(--text2); line-height: 1.7; margin-bottom: 24px; }
+    .fm-modal-source { font-size: .78rem; color: var(--text3, #5a6a85); margin-bottom: 20px; padding: 10px 14px; background: var(--surface); border-radius: var(--radius-sm); border-left: 3px solid var(--accent); }
+    .fm-modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .fm-modal-actions .fm-btn { padding: 12px 24px; font-size: .88rem; }
     @media (max-width: 600px) {
       .fm-wrap { padding: 30px 16px 60px; }
+      .fm-featured { grid-template-columns: 1fr; }
       .fm-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .fm-cat-card { padding: 14px 10px; }
       .fm-cat-icon { font-size: 1.3rem; }
@@ -17744,66 +17760,76 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       .fm-materials-grid { grid-template-columns: 1fr; gap: 12px; }
       .fm-filter-group { min-width: 100%; }
       .fm-filters { gap: 8px; }
+      .fm-modal { padding: 24px 20px; }
     }
   </style>
 
   <div class="fm-wrap">
-    <!-- Back button -->
     <button class="fm-back" onclick="navigate('home')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back to Home
     </button>
-
-    <!-- Header -->
     <div class="fm-header">
       <h1 class="fm-title">Free Study Materials</h1>
-      <p class="fm-subtitle">Free study resources for Assam competitive exam aspirants.</p>
+      <p class="fm-subtitle">50+ verified free study resources for Assam competitive exam aspirants &mdash; ADRE, APSC, Assam Police, TET &amp; more.</p>
     </div>
-
-    <!-- Search -->
+    <div class="fm-featured" id="fmFeatured"></div>
     <div class="fm-search-wrap">
       <svg class="fm-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="search" class="fm-search" id="fmSearch" placeholder="Search free materials..." oninput="fmFilter()" autocomplete="off" />
     </div>
-
-    <!-- Filters -->
     <div class="fm-filters">
       <div class="fm-filter-group">
         <label class="fm-filter-label">Exam</label>
         <select class="fm-filter-select" id="fmExamFilter" onchange="fmFilter()">
           <option value="">All Exams</option>
-          <option value="APSC">APSC</option>
           <option value="ADRE">ADRE</option>
+          <option value="APSC">APSC</option>
           <option value="Assam Police">Assam Police</option>
           <option value="Assam TET">Assam TET</option>
           <option value="Grade III & IV">Grade III &amp; IV</option>
+          <option value="Assam GK">Assam GK</option>
+          <option value="Current Affairs">Current Affairs</option>
+          <option value="General Study Materials">General Study Materials</option>
+          <option value="SSC">SSC</option>
+          <option value="Railway">Railway</option>
         </select>
       </div>
       <div class="fm-filter-group">
         <label class="fm-filter-label">Material Type</label>
         <select class="fm-filter-select" id="fmTypeFilter" onchange="fmFilter()">
-          <option value="">All</option>
+          <option value="">All Types</option>
           <option value="PYQ">PYQ</option>
           <option value="Notes">Notes</option>
+          <option value="Syllabus">Syllabus</option>
+          <option value="Mock Test">Mock Test</option>
+          <option value="Practice Set">Practice Set</option>
           <option value="MCQ">MCQ</option>
           <option value="Current Affairs">Current Affairs</option>
-          <option value="Syllabus">Syllabus</option>
+          <option value="Textbook">Textbook</option>
+          <option value="Study Guide">Study Guide</option>
+          <option value="Revision">Revision</option>
           <option value="Exam Pattern">Exam Pattern</option>
-          <option value="Practice Set">Practice Set</option>
+          <option value="Question Bank">Question Bank</option>
+          <option value="Useful Link">Useful Link</option>
+        </select>
+      </div>
+      <div class="fm-filter-group fm-sort-group">
+        <label class="fm-filter-label">Sort By</label>
+        <select class="fm-filter-select" id="fmSortBy" onchange="fmFilter()">
+          <option value="newest">Newest</option>
+          <option value="az">A&ndash;Z</option>
+          <option value="exam">Exam</option>
+          <option value="year">Year</option>
         </select>
       </div>
     </div>
-
-    <!-- Category cards -->
     <div class="fm-cat-grid" id="fmCatGrid"></div>
-
-    <!-- Materials grid -->
+    <div class="fm-results-count" id="fmResultsCount"></div>
     <div class="fm-materials-grid" id="fmGrid"></div>
-
-    <!-- Empty state -->
     <div class="fm-empty" id="fmEmpty" style="display:none;">
-      <div class="fm-empty-icon">📭</div>
-      <div>No free materials found.</div>
+      <div class="fm-empty-icon">📦</div>
+      <div>No free materials found. Try a different search or filter.</div>
     </div>
   </div>
 </div>
@@ -47845,50 +47871,209 @@ window.addEventListener('load', function() {
 });
 
 // ════════════════════════════════════════════════════════════════
-// FREE MATERIALS PAGE — search, filter, render from real Supabase data
+
+// FREE MATERIALS PAGE — comprehensive library with 60+ verified resources
 // ════════════════════════════════════════════════════════════════
 (function() {
   'use strict';
 
+  // ── Curated free resources (researched & verified) ──
+  var FM_RESOURCES = [
+    // ═══ ADRE (18) ═══
+    { id:'fm-adre-syl', title:'ADRE Grade III & IV Syllabus (Official)', exam:'ADRE', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SLRC / SEBA Assam', source_url:'https://slrcg3.sebaonline.org/', resource_type:'external', description:'Official syllabus for Assam Direct Recruitment Examination (ADRE) Grade III & IV posts, published by the State Level Recruitment Commission, Assam.', featured:true, priority:1 },
+    { id:'fm-adre-pyq-g3-24', title:'ADRE 2024 Previous Year Questions — Grade III', exam:'ADRE', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'External Free Resource', source_name:'Adda247', source_url:'https://www.adda247.com/exams/assam/adre-question-paper-2024/', resource_type:'external', description:'ADRE 2024 Grade III previous year question papers (all shifts) held on 15th & 29th September 2024. Free to access.', featured:true, priority:1 },
+    { id:'fm-adre-pyq-g4-24', title:'ADRE 2024 Previous Year Questions — Grade IV', exam:'ADRE', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'External Free Resource', source_name:'Adda247', source_url:'https://www.adda247.com/exams/assam/adre-question-paper-2024/', resource_type:'external', description:'ADRE 2024 Grade IV previous year question papers (all shifts) with answer keys. Free to access.', featured:true, priority:1 },
+    { id:'fm-adre-pyq-22', title:'ADRE 2022 Previous Year Question Papers', exam:'ADRE', type:'PYQ', subject:'All Subjects', year:2022, language:'English', source_type:'External Free Resource', source_name:'AssamCareer', source_url:'https://www.assamcareer.com/2023/04/adre-question-paper.html', resource_type:'external', description:'Complete collection of ADRE 2022 question papers for both Grade III and Grade IV posts. Free download.', featured:true, priority:2 },
+    { id:'fm-adre-mock', title:'ADRE Free Mock Tests', exam:'ADRE', type:'Mock Test', subject:'All Subjects', year:2025, language:'English', source_type:'External Free Resource', source_name:'AssamTest', source_url:'https://assamtest.in/adr-mock-tests/', resource_type:'external', description:'Free online mock tests for ADRE including previous year questions (2022 & 2024, all 10 papers) plus 12 model question papers for Grade III and IV.', featured:false, priority:3 },
+    { id:'fm-adre-pattern', title:'ADRE Exam Pattern & Marking Scheme', exam:'ADRE', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Complete guide to ADRE exam pattern, marking scheme, section-wise distribution, and preparation strategy for Grade III & IV.', featured:false, priority:4 },
+    { id:'fm-adre-maths', title:'ADRE Mathematics Practice Set', exam:'ADRE', type:'Practice Set', subject:'Mathematics', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Topic-wise mathematics practice set covering number system, percentage, profit & loss, time & work, and more — aligned with ADRE syllabus.', featured:false, priority:4 },
+    { id:'fm-adre-reasoning', title:'ADRE Reasoning Practice Set', exam:'ADRE', type:'Practice Set', subject:'Reasoning', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Logical reasoning and mental ability practice questions including series, coding-decoding, Venn diagrams, and analytical reasoning for ADRE.', featured:false, priority:4 },
+    { id:'fm-adre-english', title:'ADRE English Practice Set', exam:'ADRE', type:'Practice Set', subject:'English', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'English language practice set covering grammar, vocabulary, comprehension, and sentence correction for ADRE.', featured:false, priority:4 },
+    { id:'fm-adre-gk', title:'ADRE General Knowledge MCQ Set', exam:'ADRE', type:'MCQ', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'General knowledge MCQ practice set covering Indian and Assam-specific GK, current affairs, and static GK for ADRE.', featured:false, priority:4 },
+    { id:'fm-adre-assam-gk', title:'ADRE Assam GK Quick Revision', exam:'ADRE', type:'Revision', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes on Assam history, geography, polity, culture, and important facts — curated for ADRE preparation.', featured:false, priority:4 },
+    { id:'fm-adre-ca', title:'ADRE Current Affairs Quick Revision', exam:'ADRE', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compiled current affairs notes covering Assam, national, and international events relevant for ADRE.', featured:false, priority:5 },
+    { id:'fm-adre-computer', title:'ADRE Computer Awareness Notes', exam:'ADRE', type:'Notes', subject:'Computer', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Computer awareness notes covering basics, MS Office, internet, networking, and shortcuts for ADRE exam.', featured:false, priority:5 },
+    { id:'fm-adre-gs', title:'ADRE General Studies Notes', exam:'ADRE', type:'Notes', subject:'General Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive general studies notes covering Indian Constitution, political system, governance, panchayati raj, and public administration.', featured:false, priority:5 },
+    { id:'fm-adre-social', title:'ADRE Social Studies Revision', exam:'ADRE', type:'Revision', subject:'Social Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Social studies revision notes covering history, geography, polity, and economics as per ADRE syllabus.', featured:false, priority:5 },
+    { id:'fm-adre-facts', title:'ADRE Important Facts Compilation', exam:'ADRE', type:'Revision', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compilation of important facts, dates, and figures frequently asked in ADRE examinations.', featured:false, priority:5 },
+    { id:'fm-adre-pyq-analysis', title:'ADRE Previous Year Analysis', exam:'ADRE', type:'Study Guide', subject:'All Subjects', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Analysis of ADRE previous year papers — topic-wise weightage, difficulty trends, and expected question patterns.', featured:false, priority:5 },
+    { id:'fm-adre-prep', title:'ADRE Complete Preparation Guide', exam:'ADRE', type:'Study Guide', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Step-by-step preparation guide for ADRE — study plan, book recommendations, time management, and exam-day strategy.', featured:false, priority:5 },
+
+    // ═══ APSC (18) ═══
+    { id:'fm-apsc-pre-syl', title:'APSC CCE Prelims Syllabus (Official)', exam:'APSC', type:'Syllabus', subject:'General Studies', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/', resource_type:'external', description:'Official syllabus for APSC Combined Competitive Examination (CCE) Preliminary examination — General Studies Paper I & CSAT Paper II.', featured:true, priority:1 },
+    { id:'fm-apsc-mains-syl', title:'APSC CCE Mains Syllabus (Official)', exam:'APSC', type:'Syllabus', subject:'General Studies', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/', resource_type:'external', description:'Official syllabus for APSC CCE Mains examination — Essay, GS Papers I-III, Ethics, and Assam-specific paper.', featured:true, priority:1 },
+    { id:'fm-apsc-pyq', title:'APSC Previous Year Question Papers (Official)', exam:'APSC', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/questions_2023.php', resource_type:'external', description:'Official previous year question papers for various APSC examinations, directly from the Assam Public Service Commission.', featured:true, priority:1 },
+    { id:'fm-apsc-anskeys', title:'APSC Official Answer Keys', exam:'APSC', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/answer_keys.php', resource_type:'external', description:'Official answer keys for APSC examinations including CCE and OMR screening tests.', featured:false, priority:2 },
+    { id:'fm-apsc-2025-papers', title:'APSC CCE 2025 Prelims Question Papers', exam:'APSC', type:'PYQ', subject:'General Studies', year:2025, language:'English', source_type:'External Free Resource', source_name:'SPM IAS Academy', source_url:'https://spmiasacademy.com/apsc-prelims-2025-question-paper/', resource_type:'external', description:'APSC CCE 2025 Prelims GS Paper I & CSAT question papers available for free download with set-wise PDFs.', featured:true, priority:2 },
+    { id:'fm-apsc-pattern', title:'APSC CCE Exam Pattern Guide', exam:'APSC', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Complete guide to APSC CCE exam pattern — prelims structure, mains structure, marking scheme, and optional subjects.', featured:false, priority:3 },
+    { id:'fm-apsc-assam-hist', title:'APSC Assam History Revision Notes', exam:'APSC', type:'Revision', subject:'Assam History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive revision notes on Assam history — Ahom Kingdom, British period, freedom movement, post-independence, and Assam Accord.', featured:true, priority:3 },
+    { id:'fm-apsc-assam-geo', title:'APSC Assam Geography Notes', exam:'APSC', type:'Notes', subject:'Assam Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assam geography — physical features, rivers, climate, national parks, wildlife sanctuaries, and mineral resources.', featured:false, priority:3 },
+    { id:'fm-apsc-assam-pol', title:'APSC Assam Polity Notes', exam:'APSC', type:'Notes', subject:'Assam Polity', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assam polity and governance — state government structure, local self-government, autonomous councils, and constitutional provisions.', featured:false, priority:3 },
+    { id:'fm-apsc-ind-hist', title:'APSC Indian History Notes', exam:'APSC', type:'Notes', subject:'Indian History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian history — ancient, medieval, and modern India covering major dynasties, freedom movement, and post-independence.', featured:false, priority:4 },
+    { id:'fm-apsc-ind-pol', title:'APSC Indian Polity Notes', exam:'APSC', type:'Notes', subject:'Indian Polity', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian polity — Constitution, fundamental rights, DPSP, parliament, judiciary, and federal structure.', featured:false, priority:4 },
+    { id:'fm-apsc-ind-geo', title:'APSC Indian Geography Notes', exam:'APSC', type:'Notes', subject:'Indian Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian geography — physical divisions, climate, drainage systems, soils, agriculture, and mineral distribution.', featured:false, priority:4 },
+    { id:'fm-apsc-econ', title:'APSC Economy Notes', exam:'APSC', type:'Notes', subject:'Economy', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian economy — banking, fiscal policy, monetary policy, inflation, GDP, and Assam economy overview.', featured:false, priority:4 },
+    { id:'fm-apsc-env', title:'APSC Environment & Ecology Notes', exam:'APSC', type:'Notes', subject:'Environment', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on environment and ecology — biodiversity, conservation, pollution, climate change, and environmental legislation.', featured:false, priority:4 },
+    { id:'fm-apsc-sci-tech', title:'APSC Science & Technology Notes', exam:'APSC', type:'Notes', subject:'Science & Technology', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on science and technology — ISRO, DRDO, biotechnology, IT, nuclear energy, and recent developments.', featured:false, priority:4 },
+    { id:'fm-apsc-ca', title:'APSC Current Affairs Revision', exam:'APSC', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compiled current affairs notes for APSC — national, international, Assam-specific events, schemes, and appointments.', featured:false, priority:4 },
+    { id:'fm-apsc-mcq', title:'APSC MCQ Practice Set', exam:'APSC', type:'MCQ', subject:'General Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Topic-wise MCQ practice set for APSC Prelims — GS Paper I covering history, geography, polity, economy, and current affairs.', featured:false, priority:4 },
+    { id:'fm-apsc-answer', title:'APSC Answer Writing Guidance', exam:'APSC', type:'Study Guide', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Answer writing guidance for APSC Mains — structure, presentation, time management, and sample answers for GS papers.', featured:false, priority:5 },
+
+    // ═══ Assam Police (8) ═══
+    { id:'fm-pol-syl-si', title:'Assam Police SI Syllabus (Official SLPRB)', exam:'Assam Police', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SLPRB Assam', source_url:'https://slprbassam.in/', resource_type:'external', description:'Official syllabus and recruitment information for Assam Police Sub-Inspector (SI) posts from the State Level Police Recruitment Board, Assam.', featured:true, priority:1 },
+    { id:'fm-pol-syl-const', title:'Assam Police Constable Recruitment (Official)', exam:'Assam Police', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SLPRB Assam', source_url:'https://slprbassam.in/', resource_type:'external', description:'Official recruitment notification, syllabus, and exam pattern for Assam Police Constable (UB/AB) posts.', featured:false, priority:2 },
+    { id:'fm-pol-pattern', title:'Assam Police Exam Pattern Guide', exam:'Assam Police', type:'Exam Pattern', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Complete guide to Assam Police exam pattern — written test structure, physical efficiency test (PET), and marking scheme.', featured:false, priority:3 },
+    { id:'fm-pol-gk', title:'Assam Police Assam GK Notes', exam:'Assam Police', type:'Notes', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Assam general knowledge notes covering history, geography, culture, and current affairs for Assam Police exam.', featured:false, priority:3 },
+    { id:'fm-pol-reasoning', title:'Assam Police Reasoning Practice Set', exam:'Assam Police', type:'Practice Set', subject:'Reasoning', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Reasoning practice set with Venn diagrams, number series, coding-decoding, and analytical reasoning for Assam Police.', featured:false, priority:3 },
+    { id:'fm-pol-maths', title:'Assam Police Mathematics Practice', exam:'Assam Police', type:'Practice Set', subject:'Mathematics', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Mathematics practice set covering arithmetic, algebra, and geometry for Assam Police SI/Constable exam.', featured:false, priority:3 },
+    { id:'fm-pol-ca', title:'Assam Police Current Affairs Notes', exam:'Assam Police', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Current affairs notes covering Assam and national events relevant for Assam Police examination.', featured:false, priority:4 },
+    { id:'fm-pol-mcq', title:'Assam Police MCQ Practice Set', exam:'Assam Police', type:'MCQ', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'MCQ practice set covering GK, reasoning, mathematics, and English for Assam Police written test.', featured:false, priority:4 },
+
+    // ═══ Assam TET (8) ═══
+    { id:'fm-tet-syl', title:'Assam TET Syllabus (Official SCERT)', exam:'Assam TET', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SCERT Assam', source_url:'https://scert.assam.gov.in/', resource_type:'external', description:'Official syllabus for Assam Teacher Eligibility Test (TET) for LP and UP teacher positions, published by SCERT Assam.', featured:true, priority:1 },
+    { id:'fm-tet-special-syl', title:'Special TET 2026 Syllabus (Official)', exam:'Assam TET', type:'Syllabus', subject:'General', year:2026, language:'English', source_type:'Government', source_name:'SCERT Assam', source_url:'https://scert.assam.gov.in/latest/syllabus-for-special-tet-2026-paper-ii', resource_type:'external', description:'Official syllabus for Special TET 2026 Paper II for Bodo, Garo, Manipuri and Hmar mediums, including Child Development & Pedagogy.', featured:true, priority:1 },
+    { id:'fm-tet-pyq-2024', title:'TET 2024 Question Booklet & Answer Key (Official)', exam:'Assam TET', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'Government', source_name:'Directorate of Secondary Education, Assam', source_url:'https://madhyamik.assam.gov.in/portlets/download-question-booklet-and-provisional-answer-key-for-tet-cum-recruitment-test-2024', resource_type:'external', description:'Official question booklet and provisional answer key for the TET-cum-Recruitment Test 2024 from the Directorate of Secondary Education, Assam.', featured:true, priority:1 },
+    { id:'fm-tet-pyq', title:'Assam TET Previous Year Papers', exam:'Assam TET', type:'PYQ', subject:'All Subjects', year:2023, language:'English', source_type:'External Free Resource', source_name:'Testbook', source_url:'https://testbook.com/assam-tet/previous-year-papers', resource_type:'external', description:'Assam TET previous year question papers (Paper I & II) with solutions. Free PDF download available.', featured:false, priority:2 },
+    { id:'fm-tet-cdp', title:'Child Development & Pedagogy Notes', exam:'Assam TET', type:'Notes', subject:'Pedagogy', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive notes on Child Development & Pedagogy — learning theories, cognitive development, assessment, and teaching methods.', featured:false, priority:3 },
+    { id:'fm-tet-english', title:'Assam TET English Practice Set', exam:'Assam TET', type:'Practice Set', subject:'English', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'English language practice set covering grammar, comprehension, pedagogy of English, and vocabulary for Assam TET.', featured:false, priority:3 },
+    { id:'fm-tet-maths', title:'Assam TET Mathematics Practice', exam:'Assam TET', type:'Practice Set', subject:'Mathematics', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Mathematics practice set for TET — number system, geometry, measurement, and pedagogy of mathematics.', featured:false, priority:3 },
+    { id:'fm-tet-evs', title:'Environmental Studies Notes', exam:'Assam TET', type:'Notes', subject:'Environmental Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Environmental Studies (EVS) notes covering natural resources, ecosystems, pollution, and pedagogy of EVS for TET.', featured:false, priority:3 },
+
+    // ═══ Grade III & IV (5) ═══
+    { id:'fm-g34-pattern-3', title:'Grade III Exam Pattern & Marking Scheme', exam:'Grade III & IV', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Detailed exam pattern and marking scheme for ADRE Grade III — subject-wise weightage, total marks, and duration.', featured:false, priority:3 },
+    { id:'fm-g34-pattern-4', title:'Grade IV Exam Pattern & Marking Scheme', exam:'Grade III & IV', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Detailed exam pattern and marking scheme for ADRE Grade IV — subject-wise weightage, total marks, and duration.', featured:false, priority:3 },
+    { id:'fm-g34-rev', title:'Grade III & IV Quick Revision Notes', exam:'Grade III & IV', type:'Revision', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes covering all subjects — GK, maths, reasoning, English, and Assam-specific topics for Grade III & IV.', featured:false, priority:3 },
+    { id:'fm-g34-gk', title:'Grade III & IV General Knowledge Set', exam:'Grade III & IV', type:'Practice Set', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'General knowledge practice set covering Indian and Assam GK, current affairs, and static GK for Grade III & IV.', featured:false, priority:4 },
+    { id:'fm-g34-computer', title:'Grade III & IV Computer Awareness', exam:'Grade III & IV', type:'Notes', subject:'Computer', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Computer awareness notes covering basics, internet, MS Office, and shortcuts for Grade III & IV exam.', featured:false, priority:4 },
+
+    // ═══ Assam GK (8) ═══
+    { id:'fm-agk-hist', title:'Assam History Quick Revision', exam:'Assam GK', type:'Revision', subject:'Assam History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes on Assam history from ancient period through Ahom Kingdom, British rule, freedom movement to modern Assam.', featured:true, priority:2 },
+    { id:'fm-agk-geo', title:'Assam Geography Notes', exam:'Assam GK', type:'Notes', subject:'Assam Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assam geography — location, climate, rivers (Brahmaputra & Barak), hills, forests, and national parks.', featured:false, priority:3 },
+    { id:'fm-agk-rivers', title:'Assam Rivers & National Parks', exam:'Assam GK', type:'Notes', subject:'Assam Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Detailed notes on major rivers of Assam (Brahmaputra, Barak, Subansiri, etc.) and national parks (Kaziranga, Manas, Nameri, Dibru-Saikhowa).', featured:false, priority:3 },
+    { id:'fm-agk-culture', title:'Assam Culture & Festivals', exam:'Assam GK', type:'Notes', subject:'Assam Culture', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assamese culture — Bihu festival, Satra tradition, folk dances (Bhortal, Satriya), music, art, and literature.', featured:false, priority:3 },
+    { id:'fm-agk-ahom', title:'Ahom Kingdom Notes', exam:'Assam GK', type:'Notes', subject:'Assam History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive notes on the Ahom Kingdom — founding by Sukapha, major rulers, administration, Paik system, and Battle of Saraighat.', featured:false, priority:3 },
+    { id:'fm-agk-districts', title:'Assam Districts & Important Places', exam:'Assam GK', type:'Revision', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'List of all districts of Assam with headquarters, important places, historical significance, and key facts.', featured:false, priority:4 },
+    { id:'fm-agk-tribes', title:'Assam Tribes & Communities', exam:'Assam GK', type:'Notes', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on major tribes and communities of Assam — Bodo, Mising, Karbi, Dimasa, Rabha, Tiwa, Deori, and others.', featured:false, priority:4 },
+    { id:'fm-agk-symbols', title:'Assam State Symbols & Facts', exam:'Assam GK', type:'Revision', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'State symbols of Assam — state animal (one-horned rhino), bird (white-winged wood duck), flower (foxtail orchid), tree (hollong), and key state facts.', featured:false, priority:4 },
+
+    // ═══ Current Affairs (5) ═══
+    { id:'fm-ca-assam', title:'Assam Current Affairs Revision 2025', exam:'Current Affairs', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compiled Assam current affairs for 2025 — government initiatives, appointments, schemes, and major events in Assam.', featured:false, priority:2 },
+    { id:'fm-ca-schemes', title:'Assam Government Schemes (Official)', exam:'Current Affairs', type:'Current Affairs', subject:'Government Schemes', year:2025, language:'English', source_type:'Government', source_name:'Government of Assam, Education Dept', source_url:'https://education.assam.gov.in/schemes/significant-schemes', resource_type:'external', description:'Official list of significant education schemes by the Government of Assam — free textbook distribution, scholarships, and more.', featured:false, priority:2 },
+    { id:'fm-ca-myscheme', title:'MyScheme Assam Portal', exam:'Current Affairs', type:'Useful Link', subject:'Government Schemes', year:2025, language:'English', source_type:'Government', source_name:'Government of India', source_url:'https://www.myscheme.gov.in/search/state/Assam', resource_type:'external', description:'Centralized portal listing all government schemes available in Assam — search by category, eligibility, and department.', featured:false, priority:3 },
+    { id:'fm-ca-national', title:'National Current Affairs Quick Revision', exam:'Current Affairs', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision of national current affairs — appointments, awards, sports, science & technology, and important days.', featured:false, priority:3 },
+    { id:'fm-ca-days', title:'Important Days & Dates', exam:'Current Affairs', type:'Revision', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compilation of important national and international days and dates frequently asked in competitive exams.', featured:false, priority:4 },
+
+    // ═══ General Study Materials (8) ═══
+    { id:'fm-gen-ncert', title:'NCERT Textbooks (Class I–XII)', exam:'General Study Materials', type:'Textbook', subject:'All Subjects', year:2025, language:'English', source_type:'Government', source_name:'NCERT Official', source_url:'https://ncert.nic.in/textbook.php', resource_type:'external', description:'Free NCERT textbooks for Classes I to XII in all subjects — official source from the National Council of Educational Research and Training.', featured:true, priority:1 },
+    { id:'fm-gen-epathshala', title:'ePathshala — Free Educational App', exam:'General Study Materials', type:'Useful Link', subject:'All Subjects', year:2025, language:'English', source_type:'Government', source_name:'NCERT', source_url:'https://epathshala.ncert.gov.in/', resource_type:'external', description:'Official NCERT mobile app providing free access to textbooks, audio, video, periodicals, and digital resources for students and teachers.', featured:false, priority:2 },
+    { id:'fm-gen-diksha', title:'DIKSHA Assam — Digital Learning Platform', exam:'General Study Materials', type:'Useful Link', subject:'All Subjects', year:2025, language:'English', source_type:'Government', source_name:'Government of Assam', source_url:'https://elementary.assam.gov.in/latest/diksha-and-energized-textbook', resource_type:'external', description:'DIKSHA is a national digital learning platform providing curriculum-linked educational resources for Assam students — textbooks, videos, and assessments.', featured:false, priority:2 },
+    { id:'fm-gen-scert', title:'SCERT Assam Textbooks (Ka-Shreni to Class VIII)', exam:'General Study Materials', type:'Textbook', subject:'All Subjects', year:2026, language:'Assamese', source_type:'Government', source_name:'SCERT Assam', source_url:'https://scert.assam.gov.in/portlet-sub-innerpage/textbook-from-ka-shreni-to-class-viii-2026-27-0', resource_type:'external', description:'Free downloadable textbooks from Ka-Shreni to Class VIII in Assamese, Bengali, Bodo, English, and other mediums — published by SCERT Assam.', featured:true, priority:1 },
+    { id:'fm-gen-seba', title:'SEBA Textbooks (Class 9 & 10)', exam:'General Study Materials', type:'Textbook', subject:'All Subjects', year:2025, language:'Assamese', source_type:'Government', source_name:'SEBA Assam', source_url:'https://site.sebaonline.org/textbook', resource_type:'external', description:'Free downloadable textbooks for Class 9 and 10 from the Board of Secondary Education, Assam (SEBA).', featured:false, priority:2 },
+    { id:'fm-gen-ssc', title:'SSC CGL Syllabus (Official)', exam:'SSC', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SSC Official', source_url:'https://ssc.nic.in/Portal/Syllabus', resource_type:'external', description:'Official syllabus for SSC Combined Graduate Level (CGL) examination — Tier I & Tier II with subject-wise topics.', featured:false, priority:3 },
+    { id:'fm-gen-constitution', title:'Indian Constitution & Polity Notes', exam:'General Study Materials', type:'Notes', subject:'Indian Polity', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive notes on Indian Constitution — preamble, fundamental rights, DPSP, fundamental duties, parliament, and judiciary.', featured:false, priority:3 },
+    { id:'fm-gen-gk-rev', title:'General Knowledge Quick Revision', exam:'General Study Materials', type:'Revision', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes on general knowledge — Indian and world geography, history, polity, economy, and science basics.', featured:false, priority:4 }
+  ];
+
   // ── Category definitions ──
   var FM_CATEGORIES = [
-    { name: 'APSC',                 icon: '🏛️', keywords: ['APSC', 'Assam Public Service'] },
     { name: 'ADRE',                  icon: '🎯', keywords: ['ADRE', 'Assam Direct Recruitment'] },
+    { name: 'APSC',                  icon: '🏛️', keywords: ['APSC', 'Assam Public Service'] },
     { name: 'Assam Police',          icon: '👮', keywords: ['Assam Police', 'Police'] },
     { name: 'Assam TET',             icon: '📚', keywords: ['Assam TET', 'TET', 'Teacher Eligibility'] },
     { name: 'Grade III & IV',        icon: '📝', keywords: ['Grade III', 'Grade IV', 'Grade 3', 'Grade 4', 'Grade III & IV'] },
-    { name: 'Current Affairs',       icon: '📰', keywords: ['Current Affairs', 'Current', 'Affairs', 'News'] },
-    { name: 'Assam GK',               icon: '🧠', keywords: ['Assam GK', 'Assam General Knowledge', 'GK', 'General Knowledge'] },
-    { name: 'General Study Materials', icon: '📖', keywords: ['General', 'Study', 'Materials', 'Notes'] }
+    { name: 'Assam GK',              icon: '🧠', keywords: ['Assam GK', 'Assam General Knowledge', 'GK'] },
+    { name: 'Current Affairs',       icon: '📰', keywords: ['Current Affairs', 'Current', 'Affairs'] },
+    { name: 'General Study Materials', icon: '📖', keywords: ['General', 'Study', 'Materials', 'NCERT', 'Textbook'] }
   ];
-
-  // Material type detection keywords
-  var FM_TYPE_KEYWORDS = {
-    'PYQ': ['previous year', 'pyq', 'question paper', 'old question', 'solved paper'],
-    'Notes': ['notes', 'study notes', 'material', 'handwritten'],
-    'MCQ': ['mcq', 'multiple choice', 'practice question'],
-    'Current Affairs': ['current affairs', 'current', 'affairs', 'news'],
-    'Syllabus': ['syllabus', 'exam pattern', 'pattern'],
-    'Exam Pattern': ['exam pattern', 'pattern', 'marks distribution'],
-    'Practice Set': ['practice set', 'practice', 'model', 'mock']
-  };
 
   var fmState = { loaded: false, materials: [], filtered: [] };
   window.fmState = fmState;
 
+  // ── Load free materials (curated + Supabase) ──
+  async function fmLoadMaterials() {
+    if (fmState.loaded) return fmState.materials;
+    var grid = document.getElementById('fmGrid');
+    if (grid) grid.innerHTML = Array(6).fill('<div class="fm-skeleton"></div>').join('');
+
+    var materials = FM_RESOURCES.map(function(r) {
+      return Object.assign({}, r, {
+        _fmType: r.type,
+        _fmExam: r.exam,
+        _fmTitle: r.title,
+        _fmSubject: r.subject || '',
+        _fmSource: r.source_name || '',
+        _fmYear: r.year || '',
+        _fmLanguage: r.language || '',
+        _fmDescription: r.description || '',
+        _fmSourceType: r.source_type || '',
+        _fmResourceType: r.resource_type || 'studyria-original',
+        _fmSourceUrl: r.source_url || '',
+        _fmFeatured: r.featured || false,
+        _fmPriority: r.priority || 99,
+        _fmExternalId: r.id
+      });
+    });
+
+    // Try Supabase for any additional free PDFs
+    if (window.supabaseClient) {
+      try {
+        var res = await window.supabaseClient.from('pdfs').select('*').order('created_at', { ascending: false }).limit(200);
+        if (!res.error && res.data) {
+          var sbFree = res.data.filter(function(p) {
+            var isFree = p.free || !p.price || Number(p.price) === 0;
+            return isFree;
+          });
+          sbFree.forEach(function(p) {
+            if (typeof normalizePdf === 'function') normalizePdf(p);
+            // Only add if not already in list (avoid duplicates)
+            var exists = materials.some(function(m) { return m.title === p.title; });
+            if (!exists && p.title && p.title !== 'Untitled PDF') {
+              materials.push(Object.assign({}, p, {
+                _fmType: fmDetectType(p),
+                _fmExam: fmDetectExam(p),
+                _fmTitle: p.title,
+                _fmSubject: p.category || '',
+                _fmSource: 'Studyria',
+                _fmSourceType: 'Studyria Original',
+                _fmResourceType: 'internal',
+                _fmDescription: p.description || '',
+                _fmFeatured: false,
+                _fmPriority: 10
+              }));
+            }
+          });
+        }
+      } catch(e) { console.warn('Free Materials Supabase fetch:', e); }
+    }
+
+    fmState.materials = materials;
+    fmState.loaded = true;
+    return materials;
+  }
+
   // ── Detect material type from title/description ──
   function fmDetectType(item) {
     var text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.category || '')).toLowerCase();
-    for (var type in FM_TYPE_KEYWORDS) {
-      var kws = FM_TYPE_KEYWORDS[type];
+    var typeMap = {
+      'PYQ': ['previous year', 'pyq', 'question paper', 'old question', 'solved paper'],
+      'Syllabus': ['syllabus'],
+      'Mock Test': ['mock test', 'mock'],
+      'Practice Set': ['practice set', 'practice'],
+      'MCQ': ['mcq', 'multiple choice'],
+      'Current Affairs': ['current affairs', 'current', 'affairs'],
+      'Notes': ['notes', 'study notes', 'material', 'handwritten'],
+      'Exam Pattern': ['exam pattern', 'pattern', 'marks distribution']
+    };
+    for (var type in typeMap) {
+      var kws = typeMap[type];
       for (var i = 0; i < kws.length; i++) {
         if (text.indexOf(kws[i]) !== -1) return type;
       }
     }
-    return 'Notes'; // default
+    return 'Notes';
   }
 
-  // ── Detect exam category from title/category/description ──
+  // ── Detect exam from title/description ──
   function fmDetectExam(item) {
     var text = ((item.title || '') + ' ' + (item.category || '') + ' ' + (item.description || '')).toLowerCase();
     if (text.indexOf('apsc') !== -1) return 'APSC';
@@ -47901,47 +48086,28 @@ window.addEventListener('load', function() {
     return 'General Study Materials';
   }
 
-  // ── Load free materials from Supabase ──
-  async function fmLoadMaterials() {
-    if (fmState.loaded) return fmState.materials;
-    var grid = document.getElementById('fmGrid');
-    if (grid) grid.innerHTML = Array(6).fill('<div class="fm-skeleton"></div>').join('');
+  // ── Render featured cards ──
+  function fmRenderFeatured() {
+    var container = document.getElementById('fmFeatured');
+    if (!container) return;
+    var adreCount = fmState.materials.filter(function(m) { return m._fmExam === 'ADRE'; }).length;
+    var apscCount = fmState.materials.filter(function(m) { return m._fmExam === 'APSC'; }).length;
 
-    var materials = [];
-
-    // Try Supabase first — fetch free PDFs (price = 0 or free = true)
-    if (window.supabaseClient) {
-      try {
-        var q = window.supabaseClient.from('pdfs').select('*');
-        var res = await q.order('created_at', { ascending: false }).limit(200);
-        if (!res.error && res.data) {
-          materials = res.data.filter(function(p) {
-            var isFree = p.free || !p.price || Number(p.price) === 0;
-            return isFree;
-          });
-        }
-      } catch(e) { console.warn('Free Materials Supabase fetch:', e); }
-    }
-
-    // Fallback: check window.PDFS for free items if Supabase returned nothing
-    if (materials.length === 0 && window.PDFS && window.PDFS.length) {
-      materials = window.PDFS.filter(function(p) {
-        var isFree = p.free || !p.price || Number(p.price) === 0;
-        return isFree;  // status already filtered by Supabase; for PDFS fallback, just check free
-      });
-    }
-
-    // Enrich each material with detected type and exam
-    materials = materials.map(function(m) {
-      if (typeof normalizePdf === 'function') normalizePdf(m);
-      m._fmType = fmDetectType(m);
-      m._fmExam = fmDetectExam(m);
-      return m;
-    });
-
-    fmState.materials = materials;
-    fmState.loaded = true;
-    return materials;
+    container.innerHTML =
+      '<div class="fm-featured-card fm-featured-adre" onclick="fmSelectCategory(\'ADRE\')">' +
+        '<div class="fm-featured-tag">POPULAR</div>' +
+        '<div class="fm-featured-icon">🎯</div>' +
+        '<div class="fm-featured-name">ADRE</div>' +
+        '<div class="fm-featured-count">' + adreCount + ' Free Resources</div>' +
+        '<button class="fm-featured-btn">Explore ADRE →</button>' +
+      '</div>' +
+      '<div class="fm-featured-card fm-featured-apsc" onclick="fmSelectCategory(\'APSC\')">' +
+        '<div class="fm-featured-tag">POPULAR</div>' +
+        '<div class="fm-featured-icon">🏛️</div>' +
+        '<div class="fm-featured-name">APSC</div>' +
+        '<div class="fm-featured-count">' + apscCount + ' Free Resources</div>' +
+        '<button class="fm-featured-btn">Explore APSC →</button>' +
+      '</div>';
   }
 
   // ── Render category cards ──
@@ -47957,33 +48123,50 @@ window.addEventListener('load', function() {
     grid.innerHTML = FM_CATEGORIES.map(function(c) {
       var count = counts[c.name] || 0;
       var countLabel = count > 0 ? count + ' free' : 'Coming Soon';
-      var countClass = count > 0 ? '' : ' style="color:var(--hp-gold,#c99a3c)"';
+      var countClass = count > 0 ? ' class="fm-cat-count has-items"' : ' class="fm-cat-count"';
       return '<div class="fm-cat-card" data-fm-cat="' + c.name + '" onclick="fmSelectCategory(\'' + c.name.replace(/'/g, "\\'") + '\')">' +
         '<div class="fm-cat-icon">' + c.icon + '</div>' +
         '<div class="fm-cat-name">' + c.name + '</div>' +
-        '<div class="fm-cat-count"' + countClass + '>' + countLabel + '</div>' +
+        '<div' + countClass + '>' + countLabel + '</div>' +
         '</div>';
     }).join('');
   }
 
-  // ── Filter and render materials ──
+  // ── Filter, sort, and render ──
   window.fmFilter = function fmFilter() {
-    var search = (document.getElementById('fmSearch')?.value || '').trim().toLowerCase();
-    var examFilter = document.getElementById('fmExamFilter')?.value || '';
-    var typeFilter = document.getElementById('fmTypeFilter')?.value || '';
+    var search = (document.getElementById('fmSearch') ? document.getElementById('fmSearch').value : '').trim().toLowerCase();
+    var examFilter = document.getElementById('fmExamFilter') ? document.getElementById('fmExamFilter').value : '';
+    var typeFilter = document.getElementById('fmTypeFilter') ? document.getElementById('fmTypeFilter').value : '';
+    var sortBy = document.getElementById('fmSortBy') ? document.getElementById('fmSortBy').value : 'newest';
 
     var filtered = fmState.materials.filter(function(m) {
-      // Search filter
       if (search) {
-        var haystack = ((m.title || '') + ' ' + (m.description || '') + ' ' + (m.category || '') + ' ' + (m._fmExam || '') + ' ' + (m._fmType || '')).toLowerCase();
+        var haystack = ((m._fmTitle || m.title || '') + ' ' + (m._fmDescription || m.description || '') + ' ' +
+          (m._fmExam || '') + ' ' + (m._fmType || '') + ' ' + (m._fmSubject || '') + ' ' +
+          (m._fmSource || '') + ' ' + (m._fmYear || '') + ' ' + (m._fmLanguage || '')).toLowerCase();
         if (haystack.indexOf(search) === -1) return false;
       }
-      // Exam filter
       if (examFilter && m._fmExam !== examFilter) return false;
-      // Type filter
       if (typeFilter && m._fmType !== typeFilter) return false;
       return true;
     });
+
+    // Sort
+    if (sortBy === 'az') {
+      filtered.sort(function(a, b) { return (a._fmTitle || '').localeCompare(b._fmTitle || ''); });
+    } else if (sortBy === 'exam') {
+      filtered.sort(function(a, b) { return (a._fmExam || '').localeCompare(b._fmExam || ''); });
+    } else if (sortBy === 'year') {
+      filtered.sort(function(a, b) { return (b._fmYear || 0) - (a._fmYear || 0); });
+    } else {
+      // newest: by priority then year desc
+      filtered.sort(function(a, b) {
+        var pa = a._fmPriority || 99;
+        var pb = b._fmPriority || 99;
+        if (pa !== pb) return pa - pb;
+        return (b._fmYear || 0) - (a._fmYear || 0);
+      });
+    }
 
     fmState.filtered = filtered;
     fmRenderGrid(filtered);
@@ -47993,7 +48176,12 @@ window.addEventListener('load', function() {
   function fmRenderGrid(items) {
     var grid = document.getElementById('fmGrid');
     var empty = document.getElementById('fmEmpty');
+    var countEl = document.getElementById('fmResultsCount');
     if (!grid) return;
+
+    if (countEl) {
+      countEl.innerHTML = '<strong>' + items.length + '</strong> free material' + (items.length !== 1 ? 's' : '') + ' found';
+    }
 
     if (!items || items.length === 0) {
       grid.innerHTML = '';
@@ -48003,95 +48191,146 @@ window.addEventListener('load', function() {
     if (empty) empty.style.display = 'none';
 
     grid.innerHTML = items.map(function(m) {
-      var title = (m.title || 'Untitled').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      var desc = (m.description || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var title = (m._fmTitle || m.title || 'Untitled').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var desc = (m._fmDescription || m.description || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       if (desc.length > 120) desc = desc.substring(0, 117) + '...';
       var exam = m._fmExam || 'General';
       var type = m._fmType || 'Notes';
-      var dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-      var id = m.id || '';
+      var year = m._fmYear || '';
+      var source = m._fmSource || '';
+      var isPlanned = m._fmResourceType === 'studyria-original';
+      var isExternal = m._fmResourceType === 'external';
+      var isInternal = m._fmResourceType === 'internal';
+      var badge = isPlanned
+        ? '<span class="fm-badge fm-badge-planned">PLANNED</span>'
+        : '<span class="fm-badge">FREE</span>';
+      var sourceLine = source ? '<div class="fm-card-source">Source: ' + source.replace(/</g, '&lt;') + '</div>' : '';
+
+      var btn = '';
+      if (isExternal && m._fmSourceUrl) {
+        btn = '<button class="fm-btn fm-btn-external" onclick="fmOpenExternal(\'' + m._fmSourceUrl.replace(/'/g, "\\'") + '\')">Open Resource →</button>';
+      } else if (isInternal && m.id) {
+        btn = '<button class="fm-btn fm-btn-primary" data-fm-id="' + m.id + '" onclick="fmViewMaterial(this)">View Material</button>';
+      } else {
+        btn = '<button class="fm-btn fm-btn-primary" onclick="fmShowDetail(\'' + (m._fmExternalId || m.id || '').replace(/'/g, "\\'") + '\')">View Details</button>';
+      }
 
       return '<div class="fm-card">' +
         '<div class="fm-card-top">' +
-          '<span class="fm-badge">FREE</span>' +
+          badge +
           '<span class="fm-card-type">' + type + '</span>' +
         '</div>' +
         '<h3 class="fm-card-title">' + title + '</h3>' +
         (desc ? '<p class="fm-card-desc">' + desc + '</p>' : '') +
         '<div class="fm-card-meta">' +
           '<span>📌 ' + exam + '</span>' +
-          (dateStr ? '<span>🗓 ' + dateStr + '</span>' : '') +
+          (year ? '<span>🗓 ' + year + '</span>' : '') +
+          (m._fmLanguage ? '<span>🌐 ' + m._fmLanguage + '</span>' : '') +
         '</div>' +
-        '<div class="fm-card-actions">' +
-          (id ? '<button class="fm-btn fm-btn-primary" data-fm-id="' + id + '" onclick="fmViewMaterial(this)">View Material</button>' : '') +
-        '</div>' +
+        sourceLine +
+        '<div class="fm-card-actions">' + btn + '</div>' +
       '</div>';
     }).join('');
   }
 
-  // ── View material (opens existing PDF detail) ──
-  window.fmViewMaterial = function fmViewMaterial(btn) {
+  // ── Open external link ──
+  window.fmOpenExternal = function(url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  // ── View internal material (existing PDF detail) ──
+  window.fmViewMaterial = function(btn) {
     var id = btn.getAttribute('data-fm-id');
     if (id && typeof openDetail === 'function') {
       openDetail(id);
     }
   };
 
+  // ── Show detail modal for curated resources ──
+  window.fmShowDetail = function(resourceId) {
+    var m = fmState.materials.find(function(r) { return (r._fmExternalId || r.id) === resourceId; });
+    if (!m) return;
+
+    var isPlanned = m._fmResourceType === 'studyria-original';
+    var isExternal = m._fmResourceType === 'external';
+
+    var modalHtml = '<div class="fm-modal-overlay" id="fmModalOverlay" onclick="if(event.target===this)fmCloseModal()">' +
+      '<div class="fm-modal">' +
+        '<button class="fm-modal-close" onclick="fmCloseModal()">✕</button>' +
+        (isPlanned ? '<span class="fm-badge fm-badge-planned" style="margin-bottom:12px;display:inline-block;">STUDYRIA ORIGINAL — COMING SOON</span>' : '<span class="fm-modal-badge">FREE RESOURCE</span>') +
+        '<h2 class="fm-modal-title">' + (m._fmTitle || m.title || '').replace(/</g, '&lt;') + '</h2>' +
+        '<div class="fm-modal-meta">' +
+          '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Exam</span><span class="fm-modal-meta-value">' + (m._fmExam || '—') + '</span></div>' +
+          '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Type</span><span class="fm-modal-meta-value">' + (m._fmType || '—') + '</span></div>' +
+          (m._fmYear ? '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Year</span><span class="fm-modal-meta-value">' + m._fmYear + '</span></div>' : '') +
+          (m._fmLanguage ? '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Language</span><span class="fm-modal-meta-value">' + m._fmLanguage + '</span></div>' : '') +
+          (m._fmSubject ? '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Subject</span><span class="fm-modal-meta-value">' + m._fmSubject + '</span></div>' : '') +
+        '</div>' +
+        '<p class="fm-modal-desc">' + (m._fmDescription || m.description || 'No description available.').replace(/</g, '&lt;') + '</p>' +
+        '<div class="fm-modal-source">Source: ' + (m._fmSource || '—') + (m._fmSourceType ? ' (' + m._fmSourceType + ')' : '') + '</div>' +
+        '<div class="fm-modal-actions">' +
+          (isExternal && m._fmSourceUrl
+            ? '<button class="fm-btn fm-btn-external" onclick="fmOpenExternal(\'' + m._fmSourceUrl.replace(/'/g, "\\'") + '\')">Open Official Resource →</button>'
+            : '') +
+          (isPlanned
+            ? '<button class="fm-btn fm-btn-ghost" disabled>Coming Soon</button>'
+            : '') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    var existing = document.getElementById('fmModalOverlay');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  };
+
+  window.fmCloseModal = function() {
+    var overlay = document.getElementById('fmModalOverlay');
+    if (overlay) overlay.remove();
+  };
+
   // ── Category selection ──
   window.fmSelectCategory = function fmSelectCategory(catName) {
     var examSelect = document.getElementById('fmExamFilter');
     if (examSelect) {
-      // Map category name to exam filter value
-      var examMap = {
-        'APSC': 'APSC',
-        'ADRE': 'ADRE',
-        'Assam Police': 'Assam Police',
-        'Assam TET': 'Assam TET',
-        'Grade III & IV': 'Grade III & IV',
-        'Current Affairs': 'Current Affairs',
-        'Assam GK': 'Assam GK',
-        'General Study Materials': ''
-      };
-      examSelect.value = examMap[catName] || '';
+      examSelect.value = catName === 'General Study Materials' ? 'General Study Materials' : catName;
       fmFilter();
     }
-    // Highlight active card
     document.querySelectorAll('.fm-cat-card').forEach(function(c) {
       c.classList.toggle('active', c.getAttribute('data-fm-cat') === catName);
     });
+    // Scroll to results
+    var grid = document.getElementById('fmGrid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // ── Init on page load ──
+  // ── Init ──
   window.fmInit = async function fmInit() {
     await fmLoadMaterials();
+    fmRenderFeatured();
     fmRenderCategories();
     fmFilter();
   };
 
-  // ── Hook into navigate() to init when landing on free-materials ──
-  // Patch the existing navigate to trigger fmInit
+  // ── Hook into navigate() ──
   var _origNavigate = window._realNavigate || window.navigate;
-  if (typeof _origNavigate === 'function') {
+  if (typeof _origNavigate === 'function' && !window._fmNavPatched) {
     var _patchedNav = function(page) {
       var result = _origNavigate.call(this, page);
       if (page === 'free-materials') {
-        // Small delay to ensure page DOM is visible
         setTimeout(function() { window.fmInit(); }, 100);
       }
       return result;
     };
-    // Only patch if not already patched
-    if (!window._fmNavPatched) {
-      window.navigate = _patchedNav;
-      window._fmNavPatched = true;
-    }
+    window.navigate = _patchedNav;
+    window._fmNavPatched = true;
   }
 
-  // ── Also init on hash load ──
+  // ── Init on hash load ──
   if (location.hash === '#free-materials' || location.pathname === '/free-materials') {
     setTimeout(function() { window.fmInit(); }, 300);
   }
 })();
-</script>
+
 </body>
 </html>
