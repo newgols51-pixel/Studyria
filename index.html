@@ -47877,6 +47877,14 @@ window.addEventListener('load', function() {
 (function() {
   'use strict';
 
+  // DIAGNOSTIC: mark that the IIFE ran
+  var _diag = document.createElement('div');
+  _diag.id = 'fm-diag';
+  _diag.style.cssText = 'position:fixed;top:0;left:0;z-index:99999;background:#10d98e;color:#fff;padding:8px 16px;font-size:12px;font-family:monospace;';
+  _diag.textContent = 'FM IIFE executed at ' + new Date().toISOString();
+  document.body.appendChild(_diag);
+  setTimeout(function() { if (_diag && _diag.parentNode) _diag.parentNode.removeChild(_diag); }, 8000);
+
   // ── Curated free resources (researched & verified) ──
   var FM_RESOURCES = [
     // ═══ ADRE (18) ═══
