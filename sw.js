@@ -36,7 +36,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
   importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 }
 
-const CACHE_NAME   = 'studyria-v22';  // premium page visibility fix
+const CACHE_NAME   = 'studyria-v23';  // hero banner v2 update  // premium page visibility fix
 const SW_BUILD     = '2026.07.12-phase1-premium-landing';
 const OFFLINE_PAGE = '/offline.html';
 
