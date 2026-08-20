@@ -17678,6 +17678,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     .fm-header { margin-bottom: 28px; }
     .fm-title { font-family: var(--font-editorial); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 800; background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 8px; }
     .fm-subtitle { color: var(--text2); font-size: .95rem; margin: 0; line-height: 1.6; }
+    .fm-hero { margin-bottom: 28px; }
+    .fm-hero-img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
     .fm-featured { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
     .fm-featured-card { border-radius: var(--radius); padding: 24px 20px; cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; border: 1px solid rgba(147,2,5,0.3); }
     .fm-featured-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(147,2,5,0.15); }
@@ -17769,9 +17771,8 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back to Home
     </button>
-    <div class="fm-header">
-      <h1 class="fm-title">Free Study Materials</h1>
-      <p class="fm-subtitle">50+ verified free study resources for Assam competitive exam aspirants &mdash; ADRE, APSC, Assam Police, TET &amp; more.</p>
+    <div class="fm-hero">
+      <img class="fm-hero-img" src="https://base44.app/api/apps/6a56207ef04bee5f8f08d11f/files/mp/public/6a56207ef04bee5f8f08d11f/0c898f85e_fm-banner.png" alt="Free Study Materials — 50+ verified free study resources for Assam competitive exam aspirants: ADRE, APSC, Assam Police, TET &amp; more." width="1024" height="410" loading="eager">
     </div>
     <div class="fm-featured" id="fmFeatured"></div>
     <div class="fm-search-wrap">
