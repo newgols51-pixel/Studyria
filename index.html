@@ -5766,6 +5766,12 @@ function studyriaApp() {
 }
 
 
+/* Disable noise + gradient pseudo-elements from .sh-hero */
+.hero-banner-section::before,
+.hero-banner-section::after {
+  display: none !important;
+}
+
 /* ── HERO BANNER (Image B replacement) ─────────────────────────── */
 .hero-banner-section {
   min-height: auto;
@@ -5824,10 +5830,10 @@ function studyriaApp() {
 }
 .hero-hotspot-cta2 {
   position: absolute;
-  left: 21.5%;
+  left: 22.9%;
   top: 90.5%;
-  width: 56.1%;
-  height: 9.4%;
+  width: 54.1%;
+  height: 5.5%;
   border: none;
   background: transparent;
   cursor: pointer;
