@@ -31,14 +31,14 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v72'; // v70: BrainLab premium visual upgrade — SVG icon system, section-distinct hero icons, badge cards, unified design
+const CACHE_VERSION = 'v78'; // v78: ADRE Previous Year Papers + Arena merge
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.13-new-logo-icon-cache-bust';
+const SW_BUILD      = '2026.08.18-instant-result';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🏛️ ADRE Previous Year Papers: Real exam simulation with verified questions and official answer keys. Arena matchmaking upgrade with 8 persistent opponents.';
+const WHATS_NEW = '🏛️ ADRE Previous Year Papers: Real exam simulation with verified questions and official answer keys.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [

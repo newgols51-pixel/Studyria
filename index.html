@@ -6229,7 +6229,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="brainlab-icons.js?v=20260818icons1" defer></script>
 <script src="brainlab.js?v=20260826a" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
-    <script src="arena.js?v=20260826arena1" defer></script>
+    <script src="arena.js?v=20260826merge1" defer></script>
 <script src="adre-papers-data.js?v=20260826a" defer></script>
 <script src="adre-exam.js?v=20260826a" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
@@ -10193,146 +10193,99 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </style>
 
 <!-- ── HERO (REDESIGNED) ──────────────────────────────────────── -->
-<section class="hr-hero sh-hero" id="dynamicHero">
-  <div class="hr-hero-inner">
-    <div class="hr-hero-content">
+<section class="hr-hero sh-hero" id="dynamicHero" style="padding:0;background:none;">
+  <div class="hero-img-wrap" style="position:relative;width:100%;max-width:1086px;margin:0 auto;overflow:hidden;">
+    <picture>
+      <source srcset="hero-banner.webp" type="image/webp">
+      <img src="hero-banner.jpg" alt="Studyria — Assam's #1 Study Platform. Turn your Assam govt job dream into reality. Browse Study Materials. Start Free. Follow us on Instagram, YouTube, Pinterest, WhatsApp, Telegram." width="1086" height="1322" fetchpriority="high" decoding="async" style="display:block;width:100%;height:auto;" />
+    </picture>
 
-      <!-- Eyebrow badge -->
-      <div class="hr-hero-eyebrow">
-        <span class="hr-hero-eyebrow-dot"></span>
-        <span id="heroBadgeText">Assam's #1 Study Platform</span>
-      </div>
+    <!-- Invisible hotspots: preserve CTA + social functionality without altering artwork -->
 
-      <!-- Title (matches homepage.html — centered, with italic red 'reality') -->
-      <h1 class="hr-hero-title" id="heroTitle"><span class="hr-title-seg">Turn your</span> <span class="hr-title-seg">Assam govt job</span><br class="hr-title-br"><span class="hr-title-seg">dream into</span> <span class="hr-title-seg hr-title-em"><em>reality</em></span></h1>
+    <!-- Browse Study Materials button (red filled, ~82-89% height, 22-77% width) -->
+    <a href="javascript:void(0)" onclick="navigate('library')" aria-label="Browse Study Materials"
+       style="position:absolute;left:22%;top:82%;width:55%;height:7%;z-index:5;">
+    </a>
 
-      <!-- Subtitle -->
-      <p class="hr-hero-sub" id="heroSubtitle">
-        Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">1,500+</span> students</strong> across Assam.
-      </p>
+    <!-- Start Free button (outline, ~90-94% height, 24-76% width) -->
+    <a href="javascript:void(0)" onclick="navigate('register')" aria-label="Start Free"
+       style="position:absolute;left:24%;top:90%;width:52%;height:5%;z-index:5;">
+    </a>
 
+    <!-- Social icon hotspots (~70-77% height) -->
+    <!-- Instagram: 31-35% width -->
+    <a href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==" target="_blank" rel="noopener noreferrer" aria-label="Studyria Instagram"
+       style="position:absolute;left:31%;top:70%;width:5%;height:7%;z-index:5;">
+    </a>
+    <!-- YouTube: 39-44% width -->
+    <a href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA" target="_blank" rel="noopener noreferrer" aria-label="Studyria YouTube"
+       style="position:absolute;left:39%;top:70%;width:5%;height:7%;z-index:5;">
+    </a>
+    <!-- Center icon (Pinterest): 48-52% width -->
+    <a href="https://pin.it/3f4ctNDO7" target="_blank" rel="noopener noreferrer" aria-label="Studyria Pinterest"
+       style="position:absolute;left:48%;top:70%;width:4%;height:7%;z-index:5;">
+    </a>
+    <!-- WhatsApp: 56-60% width -->
+    <a href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R" target="_blank" rel="noopener noreferrer" aria-label="Studyria WhatsApp"
+       style="position:absolute;left:56%;top:70%;width:4.5%;height:7%;z-index:5;">
+    </a>
+    <!-- Telegram: 65-69% width -->
+    <a href="https://t.me/studyria" target="_blank" rel="noopener noreferrer" aria-label="Studyria Telegram"
+       style="position:absolute;left:65%;top:70%;width:4.5%;height:7%;z-index:5;">
+    </a>
 
-      <!-- Premium Social Media Bar -->
-      <div class="hr-hero-social" role="navigation" aria-label="Studyria social media links">
-        <span class="hr-hero-social-label">Follow Us</span>
-        <!-- Instagram SVG gradient def -->
-        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-          <defs>
-            <linearGradient id="hrIgGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#FED576"/>
-              <stop offset="26%" stop-color="#F47133"/>
-              <stop offset="61%" stop-color="#BC3081"/>
-              <stop offset="100%" stop-color="#4C63D2"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <a class="hr-hero-social-item" data-brand="instagram"
-           href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA=="
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria Instagram — Study Reels"
-           title="Studyria Instagram">
-          <svg viewBox="0 0 24 24" fill="url(#hrIgGrad)"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="youtube"
-           href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria YouTube channel"
-           title="Studyria YouTube">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="pinterest"
-           href="https://pin.it/3f4ctNDO7"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria Pinterest profile"
-           title="Studyria Pinterest">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="whatsapp"
-           href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria WhatsApp Community"
-           title="Studyria WhatsApp">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="telegram"
-           href="https://t.me/studyria"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria Telegram channel"
-           title="Studyria Telegram">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        </a>
-      </div>
-
-      <!-- CTA buttons -->
-      <div class="hr-hero-ctas">
-        <button class="hr-btn-primary" id="heroCta1" onclick="navigate('library')">
-          <span id="heroCta1Text">Browse Study Materials</span>
-        </button>
-        <button class="hr-btn-secondary" id="heroCta2" onclick="navigate('register')">
-          <span id="heroCta2Text">Start Free</span>
-        </button>
-      </div>
-
-      <!-- Search bar -->
-      <div class="hr-hero-search">
-        <span class="hr-hero-search-icon" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </span>
-        <input
-          type="search"
-          id="homeSearch"
-          placeholder="Search notes, exams..."
-          autocomplete="off"
-          oninput="(function(v){var ls=document.getElementById('libSearch');if(ls)ls.value=v;var ds=document.getElementById('discoverSearch');if(ds){ds.value=v;if(typeof onDiscoverInput==='function')onDiscoverInput();}})(this.value)"
-          onkeydown="if(event.key==='Enter'){var v=this.value.trim();if(v&&typeof navigate==='function'){navigate('library');var ls=document.getElementById('libSearch');if(ls){ls.value=v;if(typeof renderLibrary==='function')renderLibrary();}}}"
-          aria-label="Search PDFs"
-        />
-      </div>
-
-      <!-- Trust row (matches homepage.html) -->
-      <div class="hr-hero-stats">
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num" id="heroStatPdfs">⚡</span>
-          <span class="hr-hero-stat-label">Instant PDF Access</span>
-        </div>
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num" id="heroStatStudents">🔒</span>
-          <span class="hr-hero-stat-label">Secure Payment</span>
-        </div>
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num">🎯</span>
-          <span class="hr-hero-stat-label">Assam-Focused Content</span>
-        </div>
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num">⭐</span>
-          <span class="hr-hero-stat-label">4.9/5 from 1,500+ students</span>
-        </div>
-      </div>
-
-      <!-- Social links (hidden via CSS, kept for JS compatibility) -->
-      <div class="hr-hero-socials" style="display:none">
-        <a class="hr-hero-social hr-hero-social--wa" id="heroWaBtn"
-          href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R"
-          target="_blank" rel="noopener noreferrer"
-          aria-label="Join Studyria WhatsApp Community"></a>
-        <a class="hr-hero-social hr-hero-social--tg" id="heroTgBtn"
-          href="https://t.me/studyria" target="_blank" rel="noopener noreferrer"
-          aria-label="Join Studyria Telegram Channel"></a>
-        <a class="hr-hero-social hr-hero-social--ig" id="heroIgBtn"
-          href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==" target="_blank" rel="noopener noreferrer"
-          aria-label="Follow Studyria on Instagram"></a>
-        <a class="hr-hero-social hr-hero-social--yt" id="heroYtBtn"
-          href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA"
-          target="_blank" rel="noopener noreferrer"
-          aria-label="Subscribe to Studyria YouTube Channel"></a>
-      </div>
-
-      <!-- Wordmark (hidden via CSS, kept for JS) -->
-      <div class="hr-hero-wordmark" id="heroSiteName" style="display:none">Studyria</div>
-
+    <!-- Hidden elements for JS compatibility (keep IDs that other scripts reference) -->
+    <span id="heroBadgeText" style="display:none">Assam's #1 Study Platform</span>
+    <h1 id="heroTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Turn your Assam govt job dream into reality</h1>
+    <p id="heroSubtitle" style="display:none">Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">1,500+</span> students</strong> across Assam.</p>
+    <span id="heroCta1Text" style="display:none">Browse Study Materials</span>
+    <span id="heroCta2Text" style="display:none">Start Free</span>
+    <span id="heroStatPdfs" style="display:none">⚡</span>
+    <span id="heroStatStudents" style="display:none">🔒</span>
+    <div id="heroSiteName" style="display:none">Studyria</div>
+    <input type="search" id="homeSearch" style="display:none" placeholder="Search notes, exams..." autocomplete="off"
+      oninput="(function(v){var ls=document.getElementById('libSearch');if(ls)ls.value=v;var ds=document.getElementById('discoverSearch');if(ds){ds.value=v;if(typeof onDiscoverInput==='function')onDiscoverInput();}})(this.value)"
+      onkeydown="if(event.key==='Enter'){var v=this.value.trim();if(v&&typeof navigate==='function'){navigate('library');var ls=document.getElementById('libSearch');if(ls){ls.value=v;if(typeof renderLibrary==='function')renderLibrary();}}}" />
+    <div class="hr-hero-socials" style="display:none">
+      <a class="hr-hero-social hr-hero-social--wa" id="heroWaBtn" href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R" target="_blank" rel="noopener noreferrer" aria-label="Join Studyria WhatsApp Community"></a>
+      <a class="hr-hero-social hr-hero-social--tg" id="heroTgBtn" href="https://t.me/studyria" target="_blank" rel="noopener noreferrer" aria-label="Join Studyria Telegram Channel"></a>
+      <a class="hr-hero-social hr-hero-social--ig" id="heroIgBtn" href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==" target="_blank" rel="noopener noreferrer" aria-label="Follow Studyria on Instagram"></a>
+      <a class="hr-hero-social hr-hero-social--yt" id="heroYtBtn" href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to Studyria YouTube Channel"></a>
     </div>
   </div>
 </section>
+<style>
+/* ── HERO IMAGE BANNER (Image B replacement) ─────────────────── */
+#dynamicHero {
+  background: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  overflow: hidden !important;
+}
+#dynamicHero::before { display: none !important; }
+#dynamicHero::after { display: none !important; content: none !important; }
+.hero-img-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1086px;
+  margin: 0 auto;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 1;
+}
+.hero-img-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero-img-wrap a {
+  display: block;
+  cursor: pointer;
+}
+@media (max-width: 480px) {
+  .hero-img-wrap { max-width: 100vw; }
+}
+</style>
 
 <!-- ── STAT BAND (matches homepage.html) ─────────────────────── -->
 <section class="hp-stat-band">
@@ -15985,816 +15938,12 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 </div>
 
 <div class="page" id="page-career-hub">
-<style>
-/* ══════════════════════════════════════════════════════════════
-   STUDYRIA CAREER HUB — PREMIUM UI v2
-   AMOLED Black · Glassmorphism · Neon Blue + Red
-   ══════════════════════════════════════════════════════════════ */
-
-/* ── Wrap ─────────────────────────────────────────────────── */
-.ch-wrap { max-width: 900px; margin: 0 auto; padding: 0 0 120px; }
-@media(max-width:640px){ .ch-wrap { padding-bottom: 90px; } }
-
-/* ── Skeleton loader ──────────────────────────────────────── */
-@keyframes ch-shimmer {
-  0%   { background-position:-200% 0; }
-  100% { background-position: 200% 0; }
-}
-.ch-skel {
-  background: linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.10) 50%,rgba(255,255,255,.04) 75%);
-  background-size:200% 100%; animation:ch-shimmer 1.4s ease-in-out infinite; border-radius:8px;
-}
-body.light .ch-skel {
-  background: linear-gradient(90deg,rgba(0,0,0,.06) 25%,rgba(0,0,0,.13) 50%,rgba(0,0,0,.06) 75%);
-  background-size:200% 100%;
-}
-.ch-skel-card {
-  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07);
-  border-radius:16px; padding:16px; margin-bottom:10px;
-}
-body.light .ch-skel-card { background:rgba(255,255,255,.85); border-color:rgba(0,0,0,.07); }
-.ch-skel-row { display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
-.ch-skel-circle { width:44px;height:44px;border-radius:12px;flex-shrink:0; }
-.ch-skel-line { height:12px; border-radius:6px; margin-bottom:8px; }
-.ch-skel-line.lg{height:17px;width:70%;}
-.ch-skel-line.md{width:50%;}
-.ch-skel-line.sm{width:35%;}
-.ch-skel-tags { display:flex;gap:6px;margin-bottom:14px; }
-.ch-skel-tag  { height:24px;width:72px;border-radius:100px; }
-.ch-skel-foot { display:flex;gap:8px; }
-.ch-skel-btn  { height:36px;border-radius:9px;flex:1; }
-.ch-skel-icon { width:36px;height:36px;border-radius:9px;flex-shrink:0; }
-
-/* ── Hero ─────────────────────────────────────────────────── */
-.ch-hero {
-  background:linear-gradient(135deg,rgba(147,2,5,.13) 0%,rgba(139,92,246,.10) 50%,rgba(201,154,60,.08) 100%);
-  border-bottom:1px solid rgba(255,255,255,.07);
-  padding:32px 20px 24px; text-align:center;
-  overflow:visible;position:relative;
-}
-body.light .ch-hero { border-color:rgba(0,0,0,.07); }
-.ch-hero-badge {
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);
-  border-radius:100px;padding:5px 14px;font-size:.72rem;font-weight:700;
-  color:#f59e0b;letter-spacing:.04em;text-transform:uppercase;margin-bottom:14px;
-}
-.ch-live-dot {
-  width:7px;height:7px;border-radius:50%;background:#ff4d6d;flex-shrink:0;
-  box-shadow:0 0 6px rgba(255,77,109,.7);
-  animation:ch-pulse 1.5s ease-in-out infinite;
-}
-@keyframes ch-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
-.ch-hero-title {
-  font-family:var(--font-editorial);font-size:clamp(1.6rem,5vw,2.4rem);
-  font-weight:800;margin-bottom:8px;line-height:1.2;
-  background:linear-gradient(135deg,#f59e0b,#930205,#c99a3c);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.ch-hero-sub { color:var(--text2);font-size:.9rem;max-width:500px;margin:0 auto 20px; }
-
-/* ── Search bar ───────────────────────────────────────────── */
-.ch-search-bar {
-  display:flex;gap:10px;max-width:560px;margin:0 auto;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  border-radius:50px;padding:6px 6px 6px 18px;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  transition:border-color .2s,box-shadow .2s;
-  box-shadow:0 2px 20px rgba(147,2,5,.08);
-}
-body.light .ch-search-bar { background:rgba(255,255,255,.85);border-color:rgba(0,0,0,.12); }
-.ch-search-bar:focus-within {
-  border-color:#930205;
-  box-shadow:0 0 0 3px rgba(147,2,5,.15),0 4px 24px rgba(147,2,5,.12);
-}
-.ch-search-input {
-  flex:1;background:none;border:none;outline:none;
-  color:var(--text);font-size:.92rem;font-family:var(--font-body);
-}
-.ch-search-input::placeholder{color:var(--text3);}
-.ch-search-btn {
-  padding:10px 18px;border-radius:50px;border:none;
-  background:linear-gradient(135deg,#930205,#c99a3c);color:#fff;
-  font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font-body);
-  transition:transform .2s,box-shadow .2s;white-space:nowrap;
-  box-shadow:0 4px 14px rgba(147,2,5,.35);
-}
-.ch-search-btn:hover{transform:scale(1.04);box-shadow:0 6px 20px rgba(147,2,5,.5);}
-
-/* ── Hamburger trigger (beside search bar) ───────────────────── */
-.ch-hero-toprow{display:flex;align-items:center;gap:10px;max-width:560px;margin:0 auto 0;touch-action:manipulation;overflow:visible;}
-.ch-hamburger-btn{
-  flex-shrink:0;width:46px;height:46px;border-radius:50%;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:border-color .2s,box-shadow .2s,transform .15s;
-  position:relative;z-index:9999;pointer-events:auto;
-  -webkit-tap-highlight-color:rgba(147,2,5,.18);
-  touch-action:manipulation;
-}
-body.light .ch-hamburger-btn{background:rgba(255,255,255,.85);border-color:rgba(0,0,0,.12);}
-.ch-hamburger-btn:hover{border-color:#930205;box-shadow:0 0 0 3px rgba(147,2,5,.15);transform:scale(1.04);}
-.ch-hamburger-btn:active{transform:scale(.96);}
-.ch-hamburger-btn svg{color:var(--text);}
-.ch-hamburger-dot{
-  position:absolute;top:5px;right:5px;width:9px;height:9px;border-radius:50%;
-  background:#ff4d6d;border:2px solid var(--bg2);box-shadow:0 0 6px rgba(255,77,109,.7);
-  display:none;
-}
-.ch-hamburger-dot.show{display:block;}
-.ch-hero-toprow .ch-search-bar{flex:1;margin:0;}
-
-/* ── Main Menu Drawer ─────────────────────────────────────────── */
-.ch-menu-overlay{
-  /* Use visibility+pointer-events (NOT display:none) so CSS transitions animate properly */
-  visibility:hidden;pointer-events:none;
-  position:fixed;inset:0;z-index:950;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  opacity:0;transition:opacity .28s ease,visibility 0s linear .28s;
-}
-.ch-menu-overlay.open{
-  visibility:visible;pointer-events:auto;
-  opacity:1;transition:opacity .28s ease,visibility 0s linear 0s;
-}
-.ch-menu-drawer{
-  position:absolute;top:0;left:0;bottom:0;width:86%;max-width:360px;
-  background:linear-gradient(165deg,#0a0f1c 0%,#0d1424 45%,#0a0f1c 100%);
-  border-right:1px solid rgba(147,2,5,.18);
-  box-shadow:0 0 60px rgba(0,0,0,.55);
-  display:flex;flex-direction:column;
-  transform:translateX(-105%);transition:transform .32s cubic-bezier(.22,1,.36,1);
-  overflow:hidden;will-change:transform;
-}
-body.light .ch-menu-drawer{background:linear-gradient(165deg,#f4f7fc 0%,#ffffff 45%,#f4f7fc 100%);}
-.ch-menu-overlay.open .ch-menu-drawer{transform:translateX(0);}
-.ch-menu-drawer::before{
-  content:'';position:absolute;top:-80px;left:-80px;width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle,rgba(147,2,5,.18),transparent 70%);pointer-events:none;
-}
-.ch-menu-drawer::after{
-  content:'';position:absolute;bottom:-100px;right:-100px;width:260px;height:260px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,154,60,.13),transparent 70%);pointer-events:none;
-}
-
-.ch-menu-head{
-  position:relative;padding:18px 16px 14px;flex-shrink:0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-body.light .ch-menu-head{border-bottom-color:rgba(0,0,0,.08);}
-.ch-menu-close-btn{
-  position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);
-  transition:all .18s;z-index:2;
-}
-body.light .ch-menu-close-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-menu-close-btn:hover{border-color:#ff4d6d;color:#ff4d6d;transform:rotate(90deg);}
-
-.ch-menu-brand{display:flex;align-items:center;gap:8px;font-family:var(--font-editorial);font-weight:800;font-size:1.05rem;margin-bottom:14px;}
-.ch-menu-brand-badge{
-  background:linear-gradient(135deg,#930205,#c99a3c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-}
-
-.ch-menu-profile{
-  display:flex;align-items:center;gap:11px;padding:12px;border-radius:16px;cursor:pointer;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
-  transition:border-color .2s;
-}
-body.light .ch-menu-profile{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);}
-.ch-menu-profile:hover{border-color:#930205;}
-.ch-menu-avatar{
-  width:42px;height:42px;border-radius:50%;flex-shrink:0;object-fit:cover;
-  background:linear-gradient(135deg,#930205,#c99a3c);
-  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem;
-  border:2px solid rgba(255,255,255,.15);
-}
-.ch-menu-profile-name{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.25;}
-.ch-menu-profile-sub{font-size:.7rem;color:var(--text3);margin-top:2px;}
-.ch-menu-profile-chev{margin-left:auto;color:var(--text3);flex-shrink:0;}
-
-.ch-menu-search{position:relative;margin-top:12px;}
-.ch-menu-search input{
-  width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:12px;padding:10px 14px 10px 38px;color:var(--text);font-size:.82rem;
-  font-family:var(--font-body);outline:none;transition:border-color .2s;
-}
-body.light .ch-menu-search input{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.09);}
-.ch-menu-search input:focus{border-color:#930205;}
-.ch-menu-search input::placeholder{color:var(--text3);}
-.ch-menu-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
-
-/* ── Quick-stats strip inside menu head ───────────────────── */
-.ch-menu-qs{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
-  margin-top:12px;
-}
-.ch-menu-qs-item{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:9px 4px;border-radius:12px;cursor:pointer;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
-  transition:background .15s,border-color .15s;
-}
-body.light .ch-menu-qs-item{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.07);}
-.ch-menu-qs-item:hover{background:rgba(147,2,5,.1);border-color:rgba(147,2,5,.25);}
-.ch-menu-qs-item:active{transform:scale(.95);}
-.ch-menu-qs-num{font-size:.9rem;font-weight:800;line-height:1;}
-.ch-menu-qs-num.blue{color:#930205;}
-.ch-menu-qs-num.red{color:#ff4d6d;}
-.ch-menu-qs-num.gold{color:#f59e0b;}
-.ch-menu-qs-num.green{color:#10d98e;}
-.ch-menu-qs-lbl{font-size:.59rem;color:var(--text3);font-weight:700;text-align:center;line-height:1.2;}
-
-.ch-menu-body{flex:1;overflow-y:auto;padding:10px 8px;position:relative;}
-.ch-menu-body::-webkit-scrollbar{width:0;}
-.ch-menu-section-lbl{font-size:.64rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:14px 14px 6px;}
-.ch-menu-item{
-  display:flex;align-items:center;gap:13px;padding:11px 14px;margin:1px 6px;border-radius:13px;
-  cursor:pointer;text-decoration:none;color:var(--text);transition:background .15s,transform .1s;
-  position:relative;
-}
-.ch-menu-item:hover{background:rgba(147,2,5,.09);}
-.ch-menu-item:active{transform:scale(.98);}
-.ch-menu-item.active{
-  background:linear-gradient(135deg,rgba(147,2,5,.16),rgba(201,154,60,.1));
-  box-shadow:inset 0 0 0 1px rgba(147,2,5,.3);
-}
-.ch-menu-item.active .ch-menu-item-label{color:#930205;font-weight:800;}
-.ch-menu-item.active::before{
-  content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:0 3px 3px 0;
-  background:linear-gradient(180deg,#930205,#c99a3c);
-}
-.ch-menu-item-icon{font-size:1.05rem;width:22px;text-align:center;flex-shrink:0;}
-.ch-menu-item-label{font-size:.84rem;font-weight:600;flex:1;}
-.ch-menu-item-count{
-  font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:100px;flex-shrink:0;
-  background:rgba(147,2,5,.14);color:#930205;border:1px solid rgba(147,2,5,.25);
-  min-width:20px;text-align:center;
-}
-.ch-menu-item-count.red{background:rgba(255,77,109,.14);color:#ff4d6d;border-color:rgba(255,77,109,.25);}
-.ch-menu-item-count.gold{background:rgba(245,158,11,.14);color:#f59e0b;border-color:rgba(245,158,11,.25);}
-.ch-menu-item-count.green{background:rgba(16,185,129,.14);color:#10b981;border-color:rgba(16,185,129,.25);}
-.ch-menu-divider{height:1px;background:rgba(255,255,255,.07);margin:10px 14px;}
-body.light .ch-menu-divider{background:rgba(0,0,0,.07);}
-
-.ch-menu-quick{display:flex;gap:8px;padding:4px 14px 12px;}
-.ch-menu-quick-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;
-  border-radius:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
-  color:var(--text2);font-size:.62rem;font-weight:700;cursor:pointer;text-decoration:none;
-  transition:all .18s;
-}
-body.light .ch-menu-quick-btn{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08);}
-.ch-menu-quick-btn span:first-child{font-size:1.15rem;}
-.ch-menu-quick-btn.telegram:hover{border-color:#229ED9;color:#229ED9;background:rgba(34,158,217,.1);}
-.ch-menu-quick-btn.whatsapp:hover{border-color:#25D366;color:#25D366;background:rgba(37,211,102,.1);}
-.ch-menu-quick-btn.channel:hover{border-color:#930205;color:#930205;background:rgba(147,2,5,.1);}
-
-.ch-menu-foot{
-  flex-shrink:0;padding:12px 16px 14px;border-top:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.02);
-}
-body.light .ch-menu-foot{border-top-color:rgba(0,0,0,.08);}
-.ch-menu-foot-row{display:flex;align-items:center;justify-content:space-between;font-size:.66rem;color:var(--text3);}
-.ch-menu-foot-brand{font-weight:800;color:var(--text2);}
-.ch-menu-foot-brand b{background:linear-gradient(135deg,#930205,#c99a3c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-.ch-menu-foot-meta{display:flex;gap:8px;margin-top:4px;}
-
-/* ── Stats strip ──────────────────────────────────────────── */
-.ch-stats {
-  display:grid;grid-template-columns:repeat(4,1fr);
-  background:var(--bg2);border-bottom:1px solid rgba(255,255,255,.06);
-}
-body.light .ch-stats { border-color:rgba(0,0,0,.07); }
-.ch-stat-item {
-  padding:14px 8px;text-align:center;
-  border-right:1px solid rgba(255,255,255,.06);
-  transition:background .15s;
-}
-body.light .ch-stat-item { border-color:rgba(0,0,0,.07); }
-.ch-stat-item:last-child{border-right:none;}
-.ch-stat-num {
-  font-size:1.1rem;font-weight:800;line-height:1;
-  transition:transform .3s;
-}
-.ch-stat-num.blue{color:#930205;}
-.ch-stat-num.red{color:#ff4d6d;}
-.ch-stat-num.gold{color:#f59e0b;}
-.ch-stat-num.green{color:#10d98e;}
-.ch-stat-lbl{font-size:.62rem;color:var(--text3);margin-top:3px;letter-spacing:.02em;font-weight:600;}
-
-/* ── Notifications ticker ─────────────────────────────────── */
-.ch-notif-ticker {
-  margin:16px 16px 0;
-  background:rgba(16,217,142,.07);border:1px solid rgba(16,217,142,.2);
-  border-radius:12px;overflow:hidden;
-}
-.ch-notif-ticker-hd {
-  display:flex;align-items:center;gap:8px;padding:9px 14px;
-  border-bottom:1px solid rgba(16,217,142,.15);
-  font-size:.75rem;font-weight:700;color:#10d98e;
-}
-.ch-notif-list{max-height:160px;overflow-y:auto;scrollbar-width:thin;}
-.ch-notif-item {
-  display:flex;gap:10px;align-items:flex-start;
-  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);
-  font-size:.78rem;color:var(--text2);transition:background .15s;
-}
-body.light .ch-notif-item { border-color:rgba(0,0,0,.05); }
-.ch-notif-item:last-child{border-bottom:none;}
-.ch-notif-item:hover{background:rgba(255,255,255,.02);}
-.ch-notif-dot{width:6px;height:6px;border-radius:50%;background:#10d98e;flex-shrink:0;margin-top:5px;}
-.ch-notif-body{flex:1;line-height:1.5;color:var(--text);}
-.ch-notif-time{font-size:.66rem;color:var(--text3);flex-shrink:0;margin-top:3px;}
-
-/* ── Category scroller ────────────────────────────────────── */
-.ch-cats-wrap {
-  padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.06);
-  overflow-x:auto;scrollbar-width:none;display:flex;gap:8px;
-}
-body.light .ch-cats-wrap { border-color:rgba(0,0,0,.07); }
-.ch-cats-wrap::-webkit-scrollbar{display:none;}
-.ch-cat-btn {
-  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
-  padding:7px 14px;border-radius:100px;font-size:.78rem;font-weight:600;
-  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
-  color:var(--text2);cursor:pointer;transition:all .18s;font-family:var(--font-body);
-}
-body.light .ch-cat-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-cat-btn:hover{border-color:#930205;color:#930205;transform:translateY(-1px);}
-.ch-cat-btn.active{
-  background:linear-gradient(135deg,#930205,#c99a3c);border-color:transparent;
-  color:#fff;box-shadow:0 4px 16px rgba(147,2,5,.4);
-}
-
-/* ── Filters row ──────────────────────────────────────────── */
-.ch-filters {
-  display:flex;gap:8px;padding:12px 16px;
-  border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap;
-}
-body.light .ch-filters { border-color:rgba(0,0,0,.07); }
-.ch-filter-select {
-  padding:8px 12px;border-radius:9px;
-  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
-  color:var(--text2);font-size:.78rem;font-family:var(--font-body);
-  outline:none;cursor:pointer;transition:all .2s;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-body.light .ch-filter-select{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-filter-select:focus{border-color:#930205;color:var(--text);}
-
-/* ── Featured banner ──────────────────────────────────────── */
-.ch-featured-banner {
-  margin:16px 16px 0;
-  background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(249,115,22,.06));
-  border:1px solid rgba(245,158,11,.25);
-  border-radius:16px;padding:14px 16px;
-  display:flex;align-items:center;gap:12px;
-}
-.ch-featured-icon{font-size:1.5rem;}
-.ch-featured-text .ch-featured-label{
-  font-size:.7rem;font-weight:800;letter-spacing:.06em;
-  color:#f59e0b;text-transform:uppercase;margin-bottom:2px;
-}
-.ch-featured-text .ch-featured-title{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.3;}
-.ch-featured-text .ch-featured-meta{font-size:.75rem;color:var(--text2);margin-top:3px;}
-.ch-featured-apply {
-  margin-left:auto;padding:8px 16px;border-radius:100px;
-  background:linear-gradient(135deg,#f59e0b,#f97316);border:none;color:#fff;
-  font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font-body);
-  white-space:nowrap;transition:transform .2s,box-shadow .2s;
-  box-shadow:0 4px 14px rgba(245,158,11,.35);
-}
-.ch-featured-apply:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(245,158,11,.5);}
-
-/* ── Dynamic section headers ──────────────────────────────── */
-.ch-section-hd {
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 16px 10px;
-}
-.ch-section-title {
-  font-size:.8rem;font-weight:800;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--text2);
-  display:flex;align-items:center;gap:8px;
-}
-.ch-sec-dot {
-  width:8px;height:8px;border-radius:50%;flex-shrink:0;
-}
-.ch-sec-dot.blue{background:#930205;box-shadow:0 0 8px rgba(147,2,5,.6);}
-.ch-sec-dot.red {background:#ff4d6d;box-shadow:0 0 8px rgba(255,77,109,.6);}
-.ch-sec-dot.gold{background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.6);}
-.ch-sec-dot.green{background:#10d98e;box-shadow:0 0 8px rgba(16,217,142,.6);}
-.ch-see-all {
-  font-size:.72rem;color:#930205;font-weight:700;background:none;border:none;
-  cursor:pointer;font-family:var(--font-body);padding:4px 8px;border-radius:6px;
-  transition:background .15s;
-}
-.ch-see-all:hover{background:rgba(147,2,5,.1);}
-.ch-refresh-btn {
-  font-size:.75rem;color:var(--text3);background:none;
-  border:none;cursor:pointer;font-family:var(--font-body);
-  padding:4px 8px;border-radius:6px;transition:all .2s;
-}
-.ch-refresh-btn:hover{color:#930205;background:rgba(147,2,5,.08);}
-.ch-refresh-btn.active{color:#ff4d6d;background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);}
-.ch-sec-divider{height:1px;background:rgba(255,255,255,.05);margin:4px 16px;}
-body.light .ch-sec-divider{background:rgba(0,0,0,.05);}
-
-/* ── Horizontal scroll rows ───────────────────────────────── */
-.ch-hscroll {
-  display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;
-  padding:0 16px 4px;
-}
-.ch-hscroll::-webkit-scrollbar{display:none;}
-
-/* Featured card (horizontal scroll) */
-.ch-feat-card {
-  flex:0 0 265px;
-  background:linear-gradient(135deg,rgba(245,158,11,.09),rgba(249,115,22,.05));
-  border:1px solid rgba(245,158,11,.22);
-  border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;
-  position:relative;overflow:hidden;
-}
-.ch-feat-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(245,158,11,.06),transparent);
-  pointer-events:none;
-}
-.ch-feat-card:hover{transform:translateY(-3px);border-color:rgba(245,158,11,.4);box-shadow:0 12px 36px rgba(245,158,11,.15);}
-.ch-feat-card .fc-lbl{font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#f59e0b;margin-bottom:8px;}
-.ch-feat-card .fc-title{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.ch-feat-card .fc-org{font-size:.74rem;color:var(--text2);margin-bottom:10px;}
-.ch-feat-card .fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
-.ch-feat-card .fc-btn{
-  width:100%;padding:9px;border-radius:9px;border:none;
-  background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;
-  font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font-body);
-  transition:box-shadow .18s;box-shadow:0 3px 10px rgba(245,158,11,.3);
-}
-.ch-feat-card .fc-btn:hover{box-shadow:0 6px 20px rgba(245,158,11,.45);}
-
-/* Compact card (horizontal scroll) */
-.ch-mini-card {
-  flex:0 0 195px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;padding:14px;cursor:pointer;transition:all .18s;
-}
-body.light .ch-mini-card{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.07);}
-.ch-mini-card:hover{transform:translateY(-2px);border-color:rgba(147,2,5,.35);box-shadow:0 8px 28px rgba(147,2,5,.13);}
-.ch-mini-card .mc-icon{font-size:1.3rem;margin-bottom:8px;}
-.ch-mini-card .mc-title{font-size:.82rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.ch-mini-card .mc-org{font-size:.7rem;color:var(--text2);margin-bottom:6px;}
-.ch-mini-card .mc-meta{font-size:.66rem;color:var(--text3);}
-
-/* ── Job Cards Grid ───────────────────────────────────────── */
-.ch-jobs-grid{display:flex;flex-direction:column;gap:10px;padding:0 16px;}
-
-.ch-job-card {
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;padding:16px;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  transition:all .22s cubic-bezier(0.34,1.15,0.64,1);
-  position:relative;overflow:hidden;cursor:pointer;
-  box-shadow:0 1px 0 rgba(255,255,255,.04),0 4px 24px rgba(0,0,0,.18);
-}
-body.light .ch-job-card{background:rgba(255,255,255,.88);border-color:rgba(0,0,0,.07);box-shadow:0 2px 16px rgba(0,0,0,.08);}
-.ch-job-card::before{
-  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-  background:linear-gradient(180deg,#930205,#c99a3c);opacity:0;transition:opacity .2s;
-}
-.ch-job-card:hover{
-  border-color:rgba(147,2,5,.35);
-  transform:translateY(-3px);
-  box-shadow:0 12px 40px rgba(147,2,5,.18),0 2px 8px rgba(0,0,0,.2);
-}
-.ch-job-card:hover::before{opacity:1;}
-.ch-job-card.ch-featured-card{
-  border-color:rgba(245,158,11,.25);
-  background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(255,255,255,.02));
-}
-.ch-job-card.ch-featured-card::before{background:linear-gradient(180deg,#f59e0b,#f97316);opacity:1;}
-.ch-job-card.ch-new::after{
-  content:'NEW';position:absolute;top:10px;right:12px;
-  background:linear-gradient(135deg,#10d98e,#06b6d4);color:#fff;
-  font-size:.6rem;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:100px;
-}
-
-/* Card internals */
-.ch-job-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
-.ch-job-org-logo{
-  width:44px;height:44px;border-radius:12px;flex-shrink:0;
-  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
-  display:flex;align-items:center;justify-content:center;font-size:1.25rem;
-}
-body.light .ch-job-org-logo{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.08);}
-.ch-job-info{flex:1;min-width:0;}
-.ch-job-title{
-  font-size:.93rem;font-weight:700;color:var(--text);
-  margin-bottom:3px;line-height:1.35;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
-.ch-job-org-line{font-size:.77rem;color:var(--text2);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.ch-posts-pill{
-  display:inline-flex;align-items:center;
-  padding:1px 7px;border-radius:100px;
-  background:rgba(16,217,142,.1);border:1px solid rgba(16,217,142,.22);
-  color:#10d98e;font-size:.65rem;font-weight:800;
-}
-
-/* Tags */
-.ch-job-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
-.ch-job-tag{
-  padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:600;
-  border:1px solid rgba(255,255,255,.09);color:var(--text2);
-  background:rgba(255,255,255,.04);white-space:nowrap;
-}
-body.light .ch-job-tag{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09);}
-.ch-job-tag.loc{color:#10d98e;border-color:rgba(16,217,142,.28);background:rgba(16,217,142,.07);}
-.ch-job-tag.qual{color:#930205;border-color:rgba(147,2,5,.28);background:rgba(147,2,5,.07);}
-.ch-job-tag.date{color:#ff4d6d;border-color:rgba(255,77,109,.28);background:rgba(255,77,109,.07);}
-.ch-job-tag.urgent{animation:ch-pulse-border 1.8s ease-in-out infinite;}
-@keyframes ch-pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(255,77,109,0);}50%{box-shadow:0 0 0 3px rgba(255,77,109,.18);}}
-
-/* Footer */
-.ch-job-footer{display:flex;align-items:center;gap:8px;margin-top:4px;}
-.ch-job-save-btn,.ch-job-share-btn{
-  width:35px;height:35px;border-radius:9px;flex-shrink:0;
-  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
-  color:var(--text3);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.85rem;transition:all .18s;font-family:var(--font-body);
-}
-body.light .ch-job-save-btn, body.light .ch-job-share-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-job-save-btn:hover{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.09);}
-.ch-job-save-btn.saved{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.12);}
-.ch-job-share-btn:hover{border-color:#930205;color:#930205;background:rgba(147,2,5,.09);}
-.ch-job-apply-btn{
-  flex:1;padding:10px 14px;border-radius:9px;border:none;
-  background:linear-gradient(135deg,#930205,#c99a3c);color:#fff;
-  font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font-body);
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  transition:all .2s;box-shadow:0 4px 14px rgba(147,2,5,.3);
-}
-.ch-job-apply-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(147,2,5,.5);}
-
-/* ── Badges ───────────────────────────────────────────────── */
-.ch-badges-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.ch-badge{
-  display:inline-flex;align-items:center;padding:3px 9px;
-  border-radius:100px;font-size:.62rem;font-weight:800;
-  letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;
-}
-.ch-badge-new        {background:rgba(16,217,142,.12);color:#10d98e;border:1px solid rgba(16,217,142,.2);}
-.ch-badge-featured   {background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2);}
-.ch-badge-trending   {background:rgba(255,77,109,.12);color:#ff4d6d;border:1px solid rgba(255,77,109,.2);}
-.ch-badge-urgent     {background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;}
-.ch-badge-salary     {background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
-.ch-badge-govt       {background:rgba(147,2,5,.12);color:#930205;border:1px solid rgba(147,2,5,.2);}
-.ch-badge-private    {background:rgba(201,154,60,.12);color:#c99a3c;border:1px solid rgba(201,154,60,.2);}
-.ch-badge-scholarship{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2);}
-.ch-badge-internship {background:rgba(16,217,142,.12);color:#10d98e;border:1px solid rgba(16,217,142,.2);}
-
-/* ── Empty / Error ────────────────────────────────────────── */
-.ch-empty{text-align:center;padding:56px 20px;color:var(--text2);font-size:.9rem;}
-.ch-empty-icon{font-size:3rem;margin-bottom:12px;display:block;}
-.ch-loading{display:flex;justify-content:center;align-items:center;padding:48px;color:var(--text3);gap:10px;font-size:.85rem;}
-.ch-spinner{width:22px;height:22px;border:2px solid rgba(255,255,255,.1);border-top-color:#930205;border-radius:50%;animation:ch-spin .7s linear infinite;}
-body.light .ch-spinner{border-color:rgba(0,0,0,.1);border-top-color:#930205;}
-@keyframes ch-spin{to{transform:rotate(360deg);}}
-
-/* ══ PREMIUM JOB DETAIL SHEET ════════════════════════════════ */
-#chJobSheet.ch-fullscreen{align-items:stretch;background:var(--bg2);backdrop-filter:none;}
-#chJobSheet.ch-fullscreen #chJobSheetInner{
-  position:fixed;inset:0;max-height:100vh;width:100%;
-  border-radius:0;padding:0;
-  animation:ch-sheet-in .28s cubic-bezier(.22,1,.36,1);
-  background:var(--bg2);overflow-y:auto;
-}
-@keyframes ch-sheet-in{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-#chJobSheet.ch-fullscreen .ch-sheet-draghandle{display:none;}
-.ch-sheet-close-btn{
-  display:none;position:fixed;top:14px;right:16px;z-index:40;
-  width:38px;height:38px;border-radius:50%;
-  background:rgba(10,14,28,.85);backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.12);color:var(--text);
-  align-items:center;justify-content:center;cursor:pointer;
-}
-body.light .ch-sheet-close-btn{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.1);}
-#chJobSheet.ch-fullscreen .ch-sheet-close-btn{display:flex;}
-
-/* Progress bar */
-.ch-detail-progress{position:sticky;top:0;left:0;width:100%;height:3px;background:rgba(255,255,255,.07);z-index:30;}
-.ch-detail-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#930205,#c99a3c);transition:width .1s linear;}
-
-/* Detail hero */
-.ch-detail-hero{
-  padding:24px 20px 18px;
-  background:linear-gradient(135deg,rgba(147,2,5,.07),rgba(201,154,60,.04));
-  border-bottom:1px solid rgba(255,255,255,.07);
-}
-body.light .ch-detail-hero{background:linear-gradient(135deg,rgba(147,2,5,.04),rgba(201,154,60,.02));border-color:rgba(0,0,0,.07);}
-.ch-detail-hero-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
-.ch-detail-org-logo{
-  width:60px;height:60px;border-radius:18px;flex-shrink:0;
-  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);
-  display:flex;align-items:center;justify-content:center;font-size:1.9rem;
-  box-shadow:0 4px 18px rgba(0,0,0,.2);
-}
-body.light .ch-detail-org-logo{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1);}
-.ch-detail-title{
-  font-family:var(--font-editorial);font-size:clamp(1rem,4vw,1.3rem);
-  font-weight:800;color:var(--text);line-height:1.3;
-}
-.ch-detail-org{font-size:.88rem;color:var(--text2);margin-top:5px;}
-.ch-detail-posts-pill{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:3px 10px;border-radius:100px;margin-top:8px;
-  background:rgba(16,217,142,.1);border:1px solid rgba(16,217,142,.22);
-  color:#10d98e;font-size:.72rem;font-weight:800;
-}
-.ch-detail-readtime{
-  padding:10px 20px 0;font-size:.72rem;color:var(--text3);
-  display:flex;gap:12px;flex-wrap:wrap;
-}
-.ch-detail-readtime span{display:flex;align-items:center;gap:4px;}
-
-/* Sticky action bar */
-.ch-detail-actionbar{
-  position:sticky;top:3px;z-index:25;
-  display:flex;gap:8px;padding:12px 16px;
-  background:rgba(8,12,24,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(255,255,255,.07);
-  box-shadow:0 4px 24px rgba(0,0,0,.3);
-}
-body.light .ch-detail-actionbar{background:rgba(255,255,255,.93);box-shadow:0 4px 24px rgba(0,0,0,.1);}
-.ch-action-btn{border:none;cursor:pointer;font-family:var(--font-body);border-radius:10px;transition:all .18s;}
-.ch-action-btn.primary{
-  flex:1;padding:13px;font-size:.88rem;font-weight:800;color:#fff;
-  background:linear-gradient(135deg,#930205,#c99a3c);
-  box-shadow:0 4px 18px rgba(147,2,5,.4);
-}
-.ch-action-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(147,2,5,.55);}
-.ch-action-btn.primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
-.ch-action-btn.icon{
-  width:44px;height:44px;flex-shrink:0;font-size:1rem;
-  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--text2);
-  display:flex;align-items:center;justify-content:center;
-}
-body.light .ch-action-btn.icon{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1);}
-.ch-action-btn.icon:hover{border-color:#930205;color:#930205;background:rgba(147,2,5,.1);}
-.ch-action-btn.icon.active{border-color:#ff4d6d;color:#ff4d6d;background:rgba(255,77,109,.12);}
-
-/* Section labels */
-.ch-detail-section-label{
-  padding:22px 20px 10px;font-size:.72rem;font-weight:800;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--text3);
-  display:flex;align-items:center;gap:8px;
-}
-.ch-detail-section-label span{font-size:1rem;}
-
-/* Meta grid */
-.ch-detail-meta-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 20px;
-}
-@media(min-width:500px){.ch-detail-meta-grid{grid-template-columns:repeat(3,1fr);}}
-.ch-detail-meta-item{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;padding:11px 12px;display:flex;flex-direction:column;gap:4px;transition:border-color .15s;
-}
-body.light .ch-detail-meta-item{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.07);}
-.ch-detail-meta-item:hover{border-color:rgba(147,2,5,.3);}
-.ch-dm-label{font-size:.62rem;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
-.ch-dm-val{font-size:.86rem;color:var(--text);font-weight:700;line-height:1.3;}
-.ch-dm-val.danger{color:#ff4d6d;}
-.ch-dm-val.success{color:#10d98e;}
-
-/* Dates timeline */
-.ch-dates-timeline{padding:4px 20px 0 26px;display:flex;flex-direction:column;}
-.ch-dates-row{position:relative;padding-bottom:18px;padding-left:22px;border-left:2px solid rgba(255,255,255,.08);}
-body.light .ch-dates-row{border-color:rgba(0,0,0,.1);}
-.ch-dates-row.last{border-left-color:transparent;padding-bottom:0;}
-.ch-dates-dot{
-  position:absolute;left:-6px;top:3px;width:10px;height:10px;border-radius:50%;
-  background:linear-gradient(135deg,#930205,#c99a3c);
-  box-shadow:0 0 0 3px var(--bg2),0 0 10px rgba(147,2,5,.4);
-}
-.ch-dates-label{font-size:.7rem;font-weight:700;color:var(--text3);letter-spacing:.02em;text-transform:uppercase;}
-.ch-dates-value{font-size:.9rem;font-weight:800;color:var(--text);margin-top:2px;}
-
-/* Important links */
-.ch-links-table{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
-.ch-links-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;text-decoration:none;transition:all .18s;cursor:pointer;
-}
-body.light .ch-links-row{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.07);}
-.ch-links-row:hover{border-color:#930205;transform:translateX(3px);background:rgba(147,2,5,.06);}
-.ch-links-label{font-size:.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
-.ch-links-go{font-size:.75rem;color:#930205;font-weight:700;}
-
-/* Accordion */
-.ch-detail-sections{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
-.ch-detail-overview-card{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;padding:16px 20px;font-size:.85rem;color:var(--text2);line-height:1.75;
-}
-body.light .ch-detail-overview-card{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.07);}
-.ch-detail-accordion{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;overflow:hidden;transition:border-color .2s;
-}
-body.light .ch-detail-accordion{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.07);}
-.ch-detail-accordion.open{border-color:rgba(147,2,5,.3);}
-.ch-detail-accordion-hd{
-  width:100%;display:flex;align-items:center;justify-content:space-between;
-  padding:13px 15px;background:none;border:none;cursor:pointer;
-  font-family:var(--font-body);text-align:left;gap:10px;
-}
-.ch-detail-accordion-title{font-size:.84rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
-.ch-accordion-chev{color:var(--text3);transition:transform .25s,color .2s;flex-shrink:0;}
-.ch-detail-accordion.open .ch-accordion-chev{transform:rotate(180deg);color:#930205;}
-.ch-detail-accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
-.ch-detail-accordion.open .ch-detail-accordion-body{max-height:2000px;}
-.ch-detail-accordion-inner{padding:2px 15px 15px;font-size:.83rem;color:var(--text2);line-height:1.75;}
-.ch-detail-accordion-inner p{margin-bottom:8px;}
-.ch-detail-accordion-inner p:last-child{margin-bottom:0;}
-.ch-detail-bullet{padding-left:18px;position:relative;margin-bottom:6px;}
-.ch-detail-bullet::before{content:'•';position:absolute;left:4px;color:#930205;}
-
-/* Article body */
-.ch-article-body{padding:0 20px;font-size:.87rem;line-height:1.85;color:var(--text2);word-wrap:break-word;}
-.ch-article-body p{margin:0 0 14px;}
-.ch-article-body h1,.ch-article-body h2,.ch-article-body h3,.ch-article-body h4{
-  font-family:var(--font-editorial);color:var(--text);font-weight:800;margin:22px 0 10px;line-height:1.35;
-}
-.ch-article-body h1{font-size:1.15rem;}.ch-article-body h2{font-size:1.05rem;}
-.ch-article-body h3,.ch-article-body h4{font-size:.95rem;}
-.ch-article-body ul,.ch-article-body ol{margin:0 0 14px;padding-left:20px;}
-.ch-article-body li{margin-bottom:6px;}
-.ch-article-body table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.82rem;background:rgba(255,255,255,.02);border-radius:10px;overflow:hidden;}
-body.light .ch-article-body table{background:rgba(0,0,0,.02);}
-.ch-article-body th,.ch-article-body td{padding:9px 10px;border:1px solid rgba(255,255,255,.07);text-align:left;}
-body.light .ch-article-body th, body.light .ch-article-body td{border-color:rgba(0,0,0,.07);}
-.ch-article-body th{background:rgba(255,255,255,.04);font-weight:700;color:var(--text);}
-.ch-article-body strong,.ch-article-body b{color:var(--text);}
-.ch-article-body img{max-width:100%;height:auto;border-radius:10px;margin:10px 0;display:block;}
-.ch-article-body blockquote{border-left:3px solid #930205;padding:4px 14px;margin:14px 0;color:var(--text2);background:rgba(147,2,5,.05);border-radius:0 10px 10px 0;}
-
-/* Recommendations */
-.ch-rec-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 20px 4px;scrollbar-width:none;}
-.ch-rec-scroll::-webkit-scrollbar{display:none;}
-.ch-rec-card{
-  flex:0 0 155px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;padding:12px;cursor:pointer;transition:all .18s;
-}
-body.light .ch-rec-card{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.07);}
-.ch-rec-card:hover{border-color:rgba(147,2,5,.35);transform:translateY(-2px);box-shadow:0 6px 20px rgba(147,2,5,.12);}
-.ch-rec-org-logo{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:8px;}
-.ch-rec-title{font-size:.76rem;font-weight:700;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px;}
-.ch-rec-meta{font-size:.64rem;color:var(--text3);}
-
-/* Leaving modal */
-.ch-leaving-overlay{
-  display:none;position:fixed;inset:0;z-index:700;
-  background:rgba(0,0,0,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  align-items:center;justify-content:center;padding:20px;
-}
-.ch-leaving-card{
-  width:100%;max-width:370px;background:var(--bg2);
-  border:1px solid rgba(255,255,255,.1);border-radius:24px;
-  padding:28px 22px;text-align:center;
-  box-shadow:0 32px 80px rgba(0,0,0,.6);
-  animation:ch-sheet-in .25s cubic-bezier(.22,1,.36,1);
-}
-body.light .ch-leaving-card{background:#fff;border-color:rgba(0,0,0,.1);}
-.ch-leaving-icon{font-size:2.2rem;margin-bottom:10px;}
-.ch-leaving-title{font-family:var(--font-editorial);font-size:1.15rem;font-weight:800;color:var(--text);}
-.ch-leaving-sub{font-size:.82rem;color:var(--text2);margin-top:8px;line-height:1.55;}
-.ch-leaving-recs-label{font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin:20px 0 10px;text-align:left;}
-.ch-leaving-recs{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;}
-.ch-leaving-rec{display:flex;align-items:center;gap:10px;padding:9px 11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;text-align:left;transition:all .15s;}
-body.light .ch-leaving-rec{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.07);}
-.ch-leaving-rec:hover{border-color:#930205;}
-.ch-leaving-rec-icon{font-size:1.1rem;flex-shrink:0;}
-.ch-leaving-rec-title{font-size:.76rem;color:var(--text);font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
-.ch-leaving-actions{display:flex;flex-direction:column;gap:8px;margin-top:20px;}
-.ch-leaving-btn{padding:13px;border-radius:11px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font-body);border:none;transition:all .18s;}
-.ch-leaving-btn.primary{background:linear-gradient(135deg,#930205,#c99a3c);color:#fff;}
-.ch-leaving-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(147,2,5,.4);}
-.ch-leaving-btn.ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text2);}
-body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);}
-.ch-leaving-btn.ghost:hover{color:var(--text);}
-</style>
-
 <div class="ch-wrap">
 
   <div class="ch-hero">
     <div class="ch-hero-badge"><span class="ch-live-dot"></span>🔥 Live Updates Daily</div>
     <h1 class="ch-hero-title">💼 Career Hub</h1>
-    <p class="ch-hero-sub">Latest govt jobs, private jobs, internships &amp; scholarships — all in one place</p>
+    <p class="ch-hero-sub">Latest govt jobs, private jobs, scholarships, internships, admissions &amp; career updates — all in one place</p>
     <div class="ch-hero-toprow">
       <button class="ch-hamburger-btn" id="careerMenuBtn" aria-label="Open menu" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -16808,8 +15957,8 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
   </div>
 
   <div class="ch-stats">
-    <div class="ch-stat-item"><div class="ch-stat-num blue" id="chStatJobs">—</div><div class="ch-stat-lbl">Active Jobs</div></div>
-    <div class="ch-stat-item"><div class="ch-stat-num red"  id="chStatGovt">—</div><div class="ch-stat-lbl">Govt Posts</div></div>
+    <div class="ch-stat-item"><div class="ch-stat-num" id="chStatJobs">—</div><div class="ch-stat-lbl">Active Jobs</div></div>
+    <div class="ch-stat-item"><div class="ch-stat-num red" id="chStatGovt">—</div><div class="ch-stat-lbl">Govt Posts</div></div>
     <div class="ch-stat-item"><div class="ch-stat-num gold" id="chStatScholar">—</div><div class="ch-stat-lbl">Scholarships</div></div>
     <div class="ch-stat-item"><div class="ch-stat-num green" id="chStatIntern">—</div><div class="ch-stat-lbl">Internships</div></div>
   </div>
@@ -16820,62 +15969,41 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
       Latest Notifications
     </div>
     <div class="ch-notif-list" id="chNotifList">
-      <div class="ch-notif-item"><span class="ch-notif-dot"></span><span class="ch-notif-body"><b>SSC CGL 2026</b> — Notification OUT! 12,256 vacancies. Last date: 22 June 2026.</span><span class="ch-notif-time">2h ago</span></div>
-      <div class="ch-notif-item"><span class="ch-notif-dot"></span><span class="ch-notif-body"><b>IBPS PO 2026</b> — 5,000+ vacancies across 11 PSBs. Prelims: 22–23 Aug 2026.</span><span class="ch-notif-time">5h ago</span></div>
-      <div class="ch-notif-item"><span class="ch-notif-dot"></span><span class="ch-notif-body"><b>RRB ALP 2026</b> — Correction window open till 26 June. 11,127 vacancies.</span><span class="ch-notif-time">1d ago</span></div>
-      <div class="ch-notif-item"><span class="ch-notif-dot"></span><span class="ch-notif-body"><b>RRB Group D 2026</b> — Apply for 21,997 posts at rrbapply.gov.in.</span><span class="ch-notif-time">1d ago</span></div>
-      <div class="ch-notif-item"><span class="ch-notif-dot"></span><span class="ch-notif-body"><b>Infosys Off Campus 2026</b> — Freshers SP &amp; DSE roles, up to ₹21 LPA via InfyTQ.</span><span class="ch-notif-time">2d ago</span></div>
+      <div class="ch-notif-item"><span class="ch-notif-dot"></span><span class="ch-notif-body">Loading latest updates…</span></div>
     </div>
   </div>
 
   <div class="ch-cats-wrap" id="chCatsWrap">
-    <button class="ch-cat-btn active" data-cat="all"         onclick="chSelectCat(this,'all')">🌐 All</button>
-    <button class="ch-cat-btn" data-cat="govt"               onclick="chSelectCat(this,'govt')">🏛️ Govt Jobs</button>
-    <button class="ch-cat-btn" data-cat="assam"              onclick="chSelectCat(this,'assam')">🗺️ Assam Jobs</button>
-    <button class="ch-cat-btn" data-cat="adre"               onclick="chSelectCat(this,'adre')">📝 ADRE</button>
-    <button class="ch-cat-btn" data-cat="apsc"               onclick="chSelectCat(this,'apsc')">?? APSC</button>
-    <button class="ch-cat-btn" data-cat="ssc"                onclick="chSelectCat(this,'ssc')">📋 SSC</button>
-    <button class="ch-cat-btn" data-cat="railway"            onclick="chSelectCat(this,'railway')">🚂 Railway</button>
-    <button class="ch-cat-btn" data-cat="banking"            onclick="chSelectCat(this,'banking')">🏦 Banking</button>
-    <button class="ch-cat-btn" data-cat="defence"            onclick="chSelectCat(this,'defence')">🛡️ Defence</button>
-    <button class="ch-cat-btn" data-cat="private"            onclick="chSelectCat(this,'private')">🏢 Private</button>
-    <button class="ch-cat-btn" data-cat="it"                 onclick="chSelectCat(this,'it')">💻 IT Jobs</button>
-    <button class="ch-cat-btn" data-cat="wfh"                onclick="chSelectCat(this,'wfh')">🏠 Work From Home</button>
-    <button class="ch-cat-btn" data-cat="freshers"           onclick="chSelectCat(this,'freshers')">🌱 Freshers</button>
-    <button class="ch-cat-btn" data-cat="internship"         onclick="chSelectCat(this,'internship')">🎓 Internships</button>
-    <button class="ch-cat-btn" data-cat="scholarship"        onclick="chSelectCat(this,'scholarship')">🏆 Scholarships</button>
-    <button class="ch-cat-btn" data-cat="admit"              onclick="chSelectCat(this,'admit')">🪪 Admit Cards</button>
-    <button class="ch-cat-btn" data-cat="result"             onclick="chSelectCat(this,'result')">📊 Results</button>
-    <button class="ch-cat-btn" data-cat="syllabus"           onclick="chSelectCat(this,'syllabus')">📚 Syllabus</button>
+    <button class="ch-cat-btn active" data-cat="all" onclick="chSelectCat(this,'all')">🌐 All</button>
+    <button class="ch-cat-btn" data-cat="govt" onclick="chSelectCat(this,'govt')">🏛️ Govt Jobs</button>
+    <button class="ch-cat-btn" data-cat="assam" onclick="chSelectCat(this,'assam')">🗺️ Assam Jobs</button>
+    <button class="ch-cat-btn" data-cat="private" onclick="chSelectCat(this,'private')">🏢 Private Jobs</button>
+    <button class="ch-cat-btn" data-cat="scholarship" onclick="chSelectCat(this,'scholarship')">🏆 Scholarships</button>
+    <button class="ch-cat-btn" data-cat="internship" onclick="chSelectCat(this,'internship')">🎓 Internships</button>
+    <button class="ch-cat-btn" data-cat="admission" onclick="chSelectCat(this,'admission')">📚 Admissions</button>
+    <button class="ch-cat-btn" data-cat="admit" onclick="chSelectCat(this,'admit')">🪪 Admit Cards</button>
+    <button class="ch-cat-btn" data-cat="result" onclick="chSelectCat(this,'result')">📊 Results</button>
   </div>
 
   <div class="ch-filters">
-    <select class="ch-filter-select" id="chQualFilter" onchange="chFilterJobs()">
+    <select class="ch-filter-select" id="chQualFilter" onchange="window._ch.qual=this.value;chFilterJobs()">
       <option value="">🎓 All Qualifications</option>
       <option value="10th">Class 10th</option>
       <option value="12th">Class 12th</option>
-      <option value="diploma">Diploma</option>
+      <option value="diploma">Diploma / ITI</option>
       <option value="graduate">Graduate</option>
       <option value="postgraduate">Post Graduate</option>
-      <option value="phd">PhD</option>
     </select>
-    <select class="ch-filter-select" id="chStateFilter" onchange="chFilterJobs()">
-      <option value="">📍 All States</option>
+    <select class="ch-filter-select" id="chStateFilter" onchange="window._ch.state=this.value;chFilterJobs()">
+      <option value="">📍 All Locations</option>
       <option value="assam">Assam</option>
       <option value="national">National</option>
-      <option value="northeast">North East</option>
     </select>
-    <select class="ch-filter-select" id="chSortFilter" onchange="chFilterJobs()">
+    <select class="ch-filter-select" id="chSortFilter" onchange="window._ch.sort=this.value;chFilterJobs()">
       <option value="latest">🕐 Latest First</option>
-      <option value="deadline">⏰ Deadline</option>
-      <option value="salary">💰 Salary High</option>
-    </select>
-    <select class="ch-filter-select" id="chSourceFilter" onchange="chFilterJobs()">
-      <option value="">📡 All Sources</option>
-      <option value="manual">✍️ Manual</option>
-      <option value="rss">📰 RSS Feed</option>
-      <option value="jsearch">🔍 JSearch</option>
-      <option value="pipedream">⚡ Pipedream</option>
+      <option value="deadline">⏰ Deadline Soon</option>
+      <option value="trending">🔥 Trending</option>
+      <option value="ending_soon">⚡ Ending Soon</option>
     </select>
   </div>
 
@@ -16890,24 +16018,24 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
   </div>
 
   <div id="chFeaturedSection"></div>
-  <div id="chTrendingSection"></div>
   <div id="chGovtSection"></div>
   <div id="chScholarSection"></div>
   <div id="chInternSection"></div>
 
   <div class="ch-section-hd">
     <div class="ch-section-title" id="chJobsSectionTitle">
-      <span class="ch-sec-dot blue"></span>💼 Latest Jobs
+      <span class="ch-sec-dot maroon"></span>💼 Latest Jobs
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <button class="ch-refresh-btn" id="chSavedToggleBtn" onclick="chToggleSavedView()">🤍 Saved (<span id="chSavedCount">0</span>)</button>
+      <button class="ch-refresh-btn" id="chAppliedToggleBtn" onclick="chToggleAppliedView()">✓ Applied</button>
       <button class="ch-refresh-btn" onclick="chLoadJobs(true)">↻ Refresh</button>
     </div>
   </div>
 
   <div id="chJobsList" class="ch-jobs-grid"></div>
-  <div id="chJobsLoading" class="ch-loading" style="display:none">
-    <div class="ch-spinner"></div> Loading jobs…
+  <div id="chJobsLoading" class="ch-empty" style="display:none">
+    <div class="ch-empty-icon">⏳</div> Loading jobs…
   </div>
   <div id="chJobsEmpty" class="ch-empty" style="display:none">
     <span class="ch-empty-icon">🔍</span>
@@ -16916,20 +16044,18 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
   <div id="chJobsError" class="ch-empty" style="display:none">
     <span class="ch-empty-icon">⚠️</span>
     <span id="chJobsErrorText">Unable to load jobs.</span><br>
-    <button onclick="chLoadJobs(true)" style="margin-top:14px;padding:10px 22px;border-radius:9px;border:1px solid #ff4d6d;background:rgba(255,77,109,.1);color:#ff4d6d;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font-body)">↻ Retry</button>
+    <button onclick="chLoadJobs(true)" style="margin-top:14px;padding:10px 22px;border-radius:9px;border:1px solid #930205;background:rgba(147,2,5,0.1);color:#930205;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit">↻ Retry</button>
   </div>
 
 </div>
 
 <div class="ch-menu-overlay" id="chMenuOverlay">
   <div class="ch-menu-drawer" id="chMenuDrawer" onclick="event.stopPropagation()">
-
     <div class="ch-menu-head">
       <button class="ch-menu-close-btn" id="careerMenuCloseBtn" aria-label="Close menu" type="button">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-      <div class="ch-menu-brand">💼 <span class="ch-menu-brand-badge">Career Hub</span></div>
-
+      <div class="ch-menu-brand">💼 <span>Career Hub</span></div>
       <div class="ch-menu-profile" id="chMenuProfileCard" onclick="chMenuProfileTap()">
         <div class="ch-menu-avatar" id="chMenuAvatar">?</div>
         <div style="min-width:0">
@@ -16938,84 +16064,46 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
         </div>
         <svg class="ch-menu-profile-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-
       <div class="ch-menu-search">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="chMenuSearchInput" placeholder="Search jobs, exams, scholarships…" autocomplete="off"
-               onkeydown="if(event.key==='Enter') chMenuSearchGo()" />
-      </div>
-
-      <div class="ch-menu-qs">
-        <div class="ch-menu-qs-item" onclick="chMenuNav(event,'latest')">
-          <span class="ch-menu-qs-num blue" id="chMenuStatActive">—</span>
-          <span class="ch-menu-qs-lbl">📊 Active</span>
-        </div>
-        <div class="ch-menu-qs-item" onclick="chMenuNav(event,'govt')">
-          <span class="ch-menu-qs-num red" id="chMenuStatGovt">—</span>
-          <span class="ch-menu-qs-lbl">🏛 Govt</span>
-        </div>
-        <div class="ch-menu-qs-item" onclick="chMenuNav(event,'scholarship')">
-          <span class="ch-menu-qs-num gold" id="chMenuStatScholar2">—</span>
-          <span class="ch-menu-qs-lbl">🎓 Scholar</span>
-        </div>
-        <div class="ch-menu-qs-item" onclick="chMenuNav(event,'internship')">
-          <span class="ch-menu-qs-num green" id="chMenuStatIntern2">—</span>
-          <span class="ch-menu-qs-lbl">🚀 Intern</span>
-        </div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="chMenuSearchInput" type="text" placeholder="Search jobs…" onkeydown="if(event.key==='Enter')chMenuSearchGo()">
       </div>
     </div>
-
-    <div class="ch-menu-body">
-      <div class="ch-menu-section-lbl">Explore</div>
-      <a class="ch-menu-item" data-menu="home"        onclick="chMenuNav(event,'home')"><span class="ch-menu-item-icon">🏠</span><span class="ch-menu-item-label">Home</span></a>
-      <a class="ch-menu-item" data-menu="latest"       onclick="chMenuNav(event,'latest')"><span class="ch-menu-item-icon">🔥</span><span class="ch-menu-item-label">Latest Jobs</span></a>
-      <a class="ch-menu-item" data-menu="govt"         onclick="chMenuNav(event,'govt')"><span class="ch-menu-item-icon">🏛</span><span class="ch-menu-item-label">Govt Jobs</span><span class="ch-menu-item-count" id="chMenuCountGovt">0</span></a>
-      <a class="ch-menu-item" data-menu="private"      onclick="chMenuNav(event,'private')"><span class="ch-menu-item-icon">💼</span><span class="ch-menu-item-label">Private Jobs</span></a>
-      <a class="ch-menu-item" data-menu="scholarship"  onclick="chMenuNav(event,'scholarship')"><span class="ch-menu-item-icon">🎓</span><span class="ch-menu-item-label">Scholarships</span><span class="ch-menu-item-count gold" id="chMenuCountScholar">0</span></a>
-      <a class="ch-menu-item" data-menu="internship"   onclick="chMenuNav(event,'internship')"><span class="ch-menu-item-icon">🚀</span><span class="ch-menu-item-label">Internships</span><span class="ch-menu-item-count green" id="chMenuCountIntern">0</span></a>
-      <a class="ch-menu-item" data-menu="admission"     onclick="chMenuNav(event,'admission')"><span class="ch-menu-item-icon">📚</span><span class="ch-menu-item-label">Admissions</span></a>
-      <a class="ch-menu-item" data-menu="result"        onclick="chMenuNav(event,'result')"><span class="ch-menu-item-icon">📝</span><span class="ch-menu-item-label">Results</span></a>
-      <a class="ch-menu-item" data-menu="admit"         onclick="chMenuNav(event,'admit')"><span class="ch-menu-item-icon">🎫</span><span class="ch-menu-item-label">Admit Cards</span></a>
-      <a class="ch-menu-item" data-menu="links"         onclick="chMenuNav(event,'links')"><span class="ch-menu-item-icon">🔗</span><span class="ch-menu-item-label">Important Links</span></a>
-
-      <div class="ch-menu-divider"></div>
-      <div class="ch-menu-section-lbl">My Activity</div>
-      <a class="ch-menu-item" data-menu="featured"     onclick="chMenuNav(event,'featured')"><span class="ch-menu-item-icon">⭐</span><span class="ch-menu-item-label">Featured Jobs</span></a>
-      <a class="ch-menu-item" data-menu="saved"        onclick="chMenuNav(event,'saved')"><span class="ch-menu-item-icon">❤️</span><span class="ch-menu-item-label">Saved Jobs</span><span class="ch-menu-item-count red" id="chMenuCountSaved">0</span></a>
-      <a class="ch-menu-item" data-menu="applied"      onclick="chMenuNav(event,'applied')"><span class="ch-menu-item-icon">📄</span><span class="ch-menu-item-label">Applied Jobs</span><span class="ch-menu-item-count" id="chMenuCountApplied">0</span></a>
-      <a class="ch-menu-item" data-menu="notifications" onclick="chMenuNav(event,'notifications')"><span class="ch-menu-item-icon">📢</span><span class="ch-menu-item-label">Notifications</span><span class="ch-menu-item-count" id="chMenuCountNotif">0</span></a>
-
-      <div class="ch-menu-divider"></div>
-      <div class="ch-menu-section-lbl">Account</div>
-      <a class="ch-menu-item" data-menu="profile"      onclick="chMenuNav(event,'profile')"><span class="ch-menu-item-icon">👤</span><span class="ch-menu-item-label">My Profile</span></a>
-      <a class="ch-menu-item" data-menu="settings"     onclick="chMenuNav(event,'settings')"><span class="ch-menu-item-icon">⚙</span><span class="ch-menu-item-label">Settings</span></a>
-      <a class="ch-menu-item" data-menu="contact"      onclick="chMenuNav(event,'contact')"><span class="ch-menu-item-icon">📞</span><span class="ch-menu-item-label">Contact Us</span></a>
-
-      <div class="ch-menu-quick">
-        <a class="ch-menu-quick-btn telegram" id="chMenuTelegramBtn" href="https://t.me/studyria" target="_blank" rel="noopener" onclick="chMenuQuickTap(event,'telegram')"><span>📨</span><span>Telegram</span></a>
-        <a class="ch-menu-quick-btn whatsapp" id="chMenuWhatsappBtn" href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R" target="_blank" rel="noopener" onclick="chMenuQuickTap(event,'whatsapp')"><span>💬</span><span>WhatsApp</span></a>
-        <a class="ch-menu-quick-btn channel" id="chMenuChannelBtn" href="https://whatsapp.com/channel/studyria" target="_blank" rel="noopener" onclick="chMenuQuickTap(event,'channel')"><span>📡</span><span>Join Channel</span></a>
-      </div>
+    <div class="ch-menu-nav">
+      <div class="ch-menu-section-label">Home</div>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'home')"><span class="ch-menu-nav-icon">🏠</span> Career Hub Home</button>
+      <div class="ch-menu-section-label">Explore</div>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'latest')"><span class="ch-menu-nav-icon">💼</span> Latest Jobs</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'govt')"><span class="ch-menu-nav-icon">🏛️</span> Govt Jobs</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'private')"><span class="ch-menu-nav-icon">🏢</span> Private Jobs</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'assam')"><span class="ch-menu-nav-icon">🗺️</span> Assam Jobs</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'scholarship')"><span class="ch-menu-nav-icon">🏆</span> Scholarships</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'internship')"><span class="ch-menu-nav-icon">🎓</span> Internships</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'admission')"><span class="ch-menu-nav-icon">📚</span> Admissions</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'result')"><span class="ch-menu-nav-icon">📊</span> Results</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'admit')"><span class="ch-menu-nav-icon">🪪</span> Admit Cards</button>
+      <div class="ch-menu-section-label">Activity</div>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'saved')"><span class="ch-menu-nav-icon">🤍</span> Saved Jobs <span class="ch-menu-nav-count" id="chMenuSavedCount">0</span></button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'applied')"><span class="ch-menu-nav-icon">✓</span> Applied Jobs</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'notifications')"><span class="ch-menu-nav-icon">🔔</span> Notifications</button>
+      <div class="ch-menu-section-label">Account</div>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'profile')"><span class="ch-menu-nav-icon">👤</span> My Profile</button>
+      <button class="ch-menu-nav-item" onclick="chMenuNav(event,'contact')"><span class="ch-menu-nav-icon">📧</span> Contact Us</button>
     </div>
-
     <div class="ch-menu-foot">
       <div class="ch-menu-foot-row">
         <span class="ch-menu-foot-brand">Career Hub by <b>Studyria</b></span>
-        <span id="chMenuVersion">v1.0.0</span>
+        <span>v5.0</span>
       </div>
-      <div class="ch-menu-foot-meta">
+      <div class="ch-menu-foot-row">
         <span>Updated: <span id="chMenuUpdated">—</span></span>
       </div>
     </div>
-
   </div>
 </div>
 
-<div id="chJobSheet" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.75);backdrop-filter:blur(10px)" onclick="chCloseJobSheet(event)">
-  <div id="chJobSheetInner" style="position:absolute;bottom:0;left:0;right:0;max-height:90vh;overflow-y:auto;background:var(--bg2);border-radius:24px 24px 0 0;border:1px solid rgba(255,255,255,.1);padding:28px 0 48px;animation:ch-sheet-in .3s ease">
-    <div class="ch-sheet-draghandle" style="text-align:center;margin-bottom:4px">
-      <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:0 auto 16px"></div>
-    </div>
+<div id="chJobSheet" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5)" onclick="chCloseJobSheet(event)">
+  <div id="chJobSheetInner" style="position:absolute;bottom:0;left:0;right:0;max-height:100vh;overflow-y:auto;background:#fdfbf7;border-radius:0;padding:0 0 48px;">
     <button class="ch-sheet-close-btn" onclick="chCloseJobSheet()" aria-label="Close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
@@ -17024,266 +16112,63 @@ body.light .ch-leaving-btn.ghost{background:rgba(0,0,0,.04);border-color:rgba(0,
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════════
-   CAREER HUB MENU BOOTSTRAP  — v3 (all bugs fixed — see inline docs)
-   ═══════════════════════════════════════════════════════════════════ */
 window._chMenuBootstrap = (function() {
   'use strict';
-  /* ═══════════════════════════════════════════════════════════════════
-     CAREER HUB MENU BOOTSTRAP  — v3 (all bugs fixed)
-     ═══════════════════════════════════════════════════════════════════
-     KEY FIXES vs v2:
-     • Overlay + swipe listeners call window.chCloseMenu() via the live
-       global reference — they never capture a stale stub. This means
-       the _ovlayBound / _swipeBound guards are safe to keep (they
-       prevent duplicate listeners) because the handler always reads the
-       current window.chCloseMenu value at call time.
-     • Open-button also calls window.chOpenMenu() via live reference —
-       same pattern, consistent.
-     • Close-button re-binding: _chBound sentinel is REMOVED so
-       activate() can re-attach after the real functions load. A named
-       handler object (_handlers) is used with removeEventListener to
-       prevent duplicates instead of a boolean sentinel.
-     • touchend on open button fires chOpenMenu with stopPropagation to
-       prevent the 300 ms ghost click on Android from double-firing.
-     • Swipe: touchstart records timestamp; moves older than 500 ms are
-       ignored (prevents accidental swipe-away after a scroll pause).
-     ═══════════════════════════════════════════════════════════════════ */
-
-  var _pendingOpen = false;
-  var _ovlayBound  = false;
-  var _swipeBound  = false;
-
-  /* Stored handler references so we can removeEventListener cleanly */
-  var _handlers = {
-    openClick:  null,
-    openTouch:  null,
-    closeClick: null,
-  };
-
-  /* ── Queuing stubs (active until career-hub.js calls activate()) ── */
-  window.chOpenMenu  = function() { _pendingOpen = true; };
-  window.chCloseMenu = function() { /* no-op stub — real fn not loaded yet */ };
-
-  /* ── Overlay backdrop click → close ─────────────────────────────── */
-  /* NOTE: listener calls window.chCloseMenu() — the live global —
-     so it automatically uses the real function once activate() runs.
-     Therefore _ovlayBound only needs to be set once. */
+  var _pendingOpen = false, _ovlayBound = false, _swipeBound = false;
+  var _handlers = { openClick: null, openTouch: null, closeClick: null };
+  window.chOpenMenu = function() { _pendingOpen = true; };
+  window.chCloseMenu = function() {};
   function _bindOverlay() {
     if (_ovlayBound) return;
     var ov = document.getElementById('chMenuOverlay');
     if (!ov) return;
-    ov.addEventListener('click', function(e) {
-      /* Only close when the click landed directly on the dark backdrop,
-         not bubbled up from inside the drawer */
-      if (e.target === ov) {
-        e.stopPropagation();
-        window.chCloseMenu(); /* always the live function */
-      }
-    });
+    ov.addEventListener('click', function(e) { if (e.target === ov) { e.stopPropagation(); window.chCloseMenu(); } });
     _ovlayBound = true;
   }
-
-  /* ── Swipe-left on the drawer → close ───────────────────────────── */
   function _bindSwipe() {
     if (_swipeBound) return;
     var drawer = document.getElementById('chMenuDrawer');
     if (!drawer) return;
-    var startX = 0, startY = 0, startT = 0, dragging = false;
-
-    drawer.addEventListener('touchstart', function(e) {
-      var t = e.touches[0];
-      startX   = t.clientX;
-      startY   = t.clientY;
-      startT   = Date.now();
-      dragging = true;
-    }, { passive: true });
-
+    var startX = 0, startT = 0, dragging = false;
+    drawer.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; startT = Date.now(); dragging = true; }, { passive: true });
     drawer.addEventListener('touchmove', function(e) {
       if (!dragging) return;
-      if (Date.now() - startT > 500) { dragging = false; return; } /* stale move */
+      if (Date.now() - startT > 500) { dragging = false; return; }
       var dx = e.touches[0].clientX - startX;
-      var dy = e.touches[0].clientY - startY;
-      /* Left swipe: dx < -40px, predominantly horizontal */
-      if (dx < -40 && Math.abs(dy) < Math.abs(dx)) {
-        dragging = false;
-        window.chCloseMenu(); /* live global */
-      }
+      if (dx < -40 && Math.abs(dx) > Math.abs(e.touches[0].clientY - startX)) { dragging = false; window.chCloseMenu(); }
     }, { passive: true });
-
-    drawer.addEventListener('touchend',   function() { dragging = false; }, { passive: true });
-    drawer.addEventListener('touchcancel',function() { dragging = false; }, { passive: true });
+    drawer.addEventListener('touchend', function() { dragging = false; }, { passive: true });
     _swipeBound = true;
   }
-
-  /* ── Bind ☰ open btn + ✕ close btn ──────────────────────────────── */
   function _bindButtons() {
-    var openBtn  = document.getElementById('careerMenuBtn');
+    var openBtn = document.getElementById('careerMenuBtn');
     var closeBtn = document.getElementById('careerMenuCloseBtn');
-
-    /* ── Open button ── */
     if (openBtn) {
-      /* Remove any previously attached handlers before re-attaching */
-      if (_handlers.openClick) {
-        openBtn.removeEventListener('click',    _handlers.openClick);
-        openBtn.removeEventListener('touchend', _handlers.openTouch);
-      }
-
-      _handlers.openClick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        window.chOpenMenu(); /* live global */
-      };
-
-      /* touchend fires first on mobile — call open and mark handled so
-         the synthetic click event that follows (300 ms later) is ignored */
-      var _touchFired = false;
-      _handlers.openTouch = function(e) {
-        e.preventDefault(); /* prevents the ghost click */
-        e.stopPropagation();
-        _touchFired = true;
-        window.chOpenMenu();
-        /* reset after ghost-click window */
-        setTimeout(function() { _touchFired = false; }, 600);
-      };
-
-      /* Wrap click so it skips when touchend already handled it */
-      var _safeOpenClick = function(e) {
-        if (_touchFired) return;
-        _handlers.openClick(e);
-      };
-
-      openBtn.addEventListener('touchend', _handlers.openTouch,  { passive: false });
-      openBtn.addEventListener('click',    _safeOpenClick);
-      /* Store the wrapper too so we can remove it later */
-      _handlers.openClick = _safeOpenClick;
+      if (_handlers.openClick) openBtn.removeEventListener('click', _handlers.openClick);
+      _handlers.openClick = function(e) { e.preventDefault(); e.stopPropagation(); window.chOpenMenu(); };
+      openBtn.addEventListener('click', _handlers.openClick);
     }
-
-    /* ── Close button ── */
     if (closeBtn) {
-      if (_handlers.closeClick) {
-        closeBtn.removeEventListener('click', _handlers.closeClick);
-      }
-
-      _handlers.closeClick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        window.chCloseMenu(); /* no-arg → unconditional close (fixed guard in career-hub.js) */
-      };
-
+      if (_handlers.closeClick) closeBtn.removeEventListener('click', _handlers.closeClick);
+      _handlers.closeClick = function(e) { e.preventDefault(); e.stopPropagation(); window.chCloseMenu(); };
       closeBtn.addEventListener('click', _handlers.closeClick);
     }
-
     _bindOverlay();
     _bindSwipe();
   }
-
-  /* ── Run once DOM is interactive ─────────────────────────────────── */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _bindButtons);
-  } else {
-    _bindButtons();
-  }
-
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _bindButtons);
+  else _bindButtons();
   return {
-    /* Called by career-hub.js once chOpenMenu / chCloseMenu are real */
     activate: function(openFn, closeFn) {
-      window.chOpenMenu  = openFn;
+      window.chOpenMenu = openFn;
       window.chCloseMenu = closeFn;
-      /* Re-bind buttons now that the real functions are in place.
-         Overlay + swipe don't need re-binding — they use window.chCloseMenu
-         by live reference and are already attached. */
       _bindButtons();
-      /* Replay any tap that arrived before the script finished loading */
       if (_pendingOpen) { _pendingOpen = false; openFn(); }
     }
   };
 })();
 </script>
 </div>
-
-<div id="reportModal" style="display:none;position:fixed;inset:0;z-index:500;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);animation:fadeIn .2s ease">
-  <div style="background:var(--bg2);border:1px solid var(--glass-border);border-radius:24px;padding:32px;max-width:480px;width:calc(100% - 32px);box-shadow:0 32px 80px rgba(0,0,0,0.7);position:relative;animation:badgePop .3s ease">
-    <button onclick="closeReportModal()" style="position:absolute;top:14px;right:14px;background:var(--glass);border:1px solid var(--glass-border);border-radius:50%;width:34px;height:34px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .2s">✕</button>
-    <div style="text-align:center;margin-bottom:24px">
-      <div style="font-size:2.5rem;margin-bottom:10px">🐛</div>
-      <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:6px">Report Broken PDF</div>
-      <div style="font-size:.83rem;color:var(--text2)">Help us fix broken links and missing files</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div>
-        <label style="font-size:.78rem;font-weight:700;color:var(--text2);display:block;margin-bottom:6px">PDF Title</label>
-        <input id="reportPdfTitle" class="form-input" style="width:100%" placeholder="Name of the PDF">
-      </div>
-      <div>
-        <label style="font-size:.78rem;font-weight:700;color:var(--text2);display:block;margin-bottom:6px">Problem Description *</label>
-        <textarea id="reportProblem" class="form-input" rows="3" style="width:100%;resize:vertical" placeholder="Describe the issue — broken link, wrong file, missing pages…"></textarea>
-      </div>
-      <div>
-        <label style="font-size:.78rem;font-weight:700;color:var(--text2);display:block;margin-bottom:6px">Your Email (optional)</label>
-        <input id="reportEmail" class="form-input" style="width:100%" type="email" placeholder="Get notified when fixed">
-      </div>
-      <button onclick="submitReport()" style="padding:14px;border-radius:var(--radius);background:var(--grad-primary);color:#fff;font-size:.9rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font-body);box-shadow:0 6px 24px rgba(147,2,5,0.4);transition:all .25s">
-        📤 Submit Report
-      </button>
-    </div>
-  </div>
-</div>
-<script>
-// Store current PDF for report
-window._reportPdfId = null;
-window._reportPdfUrl = null;
-
-function openReportModal(pdfId, pdfTitle, pdfUrl) {
-  window._reportPdfId = pdfId;
-  window._reportPdfUrl = pdfUrl || '';
-  const el = document.getElementById('reportModal');
-  if (!el) return;
-  document.getElementById('reportPdfTitle').value = pdfTitle || '';
-  document.getElementById('reportProblem').value = '';
-  document.getElementById('reportEmail').value = '';
-  el.style.display = 'flex';
-}
-
-function closeReportModal() {
-  const el = document.getElementById('reportModal');
-  if (el) el.style.display = 'none';
-}
-
-async function submitReport() {
-  const problem = document.getElementById('reportProblem')?.value?.trim();
-  if (!problem) { showToast('Please describe the problem.', 'error'); return; }
-  const sb = window.supabaseClient;
-  const payload = {
-    pdf_id: window._reportPdfId,
-    pdf_title: document.getElementById('reportPdfTitle')?.value || '',
-    pdf_url: window._reportPdfUrl || '',
-    problem_description: problem,
-    reporter_email: document.getElementById('reportEmail')?.value?.trim() || null,
-    status: 'open',
-    created_at: new Date().toISOString()
-  };
-  if (sb) {
-    try {
-      await sb.from('broken_pdf_reports').insert(payload);
-    } catch(e) { /* table may not exist yet — still show success */ }
-  }
-  closeReportModal();
-  showToast('✅ Report submitted! We\'ll fix it soon. Thank you 🙏', 'success');
-}
-
-// Close modal on backdrop click
-document.getElementById('reportModal')?.addEventListener('click', function(e) {
-  if (e.target === this) closeReportModal();
-});
-</script>
-
-<!-- ── PAGE: 404 Not Found ─────────────────────────────────────── -->
-<!-- ══════════════════════════════════════════════════════════════
-     STATIC INFO PAGES  (SPA-routed via navigate())
-══════════════════════════════════════════════════════════════ -->
-
-<!-- ── PRIVACY POLICY ── -->
 <div class="page" id="page-privacy">
   <div style="max-width:780px;margin:0 auto;padding:40px 20px 80px;">
     <button class="btn btn-ghost btn-sm" onclick="navigate('home')" style="margin-bottom:24px;display:inline-flex;align-items:center;gap:6px;color:var(--text2);">
@@ -17677,30 +16562,37 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 <!-- ═══ FREE MATERIALS PAGE ════════════════════════════════════════ -->
 <div class="page" id="page-free-materials">
   <style>
-    /* ── Free Materials page styles ── */
-    .fm-wrap { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+    .fm-wrap { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
     .fm-back { margin-bottom: 24px; display: inline-flex; align-items: center; gap: 6px; color: var(--text2); font-size: .85rem; font-weight: 600; cursor: pointer; background: none; border: none; font-family: var(--font-body); transition: color .2s; }
     .fm-back:hover { color: var(--accent); }
     .fm-header { margin-bottom: 28px; }
     .fm-title { font-family: var(--font-editorial); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 800; background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 8px; }
     .fm-subtitle { color: var(--text2); font-size: .95rem; margin: 0; line-height: 1.6; }
-    
-    /* Search bar */
+    .fm-hero { margin-bottom: 28px; }
+    .fm-hero-img { width: 100%; height: auto; display: block; border-radius: var(--radius); }
+    .fm-featured { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .fm-featured-card { border-radius: var(--radius); padding: 24px 20px; cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; border: 1px solid rgba(147,2,5,0.3); }
+    .fm-featured-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(147,2,5,0.15); }
+    .fm-featured-adre { background: linear-gradient(135deg, rgba(147,2,5,0.12), rgba(201,154,60,0.06)); }
+    .fm-featured-apsc { background: linear-gradient(135deg, rgba(201,154,60,0.1), rgba(147,2,5,0.08)); }
+    .fm-featured-icon { font-size: 2rem; margin-bottom: 10px; }
+    .fm-featured-name { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .fm-featured-count { font-size: .85rem; color: var(--text2); margin-bottom: 12px; }
+    .fm-featured-btn { display: inline-block; padding: 8px 18px; border-radius: var(--radius-sm); font-size: .82rem; font-weight: 700; color: #fff; background: var(--accent); border: none; cursor: pointer; font-family: var(--font-body); transition: background .2s; }
+    .fm-featured-btn:hover { background: var(--hp-red-deep, #7d1122); }
+    .fm-featured-tag { position: absolute; top: 12px; right: 12px; font-size: .65rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; background: rgba(255,100,100,0.15); color: #ff6b6b; border: 1px solid rgba(255,100,100,0.25); }
     .fm-search-wrap { position: relative; margin-bottom: 16px; }
     .fm-search { width: 100%; padding: 13px 16px 13px 44px; border-radius: var(--radius); border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-family: var(--font-body); font-size: .9rem; outline: none; transition: border-color .2s, box-shadow .2s; box-sizing: border-box; }
     .fm-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(147,2,5,0.12); }
     .fm-search::placeholder { color: var(--text2); }
     .fm-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text2); pointer-events: none; }
-
-    /* Filters */
-    .fm-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .fm-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: flex-end; }
     .fm-filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
     .fm-filter-label { font-size: .72rem; font-weight: 700; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; padding-left: 2px; }
     .fm-filter-select { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); background: var(--glass); color: var(--text); font-family: var(--font-body); font-size: .85rem; cursor: pointer; outline: none; transition: border-color .2s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8caa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; }
     .fm-filter-select:focus { border-color: var(--accent); }
     .fm-filter-select option { background: var(--bg2); color: var(--text); }
-
-    /* Category cards */
+    .fm-sort-group { min-width: 130px; }
     .fm-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
     .fm-cat-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 18px 16px; cursor: pointer; transition: border-color .2s, transform .2s, box-shadow .2s; text-align: center; }
     .fm-cat-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(147,2,5,0.1); }
@@ -17708,18 +16600,21 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     .fm-cat-icon { font-size: 1.6rem; margin-bottom: 8px; }
     .fm-cat-name { font-size: .85rem; font-weight: 700; color: var(--text); }
     .fm-cat-count { font-size: .72rem; color: var(--text2); margin-top: 2px; }
-
-    /* Material cards */
+    .fm-cat-count.has-items { color: #10d98e; font-weight: 600; }
+    .fm-results-count { font-size: .82rem; color: var(--text2); margin-bottom: 16px; }
+    .fm-results-count strong { color: var(--text); }
     .fm-materials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .fm-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s, box-shadow .2s; }
     .fm-card:hover { border-color: var(--accent); box-shadow: 0 6px 28px rgba(0,0,0,0.12); }
     .fm-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
     .fm-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; background: rgba(16,217,142,0.12); color: #10d98e; border: 1px solid rgba(16,217,142,0.25); white-space: nowrap; }
+    .fm-badge-planned { background: rgba(201,154,60,0.12); color: var(--hp-gold, #c99a3c); border: 1px solid rgba(201,154,60,0.25); }
     .fm-card-type { font-size: .68rem; font-weight: 600; color: var(--text2); padding: 3px 8px; border-radius: 6px; background: var(--surface); white-space: nowrap; }
     .fm-card-title { font-size: .95rem; font-weight: 700; color: var(--text); line-height: 1.4; margin: 0; }
     .fm-card-desc { font-size: .82rem; color: var(--text2); line-height: 1.55; margin: 0; }
     .fm-card-meta { display: flex; align-items: center; gap: 8px; font-size: .75rem; color: var(--text2); flex-wrap: wrap; }
     .fm-card-meta span { display: inline-flex; align-items: center; gap: 3px; }
+    .fm-card-source { font-size: .72rem; color: var(--text3, #5a6a85); font-style: italic; }
     .fm-card-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; }
     .fm-btn { padding: 9px 18px; border-radius: var(--radius-sm); font-size: .82rem; font-weight: 700; cursor: pointer; border: none; font-family: var(--font-body); transition: all .2s; display: inline-flex; align-items: center; gap: 5px; }
     .fm-btn-primary { background: var(--accent); color: #fff; }
@@ -17727,21 +16622,29 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
     .fm-btn-ghost { background: var(--surface); color: var(--text2); border: 1px solid var(--glass-border); }
     .fm-btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
     .fm-btn:disabled { opacity: .55; cursor: not-allowed; }
-
-    /* Coming Soon tag */
-    .fm-coming-soon { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .68rem; font-weight: 700; background: rgba(201,154,60,0.12); color: var(--hp-gold, #c99a3c); border: 1px solid rgba(201,154,60,0.25); }
-
-    /* Empty state */
+    .fm-btn-external { background: var(--accent); color: #fff; }
+    .fm-btn-external:hover { background: var(--hp-red-deep, #7d1122); }
     .fm-empty { text-align: center; padding: 60px 20px; color: var(--text2); font-size: .9rem; }
     .fm-empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: .5; }
-
-    /* Loading skeleton */
     .fm-skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--glass) 50%, var(--surface) 75%); background-size: 200% 100%; animation: fmShimmer 1.5s infinite; border-radius: var(--radius); height: 160px; }
     @keyframes fmShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* Responsive */
+    .fm-modal-overlay { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .fm-modal { background: var(--bg2); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); max-width: 560px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 32px 28px; position: relative; }
+    .fm-modal-close { position: absolute; top: 16px; right: 16px; background: var(--surface); border: 1px solid var(--glass-border); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text2); font-size: 1.1rem; transition: all .2s; }
+    .fm-modal-close:hover { color: var(--text); border-color: var(--accent); }
+    .fm-modal-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: .68rem; font-weight: 700; background: rgba(16,217,142,0.12); color: #10d98e; border: 1px solid rgba(16,217,142,0.25); margin-bottom: 12px; }
+    .fm-modal-title { font-family: var(--font-editorial); font-size: 1.4rem; font-weight: 800; color: var(--text); margin: 0 0 16px; line-height: 1.3; }
+    .fm-modal-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; padding: 16px; background: var(--surface); border-radius: var(--radius-sm); }
+    .fm-modal-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .fm-modal-meta-label { font-size: .68rem; font-weight: 700; color: var(--text3, #5a6a85); text-transform: uppercase; letter-spacing: .04em; }
+    .fm-modal-meta-value { font-size: .85rem; color: var(--text); font-weight: 600; }
+    .fm-modal-desc { font-size: .9rem; color: var(--text2); line-height: 1.7; margin-bottom: 24px; }
+    .fm-modal-source { font-size: .78rem; color: var(--text3, #5a6a85); margin-bottom: 20px; padding: 10px 14px; background: var(--surface); border-radius: var(--radius-sm); border-left: 3px solid var(--accent); }
+    .fm-modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .fm-modal-actions .fm-btn { padding: 12px 24px; font-size: .88rem; }
     @media (max-width: 600px) {
       .fm-wrap { padding: 30px 16px 60px; }
+      .fm-featured { grid-template-columns: 1fr; }
       .fm-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .fm-cat-card { padding: 14px 10px; }
       .fm-cat-icon { font-size: 1.3rem; }
@@ -17749,66 +16652,75 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
       .fm-materials-grid { grid-template-columns: 1fr; gap: 12px; }
       .fm-filter-group { min-width: 100%; }
       .fm-filters { gap: 8px; }
+      .fm-modal { padding: 24px 20px; }
     }
   </style>
 
   <div class="fm-wrap">
-    <!-- Back button -->
     <button class="fm-back" onclick="navigate('home')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back to Home
     </button>
-
-    <!-- Header -->
-    <div class="fm-header">
-      <h1 class="fm-title">Free Study Materials</h1>
-      <p class="fm-subtitle">Free study resources for Assam competitive exam aspirants.</p>
+    <div class="fm-hero">
+      <img class="fm-hero-img" src="https://base44.app/api/apps/6a56207ef04bee5f8f08d11f/files/mp/public/6a56207ef04bee5f8f08d11f/0c898f85e_fm-banner.png" alt="Free Study Materials — 50+ verified free study resources for Assam competitive exam aspirants: ADRE, APSC, Assam Police, TET &amp; more." width="1024" height="410" loading="eager">
     </div>
-
-    <!-- Search -->
+    <div class="fm-featured" id="fmFeatured"></div>
     <div class="fm-search-wrap">
       <svg class="fm-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="search" class="fm-search" id="fmSearch" placeholder="Search free materials..." oninput="fmFilter()" autocomplete="off" />
     </div>
-
-    <!-- Filters -->
     <div class="fm-filters">
       <div class="fm-filter-group">
         <label class="fm-filter-label">Exam</label>
         <select class="fm-filter-select" id="fmExamFilter" onchange="fmFilter()">
           <option value="">All Exams</option>
-          <option value="APSC">APSC</option>
           <option value="ADRE">ADRE</option>
+          <option value="APSC">APSC</option>
           <option value="Assam Police">Assam Police</option>
           <option value="Assam TET">Assam TET</option>
           <option value="Grade III & IV">Grade III &amp; IV</option>
+          <option value="Assam GK">Assam GK</option>
+          <option value="Current Affairs">Current Affairs</option>
+          <option value="General Study Materials">General Study Materials</option>
+          <option value="SSC">SSC</option>
+          <option value="Railway">Railway</option>
         </select>
       </div>
       <div class="fm-filter-group">
         <label class="fm-filter-label">Material Type</label>
         <select class="fm-filter-select" id="fmTypeFilter" onchange="fmFilter()">
-          <option value="">All</option>
+          <option value="">All Types</option>
           <option value="PYQ">PYQ</option>
           <option value="Notes">Notes</option>
+          <option value="Syllabus">Syllabus</option>
+          <option value="Mock Test">Mock Test</option>
+          <option value="Practice Set">Practice Set</option>
           <option value="MCQ">MCQ</option>
           <option value="Current Affairs">Current Affairs</option>
-          <option value="Syllabus">Syllabus</option>
+          <option value="Textbook">Textbook</option>
+          <option value="Study Guide">Study Guide</option>
+          <option value="Revision">Revision</option>
           <option value="Exam Pattern">Exam Pattern</option>
-          <option value="Practice Set">Practice Set</option>
+          <option value="Question Bank">Question Bank</option>
+          <option value="Useful Link">Useful Link</option>
+        </select>
+      </div>
+      <div class="fm-filter-group fm-sort-group">
+        <label class="fm-filter-label">Sort By</label>
+        <select class="fm-filter-select" id="fmSortBy" onchange="fmFilter()">
+          <option value="newest">Newest</option>
+          <option value="az">A&ndash;Z</option>
+          <option value="exam">Exam</option>
+          <option value="year">Year</option>
         </select>
       </div>
     </div>
-
-    <!-- Category cards -->
     <div class="fm-cat-grid" id="fmCatGrid"></div>
-
-    <!-- Materials grid -->
+    <div class="fm-results-count" id="fmResultsCount"></div>
     <div class="fm-materials-grid" id="fmGrid"></div>
-
-    <!-- Empty state -->
     <div class="fm-empty" id="fmEmpty" style="display:none;">
-      <div class="fm-empty-icon">📭</div>
-      <div>No free materials found.</div>
+      <div class="fm-empty-icon">📦</div>
+      <div>No free materials found. Try a different search or filter.</div>
     </div>
   </div>
 </div>
@@ -40360,7 +39272,7 @@ if (_origTrackReading) {
 </script>
 
 <script src="website-customization.js" defer></script>
-<script src="career-hub.js" defer></script>
+<script src="career-hub-v2.js" defer></script>
 <script src="career-hub-poster-engine.js" defer></script>
 <script src="pipedream.js" defer></script>
 <script src="pdf-list.js" defer></script>
@@ -47855,50 +46767,213 @@ window.addEventListener('load', function() {
 });
 
 // ════════════════════════════════════════════════════════════════
-// FREE MATERIALS PAGE — search, filter, render from real Supabase data
+
+// FREE MATERIALS PAGE — comprehensive library with 60+ verified resources
 // ════════════════════════════════════════════════════════════════
 (function() {
   'use strict';
 
+  // ── Curated free resources (researched & verified) ──
+  var FM_RESOURCES = [
+    // ═══ ADRE (18) ═══
+    { id:'fm-adre-syl', title:'ADRE Grade III & IV Syllabus (Official)', exam:'ADRE', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SLRC / SEBA Assam', source_url:'https://slrcg3.sebaonline.org/', resource_type:'external', description:'Official syllabus for Assam Direct Recruitment Examination (ADRE) Grade III & IV posts, published by the State Level Recruitment Commission, Assam.', featured:true, priority:1 },
+    { id:'fm-adre-pyq-g3-24', title:'ADRE 2024 Previous Year Questions — Grade III', exam:'ADRE', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'External Free Resource', source_name:'Adda247', source_url:'https://www.adda247.com/exams/assam/adre-question-paper-2024/', resource_type:'external', description:'ADRE 2024 Grade III previous year question papers (all shifts) held on 15th & 29th September 2024. Free to access.', featured:true, priority:1 },
+    { id:'fm-adre-pyq-g4-24', title:'ADRE 2024 Previous Year Questions — Grade IV', exam:'ADRE', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'External Free Resource', source_name:'Adda247', source_url:'https://www.adda247.com/exams/assam/adre-question-paper-2024/', resource_type:'external', description:'ADRE 2024 Grade IV previous year question papers (all shifts) with answer keys. Free to access.', featured:true, priority:1 },
+    { id:'fm-adre-pyq-22', title:'ADRE 2022 Previous Year Question Papers', exam:'ADRE', type:'PYQ', subject:'All Subjects', year:2022, language:'English', source_type:'External Free Resource', source_name:'AssamCareer', source_url:'https://www.assamcareer.com/2023/04/adre-question-paper.html', resource_type:'external', description:'Complete collection of ADRE 2022 question papers for both Grade III and Grade IV posts. Free download.', featured:true, priority:2 },
+    { id:'fm-adre-mock', title:'ADRE Free Mock Tests', exam:'ADRE', type:'Mock Test', subject:'All Subjects', year:2025, language:'English', source_type:'External Free Resource', source_name:'AssamTest', source_url:'https://assamtest.in/adr-mock-tests/', resource_type:'external', description:'Free online mock tests for ADRE including previous year questions (2022 & 2024, all 10 papers) plus 12 model question papers for Grade III and IV.', featured:false, priority:3 },
+    { id:'fm-adre-pattern', title:'ADRE Exam Pattern & Marking Scheme', exam:'ADRE', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Complete guide to ADRE exam pattern, marking scheme, section-wise distribution, and preparation strategy for Grade III & IV.', featured:false, priority:4 },
+    { id:'fm-adre-maths', title:'ADRE Mathematics Practice Set', exam:'ADRE', type:'Practice Set', subject:'Mathematics', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Topic-wise mathematics practice set covering number system, percentage, profit & loss, time & work, and more — aligned with ADRE syllabus.', featured:false, priority:4 },
+    { id:'fm-adre-reasoning', title:'ADRE Reasoning Practice Set', exam:'ADRE', type:'Practice Set', subject:'Reasoning', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Logical reasoning and mental ability practice questions including series, coding-decoding, Venn diagrams, and analytical reasoning for ADRE.', featured:false, priority:4 },
+    { id:'fm-adre-english', title:'ADRE English Practice Set', exam:'ADRE', type:'Practice Set', subject:'English', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'English language practice set covering grammar, vocabulary, comprehension, and sentence correction for ADRE.', featured:false, priority:4 },
+    { id:'fm-adre-gk', title:'ADRE General Knowledge MCQ Set', exam:'ADRE', type:'MCQ', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'General knowledge MCQ practice set covering Indian and Assam-specific GK, current affairs, and static GK for ADRE.', featured:false, priority:4 },
+    { id:'fm-adre-assam-gk', title:'ADRE Assam GK Quick Revision', exam:'ADRE', type:'Revision', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes on Assam history, geography, polity, culture, and important facts — curated for ADRE preparation.', featured:false, priority:4 },
+    { id:'fm-adre-ca', title:'ADRE Current Affairs Quick Revision', exam:'ADRE', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compiled current affairs notes covering Assam, national, and international events relevant for ADRE.', featured:false, priority:5 },
+    { id:'fm-adre-computer', title:'ADRE Computer Awareness Notes', exam:'ADRE', type:'Notes', subject:'Computer', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Computer awareness notes covering basics, MS Office, internet, networking, and shortcuts for ADRE exam.', featured:false, priority:5 },
+    { id:'fm-adre-gs', title:'ADRE General Studies Notes', exam:'ADRE', type:'Notes', subject:'General Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive general studies notes covering Indian Constitution, political system, governance, panchayati raj, and public administration.', featured:false, priority:5 },
+    { id:'fm-adre-social', title:'ADRE Social Studies Revision', exam:'ADRE', type:'Revision', subject:'Social Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Social studies revision notes covering history, geography, polity, and economics as per ADRE syllabus.', featured:false, priority:5 },
+    { id:'fm-adre-facts', title:'ADRE Important Facts Compilation', exam:'ADRE', type:'Revision', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compilation of important facts, dates, and figures frequently asked in ADRE examinations.', featured:false, priority:5 },
+    { id:'fm-adre-pyq-analysis', title:'ADRE Previous Year Analysis', exam:'ADRE', type:'Study Guide', subject:'All Subjects', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Analysis of ADRE previous year papers — topic-wise weightage, difficulty trends, and expected question patterns.', featured:false, priority:5 },
+    { id:'fm-adre-prep', title:'ADRE Complete Preparation Guide', exam:'ADRE', type:'Study Guide', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Step-by-step preparation guide for ADRE — study plan, book recommendations, time management, and exam-day strategy.', featured:false, priority:5 },
+
+    // ═══ APSC (18) ═══
+    { id:'fm-apsc-pre-syl', title:'APSC CCE Prelims Syllabus (Official)', exam:'APSC', type:'Syllabus', subject:'General Studies', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/', resource_type:'external', description:'Official syllabus for APSC Combined Competitive Examination (CCE) Preliminary examination — General Studies Paper I & CSAT Paper II.', featured:true, priority:1 },
+    { id:'fm-apsc-mains-syl', title:'APSC CCE Mains Syllabus (Official)', exam:'APSC', type:'Syllabus', subject:'General Studies', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/', resource_type:'external', description:'Official syllabus for APSC CCE Mains examination — Essay, GS Papers I-III, Ethics, and Assam-specific paper.', featured:true, priority:1 },
+    { id:'fm-apsc-pyq', title:'APSC Previous Year Question Papers (Official)', exam:'APSC', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/questions_2023.php', resource_type:'external', description:'Official previous year question papers for various APSC examinations, directly from the Assam Public Service Commission.', featured:true, priority:1 },
+    { id:'fm-apsc-anskeys', title:'APSC Official Answer Keys', exam:'APSC', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'Government', source_name:'APSC Official', source_url:'https://apsc.nic.in/answer_keys.php', resource_type:'external', description:'Official answer keys for APSC examinations including CCE and OMR screening tests.', featured:false, priority:2 },
+    { id:'fm-apsc-2025-papers', title:'APSC CCE 2025 Prelims Question Papers', exam:'APSC', type:'PYQ', subject:'General Studies', year:2025, language:'English', source_type:'External Free Resource', source_name:'SPM IAS Academy', source_url:'https://spmiasacademy.com/apsc-prelims-2025-question-paper/', resource_type:'external', description:'APSC CCE 2025 Prelims GS Paper I & CSAT question papers available for free download with set-wise PDFs.', featured:true, priority:2 },
+    { id:'fm-apsc-pattern', title:'APSC CCE Exam Pattern Guide', exam:'APSC', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Complete guide to APSC CCE exam pattern — prelims structure, mains structure, marking scheme, and optional subjects.', featured:false, priority:3 },
+    { id:'fm-apsc-assam-hist', title:'APSC Assam History Revision Notes', exam:'APSC', type:'Revision', subject:'Assam History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive revision notes on Assam history — Ahom Kingdom, British period, freedom movement, post-independence, and Assam Accord.', featured:true, priority:3 },
+    { id:'fm-apsc-assam-geo', title:'APSC Assam Geography Notes', exam:'APSC', type:'Notes', subject:'Assam Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assam geography — physical features, rivers, climate, national parks, wildlife sanctuaries, and mineral resources.', featured:false, priority:3 },
+    { id:'fm-apsc-assam-pol', title:'APSC Assam Polity Notes', exam:'APSC', type:'Notes', subject:'Assam Polity', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assam polity and governance — state government structure, local self-government, autonomous councils, and constitutional provisions.', featured:false, priority:3 },
+    { id:'fm-apsc-ind-hist', title:'APSC Indian History Notes', exam:'APSC', type:'Notes', subject:'Indian History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian history — ancient, medieval, and modern India covering major dynasties, freedom movement, and post-independence.', featured:false, priority:4 },
+    { id:'fm-apsc-ind-pol', title:'APSC Indian Polity Notes', exam:'APSC', type:'Notes', subject:'Indian Polity', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian polity — Constitution, fundamental rights, DPSP, parliament, judiciary, and federal structure.', featured:false, priority:4 },
+    { id:'fm-apsc-ind-geo', title:'APSC Indian Geography Notes', exam:'APSC', type:'Notes', subject:'Indian Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian geography — physical divisions, climate, drainage systems, soils, agriculture, and mineral distribution.', featured:false, priority:4 },
+    { id:'fm-apsc-econ', title:'APSC Economy Notes', exam:'APSC', type:'Notes', subject:'Economy', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Indian economy — banking, fiscal policy, monetary policy, inflation, GDP, and Assam economy overview.', featured:false, priority:4 },
+    { id:'fm-apsc-env', title:'APSC Environment & Ecology Notes', exam:'APSC', type:'Notes', subject:'Environment', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on environment and ecology — biodiversity, conservation, pollution, climate change, and environmental legislation.', featured:false, priority:4 },
+    { id:'fm-apsc-sci-tech', title:'APSC Science & Technology Notes', exam:'APSC', type:'Notes', subject:'Science & Technology', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on science and technology — ISRO, DRDO, biotechnology, IT, nuclear energy, and recent developments.', featured:false, priority:4 },
+    { id:'fm-apsc-ca', title:'APSC Current Affairs Revision', exam:'APSC', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compiled current affairs notes for APSC — national, international, Assam-specific events, schemes, and appointments.', featured:false, priority:4 },
+    { id:'fm-apsc-mcq', title:'APSC MCQ Practice Set', exam:'APSC', type:'MCQ', subject:'General Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Topic-wise MCQ practice set for APSC Prelims — GS Paper I covering history, geography, polity, economy, and current affairs.', featured:false, priority:4 },
+    { id:'fm-apsc-answer', title:'APSC Answer Writing Guidance', exam:'APSC', type:'Study Guide', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Answer writing guidance for APSC Mains — structure, presentation, time management, and sample answers for GS papers.', featured:false, priority:5 },
+
+    // ═══ Assam Police (8) ═══
+    { id:'fm-pol-syl-si', title:'Assam Police SI Syllabus (Official SLPRB)', exam:'Assam Police', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SLPRB Assam', source_url:'https://slprbassam.in/', resource_type:'external', description:'Official syllabus and recruitment information for Assam Police Sub-Inspector (SI) posts from the State Level Police Recruitment Board, Assam.', featured:true, priority:1 },
+    { id:'fm-pol-syl-const', title:'Assam Police Constable Recruitment (Official)', exam:'Assam Police', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SLPRB Assam', source_url:'https://slprbassam.in/', resource_type:'external', description:'Official recruitment notification, syllabus, and exam pattern for Assam Police Constable (UB/AB) posts.', featured:false, priority:2 },
+    { id:'fm-pol-pattern', title:'Assam Police Exam Pattern Guide', exam:'Assam Police', type:'Exam Pattern', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Complete guide to Assam Police exam pattern — written test structure, physical efficiency test (PET), and marking scheme.', featured:false, priority:3 },
+    { id:'fm-pol-gk', title:'Assam Police Assam GK Notes', exam:'Assam Police', type:'Notes', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Assam general knowledge notes covering history, geography, culture, and current affairs for Assam Police exam.', featured:false, priority:3 },
+    { id:'fm-pol-reasoning', title:'Assam Police Reasoning Practice Set', exam:'Assam Police', type:'Practice Set', subject:'Reasoning', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Reasoning practice set with Venn diagrams, number series, coding-decoding, and analytical reasoning for Assam Police.', featured:false, priority:3 },
+    { id:'fm-pol-maths', title:'Assam Police Mathematics Practice', exam:'Assam Police', type:'Practice Set', subject:'Mathematics', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Mathematics practice set covering arithmetic, algebra, and geometry for Assam Police SI/Constable exam.', featured:false, priority:3 },
+    { id:'fm-pol-ca', title:'Assam Police Current Affairs Notes', exam:'Assam Police', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Current affairs notes covering Assam and national events relevant for Assam Police examination.', featured:false, priority:4 },
+    { id:'fm-pol-mcq', title:'Assam Police MCQ Practice Set', exam:'Assam Police', type:'MCQ', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'MCQ practice set covering GK, reasoning, mathematics, and English for Assam Police written test.', featured:false, priority:4 },
+
+    // ═══ Assam TET (8) ═══
+    { id:'fm-tet-syl', title:'Assam TET Syllabus (Official SCERT)', exam:'Assam TET', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SCERT Assam', source_url:'https://scert.assam.gov.in/', resource_type:'external', description:'Official syllabus for Assam Teacher Eligibility Test (TET) for LP and UP teacher positions, published by SCERT Assam.', featured:true, priority:1 },
+    { id:'fm-tet-special-syl', title:'Special TET 2026 Syllabus (Official)', exam:'Assam TET', type:'Syllabus', subject:'General', year:2026, language:'English', source_type:'Government', source_name:'SCERT Assam', source_url:'https://scert.assam.gov.in/latest/syllabus-for-special-tet-2026-paper-ii', resource_type:'external', description:'Official syllabus for Special TET 2026 Paper II for Bodo, Garo, Manipuri and Hmar mediums, including Child Development & Pedagogy.', featured:true, priority:1 },
+    { id:'fm-tet-pyq-2024', title:'TET 2024 Question Booklet & Answer Key (Official)', exam:'Assam TET', type:'PYQ', subject:'All Subjects', year:2024, language:'English', source_type:'Government', source_name:'Directorate of Secondary Education, Assam', source_url:'https://madhyamik.assam.gov.in/portlets/download-question-booklet-and-provisional-answer-key-for-tet-cum-recruitment-test-2024', resource_type:'external', description:'Official question booklet and provisional answer key for the TET-cum-Recruitment Test 2024 from the Directorate of Secondary Education, Assam.', featured:true, priority:1 },
+    { id:'fm-tet-pyq', title:'Assam TET Previous Year Papers', exam:'Assam TET', type:'PYQ', subject:'All Subjects', year:2023, language:'English', source_type:'External Free Resource', source_name:'Testbook', source_url:'https://testbook.com/assam-tet/previous-year-papers', resource_type:'external', description:'Assam TET previous year question papers (Paper I & II) with solutions. Free PDF download available.', featured:false, priority:2 },
+    { id:'fm-tet-cdp', title:'Child Development & Pedagogy Notes', exam:'Assam TET', type:'Notes', subject:'Pedagogy', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive notes on Child Development & Pedagogy — learning theories, cognitive development, assessment, and teaching methods.', featured:false, priority:3 },
+    { id:'fm-tet-english', title:'Assam TET English Practice Set', exam:'Assam TET', type:'Practice Set', subject:'English', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'English language practice set covering grammar, comprehension, pedagogy of English, and vocabulary for Assam TET.', featured:false, priority:3 },
+    { id:'fm-tet-maths', title:'Assam TET Mathematics Practice', exam:'Assam TET', type:'Practice Set', subject:'Mathematics', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Mathematics practice set for TET — number system, geometry, measurement, and pedagogy of mathematics.', featured:false, priority:3 },
+    { id:'fm-tet-evs', title:'Environmental Studies Notes', exam:'Assam TET', type:'Notes', subject:'Environmental Studies', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Environmental Studies (EVS) notes covering natural resources, ecosystems, pollution, and pedagogy of EVS for TET.', featured:false, priority:3 },
+
+    // ═══ Grade III & IV (5) ═══
+    { id:'fm-g34-pattern-3', title:'Grade III Exam Pattern & Marking Scheme', exam:'Grade III & IV', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Detailed exam pattern and marking scheme for ADRE Grade III — subject-wise weightage, total marks, and duration.', featured:false, priority:3 },
+    { id:'fm-g34-pattern-4', title:'Grade IV Exam Pattern & Marking Scheme', exam:'Grade III & IV', type:'Exam Pattern', subject:'General', year:2024, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Detailed exam pattern and marking scheme for ADRE Grade IV — subject-wise weightage, total marks, and duration.', featured:false, priority:3 },
+    { id:'fm-g34-rev', title:'Grade III & IV Quick Revision Notes', exam:'Grade III & IV', type:'Revision', subject:'General', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes covering all subjects — GK, maths, reasoning, English, and Assam-specific topics for Grade III & IV.', featured:false, priority:3 },
+    { id:'fm-g34-gk', title:'Grade III & IV General Knowledge Set', exam:'Grade III & IV', type:'Practice Set', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'General knowledge practice set covering Indian and Assam GK, current affairs, and static GK for Grade III & IV.', featured:false, priority:4 },
+    { id:'fm-g34-computer', title:'Grade III & IV Computer Awareness', exam:'Grade III & IV', type:'Notes', subject:'Computer', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Computer awareness notes covering basics, internet, MS Office, and shortcuts for Grade III & IV exam.', featured:false, priority:4 },
+
+    // ═══ Assam GK (8) ═══
+    { id:'fm-agk-hist', title:'Assam History Quick Revision', exam:'Assam GK', type:'Revision', subject:'Assam History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes on Assam history from ancient period through Ahom Kingdom, British rule, freedom movement to modern Assam.', featured:true, priority:2 },
+    { id:'fm-agk-geo', title:'Assam Geography Notes', exam:'Assam GK', type:'Notes', subject:'Assam Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assam geography — location, climate, rivers (Brahmaputra & Barak), hills, forests, and national parks.', featured:false, priority:3 },
+    { id:'fm-agk-rivers', title:'Assam Rivers & National Parks', exam:'Assam GK', type:'Notes', subject:'Assam Geography', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Detailed notes on major rivers of Assam (Brahmaputra, Barak, Subansiri, etc.) and national parks (Kaziranga, Manas, Nameri, Dibru-Saikhowa).', featured:false, priority:3 },
+    { id:'fm-agk-culture', title:'Assam Culture & Festivals', exam:'Assam GK', type:'Notes', subject:'Assam Culture', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on Assamese culture — Bihu festival, Satra tradition, folk dances (Bhortal, Satriya), music, art, and literature.', featured:false, priority:3 },
+    { id:'fm-agk-ahom', title:'Ahom Kingdom Notes', exam:'Assam GK', type:'Notes', subject:'Assam History', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive notes on the Ahom Kingdom — founding by Sukapha, major rulers, administration, Paik system, and Battle of Saraighat.', featured:false, priority:3 },
+    { id:'fm-agk-districts', title:'Assam Districts & Important Places', exam:'Assam GK', type:'Revision', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'List of all districts of Assam with headquarters, important places, historical significance, and key facts.', featured:false, priority:4 },
+    { id:'fm-agk-tribes', title:'Assam Tribes & Communities', exam:'Assam GK', type:'Notes', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Notes on major tribes and communities of Assam — Bodo, Mising, Karbi, Dimasa, Rabha, Tiwa, Deori, and others.', featured:false, priority:4 },
+    { id:'fm-agk-symbols', title:'Assam State Symbols & Facts', exam:'Assam GK', type:'Revision', subject:'Assam GK', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'State symbols of Assam — state animal (one-horned rhino), bird (white-winged wood duck), flower (foxtail orchid), tree (hollong), and key state facts.', featured:false, priority:4 },
+
+    // ═══ Current Affairs (5) ═══
+    { id:'fm-ca-assam', title:'Assam Current Affairs Revision 2025', exam:'Current Affairs', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compiled Assam current affairs for 2025 — government initiatives, appointments, schemes, and major events in Assam.', featured:false, priority:2 },
+    { id:'fm-ca-schemes', title:'Assam Government Schemes (Official)', exam:'Current Affairs', type:'Current Affairs', subject:'Government Schemes', year:2025, language:'English', source_type:'Government', source_name:'Government of Assam, Education Dept', source_url:'https://education.assam.gov.in/schemes/significant-schemes', resource_type:'external', description:'Official list of significant education schemes by the Government of Assam — free textbook distribution, scholarships, and more.', featured:false, priority:2 },
+    { id:'fm-ca-myscheme', title:'MyScheme Assam Portal', exam:'Current Affairs', type:'Useful Link', subject:'Government Schemes', year:2025, language:'English', source_type:'Government', source_name:'Government of India', source_url:'https://www.myscheme.gov.in/search/state/Assam', resource_type:'external', description:'Centralized portal listing all government schemes available in Assam — search by category, eligibility, and department.', featured:false, priority:3 },
+    { id:'fm-ca-national', title:'National Current Affairs Quick Revision', exam:'Current Affairs', type:'Current Affairs', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision of national current affairs — appointments, awards, sports, science & technology, and important days.', featured:false, priority:3 },
+    { id:'fm-ca-days', title:'Important Days & Dates', exam:'Current Affairs', type:'Revision', subject:'Current Affairs', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Compilation of important national and international days and dates frequently asked in competitive exams.', featured:false, priority:4 },
+
+    // ═══ General Study Materials (8) ═══
+    { id:'fm-gen-ncert', title:'NCERT Textbooks (Class I–XII)', exam:'General Study Materials', type:'Textbook', subject:'All Subjects', year:2025, language:'English', source_type:'Government', source_name:'NCERT Official', source_url:'https://ncert.nic.in/textbook.php', resource_type:'external', description:'Free NCERT textbooks for Classes I to XII in all subjects — official source from the National Council of Educational Research and Training.', featured:true, priority:1 },
+    { id:'fm-gen-epathshala', title:'ePathshala — Free Educational App', exam:'General Study Materials', type:'Useful Link', subject:'All Subjects', year:2025, language:'English', source_type:'Government', source_name:'NCERT', source_url:'https://epathshala.ncert.gov.in/', resource_type:'external', description:'Official NCERT mobile app providing free access to textbooks, audio, video, periodicals, and digital resources for students and teachers.', featured:false, priority:2 },
+    { id:'fm-gen-diksha', title:'DIKSHA Assam — Digital Learning Platform', exam:'General Study Materials', type:'Useful Link', subject:'All Subjects', year:2025, language:'English', source_type:'Government', source_name:'Government of Assam', source_url:'https://elementary.assam.gov.in/latest/diksha-and-energized-textbook', resource_type:'external', description:'DIKSHA is a national digital learning platform providing curriculum-linked educational resources for Assam students — textbooks, videos, and assessments.', featured:false, priority:2 },
+    { id:'fm-gen-scert', title:'SCERT Assam Textbooks (Ka-Shreni to Class VIII)', exam:'General Study Materials', type:'Textbook', subject:'All Subjects', year:2026, language:'Assamese', source_type:'Government', source_name:'SCERT Assam', source_url:'https://scert.assam.gov.in/portlet-sub-innerpage/textbook-from-ka-shreni-to-class-viii-2026-27-0', resource_type:'external', description:'Free downloadable textbooks from Ka-Shreni to Class VIII in Assamese, Bengali, Bodo, English, and other mediums — published by SCERT Assam.', featured:true, priority:1 },
+    { id:'fm-gen-seba', title:'SEBA Textbooks (Class 9 & 10)', exam:'General Study Materials', type:'Textbook', subject:'All Subjects', year:2025, language:'Assamese', source_type:'Government', source_name:'SEBA Assam', source_url:'https://site.sebaonline.org/textbook', resource_type:'external', description:'Free downloadable textbooks for Class 9 and 10 from the Board of Secondary Education, Assam (SEBA).', featured:false, priority:2 },
+    { id:'fm-gen-ssc', title:'SSC CGL Syllabus (Official)', exam:'SSC', type:'Syllabus', subject:'General', year:2024, language:'English', source_type:'Government', source_name:'SSC Official', source_url:'https://ssc.nic.in/Portal/Syllabus', resource_type:'external', description:'Official syllabus for SSC Combined Graduate Level (CGL) examination — Tier I & Tier II with subject-wise topics.', featured:false, priority:3 },
+    { id:'fm-gen-constitution', title:'Indian Constitution & Polity Notes', exam:'General Study Materials', type:'Notes', subject:'Indian Polity', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Comprehensive notes on Indian Constitution — preamble, fundamental rights, DPSP, fundamental duties, parliament, and judiciary.', featured:false, priority:3 },
+    { id:'fm-gen-gk-rev', title:'General Knowledge Quick Revision', exam:'General Study Materials', type:'Revision', subject:'General Knowledge', year:2025, language:'English', source_type:'Studyria Original', source_name:'Studyria', resource_type:'studyria-original', description:'Quick revision notes on general knowledge — Indian and world geography, history, polity, economy, and science basics.', featured:false, priority:4 }
+  ];
+
   // ── Category definitions ──
   var FM_CATEGORIES = [
-    { name: 'APSC',                 icon: '🏛️', keywords: ['APSC', 'Assam Public Service'] },
     { name: 'ADRE',                  icon: '🎯', keywords: ['ADRE', 'Assam Direct Recruitment'] },
+    { name: 'APSC',                  icon: '🏛️', keywords: ['APSC', 'Assam Public Service'] },
     { name: 'Assam Police',          icon: '👮', keywords: ['Assam Police', 'Police'] },
     { name: 'Assam TET',             icon: '📚', keywords: ['Assam TET', 'TET', 'Teacher Eligibility'] },
     { name: 'Grade III & IV',        icon: '📝', keywords: ['Grade III', 'Grade IV', 'Grade 3', 'Grade 4', 'Grade III & IV'] },
-    { name: 'Current Affairs',       icon: '📰', keywords: ['Current Affairs', 'Current', 'Affairs', 'News'] },
-    { name: 'Assam GK',               icon: '🧠', keywords: ['Assam GK', 'Assam General Knowledge', 'GK', 'General Knowledge'] },
-    { name: 'General Study Materials', icon: '📖', keywords: ['General', 'Study', 'Materials', 'Notes'] }
+    { name: 'Assam GK',              icon: '🧠', keywords: ['Assam GK', 'Assam General Knowledge', 'GK'] },
+    { name: 'Current Affairs',       icon: '📰', keywords: ['Current Affairs', 'Current', 'Affairs'] },
+    { name: 'General Study Materials', icon: '📖', keywords: ['General', 'Study', 'Materials', 'NCERT', 'Textbook'] }
   ];
 
-  // Material type detection keywords
-  var FM_TYPE_KEYWORDS = {
-    'PYQ': ['previous year', 'pyq', 'question paper', 'old question', 'solved paper'],
-    'Notes': ['notes', 'study notes', 'material', 'handwritten'],
-    'MCQ': ['mcq', 'multiple choice', 'practice question'],
-    'Current Affairs': ['current affairs', 'current', 'affairs', 'news'],
-    'Syllabus': ['syllabus', 'exam pattern', 'pattern'],
-    'Exam Pattern': ['exam pattern', 'pattern', 'marks distribution'],
-    'Practice Set': ['practice set', 'practice', 'model', 'mock']
-  };
-
-  var fmState = { loaded: false, materials: [], filtered: [] };
+  var fmState = { loaded: false, initializing: false, materials: [], filtered: [] };
   window.fmState = fmState;
+
+  // ── Load free materials (curated + Supabase) ──
+  async function fmLoadMaterials() {
+    if (fmState.loaded) return fmState.materials;
+    var grid = document.getElementById('fmGrid');
+    if (grid) grid.innerHTML = Array(6).fill('<div class="fm-skeleton"></div>').join('');
+
+    var materials = FM_RESOURCES.map(function(r) {
+      return Object.assign({}, r, {
+        _fmType: r.type,
+        _fmExam: r.exam,
+        _fmTitle: r.title,
+        _fmSubject: r.subject || '',
+        _fmSource: r.source_name || '',
+        _fmYear: r.year || '',
+        _fmLanguage: r.language || '',
+        _fmDescription: r.description || '',
+        _fmSourceType: r.source_type || '',
+        _fmResourceType: r.resource_type || 'studyria-original',
+        _fmSourceUrl: r.source_url || '',
+        _fmFeatured: r.featured || false,
+        _fmPriority: r.priority || 99,
+        _fmExternalId: r.id
+      });
+    });
+
+    // Try Supabase for any additional free PDFs (with 5s timeout)
+    if (window.supabaseClient) {
+      try {
+        var sbPromise = window.supabaseClient.from('pdfs').select('*').order('created_at', { ascending: false }).limit(200);
+        var timeoutPromise = new Promise(function(_, reject) {
+          setTimeout(function() { reject(new Error('Supabase timeout')); }, 5000);
+        });
+        var res = await Promise.race([sbPromise, timeoutPromise]);
+        if (!res.error && res.data) {
+          var sbFree = res.data.filter(function(p) {
+            var isFree = p.free || !p.price || Number(p.price) === 0;
+            return isFree;
+          });
+          sbFree.forEach(function(p) {
+            if (typeof normalizePdf === 'function') normalizePdf(p);
+            // Only add if not already in list (avoid duplicates)
+            var exists = materials.some(function(m) { return m.title === p.title; });
+            if (!exists && p.title && p.title !== 'Untitled PDF') {
+              materials.push(Object.assign({}, p, {
+                _fmType: fmDetectType(p),
+                _fmExam: fmDetectExam(p),
+                _fmTitle: p.title,
+                _fmSubject: p.category || '',
+                _fmSource: 'Studyria',
+                _fmSourceType: 'Studyria Original',
+                _fmResourceType: 'internal',
+                _fmDescription: p.description || '',
+                _fmFeatured: false,
+                _fmPriority: 10
+              }));
+            }
+          });
+        }
+      } catch(e) { console.warn('Free Materials Supabase fetch:', e); }
+    }
+
+    fmState.materials = materials;
+    fmState.loaded = true;
+    return materials;
+  }
 
   // ── Detect material type from title/description ──
   function fmDetectType(item) {
     var text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.category || '')).toLowerCase();
-    for (var type in FM_TYPE_KEYWORDS) {
-      var kws = FM_TYPE_KEYWORDS[type];
+    var typeMap = {
+      'PYQ': ['previous year', 'pyq', 'question paper', 'old question', 'solved paper'],
+      'Syllabus': ['syllabus'],
+      'Mock Test': ['mock test', 'mock'],
+      'Practice Set': ['practice set', 'practice'],
+      'MCQ': ['mcq', 'multiple choice'],
+      'Current Affairs': ['current affairs', 'current', 'affairs'],
+      'Notes': ['notes', 'study notes', 'material', 'handwritten'],
+      'Exam Pattern': ['exam pattern', 'pattern', 'marks distribution']
+    };
+    for (var type in typeMap) {
+      var kws = typeMap[type];
       for (var i = 0; i < kws.length; i++) {
         if (text.indexOf(kws[i]) !== -1) return type;
       }
     }
-    return 'Notes'; // default
+    return 'Notes';
   }
 
-  // ── Detect exam category from title/category/description ──
+  // ── Detect exam from title/description ──
   function fmDetectExam(item) {
     var text = ((item.title || '') + ' ' + (item.category || '') + ' ' + (item.description || '')).toLowerCase();
     if (text.indexOf('apsc') !== -1) return 'APSC';
@@ -47911,47 +46986,28 @@ window.addEventListener('load', function() {
     return 'General Study Materials';
   }
 
-  // ── Load free materials from Supabase ──
-  async function fmLoadMaterials() {
-    if (fmState.loaded) return fmState.materials;
-    var grid = document.getElementById('fmGrid');
-    if (grid) grid.innerHTML = Array(6).fill('<div class="fm-skeleton"></div>').join('');
+  // ── Render featured cards ──
+  function fmRenderFeatured() {
+    var container = document.getElementById('fmFeatured');
+    if (!container) return;
+    var adreCount = fmState.materials.filter(function(m) { return m._fmExam === 'ADRE'; }).length;
+    var apscCount = fmState.materials.filter(function(m) { return m._fmExam === 'APSC'; }).length;
 
-    var materials = [];
-
-    // Try Supabase first — fetch free PDFs (price = 0 or free = true)
-    if (window.supabaseClient) {
-      try {
-        var q = window.supabaseClient.from('pdfs').select('*');
-        var res = await q.order('created_at', { ascending: false }).limit(200);
-        if (!res.error && res.data) {
-          materials = res.data.filter(function(p) {
-            var isFree = p.free || !p.price || Number(p.price) === 0;
-            return isFree;
-          });
-        }
-      } catch(e) { console.warn('Free Materials Supabase fetch:', e); }
-    }
-
-    // Fallback: check window.PDFS for free items if Supabase returned nothing
-    if (materials.length === 0 && window.PDFS && window.PDFS.length) {
-      materials = window.PDFS.filter(function(p) {
-        var isFree = p.free || !p.price || Number(p.price) === 0;
-        return isFree;  // status already filtered by Supabase; for PDFS fallback, just check free
-      });
-    }
-
-    // Enrich each material with detected type and exam
-    materials = materials.map(function(m) {
-      if (typeof normalizePdf === 'function') normalizePdf(m);
-      m._fmType = fmDetectType(m);
-      m._fmExam = fmDetectExam(m);
-      return m;
-    });
-
-    fmState.materials = materials;
-    fmState.loaded = true;
-    return materials;
+    container.innerHTML =
+      '<div class="fm-featured-card fm-featured-adre" onclick="fmSelectCategory(\'ADRE\')">' +
+        '<div class="fm-featured-tag">POPULAR</div>' +
+        '<div class="fm-featured-icon">🎯</div>' +
+        '<div class="fm-featured-name">ADRE</div>' +
+        '<div class="fm-featured-count">' + adreCount + ' Free Resources</div>' +
+        '<button class="fm-featured-btn">Explore ADRE →</button>' +
+      '</div>' +
+      '<div class="fm-featured-card fm-featured-apsc" onclick="fmSelectCategory(\'APSC\')">' +
+        '<div class="fm-featured-tag">POPULAR</div>' +
+        '<div class="fm-featured-icon">🏛️</div>' +
+        '<div class="fm-featured-name">APSC</div>' +
+        '<div class="fm-featured-count">' + apscCount + ' Free Resources</div>' +
+        '<button class="fm-featured-btn">Explore APSC →</button>' +
+      '</div>';
   }
 
   // ── Render category cards ──
@@ -47967,33 +47023,50 @@ window.addEventListener('load', function() {
     grid.innerHTML = FM_CATEGORIES.map(function(c) {
       var count = counts[c.name] || 0;
       var countLabel = count > 0 ? count + ' free' : 'Coming Soon';
-      var countClass = count > 0 ? '' : ' style="color:var(--hp-gold,#c99a3c)"';
+      var countClass = count > 0 ? ' class="fm-cat-count has-items"' : ' class="fm-cat-count"';
       return '<div class="fm-cat-card" data-fm-cat="' + c.name + '" onclick="fmSelectCategory(\'' + c.name.replace(/'/g, "\\'") + '\')">' +
         '<div class="fm-cat-icon">' + c.icon + '</div>' +
         '<div class="fm-cat-name">' + c.name + '</div>' +
-        '<div class="fm-cat-count"' + countClass + '>' + countLabel + '</div>' +
+        '<div' + countClass + '>' + countLabel + '</div>' +
         '</div>';
     }).join('');
   }
 
-  // ── Filter and render materials ──
+  // ── Filter, sort, and render ──
   window.fmFilter = function fmFilter() {
-    var search = (document.getElementById('fmSearch')?.value || '').trim().toLowerCase();
-    var examFilter = document.getElementById('fmExamFilter')?.value || '';
-    var typeFilter = document.getElementById('fmTypeFilter')?.value || '';
+    var search = (document.getElementById('fmSearch') ? document.getElementById('fmSearch').value : '').trim().toLowerCase();
+    var examFilter = document.getElementById('fmExamFilter') ? document.getElementById('fmExamFilter').value : '';
+    var typeFilter = document.getElementById('fmTypeFilter') ? document.getElementById('fmTypeFilter').value : '';
+    var sortBy = document.getElementById('fmSortBy') ? document.getElementById('fmSortBy').value : 'newest';
 
     var filtered = fmState.materials.filter(function(m) {
-      // Search filter
       if (search) {
-        var haystack = ((m.title || '') + ' ' + (m.description || '') + ' ' + (m.category || '') + ' ' + (m._fmExam || '') + ' ' + (m._fmType || '')).toLowerCase();
+        var haystack = ((m._fmTitle || m.title || '') + ' ' + (m._fmDescription || m.description || '') + ' ' +
+          (m._fmExam || '') + ' ' + (m._fmType || '') + ' ' + (m._fmSubject || '') + ' ' +
+          (m._fmSource || '') + ' ' + (m._fmYear || '') + ' ' + (m._fmLanguage || '')).toLowerCase();
         if (haystack.indexOf(search) === -1) return false;
       }
-      // Exam filter
       if (examFilter && m._fmExam !== examFilter) return false;
-      // Type filter
       if (typeFilter && m._fmType !== typeFilter) return false;
       return true;
     });
+
+    // Sort
+    if (sortBy === 'az') {
+      filtered.sort(function(a, b) { return (a._fmTitle || '').localeCompare(b._fmTitle || ''); });
+    } else if (sortBy === 'exam') {
+      filtered.sort(function(a, b) { return (a._fmExam || '').localeCompare(b._fmExam || ''); });
+    } else if (sortBy === 'year') {
+      filtered.sort(function(a, b) { return (b._fmYear || 0) - (a._fmYear || 0); });
+    } else {
+      // newest: by priority then year desc
+      filtered.sort(function(a, b) {
+        var pa = a._fmPriority || 99;
+        var pb = b._fmPriority || 99;
+        if (pa !== pb) return pa - pb;
+        return (b._fmYear || 0) - (a._fmYear || 0);
+      });
+    }
 
     fmState.filtered = filtered;
     fmRenderGrid(filtered);
@@ -48003,7 +47076,12 @@ window.addEventListener('load', function() {
   function fmRenderGrid(items) {
     var grid = document.getElementById('fmGrid');
     var empty = document.getElementById('fmEmpty');
+    var countEl = document.getElementById('fmResultsCount');
     if (!grid) return;
+
+    if (countEl) {
+      countEl.innerHTML = '<strong>' + items.length + '</strong> free material' + (items.length !== 1 ? 's' : '') + ' found';
+    }
 
     if (!items || items.length === 0) {
       grid.innerHTML = '';
@@ -48013,95 +47091,177 @@ window.addEventListener('load', function() {
     if (empty) empty.style.display = 'none';
 
     grid.innerHTML = items.map(function(m) {
-      var title = (m.title || 'Untitled').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      var desc = (m.description || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var title = (m._fmTitle || m.title || 'Untitled').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      var desc = (m._fmDescription || m.description || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       if (desc.length > 120) desc = desc.substring(0, 117) + '...';
       var exam = m._fmExam || 'General';
       var type = m._fmType || 'Notes';
-      var dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-      var id = m.id || '';
+      var year = m._fmYear || '';
+      var source = m._fmSource || '';
+      var isPlanned = m._fmResourceType === 'studyria-original';
+      var isExternal = m._fmResourceType === 'external';
+      var isInternal = m._fmResourceType === 'internal';
+      var badge = isPlanned
+        ? '<span class="fm-badge fm-badge-planned">PLANNED</span>'
+        : '<span class="fm-badge">FREE</span>';
+      var sourceLine = source ? '<div class="fm-card-source">Source: ' + source.replace(/</g, '&lt;') + '</div>' : '';
+
+      var btn = '';
+      if (isExternal && m._fmSourceUrl) {
+        btn = '<button class="fm-btn fm-btn-external" onclick="fmOpenExternal(\'' + m._fmSourceUrl.replace(/'/g, "\\'") + '\')">Open Resource →</button>';
+      } else if (isInternal && m.id) {
+        btn = '<button class="fm-btn fm-btn-primary" data-fm-id="' + m.id + '" onclick="fmViewMaterial(this)">View Material</button>';
+      } else {
+        btn = '<button class="fm-btn fm-btn-primary" onclick="fmShowDetail(\'' + (m._fmExternalId || m.id || '').replace(/'/g, "\\'") + '\')">View Details</button>';
+      }
 
       return '<div class="fm-card">' +
         '<div class="fm-card-top">' +
-          '<span class="fm-badge">FREE</span>' +
+          badge +
           '<span class="fm-card-type">' + type + '</span>' +
         '</div>' +
         '<h3 class="fm-card-title">' + title + '</h3>' +
         (desc ? '<p class="fm-card-desc">' + desc + '</p>' : '') +
         '<div class="fm-card-meta">' +
           '<span>📌 ' + exam + '</span>' +
-          (dateStr ? '<span>🗓 ' + dateStr + '</span>' : '') +
+          (year ? '<span>🗓 ' + year + '</span>' : '') +
+          (m._fmLanguage ? '<span>🌐 ' + m._fmLanguage + '</span>' : '') +
         '</div>' +
-        '<div class="fm-card-actions">' +
-          (id ? '<button class="fm-btn fm-btn-primary" data-fm-id="' + id + '" onclick="fmViewMaterial(this)">View Material</button>' : '') +
-        '</div>' +
+        sourceLine +
+        '<div class="fm-card-actions">' + btn + '</div>' +
       '</div>';
     }).join('');
   }
 
-  // ── View material (opens existing PDF detail) ──
-  window.fmViewMaterial = function fmViewMaterial(btn) {
+  // ── Open external link ──
+  window.fmOpenExternal = function(url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  // ── View internal material (existing PDF detail) ──
+  window.fmViewMaterial = function(btn) {
     var id = btn.getAttribute('data-fm-id');
     if (id && typeof openDetail === 'function') {
       openDetail(id);
     }
   };
 
+  // ── Show detail modal for curated resources ──
+  window.fmShowDetail = function(resourceId) {
+    var m = fmState.materials.find(function(r) { return (r._fmExternalId || r.id) === resourceId; });
+    if (!m) return;
+
+    var isPlanned = m._fmResourceType === 'studyria-original';
+    var isExternal = m._fmResourceType === 'external';
+
+    var modalHtml = '<div class="fm-modal-overlay" id="fmModalOverlay" onclick="if(event.target===this)fmCloseModal()">' +
+      '<div class="fm-modal">' +
+        '<button class="fm-modal-close" onclick="fmCloseModal()">✕</button>' +
+        (isPlanned ? '<span class="fm-badge fm-badge-planned" style="margin-bottom:12px;display:inline-block;">STUDYRIA ORIGINAL — COMING SOON</span>' : '<span class="fm-modal-badge">FREE RESOURCE</span>') +
+        '<h2 class="fm-modal-title">' + (m._fmTitle || m.title || '').replace(/</g, '&lt;') + '</h2>' +
+        '<div class="fm-modal-meta">' +
+          '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Exam</span><span class="fm-modal-meta-value">' + (m._fmExam || '—') + '</span></div>' +
+          '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Type</span><span class="fm-modal-meta-value">' + (m._fmType || '—') + '</span></div>' +
+          (m._fmYear ? '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Year</span><span class="fm-modal-meta-value">' + m._fmYear + '</span></div>' : '') +
+          (m._fmLanguage ? '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Language</span><span class="fm-modal-meta-value">' + m._fmLanguage + '</span></div>' : '') +
+          (m._fmSubject ? '<div class="fm-modal-meta-item"><span class="fm-modal-meta-label">Subject</span><span class="fm-modal-meta-value">' + m._fmSubject + '</span></div>' : '') +
+        '</div>' +
+        '<p class="fm-modal-desc">' + (m._fmDescription || m.description || 'No description available.').replace(/</g, '&lt;') + '</p>' +
+        '<div class="fm-modal-source">Source: ' + (m._fmSource || '—') + (m._fmSourceType ? ' (' + m._fmSourceType + ')' : '') + '</div>' +
+        '<div class="fm-modal-actions">' +
+          (isExternal && m._fmSourceUrl
+            ? '<button class="fm-btn fm-btn-external" onclick="fmOpenExternal(\'' + m._fmSourceUrl.replace(/'/g, "\\'") + '\')">Open Official Resource →</button>'
+            : '') +
+          (isPlanned
+            ? '<button class="fm-btn fm-btn-ghost" disabled>Coming Soon</button>'
+            : '') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    var existing = document.getElementById('fmModalOverlay');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  };
+
+  window.fmCloseModal = function() {
+    var overlay = document.getElementById('fmModalOverlay');
+    if (overlay) overlay.remove();
+  };
+
   // ── Category selection ──
   window.fmSelectCategory = function fmSelectCategory(catName) {
     var examSelect = document.getElementById('fmExamFilter');
     if (examSelect) {
-      // Map category name to exam filter value
-      var examMap = {
-        'APSC': 'APSC',
-        'ADRE': 'ADRE',
-        'Assam Police': 'Assam Police',
-        'Assam TET': 'Assam TET',
-        'Grade III & IV': 'Grade III & IV',
-        'Current Affairs': 'Current Affairs',
-        'Assam GK': 'Assam GK',
-        'General Study Materials': ''
-      };
-      examSelect.value = examMap[catName] || '';
+      examSelect.value = catName === 'General Study Materials' ? 'General Study Materials' : catName;
       fmFilter();
     }
-    // Highlight active card
     document.querySelectorAll('.fm-cat-card').forEach(function(c) {
       c.classList.toggle('active', c.getAttribute('data-fm-cat') === catName);
     });
+    // Scroll to results
+    var grid = document.getElementById('fmGrid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // ── Init on page load ──
+  // ── Init ──
   window.fmInit = async function fmInit() {
-    await fmLoadMaterials();
-    fmRenderCategories();
-    fmFilter();
+    if (fmState.loaded || fmState.initializing) return;
+    fmState.initializing = true;
+    try {
+      await fmLoadMaterials();
+      fmRenderFeatured();
+      fmRenderCategories();
+      fmFilter();
+    } catch(e) {
+      console.error('fmInit error:', e);
+    } finally {
+      fmState.initializing = false;
+    }
   };
 
-  // ── Hook into navigate() to init when landing on free-materials ──
-  // Patch the existing navigate to trigger fmInit
-  var _origNavigate = window._realNavigate || window.navigate;
-  if (typeof _origNavigate === 'function') {
-    var _patchedNav = function(page) {
-      var result = _origNavigate.call(this, page);
-      if (page === 'free-materials') {
-        // Small delay to ensure page DOM is visible
-        setTimeout(function() { window.fmInit(); }, 100);
-      }
-      return result;
-    };
-    // Only patch if not already patched
-    if (!window._fmNavPatched) {
-      window.navigate = _patchedNav;
-      window._fmNavPatched = true;
+  // ── Init detection: MutationObserver on page visibility ──
+  function _fmCheckAndInit() {
+    var page = document.getElementById('page-free-materials');
+    if (page && page.classList.contains('active') && !fmState.loaded && !fmState.initializing) {
+      window.fmInit();
     }
   }
 
-  // ── Also init on hash load ──
-  if (location.hash === '#free-materials' || location.pathname === '/free-materials') {
-    setTimeout(function() { window.fmInit(); }, 300);
+  // Hash change listener
+  window.addEventListener('hashchange', function() {
+    setTimeout(_fmCheckAndInit, 200);
+  });
+
+  // Check on load (multiple attempts to catch different timing)
+  setTimeout(_fmCheckAndInit, 500);
+  setTimeout(_fmCheckAndInit, 1500);
+  setTimeout(_fmCheckAndInit, 3000);
+
+  // MutationObserver: watch for page-free-materials becoming active
+  document.addEventListener('DOMContentLoaded', function() {
+    var fmPage = document.getElementById('page-free-materials');
+    if (fmPage && typeof MutationObserver !== 'undefined') {
+      var observer = new MutationObserver(function() { _fmCheckAndInit(); });
+      observer.observe(fmPage, { attributes: true, attributeFilter: ['class'] });
+    }
+    setTimeout(_fmCheckAndInit, 500);
+  });
+
+  // Also intercept navigate calls for free-materials
+  var _origNav = window.navigate || function(){};
+  if (!window._fmNavPatched) {
+    window.navigate = function(page) {
+      var result = _origNav.apply(this, arguments);
+      if (page === 'free-materials') {
+        setTimeout(_fmCheckAndInit, 100);
+      }
+      return result;
+    };
+    window._fmNavPatched = true;
   }
 })();
 </script>
+
 </body>
 </html>
