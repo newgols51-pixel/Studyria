@@ -263,6 +263,195 @@ var EXAMS=['All','APSC','ADRE','Assam Police','Assam TET','Grade III','Grade IV'
 var DIFFS=[{id:'mixed',l:'Mixed',icon:'🎲'},{id:'easy',l:'Easy',icon:'🟢'},{id:'medium',l:'Medium',icon:'🟡'},{id:'hard',l:'Hard',icon:'🔴'}];
 
 // ════════════════════════════════════════════════
+// 8 PERMANENT ARENA OPPONENTS
+// ════════════════════════════════════════════════
+var OPPONENTS=[
+  {id:'opp_rituraj',name:'Rituraj Saikia',gender:'male',avatar:'👨',baseRating:1050,baseAccuracy:68,responseSpeed:1.2,strengths:['GK','Current Affairs','General Knowledge'],weaknesses:['History'],difficulty_level:'medium'},
+  {id:'opp_parthajit',name:'Parthajit Bora',gender:'male',avatar:'👨',baseRating:1120,baseAccuracy:78,responseSpeed:1.5,strengths:['Polity','Indian Polity'],weaknesses:['Geography'],difficulty_level:'hard'},
+  {id:'opp_ankur',name:'Ankur Hazarika',gender:'male',avatar:'👨',baseRating:1000,baseAccuracy:70,responseSpeed:1.3,strengths:['History','Indian History'],weaknesses:['GK','General Knowledge'],difficulty_level:'medium'},
+  {id:'opp_debojit',name:'Debojit Dutta',gender:'male',avatar:'👨',baseRating:980,baseAccuracy:62,responseSpeed:0.9,strengths:['Geography'],weaknesses:['Polity','History'],difficulty_level:'easy'},
+  {id:'opp_junali',name:'Junali Saikia',gender:'female',avatar:'👩',baseRating:1030,baseAccuracy:72,responseSpeed:1.3,strengths:['Current Affairs','Current affairs'],weaknesses:['History'],difficulty_level:'medium'},
+  {id:'opp_nandita',name:'Nandita Bora',gender:'female',avatar:'👩',baseRating:1100,baseAccuracy:80,responseSpeed:1.6,strengths:['Assam GK','Assam History','Assam Polity'],weaknesses:['Geography'],difficulty_level:'hard'},
+  {id:'opp_priyanka',name:'Priyanka Hazarika',gender:'female',avatar:'👩',baseRating:1010,baseAccuracy:66,responseSpeed:1.0,strengths:['Geography','Indian Geography'],weaknesses:['Polity'],difficulty_level:'medium'},
+  {id:'opp_mousumi',name:'Mousumi Dutta',gender:'female',avatar:'👩',baseRating:1070,baseAccuracy:75,responseSpeed:1.4,strengths:['History','Polity','Indian History','Indian Polity'],weaknesses:['Current Affairs','Current affairs'],difficulty_level:'medium'}
+];
+
+// Persistent opponent state management (localStorage)
+function loadOpponentStates(){
+  try{
+    var saved=JSON.parse(localStorage.getItem('arena_opponents')||'{}');
+    OPPONENTS.forEach(function(o){
+      if(saved[o.id]){
+        o.rating=saved[o.id].rating||o.baseRating;
+        o.wins=saved[o.id].wins||0;
+        o.losses=saved[o.id].losses||0;
+        o.draws=saved[o.id].draws||0;
+        o.matches=saved[o.id].matches||0;
+        o.current_streak=saved[o.id].current_streak||0;
+        o.best_streak=saved[o.id].best_streak||0;
+        o.recent_form=saved[o.id].recent_form||[];
+      }else{
+        o.rating=o.baseRating;
+        o.wins=0;o.losses=0;o.draws=0;o.matches=0;
+        o.current_streak=0;o.best_streak=0;o.recent_form=[];
+      }
+    });
+  }catch(e){
+    OPPONENTS.forEach(function(o){
+      o.rating=o.baseRating;o.wins=0;o.losses=0;o.draws=0;o.matches=0;
+      o.current_streak=0;o.best_streak=0;o.recent_form=[];
+    });
+  }
+}
+
+function saveOpponentStates(){
+  try{
+    var states={};
+    OPPONENTS.forEach(function(o){
+      states[o.id]={rating:o.rating,wins:o.wins,losses:o.losses,draws:o.draws,matches:o.matches,current_streak:o.current_streak,best_streak:o.best_streak,recent_form:o.recent_form};
+    });
+    localStorage.setItem('arena_opponents',JSON.stringify(states));
+  }catch(e){}
+}
+
+function getOpponentById(id){
+  return OPPONENTS.find(function(o){return o.id===id;});
+}
+
+function updateOpponentStats(oppId,isWin,isDraw){
+  var opp=getOpponentById(id);
+  if(!opp)return;
+  opp.matches++;
+  if(isDraw){opp.draws++;opp.recent_form.unshift('D');opp.current_streak=0;}
+  else if(isWin){opp.wins++;opp.recent_form.unshift('W');opp.current_streak++;if(opp.current_streak>opp.best_streak)opp.best_streak=opp.current_streak;}
+  else{opp.losses++;opp.recent_form.unshift('L');opp.current_streak=0;}
+  if(opp.recent_form.length>5)opp.recent_form=opp.recent_form.slice(0,5);
+  saveOpponentStates();
+}
+
+// Elo rating calculation (K=32, standard Elo)
+function calculateElo(userRating,oppRating,result){
+  // result: 1=win, 0=loss, 0.5=draw
+  var expected=1/(1+Math.pow(10,(oppRating-userRating)/400));
+  var K=32;
+  var change=Math.round(K*(result-expected));
+  return {newRating:userRating+change,change:change};
+}
+
+// Select fallback opponent closest to user's rating
+function selectFallbackOpponent(userRating,excludeIds){
+  excludeIds=excludeIds||[];
+  loadOpponentStates();
+  var available=OPPONENTS.filter(function(o){return excludeIds.indexOf(o.id)<0;});
+  if(!available.length)available=OPPONENTS.slice();
+  // Sort by rating closeness to user
+  available.sort(function(a,b){
+    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
+  });
+  // Pick from top 3 with some randomness
+  var pool=available.slice(0,Math.min(3,available.length));
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// Select multiple opponents for team modes
+function selectFallbackOpponents(userRating,count,excludeIds){
+  excludeIds=excludeIds||[];
+  loadOpponentStates();
+  var available=OPPONENTS.filter(function(o){return excludeIds.indexOf(o.id)<0;});
+  if(!available.length)available=OPPONENTS.slice();
+  available.sort(function(a,b){
+    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
+  });
+  var selected=[];
+  var used=[];
+  for(var i=0;i<count&&i<available.length;i++){
+    // Pick from top available with some randomness
+    var pool=available.filter(function(o){return used.indexOf(o.id)<0;});
+    if(!pool.length)break;
+    var pickIdx=Math.floor(Math.random()*Math.min(3,pool.length));
+    selected.push(pool[pickIdx]);
+    used.push(pool[pickIdx].id);
+  }
+  return selected;
+}
+
+// Get local match history (for fallback matches)
+function getLocalHistory(){
+  try{return JSON.parse(localStorage.getItem('arena_local_history')||'[]');}catch(e){return[];}
+}
+
+function saveLocalMatch(match){
+  var hist=getLocalHistory();
+  hist.unshift(match);
+  if(hist.length>200)hist=hist.slice(0,200);
+  try{localStorage.setItem('arena_local_history',JSON.stringify(hist));}catch(e){}
+}
+
+// Get combined history (backend + local)
+function getCombinedHistory(){
+  return getLocalHistory();
+}
+
+// Opponent answer simulation
+function simulateOpponentAnswer(opp,qIdx,questions){
+  var q=questions[qIdx];
+  if(!q)return null;
+  var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
+  
+  // Base accuracy from opponent profile
+  var acc=opp.baseAccuracy/100;
+  
+  // Topic match - strengths/weaknesses
+  var topic=(q.topic||q.category||'').toLowerCase();
+  var isStrength=opp.strengths.some(function(s){return topic.indexOf(s.toLowerCase())>=0||s.toLowerCase().indexOf(topic)>=0;});
+  var isWeakness=opp.weaknesses.some(function(s){return topic.indexOf(s.toLowerCase())>=0||s.toLowerCase().indexOf(topic)>=0;});
+  
+  if(isStrength)acc+=0.15;
+  if(isWeakness)acc-=0.15;
+  
+  // Difficulty adjustment
+  var diff=(q.difficulty||'').toLowerCase();
+  if(diff==='hard')acc-=0.10;
+  else if(diff==='easy')acc+=0.05;
+  
+  // Match progress pressure - later questions slightly harder
+  var progress=qIdx/questions.length;
+  acc-=progress*0.03;
+  
+  // Clamp
+  acc=Math.max(0.15,Math.min(0.95,acc));
+  
+  // Randomness
+  var isCorrect=Math.random()<acc;
+  
+  // Response time: base * speed * random factor
+  var baseTime=8+Math.random()*12; // 8-20 seconds base
+  var responseTime=Math.round(baseTime*opp.responseSpeed*(0.7+Math.random()*0.6));
+  
+  // If wrong, pick a random wrong answer
+  var selectedIdx;
+  if(isCorrect){
+    selectedIdx=correctIdx;
+  }else{
+    var wrongOptions=[0,1,2,3].filter(function(i){return i!==correctIdx;});
+    selectedIdx=wrongOptions[Math.floor(Math.random()*wrongOptions.length)];
+  }
+  
+  return {selectedIdx:selectedIdx,isCorrect:isCorrect,timeSpent:responseTime,answer:String.fromCharCode(97+selectedIdx)};
+}
+
+// Pre-compute all opponent answers for a match
+function preComputeOpponentAnswers(opp,questions){
+  var answers=[];
+  for(var i=0;i<questions.length;i++){
+    answers.push(simulateOpponentAnswer(opp,i,questions));
+  }
+  return answers;
+}
+
+
+
+// ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
 var S={
@@ -276,7 +465,11 @@ var S={
   searchResults:[],
   pendingInvite:null,
   seed:null,
-  lobbyReady:false
+  lobbyReady:false,
+  isFallback:false,
+  fallbackOpponent:null,
+  fallbackOpponents:[],
+  oppSimTimers:[]
 };
 
 async function api(action,data){
@@ -909,6 +1102,10 @@ var CSS=`
 }
 .arena-promo-badge-icon{font-size:0.8rem}
 
+/* ══ MATCHMAKING UI ══ */
+.arena-searching{position:relative;}
+.arena-search-config{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:10px;}
+
 /* ══ RESPONSIVE BANNER ══ */
 @media(max-width:600px){
   .arena-promo-grid{padding:16px 14px 12px}
@@ -977,6 +1174,9 @@ function toast(msg){
 async function computeArenaStats(userId){
   var res=await api('getHistory',{userId:userId});
   var history=(res.ok&&res.history)?res.history:[];
+  // Merge local fallback match history
+  var localHist=getLocalHistory();
+  history=history.concat(localHist);
   var wins=0,losses=0,draws=0;
   var teamLookups=[];
   history.forEach(function(m){
@@ -1007,9 +1207,21 @@ async function computeArenaStats(userId){
   }
   var battles=wins+losses+draws;
   var winRate=battles?Math.round(wins/battles*100):0;
-  // No persisted ELO on the backend — approximate rating from the real
-  // win/loss record so it moves with actual results instead of staying frozen.
-  var rating=1000+wins*25-losses*20;
+  // Use Elo rating from local storage if available, otherwise approximate
+  var storedRating=0;
+  try{var sr=JSON.parse(localStorage.getItem('arena_elo')||'{}');storedRating=sr.rating||0;}catch(e){}
+  var rating;
+  if(storedRating>0){
+    // Adjust stored Elo based on any new backend-only matches we haven't counted
+    var localMatchCount=localHist.length;
+    var backendWins=0,backendLosses=0;
+    history.forEach(function(m){
+      if(localMatchCount>0){return;} // Already counted
+    });
+    rating=storedRating;
+  }else{
+    rating=1000+wins*25-losses*20;
+  }
   if(rating<0)rating=0;
   return {rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate};
 }
@@ -1079,7 +1291,8 @@ async function showHome(){
     showOverlay('<div class="arena-login-prompt"><div class="arena-login-icon">🔐</div><div class="arena-login-text">Please log in to use the Practice Arena.</div><button class="arena-btn" onclick="Arena.close()">OK</button></div>');
     return;
   }
-  if(S.user)api('clearMatch',{userId:S.user.id});
+  if(S.user&&!S.isFallback)api('clearMatch',{userId:S.user.id});
+  S.isFallback=false;
   var st=await computeArenaStats(S.user.id);
   var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
   var battles=st.battles,winRate=st.winRate;
@@ -1280,14 +1493,41 @@ async function startSearch(){
 function renderSearch(){
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
   var elapsed=S.searchStartTime?Math.floor((Date.now()-S.searchStartTime)/1000):0;
-  var h='<div class="arena-title">🔎 Find Players</div>';
-  h+='<div class="arena-sub">'+m.label+' · Auto-matching...</div>';
+  var remaining=Math.max(0,100-elapsed);
+  var onlineCount=S.searchResults.length;
+  
+  // Match quality
+  var quality='Searching';
+  if(onlineCount>0){
+    var userRating=getArenaStats().rating||1000;
+    var hasMatch=onlineCount>0&&Math.abs((S.searchResults[0].arenaRating||1000)-userRating)<200;
+    quality=hasMatch?'Excellent':'Good';
+  }
+  if(elapsed<5)quality='Searching';
+  
+  // Estimated wait
+  var estWait;
+  if(onlineCount>0)estWait=Math.min(30,5+elapsed);
+  else estWait=Math.max(30,100-elapsed);
+  
+  var h='<div class="arena-title">⚔️ Finding Opponent</div>';
+  h+='<div class="arena-sub">'+m.label+' · Searching Arena players...</div>';
 
   h+='<div class="arena-searching">';
   h+='<div class="arena-spinner"></div>';
-  h+='<div style="font-size:15px;color:#f5e9e0;margin-bottom:4px">Auto-matching with compatible players...</div>';
-  h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-top:4px">Searching for '+elapsed+'s</div>';
+  h+='<div style="font-size:15px;color:#f5e9e0;margin-bottom:4px">Searching Arena players...</div>';
   h+='</div>';
+  
+  // Live matchmaking stats
+  h+='<div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:12px 0">';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Players Online</div><div style="font-size:18px;font-weight:700;color:#e8c87a;margin-top:2px">'+onlineCount+'</div></div>';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Match Quality</div><div style="font-size:14px;font-weight:700;color:'+(quality==='Excellent'?'#66bb6a':quality==='Good'?'#e8c87a':'rgba(245,233,224,0.5)')+';margin-top:4px">'+quality+'</div></div>';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Estimated Wait</div><div style="font-size:14px;font-weight:700;color:#e8c87a;margin-top:4px">'+estWait+'s</div></div>';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Elapsed</div><div style="font-size:14px;font-weight:700;color:rgba(245,233,224,0.6);margin-top:4px">'+elapsed+'s</div></div>';
+  h+='</div>';
+  
+  // Progress bar
+  h+='<div style="width:100%;max-width:300px;margin:0 auto 12px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,elapsed)+'%;background:linear-gradient(90deg,#930205,#e8c87a);border-radius:2px;transition:width 0.5s"></div></div>';
 
   h+='<div class="arena-search-config">';
   h+='<span>📋 '+m.label+'</span><span>📝 '+S.cfg.qCount+'Q</span><span>📚 '+S.cfg.exam+'</span><span>📁 '+S.cfg.cat+'</span><span>📊 '+S.cfg.diff+'</span>';
@@ -1338,6 +1578,7 @@ async function searchPoll(){
     S.matchId=res.matchId;
     S.match=res.match;
     S.autoMatching=false;
+    S.isFallback=false;
     try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
     S.screen='lobby';
     showLobby();
@@ -1350,9 +1591,13 @@ async function searchPoll(){
     S.searchResults=searchRes.players;
   }
   
-  // Check timeout (2 minutes)
-  if(S.searchStartTime&&Date.now()-S.searchStartTime>120000){
+  // Check timeout (100 seconds) — fallback to persistent opponent
+  if(S.searchStartTime&&Date.now()-S.searchStartTime>=100000){
+    S.autoMatching=false;
     S.searchTimedOut=true;
+    try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
+    startFallbackMatch();
+    return;
   }
   
   renderSearch();
@@ -1376,10 +1621,11 @@ async function invitePlayer(toUserId,toUserName){
 }
 
 function cancelSearch(){
-  if(S.matchId){
+  if(S.matchId&&!S.isFallback){
     api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
-    S.matchId=null;
   }
+  S.matchId=null;
+  S.isFallback=false;
   S.autoMatching=false;
   try{ArenaAudio.stopSearch();}catch(e){}
   if(S.user){
@@ -1649,8 +1895,10 @@ function answerQ(optIdx){
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
   try{ArenaAudio.play('answerSelect');if(isCorrect)ArenaAudio.play('correct');else ArenaAudio.play('wrong');}catch(e){}
   
-  // Submit to backend
-  api('submitAnswer',{matchId:S.matchId,userId:S.user.id,questionIndex:idx,answer:String.fromCharCode(97+optIdx),timeSpent:timeSpent});
+  // Submit to backend (skip for fallback matches — simulated locally)
+  if(!S.isFallback){
+    api('submitAnswer',{matchId:S.matchId,userId:S.user.id,questionIndex:idx,answer:String.fromCharCode(97+optIdx),timeSpent:timeSpent});
+  }
   
   // Show feedback
   var opts=document.querySelectorAll('.arena-battle-opt');
@@ -1733,6 +1981,15 @@ async function finishBattle(){
   if(battleTimerInt)clearInterval(battleTimerInt);
   stopTimer('battlePoll');
   try{ArenaAudio.stopTimeWarn();ArenaAudio.play('battleComplete');}catch(e){}
+  
+  // Clear any pending opponent simulation timers
+  if(S.oppSimTimers){S.oppSimTimers.forEach(function(t){clearTimeout(t);});S.oppSimTimers=[];}
+  
+  // FALLBACK MATCH: Process locally without backend API
+  if(S.isFallback){
+    processFallbackResult();
+    return;
+  }
   
   // Calculate final stats
   var total=S.battle.questions.length;
@@ -1848,7 +2105,12 @@ function checkNowWait(){
 
 async function leaveBattle(){
   if(!confirm('Leave Arena? Your progress will be saved as abandoned.'))return;
-  await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
+  if(!S.isFallback){
+    await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
+  }else{
+    // Clear opponent sim timers for fallback
+    if(S.oppSimTimers){S.oppSimTimers.forEach(function(t){clearTimeout(t);});S.oppSimTimers=[];}
+  }
   if(battleTimerInt)clearInterval(battleTimerInt);
   try{ArenaAudio.stopTimeWarn();ArenaAudio.cleanup();}catch(e){}
   stopAllTimers();
@@ -2379,8 +2641,8 @@ function practiceWeakTopic(topic){
 function rematch(){
   try{ArenaAudio.play('rematch');}catch(e){}
   // Create new match with same config
-  if(S.user)api('clearMatch',{userId:S.user.id});
-  S.matchId=null;S.match=null;
+  if(S.user&&!S.isFallback)api('clearMatch',{userId:S.user.id});
+  S.matchId=null;S.match=null;S.isFallback=false;
   S.seed=genSeed();
   startSearch();
 }
@@ -2411,6 +2673,15 @@ async function showHistory(){
   S.user=getUser();if(!S.user){toast('Please log in');return;}
   var res=await api('getHistory',{userId:S.user.id});
   var history=res.ok?res.history:[];
+  // Merge local fallback match history
+  var localHist=getLocalHistory();
+  history=history.concat(localHist);
+  // Sort by date descending
+  history.sort(function(a,b){
+    var da=new Date(a.createdAt||a.completedAt||0).getTime();
+    var db=new Date(b.createdAt||b.completedAt||0).getTime();
+    return db-da;
+  });
   
   var h='<div class="arena-title">📜 Battle History</div>';
   h+='<div class="arena-sub">'+history.length+' battles</div>';
@@ -2810,6 +3081,27 @@ function startLobbyPoll(){
 
 function startBattlePoll(){
   stopTimer('poll');
+  if(S.isFallback){
+    // For fallback matches, poll locally to update opponent status
+    S.timers.poll=setInterval(function(){
+      if(S.screen!=='battle'||!S.isFallback)return;
+      // Update opponent status display without re-rendering
+      if(S.match&&S.match.players){
+        S.match.players.forEach(function(p){
+          if(p.userId!==S.user.id){
+            var answered=p.answers?p.answers.length:0;
+            var dotEl=document.querySelector('[data-opp-status="'+p.userId+'"]');
+            if(dotEl){
+              var idx=S.battle.qIdx;
+              var statusText=answered>idx?'Answered':answered>0?'Thinking':'Not Started';
+              dotEl.textContent=escapeHtml(p.userName)+': '+statusText+' ('+answered+'/'+S.battle.questions.length+')';
+            }
+          }
+        });
+      }
+    },POLL_MS);
+    return;
+  }
   S.timers.poll=setInterval(async function(){
     if(S.screen!=='battle'||!S.matchId)return;
     var res=await api('getMatch',{matchId:S.matchId});
@@ -2889,6 +3181,9 @@ function init(){
   if(window._arenaInitDone)return; // Prevent double-init
   window._arenaInitDone=true;
   
+  // Initialize persistent opponent states
+  loadOpponentStates();
+  
   // Store original renderPracticeArena
   var origRender=BrainLab.renderPracticeArena;
   
@@ -2919,6 +3214,330 @@ function init(){
   }
 }
 
+
+// ════════════════════════════════════════════════
+// FALLBACK MATCH: START, SIMULATE, COMPLETE
+// ════════════════════════════════════════════════
+
+function startFallbackMatch(){
+  S.user=getUser();
+  if(!S.user){toast('Please log in');return;}
+  
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  if(!m)return;
+  
+  var userRating=getArenaStats().rating||1000;
+  S.isFallback=true;
+  S.fallbackOpponents=[];
+  
+  // Select opponents based on mode
+  if(m.type==='duel'){
+    // 1v1: one opponent
+    var opp=selectFallbackOpponent(userRating);
+    S.fallbackOpponents=[opp];
+  }else if(m.type==='team'){
+    // Team modes: fill both teams with opponents
+    // Team A: user + (teamA-1) opponents
+    // Team B: (teamB) opponents
+    var teamACount=m.teamA-1; // user fills one slot
+    var teamBCount=m.teamB;
+    var teamAOpps=selectFallbackOpponents(userRating,teamACount);
+    var excludeIds=teamAOpps.map(function(o){return o.id;});
+    var teamBOpps=selectFallbackOpponents(userRating,teamBCount,excludeIds);
+    S.fallbackOpponents=teamAOpps.concat(teamBOpps);
+  }else if(m.type==='ffa'){
+    // FFA: (players-1) opponents
+    var ffaCount=m.players-1;
+    S.fallbackOpponents=selectFallbackOpponents(userRating,ffaCount);
+  }
+  
+  // Show "Opponent Found" screen
+  showOpponentFound();
+}
+
+function showOpponentFound(){
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  var h='<div class="arena-countdown" style="text-align:center">';
+  h+='<div style="font-size:20px;color:#e8c87a;margin-bottom:16px;font-weight:700">⚔️ OPPONENT FOUND</div>';
+  
+  if(m.type==='duel'&&S.fallbackOpponents.length>0){
+    var opp=S.fallbackOpponents[0];
+    loadOpponentStates();
+    var oppData=getOpponentById(opp.id)||opp;
+    var form=oppData.recent_form||[];
+    var formStr=form.length?form.map(function(r){return r==='W'?'<span style="color:#66bb6a">W</span>':r==='L'?'<span style="color:#f44336">L</span>':'<span style="color:#e8c87a">D</span>';}).join(' '):'New';
+    
+    h+='<div style="display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0">';
+    h+='<div style="text-align:center"><div style="width:60px;height:60px;border-radius:50%;background:rgba(201,154,60,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 8px">'+(S.user.name[0]||'P').toUpperCase()+'</div><div style="font-size:14px;color:#f5e9e0;font-weight:600">'+escapeHtml(S.user.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.4)">'+(getArenaStats().rating||1000)+' Rating</div></div>';
+    h+='<div style="font-size:24px;color:#e8c87a;font-weight:700">VS</div>';
+    h+='<div style="text-align:center"><div style="width:60px;height:60px;border-radius:50%;background:rgba(201,154,60,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 8px">'+oppData.avatar+'</div><div style="font-size:14px;color:#f5e9e0;font-weight:600">'+escapeHtml(oppData.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.4)">'+oppData.rating+' Rating</div></div>';
+    h+='</div>';
+    
+    h+='<div style="display:flex;justify-content:center;gap:24px;margin:12px 0">';
+    h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4)">Accuracy</div><div style="font-size:16px;color:#f5e9e0">'+oppData.baseAccuracy+'%</div></div>';
+    h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4)">Recent Form</div><div style="font-size:16px;color:#f5e9e0">'+formStr+'</div></div>';
+    h+='</div>';
+  }else if(m.type==='team'){
+    h+='<div style="margin:16px 0">';
+    var teamAOpps=S.fallbackOpponents.slice(0,m.teamA-1);
+    var teamBOpps=S.fallbackOpponents.slice(m.teamA-1);
+    h+='<div style="font-size:14px;color:#66bb6a;font-weight:600;margin-bottom:8px">Team A: You + '+teamAOpps.map(function(o){return escapeHtml(o.name);}).join(', ')+'</div>';
+    h+='<div style="font-size:14px;color:#f44336;font-weight:600">Team B: '+teamBOpps.map(function(o){return escapeHtml(o.name);}).join(', ')+'</div>';
+    h+='</div>';
+  }else{
+    // FFA
+    h+='<div style="margin:16px 0;font-size:14px;color:#f5e9e0">Opponents: '+S.fallbackOpponents.map(function(o){return escapeHtml(o.name);}).join(', ')+'</div>';
+  }
+  
+  h+='</div>';
+  showOverlay(h);
+  
+  // Countdown 3-2-1-BATTLE
+  setTimeout(function(){fallbackCountdown(3);},2500);
+}
+
+function fallbackCountdown(n){
+  if(n<=0){
+    try{ArenaAudio.play('countdownGo');ArenaAudio.stopTimeWarn();ArenaAudio.startTimeWarn();}catch(e){}
+    startFallbackBattle();
+    return;
+  }
+  try{ArenaAudio.play('countdownTick');}catch(e){}
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">⚔️ BATTLE START</div><div class="arena-countdown-num">'+n+'</div></div>');
+  setTimeout(function(){fallbackCountdown(n-1);},1000);
+}
+
+function startFallbackBattle(){
+  S.screen='battle';
+  S.matchId='fallback_'+Date.now();
+  
+  // Generate questions locally using same engine
+  var seed=genSeed();
+  var matchConfig={
+    questionIds:'seed:'+seed,
+    questionCount:S.cfg.qCount,
+    exam:S.cfg.exam,
+    category:S.cfg.cat,
+    difficulty:S.cfg.diff,
+    mode:S.cfg.mode
+  };
+  
+  S.battle.questions=getMatchQuestions(matchConfig);
+  if(!S.battle.questions.length){toast('No questions available');showHome();return;}
+  S.battle.qIdx=0;
+  S.battle.answers=[];
+  S.battle.correct=0;
+  S.battle.wrong=0;
+  S.battle.skipped=0;
+  S.battle.totalTime=0;
+  S.battle.topicStats={};
+  S.battle.startTime=Date.now();
+  S.battle.qStart=Date.now();
+  
+  // Build match object with same structure as backend match
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  var players=[{userId:S.user.id,userName:S.user.name,status:'in_progress',answers:[],score:0,correct:0,wrong:0,skipped:0,totalTime:0}];
+  
+  // Add opponent players
+  S.fallbackOpponents.forEach(function(opp){
+    var team=m.type==='team'?(S.fallbackOpponents.indexOf(opp)<m.teamA-1?'A':'B'):undefined;
+    players.push({userId:opp.id,userName:opp.name,status:'in_progress',answers:[],score:0,correct:0,wrong:0,skipped:0,totalTime:0,team:team,isBot:true});
+  });
+  
+  S.match={
+    matchId:S.matchId,
+    mode:S.cfg.mode,
+    questionCount:S.cfg.qCount,
+    exam:S.cfg.exam,
+    category:S.cfg.cat,
+    difficulty:S.cfg.diff,
+    players:players,
+    status:'in_progress',
+    createdAt:new Date().toISOString()
+  };
+  
+  // Pre-compute opponent answers
+  S.fallbackOpponentAnswers={};
+  S.fallbackOpponents.forEach(function(opp){
+    S.fallbackOpponentAnswers[opp.id]=preComputeOpponentAnswers(opp,S.battle.questions);
+  });
+  
+  // Schedule opponent answer simulations
+  scheduleOpponentAnswers();
+  
+  renderBattle();
+}
+
+function scheduleOpponentAnswers(){
+  S.oppSimTimers=[];
+  var totalQ=S.battle.questions.length;
+  
+  S.fallbackOpponents.forEach(function(opp){
+    var answers=S.fallbackOpponentAnswers[opp.id];
+    var cumulativeTime=0;
+    
+    for(var i=0;i<totalQ;i++){
+      var ans=answers[i];
+      cumulativeTime+=ans.timeSpent*1000;
+      
+      (function(oppId,qIdx,ansData,delay){
+        var t=setTimeout(function(){
+          // Only update if battle is still active
+          if(S.screen!=='battle'||!S.isFallback)return;
+          var player=S.match.players.find(function(p){return p.userId===oppId;});
+          if(!player)return;
+          player.answers[qIdx]=ansData.answer;
+          if(ansData.isCorrect){player.correct++;player.score+=100;}
+          else{player.wrong++;}
+          player.totalTime+=ansData.timeSpent;
+        },delay);
+        S.oppSimTimers.push(t);
+      })(opp.id,i,ans,cumulativeTime);
+    }
+  });
+}
+
+function processFallbackResult(){
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  var total=S.battle.questions.length;
+  var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
+  var userScore=Math.round((S.battle.correct/total)*100);
+  
+  // Update user's player object in match
+  var me=S.match.players.find(function(p){return p.userId===S.user.id;});
+  if(me){
+    me.correct=S.battle.correct;
+    me.wrong=S.battle.wrong;
+    me.skipped=S.battle.skipped;
+    me.score=userScore;
+    me.totalTime=totalTime;
+    me.answers=S.battle.answers.map(function(a){
+      if(!a||a.skipped)return '';
+      return String.fromCharCode(97+a.selectedIdx);
+    });
+    me.status='completed';
+    me.topicBreakdown=S.battle.topicStats;
+  }
+  
+  // Ensure all opponents are completed (in case some timers didn't fire)
+  S.match.players.forEach(function(p){
+    if(p.userId!==S.user.id){
+      p.status='completed';
+      // If opponent didn't answer all questions, fill remaining as wrong
+      var opp=getOpponentById(p.userId);
+      if(opp&&S.fallbackOpponentAnswers[p.userId]){
+        var answers=S.fallbackOpponentAnswers[p.userId];
+        for(var i=0;i<total;i++){
+          if(!p.answers[i]){
+            var ans=answers[i];
+            p.answers[i]=ans?ans.answer:'';
+            if(ans&&ans.isCorrect){p.correct++;p.score+=100;}
+            else{p.wrong++;}
+            p.totalTime+=ans?ans.timeSpent:15;
+          }
+        }
+      }
+      p.score=p.score||Math.round((p.correct/total)*100);
+    }
+  });
+  
+  S.match.status='completed';
+  S.match.completedAt=new Date().toISOString();
+  
+  // Determine winner
+  var winner={};
+  if(m.type==='duel'){
+    var opp=S.match.players.find(function(p){return p.userId!==S.user.id;});
+    var myScore=me?me.score:0;
+    var oppScore=opp?opp.score:0;
+    if(myScore>oppScore){
+      winner={type:'user',userId:S.user.id,userName:S.user.name,score:myScore};
+    }else if(oppScore>myScore){
+      winner={type:'user',userId:opp.userId,userName:opp.userName,score:oppScore};
+    }else{
+      winner={type:'draw',userId:S.user.id,userName:S.user.name,score:myScore};
+    }
+  }else if(m.type==='team'){
+    var teamA=S.match.players.filter(function(p){return p.team==='A';});
+    var teamB=S.match.players.filter(function(p){return p.team==='B';});
+    var scoreA=teamA.reduce(function(s,p){return s+(p.score||0);},0);
+    var scoreB=teamB.reduce(function(s,p){return s+(p.score||0);},0);
+    if(scoreA>scoreB)winner={type:'team',team:'A'};
+    else if(scoreB>scoreA)winner={type:'team',team:'B'};
+    else winner={type:'draw'};
+  }else if(m.type==='ffa'){
+    var ranked=S.match.players.slice().sort(function(a,b){return (b.score||0)-(a.score||0);});
+    if(ranked.length>1&&ranked[0].score===ranked[1].score){
+      winner={type:'draw'};
+    }else{
+      winner={type:'ffa',ranking:ranked.map(function(p){return {userId:p.userId,userName:p.userName,score:p.score||0,correct:p.correct||0};})};
+    }
+  }
+  
+  S.match.winner=winner;
+  
+  // Calculate Elo rating change
+  var userRating=getArenaStats().rating||1000;
+  var oppRating=0;
+  if(m.type==='duel'){
+    var opp2=S.match.players.find(function(p){return p.userId!==S.user.id;});
+    oppRating=opp2?(getOpponentById(opp2.userId)||opp2).rating||1000:1000;
+  }else{
+    // For team/FFA, use average opponent rating
+    var opps=S.match.players.filter(function(p){return p.userId!==S.user.id;});
+    oppRating=opps.length?Math.round(opps.reduce(function(s,p){var od=getOpponentById(p.userId);return s+(od?od.rating:1000);},0)/opps.length):1000;
+  }
+  
+  var eloResult;
+  if(winner.type==='draw'){eloResult=calculateElo(userRating,oppRating,0.5);}
+  else if((winner.type==='user'&&winner.userId===S.user.id)||(winner.type==='team'&&winner.team==='A')){
+    eloResult=calculateElo(userRating,oppRating,1);
+  }else{
+    eloResult=calculateElo(userRating,oppRating,0);
+  }
+  
+  // Store new Elo rating
+  try{localStorage.setItem('arena_elo',JSON.stringify({rating:eloResult.newRating}));}catch(e){}
+  
+  // Update opponent stats
+  var isUserWin=(winner.type==='user'&&winner.userId===S.user.id)||(winner.type==='team'&&winner.team==='A');
+  var isDraw=winner.type==='draw';
+  S.fallbackOpponents.forEach(function(opp){
+    // Opponent's result is opposite of user's
+    updateOpponentStats(opp.id,!isUserWin&&!isDraw,isDraw);
+    // Also update opponent's Elo
+    var oppEloResult=calculateElo(opp.rating,userRating,isUserWin?0:isDraw?0.5:1);
+    var oppData=getOpponentById(opp.id);
+    if(oppData){oppData.rating=oppEloResult.newRating;saveOpponentStates();}
+  });
+  
+  // Save match to local history
+  var historyMatch={
+    matchId:S.matchId,
+    mode:S.cfg.mode,
+    questionCount:S.cfg.qCount,
+    exam:S.cfg.exam,
+    category:S.cfg.cat,
+    difficulty:S.cfg.diff,
+    status:'completed',
+    winner:winner,
+    players:S.match.players.map(function(p){
+      return {userId:p.userId,userName:p.userName,score:p.score||0,correct:p.correct||0,wrong:p.wrong||0,skipped:p.skipped||0,totalTime:p.totalTime||0,team:p.team};
+    }),
+    playerResults:S.match.players.map(function(p){
+      return {userId:p.userId,userName:p.userName,score:p.score||0,correct:p.correct||0,wrong:p.wrong||0,skipped:p.skipped||0,totalTime:p.totalTime||0,team:p.team,accuracy:p.correct&&total?Math.round(p.correct/total*100):0};
+    }),
+    ratingBefore:userRating,
+    ratingAfter:eloResult.newRating,
+    ratingChange:eloResult.change,
+    createdAt:S.match.createdAt,
+    completedAt:S.match.completedAt
+  };
+  saveLocalMatch(historyMatch);
+  
+  // Show results using same showResults function
+  showResults(winner,S.match);
+}
 
 // ════════════════════════════════════════════════
 // EXPOSE PUBLIC API
@@ -2955,7 +3574,8 @@ window.Arena={
   forfeitWait:forfeitWait,
   retrySubmit:retrySubmit,
   checkNowWait:checkNowWait,
-  close:closeOverlay
+  close:closeOverlay,
+  startFallbackMatch:startFallbackMatch
 };
 
 // Initialize when BrainLab is ready

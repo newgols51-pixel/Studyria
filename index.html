@@ -6227,9 +6227,11 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260816exp3" defer></script>
 <script src="brainlab-icons.js?v=20260818icons1" defer></script>
-<script src="brainlab.js?v=20260818skiplock" defer></script>
+<script src="brainlab.js?v=20260826a" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
-    <script src="arena.js?v=20260818restoreimg" defer></script>
+    <script src="arena.js?v=20260826arena1" defer></script>
+<script src="adre-papers-data.js?v=20260826a" defer></script>
+<script src="adre-exam.js?v=20260826a" defer></script>
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
@@ -6945,6 +6947,7 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="campus.css?v=20260731a">
 <link rel="stylesheet" href="brainlab.css?v=20260815fix1">
 <link rel="stylesheet" href="brainlab-icons.css?v=20260818icons1">
+<link rel="stylesheet" href="adre-exam.css?v=20260826a">
 <link rel="stylesheet" href="pdp-v2.css?v=20260801">
   <link rel="stylesheet" href="pdp-v3.css?v=20260803a">
   <link rel="stylesheet" href="pdp-v4.css?v=20260803a">
@@ -8750,6 +8753,7 @@ function studyriaApp() {
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dPaidFilter');if(f){f.value='free';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">📄</span> Free PDFs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('quiz');},400)"><span class="hp-menu-icon">🧩</span> Quizzes</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)"><span class="hp-menu-icon">📝</span> Mock Tests</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('adre-papers')"><span class="hp-menu-icon">🏛️</span> ADRE Papers</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('pyq');},400)"><span class="hp-menu-icon">📋</span> PYQs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mcq');},400)"><span class="hp-menu-icon">✅</span> MCQs</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)"><span class="hp-menu-icon">📰</span> Current Affairs</a>
@@ -15934,6 +15938,7 @@ body.light .crp-input{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,
 <div class="crd-main" id="crdMain"></div>
 </div>
 
+<div class="page" id="page-adre-papers"><div class="adre-content" style="max-width:1100px;margin:0 auto;padding:20px"><div style="text-align:center;margin-bottom:24px"><h1 style="font-size:28px;font-weight:900;color:#6d1b1b">🏛️ ADRE Previous Year Papers</h1><p style="color:#666;margin-top:8px">Official previous-year examination practice — verified questions and answer keys</p></div><div id="adre-paper-list"></div></div></div>
 <div class="page" id="page-upload">
   <div class="section">
     <div class="container" style="max-width:800px">
@@ -21148,7 +21153,7 @@ async function navigate(page) {
   window.scrollTo(0, 0);
 
   // ── Hash-based SPA routing (public pages only) ────────────────
-  if (_SPA_PUBLIC_PAGES.has(page)) {
+  if (_SPA_PUBLIC_PAGES.has(page) || page === 'adre-papers') {
     const hash = page === 'home' ? '#' : '#' + page;
     if (history.pushState && location.hash !== hash && location.hash !== (page === 'home' ? '' : hash)) {
       history.pushState({ page }, '', hash);
@@ -21185,6 +21190,11 @@ async function navigate(page) {
   }
   if (page === 'pwa') {
     if (window.PWA32 && typeof window.PWA32.renderPage === 'function') window.PWA32.renderPage();
+  }
+  if (page === 'adre-papers') {
+    if (window.ADREExam && document.getElementById('adre-paper-list')) {
+      ADREExam.renderPaperList(document.getElementById('adre-paper-list'));
+    }
   }
   if (page === 'blog') {
     // Reset to the article-list view (openBlogPost switches to article view)
