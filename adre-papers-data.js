@@ -2583,6 +2583,7 @@ window.ADRE_PAPERS = {
     }
     ,{
       id: 'adre-2024-paper4',
+      published: true,
       edition: 'ADRE 2.0',
       year: 2024,
       paper_code: 'IV',
@@ -2594,7 +2595,7 @@ window.ADRE_PAPERS = {
       total_marks: 175,
       marks_per_question: 'variable',
       duration_minutes: 180,
-      negative_marking: 'variable',
+      negative_marking: 0.25,
       negative_per_wrong_1mark: 0.25,
       negative_per_wrong_2mark: 0.5,
       source: 'Official SLRC-2024 Paper IV Set-A',
