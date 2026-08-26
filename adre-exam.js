@@ -374,8 +374,8 @@
     var page=document.getElementById('page-adre-papers')||document.querySelector('.page.active');
     if(!page)return;
     var h='<div class="adre-cert-page"><div class="adre-cert"><div class="adre-cert-border">';
-    h+='<div class="adre-cert-logo">🎓 Studyrya</div>';
-    h+='<div class="adre-cert-title">Studyrya Previous-Year Mock Completion Certificate</div>';
+    h+='<div class="adre-cert-logo">🎓 Studyria</div>';
+    h+='<div class="adre-cert-title">Studyria Previous-Year Mock Completion Certificate</div>';
     h+='<div class="adre-cert-subtitle">Practice certificate — not an official recruitment certificate</div>';
     h+='<div class="adre-cert-body"><div class="adre-cert-name">'+esc(r.userName)+'</div>';
     h+='<div class="adre-cert-text">has successfully completed the</div>';
@@ -386,7 +386,7 @@
     h+='<div class="adre-cert-accuracy">Accuracy: '+r.accuracy+'%</div>';
     h+='<div class="adre-cert-date">'+date+'</div>';
     h+='<div class="adre-cert-id">Certificate ID: '+certId+'</div></div>';
-    h+='<div class="adre-cert-footer">Studyrya Practice Certificate · Verify at studyria.qzz.io</div>';
+    h+='<div class="adre-cert-footer">Studyria Practice Certificate · Verify at studyria.qzz.io</div>';
     h+='</div></div>';
     h+='<div class="adre-cert-actions"><button class="adre-btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>';
     h+='<button class="adre-btn-secondary" onclick="ADREExam.showHome()">← Back</button></div></div>';
