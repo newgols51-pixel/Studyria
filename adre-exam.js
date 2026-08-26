@@ -48,30 +48,60 @@
     try { localStorage.setItem('adre_history',JSON.stringify(hist)); } catch(e) {}
   }
 
+  function fmtDuration(min) {
+    if(min%60===0)return (min/60)+' Hours';
+    var h=Math.floor(min/60),m=min%60;
+    return h+'h '+m+'m';
+  }
+
   function renderPaperList(container) {
     if(!container)return;
-    var papers=window.ADRE_PAPERS.papers.filter(function(p){return p.published;});
+    // Show ALL papers — published ones are clickable, unpublished show "Coming Soon"
+    var papers=window.ADRE_PAPERS.papers.slice().sort(function(a,b){
+      // Sort by year desc, then grade, then paper code
+      if(b.year!==a.year)return b.year-a.year;
+      var ga=a.grade||'',gb=b.grade||'';
+      if(ga!==gb)return ga<gb?-1:1;
+      return (a.paper_code||'').localeCompare(b.paper_code||'');
+    });
     if(!papers.length){
-      container.innerHTML='<div style="text-align:center;padding:40px 20px;color:#888"><div style="font-size:48px;margin-bottom:12px">📋</div><p>No verified ADRE papers available yet.</p></div>';
+      container.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--adre-text-muted,#888)"><div style="font-size:48px;margin-bottom:12px">📋</div><p>No ADRE papers available yet.</p></div>';
       return;
     }
     var h='<div class="adre-papers-grid">';
     papers.forEach(function(p){
+      var isPublished=p.published && p.questions && p.questions.length>0;
       var verified=p.verification_status==='VERIFIED_OFFICIAL';
-      h+='<div class="adre-paper-card" onclick="ADREExam.startPaper(\''+p.id+'\')">';
-      h+='<div class="adre-paper-badge">'+(verified?'✓ Official Paper':'Under Review')+'</div>';
+      var hasQuestions=p.questions && p.questions.length===p.total_questions;
+
+      if(isPublished){
+        h+='<div class="adre-paper-card" onclick="ADREExam.startPaper(\''+p.id+'\')">';
+        h+='<div class="adre-paper-badge">'+(verified?'✓ Official Paper':'Under Review')+'</div>';
+      } else {
+        h+='<div class="adre-paper-card adre-paper-locked">';
+        h+='<div class="adre-paper-badge" style="background:rgba(251,191,36,0.08);color:#fbbf24;border-color:rgba(251,191,36,0.15)">🔒 Coming Soon</div>';
+      }
       h+='<div class="adre-paper-title">🏛️ '+esc(p.title)+'</div>';
       h+='<div class="adre-paper-subtitle">'+esc(p.subtitle)+'</div>';
       h+='<div class="adre-paper-meta">';
       h+='<span>📝 '+p.total_questions+' Questions</span>';
       h+='<span>📊 '+p.total_marks+' Marks</span>';
-      h+='<span>⏱️ '+(p.duration_minutes/60)+' Hours</span>';
+      h+='<span>⏱️ '+fmtDuration(p.duration_minutes)+'</span>';
       h+='</div>';
       if(p.negative_marking>0){
-        h+='<div class="adre-paper-negative">⚠️ Negative Marking: -'+p.negative_marking+' per wrong answer</div>';
+        var negText='⚠️ Negative Marking: -'+p.negative_marking+' per wrong answer';
+        if(p.negative_per_wrong_2mark){
+          negText='⚠️ Negative: -'+p.negative_marking+' (1-mark Qs) / -'+p.negative_per_wrong_2mark+' (2-mark Qs)';
+        }
+        h+='<div class="adre-paper-negative">'+negText+'</div>';
       }
-      h+='<div class="adre-paper-verify">'+(verified?'✓ Official Answer Key Verified':'⚠️ Verification Pending')+'</div>';
-      h+='<button class="adre-paper-btn">Start Real Paper →</button>';
+      if(isPublished){
+        h+='<div class="adre-paper-verify">'+(verified&&hasQuestions?'✓ Official Answer Key Verified':'⚠️ Verification Pending')+'</div>';
+        h+='<button class="adre-paper-btn">Start Real Paper →</button>';
+      } else {
+        h+='<div class="adre-paper-verify" style="color:var(--adre-text-dim,#5a5664)">📋 Paper structure verified — questions being imported from official PDF</div>';
+        h+='<button class="adre-paper-btn" disabled style="opacity:0.4;cursor:not-allowed">Questions Coming Soon</button>';
+      }
       h+='</div>';
     });
     h+='</div>';

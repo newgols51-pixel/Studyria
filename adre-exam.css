@@ -1009,3 +1009,16 @@
   .adre-cert-score { font-size: 26px; }
   .adre-result-score-main { font-size: 36px; }
 }
+
+/* ── Locked / Coming Soon Papers ── */
+.adre-paper-card.adre-paper-locked {
+  opacity: 0.7;
+  cursor: default;
+}
+.adre-paper-card.adre-paper-locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+.adre-paper-card.adre-paper-locked::before {
+  background: linear-gradient(90deg, #5a5664, #8a8694);
+}
