@@ -162,3 +162,21 @@
   .adre-exam-header{flex-direction:column;align-items:flex-start;text-align:left;}
   .adre-exam-timer{align-self:flex-end;font-size:18px;}
 }
+
+/* ═══ Filters ═══ */
+.adre-filters{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:24px;align-items:flex-start;}
+.adre-filter-group{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.adre-filter-label{font-size:12px;font-weight:700;color:#6d1b1b;text-transform:uppercase;letter-spacing:0.5px;margin-right:4px;}
+.adre-filter-btn{padding:5px 14px;border:1px solid #e0d0c0;border-radius:20px;background:#fff;color:#666;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+.adre-filter-btn:hover{border-color:#930205;color:#930205;}
+.adre-filter-btn.active{background:#6d1b1b;color:#fff;border-color:#6d1b1b;}
+.adre-paper-locked{opacity:0.85;}
+.adre-paper-locked::before{background:linear-gradient(90deg,#f59e0b,#e8c87a) !important;}
+.adre-review-q.grace{border-left:3px solid #3b82f6;}
+.adre-review-q.grace .adre-review-q-status{color:#3b82f6;font-weight:700;}
+.adre-q-note{border-radius:8px;margin-bottom:12px;}
+@media(max-width:768px){
+  .adre-filters{flex-direction:column;gap:10px;}
+  .adre-filter-group{width:100%;}
+  .adre-filter-btn{font-size:12px;padding:4px 10px;}
+}
