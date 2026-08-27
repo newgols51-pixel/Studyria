@@ -226,6 +226,11 @@
     h+='<div class="adre-exam-header">';
     h+='<div class="adre-exam-title">🏛️ '+esc(p.title)+'</div>';
     h+='<div class="adre-exam-info">'+esc(p.subtitle)+' · '+p.total_questions+'Q · '+p.total_marks+' Marks</div>';
+    h+='<div class="adre-lang-toggle">';
+    h+='<button class="adre-lang-btn'+(getLang()==='en'?' active':'')+'" onclick="ADREExam.setLang(\'en\')">EN</button>';
+    h+='<button class="adre-lang-btn'+(getLang()==='as'?' active':'')+'" onclick="ADREExam.setLang(\'as\')">অসমীয়া</button>';
+    h+='<button class="adre-lang-btn'+(getLang()==='both'?' active':'')+'" onclick="ADREExam.setLang(\'both\')">EN+AS</button>';
+    h+='</div>';
     h+='<div class="adre-exam-timer" id="adre-timer">⏱ '+fmtTime(_state.timeRemaining)+'</div>';
     h+='</div>';
     h+='<div class="adre-exam-statusbar">';
@@ -253,7 +258,17 @@
     if(q.grace){marksLabel='Grace (dropped)';}
     else{marksLabel+=' · -'+q.negative_marks+' wrong';}
     h+='<span class="adre-q-marks">'+marksLabel+'</span></div>';
-    h+='<div class="adre-q-text">'+esc(q.question)+'</div>';
+    var lang=getLang();
+    var qTextHtml='';
+    if(lang==='both'){
+      qTextHtml+='<div class="adre-q-text">'+esc(q.question)+'</div>';
+      if(q.question_as){qTextHtml+='<div class="adre-q-text adre-q-as">'+esc(q.question_as)+'</div>';}
+    }else if(lang==='as' && q.question_as){
+      qTextHtml+='<div class="adre-q-text">'+esc(q.question_as)+'</div>';
+    }else{
+      qTextHtml+='<div class="adre-q-text">'+esc(q.question)+'</div>';
+    }
+    h+=qTextHtml;
     if(q.image_based){
       h+='<div class="adre-q-note" style="font-size:13px;color:#92400e;background:#fef3c7;padding:8px 12px">📷 Original question contains visual figures. Options shown as placeholders.</div>';
     }
@@ -264,12 +279,15 @@
       h+='<div class="adre-q-note" style="font-size:13px;color:#666;background:#f5f0e8;padding:8px 12px">ℹ️ '+esc(q.note)+'</div>';
     }
     h+='<div class="adre-q-options">';
-    var opts=[{key:'a',text:q.option_a},{key:'b',text:q.option_b},{key:'c',text:q.option_c},{key:'d',text:q.option_d}];
+    var opts=[{key:'a',text:q.option_a,text_as:q.option_a_as||''},
+      {key:'b',text:q.option_b,text_as:q.option_b_as||''},
+      {key:'c',text:q.option_c,text_as:q.option_c_as||''},
+      {key:'d',text:q.option_d,text_as:q.option_d_as||''}];
     opts.forEach(function(o){
       if(!o.text)return;
       var selected=_state.answers[q.q_num]===o.key;
       h+='<div class="adre-q-option'+(selected?' selected':'')+'" onclick="ADREExam.selectAnswer('+q.q_num+',\''+o.key+'\')">';
-      h+='<span class="adre-opt-letter">'+o.key.toUpperCase()+'</span><span class="adre-opt-text">'+esc(o.text)+'</span></div>';
+      h+='<span class="adre-opt-letter">'+o.key.toUpperCase()+'</span><span class="adre-opt-text">'+esc(o.text)+(lang==='both'&&o.text_as?'<br><span class=\"adre-opt-as\">'+esc(o.text_as)+'</span>':'')+'</span></div>';
     });
     h+='</div>';
     h+='<div class="adre-q-actions">';
@@ -478,6 +496,7 @@
       h+='<span class="adre-review-q-status">'+statusLabel+'</span>';
       h+='<span class="adre-review-q-marks">'+marksLabel+'</span></div>';
       h+='<div class="adre-review-q-text">'+esc(q.question)+'</div>';
+      if(q.question_as){h+='<div class="adre-review-q-text adre-q-as">'+esc(q.question_as)+'</div>';}
       if(q.note){h+='<div style="font-size:12px;color:#92400e;margin-bottom:8px">'+esc(q.note)+'</div>';}
       h+='<div class="adre-review-options">';
       ['a','b','c','d'].forEach(function(key){
@@ -546,7 +565,7 @@
   }
 
   window.ADREExam={
-    renderPaperList:renderPaperList,startPaper:startPaper,selectAnswer:selectAnswer,
+    renderPaperList:renderPaperList,startPaper:startPaper,selectAnswer:selectAnswer,setLang:setLang,
     clearAnswer:clearAnswer,toggleMark:toggleMark,gotoQ:gotoQ,confirmSubmit:confirmSubmit,
     retry:retry,showHome:showHome,showCert:showCert,viewResult:viewResult,setFilter:setFilter
   };
