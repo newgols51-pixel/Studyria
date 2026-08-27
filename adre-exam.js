@@ -22,7 +22,7 @@
     timeRemaining: 0,
     lastResult: null,
     filterEdition: 'all',
-    filterGrade: 'all'
+    filterPaperCode: 'all'
   };
 
   var PAPER_CODE_ORDER = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5 };
@@ -62,12 +62,13 @@
   function getFilteredPapers() {
     return window.ADRE_PAPERS.papers.filter(function(p){
       if(_state.filterEdition!=='all' && p.edition!==_state.filterEdition) return false;
-      if(_state.filterGrade!=='all' && p.grade!==_state.filterGrade) return false;
+      if(_state.filterPaperCode!=='all' && p.paper_code!==_state.filterPaperCode) return false;
       return true;
     }).sort(function(a,b){
-      if(b.year!==a.year)return b.year-a.year;
+      // Sort by paper code first (I, II, III, IV, V), then by year (newer first)
       var oa=PAPER_CODE_ORDER[a.paper_code]||99, ob=PAPER_CODE_ORDER[b.paper_code]||99;
-      return oa-ob;
+      if(oa!==ob) return oa-ob;
+      return b.year-a.year;
     });
   }
 
@@ -75,7 +76,10 @@
     if(!container)return;
     var allPapers=window.ADRE_PAPERS.papers;
     var editions=['all'].concat(Array.from(new Set(allPapers.map(function(p){return p.edition;}))));
-    var grades=['all'].concat(Array.from(new Set(allPapers.map(function(p){return p.grade;}))));
+    var paperCodes=['all','I','II','III','IV','V'].filter(function(c){
+      if(c==='all')return true;
+      return allPapers.some(function(p){return p.paper_code===c;});
+    });
 
     var h='';
     h+='<div class="adre-filters">';
@@ -86,16 +90,16 @@
     });
     h+='</div>';
     h+='<div class="adre-filter-group"><span class="adre-filter-label">Grade</span>';
-    grades.forEach(function(gr){
-      var active=_state.filterGrade===gr;
-      h+='<button class="adre-filter-btn'+(active?' active':'')+'" onclick="ADREExam.setFilter(\'grade\',\''+gr+'\')">'+(gr==='all'?'All':esc(gr))+'</button>';
+    paperCodes.forEach(function(pc){
+      var active=_state.filterPaperCode===pc;
+      h+='<button class="adre-filter-btn'+(active?' active':'')+'" onclick="ADREExam.setFilter(\'paperCode\',\''+pc+'\')">'+(pc==='all'?'All':esc(pc))+'</button>';
     });
     h+='</div>';
     h+='</div>';
 
     var papers=getFilteredPapers();
     if(!papers.length){
-      h+='<div style="text-align:center;padding:40px 20px;color:#888"><div style="font-size:48px;margin-bottom:12px">📋</div><p>No papers match this filter.</p></div>';
+      h+='<div style="text-align:center;padding:40px 20px;color:#888"><div style="font-size:48px;margin-bottom:12px">📋</div><p>No verified papers available for this paper code yet.</p></div>';
       container.innerHTML=h;
       return;
     }
@@ -156,7 +160,7 @@
 
   function setFilter(type,value) {
     if(type==='edition')_state.filterEdition=value;
-    if(type==='grade')_state.filterGrade=value;
+    if(type==='paperCode')_state.filterPaperCode=value;
     var page=document.getElementById('page-adre-papers');
     if(page)renderPaperList(page.querySelector('.adre-content')||page);
   }
