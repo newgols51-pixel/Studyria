@@ -106,12 +106,14 @@
 
     h+='<div class="adre-papers-grid">';
     papers.forEach(function(p){
-      var isPublished=p.published && p.questions && p.questions.length===p.total_questions;
+      var isPublished=p.published && p.questions && p.questions.length>0;
+    var isPractice=p.verification_status==='PRACTICE_MODE'||p.practice_mode;
+    var isCommunityKey=p.verification_status==='COMMUNITY_KEY';
       var verified=p.verification_status==='VERIFIED_OFFICIAL';
 
       if(isPublished){
         h+='<div class="adre-paper-card" onclick="ADREExam.startPaper(\''+p.id+'\')">';
-        h+='<div class="adre-paper-badge">'+(verified?'✓ Official Paper':'Under Review')+'</div>';
+        h+='<div class="adre-paper-badge">'+(verified?'✓ Official Paper':(p.verification_status==='COMMUNITY_KEY'?'✎ Community Key':'Under Review'))+'</div>';
       } else {
         h+='<div class="adre-paper-card adre-paper-locked">';
         h+='<div class="adre-paper-badge" style="background:rgba(251,191,36,0.08);color:#f59e0b;border-color:rgba(251,191,36,0.15)">🔒 Coming Soon</div>';
@@ -131,7 +133,13 @@
         h+='<div class="adre-paper-negative">'+negText+'</div>';
       }
       if(isPublished){
-        h+='<div class="adre-paper-verify">✓ Official Answer Key Verified</div>';
+        if(isCommunityKey){
+          h+='<div class="adre-paper-verify" style="color:#3b82f6">✎ Community Answer Key — Not official but playable</div>';
+        }else if(isPractice){
+          h+='<div class="adre-paper-verify" style="color:#f59e0b">✎ No official answer key — Practice Mode (no scoring)</div>';
+        }else{
+          h+='<div class="adre-paper-verify">✓ Official Answer Key Verified</div>';
+        }
         h+='<button class="adre-paper-btn">Start Real Paper →</button>';
       } else {
         h+='<div class="adre-paper-verify" style="color:#999">📋 Paper structure verified — questions being imported from official PDF</div>';
@@ -355,6 +363,8 @@
     if(_state.timerInterval)clearInterval(_state.timerInterval);
     var p=_state.paper,qs=_state.questions;
     var correct=0,wrong=0,unanswered=0,graceCount=0,rawScore=0,negMarks=0,graceMarks=0;
+    var isPracticePaper=p.practice_mode||p.verification_status==='PRACTICE_MODE';
+    var answeredCount=0;
     qs.forEach(function(q){
       var ans=_state.answers[q.q_num];
       if(q.grace || q.correct_answer==='grace'){
@@ -365,9 +375,18 @@
         return;
       }
       if(!ans){unanswered++;return;}
+      answeredCount++;
+      if(isPracticePaper || !q.correct_answer){
+        // Practice mode: no scoring, just count attempts
+        return;
+      }
       if(ans===q.correct_answer){correct++;rawScore+=q.marks;}
       else{wrong++;negMarks+=(q.negative_marks||0);}
     });
+    if(isPracticePaper){
+      // Practice mode: override all scoring
+      correct=0;wrong=0;rawScore=0;negMarks=0;graceCount=0;graceMarks=0;
+    }
     var finalScore=Math.max(0,rawScore-negMarks);
     var maxMarks=p.total_marks;
     var percentage=Math.round((finalScore/maxMarks)*10000)/100;
@@ -383,7 +402,7 @@
       rawScore:rawScore,negativeMarks:negMarks,
       finalScore:finalScore,maxMarks:maxMarks,percentage:percentage,
       accuracy:accuracy,timeUsed:timeUsed,timeRemaining:timeRemaining,
-      autoSubmitted:autoSubmit||false,completedAt:new Date().toISOString(),
+      autoSubmitted:autoSubmit||false,completedAt:new Date().toISOString(),isPracticeMode:isPracticePaper,
       userId:getUserId(),userName:getUserName(),answers:_state.answers,
       questions:qs.map(function(q){
         return{q_num:q.q_num,question:q.question,option_a:q.option_a,option_b:q.option_b,
@@ -404,17 +423,34 @@
     var isPass=r.percentage>=40;
     var h='<div class="adre-result-container">';
     h+='<div class="adre-result-hero"><div class="adre-result-icon">'+(isPass?'🎉':'💪')+'</div>';
-    h+='<div class="adre-result-title">Mock Completed</div>';
+    var isPracticeResult=r.isPracticeMode;
+    h+='<div class="adre-result-title">'+(isPracticeResult?'Practice Completed':'Mock Completed')+'</div>';
     h+='<div class="adre-result-sub">'+esc(r.paperTitle)+'</div>';
     h+='<div class="adre-result-disclaimer">Performance only — not an official recruitment result</div></div>';
-    h+='<div class="adre-result-score-box"><div class="adre-result-score-main">'+r.finalScore+' <span class="adre-result-score-max">/ '+r.maxMarks+'</span></div>';
+    if(r.isPracticeMode){
+      h+='<div class="adre-result-score-box"><div class="adre-result-score-main" style="font-size:1.2em;color:#f59e0b">Practice Mode</div>';
+      h+='<div class="adre-result-score-pct">No Answer Key</div></div>';
+      h+='<div style="text-align:center;padding:12px 20px;color:#888;font-size:14px;max-width:500px;margin:0 auto 16px">✎ This is a practice paper. SLRC did not publish an official answer key for the 2022 exam. Your answers are recorded below for self-review.</div>';
+    }else{
+      h+='<div class="adre-result-score-box"><div class="adre-result-score-main">'+r.finalScore+' <span class="adre-result-score-max">/ '+r.maxMarks+'</span></div>';
+      h+='<div class="adre-result-score-pct">'+r.percentage+'%</div></div>';
+    }
     h+='<div class="adre-result-score-pct">'+r.percentage+'%</div></div>';
-    h+='<div class="adre-result-stats">';
-    h+='<div class="adre-stat-card correct"><div class="adre-stat-val">'+r.correct+'</div><div class="adre-stat-label">Correct</div></div>';
-    h+='<div class="adre-stat-card wrong"><div class="adre-stat-val">'+r.wrong+'</div><div class="adre-stat-label">Wrong</div></div>';
-    h+='<div class="adre-stat-card skip"><div class="adre-stat-val">'+r.unanswered+'</div><div class="adre-stat-label">Unanswered</div></div>';
-    h+='<div class="adre-stat-card accuracy"><div class="adre-stat-val">'+r.accuracy+'%</div><div class="adre-stat-label">Accuracy</div></div>';
-    h+='</div>';
+    if(r.isPracticeMode){
+      h+='<div class="adre-result-stats">';
+      h+='<div class="adre-stat-card skip"><div class="adre-stat-val">'+(r.totalQuestions-r.unanswered)+'</div><div class="adre-stat-label">Attempted</div></div>';
+      h+='<div class="adre-stat-card correct"><div class="adre-stat-val">'+r.unanswered+'</div><div class="adre-stat-label">Unanswered</div></div>';
+      h+='<div class="adre-stat-card accuracy"><div class="adre-stat-val">'+r.totalQuestions+'</div><div class="adre-stat-label">Total Qs</div></div>';
+      h+='</div>';
+    }else{
+      h+='<div class="adre-result-stats">';
+      h+='<div class="adre-stat-card correct"><div class="adre-stat-val">'+r.correct+'</div><div class="adre-stat-label">Correct</div></div>';
+      h+='<div class="adre-stat-card wrong"><div class="adre-stat-val">'+r.wrong+'</div><div class="adre-stat-label">Wrong</div></div>';
+      h+='<div class="adre-stat-card skip"><div class="adre-stat-val">'+r.unanswered+'</div><div class="adre-stat-label">Unanswered</div></div>';
+      h+='<div class="adre-stat-card accuracy"><div class="adre-stat-val">'+r.accuracy+'%</div><div class="adre-stat-label">Accuracy</div></div>';
+      h+='</div>';
+    }
+    if(!r.isPracticeMode){
     h+='<div class="adre-result-section"><div class="adre-result-section-title">📊 Score Breakdown</div>';
     h+='<div class="adre-result-row"><span>Raw Score (correct answers)</span><span>+'+r.rawScore+'</span></div>';
     h+='<div class="adre-result-row"><span>Negative Marks (wrong answers)</span><span class="neg">-'+r.negativeMarks+'</span></div>';
@@ -422,6 +458,7 @@
       h+='<div class="adre-result-row"><span>Grace Marks ('+r.graceCount+' dropped Qs)</span><span>+'+r.graceMarks+'</span></div>';
     }
     h+='<div class="adre-result-row highlight"><span>Final Score</span><span>'+r.finalScore+' / '+r.maxMarks+'</span></div></div>';
+    }
     h+='<div class="adre-result-section"><div class="adre-result-section-title">⏱️ Time Management</div>';
     h+='<div class="adre-result-row"><span>Time Used</span><span>'+fmtTime(r.timeUsed)+'</span></div>';
     h+='<div class="adre-result-row"><span>Time Remaining</span><span>'+fmtTime(r.timeRemaining)+'</span></div>';
@@ -431,11 +468,12 @@
     r.questions.forEach(function(q){
       var userAns=q.user_answer;
       var isGrace=q.grace||q.correct_answer==='grace';
-      var isCorrect=!isGrace&&userAns===q.correct_answer;
-      var isWrong=!isGrace&&userAns&&!isCorrect;
-      var statusLabel=isGrace?'⭐ Grace (Dropped)':isCorrect?'✓ Correct':isWrong?'✗ Wrong':'○ Skipped';
-      var marksLabel=isGrace?'+'+q.marks:isCorrect?'+'+q.marks:isWrong?'-'+q.negative_marks:'0';
-      h+='<div class="adre-review-q'+(isGrace?' grace':isCorrect?' correct':isWrong?' wrong':' skip')+'">';
+      var isPracticeQ=r.isPracticeMode||!q.correct_answer;
+      var isCorrect=!isGrace&&!isPracticeQ&&userAns===q.correct_answer;
+      var isWrong=!isGrace&&!isPracticeQ&&userAns&&!isCorrect;
+      var statusLabel=isGrace?'⭐ Grace (Dropped)':isPracticeQ?'✎ Attempted':isCorrect?'✓ Correct':isWrong?'✗ Wrong':'○ Skipped';
+      var marksLabel=isGrace?'+'+q.marks:isPracticeQ?'-':isCorrect?'+'+q.marks:isWrong?'-'+q.negative_marks:'0';
+      h+='<div class="adre-review-q'+(isGrace?' grace':isPracticeQ?(userAns?' attempted':' skip'):isCorrect?' correct':isWrong?' wrong':' skip')+'">';
       h+='<div class="adre-review-q-header"><span class="adre-review-q-num">Q'+q.q_num+'</span>';
       h+='<span class="adre-review-q-status">'+statusLabel+'</span>';
       h+='<span class="adre-review-q-marks">'+marksLabel+'</span></div>';
@@ -445,12 +483,12 @@
       ['a','b','c','d'].forEach(function(key){
         var text=q['option_'+key];if(!text)return;
         var cls='adre-review-opt';
-        if(!isGrace&&key===q.correct_answer)cls+=' official-correct';
+        if(!isGrace&&!isPracticeQ&&key===q.correct_answer)cls+=' official-correct';
         if(key===userAns&&!isCorrect&&!isGrace)cls+=' user-wrong';
         if(key===userAns&&isCorrect)cls+=' user-correct';
         h+='<div class="'+cls+'"><span>'+key.toUpperCase()+'</span> '+esc(text)+'</div>';
       });
-      h+='</div><div class="adre-review-verify">'+(q.verification_status==='VERIFIED_OFFICIAL'?'✓ Official Answer Key':'⚠️ '+esc(q.verification_status))+'</div></div>';
+      h+='</div><div class="adre-review-verify">'+(isPracticeQ?'✎ Practice Mode — No answer key':q.verification_status==='VERIFIED_OFFICIAL'?'✓ Official Answer Key':'⚠️ '+esc(q.verification_status))+'</div></div>';
     });
     h+='</div>';
     h+='<div class="adre-result-actions">';
