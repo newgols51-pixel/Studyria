@@ -54,7 +54,38 @@
     });
   }
 
-  // ADRE 2.0 2024 Paper V — Driver, Grade-III
+  
+  // ADRE 2.0 2024 Paper III — HSSLC, Grade-III
+  if (existingIds.indexOf('adre-2024-paper3') === -1) {
+    existingIds.push('adre-2024-paper3');
+    window.ADRE_PAPERS.papers.push({
+      id: 'adre-2024-paper3', edition: 'ADRE 2.0', year: 2024, paper_code: 'III',
+      level: 'HSSLC (Class 12)', grade: 'Grade-III',
+      title: 'ADRE 2.0 \u2014 2024 \u00b7 Paper III', subtitle: 'HSSLC Level \u2014 Grade III',
+      total_questions: 150, total_marks: 150, marks_per_question: 1,
+      duration_minutes: 180, negative_marking: 0.25, negative_per_wrong_2mark: 0,
+      exam_date: '2024-09-15',
+      source: 'Official SLRC-2024 Exam \u2014 Set A + Official Answer Key',
+      published: false, questions_imported: false, questions: []
+    });
+  }
+
+  // ADRE 2.0 2024 Paper IV — Degree, Grade-III (variable marking)
+  if (existingIds.indexOf('adre-2024-paper4') === -1) {
+    existingIds.push('adre-2024-paper4');
+    window.ADRE_PAPERS.papers.push({
+      id: 'adre-2024-paper4', edition: 'ADRE 2.0', year: 2024, paper_code: 'IV',
+      level: "Bachelor's Degree", grade: 'Grade-III',
+      title: 'ADRE 2.0 \u2014 2024 \u00b7 Paper IV', subtitle: "Bachelor's Degree Level \u2014 Grade III",
+      total_questions: 150, total_marks: 175, marks_per_question: 1,
+      duration_minutes: 180, negative_marking: 0.25, negative_per_wrong_2mark: 0.50,
+      exam_date: '2024-09-29',
+      source: 'Official SLRC-2024 Exam \u2014 Set A + Official Answer Key',
+      published: false, questions_imported: false, questions: []
+    });
+  }
+
+// ADRE 2.0 2024 Paper V — Driver, Grade-III
   if (existingIds.indexOf('adre-2024-paper5') === -1) {
     window.ADRE_PAPERS.papers.push({
       id: 'adre-2024-paper5', edition: 'ADRE 2.0', year: 2024, paper_code: 'V',
