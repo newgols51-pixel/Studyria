@@ -12391,6 +12391,25 @@ window.addEventListener('resize', function() {
           <option value="price-high">💎 Price: High → Low</option>
         </select>
         <button class="ottlib-free-btn" id="freeOnlyBtn" onclick="toggleFreeOnly()">🆓 Free Only</button>
+        <select class="ottlib-sort-select" id="libExamFilter" onchange="renderLibGrid()" style="min-width:120px">
+          <option value="">All Exams</option>
+          <option value="ADRE">ADRE</option>
+          <option value="APSC">APSC</option>
+          <option value="Assam Police">Assam Police</option>
+          <option value="Assam TET">Assam TET</option>
+          <option value="Scholarship">Scholarship</option>
+        </select>
+        <select class="ottlib-sort-select" id="libMaterialFilter" onchange="renderLibGrid()" style="min-width:130px">
+          <option value="">All Types</option>
+          <option value="complete_notes">Complete Notes</option>
+          <option value="revision_notes">Revision Notes</option>
+          <option value="mcq_book">MCQ Books</option>
+          <option value="model_paper">Model Papers</option>
+          <option value="formula_sheet">Formula Sheets</option>
+          <option value="current_affairs">Current Affairs</option>
+          <option value="exam_strategy">Exam Strategy</option>
+          <option value="subject_capsule">Subject Capsules</option>
+        </select>
       </div>
 
       <div class="ottlib-stats-strip">
@@ -39892,7 +39911,7 @@ document.addEventListener('keydown', e => {
 <!-- ══════════════════════════════════════════════════════════════════════
      PDF CLASSIFICATION SYSTEM — COMPLETE REFACTOR PATCH
      STUDYRIA PHASE 1 — OMNI SEARCH + MULTI-LANGUAGE
-     Injected just before </body> — fully backward compatible
+</body> — fully backward compatible
   ══════════════════════════════════════════════════════════════════════ -->
 <style>
 /* ── Lang dropdown animation ─────────────────────────────────────── */
@@ -47272,5 +47291,8 @@ window.addEventListener('load', function() {
 })();
 </script>
 
+<script src="library-expansion-data.js" defer></script>
+<script src="library-expansion-uploader.js" defer></script>
+<script src="library-expansion-ui.js" defer></script>
 </body>
 </html>
