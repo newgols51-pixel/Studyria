@@ -22,12 +22,21 @@
     timeRemaining: 0,
     lastResult: null,
     filterEdition: 'all',
-    filterPaperCode: 'all'
+    filterPaperCode: 'all',
+    lang: 'both'
   };
+  try { var _savedLang = localStorage.getItem('adre_exam_lang'); if (_savedLang && (_savedLang === 'en' || _savedLang === 'as' || _savedLang === 'both')) _state.lang = _savedLang; } catch(e) {}
 
   var PAPER_CODE_ORDER = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5 };
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function getLang() { return _state.lang || 'both'; }
+  function setLang(l) {
+    if (l !== 'en' && l !== 'as' && l !== 'both') l = 'both';
+    _state.lang = l;
+    try { localStorage.setItem('adre_exam_lang', l); } catch(e) {}
+    renderExam();
+  }
   function fmtTime(s) {
     var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=Math.floor(s%60);
     return h+':'+(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
