@@ -7555,7 +7555,7 @@ crossorigin="anonymous"></script>
   
   /* ── Stat band ─────────────────────────────────────────────── */
   .hp-stat-band {
-    background: #fff;
+    background: var(--hp-paper-dim);
     border-top: 1px solid var(--hp-line);
     border-bottom: 1px solid var(--hp-line);
     position: relative; z-index: 1;
@@ -10249,9 +10249,9 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     </a>
 
     <!-- Hidden elements for JS compatibility (keep IDs that other scripts reference) -->
-    <span id="heroBadgeText" style="display:none">Assam's #1 Study Platform</span>
+    <span id="heroBadgeText" style="display:none">Assam-Focused Study Platform</span>
     <h1 id="heroTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Turn your Assam govt job dream into reality</h1>
-    <p id="heroSubtitle" style="display:none">Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">1,500+</span> students</strong> across Assam.</p>
+    <p id="heroSubtitle" style="display:none">Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">students</span></strong> across Assam.</p>
     <span id="heroCta1Text" style="display:none">Browse Study Materials</span>
     <span id="heroCta2Text" style="display:none">Start Free</span>
     <span id="heroStatPdfs" style="display:none">⚡</span>
@@ -10305,20 +10305,20 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 <section class="hp-stat-band">
   <div class="hp-stat-grid">
     <div class="hp-stat-item">
-      <span class="hp-stat-num">12,000+</span>
+      <span class="hp-stat-num" id="statBandStudents">—</span>
       <span class="hp-stat-label">Students Enrolled</span>
     </div>
     <div class="hp-stat-item">
-      <span class="hp-stat-num">50+</span>
-      <span class="hp-stat-label">Exam Categories</span>
+      <span class="hp-stat-num" id="statBandPdfs">—</span>
+      <span class="hp-stat-label">PDFs Published</span>
     </div>
     <div class="hp-stat-item">
-      <span class="hp-stat-num">4.9★</span>
+      <span class="hp-stat-num" id="statBandDownloads">—</span>
+      <span class="hp-stat-label">Total Downloads</span>
+    </div>
+    <div class="hp-stat-item">
+      <span class="hp-stat-num" id="statBandRating">4.9★</span>
       <span class="hp-stat-label">Average Rating</span>
-    </div>
-    <div class="hp-stat-item">
-      <span class="hp-stat-num">1,200+</span>
-      <span class="hp-stat-label">Selectees & Counting</span>
     </div>
   </div>
 </section>
@@ -10352,7 +10352,66 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
         <div class="hr-feature-icon">⭐</div>
         <div class="hr-feature-text">
           <span class="hr-feature-name">Trusted by Students</span>
-          <span class="hr-feature-desc">1,500+ across Assam</span>
+          <span class="hr-feature-desc">Students across Assam</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DISCOVER (Search + Filter) ───────────────────────────── -->
+<section class="sh-discover-section" id="discover-section">
+  <div class="container">
+    <div class="sh-section-head">
+      <div class="sh-section-label">
+        <span class="sh-section-dot" style="background:var(--accent)"></span>
+        <span class="sh-section-title">🔍 Find Your PDF</span>
+      </div>
+    </div>
+    <div class="sh-discover-filters">
+      <select class="sh-filter-select" id="dCat" onchange="onDiscoverInput()">
+        <option value="">All Categories</option>
+      </select>
+      <select class="sh-filter-select" id="dSub" onchange="onDiscoverInput()">
+        <option value="">All Subcategories</option>
+      </select>
+      <select class="sh-filter-select" id="dStream" onchange="onDiscoverInput()">
+        <option value="">All Streams</option>
+      </select>
+      <select class="sh-filter-select" id="dSubject" onchange="onDiscoverInput()">
+        <option value="">All Subjects</option>
+      </select>
+    </div>
+    <div>
+      <!-- ── Omni Search wrapper ───────────────────────── -->
+      <div id="omniSearchWrap" style="position:relative;margin-bottom:4px">
+        <input type="search" class="sh-filter-select" id="discoverSearch"
+          style="width:100%"
+          placeholder="Search by title, topic, author…"
+          data-i18n-placeholder="search_placeholder"
+          oninput="omniOnInput()" onfocus="omniOnFocus()" onblur="omniOnBlur()"
+          onkeydown="omniOnKeydown(event)" autocomplete="off"
+          aria-label="Search PDFs" aria-autocomplete="list" aria-haspopup="listbox" />
+        <!-- Autocomplete dropdown -->
+        <div id="omniDropdown" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--glass-bg,rgba(18,18,30,0.98));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;z-index:9990;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:langFadeIn .15s ease;max-height:320px;overflow-y:auto"></div>
+      </div>
+      <!-- ── Free / Paid filter pills (shown on search focus) ─ -->
+      <div id="omniFreePaidWrap" style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:10px;margin-top:4px">
+        <button class="omni-pill" data-filter="all"   onclick="omniSetFreePaid('all')"  >All</button>
+        <button class="omni-pill" data-filter="free"  onclick="omniSetFreePaid('free')" >Free</button>
+        <button class="omni-pill" data-filter="paid"  onclick="omniSetFreePaid('paid')" >Paid</button>
+      </div>
+    </div>
+    <div id="discoverResultsWrap" style="display:none;margin-top:24px">
+      <div id="discoverLoading" class="discover-loading" style="display:none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Searching…
+      </div>
+      <div id="discoverResults" class="pdf-grid"></div>
+      <div id="discoverEmpty" class="discover-empty" style="display:none">
+        <div style="text-align:center;padding:40px 20px;color:var(--text2)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:.4"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <p>No PDFs found. Try a different search.</p>
         </div>
       </div>
     </div>
@@ -10367,7 +10426,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     <div class="sh-section-head">
       <div class="sh-section-label">
         <span class="sh-section-dot" style="background:#f59e0b"></span>
-        <span class="sh-section-title" id="shForYouTitle">✨ For You</span>
+        <span class="sh-section-title" id="shForYouTitle">✨ Recommended For You</span>
         <span class="sh-section-badge">Personalized</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
@@ -10405,7 +10464,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     <div class="sh-section-head">
       <div class="sh-section-label">
         <span class="sh-section-dot" style="background:#8b5cf6"></span>
-        <span class="sh-section-title" id="shAITitle">🤖 AI Recommended</span>
+        <span class="sh-section-title" id="shAITitle">📚 Recommended Picks</span>
         <span class="sh-section-badge" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border-color:rgba(139,92,246,0.35)">Smart</span>
       </div>
       <button class="sh-see-all" onclick="navigate('library')">See All →</button>
@@ -10430,7 +10489,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </section>
 
 <!-- Popular -->
-<section class="sh-row-section" id="shPopularSection">
+<section class="sh-row-section" id="shPopularSection" style="display:none">
   <div class="container">
     <div class="sh-section-head">
       <div class="sh-section-label">
@@ -10459,7 +10518,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </section>
 
 <!-- Recently Added -->
-<section class="sh-row-section" id="shRecentSection">
+<section class="sh-row-section" id="shRecentSection" style="display:none">
   <div class="container">
     <div class="sh-section-head">
       <div class="sh-section-label">
@@ -10841,66 +10900,6 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
   </div>
 </section>
 
-<!-- ── DISCOVER (Search + Filter) ───────────────────────────── -->
-<section class="sh-discover-section" id="discover-section">
-  <div class="container">
-    <div class="sh-section-head">
-      <div class="sh-section-label">
-        <span class="sh-section-dot" style="background:var(--accent)"></span>
-        <span class="sh-section-title">🔍 Find Your PDF</span>
-      </div>
-    </div>
-    <div class="sh-discover-filters">
-      <select class="sh-filter-select" id="dCat" onchange="onDiscoverInput()">
-        <option value="">All Categories</option>
-      </select>
-      <select class="sh-filter-select" id="dSub" onchange="onDiscoverInput()">
-        <option value="">All Subcategories</option>
-      </select>
-      <select class="sh-filter-select" id="dStream" onchange="onDiscoverInput()">
-        <option value="">All Streams</option>
-      </select>
-      <select class="sh-filter-select" id="dSubject" onchange="onDiscoverInput()">
-        <option value="">All Subjects</option>
-      </select>
-    </div>
-    <div>
-      <!-- ── Omni Search wrapper ───────────────────────── -->
-      <div id="omniSearchWrap" style="position:relative;margin-bottom:4px">
-        <input type="search" class="sh-filter-select" id="discoverSearch"
-          style="width:100%"
-          placeholder="Search by title, topic, author…"
-          data-i18n-placeholder="search_placeholder"
-          oninput="omniOnInput()" onfocus="omniOnFocus()" onblur="omniOnBlur()"
-          onkeydown="omniOnKeydown(event)" autocomplete="off"
-          aria-label="Search PDFs" aria-autocomplete="list" aria-haspopup="listbox" />
-        <!-- Autocomplete dropdown -->
-        <div id="omniDropdown" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--glass-bg,rgba(18,18,30,0.98));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;z-index:9990;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:langFadeIn .15s ease;max-height:320px;overflow-y:auto"></div>
-      </div>
-      <!-- ── Free / Paid filter pills (shown on search focus) ─ -->
-      <div id="omniFreePaidWrap" style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:10px;margin-top:4px">
-        <button class="omni-pill" data-filter="all"   onclick="omniSetFreePaid('all')"  >All</button>
-        <button class="omni-pill" data-filter="free"  onclick="omniSetFreePaid('free')" >Free</button>
-        <button class="omni-pill" data-filter="paid"  onclick="omniSetFreePaid('paid')" >Paid</button>
-      </div>
-    </div>
-    <div id="discoverResultsWrap" style="display:none;margin-top:24px">
-      <div id="discoverLoading" class="discover-loading" style="display:none">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        Searching…
-      </div>
-      <div id="discoverResults" class="pdf-grid"></div>
-      <div id="discoverEmpty" class="discover-empty" style="display:none">
-        <div style="text-align:center;padding:40px 20px;color:var(--text2)">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:.4"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <p>No PDFs found. Try a different search.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── SUCCESS STORIES moved to before FAQ section ──>
 
 <!-- ── FAQ ──────────────────────────────────────────────────── -->
 <section class="sh-faq-section">
@@ -10968,6 +10967,9 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     </div>
   </div>
 </section>
+
+<!-- ── SUCCESS STORIES moved to before FAQ section ──>
+
 
 <!-- ── FEATURED GRID (legacy — hidden, keep for renderHomeCore compat) ── -->
 <div id="featuredGrid" style="display:none"></div>
@@ -11418,7 +11420,7 @@ async function shLoadSettings() {
       for_you_enabled: true, ai_reco_enabled: true, trending_enabled: true,
       popular_enabled: true, new_arrivals_enabled: true, recently_added_enabled: true,
       continue_reading_enabled: true,
-      for_you_title: '✨ For You', ai_reco_title: '🤖 AI Recommended',
+      for_you_title: '✨ Recommended For You', ai_reco_title: '📚 Recommended Picks',
       trending_title: '🔥 Trending This Week', popular_title: '🎓 Popular Among Students',
       new_arrivals_title: '🆕 New Arrivals', recent_title: '🕐 Recently Added',
       continue_title: '📖 Continue Reading',
@@ -11456,9 +11458,9 @@ async function shRenderDiscovery(force) {
   showSection('shForYouSection',   s.for_you_enabled !== false);
   showSection('shAISection',       s.ai_reco_enabled !== false);
   showSection('shTrendingSection', s.trending_enabled !== false);
-  showSection('shPopularSection',  s.popular_enabled !== false);
+  showSection('shPopularSection',  false);
   showSection('shNewSection',      s.new_arrivals_enabled !== false);
-  showSection('shRecentSection',   s.recently_added_enabled !== false);
+  showSection('shRecentSection',   false);
 
   // ── Update CMS section titles ────────────────────────────────
   var titleMap = {
@@ -12461,7 +12463,7 @@ window.addEventListener('resize', function() {
     <div class="ottlib-ai-banner-inner" onclick="document.getElementById('ottlibAISection').scrollIntoView({behavior:'smooth'})">
       <span class="ottlib-ai-icon">🤖</span>
       <div class="ottlib-ai-text">
-        <div class="ottlib-ai-title">AI-Curated Just For You</div>
+        <div class="ottlib-ai-title">Featured For You</div>
         <div class="ottlib-ai-sub">Based on your reading history and interests — your personal study concierge.</div>
       </div>
       <button class="ottlib-ai-cta">See Picks →</button>
@@ -36473,7 +36475,7 @@ window._startTypedFallback = function(phrases) {
 
 // ── HERO DESIGNER DEFAULT SETTINGS ──────────────────────────────
 window._heroDefaults = {
-  badge_text: "Assam's #1 Study Platform",
+  badge_text: "Assam-Focused Study Platform",
   main_title: "Turn your Assam govt job dream into reality",
   highlight_text: "reality",
   subtitle_phrases: "Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police & TET — curated by educators who know the exam.",
@@ -36517,7 +36519,7 @@ function _hpForceHero() {
   if(window._heroTypingTimer) clearTimeout(window._heroTypingTimer);
   // Force homepage.html text values (overrides Supabase DB values)
   const bt = document.getElementById('heroBadgeText');
-  if(bt) bt.textContent = "Assam's #1 Study Platform";
+  if(bt) bt.textContent = "Assam-Focused Study Platform";
   const t1 = document.getElementById('heroTitle');
   if(t1) {
     t1.innerHTML = '<span class="hr-title-seg">Turn your</span> <span class="hr-title-seg">Assam govt job</span><br class="hr-title-br"><span class="hr-title-seg">dream into</span> <span class="hr-title-seg hr-title-em"><em>reality</em></span>';
@@ -38758,6 +38760,26 @@ function _applyPlatformStats(stats) {
   if (communityCount) {
     communityCount.textContent = _fmtStatNum(studentCount) + ' Students';
   }
+
+  // ── Homepage stat band (dynamic) ────────────────────────────
+  const sbStudents = document.getElementById('statBandStudents');
+  if (sbStudents) {
+    sbStudents.textContent = _fmtStatNum(studentCount) + '+';
+  }
+  const sbPdfs = document.getElementById('statBandPdfs');
+  if (sbPdfs && pdfCount > 0) {
+    sbPdfs.textContent = _fmtStatNum(pdfCount) + '+';
+  } else if (sbPdfs) {
+    sbPdfs.textContent = '—';
+  }
+  const sbDl = document.getElementById('statBandDownloads');
+  if (sbDl && totalDl > 0) {
+    sbDl.textContent = _fmtStatNum(totalDl) + '+';
+  } else if (sbDl) {
+    sbDl.textContent = '—';
+  }
+  const sbRating = document.getElementById('statBandRating');
+  // Rating stays at 4.9★ default — updated by reviews system if available
 }
 
 function initPlatformStats() {
@@ -38929,6 +38951,13 @@ document.addEventListener('DOMContentLoaded', function _initStudentCounters() {
   if (commEl) commEl.textContent = autoCount + '+ Students';
   var aboutEl = document.getElementById('aboutStatStudents');
   if (aboutEl && aboutEl.textContent === '—') aboutEl.textContent = autoCount + '+';
+  // Stat band fallback (Supabase will overwrite with live data)
+  var sbStud = document.getElementById('statBandStudents');
+  if (sbStud) sbStud.textContent = autoCount + '+';
+  var sbPdfs = document.getElementById('statBandPdfs');
+  if (sbPdfs) sbPdfs.textContent = '—';
+  var sbDl = document.getElementById('statBandDownloads');
+  if (sbDl) sbDl.textContent = '—';
 });
 
 // Also init on DOMContentLoaded for direct home load
