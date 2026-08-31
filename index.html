@@ -10021,6 +10021,73 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 /* ═══════════════════════════════════════════════════════════════
    DISCOVER / SEARCH (below-fold)
    ══════════════════════════════════════════════════════════════ */
+
+/* LIVE NOTIFICATIONS */
+.ln-section { padding:14px 0 6px; background:linear-gradient(180deg,transparent 0%,rgba(147,2,5,0.04) 100%); }
+.ln-container { max-width:1200px; margin:0 auto; padding:0 16px; }
+.ln-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.ln-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:lnPulse 2s ease-in-out infinite; flex-shrink:0; }
+@keyframes lnPulse { 0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 rgba(147,2,5,0.5)} 50%{opacity:.7;transform:scale(1.15);box-shadow:0 0 0 6px rgba(147,2,5,0)} }
+.ln-title { font-family:var(--font-ui); font-size:.82rem; font-weight:700; color:var(--text2); letter-spacing:.04em; text-transform:uppercase; }
+.ln-badge { margin-left:auto; font-size:.65rem; font-weight:600; color:var(--gold); background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.2); padding:2px 8px; border-radius:100px; }
+.ln-track-wrap { overflow:hidden; position:relative; -webkit-mask-image:linear-gradient(90deg,transparent 0%,black 4%,black 96%,transparent 100%); mask-image:linear-gradient(90deg,transparent 0%,black 4%,black 96%,transparent 100%); }
+.ln-track { display:flex; gap:12px; width:max-content; animation:lnScroll 40s linear infinite; }
+.ln-track:hover { animation-play-state:paused; }
+@keyframes lnScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+.ln-card { display:flex; align-items:center; gap:8px; padding:10px 16px; background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; flex-shrink:0; max-width:420px; transition:border-color .2s; cursor:pointer; }
+.ln-card:hover { border-color:var(--glass-border-hover); }
+.ln-card-icon { font-size:1.1rem; flex-shrink:0; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:rgba(147,2,5,0.08); }
+.ln-card-body { overflow:hidden; }
+.ln-card-title { font-size:.8rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ln-card-msg { font-size:.72rem; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
+.ln-card-time { font-size:.62rem; color:var(--text3); margin-top:2px; white-space:nowrap; }
+.ln-card-type { font-size:.58rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:1px 6px; border-radius:100px; flex-shrink:0; }
+.ln-type-pdf { background:rgba(147,2,5,0.12); color:var(--accent); }
+.ln-type-job { background:rgba(16,217,142,0.12); color:var(--success); }
+.ln-type-quiz { background:rgba(99,102,241,0.12); color:#818cf8; }
+.ln-type-affair { background:rgba(245,158,11,0.12); color:var(--gold); }
+.ln-type-ann { background:rgba(147,2,5,0.15); color:var(--accent); }
+.ln-skeleton { display:flex; gap:12px; overflow:hidden; }
+.ln-skel-card { flex-shrink:0; width:380px; padding:10px 16px; background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; display:flex; align-items:center; gap:8px; }
+.ln-skel-icon { width:32px; height:32px; border-radius:8px; background:var(--glass); flex-shrink:0; }
+.ln-skel-lines { flex:1; }
+.ln-skel-line { height:8px; border-radius:4px; background:var(--glass); margin-bottom:4px; }
+.ln-skel-line.lg { width:80%; }
+.ln-skel-line.sm { width:50%; }
+.ln-empty { display:flex; align-items:center; gap:8px; padding:10px 16px; font-size:.78rem; color:var(--text3); }
+.ln-error { display:flex; flex-direction:column; align-items:center; gap:10px; padding:16px; text-align:center; }
+.ln-error-text { font-size:.78rem; color:var(--text2); }
+.ln-retry-btn { padding:6px 16px; border-radius:8px; border:1px solid var(--accent); background:rgba(147,2,5,0.08); color:var(--accent); font-size:.75rem; font-weight:600; cursor:pointer; font-family:var(--font-ui); transition:all .2s; }
+.ln-retry-btn:hover { background:var(--accent); color:#fff; }
+@media(max-width:768px){ .ln-card{max-width:320px;padding:8px 12px} .ln-skel-card{width:300px} }
+@media(max-width:480px){ .ln-card{max-width:260px} .ln-skel-card{width:240px} .ln-title{font-size:.72rem} }
+
+/* GLOBAL SEARCH TYPE TABS */
+.gs-type-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.gs-type-tab { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:100px; background:var(--glass); border:1px solid var(--glass-border); color:var(--text2); font-size:.76rem; font-weight:600; cursor:pointer; transition:all .2s; font-family:var(--font-ui); white-space:nowrap; }
+.gs-type-tab:hover { border-color:var(--glass-border-hover); color:var(--text); }
+.gs-type-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 2px 12px rgba(147,2,5,0.3); }
+.gs-type-tab .gs-type-count { font-size:.65rem; opacity:.7; font-weight:700; background:rgba(255,255,255,0.15); padding:1px 5px; border-radius:100px; min-width:16px; text-align:center; }
+.gs-type-tab:not(.active) .gs-type-count { background:var(--glass); color:var(--text3); }
+.gs-results-group { margin-bottom:24px; }
+.gs-group-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--glass-border); }
+.gs-group-icon { font-size:1rem; }
+.gs-group-title { font-size:.85rem; font-weight:700; color:var(--text); }
+.gs-group-count { font-size:.7rem; color:var(--text3); font-weight:600; }
+.gs-group-see-all { margin-left:auto; font-size:.72rem; color:var(--accent); cursor:pointer; font-weight:600; }
+.gs-group-see-all:hover { text-decoration:underline; }
+.gs-job-card,.gs-quiz-card,.gs-affair-card,.gs-cat-card,.gs-mock-card { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; cursor:pointer; transition:all .2s; margin-bottom:8px; }
+.gs-job-card:hover,.gs-quiz-card:hover,.gs-affair-card:hover,.gs-cat-card:hover,.gs-mock-card:hover { border-color:var(--glass-border-hover); transform:translateY(-1px); }
+.gs-card-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; background:rgba(147,2,5,0.08); }
+.gs-card-body { flex:1; overflow:hidden; }
+.gs-card-title { font-size:.82rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.gs-card-sub { font-size:.72rem; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.gs-card-meta { display:flex; gap:6px; flex-shrink:0; }
+.gs-card-tag { font-size:.62rem; font-weight:600; padding:2px 7px; border-radius:100px; background:var(--glass); color:var(--text2); }
+.gs-no-results { text-align:center; padding:48px 20px; color:var(--text2); }
+@media(max-width:480px){ .gs-type-tab{font-size:.7rem;padding:6px 10px} .gs-card-title{font-size:.78rem} .gs-card-sub{font-size:.68rem} }
+
+
 .sh-discover-section {
   padding: 32px 0 24px;
   background: linear-gradient(180deg, transparent 0%, rgba(147,2,5,0.03) 100%);
@@ -10302,58 +10369,19 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </style>
 
 <!-- ── STAT BAND (matches homepage.html) ─────────────────────── -->
-<section class="hp-stat-band">
-  <div class="hp-stat-grid">
-    <div class="hp-stat-item">
-      <span class="hp-stat-num" id="statBandStudents">—</span>
-      <span class="hp-stat-label">Students Enrolled</span>
+<!-- ── LIVE NOTIFICATIONS ─────────────────────────────────────── -->
+<section class="ln-section" id="lnSection">
+  <div class="ln-container">
+    <div class="ln-header">
+      <span class="ln-dot"></span>
+      <span class="ln-title">Live Notifications</span>
+      <span class="ln-badge" id="lnBadge">Loading…</span>
     </div>
-    <div class="hp-stat-item">
-      <span class="hp-stat-num" id="statBandPdfs">—</span>
-      <span class="hp-stat-label">PDFs Published</span>
-    </div>
-    <div class="hp-stat-item">
-      <span class="hp-stat-num" id="statBandDownloads">—</span>
-      <span class="hp-stat-label">Total Downloads</span>
-    </div>
-    <div class="hp-stat-item">
-      <span class="hp-stat-num" id="statBandRating">4.9★</span>
-      <span class="hp-stat-label">Average Rating</span>
-    </div>
-  </div>
-</section>
-
-<!-- ── FEATURE STRIP (REDESIGNED) ──────────────────────────────── -->
-<section class="hr-reveal" style="padding:16px 0 8px">
-  <div class="container">
-    <div class="hr-feature-strip">
-      <div class="hr-feature-item">
-        <div class="hr-feature-icon">⚡</div>
-        <div class="hr-feature-text">
-          <span class="hr-feature-name">Instant PDF Access</span>
-          <span class="hr-feature-desc">Download immediately</span>
-        </div>
-      </div>
-      <div class="hr-feature-item">
-        <div class="hr-feature-icon">🔒</div>
-        <div class="hr-feature-text">
-          <span class="hr-feature-name">Secure Payments</span>
-          <span class="hr-feature-desc">Razorpay verified</span>
-        </div>
-      </div>
-      <div class="hr-feature-item">
-        <div class="hr-feature-icon">📚</div>
-        <div class="hr-feature-text">
-          <span class="hr-feature-name">Latest Syllabus</span>
-          <span class="hr-feature-desc">Always updated</span>
-        </div>
-      </div>
-      <div class="hr-feature-item">
-        <div class="hr-feature-icon">⭐</div>
-        <div class="hr-feature-text">
-          <span class="hr-feature-name">Trusted by Students</span>
-          <span class="hr-feature-desc">Students across Assam</span>
-        </div>
+    <div class="ln-track-wrap" id="lnTrackWrap">
+      <div class="ln-skeleton" id="lnSkeleton">
+        <div class="ln-skel-card"><div class="ln-skel-icon"></div><div class="ln-skel-lines"><div class="ln-skel-line lg"></div><div class="ln-skel-line sm"></div></div></div>
+        <div class="ln-skel-card"><div class="ln-skel-icon"></div><div class="ln-skel-lines"><div class="ln-skel-line lg"></div><div class="ln-skel-line sm"></div></div></div>
+        <div class="ln-skel-card"><div class="ln-skel-icon"></div><div class="ln-skel-lines"><div class="ln-skel-line lg"></div><div class="ln-skel-line sm"></div></div></div>
       </div>
     </div>
   </div>
@@ -10365,8 +10393,17 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     <div class="sh-section-head">
       <div class="sh-section-label">
         <span class="sh-section-dot" style="background:var(--accent)"></span>
-        <span class="sh-section-title">🔍 Find Your PDF</span>
+        <span class="sh-section-title">🔍 Search Studyria</span>
       </div>
+    </div>
+    <div class="gs-type-tabs" id="gsTypeTabs">
+      <button class="gs-type-tab active" data-type="all" onclick="gsSetType('all')">All <span class="gs-type-count" id="gsCountAll">0</span></button>
+      <button class="gs-type-tab" data-type="pdf" onclick="gsSetType('pdf')">PDFs <span class="gs-type-count" id="gsCountPdf">0</span></button>
+      <button class="gs-type-tab" data-type="job" onclick="gsSetType('job')">Jobs <span class="gs-type-count" id="gsCountJob">0</span></button>
+      <button class="gs-type-tab" data-type="quiz" onclick="gsSetType('quiz')">Quizzes <span class="gs-type-count" id="gsCountQuiz">0</span></button>
+      <button class="gs-type-tab" data-type="mock" onclick="gsSetType('mock')">Mock Tests <span class="gs-type-count" id="gsCountMock">0</span></button>
+      <button class="gs-type-tab" data-type="affair" onclick="gsSetType('affair')">Current Affairs <span class="gs-type-count" id="gsCountAffair">0</span></button>
+      <button class="gs-type-tab" data-type="cat" onclick="gsSetType('cat')">Categories <span class="gs-type-count" id="gsCountCat">0</span></button>
     </div>
     <div class="sh-discover-filters">
       <select class="sh-filter-select" id="dCat" onchange="onDiscoverInput()">
@@ -10387,11 +10424,11 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
       <div id="omniSearchWrap" style="position:relative;margin-bottom:4px">
         <input type="search" class="sh-filter-select" id="discoverSearch"
           style="width:100%"
-          placeholder="Search by title, topic, author…"
+          placeholder="Search PDFs, jobs, quizzes, current affairs…"
           data-i18n-placeholder="search_placeholder"
           oninput="omniOnInput()" onfocus="omniOnFocus()" onblur="omniOnBlur()"
           onkeydown="omniOnKeydown(event)" autocomplete="off"
-          aria-label="Search PDFs" aria-autocomplete="list" aria-haspopup="listbox" />
+          aria-label="Search Studyria" aria-autocomplete="list" aria-haspopup="listbox" />
         <!-- Autocomplete dropdown -->
         <div id="omniDropdown" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--glass-bg,rgba(18,18,30,0.98));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;z-index:9990;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:langFadeIn .15s ease;max-height:320px;overflow-y:auto"></div>
       </div>
@@ -47337,5 +47374,331 @@ window.addEventListener('load', function() {
 <script src="library-expansion-uploader.js" defer></script>
 <script src="library-expansion-ui.js" defer></script>
 <script src="ai-notes-studio.js" defer></script>
+
+<script>
+/* LIVE NOTIFICATIONS ENGINE */
+(function() {
+  'use strict';
+  var _cache = null;
+  var _loaded = false;
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    try {
+      var d = new Date(dateStr);
+      var now = new Date();
+      var diff = Math.floor((now - d) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+      if (diff < 604800) return Math.floor(diff/86400) + 'd ago';
+      return d.toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+    } catch(e) { return ''; }
+  }
+
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderSkeleton() {
+    var sk = document.getElementById('lnSkeleton');
+    if (sk) sk.style.display = 'flex';
+    var wrap = document.getElementById('lnTrackWrap');
+    if (wrap) { var tr = wrap.querySelector('.ln-track'); if (tr) tr.style.display='none'; }
+  }
+
+  function renderNotifications(items) {
+    var wrap = document.getElementById('lnTrackWrap');
+    var sk = document.getElementById('lnSkeleton');
+    var badge = document.getElementById('lnBadge');
+    if (!wrap) return;
+    if (sk) sk.style.display = 'none';
+    if (!items || items.length === 0) {
+      wrap.innerHTML = '<div class="ln-empty"><span>\uD83D\uDCED</span> No live notifications right now</div>';
+      if (badge) badge.textContent = '0 Live';
+      return;
+    }
+    if (badge) badge.textContent = items.length + ' Live';
+    var cards = items.map(function(item) {
+      var typeClass = 'ln-type-' + (item.type || 'ann');
+      var icon = item.icon || '\uD83D\uDCE2';
+      var time = timeAgo(item.time);
+      var msgHtml = item.message ? '<div class="ln-card-msg">' + esc(item.message) + '</div>' : '';
+      var timeHtml = time ? '<div class="ln-card-time">' + time + '</div>' : '';
+      var action = item.action || '';
+      var clickAttr = action ? ' onclick="' + action + '"' : '';
+      return '<div class="ln-card"' + clickAttr + '>' +
+        '<div class="ln-card-icon">' + icon + '</div>' +
+        '<div class="ln-card-body">' +
+          '<div class="ln-card-title">' + esc(item.title) + '</div>' +
+          msgHtml + timeHtml +
+        '</div>' +
+        '<span class="ln-card-type ' + typeClass + '">' + esc(item.typeLabel || item.type || '') + '</span>' +
+      '</div>';
+    }).join('');
+    wrap.innerHTML = '<div class="ln-track">' + cards + cards + '</div>';
+  }
+
+  function renderError(msg) {
+    var wrap = document.getElementById('lnTrackWrap');
+    var sk = document.getElementById('lnSkeleton');
+    var badge = document.getElementById('lnBadge');
+    if (sk) sk.style.display = 'none';
+    if (badge) badge.textContent = 'Error';
+    if (wrap) {
+      wrap.innerHTML = '<div class="ln-error">' +
+        '<div class="ln-error-text">\u26A0\uFE0F ' + esc(msg || 'Unable to load notifications') + '</div>' +
+        '<button class="ln-retry-btn" onclick="loadLiveNotifications()">\u21BB Retry</button>' +
+      '</div>';
+    }
+  }
+
+  async function loadLiveNotifications() {
+    if (_loaded && _cache) { renderNotifications(_cache); return; }
+    renderSkeleton();
+    var sb = window.supabaseClient;
+    if (!sb) { renderError('Supabase not available'); return; }
+    var items = [];
+
+    try {
+      var annRes = await sb.from('announcements').select('id, title, message, created_at').eq('active', true).order('created_at', { ascending:false }).limit(5);
+      if (annRes.data) {
+        annRes.data.forEach(function(a) {
+          items.push({ type:'ann', typeLabel:'Update', title:a.title||'Announcement', message:a.message||'', time:a.created_at, icon:'\uD83D\uDCE2', action:'' });
+        });
+      }
+    } catch(e) { console.warn('LiveNotif announcements:', e); }
+
+    try {
+      var jobRes = await sb.from('jobs').select('id, title, org, organization, published_at, created_at').eq('active', true).order('published_at', { ascending:false, nullsFirst:false }).order('created_at', { ascending:false }).limit(5);
+      if (jobRes.data) {
+        jobRes.data.forEach(function(j) {
+          items.push({ type:'job', typeLabel:'Job', title:j.title||'Job Opening', message:j.org||j.organization||'', time:j.published_at||j.created_at, icon:'\uD83D\uDCBC', action:"navigate('career-hub')" });
+        });
+      }
+    } catch(e) { console.warn('LiveNotif jobs:', e); }
+
+    try {
+      var affRes = await sb.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).order('created_at', { ascending:false }).limit(4);
+      if (affRes.data) {
+        affRes.data.forEach(function(a) {
+          items.push({ type:'affair', typeLabel:'Affairs', title:a.title||'Current Affairs', message:'', time:a.created_at, icon:'\uD83D\uDCF0', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)" });
+        });
+      }
+    } catch(e) { console.warn('LiveNotif affairs:', e); }
+
+    if (typeof SQ !== 'undefined' && SQ.length) {
+      items.push({ type:'quiz', typeLabel:'Quiz', title:SQ[0].title + ' \u2014 Try Now!', message:'Daily GK challenge available', time:null, icon:'\uD83E\uDDE9', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('quiz');},400)" });
+    }
+    if (typeof SM !== 'undefined' && SM.length) {
+      items.push({ type:'mock', typeLabel:'Mock', title:SM[0].title + ' Available', message:'Full-length exam-style test', time:null, icon:'\uD83D\uDCDD', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)" });
+    }
+
+    items.sort(function(a,b) {
+      if (a.type==='ann' && b.type!=='ann') return -1;
+      if (b.type==='ann' && a.type!=='ann') return 1;
+      var ta = a.time ? new Date(a.time).getTime() : 0;
+      var tb = b.time ? new Date(b.time).getTime() : 0;
+      return tb - ta;
+    });
+
+    _cache = items;
+    _loaded = true;
+    renderNotifications(items);
+  }
+
+  window.loadLiveNotifications = loadLiveNotifications;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() { if (document.getElementById('lnSection')) loadLiveNotifications(); }, 800);
+  });
+
+  var _origNav = window.navigate;
+  if (_origNav) {
+    window.navigate = function(page) {
+      var result = _origNav.apply(this, arguments);
+      if (page === 'home' || page === '') {
+        setTimeout(function() { if (document.getElementById('lnSection')) loadLiveNotifications(); }, 400);
+      }
+      return result;
+    };
+  }
+})();
+
+/* GLOBAL SEARCH ENGINE */
+(function() {
+  'use strict';
+  var _currentType = 'all';
+
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fm(t,q) { if(!t) return false; return String(t).toLowerCase().includes(String(q).toLowerCase()); }
+
+  window.gsSetType = function(type) {
+    _currentType = type;
+    document.querySelectorAll('.gs-type-tab').forEach(function(tab) {
+      tab.classList.toggle('active', tab.dataset.type === type);
+    });
+    if (typeof onDiscoverInput === 'function') onDiscoverInput();
+  };
+
+  var _origRun = window.runDiscover;
+  window.runDiscover = async function() {
+    var query = (document.getElementById('discoverSearch')?.value || '').trim().toLowerCase();
+    var cat = document.getElementById('dCat')?.value || '';
+    var sub = document.getElementById('dSub')?.value || '';
+    var stream = document.getElementById('dStream')?.value || '';
+    var subject = document.getElementById('dSubject')?.value || '';
+
+    var hasFilters = query || cat || sub || stream || subject;
+    var resultsWrap = document.getElementById('discoverResultsWrap');
+    if (resultsWrap) resultsWrap.style.display = hasFilters ? 'block' : 'none';
+    if (!hasFilters) { if (typeof updateActivePills === 'function') updateActivePills(); updateTypeCounts({}); return; }
+
+    var dl = document.getElementById('discoverLoading');
+    var dr = document.getElementById('discoverResults');
+    var de = document.getElementById('discoverEmpty');
+    if (dl) dl.style.display = 'flex';
+    if (dr) dr.innerHTML = '';
+    if (de) de.style.display = 'none';
+    if (typeof updateActivePills === 'function') updateActivePills();
+
+    var grouped = { pdf:[], job:[], quiz:[], mock:[], affair:[], cat:[] };
+    var sb = window.supabaseClient;
+
+    /* PDFs */
+    if (_currentType === 'all' || _currentType === 'pdf') {
+      var pdfResults = [];
+      if (sb && query) {
+        try {
+          var q = sb.from('pdfs').select('*');
+          if (cat) { var catObj = (window._dbCategories||[]).find(function(c){return c.name===cat||c.slug===cat;}); q = catObj ? q.eq('category_id', catObj.id) : q.eq('category', cat); }
+          if (query) q = q.or('title.ilike.%'+query+'%,seo_keywords.ilike.%'+query+'%,author.ilike.%'+query+'%');
+          q = q.eq('status','published').limit(40);
+          var res = await q;
+          if (res.data) pdfResults = res.data;
+        } catch(e) {}
+      }
+      if (pdfResults.length === 0 && query) {
+        pdfResults = (window.PDFS||[]).filter(function(p) {
+          if (!p || !p.title) return false;
+          return fm(p.title,query) || fm(p.author,query) || fm(p.category,query) || fm(p.description,query) || fm(p.seo_keywords,query);
+        }).slice(0, 40);
+      }
+      grouped.pdf = pdfResults;
+    }
+
+    /* Jobs */
+    if (_currentType === 'all' || _currentType === 'job') {
+      if (sb && query) {
+        try {
+          var jr = await sb.from('jobs').select('id, title, org, organization, location, job_type, published_at').eq('active', true).or('title.ilike.%'+query+'%,org.ilike.%'+query+'%,organization.ilike.%'+query+'%').order('published_at',{ascending:false,nullsFirst:false}).limit(10);
+          if (jr.data) grouped.job = jr.data;
+        } catch(e) { console.warn('GS jobs:', e); }
+      }
+    }
+
+    /* Quizzes */
+    if (_currentType === 'all' || _currentType === 'quiz') {
+      if (typeof SQ !== 'undefined' && query) grouped.quiz = SQ.filter(function(qz){ return fm(qz.title,query) || fm(qz.category,query); }).slice(0, 8);
+    }
+
+    /* Mocks */
+    if (_currentType === 'all' || _currentType === 'mock') {
+      if (typeof SM !== 'undefined' && query) grouped.mock = SM.filter(function(m){ return fm(m.title,query) || fm(m.exam,query); }).slice(0, 8);
+    }
+
+    /* Current Affairs */
+    if (_currentType === 'all' || _currentType === 'affair') {
+      if (sb && query) {
+        try {
+          var ar = await sb.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).or('title.ilike.%'+query+'%').order('created_at',{ascending:false}).limit(10);
+          if (ar.data) grouped.affair = ar.data;
+        } catch(e) { console.warn('GS affairs:', e); }
+      }
+    }
+
+    /* Categories */
+    if (_currentType === 'all' || _currentType === 'cat') {
+      if (window._dbCategories && query) grouped.cat = (window._dbCategories||[]).filter(function(c){ return fm(c.name,query) || fm(c.slug,query); }).slice(0, 8);
+      if (!query && cat && window._dbCategories) grouped.cat = (window._dbCategories||[]).filter(function(c){ return c.name === cat; }).slice(0, 3);
+    }
+
+    updateTypeCounts(grouped);
+    if (dl) dl.style.display = 'none';
+
+    var displayGroups = {};
+    if (_currentType === 'all') displayGroups = grouped;
+    else displayGroups[_currentType] = grouped[_currentType] || [];
+
+    var hasAny = false;
+    Object.keys(displayGroups).forEach(function(k){ if (displayGroups[k].length > 0) hasAny = true; });
+
+    if (!hasAny) { if (de) de.style.display = 'block'; if (dr) dr.innerHTML = ''; return; }
+    if (de) de.style.display = 'none';
+
+    var typeConfig = {
+      pdf:   { icon:'\uD83D\uDCC4', label:'PDFs', seeAll:"navigate('library')" },
+      job:   { icon:'\uD83D\uDCBC', label:'Jobs', seeAll:"navigate('career-hub')" },
+      quiz:  { icon:'\uD83E\uDDE9', label:'Quizzes', seeAll:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('quiz');},400)" },
+      mock:  { icon:'\uD83D\uDCDD', label:'Mock Tests', seeAll:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)" },
+      affair:{ icon:'\uD83D\uDCF0', label:'Current Affairs', seeAll:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)" },
+      cat:   { icon:'\uD83D\uDCC2', label:'Categories', seeAll:"navigate('library')" }
+    };
+
+    var html = '';
+    Object.keys(displayGroups).forEach(function(type) {
+      var items = displayGroups[type];
+      if (!items.length) return;
+      var cfg = typeConfig[type] || { icon:'\uD83D\uDCCB', label:type, seeAll:'' };
+
+      html += '<div class="gs-results-group">';
+      html += '<div class="gs-group-head"><span class="gs-group-icon">' + cfg.icon + '</span><span class="gs-group-title">' + cfg.label + '</span><span class="gs-group-count">' + items.length + ' found</span><span class="gs-group-see-all" onclick="' + cfg.seeAll + '">See All \u2192</span></div>';
+
+      if (type === 'pdf') {
+        if (typeof pdfCardHTML === 'function') {
+          var valid = (typeof validPdfs === 'function') ? validPdfs(items) : items;
+          html += '<div class="pdf-grid">' + valid.map(function(p){ return pdfCardHTML(p); }).join('') + '</div>';
+        } else {
+          html += '<div class="pdf-grid">' + items.map(function(p){
+            return '<div class="pdf-card" onclick="openPdf(\\\''+p.id+'\\\')"><div class="pdf-card-body"><div class="pdf-title">'+esc(p.title)+'</div><div class="pdf-author">'+esc(p.author||'')+'</div></div></div>';
+          }).join('') + '</div>';
+        }
+      } else {
+        items.forEach(function(item) {
+          if (type === 'job') {
+            var title = esc(item.title||'Job Opening');
+            var sub = esc(item.org||item.organization||'') + (item.location ? ' \u00B7 ' + esc(item.location) : '');
+            var tags = item.job_type ? '<span class="gs-card-tag">'+esc(item.job_type)+'</span>' : '';
+            html += '<div class="gs-job-card" onclick="navigate(\'career-hub\');setTimeout(function(){if(typeof csOpenJob===\'function\')csOpenJob(\\\''+item.id+'\\\')},300)"><div class="gs-card-icon">\uD83D\uDCBC</div><div class="gs-card-body"><div class="gs-card-title">'+title+'</div><div class="gs-card-sub">'+sub+'</div></div><div class="gs-card-meta">'+tags+'</div></div>';
+          } else if (type === 'quiz') {
+            html += '<div class="gs-quiz-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.startCategoryQuiz)BrainLab.startCategoryQuiz(\\\''+item.id+'\\\')},400)"><div class="gs-card-icon">\uD83E\uDDE9</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">'+esc(item.category)+'</div></div><div class="gs-card-meta"><span class="gs-card-tag">Quiz</span></div></div>';
+          } else if (type === 'mock') {
+            html += '<div class="gs-mock-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.startMock)BrainLab.startMock(\\\''+item.id+'\\\')},400)"><div class="gs-card-icon">\uD83D\uDCDD</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">'+esc(item.exam)+'</div></div><div class="gs-card-meta"><span class="gs-card-tag">Mock Test</span></div></div>';
+          } else if (type === 'affair') {
+            html += '<div class="gs-affair-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.switchTab)BrainLab.switchTab(\'affairs\')},400)"><div class="gs-card-icon">\uD83D\uDCF0</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">Current Affairs</div></div><div class="gs-card-meta"><span class="gs-card-tag">Read</span></div></div>';
+          } else if (type === 'cat') {
+            html += '<div class="gs-cat-card" onclick="navigate(\'library\');setTimeout(function(){if(typeof filterLibraryByCategory===\'function\')filterLibraryByCategory(\\\''+esc(item.name)+'\\\')},400)"><div class="gs-card-icon">'+(item.icon||'\uD83D\uDCC2')+'</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.name)+'</div><div class="gs-card-sub">Browse all PDFs in this category</div></div><div class="gs-card-meta"><span class="gs-card-tag">Category</span></div></div>';
+          }
+        });
+      }
+      html += '</div>';
+    });
+
+    if (dr) dr.innerHTML = html;
+    if (typeof _refreshFreeButtonLabels === 'function') setTimeout(_refreshFreeButtonLabels, 50);
+  };
+
+  function updateTypeCounts(grouped) {
+    var counts = { all:0, pdf:0, job:0, quiz:0, mock:0, affair:0, cat:0 };
+    Object.keys(grouped).forEach(function(k) { counts[k] = (grouped[k]||[]).length; counts.all += counts[k]; });
+    var labelMap = { all:'All', pdf:'Pdf', job:'Job', quiz:'Quiz', mock:'Mock', affair:'Affair', cat:'Cat' };
+    Object.keys(counts).forEach(function(k) {
+      var el = document.getElementById('gsCount' + labelMap[k]);
+      if (el) el.textContent = counts[k];
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
