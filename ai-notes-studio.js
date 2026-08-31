@@ -215,17 +215,27 @@ async function verifyPaymentAndUpdate(jobId, paymentResponse) {
 
 /* ── Trigger processing ─────────────────────────────────────────────────── */
 async function triggerProcessing(jobId) {
-  // Try Base44 backend function first
+  // Call Base44 backend function to process the job
+  var backendUrl = 'https://vesper-7a174e45.base44.app/functions/aiNotesProcess';
   try {
-    var resp = await fetch('https://app.base44.com/api/agents/6a57ae68c5c504767a174e45/functions/aiNotesProcess', {
+    var resp = await fetch(backendUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ job_id: jobId }),
     });
-    if (resp.ok) return;
-  } catch(e) { /* fall through */ }
+    var data = await resp.json();
+    if (resp.ok && data.success) {
+      console.log('[AI Notes] Processing complete:', data);
+      return;
+    }
+    if (!resp.ok && data.error && data.error !== 'Job not ready') {
+      console.warn('[AI Notes] Backend error:', data);
+    }
+  } catch(e) { 
+    console.warn('[AI Notes] Backend call failed, job stays QUEUED:', e);
+  }
   
-  // Mark as QUEUED — backend will pick it up
+  // Ensure job is marked QUEUED for potential retry
   await _sb().from('ai_note_jobs').update({ status: 'QUEUED' }).eq('id', jobId);
 }
 
