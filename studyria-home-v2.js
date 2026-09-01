@@ -609,13 +609,24 @@
 
     container.innerHTML = html;
 
-    // Insert after the existing hero section but before the OTT discovery
-    // Place it right at the start of page-home, before the existing hero
-    var hero = homePage.querySelector('.sh-hero');
-    if (hero && hero.parentNode) {
-      hero.parentNode.insertBefore(container, hero.nextSibling);
+    // Insert AFTER the discover/search section so that:
+    // Hero → Live Notifications → Search Studyria → [sv2 sections] → OTT Carousels
+    var discover = homePage.querySelector('#discover-section');
+    if (discover) {
+      // Insert right after the discover-section
+      if (discover.nextSibling) {
+        homePage.insertBefore(container, discover.nextSibling);
+      } else {
+        homePage.appendChild(container);
+      }
     } else {
-      homePage.insertBefore(container, homePage.firstChild);
+      // Fallback: insert after the hero section
+      var hero = homePage.querySelector('.sh-hero');
+      if (hero && hero.parentNode) {
+        hero.parentNode.insertBefore(container, hero.nextSibling);
+      } else {
+        homePage.insertBefore(container, homePage.firstChild);
+      }
     }
 
     // Render static sections immediately
