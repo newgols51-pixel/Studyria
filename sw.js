@@ -31,11 +31,11 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v47'; // v55: new Studyria logo icons — regenerated all favicons/PWA icons, cache-bust old blue logo
+const CACHE_VERSION = 'v48'; // fix Live Notifications real-data pipeline (announcements/jobs column names, quiz/mock global exposure)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.13-new-logo-icon-cache-bust';
+const SW_BUILD      = '2026.09.01-live-notifications-fix';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🧠 BrainLab expanded: 12 learning sections with quizzes, mock tests, flashcards, PYQ practice, study streak, and more. Complete learning hub redesign.';

@@ -6228,7 +6228,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260816exp3" defer></script>
 <script src="brainlab-icons.js?v=20260901gs" defer></script>
-<script src="brainlab.js?v=20260901gs" defer></script>
+<script src="brainlab.js?v=20260901h" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
     <script src="arena.js?v=20260826merge1" defer></script>
 <script src="adre-papers-data.js?v=20260827d" defer></script>
@@ -47927,34 +47927,51 @@ window.addEventListener('load', function() {
     var sb = window.supabaseClient;
     if (!sb) { renderError('Supabase not available'); return; }
     var items = [];
+    var sourcesAttempted = 0;
+    var sourcesFailed = 0;
 
+    // Announcements - real column is "is_active" (was "active", always 42703'd)
+    sourcesAttempted++;
     try {
-      var annRes = await sb.from('announcements').select('id, title, message, created_at').eq('active', true).order('created_at', { ascending:false }).limit(5);
+      var annRes = await sb.from('announcements').select('id, title, message, created_at').eq('is_active', true).order('created_at', { ascending:false }).limit(5);
+      if (annRes.error) throw annRes.error;
       if (annRes.data) {
         annRes.data.forEach(function(a) {
           items.push({ type:'ann', typeLabel:'Update', title:a.title||'Announcement', message:a.message||'', time:a.created_at, icon:'\uD83D\uDCE2', action:'' });
         });
       }
-    } catch(e) { console.warn('LiveNotif announcements:', e); }
+    } catch(e) { console.warn('LiveNotif announcements:', e); sourcesFailed++; }
 
+    // Jobs - real column is "organization" only ("org" doesn't exist, was 42703'ing
+    // the whole query). Limit raised to 10 so real jobs alone can satisfy 10+ Live.
+    sourcesAttempted++;
     try {
-      var jobRes = await sb.from('jobs').select('id, title, org, organization, published_at, created_at').eq('active', true).order('published_at', { ascending:false, nullsFirst:false }).order('created_at', { ascending:false }).limit(5);
+      var jobRes = await sb.from('jobs').select('id, title, organization, published_at, created_at').eq('active', true).order('published_at', { ascending:false, nullsFirst:false }).order('created_at', { ascending:false }).limit(10);
+      if (jobRes.error) throw jobRes.error;
       if (jobRes.data) {
         jobRes.data.forEach(function(j) {
-          items.push({ type:'job', typeLabel:'Job', title:j.title||'Job Opening', message:j.org||j.organization||'', time:j.published_at||j.created_at, icon:'\uD83D\uDCBC', action:"navigate('career-hub')" });
+          items.push({ type:'job', typeLabel:'Job', title:j.title||'Job Opening', message:j.organization||'', time:j.published_at||j.created_at, icon:'\uD83D\uDCBC', action:"navigate('career-hub')" });
         });
       }
-    } catch(e) { console.warn('LiveNotif jobs:', e); }
+    } catch(e) { console.warn('LiveNotif jobs:', e); sourcesFailed++; }
 
+    // Current Affairs - table not present in the DB schema yet (confirmed via
+    // direct query: PGRST205 "Could not find the table"). Left in place so it
+    // activates automatically the moment that table exists - no fake data added.
+    sourcesAttempted++;
     try {
       var affRes = await sb.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).order('created_at', { ascending:false }).limit(4);
+      if (affRes.error) throw affRes.error;
       if (affRes.data) {
         affRes.data.forEach(function(a) {
           items.push({ type:'affair', typeLabel:'Affairs', title:a.title||'Current Affairs', message:'', time:a.created_at, icon:'\uD83D\uDCF0', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)" });
         });
       }
-    } catch(e) { console.warn('LiveNotif affairs:', e); }
+    } catch(e) { console.warn('LiveNotif affairs:', e); sourcesFailed++; }
 
+    // Quiz / Mock categories - real arrays defined in brainlab.js, now exposed
+    // on window (previously scoped inside brainlab.js's IIFE and unreachable
+    // here, which is why these never appeared).
     if (typeof SQ !== 'undefined' && SQ.length) {
       items.push({ type:'quiz', typeLabel:'Quiz', title:SQ[0].title + ' \u2014 Try Now!', message:'Daily GK challenge available', time:null, icon:'\uD83E\uDDE9', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('quiz');},400)" });
     }
@@ -47969,6 +47986,14 @@ window.addEventListener('load', function() {
       var tb = b.time ? new Date(b.time).getTime() : 0;
       return tb - ta;
     });
+
+    // Only show the "no notifications" empty state when we genuinely fetched
+    // successfully and found nothing. If every DB source failed, show the
+    // existing error/retry UI instead of silently claiming zero results.
+    if (items.length === 0 && sourcesFailed > 0 && sourcesFailed === sourcesAttempted) {
+      renderError('Unable to load notifications right now');
+      return;
+    }
 
     _cache = items;
     _loaded = true;
