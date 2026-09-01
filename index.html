@@ -47812,6 +47812,7 @@ window.addEventListener('load', function() {
     var attempt = _attempt || 1;
     var counts = { pdf: 0, job: 0, quiz: 0, mock: 0, affair: 0, cat: 0 };
     var labelMap = { pdf:'Pdf', job:'Job', quiz:'Quiz', mock:'Mock', affair:'Affair', cat:'Cat' };
+    var jobOk = false, affairOk = false;
 
     // PDFs — from window.PDFS (loaded from Supabase)
     counts.pdf = (window.PDFS || []).filter(function(p){ return p && p.title && (p.status === 'published' || p.status === 'approved' || !p.status); }).length;
@@ -47825,56 +47826,69 @@ window.addEventListener('load', function() {
     // Categories — from _dbCategories
     counts.cat = (window._dbCategories || []).length;
 
-    // Jobs — from Supabase with timeout
+    // Jobs + Current Affairs — from Supabase, run concurrently (not
+    // sequentially) so a slow/failing one doesn't double the wait, each
+    // with its own timeout. Track success explicitly (jobOk/affairOk) —
+    // a query that errors or times out must NOT be treated the same as a
+    // genuine "0 rows" result, otherwise a transient failure permanently
+    // freezes that tab's count.
     var sb = window.supabaseClient;
     if (sb) {
-      try {
-        var jobRes = await Promise.race([
-          sb.from('jobs').select('id', { count: 'exact', head: true }).eq('active', true),
-          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 8000); })
-        ]);
-        if (jobRes && jobRes.count !== undefined) counts.job = jobRes.count;
-      } catch(e) { console.warn('GS init counts - jobs:', e); }
+      var jobPromise = Promise.race([
+        sb.from('jobs').select('id', { count: 'exact', head: true }).eq('active', true),
+        new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 6000); })
+      ]).then(function(res) {
+        if (res && res.count !== undefined) { counts.job = res.count; jobOk = true; }
+      }).catch(function(e) { console.warn('GS init counts - jobs:', e); });
 
-      // Current Affairs — from Supabase with timeout
-      try {
-        var affairRes = await Promise.race([
-          sb.from('current_affairs').select('id', { count: 'exact', head: true }).eq('is_deleted', false),
-          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 8000); })
-        ]);
-        if (affairRes && affairRes.count !== undefined) counts.affair = affairRes.count;
-      } catch(e) { console.warn('GS init counts - affairs:', e); }
+      var affairPromise = Promise.race([
+        sb.from('current_affairs').select('id', { count: 'exact', head: true }).eq('is_deleted', false),
+        new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 6000); })
+      ]).then(function(res) {
+        if (res && res.count !== undefined) { counts.affair = res.count; affairOk = true; }
+      }).catch(function(e) { console.warn('GS init counts - affairs:', e); });
+
+      await Promise.all([jobPromise, affairPromise]);
     }
 
     counts.all = counts.pdf + counts.job + counts.quiz + counts.mock + counts.affair + counts.cat;
 
-    // Real-data readiness check. quiz/mock/cat/pdf come from data sources
-    // that are ALWAYS non-zero once actually loaded (12 quizzes, 9 mocks,
-    // 28 categories, 12+ PDFs) — so if any of them read 0, that source
-    // simply hasn't finished loading yet (this happens on slow connections
-    // where the 2.3MB page + brainlab.js + Supabase calls take a while).
+    // Readiness checks. quiz/mock/cat/pdf come from data sources that are
+    // ALWAYS non-zero once actually loaded (12 quizzes, 9 mocks, 28
+    // categories, 12+ PDFs) — so a 0 there just means "not loaded yet"
+    // (happens on slow connections where the page + brainlab.js +
+    // Supabase calls take a while). Jobs/Current Affairs use explicit
+    // success flags instead, since a genuine 0 is a valid real answer.
     var coreReady = counts.pdf > 0 && counts.quiz > 0 && counts.mock > 0 && counts.cat > 0;
+    var remoteReady = jobOk && affairOk;
+    var allReady = coreReady && remoteReady;
     var isFinalAttempt = attempt >= 14; // ~40s of retrying with backoff, worst case
 
     // Update the DOM — never overwrite the "…" placeholder with a fake "0"
-    // while a data source is still loading. Only write a tab's real count
-    // once it's actually known (>0), or once we've exhausted retries (so
-    // a genuinely-empty source, e.g. 0 current affairs, still resolves).
-    Object.keys(counts).forEach(function(k) {
-      if (k === 'all') return;
-      var label = labelMap[k];
-      var el = document.getElementById('gsCount' + label);
-      if (el && (counts[k] > 0 || isFinalAttempt)) el.textContent = counts[k];
-    });
+    // while a data source is still loading or its query hasn't succeeded
+    // yet. Write each tab's real count as soon as ITS source is ready, or
+    // once retries are exhausted (so a genuinely-empty source still
+    // resolves instead of spinning forever).
+    var pdfEl = document.getElementById('gsCountPdf');
+    if (pdfEl && (counts.pdf > 0 || isFinalAttempt)) pdfEl.textContent = counts.pdf;
+    var quizEl = document.getElementById('gsCountQuiz');
+    if (quizEl && (counts.quiz > 0 || isFinalAttempt)) quizEl.textContent = counts.quiz;
+    var mockEl = document.getElementById('gsCountMock');
+    if (mockEl && (counts.mock > 0 || isFinalAttempt)) mockEl.textContent = counts.mock;
+    var catEl = document.getElementById('gsCountCat');
+    if (catEl && (counts.cat > 0 || isFinalAttempt)) catEl.textContent = counts.cat;
+    var jobEl = document.getElementById('gsCountJob');
+    if (jobEl && (jobOk || isFinalAttempt)) jobEl.textContent = counts.job;
+    var affairEl = document.getElementById('gsCountAffair');
+    if (affairEl && (affairOk || isFinalAttempt)) affairEl.textContent = counts.affair;
     var allEl = document.getElementById('gsCountAll');
-    if (allEl && (coreReady || isFinalAttempt)) allEl.textContent = counts.all;
+    if (allEl && (allReady || isFinalAttempt)) allEl.textContent = counts.all;
 
-    console.log('✅ Global Search counts (attempt ' + attempt + (coreReady ? ', ready' : ', retrying') + '):', counts);
+    console.log('✅ Global Search counts (attempt ' + attempt + (allReady ? ', ready' : ', retrying') + '):', counts);
 
-    // Retry with backoff until the core static/local counts are actually
-    // populated — covers slow connections where brainlab.js / PDFS /
-    // categories haven't loaded yet by the time this first runs.
-    if (!coreReady && !isFinalAttempt) {
+    // Retry with backoff until every source is actually ready — covers
+    // slow connections and transient Supabase failures alike.
+    if (!allReady && !isFinalAttempt) {
       setTimeout(function() { window.gsInitCounts(attempt + 1); }, Math.min(1200 * attempt, 4000));
     }
   };
