@@ -21067,7 +21067,9 @@ let discoverDebounce = null;
 
 function onDiscoverInput() {
   clearTimeout(discoverDebounce);
-  discoverDebounce = setTimeout(runDiscover, 380);
+  // Use global search override if available, else fallback to original
+  var fn = (typeof window.gsRunDiscover === 'function') ? window.gsRunDiscover : runDiscover;
+  discoverDebounce = setTimeout(fn, 380);
 }
 
 async function runDiscover() {
@@ -47542,7 +47544,7 @@ window.addEventListener('load', function() {
   };
 
   var _origRun = window.runDiscover;
-  window.runDiscover = async function() {
+  window.gsRunDiscover = async function() {
     var query = (document.getElementById('discoverSearch')?.value || '').trim().toLowerCase();
     var cat = document.getElementById('dCat')?.value || '';
     var sub = document.getElementById('dSub')?.value || '';
@@ -47687,6 +47689,9 @@ window.addEventListener('load', function() {
     if (dr) dr.innerHTML = html;
     if (typeof _refreshFreeButtonLabels === 'function') setTimeout(_refreshFreeButtonLabels, 50);
   };
+
+  // Double-wire: also override window.runDiscover so onDiscoverInput picks it up
+  window.runDiscover = window.gsRunDiscover;
 
   function updateTypeCounts(grouped) {
     var counts = { all:0, pdf:0, job:0, quiz:0, mock:0, affair:0, cat:0 };
