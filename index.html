@@ -47565,61 +47565,67 @@ window.addEventListener('load', function() {
     if (typeof updateActivePills === 'function') updateActivePills();
 
     var grouped = { pdf:[], job:[], quiz:[], mock:[], affair:[], cat:[] };
-    var sb = window.supabaseClient;
 
-    /* PDFs */
+    /* PDFs — local data FIRST (synchronous, never hangs) */
     if (_currentType === 'all' || _currentType === 'pdf') {
       var pdfResults = [];
-      if (sb && query) {
-        try {
-          var q = sb.from('pdfs').select('*');
-          if (cat) { var catObj = (window._dbCategories||[]).find(function(c){return c.name===cat||c.slug===cat;}); q = catObj ? q.eq('category_id', catObj.id) : q.eq('category', cat); }
-          if (query) q = q.or('title.ilike.%'+query+'%,seo_keywords.ilike.%'+query+'%,author.ilike.%'+query+'%');
-          q = q.eq('status','published').limit(40);
-          var res = await q;
-          if (res.data) pdfResults = res.data;
-        } catch(e) {}
-      }
-      if (pdfResults.length === 0 && query) {
+      if (query) {
         pdfResults = (window.PDFS||[]).filter(function(p) {
           if (!p || !p.title) return false;
-          return fm(p.title,query) || fm(p.author,query) || fm(p.category,query) || fm(p.description,query) || fm(p.seo_keywords,query);
+          return fm(p.title,query) || fm(p.author||'',query) || fm(p.category||'',query) || fm(p.description||'',query) || fm(p.seo_keywords||'',query);
+        }).slice(0, 40);
+      } else if (cat) {
+        pdfResults = (window.PDFS||[]).filter(function(p) {
+          if (!p) return false;
+          return fm(p.category||'',cat) || fm(p.category_id||'',cat);
         }).slice(0, 40);
       }
       grouped.pdf = pdfResults;
     }
 
-    /* Jobs */
+    /* Jobs — Supabase with 3s timeout */
     if (_currentType === 'all' || _currentType === 'job') {
-      if (sb && query) {
+      if (query) {
         try {
-          var jr = await sb.from('jobs').select('id, title, org, organization, location, job_type, published_at').eq('active', true).or('title.ilike.%'+query+'%,org.ilike.%'+query+'%,organization.ilike.%'+query+'%').order('published_at',{ascending:false,nullsFirst:false}).limit(10);
-          if (jr.data) grouped.job = jr.data;
+          var sb = window.supabaseClient;
+          if (sb) {
+            var jr = await Promise.race([
+              sb.from('jobs').select('id, title, org, organization, location, job_type, published_at').eq('active', true).or('title.ilike.%'+query+'%,org.ilike.%'+query+'%,organization.ilike.%'+query+'%').order('published_at',{ascending:false,nullsFirst:false}).limit(10),
+              new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 3000); })
+            ]);
+            if (jr && jr.data) grouped.job = jr.data;
+          }
         } catch(e) { console.warn('GS jobs:', e); }
       }
     }
 
-    /* Quizzes */
+    /* Quizzes — local data (synchronous) */
     if (_currentType === 'all' || _currentType === 'quiz') {
       if (typeof SQ !== 'undefined' && query) grouped.quiz = SQ.filter(function(qz){ return fm(qz.title,query) || fm(qz.category,query); }).slice(0, 8);
     }
 
-    /* Mocks */
+    /* Mocks — local data (synchronous) */
     if (_currentType === 'all' || _currentType === 'mock') {
       if (typeof SM !== 'undefined' && query) grouped.mock = SM.filter(function(m){ return fm(m.title,query) || fm(m.exam,query); }).slice(0, 8);
     }
 
-    /* Current Affairs */
+    /* Current Affairs — Supabase with 3s timeout */
     if (_currentType === 'all' || _currentType === 'affair') {
-      if (sb && query) {
+      if (query) {
         try {
-          var ar = await sb.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).or('title.ilike.%'+query+'%').order('created_at',{ascending:false}).limit(10);
-          if (ar.data) grouped.affair = ar.data;
+          var sb2 = window.supabaseClient;
+          if (sb2) {
+            var ar = await Promise.race([
+              sb2.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).or('title.ilike.%'+query+'%').order('created_at',{ascending:false}).limit(10),
+              new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 3000); })
+            ]);
+            if (ar && ar.data) grouped.affair = ar.data;
+          }
         } catch(e) { console.warn('GS affairs:', e); }
       }
     }
 
-    /* Categories */
+    /* Categories — local data (synchronous) */
     if (_currentType === 'all' || _currentType === 'cat') {
       if (window._dbCategories && query) grouped.cat = (window._dbCategories||[]).filter(function(c){ return fm(c.name,query) || fm(c.slug,query); }).slice(0, 8);
       if (!query && cat && window._dbCategories) grouped.cat = (window._dbCategories||[]).filter(function(c){ return c.name === cat; }).slice(0, 3);
@@ -47662,24 +47668,24 @@ window.addEventListener('load', function() {
           html += '<div class="pdf-grid">' + valid.map(function(p){ return pdfCardHTML(p); }).join('') + '</div>';
         } else {
           html += '<div class="pdf-grid">' + items.map(function(p){
-            return '<div class="pdf-card" onclick="openPdf(\\\''+p.id+'\\\')"><div class="pdf-card-body"><div class="pdf-title">'+esc(p.title)+'</div><div class="pdf-author">'+esc(p.author||'')+'</div></div></div>';
+            return '<div class="pdf-card" onclick="openPdf(\''+p.id+'\')"><div class="pdf-card-body"><div class="pdf-title">'+esc(p.title)+'</div><div class="pdf-author">'+esc(p.author||'')+'</div></div></div>';
           }).join('') + '</div>';
         }
       } else {
         items.forEach(function(item) {
           if (type === 'job') {
             var title = esc(item.title||'Job Opening');
-            var sub = esc(item.org||item.organization||'') + (item.location ? ' \u00B7 ' + esc(item.location) : '');
+            var subTxt = esc(item.org||item.organization||'') + (item.location ? ' \u00B7 ' + esc(item.location) : '');
             var tags = item.job_type ? '<span class="gs-card-tag">'+esc(item.job_type)+'</span>' : '';
-            html += '<div class="gs-job-card" onclick="navigate(\'career-hub\');setTimeout(function(){if(typeof csOpenJob===\'function\')csOpenJob(\\\''+item.id+'\\\')},300)"><div class="gs-card-icon">\uD83D\uDCBC</div><div class="gs-card-body"><div class="gs-card-title">'+title+'</div><div class="gs-card-sub">'+sub+'</div></div><div class="gs-card-meta">'+tags+'</div></div>';
+            html += '<div class="gs-job-card" onclick="navigate(\'career-hub\');setTimeout(function(){if(typeof csOpenJob===\'function\')csOpenJob(\''+item.id+'\')},300)"><div class="gs-card-icon">\uD83D\uDCBC</div><div class="gs-card-body"><div class="gs-card-title">'+title+'</div><div class="gs-card-sub">'+subTxt+'</div></div><div class="gs-card-meta">'+tags+'</div></div>';
           } else if (type === 'quiz') {
-            html += '<div class="gs-quiz-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.startCategoryQuiz)BrainLab.startCategoryQuiz(\\\''+item.id+'\\\')},400)"><div class="gs-card-icon">\uD83E\uDDE9</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">'+esc(item.category)+'</div></div><div class="gs-card-meta"><span class="gs-card-tag">Quiz</span></div></div>';
+            html += '<div class="gs-quiz-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.startCategoryQuiz)BrainLab.startCategoryQuiz(\''+item.id+'\')},400)"><div class="gs-card-icon">\uD83E\uDDE9</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">'+esc(item.category)+'</div></div><div class="gs-card-meta"><span class="gs-card-tag">Quiz</span></div></div>';
           } else if (type === 'mock') {
-            html += '<div class="gs-mock-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.startMock)BrainLab.startMock(\\\''+item.id+'\\\')},400)"><div class="gs-card-icon">\uD83D\uDCDD</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">'+esc(item.exam)+'</div></div><div class="gs-card-meta"><span class="gs-card-tag">Mock Test</span></div></div>';
+            html += '<div class="gs-mock-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.startMock)BrainLab.startMock(\''+item.id+'\')},400)"><div class="gs-card-icon">\uD83D\uDCDD</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">'+esc(item.exam)+'</div></div><div class="gs-card-meta"><span class="gs-card-tag">Mock Test</span></div></div>';
           } else if (type === 'affair') {
             html += '<div class="gs-affair-card" onclick="navigate(\'brainlab\');setTimeout(function(){if(typeof BrainLab!==\'undefined\'&&BrainLab.switchTab)BrainLab.switchTab(\'affairs\')},400)"><div class="gs-card-icon">\uD83D\uDCF0</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.title)+'</div><div class="gs-card-sub">Current Affairs</div></div><div class="gs-card-meta"><span class="gs-card-tag">Read</span></div></div>';
           } else if (type === 'cat') {
-            html += '<div class="gs-cat-card" onclick="navigate(\'library\');setTimeout(function(){if(typeof filterLibraryByCategory===\'function\')filterLibraryByCategory(\\\''+esc(item.name)+'\\\')},400)"><div class="gs-card-icon">'+(item.icon||'\uD83D\uDCC2')+'</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.name)+'</div><div class="gs-card-sub">Browse all PDFs in this category</div></div><div class="gs-card-meta"><span class="gs-card-tag">Category</span></div></div>';
+            html += '<div class="gs-cat-card" onclick="navigate(\'library\');setTimeout(function(){if(typeof filterLibraryByCategory===\'function\')filterLibraryByCategory(\''+esc(item.name)+'\')},400)"><div class="gs-card-icon">'+(item.icon||'\uD83D\uDCC2')+'</div><div class="gs-card-body"><div class="gs-card-title">'+esc(item.name)+'</div><div class="gs-card-sub">Browse all PDFs in this category</div></div><div class="gs-card-meta"><span class="gs-card-tag">Category</span></div></div>';
           }
         });
       }
@@ -47689,9 +47695,6 @@ window.addEventListener('load', function() {
     if (dr) dr.innerHTML = html;
     if (typeof _refreshFreeButtonLabels === 'function') setTimeout(_refreshFreeButtonLabels, 50);
   };
-
-  // Double-wire: also override window.runDiscover so onDiscoverInput picks it up
-  window.runDiscover = window.gsRunDiscover;
 
   function updateTypeCounts(grouped) {
     var counts = { all:0, pdf:0, job:0, quiz:0, mock:0, affair:0, cat:0 };
