@@ -38270,11 +38270,14 @@ document.addEventListener('DOMContentLoaded', async function _appInit() {
   // Load categories from database (non-blocking)
   loadCategoriesFromDB().catch(e => console.warn('Categories load:', e));
 
-  // Initialize global search counts from real backend data (non-blocking)
-  // Delay 2s to allow PDFS + categories to load first
+  // Initialize global search counts from real backend data (non-blocking).
+  // gsInitCounts() retries itself internally (with backoff) until the
+  // real PDFS/categories/quiz/mock data has actually loaded — this matters
+  // on slow connections where a single fixed-delay call would otherwise
+  // permanently lock every tab at "0".
   setTimeout(function() {
-    if (typeof window.gsInitCounts === 'function') window.gsInitCounts();
-  }, 2000);
+    if (typeof window.gsInitCounts === 'function') window.gsInitCounts(1);
+  }, 300);
 
   // Load active announcement into the bar (non-blocking)
   loadActiveAnnouncement().catch(e => console.warn('Announcement load:', e));
@@ -47805,7 +47808,8 @@ window.addEventListener('load', function() {
   }
 
   /* ── Initialize real counts from backend on page load ─────────── */
-  window.gsInitCounts = async function() {
+  window.gsInitCounts = async function(_attempt) {
+    var attempt = _attempt || 1;
     var counts = { pdf: 0, job: 0, quiz: 0, mock: 0, affair: 0, cat: 0 };
     var labelMap = { pdf:'Pdf', job:'Job', quiz:'Quiz', mock:'Mock', affair:'Affair', cat:'Cat' };
 
@@ -47827,7 +47831,7 @@ window.addEventListener('load', function() {
       try {
         var jobRes = await Promise.race([
           sb.from('jobs').select('id', { count: 'exact', head: true }).eq('active', true),
-          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 5000); })
+          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 8000); })
         ]);
         if (jobRes && jobRes.count !== undefined) counts.job = jobRes.count;
       } catch(e) { console.warn('GS init counts - jobs:', e); }
@@ -47836,7 +47840,7 @@ window.addEventListener('load', function() {
       try {
         var affairRes = await Promise.race([
           sb.from('current_affairs').select('id', { count: 'exact', head: true }).eq('is_deleted', false),
-          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 5000); })
+          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 8000); })
         ]);
         if (affairRes && affairRes.count !== undefined) counts.affair = affairRes.count;
       } catch(e) { console.warn('GS init counts - affairs:', e); }
@@ -47844,14 +47848,35 @@ window.addEventListener('load', function() {
 
     counts.all = counts.pdf + counts.job + counts.quiz + counts.mock + counts.affair + counts.cat;
 
-    // Update the DOM
-    Object.keys(counts).forEach(function(k) {
-      var label = k === 'all' ? 'All' : labelMap[k];
-      var el = document.getElementById('gsCount' + label);
-      if (el) el.textContent = counts[k];
-    });
+    // Real-data readiness check. quiz/mock/cat/pdf come from data sources
+    // that are ALWAYS non-zero once actually loaded (12 quizzes, 9 mocks,
+    // 28 categories, 12+ PDFs) — so if any of them read 0, that source
+    // simply hasn't finished loading yet (this happens on slow connections
+    // where the 2.3MB page + brainlab.js + Supabase calls take a while).
+    var coreReady = counts.pdf > 0 && counts.quiz > 0 && counts.mock > 0 && counts.cat > 0;
+    var isFinalAttempt = attempt >= 14; // ~40s of retrying with backoff, worst case
 
-    console.log('✅ Global Search counts loaded:', counts);
+    // Update the DOM — never overwrite the "…" placeholder with a fake "0"
+    // while a data source is still loading. Only write a tab's real count
+    // once it's actually known (>0), or once we've exhausted retries (so
+    // a genuinely-empty source, e.g. 0 current affairs, still resolves).
+    Object.keys(counts).forEach(function(k) {
+      if (k === 'all') return;
+      var label = labelMap[k];
+      var el = document.getElementById('gsCount' + label);
+      if (el && (counts[k] > 0 || isFinalAttempt)) el.textContent = counts[k];
+    });
+    var allEl = document.getElementById('gsCountAll');
+    if (allEl && (coreReady || isFinalAttempt)) allEl.textContent = counts.all;
+
+    console.log('✅ Global Search counts (attempt ' + attempt + (coreReady ? ', ready' : ', retrying') + '):', counts);
+
+    // Retry with backoff until the core static/local counts are actually
+    // populated — covers slow connections where brainlab.js / PDFS /
+    // categories haven't loaded yet by the time this first runs.
+    if (!coreReady && !isFinalAttempt) {
+      setTimeout(function() { window.gsInitCounts(attempt + 1); }, Math.min(1200 * attempt, 4000));
+    }
   };
 
   /* ── Retry search function ────────────────────────────────────── */
