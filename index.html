@@ -8202,6 +8202,108 @@ crossorigin="anonymous"></script>
   .gsn-results-empty-text { font-size: .88rem; }
   .gsn-results-error { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 40px 20px; color: var(--hp-red); font-size: .88rem; }
 
+  
+  /* ── Hide old sv2 notification ticker (replaced by GSN carousel) */
+  #sv2NotifTicker { display: none !important; }
+  .sv2-notif-ticker-wrap, .sv2-notif-bar { display: none !important; }
+
+  /* ── Enhance existing Discover/Search section ─────────────────── */
+  .sh-discover-section { background: transparent !important; padding: 20px 0 !important; }
+  .sh-discover-section .sh-section-head { text-align: center; margin-bottom: 14px; }
+  .sh-discover-section .sh-section-title { font-size: 1.25rem !important; font-weight: 800 !important; color: var(--hp-ink) !important; letter-spacing: -.01em; }
+  .sh-discover-section .sh-section-subtitle { font-size: .82rem !important; color: var(--theme-text-muted) !important; margin-top: 4px !important; }
+
+  /* Premium search bar */
+  #omniSearchWrap { max-width: 600px; margin: 0 auto 14px !important; }
+  #discoverSearch {
+    border: 2px solid var(--hp-line) !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    transition: border-color .2s, box-shadow .2s !important;
+    font-family: inherit !important;
+  }
+  #discoverSearch:focus { border-color: var(--hp-red) !important; box-shadow: 0 0 0 3px rgba(147,2,5,0.08) !important; outline: none !important; }
+
+  /* Tabs - more premium */
+  .gs-type-tabs { gap: 8px; }
+  .gs-type-tab {
+    padding: 7px 14px !important;
+    border-radius: 9px !important;
+    border: 1px solid var(--hp-line) !important;
+    background: #fff !important;
+    color: var(--theme-text-secondary, #6b6358) !important;
+    font-size: .82rem !important;
+    font-weight: 600 !important;
+    transition: all .2s !important;
+  }
+  .gs-type-tab:hover { border-color: rgba(147,2,5,0.2) !important; }
+  .gs-type-tab.active {
+    background: var(--hp-red) !important;
+    color: #fff !important;
+    border-color: var(--hp-red) !important;
+  }
+  .gs-type-count {
+    font-size: .72rem !important;
+    font-weight: 700 !important;
+    padding: 1px 6px !important;
+    border-radius: 8px !important;
+    background: rgba(28,27,26,0.06) !important;
+  }
+  .gs-type-tab.active .gs-type-count { background: rgba(255,255,255,0.2) !important; color: #fff !important; }
+
+  /* Hide advanced filters by default, show with toggle */
+  #discoverAdvancedFilters {
+    display: none !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+  }
+  #discoverAdvancedFilters.gsn-filters-visible { display: flex !important; }
+  .sh-filter-select {
+    border-radius: 9px !important;
+    border: 1px solid var(--hp-line) !important;
+    background: #fff !important;
+    color: var(--hp-ink) !important;
+    font-size: .78rem !important;
+    padding: 7px 12px !important;
+    font-family: inherit !important;
+  }
+  .sh-filter-select:focus { border-color: var(--hp-red) !important; outline: none !important; }
+  .omni-pill {
+    border-radius: 9px !important;
+    border: 1px solid var(--hp-line) !important;
+    background: var(--hp-paper-dim) !important;
+    color: var(--theme-text-secondary, #6b6358) !important;
+    font-size: .78rem !important;
+    font-weight: 600 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all .2s !important;
+  }
+  .omni-pill:hover { border-color: rgba(147,2,5,0.2) !important; }
+  .omni-pill.active { background: var(--hp-red) !important; color: #fff !important; border-color: var(--hp-red) !important; }
+
+  /* Filters toggle button */
+  .gsn-discover-filters-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 9px;
+    border: 1px solid var(--hp-line);
+    background: var(--hp-paper-dim);
+    color: var(--theme-text-secondary, #6b6358);
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    margin-bottom: 10px;
+    transition: all .2s;
+  }
+  .gsn-discover-filters-toggle:hover { border-color: rgba(147,2,5,0.2); }
+  .gsn-discover-filters-toggle.active { border-color: var(--hp-red); color: var(--hp-red); }
+
+
   /* ── Mobile ──────────────────────────────────────────────────── */
   @media (max-width: 768px) {
     .gsn-container { padding: 0 12px; }

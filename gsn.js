@@ -36,7 +36,7 @@
       // Active announcements
       if (sb) {
         var annRes = await sb.from('announcements').select('id, title, message, created_at').eq('active', true).order('created_at', { ascending: false }).limit(5);
-        if (annRes.data) {
+        if (annRes.data && !annRes.error) {
           annRes.data.forEach(function (a) {
             items.push({ id:'ann-'+a.id, type:'announcement', title:a.title||'', desc:a.message||'', date:a.created_at, cta:null });
           });
@@ -45,7 +45,7 @@
       // Latest active jobs
       if (sb && items.length < 10) {
         var jobRes = await sb.from('jobs').select('id, title, org, organization, description, last_date, published_at, created_at').eq('active', true).order('created_at', { ascending: false }).limit(10);
-        if (jobRes.data) {
+        if (jobRes.data && !jobRes.error) {
           jobRes.data.forEach(function (j) {
             if (items.length >= 10) return;
             items.push({ id:'job-'+j.id, type:'job', title:j.title||'', desc:j.org||j.organization||'', date:j.published_at||j.created_at, cta:"navigate('career-hub')", ctaLabel:'View Job →' });
@@ -56,7 +56,7 @@
       if (sb && items.length < 10) {
         try {
           var caRes = await sb.from('current_affairs').select('id, title, description, created_at').eq('is_deleted', false).order('created_at', { ascending: false }).limit(5);
-          if (caRes.data) {
+          if (caRes.data && !caRes.error) {
             caRes.data.forEach(function (c) {
               if (items.length >= 10) return;
               items.push({ id:'ca-'+c.id, type:'affairs', title:c.title||'', desc:(c.description||'').substring(0,80), date:c.created_at, cta:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)", ctaLabel:'Read →' });
@@ -141,11 +141,11 @@
     try {
       if (sb) {
         var pdfRes = await sb.from('pdfs').select('id', { count:'exact', head:true }).eq('status','published');
-        counts.pdf = pdfRes.count || 0;
+        if (!pdfRes.error) counts.pdf = pdfRes.count || 0; else { var lp = (window.PDFS||[]).filter(function(p){return !p.status||p.status==='published';}); counts.pdf = lp.length; }
         var jobRes = await sb.from('jobs').select('id', { count:'exact', head:true }).eq('active', true);
-        counts.job = jobRes.count || 0;
-        try { var caRes = await sb.from('current_affairs').select('id', { count:'exact', head:true }).eq('is_deleted', false); counts.affairs = caRes.count || 0; } catch(e) {}
-        try { var catRes = await sb.from('categories').select('id', { count:'exact', head:true }).eq('enabled', true); counts.category = catRes.count || 0; } catch(e) { counts.category = (window._dbCategories || []).length; }
+        if (!jobRes.error) counts.job = jobRes.count || 0;
+        try { var caRes = await sb.from('current_affairs').select('id', { count:'exact', head:true }).eq('is_deleted', false); if (caRes.error) throw caRes.error; counts.affairs = caRes.count || 0; } catch(e) {}
+        try { var catRes = await sb.from('categories').select('id', { count:'exact', head:true }).eq('enabled', true); if (catRes.error) throw catRes.error; counts.category = catRes.count || 0; } catch(e) { counts.category = (window._dbCategories || []).length; }
       }
       if (typeof SQ !== 'undefined') counts.quiz = SQ.length;
       if (typeof SM !== 'undefined') counts.mock = SM.length;
@@ -414,24 +414,24 @@
     var container = document.createElement('div');
     container.id = 'gsnContainer';
     container.className = 'gsn-container';
-    container.innerHTML = '<div id="gsnNotifSection"></div><div id="gsnSearchSection"></div>';
-    // Insert after sv2 sections, or after hero
-    var sv2 = document.getElementById('sv2SectionsContainer');
-    if (sv2 && sv2.parentNode) sv2.parentNode.insertBefore(container, sv2.nextSibling);
-    else {
+    container.innerHTML = '<div id="gsnNotifSection"></div>';
+    // Insert BEFORE the discover section (right after hero)
+    var discover = document.getElementById('discover-section');
+    if (discover && discover.parentNode) {
+      discover.parentNode.insertBefore(container, discover);
+    } else {
       var hero = homePage.querySelector('.sh-hero');
       if (hero && hero.parentNode) hero.parentNode.insertBefore(container, hero.nextSibling);
       else homePage.insertBefore(container, homePage.firstChild);
     }
-    renderSearchSection();
-    setTimeout(function () { loadNotifications(); loadCounts(); }, 200);
+    setTimeout(function () { loadNotifications(); enhanceDiscoverSection(); }, 200);
   }
 
   function onNavigate(e) {
     if (e.detail === 'home') {
       setTimeout(function () {
         if (!document.getElementById('gsnContainer')) injectSections();
-        else { loadNotifications(); loadCounts(); populateFilters(); }
+        else { loadNotifications(); enhanceDiscoverSection(); }
       }, 300);
     }
   }
@@ -440,11 +440,7 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(injectSections, 500); });
     else setTimeout(injectSections, 500);
     document.addEventListener('studyria:navigate', onNavigate);
-    var pc = 0;
-    var pi = setInterval(function () {
-      pc++; if (pc > 15) { clearInterval(pi); return; }
-      if (typeof SQ !== 'undefined' && typeof SM !== 'undefined' && !GSN._counts) { loadCounts(); clearInterval(pi); }
-    }, 1000);
+    
   }
 
   window.GSN = {
