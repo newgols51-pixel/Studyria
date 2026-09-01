@@ -609,10 +609,15 @@
 
     container.innerHTML = html;
 
-    // Insert after the existing hero section but before the OTT discovery
-    // Place it right at the start of page-home, before the existing hero
+    // Insert AFTER Search Studyria (discover-section) so the newer
+    // Live Notifications / Trust Strip / Search Studyria sections stay
+    // visible right after the Hero, and this legacy jobs block appears
+    // below them instead of pushing them down.
+    var anchor = document.getElementById('discover-section');
     var hero = homePage.querySelector('.sh-hero');
-    if (hero && hero.parentNode) {
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(container, anchor.nextSibling);
+    } else if (hero && hero.parentNode) {
       hero.parentNode.insertBefore(container, hero.nextSibling);
     } else {
       homePage.insertBefore(container, homePage.firstChild);
