@@ -47552,12 +47552,14 @@ try { (function() {
   window.gsRunDiscover = async function() {
     gsLog('gsRunDiscover-CALLED');
     var query = (document.getElementById('discoverSearch')?.value || '').trim().toLowerCase();
+    gsLog('query=' + query);
     var cat = document.getElementById('dCat')?.value || '';
     var sub = document.getElementById('dSub')?.value || '';
     var stream = document.getElementById('dStream')?.value || '';
     var subject = document.getElementById('dSubject')?.value || '';
 
     var hasFilters = query || cat || sub || stream || subject;
+    gsLog('PDFS-count=' + (window.PDFS ? window.PDFS.length : 'undefined'));
     var resultsWrap = document.getElementById('discoverResultsWrap');
     if (resultsWrap) resultsWrap.style.display = hasFilters ? 'block' : 'none';
     if (!hasFilters) { if (typeof updateActivePills === 'function') updateActivePills(); updateTypeCounts({}); return; }
@@ -47587,6 +47589,7 @@ try { (function() {
         }).slice(0, 40);
       }
       grouped.pdf = pdfResults;
+      gsLog('pdf-found=' + pdfResults.length);
     }
 
     /* Jobs — Supabase with 3s timeout */
@@ -47595,13 +47598,15 @@ try { (function() {
         try {
           var sb = window.supabaseClient;
           if (sb) {
+            gsLog('jobs-query-start');
             var jr = await Promise.race([
               sb.from('jobs').select('id, title, org, organization, location, job_type, published_at').eq('active', true).or('title.ilike.%'+query+'%,org.ilike.%'+query+'%,organization.ilike.%'+query+'%').order('published_at',{ascending:false,nullsFirst:false}).limit(10),
               new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 3000); })
             ]);
             if (jr && jr.data) grouped.job = jr.data;
+            gsLog('jobs-done=' + (jr && jr.data ? jr.data.length : 0));
           }
-        } catch(e) { console.warn('GS jobs:', e); }
+        } catch(e) { gsLog('jobs-ERR: ' + e.message); console.warn('GS jobs:', e); }
       }
     }
 
@@ -47621,13 +47626,15 @@ try { (function() {
         try {
           var sb2 = window.supabaseClient;
           if (sb2) {
+            gsLog('affairs-query-start');
             var ar = await Promise.race([
               sb2.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).or('title.ilike.%'+query+'%').order('created_at',{ascending:false}).limit(10),
               new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 3000); })
             ]);
             if (ar && ar.data) grouped.affair = ar.data;
+            gsLog('affairs-done=' + (ar && ar.data ? ar.data.length : 0));
           }
-        } catch(e) { console.warn('GS affairs:', e); }
+        } catch(e) { gsLog('affairs-ERR: ' + e.message); console.warn('GS affairs:', e); }
       }
     }
 
@@ -47637,7 +47644,9 @@ try { (function() {
       if (!query && cat && window._dbCategories) grouped.cat = (window._dbCategories||[]).filter(function(c){ return c.name === cat; }).slice(0, 3);
     }
 
+    gsLog('before-updateCounts grouped=' + JSON.stringify(Object.keys(grouped).map(function(k){return k+':'+grouped[k].length}).join(',')));
     updateTypeCounts(grouped);
+    gsLog('after-updateCounts');
     if (dl) dl.style.display = 'none';
 
     var displayGroups = {};
@@ -47700,6 +47709,7 @@ try { (function() {
 
     if (dr) dr.innerHTML = html;
     if (typeof _refreshFreeButtonLabels === 'function') setTimeout(_refreshFreeButtonLabels, 50);
+    gsLog('gsRunDiscover-DONE');
   };
 
   function updateTypeCounts(grouped) {
@@ -95279,12 +95289,14 @@ try { (function() {
   window.gsRunDiscover = async function() {
     gsLog('gsRunDiscover-CALLED');
     var query = (document.getElementById('discoverSearch')?.value || '').trim().toLowerCase();
+    gsLog('query=' + query);
     var cat = document.getElementById('dCat')?.value || '';
     var sub = document.getElementById('dSub')?.value || '';
     var stream = document.getElementById('dStream')?.value || '';
     var subject = document.getElementById('dSubject')?.value || '';
 
     var hasFilters = query || cat || sub || stream || subject;
+    gsLog('PDFS-count=' + (window.PDFS ? window.PDFS.length : 'undefined'));
     var resultsWrap = document.getElementById('discoverResultsWrap');
     if (resultsWrap) resultsWrap.style.display = hasFilters ? 'block' : 'none';
     if (!hasFilters) { if (typeof updateActivePills === 'function') updateActivePills(); updateTypeCounts({}); return; }
@@ -95314,6 +95326,7 @@ try { (function() {
         }).slice(0, 40);
       }
       grouped.pdf = pdfResults;
+      gsLog('pdf-found=' + pdfResults.length);
     }
 
     /* Jobs — Supabase with 3s timeout */
@@ -95322,13 +95335,15 @@ try { (function() {
         try {
           var sb = window.supabaseClient;
           if (sb) {
+            gsLog('jobs-query-start');
             var jr = await Promise.race([
               sb.from('jobs').select('id, title, org, organization, location, job_type, published_at').eq('active', true).or('title.ilike.%'+query+'%,org.ilike.%'+query+'%,organization.ilike.%'+query+'%').order('published_at',{ascending:false,nullsFirst:false}).limit(10),
               new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 3000); })
             ]);
             if (jr && jr.data) grouped.job = jr.data;
+            gsLog('jobs-done=' + (jr && jr.data ? jr.data.length : 0));
           }
-        } catch(e) { console.warn('GS jobs:', e); }
+        } catch(e) { gsLog('jobs-ERR: ' + e.message); console.warn('GS jobs:', e); }
       }
     }
 
@@ -95348,13 +95363,15 @@ try { (function() {
         try {
           var sb2 = window.supabaseClient;
           if (sb2) {
+            gsLog('affairs-query-start');
             var ar = await Promise.race([
               sb2.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).or('title.ilike.%'+query+'%').order('created_at',{ascending:false}).limit(10),
               new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 3000); })
             ]);
             if (ar && ar.data) grouped.affair = ar.data;
+            gsLog('affairs-done=' + (ar && ar.data ? ar.data.length : 0));
           }
-        } catch(e) { console.warn('GS affairs:', e); }
+        } catch(e) { gsLog('affairs-ERR: ' + e.message); console.warn('GS affairs:', e); }
       }
     }
 
@@ -95364,7 +95381,9 @@ try { (function() {
       if (!query && cat && window._dbCategories) grouped.cat = (window._dbCategories||[]).filter(function(c){ return c.name === cat; }).slice(0, 3);
     }
 
+    gsLog('before-updateCounts grouped=' + JSON.stringify(Object.keys(grouped).map(function(k){return k+':'+grouped[k].length}).join(',')));
     updateTypeCounts(grouped);
+    gsLog('after-updateCounts');
     if (dl) dl.style.display = 'none';
 
     var displayGroups = {};
@@ -95427,6 +95446,7 @@ try { (function() {
 
     if (dr) dr.innerHTML = html;
     if (typeof _refreshFreeButtonLabels === 'function') setTimeout(_refreshFreeButtonLabels, 50);
+    gsLog('gsRunDiscover-DONE');
   };
 
   function updateTypeCounts(grouped) {
