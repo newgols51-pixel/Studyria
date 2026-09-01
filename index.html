@@ -10797,19 +10797,45 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </section>
 
 <!-- ── TRUST BADGES ─────────────────────────────────────────── -->
-<!-- ── TRUST STRIP (REDESIGNED) ───────────────────────────────── -->
-<section class="hr-reveal" style="padding:12px 0">
+<!-- ── STUDYRIA TRUST STRIP (Premium 8-item redesign) ─────────── -->
+<section class="studyria-trust-strip" aria-label="Studyria trust and security features" style="padding:14px 0 10px">
   <div class="container">
-    <div class="hr-trust-strip">
-      <div class="hr-trust-item"><span class="hr-trust-icon">🔒</span> 256-bit SSL Secure</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">⚡</span> Instant Download</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">📱</span> Works Offline</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">✅</span> Razorpay Verified</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">🎯</span> Assam-Focused</div>
+    <div class="studyria-trust-strip__grid">
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">🔒</span>
+        <span class="studyria-trust-strip__label">Secure &amp; Protected</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">⚡</span>
+        <span class="studyria-trust-strip__label">Instant Access</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">📱</span>
+        <span class="studyria-trust-strip__label">Study on Any Device</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">💳</span>
+        <span class="studyria-trust-strip__label">Secure Checkout</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">🎯</span>
+        <span class="studyria-trust-strip__label">Built for Assam Exams</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">📚</span>
+        <span class="studyria-trust-strip__label">Free + Premium Resources</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">🛡️</span>
+        <span class="studyria-trust-strip__label">Privacy First</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">✅</span>
+        <span class="studyria-trust-strip__label">Curated Study Resources</span>
+      </div>
     </div>
   </div>
 </section>
-
 <!-- ── WHY STUDYRIA ──────────────────────────────────────────── -->
 
   <!-- ── PREMIUM BANNER (REDESIGNED) ──────────────────────────────── -->
@@ -48087,6 +48113,32 @@ window.addEventListener('load', function() {
   if (location.hash === '#free-materials' || location.pathname === '/free-materials') {
     setTimeout(function() { window.fmInit(); }, 300);
   }
+})();
+</script>
+<script>
+/* Studyria Trust Strip — subtle stagger reveal */
+(function() {
+  var items = document.querySelectorAll('.studyria-trust-strip__item');
+  if (!items.length) return;
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced || !('IntersectionObserver' in window)) {
+    items.forEach(function(el) { el.classList.add('is-visible'); });
+    return;
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, idx) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var delay = Array.prototype.indexOf.call(items, el) * 60;
+        setTimeout(function() { el.classList.add('is-visible'); }, delay);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  items.forEach(function(el) { observer.observe(el); });
 })();
 </script>
 </body>
