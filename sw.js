@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-// sw.js — Studyria Service Worker  v90  (PWA V3 — 2026 Ultimate)
+// sw.js — Studyria Service Worker  v91  (PWA V3 — 2026 Ultimate)
 // ══════════════════════════════════════════════════════════════════
 //
 // Cache Strategies:

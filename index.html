@@ -47767,6 +47767,7 @@ window.addEventListener('load', function() {
 (function() {
   'use strict';
   var _currentType = 'all';
+  var _cachedCounts = null; // cached initial counts for restoring when search is cleared
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function fm(t,q) { if(!t) return false; return String(t).toLowerCase().includes(String(q).toLowerCase()); }
@@ -47791,7 +47792,7 @@ window.addEventListener('load', function() {
     var hasFilters = query || cat || sub || stream || subject;
     var resultsWrap = document.getElementById('discoverResultsWrap');
     if (resultsWrap) resultsWrap.style.display = hasFilters ? 'block' : 'none';
-    if (!hasFilters) { if (typeof updateActivePills === 'function') updateActivePills(); updateTypeCounts({}); return; }
+    if (!hasFilters) { if (typeof updateActivePills === 'function') updateActivePills(); if (_cachedCounts) { updateTypeCounts(_cachedCounts); } else { /* still loading, keep … placeholder */ } return; }
 
     var dl = document.getElementById('discoverLoading');
     var dr = document.getElementById('discoverResults');
@@ -47997,6 +47998,7 @@ window.addEventListener('load', function() {
     }
 
     counts.all = counts.pdf + counts.job + counts.quiz + counts.mock + counts.affair + counts.cat;
+    _cachedCounts = Object.assign({}, counts); // cache for restore when search cleared
 
     // Readiness checks. quiz/mock/cat/pdf come from data sources that are
     // ALWAYS non-zero once actually loaded (12 quizzes, 9 mocks, 28
