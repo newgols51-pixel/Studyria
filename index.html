@@ -47379,7 +47379,7 @@ window.addEventListener('load', function() {
 
 <script>
 /* LIVE NOTIFICATIONS ENGINE */
-(function() {
+try { (function() {
   'use strict';
   var _cache = null;
   var _loaded = false;
@@ -47526,8 +47526,10 @@ window.addEventListener('load', function() {
     };
   }
 })();
+} catch(e) { console.error('LIVE NOTIF IIFE ERROR:', e); }
 
 /* GLOBAL SEARCH ENGINE */
+console.log('[GS] IIFE starting...');
 (function() {
   'use strict';
   var _currentType = 'all';
@@ -47545,6 +47547,7 @@ window.addEventListener('load', function() {
 
   var _origRun = window.runDiscover;
   window.gsRunDiscover = async function() {
+    console.log('[GS] gsRunDiscover called!');
     var query = (document.getElementById('discoverSearch')?.value || '').trim().toLowerCase();
     var cat = document.getElementById('dCat')?.value || '';
     var sub = document.getElementById('dSub')?.value || '';
@@ -47706,6 +47709,7 @@ window.addEventListener('load', function() {
     });
   }
 })();
+console.log('[GS] IIFE completed. gsRunDiscover type:', typeof window.gsRunDiscover);
 </script>
 
 </body>
