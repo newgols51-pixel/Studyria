@@ -10067,7 +10067,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 .gs-type-tab { display:inline-flex; align-items:center; gap:5px; padding:7px 14px; border-radius:100px; background:var(--glass); border:1px solid var(--glass-border); color:var(--text2); font-size:.76rem; font-weight:600; cursor:pointer; transition:all .2s; font-family:var(--font-ui); white-space:nowrap; }
 .gs-type-tab:hover { border-color:var(--glass-border-hover); color:var(--text); }
 .gs-type-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 2px 12px rgba(147,2,5,0.3); }
-.gs-type-tab .gs-type-count { font-size:.65rem; opacity:.7; font-weight:700; background:rgba(255,255,255,0.15); padding:1px 5px; border-radius:100px; min-width:16px; text-align:center; }
+.gs-type-tab .gs-type-count { font-size:.65rem; opacity:.6; font-weight:700; background:rgba(147,2,5,0.08); color:#930205; padding:1px 6px; border-radius:100px; min-width:18px; text-align:center; }
 .gs-type-tab:not(.active) .gs-type-count { background:var(--glass); color:var(--text3); }
 .gs-results-group { margin-bottom:24px; }
 .gs-group-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--glass-border); }
@@ -10091,6 +10091,60 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 .sh-discover-section {
   padding: 32px 0 24px;
   background: linear-gradient(180deg, transparent 0%, rgba(147,2,5,0.03) 100%);
+}
+.sh-section-subtitle { display:block; }
+
+/* ── Enhanced Search Bar ─────────────────────────────────────── */
+#discoverSearch {
+  border: 1.5px solid rgba(147,2,5,0.15) !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+#discoverSearch:focus {
+  border-color: rgba(147,2,5,0.4) !important;
+  box-shadow: 0 0 0 3px rgba(147,2,5,0.08) !important;
+  outline: none !important;
+}
+
+/* ── Enhanced Type Tabs ─────────────────────────────────────── */
+.gs-type-tab.active .gs-type-count {
+  background: rgba(255,255,255,0.25) !important;
+  color: #fff !important;
+}
+
+/* ── GS Result Cards ────────────────────────────────────────── */
+.gs-job-card:hover,.gs-quiz-card:hover,.gs-mock-card:hover,.gs-affair-card:hover,.gs-cat-card:hover {
+  border-color: rgba(147,2,5,0.25) !important;
+  box-shadow: 0 4px 16px rgba(147,2,5,0.08) !important;
+}
+
+.gs-group-see-all {
+  margin-left:auto; font-size:.72rem; color:#930205; cursor:pointer;
+  font-weight:600; opacity:.8; transition:opacity .15s;
+}
+.gs-group-see-all:hover { opacity:1; text-decoration:underline; }
+
+.gs-card-tag {
+  display:inline-block; padding:2px 8px; border-radius:6px;
+  font-size:.62rem; font-weight:700; background:rgba(147,2,5,0.08);
+  color:#930205; text-transform:uppercase; letter-spacing:.03em;
+}
+
+/* ── Mobile optimizations ────────────────────────────────────── */
+@media(max-width:480px) {
+  .sh-discover-section { padding: 20px 0 16px; }
+  #discoverSearch { font-size:.85rem !important; height:44px !important; }
+  .gs-type-tab { font-size:.72rem !important; padding:6px 11px !important; }
+  .sh-discover-filters { gap:8px !important; }
+  .sh-filter-select { min-width:100px !important; font-size:.78rem !important; }
+  .gs-group-see-all { font-size:.68rem; }
+}
+
+@media(max-width:360px) {
+  #discoverSearch { font-size:.8rem !important; padding-left:38px !important; }
+  .gs-type-tab { font-size:.68rem !important; padding:5px 9px !important; gap:3px; }
+  .sh-filter-select { min-width:90px !important; }
 }
 .sh-discover-filters {
   display: flex; flex-wrap: wrap; gap: 10px;
@@ -10395,17 +10449,39 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
         <span class="sh-section-dot" style="background:var(--accent)"></span>
         <span class="sh-section-title">🔍 Search Studyria</span>
       </div>
+      <p class="sh-section-subtitle" style="font-size:.8rem;color:var(--text2);margin-top:2px">Search PDFs, Jobs, Quizzes, Mock Tests, Current Affairs & more</p>
     </div>
-    <div class="gs-type-tabs" id="gsTypeTabs">
-      <button class="gs-type-tab active" data-type="all" onclick="gsSetType('all')">All <span class="gs-type-count" id="gsCountAll">0</span></button>
-      <button class="gs-type-tab" data-type="pdf" onclick="gsSetType('pdf')">PDFs <span class="gs-type-count" id="gsCountPdf">0</span></button>
-      <button class="gs-type-tab" data-type="job" onclick="gsSetType('job')">Jobs <span class="gs-type-count" id="gsCountJob">0</span></button>
-      <button class="gs-type-tab" data-type="quiz" onclick="gsSetType('quiz')">Quizzes <span class="gs-type-count" id="gsCountQuiz">0</span></button>
-      <button class="gs-type-tab" data-type="mock" onclick="gsSetType('mock')">Mock Tests <span class="gs-type-count" id="gsCountMock">0</span></button>
-      <button class="gs-type-tab" data-type="affair" onclick="gsSetType('affair')">Current Affairs <span class="gs-type-count" id="gsCountAffair">0</span></button>
-      <button class="gs-type-tab" data-type="cat" onclick="gsSetType('cat')">Categories <span class="gs-type-count" id="gsCountCat">0</span></button>
+
+    <!-- ── Search Bar ────────────────────────────────────────── -->
+    <div id="omniSearchWrap" style="position:relative;margin-bottom:12px">
+      <div style="position:relative;display:flex;align-items:center">
+        <svg style="position:absolute;left:14px;width:18px;height:18px;color:#930205;opacity:.6;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="search" class="sh-filter-select" id="discoverSearch"
+          style="width:100%;padding-left:42px;padding-right:36px;font-size:.88rem;height:46px;border-color:rgba(147,2,5,0.15)"
+          placeholder="Search Studyria…"
+          data-i18n-placeholder="search_placeholder"
+          oninput="omniOnInput()" onfocus="omniOnFocus()" onblur="omniOnBlur()"
+          onkeydown="omniOnKeydown(event)" autocomplete="off"
+          aria-label="Search Studyria" aria-autocomplete="list" aria-haspopup="listbox" />
+        <button id="discoverSearchClear" onclick="clearDiscoverSearch()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#930205;opacity:.6;font-size:1.1rem;line-height:1" aria-label="Clear search">&times;</button>
+      </div>
+      <!-- Autocomplete dropdown -->
+      <div id="omniDropdown" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#ffffff;border:1px solid rgba(147,2,5,0.15);border-radius:12px;overflow:hidden;z-index:9990;box-shadow:0 12px 40px rgba(10,16,34,0.12);animation:langFadeIn .15s ease;max-height:320px;overflow-y:auto"></div>
     </div>
-    <div class="sh-discover-filters">
+
+    <!-- ── Content Type Tabs ─────────────────────────────────── -->
+    <div class="gs-type-tabs" id="gsTypeTabs" style="margin-bottom:10px">
+      <button class="gs-type-tab active" data-type="all" onclick="gsSetType('all')">All <span class="gs-type-count" id="gsCountAll">…</span></button>
+      <button class="gs-type-tab" data-type="pdf" onclick="gsSetType('pdf')">PDFs <span class="gs-type-count" id="gsCountPdf">…</span></button>
+      <button class="gs-type-tab" data-type="job" onclick="gsSetType('job')">Jobs <span class="gs-type-count" id="gsCountJob">…</span></button>
+      <button class="gs-type-tab" data-type="quiz" onclick="gsSetType('quiz')">Quizzes <span class="gs-type-count" id="gsCountQuiz">…</span></button>
+      <button class="gs-type-tab" data-type="mock" onclick="gsSetType('mock')">Mock Tests <span class="gs-type-count" id="gsCountMock">…</span></button>
+      <button class="gs-type-tab" data-type="affair" onclick="gsSetType('affair')">Current Affairs <span class="gs-type-count" id="gsCountAffair">…</span></button>
+      <button class="gs-type-tab" data-type="cat" onclick="gsSetType('cat')">Categories <span class="gs-type-count" id="gsCountCat">…</span></button>
+    </div>
+
+    <!-- ── Advanced Filters ──────────────────────────────────── -->
+    <div class="sh-discover-filters" id="discoverAdvancedFilters" style="margin-bottom:10px">
       <select class="sh-filter-select" id="dCat" onchange="onDiscoverInput()">
         <option value="">All Categories</option>
       </select>
@@ -10418,37 +10494,27 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
       <select class="sh-filter-select" id="dSubject" onchange="onDiscoverInput()">
         <option value="">All Subjects</option>
       </select>
+      <button class="omni-pill" data-filter="all" onclick="omniSetFreePaid('all')" style="padding:9px 14px">All</button>
+      <button class="omni-pill" data-filter="free" onclick="omniSetFreePaid('free')" style="padding:9px 14px">Free</button>
+      <button class="omni-pill" data-filter="paid" onclick="omniSetFreePaid('paid')" style="padding:9px 14px">Paid</button>
     </div>
-    <div>
-      <!-- ── Omni Search wrapper ───────────────────────── -->
-      <div id="omniSearchWrap" style="position:relative;margin-bottom:4px">
-        <input type="search" class="sh-filter-select" id="discoverSearch"
-          style="width:100%"
-          placeholder="Search PDFs, jobs, quizzes, current affairs…"
-          data-i18n-placeholder="search_placeholder"
-          oninput="omniOnInput()" onfocus="omniOnFocus()" onblur="omniOnBlur()"
-          onkeydown="omniOnKeydown(event)" autocomplete="off"
-          aria-label="Search Studyria" aria-autocomplete="list" aria-haspopup="listbox" />
-        <!-- Autocomplete dropdown -->
-        <div id="omniDropdown" role="listbox" style="display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--glass-bg,rgba(18,18,30,0.98));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;z-index:9990;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:langFadeIn .15s ease;max-height:320px;overflow-y:auto"></div>
-      </div>
-      <!-- ── Free / Paid filter pills (shown on search focus) ─ -->
-      <div id="omniFreePaidWrap" style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:10px;margin-top:4px">
-        <button class="omni-pill" data-filter="all"   onclick="omniSetFreePaid('all')"  >All</button>
-        <button class="omni-pill" data-filter="free"  onclick="omniSetFreePaid('free')" >Free</button>
-        <button class="omni-pill" data-filter="paid"  onclick="omniSetFreePaid('paid')" >Paid</button>
-      </div>
-    </div>
-    <div id="discoverResultsWrap" style="display:none;margin-top:24px">
+
+    <!-- ── Results Area ───────────────────────────────────────── -->
+    <div id="discoverResultsWrap" style="display:none;margin-top:20px">
       <div id="discoverLoading" class="discover-loading" style="display:none">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        Searching…
+        Searching Studyria…
+      </div>
+      <div id="discoverError" style="display:none;text-align:center;padding:40px 20px">
+        <p style="color:#930205;font-size:.88rem;margin-bottom:12px">Unable to load results.</p>
+        <button onclick="gsRetrySearch()" style="padding:8px 20px;border-radius:10px;background:#930205;color:#fff;border:none;cursor:pointer;font-size:.82rem;font-weight:600">Retry</button>
       </div>
       <div id="discoverResults" class="pdf-grid"></div>
       <div id="discoverEmpty" class="discover-empty" style="display:none">
         <div style="text-align:center;padding:40px 20px;color:var(--text2)">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:.4"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <p>No PDFs found. Try a different search.</p>
+          <p style="font-size:.88rem">No matching results found.</p>
+          <p style="font-size:.78rem;opacity:.7;margin-top:4px">Try another keyword or filter.</p>
         </div>
       </div>
     </div>
@@ -38204,6 +38270,12 @@ document.addEventListener('DOMContentLoaded', async function _appInit() {
   // Load categories from database (non-blocking)
   loadCategoriesFromDB().catch(e => console.warn('Categories load:', e));
 
+  // Initialize global search counts from real backend data (non-blocking)
+  // Delay 2s to allow PDFS + categories to load first
+  setTimeout(function() {
+    if (typeof window.gsInitCounts === 'function') window.gsInitCounts();
+  }, 2000);
+
   // Load active announcement into the bar (non-blocking)
   loadActiveAnnouncement().catch(e => console.warn('Announcement load:', e));
 
@@ -40005,32 +40077,28 @@ document.addEventListener('keydown', e => {
 
 /* ── Omni pill buttons ───────────────────────────────────────────── */
 .omni-pill {
-  padding:4px 13px;border-radius:20px;border:1px solid rgba(255,255,255,0.12);
-  background:rgba(255,255,255,0.05);color:var(--text2,rgba(200,210,230,0.8));
+  padding:5px 14px;border-radius:20px;border:1px solid rgba(147,2,5,0.15);
+  background:#fff;color:#4a5f80;
   cursor:pointer;font-size:.74rem;font-family:inherit;transition:all .15s;
 }
 .omni-pill:hover,.omni-pill.active {
-  background:rgba(147,2,5,0.18);border-color:rgba(147,2,5,0.5);
-  color:var(--accent,#930205);font-weight:700;
-}
-body.light .omni-pill { color:rgba(30,40,70,0.7); }
-body.light .omni-pill:hover,body.light .omni-pill.active {
-  background:rgba(147,2,5,0.12);color:#1e63d0;
+  background:rgba(147,2,5,0.08);border-color:rgba(147,2,5,0.4);
+  color:#930205;font-weight:700;
 }
 
 /* ── Autocomplete rows ───────────────────────────────────────────── */
 .omni-row {
-  display:flex;align-items:center;gap:10px;padding:9px 14px;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
   cursor:pointer;font-size:.84rem;transition:background .12s;
-  color:var(--text1,#e8eaf2);
+  color:#0a1022;border-bottom:1px solid rgba(0,0,0,0.04);
 }
-.omni-row:hover,.omni-row.focused { background:rgba(147,2,5,0.1); }
+.omni-row:hover,.omni-row.focused { background:rgba(147,2,5,0.06); }
 .omni-row-icon { font-size:1rem;flex-shrink:0;width:22px;text-align:center; }
 .omni-section-hd {
   font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  color:rgba(128,145,180,0.6);padding:8px 14px 4px;
+  color:#930205;opacity:.6;padding:8px 14px 4px;
+  border-bottom:1px solid rgba(147,2,5,0.06);
 }
-body.light .omni-row { color:rgba(30,40,70,0.85); }
 </style>
 
 <script>
@@ -40327,6 +40395,9 @@ window.omniSetFreePaid = function(val) {
 window.omniOnInput = function() {
   clearTimeout(_timer);
   var q = (document.getElementById('discoverSearch')?.value || '').trim();
+  // Show/hide clear button
+  var clearBtn = document.getElementById('discoverSearchClear');
+  if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
   // trigger existing search (debounced at 200ms)
   _timer = setTimeout(function(){
     if (typeof onDiscoverInput === 'function') onDiscoverInput();
@@ -40335,6 +40406,22 @@ window.omniOnInput = function() {
   }, DEBOUNCE_MS);
   // also update dropdown immediately for fast feel
   renderDropdown(q);
+};
+
+window.clearDiscoverSearch = function() {
+  var inp = document.getElementById('discoverSearch');
+  if (inp) inp.value = '';
+  var clearBtn = document.getElementById('discoverSearchClear');
+  if (clearBtn) clearBtn.style.display = 'none';
+  ['dCat','dSub','dStream','dSubject'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  var _rw = document.getElementById('discoverResultsWrap');
+  if (_rw) _rw.style.display = 'none';
+  if (typeof onDiscoverInput === 'function') onDiscoverInput();
+  hideDropdown();
+  if (inp) inp.focus();
 };
 
 var _pendingRecent = null;
@@ -47561,9 +47648,11 @@ window.addEventListener('load', function() {
     var dl = document.getElementById('discoverLoading');
     var dr = document.getElementById('discoverResults');
     var de = document.getElementById('discoverEmpty');
+    var derr = document.getElementById('discoverError');
     if (dl) dl.style.display = 'flex';
     if (dr) dr.innerHTML = '';
     if (de) de.style.display = 'none';
+    if (derr) derr.style.display = 'none';
     if (typeof updateActivePills === 'function') updateActivePills();
 
     var grouped = { pdf:[], job:[], quiz:[], mock:[], affair:[], cat:[] };
@@ -47635,6 +47724,7 @@ window.addEventListener('load', function() {
 
     updateTypeCounts(grouped);
     if (dl) dl.style.display = 'none';
+    if (derr) derr.style.display = 'none';
 
     var displayGroups = {};
     if (_currentType === 'all') displayGroups = grouped;
@@ -47713,6 +47803,63 @@ window.addEventListener('load', function() {
       if (el) el.textContent = counts[k];
     });
   }
+
+  /* ── Initialize real counts from backend on page load ─────────── */
+  window.gsInitCounts = async function() {
+    var counts = { pdf: 0, job: 0, quiz: 0, mock: 0, affair: 0, cat: 0 };
+    var labelMap = { pdf:'Pdf', job:'Job', quiz:'Quiz', mock:'Mock', affair:'Affair', cat:'Cat' };
+
+    // PDFs — from window.PDFS (loaded from Supabase)
+    counts.pdf = (window.PDFS || []).filter(function(p){ return p && p.title && (p.status === 'published' || p.status === 'approved' || !p.status); }).length;
+
+    // Quizzes — from SQ array
+    if (typeof SQ !== 'undefined') counts.quiz = SQ.length;
+
+    // Mocks — from SM array
+    if (typeof SM !== 'undefined') counts.mock = SM.length;
+
+    // Categories — from _dbCategories
+    counts.cat = (window._dbCategories || []).length;
+
+    // Jobs — from Supabase with timeout
+    var sb = window.supabaseClient;
+    if (sb) {
+      try {
+        var jobRes = await Promise.race([
+          sb.from('jobs').select('id', { count: 'exact', head: true }).eq('active', true),
+          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 5000); })
+        ]);
+        if (jobRes && jobRes.count !== undefined) counts.job = jobRes.count;
+      } catch(e) { console.warn('GS init counts - jobs:', e); }
+
+      // Current Affairs — from Supabase with timeout
+      try {
+        var affairRes = await Promise.race([
+          sb.from('current_affairs').select('id', { count: 'exact', head: true }).eq('is_deleted', false),
+          new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 5000); })
+        ]);
+        if (affairRes && affairRes.count !== undefined) counts.affair = affairRes.count;
+      } catch(e) { console.warn('GS init counts - affairs:', e); }
+    }
+
+    counts.all = counts.pdf + counts.job + counts.quiz + counts.mock + counts.affair + counts.cat;
+
+    // Update the DOM
+    Object.keys(counts).forEach(function(k) {
+      var label = k === 'all' ? 'All' : labelMap[k];
+      var el = document.getElementById('gsCount' + label);
+      if (el) el.textContent = counts[k];
+    });
+
+    console.log('✅ Global Search counts loaded:', counts);
+  };
+
+  /* ── Retry search function ────────────────────────────────────── */
+  window.gsRetrySearch = function() {
+    var errEl = document.getElementById('discoverError');
+    if (errEl) errEl.style.display = 'none';
+    if (typeof onDiscoverInput === 'function') onDiscoverInput();
+  };
 })();
 </script>
 
