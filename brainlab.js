@@ -324,4 +324,9 @@ showVocabulary:function(){var vocab=[{word:'Ubiquitous',meaning:'Present everywh
 /* ── Countdown ── */
 showCountdown:function(){var events=[{name:'ADRE 2026',date:'2026-09-15'},{name:'APSC Prelims 2026',date:'2026-10-01'},{name:'Assam TET 2026',date:'2026-08-30'},{name:'SSC CGL 2026',date:'2026-07-20'}];var h='<div class="bl-modal-overlay" id="bl-cd-modal" onclick="if(event.target===this)this.remove()"><div class="bl-modal-box"><div class="bl-modal-header"><h3>📅 Exam Countdown</h3><button class="bl-modal-close" onclick="this.closest(\'.bl-modal-overlay\').remove()">✕</button></div><div class="bl-modal-body">';events.forEach(function(e){var days=Math.ceil((new Date(e.date)-new Date())/86400000);h+='<div class="bl-cd-item"><div class="bl-cd-name">'+e.name+'</div><div class="bl-cd-days'+(days<=0?' passed':'')+'">'+(days>0?days+' days':'Passed')+'</div><div class="bl-cd-date">'+e.date+'</div></div>';});h+='</div></div></div>';var ex=document.createElement('div');ex.innerHTML=h;document.body.appendChild(ex.firstChild);}
 };
+
+// Expose SQ and SM globally for Global Search
+window.SQ = SQ;
+window.SM = SM;
+
 })();
