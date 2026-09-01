@@ -47792,7 +47792,18 @@ window.addEventListener('load', function() {
     var hasFilters = query || cat || sub || stream || subject;
     var resultsWrap = document.getElementById('discoverResultsWrap');
     if (resultsWrap) resultsWrap.style.display = hasFilters ? 'block' : 'none';
-    if (!hasFilters) { if (typeof updateActivePills === 'function') updateActivePills(); if (_cachedCounts) { updateTypeCounts(_cachedCounts); } else { /* still loading, keep … placeholder */ } return; }
+    if (!hasFilters) {
+      if (typeof updateActivePills === 'function') updateActivePills();
+      if (_cachedCounts) {
+        // Restore cached initial counts directly to DOM (updateTypeCounts expects arrays, but _cachedCounts has numbers)
+        var labelMap = { all:'All', pdf:'Pdf', job:'Job', quiz:'Quiz', mock:'Mock', affair:'Affair', cat:'Cat' };
+        Object.keys(_cachedCounts).forEach(function(k) {
+          var el = document.getElementById('gsCount' + labelMap[k]);
+          if (el) el.textContent = _cachedCounts[k];
+        });
+      }
+      return;
+    }
 
     var dl = document.getElementById('discoverLoading');
     var dr = document.getElementById('discoverResults');
