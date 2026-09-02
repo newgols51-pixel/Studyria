@@ -1,0 +1,89 @@
+/* brainlab-icons.css — Studyria BrainLab Premium Icon System (visual only)
+   Unified badge/shadow/spacing system; each section gets its own accent tint
+   so cards feel differentiated while staying inside the red+gold+cream identity. */
+
+/* ── Per-card icon badge (replaces bare emoji in .bl-card-icon) ── */
+.bl-icon-badge{
+  --bl-icon-bg:#fdf6ee;
+  width:44px;height:44px;
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  background:var(--bl-icon-bg);
+  box-shadow:inset 0 0 0 1px rgba(147,2,5,0.08);
+  transition:transform .22s cubic-bezier(0.4,0,0.2,1),box-shadow .22s ease;
+}
+.bl-icon-badge svg{width:24px;height:24px;color:var(--bl-icon-fg,#930205);display:block}
+.bl-card:hover .bl-icon-badge{transform:translateY(-1px) scale(1.04);box-shadow:inset 0 0 0 1px rgba(147,2,5,0.14),0 4px 10px rgba(147,2,5,0.08)}
+
+/* Section accent tints — same shape language, distinct warm hue per section */
+.bl-icon-quizzes  { --bl-icon-bg: rgba(201,154,60,0.14);  --bl-icon-fg: #b8860b; }
+.bl-icon-mocks    { --bl-icon-bg: rgba(147,2,5,0.09);     --bl-icon-fg: #930205; }
+.bl-icon-pyq      { --bl-icon-bg: rgba(151,114,58,0.14);  --bl-icon-fg: #7a5c2e; }
+.bl-icon-mcqs     { --bl-icon-bg: rgba(190,90,58,0.13);   --bl-icon-fg: #a1522f; }
+.bl-icon-flashcards{--bl-icon-bg: rgba(178,55,90,0.11);   --bl-icon-fg: #a8375a; }
+.bl-icon-affairs  { --bl-icon-bg: rgba(160,130,50,0.14);  --bl-icon-fg: #8c6d1f; }
+.bl-icon-mistakes { --bl-icon-bg: rgba(196,70,40,0.12);   --bl-icon-fg: #b8461f; }
+.bl-icon-daily    { --bl-icon-bg: rgba(224,150,40,0.16);  --bl-icon-fg: #c07d0f; }
+
+/* Cards using the badge system get slightly more breathing room at the top */
+.bl-card:has(.bl-icon-badge){ gap:10px; }
+
+/* ── Section hero icon — bigger composite glyph, one per section, used in headers/banners ── */
+.bl-hero-icon{
+  --bl-hero-bg:#fdf6ee;
+  width:38px;height:38px;
+  border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  background:linear-gradient(150deg,var(--bl-hero-bg),rgba(255,255,255,0.4));
+  box-shadow:inset 0 0 0 1px rgba(147,2,5,0.1);
+}
+.bl-hero-icon svg{width:23px;height:23px;color:var(--bl-hero-fg,#930205);display:block}
+.bl-hero-icon.bl-icon-quizzes  { --bl-hero-bg: rgba(201,154,60,0.16); --bl-hero-fg:#b8860b; }
+.bl-hero-icon.bl-icon-mocks    { --bl-hero-bg: rgba(147,2,5,0.10);   --bl-hero-fg:#930205; }
+.bl-hero-icon.bl-icon-pyq      { --bl-hero-bg: rgba(151,114,58,0.16);--bl-hero-fg:#7a5c2e; }
+.bl-hero-icon.bl-icon-mcqs     { --bl-hero-bg: rgba(190,90,58,0.15); --bl-hero-fg:#a1522f; }
+.bl-hero-icon.bl-icon-flashcards{--bl-hero-bg: rgba(178,55,90,0.13); --bl-hero-fg:#a8375a; }
+.bl-hero-icon.bl-icon-affairs  { --bl-hero-bg: rgba(160,130,50,0.16);--bl-hero-fg:#8c6d1f; }
+.bl-hero-icon.bl-icon-mistakes { --bl-hero-bg: rgba(196,70,40,0.14); --bl-hero-fg:#b8461f; }
+.bl-hero-icon.bl-icon-daily    { --bl-hero-bg: rgba(224,150,40,0.18);--bl-hero-fg:#c07d0f; }
+
+/* Section header now carries the hero icon beside the title, no layout shift for
+   sections that don't have one (bl-section-header keeps its existing flex rules) */
+.bl-section-header .bl-hero-icon{ margin-right:2px; }
+.bl-section-title-wrap{ display:flex; align-items:center; gap:10px; }
+
+/* ── Custom-quiz / promo banner icon upgrade (was plain emoji in a bare div) ── */
+.bl-custom-icon{
+  width:52px;height:52px;
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  background:linear-gradient(150deg,rgba(201,154,60,0.18),rgba(147,2,5,0.08));
+  box-shadow:inset 0 0 0 1px rgba(147,2,5,0.12);
+}
+.bl-custom-icon svg{width:28px;height:28px;color:#930205}
+
+/* ── Daily challenge icon upgrade ── */
+.bl-daily-icon{
+  width:46px;height:46px;
+  border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  background:rgba(224,150,40,0.16);
+  box-shadow:inset 0 0 0 1px rgba(147,2,5,0.08);
+}
+.bl-daily-icon svg{width:25px;height:25px;color:#c07d0f}
+.bl-daily-completed .bl-daily-icon{background:rgba(34,197,94,0.14)}
+.bl-daily-completed .bl-daily-icon svg{color:#16a34a}
+
+/* Responsive: keep badges proportional and never let them crowd small cards */
+@media (max-width:380px){
+  .bl-icon-badge{width:38px;height:38px;border-radius:10px}
+  .bl-icon-badge svg{width:20px;height:20px}
+  .bl-hero-icon{width:32px;height:32px}
+  .bl-hero-icon svg{width:19px;height:19px}
+  .bl-custom-icon{width:44px;height:44px}
+  .bl-custom-icon svg{width:23px;height:23px}
+}
