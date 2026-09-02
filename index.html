@@ -16716,26 +16716,6 @@ window._chMenuBootstrap = (function() {
   };
 })();
 </script>
-<script>
-/* TEMP DIAGNOSTIC — remove after Career Hub menu debugging */
-document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() {
-    var ov = document.getElementById('chMenuOverlay');
-    var el = document.createElement('div');
-    el.id = 'ch-debug-badge';
-    el.style.cssText = 'position:fixed;bottom:8px;left:8px;z-index:99999;background:#000;color:#0f0;font:11px/1.5 monospace;padding:6px 9px;border-radius:6px;max-width:92vw;white-space:pre-wrap';
-    function upd(tag) {
-      var src = (window.chOpenMenu && window.chOpenMenu.toString().indexOf('_pendingOpen') !== -1) ? 'STUB' : (window.chOpenMenu ? 'REAL' : 'UNDEF');
-      var sty = document.getElementById('ch-v5-styles') ? 'V5CSS' : 'NOCSS';
-      el.textContent = tag + ' open=' + src + ' css=' + sty + ' ovclass=[' + (ov ? (ov.getAttribute('class') || 'EMPTY') : 'NOEL') + '] chInit=' + (typeof chInit);
-      if (!el.parentNode) document.body.appendChild(el);
-    }
-    upd('boot');
-    var ob = document.getElementById('careerMenuBtn');
-    if (ob) ob.addEventListener('click', function() { setTimeout(function() { upd('click+400'); }, 400); });
-  }, 2000);
-});
-</script>
 </div>
 <div class="page" id="page-privacy">
   <div style="max-width:780px;margin:0 auto;padding:40px 20px 80px;">
