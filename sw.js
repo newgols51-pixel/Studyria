@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v48'; // fix Live Notifications real-data pipeline (announcements/jobs column names, quiz/mock global exposure)
+const CACHE_VERSION = 'v49'; /* fix BrainLab: restore full engine (getDailyStatus, pyq/mcq switchTab, answer locks, SVG icons) */
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
