@@ -16674,6 +16674,38 @@ window._chMenuBootstrap = (function() {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _bindButtons);
   else _bindButtons();
+  /* Self-heal: if the Career Hub engine never activates (deferred script
+     failure, bad cache, etc.), force the drawer open/closed so the menu
+     always works for users. No-op when the engine is healthy. */
+  function _selfHeal() {
+    var ov = document.getElementById('chMenuOverlay');
+    var ob = document.getElementById('careerMenuBtn');
+    var cb = document.getElementById('careerMenuCloseBtn');
+    if (!ov) return;
+    if (ob) ob.addEventListener('click', function() {
+      setTimeout(function() {
+        if (!ov.classList.contains('open')) {
+          console.warn('[ch-menu] engine activate missed — self-healing open');
+          ov.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          if (typeof _chMR === 'function') { try { _chMR(); } catch (e) {} }
+        }
+      }, 350);
+    });
+    function _healClose() {
+      setTimeout(function() {
+        if (ov.classList.contains('open')) {
+          console.warn('[ch-menu] engine close missed — self-healing close');
+          ov.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      }, 350);
+    }
+    if (cb) cb.addEventListener('click', _healClose);
+    ov.addEventListener('click', function(e) { if (e.target === ov) _healClose(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _selfHeal);
+  else _selfHeal();
   return {
     activate: function(openFn, closeFn) {
       window.chOpenMenu = openFn;
