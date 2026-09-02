@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v48'; // fix Live Notifications real-data pipeline (announcements/jobs column names, quiz/mock global exposure)
+const CACHE_VERSION = 'v49'; // fix broken hero — restore real text-based hero (404'd hero-banner.jpg replaced with working DOM hero)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
