@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v49'; // fix broken hero — restore real text-based hero (404'd hero-banner.jpg replaced with working DOM hero)
+const CACHE_VERSION = 'v50'; // restore real approved hero-banner image + graceful text fallback if it ever fails to load
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;

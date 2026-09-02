@@ -10436,8 +10436,51 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </style>
 
 <!-- ── HERO (REDESIGNED) ──────────────────────────────────────── -->
-<section class="hr-hero sh-hero" id="dynamicHero">
-  <div class="hr-hero-inner">
+<section class="hr-hero sh-hero hero-img-active" id="dynamicHero">
+  <div class="hero-img-wrap" id="heroImgWrap" style="position:relative;width:100%;max-width:1086px;margin:0 auto;overflow:hidden;">
+    <picture>
+      <source srcset="hero-banner.webp" type="image/webp">
+      <img src="hero-banner.jpg" alt="Studyria — Assam's #1 Study Platform. Turn your Assam govt job dream into reality. Browse Study Materials. Start Free. Follow us on Instagram, YouTube, Pinterest, WhatsApp, Telegram." width="1086" height="1322" fetchpriority="high" decoding="async" style="display:block;width:100%;height:auto;" onerror="window.__heroImgFallback && window.__heroImgFallback()" />
+    </picture>
+
+    <!-- Invisible hotspots: preserve CTA + social functionality without altering artwork -->
+
+    <!-- Browse Study Materials button (red filled, ~82-89% height, 22-77% width) -->
+    <a href="javascript:void(0)" onclick="navigate('library')" aria-label="Browse Study Materials"
+       style="position:absolute;left:22%;top:82%;width:55%;height:7%;z-index:5;">
+    </a>
+
+    <!-- Start Free button (outline, ~90-94% height, 24-76% width) -->
+    <a href="javascript:void(0)" onclick="navigate('register')" aria-label="Start Free"
+       style="position:absolute;left:24%;top:90%;width:52%;height:5%;z-index:5;">
+    </a>
+
+    <!-- Social icon hotspots (~70-77% height) -->
+    <!-- Instagram: 31-35% width -->
+    <a href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==" target="_blank" rel="noopener noreferrer" aria-label="Studyria Instagram"
+       style="position:absolute;left:31%;top:70%;width:5%;height:7%;z-index:5;">
+    </a>
+    <!-- YouTube: 39-44% width -->
+    <a href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA" target="_blank" rel="noopener noreferrer" aria-label="Studyria YouTube"
+       style="position:absolute;left:39%;top:70%;width:5%;height:7%;z-index:5;">
+    </a>
+    <!-- Center icon (Pinterest): 48-52% width -->
+    <a href="https://pin.it/3f4ctNDO7" target="_blank" rel="noopener noreferrer" aria-label="Studyria Pinterest"
+       style="position:absolute;left:48%;top:70%;width:4%;height:7%;z-index:5;">
+    </a>
+    <!-- WhatsApp: 56-60% width -->
+    <a href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R" target="_blank" rel="noopener noreferrer" aria-label="Studyria WhatsApp"
+       style="position:absolute;left:56%;top:70%;width:4.5%;height:7%;z-index:5;">
+    </a>
+    <!-- Telegram: 65-69% width -->
+    <a href="https://t.me/studyria" target="_blank" rel="noopener noreferrer" aria-label="Studyria Telegram"
+       style="position:absolute;left:65%;top:70%;width:4.5%;height:7%;z-index:5;">
+    </a>
+  </div>
+
+  <!-- Graceful fallback: full real, accessible text hero — shown automatically if the
+       banner image ever fails to load (network blip, CDN miss, etc). Never a blank hero. -->
+  <div class="hr-hero-inner" id="heroTextFallback" style="display:none">
     <div class="hr-hero-content">
 
       <!-- Eyebrow badge -->
@@ -10454,11 +10497,9 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
         Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">1,500+</span> students</strong> across Assam.
       </p>
 
-
       <!-- Premium Social Media Bar -->
       <div class="hr-hero-social" role="navigation" aria-label="Studyria social media links">
         <span class="hr-hero-social-label">Follow Us</span>
-        <!-- Instagram SVG gradient def -->
         <svg width="0" height="0" style="position:absolute" aria-hidden="true">
           <defs>
             <linearGradient id="hrIgGrad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -10576,6 +10617,65 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     </div>
   </div>
 </section>
+
+<script>
+/* Hero image graceful-fallback: if hero-banner.jpg/webp ever fails to load
+   (network blip, CDN miss, etc), automatically reveal the real text-based
+   hero instead of leaving a blank/broken hero on screen. */
+(function(){
+  function showHeroFallback(){
+    var sec = document.getElementById('dynamicHero');
+    var imgWrap = document.getElementById('heroImgWrap');
+    var txt = document.getElementById('heroTextFallback');
+    if (sec) sec.classList.remove('hero-img-active');
+    if (imgWrap) imgWrap.style.display = 'none';
+    if (txt) txt.style.display = '';
+  }
+  window.__heroImgFallback = showHeroFallback;
+  function checkAlreadyFailed(){
+    var img = document.querySelector('#heroImgWrap img');
+    if (img && img.complete && img.naturalWidth === 0) showHeroFallback();
+  }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    checkAlreadyFailed();
+  } else {
+    document.addEventListener('DOMContentLoaded', checkAlreadyFailed);
+  }
+})();
+</script>
+
+<style>
+/* ── HERO IMAGE BANNER (Image B replacement) ─────────────────── */
+#dynamicHero.hero-img-active {
+  background: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  overflow: hidden !important;
+}
+#dynamicHero.hero-img-active::before { display: none !important; }
+#dynamicHero.hero-img-active::after { display: none !important; content: none !important; }
+.hero-img-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1086px;
+  margin: 0 auto;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 1;
+}
+.hero-img-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero-img-wrap a {
+  display: block;
+  cursor: pointer;
+}
+@media (max-width: 480px) {
+  .hero-img-wrap { max-width: 100vw; }
+}
+</style>
 
 <!-- ── STAT BAND (matches homepage.html) ─────────────────────── -->
 <!-- ── LIVE NOTIFICATIONS ─────────────────────────────────────── -->
