@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v50'; // restore real approved hero-banner image + graceful text fallback if it ever fails to load
+const CACHE_VERSION = 'v48'; // fix Live Notifications real-data pipeline (announcements/jobs column names, quiz/mock global exposure)
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;

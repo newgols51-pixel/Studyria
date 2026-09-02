@@ -10436,11 +10436,11 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 </style>
 
 <!-- ── HERO (REDESIGNED) ──────────────────────────────────────── -->
-<section class="hr-hero sh-hero hero-img-active" id="dynamicHero">
-  <div class="hero-img-wrap" id="heroImgWrap" style="position:relative;width:100%;max-width:1086px;margin:0 auto;overflow:hidden;">
+<section class="hr-hero sh-hero" id="dynamicHero" style="padding:0;background:none;">
+  <div class="hero-img-wrap" style="position:relative;width:100%;max-width:1086px;margin:0 auto;overflow:hidden;">
     <picture>
       <source srcset="hero-banner.webp" type="image/webp">
-      <img src="hero-banner.jpg" alt="Studyria — Assam's #1 Study Platform. Turn your Assam govt job dream into reality. Browse Study Materials. Start Free. Follow us on Instagram, YouTube, Pinterest, WhatsApp, Telegram." width="1086" height="1322" fetchpriority="high" decoding="async" style="display:block;width:100%;height:auto;" onerror="window.__heroImgFallback && window.__heroImgFallback()" />
+      <img src="hero-banner.jpg" alt="Studyria — Assam's #1 Study Platform. Turn your Assam govt job dream into reality. Browse Study Materials. Start Free. Follow us on Instagram, YouTube, Pinterest, WhatsApp, Telegram." width="1086" height="1322" fetchpriority="high" decoding="async" style="display:block;width:100%;height:auto;" />
     </picture>
 
     <!-- Invisible hotspots: preserve CTA + social functionality without altering artwork -->
@@ -10476,184 +10476,37 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     <a href="https://t.me/studyria" target="_blank" rel="noopener noreferrer" aria-label="Studyria Telegram"
        style="position:absolute;left:65%;top:70%;width:4.5%;height:7%;z-index:5;">
     </a>
-  </div>
 
-  <!-- Graceful fallback: full real, accessible text hero — shown automatically if the
-       banner image ever fails to load (network blip, CDN miss, etc). Never a blank hero. -->
-  <div class="hr-hero-inner" id="heroTextFallback" style="display:none">
-    <div class="hr-hero-content">
-
-      <!-- Eyebrow badge -->
-      <div class="hr-hero-eyebrow">
-        <span class="hr-hero-eyebrow-dot"></span>
-        <span id="heroBadgeText">Assam's #1 Study Platform</span>
-      </div>
-
-      <!-- Title (matches homepage.html — centered, with italic red 'reality') -->
-      <h1 class="hr-hero-title" id="heroTitle"><span class="hr-title-seg">Turn your</span> <span class="hr-title-seg">Assam govt job</span><br class="hr-title-br"><span class="hr-title-seg">dream into</span> <span class="hr-title-seg hr-title-em"><em>reality</em></span></h1>
-
-      <!-- Subtitle -->
-      <p class="hr-hero-sub" id="heroSubtitle">
-        Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">1,500+</span> students</strong> across Assam.
-      </p>
-
-      <!-- Premium Social Media Bar -->
-      <div class="hr-hero-social" role="navigation" aria-label="Studyria social media links">
-        <span class="hr-hero-social-label">Follow Us</span>
-        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-          <defs>
-            <linearGradient id="hrIgGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#FED576"/>
-              <stop offset="26%" stop-color="#F47133"/>
-              <stop offset="61%" stop-color="#BC3081"/>
-              <stop offset="100%" stop-color="#4C63D2"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <a class="hr-hero-social-item" data-brand="instagram"
-           href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA=="
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria Instagram — Study Reels"
-           title="Studyria Instagram">
-          <svg viewBox="0 0 24 24" fill="url(#hrIgGrad)"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="youtube"
-           href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria YouTube channel"
-           title="Studyria YouTube">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="pinterest"
-           href="https://pin.it/3f4ctNDO7"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria Pinterest profile"
-           title="Studyria Pinterest">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="whatsapp"
-           href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria WhatsApp Community"
-           title="Studyria WhatsApp">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-        </a>
-        <a class="hr-hero-social-item" data-brand="telegram"
-           href="https://t.me/studyria"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Studyria Telegram channel"
-           title="Studyria Telegram">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        </a>
-      </div>
-
-      <!-- CTA buttons -->
-      <div class="hr-hero-ctas">
-        <button class="hr-btn-primary" id="heroCta1" onclick="navigate('library')">
-          <span id="heroCta1Text">Browse Study Materials</span>
-        </button>
-        <button class="hr-btn-secondary" id="heroCta2" onclick="navigate('register')">
-          <span id="heroCta2Text">Start Free</span>
-        </button>
-      </div>
-
-      <!-- Search bar -->
-      <div class="hr-hero-search">
-        <span class="hr-hero-search-icon" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </span>
-        <input
-          type="search"
-          id="homeSearch"
-          placeholder="Search notes, exams..."
-          autocomplete="off"
-          oninput="(function(v){var ls=document.getElementById('libSearch');if(ls)ls.value=v;var ds=document.getElementById('discoverSearch');if(ds){ds.value=v;if(typeof onDiscoverInput==='function')onDiscoverInput();}})(this.value)"
-          onkeydown="if(event.key==='Enter'){var v=this.value.trim();if(v&&typeof navigate==='function'){navigate('library');var ls=document.getElementById('libSearch');if(ls){ls.value=v;if(typeof renderLibrary==='function')renderLibrary();}}}"
-          aria-label="Search PDFs"
-        />
-      </div>
-
-      <!-- Trust row (matches homepage.html) -->
-      <div class="hr-hero-stats">
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num" id="heroStatPdfs">⚡</span>
-          <span class="hr-hero-stat-label">Instant PDF Access</span>
-        </div>
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num" id="heroStatStudents">🔒</span>
-          <span class="hr-hero-stat-label">Secure Payment</span>
-        </div>
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num">🎯</span>
-          <span class="hr-hero-stat-label">Assam-Focused Content</span>
-        </div>
-        <div class="hr-hero-stat">
-          <span class="hr-hero-stat-num">⭐</span>
-          <span class="hr-hero-stat-label">4.9/5 from 1,500+ students</span>
-        </div>
-      </div>
-
-      <!-- Social links (hidden via CSS, kept for JS compatibility) -->
-      <div class="hr-hero-socials" style="display:none">
-        <a class="hr-hero-social hr-hero-social--wa" id="heroWaBtn"
-          href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R"
-          target="_blank" rel="noopener noreferrer"
-          aria-label="Join Studyria WhatsApp Community"></a>
-        <a class="hr-hero-social hr-hero-social--tg" id="heroTgBtn"
-          href="https://t.me/studyria" target="_blank" rel="noopener noreferrer"
-          aria-label="Join Studyria Telegram Channel"></a>
-        <a class="hr-hero-social hr-hero-social--ig" id="heroIgBtn"
-          href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==" target="_blank" rel="noopener noreferrer"
-          aria-label="Follow Studyria on Instagram"></a>
-        <a class="hr-hero-social hr-hero-social--yt" id="heroYtBtn"
-          href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA"
-          target="_blank" rel="noopener noreferrer"
-          aria-label="Subscribe to Studyria YouTube Channel"></a>
-      </div>
-
-      <!-- Wordmark (hidden via CSS, kept for JS) -->
-      <div class="hr-hero-wordmark" id="heroSiteName" style="display:none">Studyria</div>
-
+    <!-- Hidden elements for JS compatibility (keep IDs that other scripts reference) -->
+    <span id="heroBadgeText" style="display:none">Assam-Focused Study Platform</span>
+    <h1 id="heroTitle" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Turn your Assam govt job dream into reality</h1>
+    <p id="heroSubtitle" style="display:none">Pass notes, PYQs, mock tests and current affairs for ADRE, APSC, Assam Police &amp; TET — curated by educators who know the exam. Trusted by <strong><span id="homeCtaStudentCount">students</span></strong> across Assam.</p>
+    <span id="heroCta1Text" style="display:none">Browse Study Materials</span>
+    <span id="heroCta2Text" style="display:none">Start Free</span>
+    <span id="heroStatPdfs" style="display:none">⚡</span>
+    <span id="heroStatStudents" style="display:none">🔒</span>
+    <div id="heroSiteName" style="display:none">Studyria</div>
+    <input type="search" id="homeSearch" style="display:none" placeholder="Search notes, exams..." autocomplete="off"
+      oninput="(function(v){var ls=document.getElementById('libSearch');if(ls)ls.value=v;var ds=document.getElementById('discoverSearch');if(ds){ds.value=v;if(typeof onDiscoverInput==='function')onDiscoverInput();}})(this.value)"
+      onkeydown="if(event.key==='Enter'){var v=this.value.trim();if(v&&typeof navigate==='function'){navigate('library');var ls=document.getElementById('libSearch');if(ls){ls.value=v;if(typeof renderLibrary==='function')renderLibrary();}}}" />
+    <div class="hr-hero-socials" style="display:none">
+      <a class="hr-hero-social hr-hero-social--wa" id="heroWaBtn" href="https://chat.whatsapp.com/EpuIk7lT0gE86dCTDjWE5R" target="_blank" rel="noopener noreferrer" aria-label="Join Studyria WhatsApp Community"></a>
+      <a class="hr-hero-social hr-hero-social--tg" id="heroTgBtn" href="https://t.me/studyria" target="_blank" rel="noopener noreferrer" aria-label="Join Studyria Telegram Channel"></a>
+      <a class="hr-hero-social hr-hero-social--ig" id="heroIgBtn" href="https://www.instagram.com/studyria.official?igsh=MWx5ZzY2cGdxZWF1MA==" target="_blank" rel="noopener noreferrer" aria-label="Follow Studyria on Instagram"></a>
+      <a class="hr-hero-social hr-hero-social--yt" id="heroYtBtn" href="https://youtube.com/@studyriaofficial?si=YE4Lx8DXFA2TmKqA" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to Studyria YouTube Channel"></a>
     </div>
   </div>
 </section>
-
-<script>
-/* Hero image graceful-fallback: if hero-banner.jpg/webp ever fails to load
-   (network blip, CDN miss, etc), automatically reveal the real text-based
-   hero instead of leaving a blank/broken hero on screen. */
-(function(){
-  function showHeroFallback(){
-    var sec = document.getElementById('dynamicHero');
-    var imgWrap = document.getElementById('heroImgWrap');
-    var txt = document.getElementById('heroTextFallback');
-    if (sec) sec.classList.remove('hero-img-active');
-    if (imgWrap) imgWrap.style.display = 'none';
-    if (txt) txt.style.display = '';
-  }
-  window.__heroImgFallback = showHeroFallback;
-  function checkAlreadyFailed(){
-    var img = document.querySelector('#heroImgWrap img');
-    if (img && img.complete && img.naturalWidth === 0) showHeroFallback();
-  }
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    checkAlreadyFailed();
-  } else {
-    document.addEventListener('DOMContentLoaded', checkAlreadyFailed);
-  }
-})();
-</script>
-
 <style>
 /* ── HERO IMAGE BANNER (Image B replacement) ─────────────────── */
-#dynamicHero.hero-img-active {
+#dynamicHero {
   background: none !important;
   padding: 0 !important;
   min-height: auto !important;
   overflow: hidden !important;
 }
-#dynamicHero.hero-img-active::before { display: none !important; }
-#dynamicHero.hero-img-active::after { display: none !important; content: none !important; }
+#dynamicHero::before { display: none !important; }
+#dynamicHero::after { display: none !important; content: none !important; }
 .hero-img-wrap {
   position: relative;
   width: 100%;
