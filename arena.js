@@ -319,7 +319,7 @@ function getOpponentById(id){
 }
 
 function updateOpponentStats(oppId,isWin,isDraw){
-  var opp=getOpponentById(id);
+  var opp=getOpponentById(oppId);
   if(!opp)return;
   opp.matches++;
   if(isDraw){opp.draws++;opp.recent_form.unshift('D');opp.current_streak=0;}
@@ -1565,7 +1565,7 @@ function renderSearch(){
 }
 
 async function searchPoll(){
-  if(S.screen!=='search'||!S.autoMatching)return;
+  if(S.screen!=='search'||!S.autoMatching||S.searchTimedOut)return;
   
   // Call autoMatch to find compatible players
   var res=await api('autoMatch',{
@@ -1593,6 +1593,10 @@ async function searchPoll(){
   
   // Check timeout (100 seconds) — fallback to persistent opponent
   if(S.searchStartTime&&Date.now()-S.searchStartTime>=100000){
+    // Double-invocation guard: if another in-flight searchPoll already
+    // triggered the fallback, this poll must NOT start a second battle
+    // chain (it would overwrite the live battle mid-play).
+    if(S.searchTimedOut)return;
     S.autoMatching=false;
     S.searchTimedOut=true;
     try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
