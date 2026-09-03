@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v50'; /* fix: restore missing CSS for Daily Challenge + Current Affairs cards (bl-daily-*, bl-ca-*) */
+const CACHE_VERSION = 'v51'; /* fix: daily-challenge mini-stat row was invisible white-on-cream, made it a proper stat-card row */
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
