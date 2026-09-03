@@ -1763,6 +1763,7 @@ async function leaveLobby(){
 
 async function startBattle(){
   stopTimer('poll');
+  S._finishingBattle=false;
   S.screen='battle';
   
   // Get match with questions
@@ -1982,6 +1983,11 @@ function nextQ(){
 }
 
 async function finishBattle(){
+  // RE-ENTRY GUARD: rapid Next/double-tap on the last question (or skipQ's
+  // internal nextQ followed by a user click) can call finishBattle multiple
+  // times, double-saving history and double-applying Elo/opponent stats.
+  if(S._finishingBattle)return;
+  S._finishingBattle=true;
   if(battleTimerInt)clearInterval(battleTimerInt);
   stopTimer('battlePoll');
   try{ArenaAudio.stopTimeWarn();ArenaAudio.play('battleComplete');}catch(e){}
@@ -2046,6 +2052,7 @@ async function finishBattle(){
 }
 
 function retrySubmit(){
+  S._finishingBattle=false;
   finishBattle();
 }
 
@@ -3313,6 +3320,7 @@ function fallbackCountdown(n){
 
 function startFallbackBattle(){
   S.screen='battle';
+  S._finishingBattle=false;
   S.matchId='fallback_'+Date.now();
   
   // Generate questions locally using same engine
