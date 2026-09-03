@@ -31,7 +31,7 @@ if (typeof self._oneSignalSDKLoaded === 'undefined') {
 }
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v49'; /* fix BrainLab: restore full engine (getDailyStatus, pyq/mcq switchTab, answer locks, SVG icons) */
+const CACHE_VERSION = 'v50'; /* fix: restore missing CSS for Daily Challenge + Current Affairs cards (bl-daily-*, bl-ca-*) */
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
