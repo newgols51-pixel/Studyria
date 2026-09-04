@@ -6223,8 +6223,8 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
   crossorigin="anonymous"
 ></script>
 
-<!-- OneSignal Web SDK — loaded once, deferred. Init is handled in app.js. -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<!-- [Studyria Push Migration] OneSignal SDK removed — native VAPID Web Push
+     is implemented in studyria-notifications.js (SN.push). -->
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260816exp3" defer></script>
 <script src="brainlab-icons.js?v=20260901gs" defer></script>
@@ -6245,9 +6245,7 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="campus-admin.js?v=20260731a" defer></script>
 
 <script src="wa-fab.js?v=20260730a"></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-</script>
+
 
 <!-- ══════════════════════════════════════════════════════════════
      FEATURE 4 — CLEAN UI IMPROVEMENTS  (additive polish layer)
@@ -10155,6 +10153,11 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 .ln-type-quiz { background:rgba(99,102,241,0.12); color:#818cf8; }
 .ln-type-affair { background:rgba(245,158,11,0.12); color:var(--gold); }
 .ln-type-ann { background:rgba(147,2,5,0.15); color:var(--accent); }
+.ln-type-mock_test, .ln-type-mock { background:rgba(147,2,5,0.10); color:#c99a3c; }
+.ln-type-adre { background:rgba(201,154,60,0.15); color:var(--gold); }
+.ln-type-general, .ln-type-ann { background:rgba(147,2,5,0.15); color:var(--accent); }
+.ln-type-current_affairs { background:rgba(245,158,11,0.12); color:var(--gold); }
+.ln-type-category { background:rgba(99,102,241,0.12); color:#818cf8; }
 .ln-skeleton { display:flex; gap:12px; overflow:hidden; }
 .ln-skel-card { flex-shrink:0; width:380px; padding:10px 16px; background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; display:flex; align-items:center; gap:8px; }
 .ln-skel-icon { width:32px; height:32px; border-radius:8px; background:var(--glass); flex-shrink:0; }
@@ -14883,6 +14886,9 @@ body.light .me-stat-val { filter:none; }
           <svg width="16" height="16"><use href="#ic-bell"/></svg>Announcements
           <span class="admin-nav-badge">New</span>
         </button>
+        <button class="admin-nav-item" data-atab="live-feed" onclick="switchAdminTab('live-feed')">
+          <svg width="16" height="16"><use href="#ic-bell"/></svg>Live Feed Notifications
+        </button>
         <button class="admin-nav-item" data-atab="branding" onclick="switchAdminTab('branding')">
           <svg width="16" height="16"><use href="#ic-star"/></svg>Branding Manager
           <span class="admin-nav-badge" style="background:rgba(139,92,246,0.12);color:#a78bfa;border-color:rgba(139,92,246,0.25)">New</span>
@@ -19482,6 +19488,74 @@ async function handleNewsletterSubscribe(btn) {
 window.supabaseLib = window.supabase;
 </script>
 <script src="supabase.js"></script>
+<script src="studyria-notifications.js?v=2" defer></script>
+<script>
+/* ═══ PUSH NOTIFICATION DEEP-LINK ROUTER ═════════════════════════════
+ * When a user taps a mobile push notification, the service worker opens
+ * https://studyria.qzz.io/?notif=<descriptor> (pdf:id, job:id, quiz:,
+ * mock:, affair:, page:x, url:...). This router lands the user on the
+ * EXACT content — never just the homepage. Runs after content data is
+ * ready; silently gives up (never blocks page load) after ~20s.
+ */
+(function notifDeepLink() {
+  var m = /(?:\?|&)notif=([^&]+)/.exec(location.search);
+  if (!m) return;
+  var raw;
+  try { raw = decodeURIComponent(m[1]); } catch (e) { raw = m[1]; }
+  var i = raw.indexOf(':');
+  if (i < 0) return;
+  var kind = raw.slice(0, i), val = raw.slice(i + 1);
+
+  function go() {
+    try {
+      switch (kind) {
+        case 'pdf': {
+          if (typeof openDetail !== 'function') return false;
+          if (!window.PDFS || !PDFS.length) return false; // wait for data
+          openDetail(val);
+          return true;
+        }
+        case 'job': {
+          if (typeof navigate !== 'function') return false;
+          navigate('career-hub');
+          setTimeout(function () {
+            if (typeof chOpenDetail === 'function') chOpenDetail(val);
+          }, 600);
+          return true;
+        }
+        case 'quiz': case 'mock': case 'affair': {
+          if (typeof navigate !== 'function') return false;
+          navigate('brainlab');
+          var tab = kind === 'quiz' ? 'quiz' : (kind === 'mock' ? 'mock' : 'affairs');
+          setTimeout(function () {
+            if (window.BrainLab && BrainLab.switchTab) BrainLab.switchTab(tab);
+          }, 600);
+          return true;
+        }
+        case 'page': {
+          if (typeof navigate !== 'function') return false;
+          navigate(val);
+          return true;
+        }
+        case 'url': {
+          if (/^https:\/\/studyria\.qzz\.io\//.test(val)) {
+            location.replace(val.replace(/^https:\/\/studyria\.qzz\.io/, ''));
+          }
+          return true;
+        }
+      }
+    } catch (e) { console.warn('[notif-deeplink] failed:', e); }
+    return true; // don't retry unknown kinds
+  }
+
+  var tries = 0;
+  (function poll() {
+    if (go()) return;
+    if (++tries > 40) return; // ~20s max, then give up silently
+    setTimeout(poll, 500);
+  })();
+})();
+</script>
 <script>
 // ── POST-LOAD GUARD ───────────────────────────────────────────────────────────
 // Verify supabase.js registered the real authLoginWithGoogle.
@@ -25307,12 +25381,24 @@ async function refreshNotificationCenter() {
   }
 
   if (state === 'granted') {
-    pill.textContent = 'Enabled';
-    body.textContent = 'You\'re all set! You\'ll receive alerts for new PDFs, results, scholarships and more.';
-    if (hmBadge) { hmBadge.textContent = 'ON'; hmBadge.style.color = '#10d98e'; hmBadge.style.background = 'rgba(16,217,142,.15)'; }
-    actions.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:#10d98e;font-size:.82rem;font-weight:600;justify-content:center;padding:6px 0">
-      <span>✅</span><span>Notifications Enabled</span>
-    </div>`;
+    // Permission granted — but check whether a REAL push subscription exists
+    const pushState = (window.SN && SN.push) ? await SN.push.status() : { subscribed: false };
+    if (pushState.subscribed) {
+      pill.textContent = 'Enabled';
+      body.textContent = 'You\'re all set! You\'ll receive alerts for new PDFs, jobs, quizzes, mock tests, ADRE papers and more — even when the site is closed.';
+      if (hmBadge) { hmBadge.textContent = 'ON'; hmBadge.style.color = '#10d98e'; hmBadge.style.background = 'rgba(16,217,142,.15)'; }
+      actions.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;color:#10d98e;font-size:.82rem;font-weight:600;justify-content:center;padding:2px 0">
+          <span>✅</span><span>Push Notifications Enabled</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="notifCenterTurnOff(this)">🔔 Turn Off Notifications</button>
+      </div>`;
+    } else {
+      pill.textContent = 'Half Setup';
+      body.innerHTML = 'Permission is granted but this device isn\'t subscribed yet.<br>Tap below to finish enabling push alerts.';
+      if (hmBadge) { hmBadge.textContent = 'SETUP'; hmBadge.style.color = '#fbbf24'; hmBadge.style.background = 'rgba(251,191,36,.15)'; }
+      actions.innerHTML = `<button class="btn btn-primary btn-sm" id="notifCenterEnableBtn" onclick="notifCenterRequestPermission()">🔔 Complete Setup</button>`;
+    }
     return;
   }
 
@@ -25329,6 +25415,16 @@ async function refreshNotificationCenter() {
   body.textContent = 'Turn on notifications to get notified the moment new PDFs, results, scholarships and exam alerts drop.';
   if (hmBadge) { hmBadge.textContent = 'SETUP'; hmBadge.style.color = '#fbbf24'; hmBadge.style.background = 'rgba(251,191,36,.15)'; }
   actions.innerHTML = `<button class="btn btn-primary btn-sm" id="notifCenterEnableBtn" onclick="notifCenterRequestPermission()">🔔 Enable Notifications</button>`;
+}
+
+async function notifCenterTurnOff(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Turning off…'; }
+  if (window.SN && SN.push) {
+    await SN.push.disable();
+    window.dispatchEvent(new Event('sn-push-changed'));
+  }
+  if (typeof showToast === 'function') showToast('🔕 Push notifications turned off on this device.', 'info');
+  await refreshNotificationCenter();
 }
 
 async function notifCenterRequestPermission() {
@@ -25517,7 +25613,7 @@ function switchAdminTab(tab) {
   const tabNames = { dashboard:'Dashboard', analytics:'Analytics', pdfs:'PDF Management', 'add-pdf':'Add New PDF', categories:'Hierarchy Manager', orders:'Orders', users:'Users', revenue:'Revenue', activity:'Activity Logs', settings:'Settings',
     'hero-designer':'🎨 Hero Designer',
     'pdf-manager-pro':'Advanced PDF Manager', 'category-manager-pro':'Advanced Category Manager', 'homepage-manager':'Homepage Manager', 'header-manager':'Header Manager', 'nav-manager':'Navigation Manager', 'customization':'Website Customization', 'users-pro':'User Management Pro',
-    'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
+    'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'live-feed':'Live Feed Notifications', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
     'seo-manager':'SEO Manager', 'live-analytics':'Live Analytics Center', 'ai-center':'AI Control Center', 'security':'Security Center', 'system-advanced':'Advanced System Settings',
     'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community', 'pass-management':'👑 Pass Management', 'campus-manager':'🏫 Campus Manager', 'brainlab-manager':'🧠 BrainLab Manager' };
   if (bc) bc.textContent = tabNames[tab] || tab;
@@ -25578,6 +25674,7 @@ function switchAdminTab(tab) {
     case 'coupons':               _safeRender(window.renderPCCCoupons,            'Coupons'); break;
     case 'blog':                  _safeRender(window.renderPCCBlog,               'Blog Manager'); break;
     case 'announcements':         _safeRender(window.renderPCCAnnouncements,      'Announcements'); break;
+    case 'live-feed':             _safeRender(window.SN && window.SN.adminPanel,  'Live Feed Notifications'); break;
     case 'branding':              _safeRender(window.renderPCCBranding,           'Branding'); break;
     case 'pwa-control':            _safeRender(window.renderPWAdmin32,              'PWA Control Center'); break;
     case 'library-manager':       _safeRender(renderAdminLibraryManager,          'Library Manager'); break;
@@ -26261,6 +26358,13 @@ async function chmToggleField(id, field, value) {
     if (error) throw error;
     const job = window._chAdmin.jobs.find(j => j.id === id);
     if (job) job[field] = value;
+    // ── Live Notifications hook ──
+    if (field === 'active' && window.SN && job) {
+      try {
+        if (value) SN.publish('JOB', id, { title: job.title, message: [job.org, job.location].filter(Boolean).join(' · '), destination: 'job:' + id });
+        else SN.deactivate('JOB', id);
+      } catch (e) { console.warn('SN job toggle hook:', e); }
+    }
     if (typeof showToast === 'function') showToast('Updated ✓', 'success');
   } catch (err) {
     if (typeof showToast === 'function') showToast('Update failed: ' + (err.message||''), 'error');
@@ -26277,6 +26381,7 @@ async function chmToggleQuickFlag(id, field) {
 
 async function chmDeleteJob(id) {
   if (!confirm('Delete this job permanently? This cannot be undone.')) return;
+  try { if (window.SN) SN.deactivate('JOB', id); } catch (e) { console.warn('SN job delete hook:', e); }
   const sb = window.supabaseClient;
   if (!sb) return;
   try {
@@ -26566,6 +26671,18 @@ async function chmSaveJob() {
       }
     }
     if (error) throw error;
+    // ── Live Notifications hook (fire-and-forget, never blocks the save) ──
+    try {
+      if (window.SN && SN.publish) {
+        if (id) {
+          if (payload.active) {
+            SN.publish('JOB', id, { title: payload.title, message: [payload.org, payload.location].filter(Boolean).join(' · '), destination: 'job:' + id, metadata: { category: payload.category } });
+          } else { SN.deactivate('JOB', id); }
+        } else if (insertedRow && payload.active) {
+          SN.publish('JOB', insertedRow.id, { title: payload.title, message: [payload.org, payload.location].filter(Boolean).join(' · '), destination: 'job:' + insertedRow.id, metadata: { category: payload.category } });
+        }
+      }
+    } catch (e) { console.warn('SN job hook:', e); }
     if (typeof showToast === 'function') showToast(id ? 'Job updated ✓' : 'Job published ✓', 'success');
     chmCloseForm();
     await chmLoadJobs();
@@ -29426,7 +29543,7 @@ async function sbpPublishReady() {
         //    The correct FK columns (*_id) above are sufficient. ──────────
       };
 
-      const { error: insErr } = await sb.from('pdfs').insert(payload);
+      const { data: _sbpRow, error: insErr } = await sb.from('pdfs').insert(payload).select('id').single();
       if (insErr) {
         // ── Specific DB trigger bug: LOWER(bigint) ───────────────────
         // A PostgreSQL trigger on the pdfs table calls LOWER() on a bigint
@@ -29448,6 +29565,17 @@ async function sbpPublishReady() {
       item.errors    = [];
       published++;
       logAdminActivity?.(`Published "${item.title}" via Batch Publisher`, 'green');
+      // ── Live Notifications hook (fire-and-forget, never blocks publishing) ──
+      try {
+        if (window.SN && SN.publish) {
+          SN.publish('PDF', (_sbpRow && _sbpRow.id) || slug, {
+            title: payload.title,
+            message: 'New PDF now available in the Library',
+            destination: 'pdf:' + ((_sbpRow && _sbpRow.id) || slug),
+            metadata: { category: payload.category }
+          });
+        }
+      } catch (e) { console.warn('SN sbp hook:', e); }
     } catch(e) {
       item.errors = [e.message];
       failed++;
@@ -29665,7 +29793,7 @@ async function sbpPublishSelected() {
         // Intentionally omitting legacy bigint columns (lower(bigint) trigger bug)
       };
 
-      const { error: insErr } = await sb.from('pdfs').insert(payload);
+      const { data: _sbpRow, error: insErr } = await sb.from('pdfs').insert(payload).select('id').single();
       if (insErr) {
         if (insErr.message.includes('lower(bigint)')) {
           throw new Error('DB trigger bug — run fix-trigger-lower-bigint.sql in Supabase. (' + insErr.message + ')');
@@ -29685,6 +29813,18 @@ async function sbpPublishSelected() {
 
       typeof logAdminActivity === 'function' &&
         logAdminActivity('Published "' + item.title + '" via Multi Publish', 'green');
+
+      // ── Live Notifications hook (fire-and-forget, never blocks publishing) ──
+      try {
+        if (window.SN && SN.publish) {
+          SN.publish('PDF', (_sbpRow && _sbpRow.id) || payload.slug, {
+            title: payload.title,
+            message: 'New PDF now available in the Library',
+            destination: 'pdf:' + ((_sbpRow && _sbpRow.id) || payload.slug),
+            metadata: { category: payload.category }
+          });
+        }
+      } catch (e) { console.warn('SN multi-publish hook:', e); }
 
     } catch (e) {
       item.errors = [e.message];
@@ -35702,15 +35842,15 @@ async function annLoadList() {
   if (!data || !data.length) { wrap.innerHTML = '<div class="ann-empty">📭 No announcements yet. Add one above.</div>'; return; }
 
   wrap.innerHTML = `<div class="ann-list">${data.map(a => `
-    <div class="ann-item ${a.active ? 'ann-active' : ''}" id="ann-row-${a.id}">
+    <div class="ann-item ${a.is_active ? 'ann-active' : ''}" id="ann-row-${a.id}">
       <div class="ann-item-body">
         <div class="ann-item-title">📢 ${escHtml(a.title)}</div>
         ${a.message ? `<div class="ann-item-msg">${escHtml(a.message)}</div>` : ''}
         <div class="ann-item-meta">Created ${new Date(a.created_at).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})}</div>
       </div>
       <div class="ann-item-actions">
-        <span class="ann-status-badge ${a.active ? 'active' : 'inactive'}">${a.active ? '● Active' : '○ Off'}</span>
-        <button class="btn btn-ghost btn-sm" onclick="annToggle('${a.id}', ${a.active})">${a.active ? '⏸ Deactivate' : '▶ Activate'}</button>
+        <span class="ann-status-badge ${a.is_active ? 'active' : 'inactive'}">${a.is_active ? '● Active' : '○ Off'}</span>
+        <button class="btn btn-ghost btn-sm" onclick="annToggle('${a.id}', ${a.is_active})">${a.is_active ? '⏸ Deactivate' : '▶ Activate'}</button>
         <button class="btn btn-ghost btn-sm" onclick="annEdit('${a.id}', ${JSON.stringify(a.title).replace(/'/g,"&#39;")}, ${JSON.stringify(a.message||'').replace(/'/g,"&#39;")})">✏️ Edit</button>
         <button class="btn btn-danger btn-sm" onclick="annDelete('${a.id}')">🗑</button>
       </div>
@@ -35733,10 +35873,19 @@ async function annSave() {
     // UPDATE
     const { error } = await sb.from('announcements').update({ title, message: msg }).eq('id', id);
     if (error) { showToast('Error: ' + error.message, 'error'); return; }
+    // ── Live Notifications hook: refresh the card if this announcement is live ──
+    try {
+      const { data: _annRow } = await sb.from('announcements').select('is_active').eq('id', id).single();
+      if (window.SN && _annRow?.is_active) {
+        SN.publish('GENERAL', 'ann:' + id, { title: title, message: msg, icon: '📢' });
+      } else if (window.SN) {
+        SN.deactivate('GENERAL', 'ann:' + id);
+      }
+    } catch (e) { console.warn('SN announcement hook:', e); }
     showToast('Announcement updated ✓', 'success');
   } else {
     // INSERT (new announcements are inactive by default)
-    const { error } = await sb.from('announcements').insert({ title, message: msg, active: false });
+    const { error } = await sb.from('announcements').insert({ title, message: msg, is_active: false });
     if (error) { showToast('Error: ' + error.message, 'error'); return; }
     showToast('Announcement created ✓', 'success');
   }
@@ -35768,10 +35917,25 @@ async function annToggle(id, currentlyActive) {
 
   // If activating, deactivate all others first (only one active at a time)
   if (!currentlyActive) {
-    await sb.from('announcements').update({ active: false }).neq('id', id);
+    await sb.from('announcements').update({ is_active: false }).neq('id', id);
   }
-  const { error } = await sb.from('announcements').update({ active: !currentlyActive }).eq('id', id);
+  const { error } = await sb.from('announcements').update({ is_active: !currentlyActive }).eq('id', id);
   if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  // ── Live Notifications hook ──
+  try {
+    if (window.SN) {
+      if (!currentlyActive) {
+        // Activating: refresh this announcement's notification and retire
+        // the previously active one (only one announcement is live at a time).
+        const { data: _annRow } = await sb.from('announcements').select('title, message').eq('id', id).single();
+        SN.publish('GENERAL', 'ann:' + id, { title: _annRow?.title || 'Announcement', message: _annRow?.message || '', icon: '📢' });
+        const { data: _others } = await sb.from('announcements').select('id').eq('is_active', true).neq('id', id);
+        (_others || []).forEach(o => SN.deactivate('GENERAL', 'ann:' + o.id));
+      } else {
+        SN.deactivate('GENERAL', 'ann:' + id);
+      }
+    }
+  } catch (e) { console.warn('SN announcement toggle hook:', e); }
   showToast(!currentlyActive ? '✅ Announcement activated' : 'Announcement deactivated', 'success');
   annLoadList();
   // Refresh the live bar on the page
@@ -35784,6 +35948,7 @@ async function annDelete(id) {
   if (!sb) return;
   const { error } = await sb.from('announcements').delete().eq('id', id);
   if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  try { if (window.SN) SN.deactivate('GENERAL', 'ann:' + id); } catch (e) { console.warn('SN announcement delete hook:', e); }
   showToast('Deleted', 'info');
   annLoadList();
   loadActiveAnnouncement();
@@ -35798,7 +35963,7 @@ async function loadActiveAnnouncement() {
   const { data, error } = await sb
     .from('announcements')
     .select('id, title, message')
-    .eq('active', true)
+    .eq('is_active', true)
     .limit(1)
     .maybeSingle();
 
@@ -45435,6 +45600,17 @@ async function cm2ApprovePdf(pdfId) {
       await sb.from('creator_pdf_submissions').update({ status: 'approved' }).eq('id', pdfId);
     }
 
+    // ── Live Notifications hook (fire-and-forget) ──
+    try {
+      if (window.SN && SN.publish && newPdf?.id) {
+        SN.publish('PDF', newPdf.id, {
+          title: title,
+          message: 'New PDF now available in the Library',
+          destination: 'pdf:' + newPdf.id,
+          metadata: { category: realCategory, creator: sub.creators?.author_name || '' }
+        });
+      }
+    } catch (e) { console.warn('SN cm2 hook:', e); }
     showToast('PDF approved and published live ✅', 'success');
     cm2SwitchTab('pdfs');
   } catch(e) {
@@ -47654,58 +47830,31 @@ window.addEventListener('load', function() {
     }
   }
 
-  async function loadLiveNotifications() {
-    if (_loaded && _cache) { renderNotifications(_cache); return; }
-    renderSkeleton();
-    var sb = window.supabaseClient;
-    if (!sb) { renderError('Supabase not available'); return; }
-    var items = [];
-
+  /* Live Notifications now run on the dedicated Studyria Notifications
+     Base44 backend (read-only snLive endpoint). Loading / Empty / Error
+     are three distinct states; a failed refresh never wipes the cards
+     that are already on screen. */
+  async function loadLiveNotifications(force) {
+    if (!force && _loaded && _cache) { renderNotifications(_cache); }
+    else { renderSkeleton(); }
     try {
-      var annRes = await sb.from('announcements').select('id, title, message, created_at').eq('active', true).order('created_at', { ascending:false }).limit(5);
-      if (annRes.data) {
-        annRes.data.forEach(function(a) {
-          items.push({ type:'ann', typeLabel:'Update', title:a.title||'Announcement', message:a.message||'', time:a.created_at, icon:'\uD83D\uDCE2', action:'' });
-        });
+      if (window.SN && SN.fetchLive) {
+        var items = await SN.fetchLive();
+        _cache = items;
+        _loaded = true;
+        renderNotifications(items);
+      } else if (_loaded && _cache) {
+        renderNotifications(_cache); // engine missing → keep last known good
+      } else {
+        renderError('Notification engine not available');
       }
-    } catch(e) { console.warn('LiveNotif announcements:', e); }
-
-    try {
-      var jobRes = await sb.from('jobs').select('id, title, org, organization, published_at, created_at').eq('active', true).order('published_at', { ascending:false, nullsFirst:false }).order('created_at', { ascending:false }).limit(5);
-      if (jobRes.data) {
-        jobRes.data.forEach(function(j) {
-          items.push({ type:'job', typeLabel:'Job', title:j.title||'Job Opening', message:j.org||j.organization||'', time:j.published_at||j.created_at, icon:'\uD83D\uDCBC', action:"navigate('career-hub')" });
-        });
-      }
-    } catch(e) { console.warn('LiveNotif jobs:', e); }
-
-    try {
-      var affRes = await sb.from('current_affairs').select('id, title, created_at').eq('is_deleted', false).order('created_at', { ascending:false }).limit(4);
-      if (affRes.data) {
-        affRes.data.forEach(function(a) {
-          items.push({ type:'affair', typeLabel:'Affairs', title:a.title||'Current Affairs', message:'', time:a.created_at, icon:'\uD83D\uDCF0', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('affairs');},400)" });
-        });
-      }
-    } catch(e) { console.warn('LiveNotif affairs:', e); }
-
-    if (typeof SQ !== 'undefined' && SQ.length) {
-      items.push({ type:'quiz', typeLabel:'Quiz', title:SQ[0].title + ' \u2014 Try Now!', message:'Daily GK challenge available', time:null, icon:'\uD83E\uDDE9', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('quiz');},400)" });
+    } catch (e) {
+      console.warn('loadLiveNotifications:', e);
+      if (_loaded && _cache) { renderNotifications(_cache); } // backend hiccup → keep showing last good feed
+      else { renderError('Unable to load notifications'); }
+    } finally {
+      window.__snLastFetch = Date.now();
     }
-    if (typeof SM !== 'undefined' && SM.length) {
-      items.push({ type:'mock', typeLabel:'Mock', title:SM[0].title + ' Available', message:'Full-length exam-style test', time:null, icon:'\uD83D\uDCDD', action:"navigate('brainlab');setTimeout(function(){if(typeof BrainLab!=='undefined'&&BrainLab.switchTab)BrainLab.switchTab('mock');},400)" });
-    }
-
-    items.sort(function(a,b) {
-      if (a.type==='ann' && b.type!=='ann') return -1;
-      if (b.type==='ann' && a.type!=='ann') return 1;
-      var ta = a.time ? new Date(a.time).getTime() : 0;
-      var tb = b.time ? new Date(b.time).getTime() : 0;
-      return tb - ta;
-    });
-
-    _cache = items;
-    _loaded = true;
-    renderNotifications(items);
   }
 
   window.loadLiveNotifications = loadLiveNotifications;
@@ -47719,11 +47868,31 @@ window.addEventListener('load', function() {
     window.navigate = function(page) {
       var result = _origNav.apply(this, arguments);
       if (page === 'home' || page === '') {
-        setTimeout(function() { if (document.getElementById('lnSection')) loadLiveNotifications(); }, 400);
+        setTimeout(function() { if (document.getElementById('lnSection')) loadLiveNotifications(true); }, 400);
       }
       return result;
     };
   }
+
+  /* Lightweight revalidation fallback (60s) — a single guarded interval,
+     paused while the tab is hidden, refreshed on return. No request storms. */
+  (function() {
+    if (window.__snPollStarted) return;
+    window.__snPollStarted = true;
+    setInterval(function() {
+      if (!document.getElementById('lnSection')) return;
+      if (document.visibilityState !== 'visible') return;
+      if (Date.now() - (window.__snLastFetch || 0) < 55000) return;
+      loadLiveNotifications(true).catch(function() {});
+    }, 60000);
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' &&
+          Date.now() - (window.__snLastFetch || 0) > 45000 &&
+          document.getElementById('lnSection')) {
+        loadLiveNotifications(true).catch(function() {});
+      }
+    });
+  })();
 
 /* DISCOVER SECTION ENHANCEMENT — hide advanced filters behind toggle */
 (function() {

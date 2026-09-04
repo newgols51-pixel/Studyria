@@ -907,7 +907,10 @@ async function _initOneSignal(OneSignal) {
 // script finishes loading.  Either way, _initOneSignal receives the SDK
 // instance as its first argument.
 window.OneSignalDeferred = window.OneSignalDeferred || [];
-window.OneSignalDeferred.push(_initOneSignal);
+// [Studyria Push Migration] OneSignal retired — native VAPID Web Push
+// (SN.push, studyria-notifications.js) now owns the permission flow.
+// OneSignal init intentionally disabled to prevent duplicate push systems.
+// window.OneSignalDeferred.push(_initOneSignal);
 
 // ── Helper: wait until init is complete ─────────────────────────────────────
 
@@ -1173,13 +1176,36 @@ async function tagAudienceSegment(isPremium) {
  * rather than calling OneSignal directly.
  */
 window.StudyriaNotifications = {
-  requestPermission:        requestNotificationPermission,
-  isSubscribed:             isSubscribed,
-  getSubscriptionId:        getSubscriptionId,
-  getPermissionState:       getPermissionState,
+  // [Studyria Push Migration] Engine swapped OneSignal → native VAPID
+  // Web Push (SN.push). UI shell unchanged; behavior identical to callers.
+  requestPermission: async function () {
+    if (window.SN && SN.push) return SN.push.enable();
+    return { success: false, reason: 'unsupported' };
+  },
+  isSubscribed: async function () {
+    if (window.SN && SN.push) {
+      const st = await SN.push.status();
+      return !!st.subscribed;
+    }
+    return false;
+  },
+  getSubscriptionId: async function () {
+    if (window.SN && SN.push) {
+      const st = await SN.push.status();
+      return st.subscribed ? 'device-subscribed' : null;
+    }
+    return null;
+  },
+  getPermissionState: async function () {
+    if (window.SN && SN.push) {
+      if (!SN.push.supported()) return 'unsupported';
+      return Notification.permission; // 'default' | 'granted' | 'denied'
+    }
+    return 'unsupported';
+  },
   renderNotificationCenterUI: renderNotificationCenterUI,
   openNotificationSettings: openNotificationSettings,
-  tagAudienceSegment:       tagAudienceSegment,
+  tagAudienceSegment:       async function () { /* retired with OneSignal */ },
 };
 
 console.log('[OneSignal] window.StudyriaNotifications ready');

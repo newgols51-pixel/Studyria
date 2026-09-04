@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════
-// sw.js — Studyria Service Worker  v92  (PWA V3 — 2026 Ultimate)
+// sw.js — Studyria Service Worker  v93  (PWA V3 — 2026 Ultimate)
 // ══════════════════════════════════════════════════════════════════
 //
 // Cache Strategies:
@@ -15,23 +15,18 @@
 //   CLEAR_CACHE          → wipe all caches
 //   PREFETCH_URLS        → warm cache with given URL list
 //
-// Push: OneSignal SDK first, then our custom handlers.
+// Push: native VAPID Web Push (RFC 8291/8292) — dispatched by the Studyria notification backend.
 // Periodic Sync: 'studyria-content-refresh' every 12 hours.
 // Background Sync: 'sync-data' for deferred writes.
 // ══════════════════════════════════════════════════════════════════
 
-// ── ONESIGNAL (must be first) ─────────────────────────────────────
-if (typeof self._oneSignalSDKLoaded === 'undefined') {
-  self._oneSignalSDKLoaded = true;
-  try {
-    importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
-  } catch (e) {
-    console.warn('[SW] OneSignal SDK load failed:', e.message);
-  }
-}
+// ── [Studyria Push Migration] ────────────────────────────────────────
+// OneSignal SW SDK removed (retired). Native VAPID Web Push handlers
+// below (push / notificationclick) are the ONLY push handlers now —
+// no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v89'; // v89: GSN — Global Search & Notifications + ADRE papers update
+const CACHE_VERSION = 'v93'; // v93: Native VAPID Web Push + Live Notifications system
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
@@ -71,8 +66,6 @@ const BYPASS_HOSTS = [
   'rapidapi.com',
   'firebaseapp.com',
   'firebaseio.com',
-  'onesignal.com',
-  'api.onesignal.com',
 ];
 
 const BYPASS_CDNS = [
@@ -275,9 +268,9 @@ async function refreshCriticalAssets() {
   clients.forEach(c => c.postMessage({ type: 'CONTENT_REFRESHED' }));
 }
 
-// ── PUSH NOTIFICATIONS ────────────────────────────────────────────
-// OneSignal handles push events first (via importScripts above).
-// We add a fallback for any non-OneSignal pushes.
+// ── PUSH NOTIFICATIONS (native VAPID Web Push) ────────────────────
+// Payload from the Studyria notification backend (snMutate dispatch):
+//   { title, body, icon, badge, tag, requireInteraction, data:{ url } }
 self.addEventListener('push', event => {
   if (!event.data) return;
   let payload;
