@@ -6228,9 +6228,9 @@ body.light .home-footer-bottom { border-top-color: rgba(0,0,0,0.06); }
 <script src="campus.js?v=20260731a" defer></script>
 <script src="question-bank.js?v=20260816exp3" defer></script>
 <script src="brainlab-icons.js?v=20260901gs" defer></script>
-<script src="brainlab.js?v=20260901gs" defer></script>
+<script src="brainlab.js?v=20260903a" defer></script>
 <script src="brainlab-ext.js?v=20260815fix1" defer></script>
-    <script src="arena.js?v=20260826merge1" defer></script>
+    <script src="arena.js?v=20260903fix2" defer></script>
 <script src="adre-papers-data.js?v=20260827d" defer></script>
 <script src="adre-papers-config.js?v=20260827d" defer></script>
 <script src="adre-paper1-data.js?v=20260827d" defer></script>
@@ -6953,7 +6953,7 @@ crossorigin="anonymous"></script>
 })();
 </script>
 <link rel="stylesheet" href="campus.css?v=20260731a">
-<link rel="stylesheet" href="brainlab.css?v=20260815fix1">
+<link rel="stylesheet" href="brainlab.css?v=20260903dcafix2">
 <link rel="stylesheet" href="brainlab-icons.css?v=20260818icons1">
 <link rel="stylesheet" href="adre-exam.css?v=20260827d">
 <link rel="stylesheet" href="pdp-v2.css?v=20260801">
@@ -10552,6 +10552,47 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
   </div>
 </section>
 
+<!-- ── STUDYRIA TRUST STRIP (8-item redesign) ────────────────── -->
+<section class="studyria-trust-strip" aria-label="Studyria trust and security features" style="padding:14px 0 10px">
+  <div class="container">
+    <div class="studyria-trust-strip__grid">
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">🔒</span>
+        <span class="studyria-trust-strip__label">Secure &amp; Protected</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">⚡</span>
+        <span class="studyria-trust-strip__label">Instant Access</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">📱</span>
+        <span class="studyria-trust-strip__label">Study on Any Device</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">💳</span>
+        <span class="studyria-trust-strip__label">Secure Checkout</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">🎯</span>
+        <span class="studyria-trust-strip__label">Built for Assam Exams</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">📚</span>
+        <span class="studyria-trust-strip__label">Free + Premium Resources</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">🛡️</span>
+        <span class="studyria-trust-strip__label">Privacy First</span>
+      </div>
+      <div class="studyria-trust-strip__item" role="listitem">
+        <span class="studyria-trust-strip__icon" aria-hidden="true">✅</span>
+        <span class="studyria-trust-strip__label">Curated Study Resources</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ── DISCOVER (Search + Filter) ───────────────────────────── -->
 <section class="sh-discover-section" id="discover-section">
   <div class="container">
@@ -11047,20 +11088,6 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
   <div class="cs-dots" id="csDots"></div>
 </section>
 
-<!-- ── TRUST BADGES ─────────────────────────────────────────── -->
-<!-- ── TRUST STRIP (REDESIGNED) ───────────────────────────────── -->
-<section class="hr-reveal" style="padding:12px 0">
-  <div class="container">
-    <div class="hr-trust-strip">
-      <div class="hr-trust-item"><span class="hr-trust-icon">🔒</span> 256-bit SSL Secure</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">⚡</span> Instant Download</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">📱</span> Works Offline</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">✅</span> Razorpay Verified</div>
-      <div class="hr-trust-item"><span class="hr-trust-icon">🎯</span> Assam-Focused</div>
-    </div>
-  </div>
-</section>
-
 <!-- ── WHY STUDYRIA ──────────────────────────────────────────── -->
 
   <!-- ── PREMIUM BANNER (REDESIGNED) ──────────────────────────────── -->
@@ -11079,40 +11106,280 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
     </div>
   </section>
 
+<!-- ── WHY STUDYRIA (EDITORIAL REDESIGN) ──────────────────────── -->
+<style>
+/* ══════════════════════════════════════════════════════════════
+     WHY STUDYRIA — Editorial Redesign (Paper Cream + Maroon + Gold)
+     Scoped under .studyria-why to avoid touching any other section.
+     ══════════════════════════════════════════════════════════════ */
+.studyria-why {
+  padding: 56px 0 48px;
+  background: var(--hp-paper, #faf7f2);
+}
+.studyria-why__container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.studyria-why__header {
+  text-align: left;
+  margin-bottom: 44px;
+}
+.studyria-why__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--hp-font-body, -apple-system, sans-serif);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--hp-red, #930205);
+  margin-bottom: 14px;
+}
+.studyria-why__eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--hp-red, #930205);
+  flex-shrink: 0;
+}
+.studyria-why__title {
+  font-family: var(--hp-font-display, Georgia, 'Iowan Old Style', serif);
+  font-size: clamp(1.9rem, 5.2vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.14;
+  color: var(--hp-ink, #1c1b1a);
+  letter-spacing: -.01em;
+  margin: 0;
+}
+.studyria-why__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.studyria-why__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 30px 0;
+  border-bottom: 1px solid var(--hp-line, rgba(28,27,26,0.10));
+}
+.studyria-why__item:first-child { padding-top: 0; }
+.studyria-why__item:last-child { border-bottom: none; padding-bottom: 0; }
+.studyria-why__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--hp-red, #930205);
+  color: var(--hp-gold, #c99a3c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(147,2,5,0.18);
+}
+.studyria-why__content { min-width: 0; }
+.studyria-why__item-title {
+  font-family: var(--hp-font-display, Georgia, 'Iowan Old Style', serif);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--hp-ink, #1c1b1a);
+  margin: 0 0 8px;
+  letter-spacing: -.005em;
+}
+.studyria-why__description {
+  font-family: var(--hp-font-body, -apple-system, sans-serif);
+  font-size: .92rem;
+  line-height: 1.65;
+  color: var(--theme-text-secondary, #6b6358);
+  margin: 0;
+}
 
-<!-- ── WHY STUDYRIA (REDESIGNED) ──────────────────────────────── -->
-<section class="hr-reveal" style="padding:28px 0 20px">
-  <div class="container">
-    <div class="hr-section-head">
-      <div class="hr-section-label">
-        <span class="hr-section-dot" style="background:var(--accent, #930205)"></span>
-        <span class="hr-section-title">Why Studyria?</span>
+/* ── Scroll reveal (subtle, respects reduced motion) ── */
+.studyria-why__item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.studyria-why__item.studyria-why--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .studyria-why__item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Desktop: editorial two-column layout ── */
+@media (min-width: 1024px) {
+  .studyria-why { padding: 84px 0 72px; }
+  .studyria-why__container {
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .studyria-why__header {
+    margin-bottom: 0;
+    position: sticky;
+    top: 120px;
+  }
+  .studyria-why__item {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 26px;
+    padding: 34px 0;
+  }
+  .studyria-why__icon { width: 60px; height: 60px; font-size: 1.65rem; }
+}
+
+/* ── Small phones ── */
+@media (max-width: 420px) {
+  .studyria-why { padding: 44px 0 36px; }
+  .studyria-why__container { padding: 0 20px; }
+  .studyria-why__icon { width: 50px; height: 50px; font-size: 1.35rem; }
+  .studyria-why__item-title { font-size: 1.08rem; }
+  .studyria-why__description { font-size: .88rem; }
+}
+</style>
+
+<script>
+(function(){
+  function initStudyriaWhyReveal(){
+    var items = document.querySelectorAll('.studyria-why__item');
+    if (!items.length) return;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window)) {
+      items.forEach(function(el){ el.classList.add('studyria-why--visible'); });
+      return;
+    }
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry, i){
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          var delay = Math.min(i * 40, 200);
+          setTimeout(function(){ el.classList.add('studyria-why--visible'); }, delay);
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(function(el){ observer.observe(el); });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStudyriaWhyReveal);
+  } else {
+    initStudyriaWhyReveal();
+  }
+})();
+</script>
+
+
+<section class="studyria-why" id="why-studyria" aria-labelledby="studyria-why-heading">
+  <div class="container studyria-why__container">
+    <header class="studyria-why__header">
+      <div class="studyria-why__eyebrow">
+        <span class="studyria-why__eyebrow-dot" aria-hidden="true"></span>
+        WHY STUDYRIA
       </div>
-    </div>
-    <div class="hr-why-grid">
-      <div class="hr-why-card">
-        <div class="hr-why-icon">📚</div>
-        <div class="hr-why-title">Curated Study Materials</div>
-        <div class="hr-why-desc">Expertly curated PDFs covering ADRE, APSC, Assam Police, GK and more. Quality over quantity.</div>
-      </div>
-      <div class="hr-why-card">
-        <div class="hr-why-icon">🤖</div>
-        <div class="hr-why-title">AI-Powered Recommendations</div>
-        <div class="hr-why-desc">Our AI learns your exam goals and surfaces the most relevant study materials for you.</div>
-      </div>
-      <div class="hr-why-card">
-        <div class="hr-why-icon">⚡</div>
-        <div class="hr-why-title">Free Core Content</div>
-        <div class="hr-why-desc">Dozens of high-quality PDFs free forever. Pass editions for deeper preparation.</div>
-      </div>
-      <div class="hr-why-card">
-        <div class="hr-why-icon">🚀</div>
-        <div class="hr-why-title">Career Hub</div>
-        <div class="hr-why-desc">Latest Assam government and private job notifications curated in real-time.</div>
-      </div>
-    </div>
+      <h2 class="studyria-why__title" id="studyria-why-heading">Built for Assam's<br>aspirants</h2>
+    </header>
+    <ol class="studyria-why__list">
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">📚</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Curated, not crowded</h3>
+          <p class="studyria-why__description">Expert-picked study materials for ADRE, APSC, Assam Police, TET, GK and other competitive exams — focused on useful preparation, not unnecessary clutter.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">🤖</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">AI-powered picks</h3>
+          <p class="studyria-why__description">Smart recommendations help surface study materials that are more relevant to your exam goals and preparation journey.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">⚡</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Free core content</h3>
+          <p class="studyria-why__description">Access useful free PDFs and study resources without needing to pay, with premium options available for deeper preparation.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">💼</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Career Hub built-in</h3>
+          <p class="studyria-why__description">Discover Assam government and private job opportunities, along with important career updates, from the same study platform.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">🎯</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Built around Assam exams</h3>
+          <p class="studyria-why__description">Studyria focuses strongly on the exams and preparation needs that matter to Assam's competitive-exam aspirants.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">📝</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Practice that prepares you</h3>
+          <p class="studyria-why__description">Quizzes, mock tests, MCQs and practice resources help you test your knowledge and strengthen exam readiness.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">📰</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Current affairs, in context</h3>
+          <p class="studyria-why__description">Keep up with important current-affairs resources designed to support competitive-exam preparation.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">👑</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Studyria Premium</h3>
+          <p class="studyria-why__description">Unlock premium study materials, reading access, member benefits and an enhanced ad-free study experience with Studyria Premium.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">📱</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Study anywhere</h3>
+          <p class="studyria-why__description">Use Studyria across your phone and install it as a PWA for a convenient study experience wherever you prepare.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">🔐</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Secure by design</h3>
+          <p class="studyria-why__description">Built with secure account access, protected downloads and trusted payment processing for a safer learning experience.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">❤️</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">Your study library</h3>
+          <p class="studyria-why__description">Save, organize and revisit your learning resources with Studyria's personal library and study collection features.</p>
+        </div>
+      </li>
+      <li class="studyria-why__item">
+        <div class="studyria-why__icon" aria-hidden="true">🚀</div>
+        <div class="studyria-why__content">
+          <h3 class="studyria-why__item-title">One platform. More progress.</h3>
+          <p class="studyria-why__description">Study materials, practice, current affairs, career opportunities and premium resources — brought together in one focused ecosystem for aspirants.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </section>
+
 
 
 <!-- ── FAQ ──────────────────────────────────────────────────── -->
@@ -16413,6 +16680,38 @@ window._chMenuBootstrap = (function() {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _bindButtons);
   else _bindButtons();
+  /* Self-heal: if the Career Hub engine never activates (deferred script
+     failure, bad cache, etc.), force the drawer open/closed so the menu
+     always works for users. No-op when the engine is healthy. */
+  function _selfHeal() {
+    var ov = document.getElementById('chMenuOverlay');
+    var ob = document.getElementById('careerMenuBtn');
+    var cb = document.getElementById('careerMenuCloseBtn');
+    if (!ov) return;
+    if (ob) ob.addEventListener('click', function() {
+      setTimeout(function() {
+        if (!ov.classList.contains('open')) {
+          console.warn('[ch-menu] engine activate missed — self-healing open');
+          ov.classList.add('open');
+          document.body.style.overflow = 'hidden';
+          if (typeof _chMR === 'function') { try { _chMR(); } catch (e) {} }
+        }
+      }, 350);
+    });
+    function _healClose() {
+      setTimeout(function() {
+        if (ov.classList.contains('open')) {
+          console.warn('[ch-menu] engine close missed — self-healing close');
+          ov.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      }, 350);
+    }
+    if (cb) cb.addEventListener('click', _healClose);
+    ov.addEventListener('click', function(e) { if (e.target === ov) _healClose(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _selfHeal);
+  else _selfHeal();
   return {
     activate: function(openFn, closeFn) {
       window.chOpenMenu = openFn;
@@ -46957,7 +47256,7 @@ if(document.readyState === 'loading') document.addEventListener('DOMContentLoade
 <script src="pwa-admin-v32.js" defer></script>
 <script src="studyria-ui-2.0.js?v=20260730a" defer></script>
 <script src="studyria-me-v3.js" defer></script>
-<script src="studyria-home-v2.js?v=20260901" defer></script>
+<script src="studyria-home-v2.js?v=20260901b" defer></script>
 
 <!-- ═══ V5.1 REVENUE MODULES ═══ -->
 

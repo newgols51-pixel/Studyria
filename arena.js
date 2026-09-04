@@ -6,7 +6,7 @@
 // ════════════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════════════
-var API='https://solas-e60b5349.base44.app/functions/arenaApi';
+var API='https://solene-a54e17bb.base44.app/functions/arenaApi';
 
 // ════════════════════════════════════════════════
 // ARENA AUDIO LAYER — Premium Web Audio SFX
@@ -263,6 +263,195 @@ var EXAMS=['All','APSC','ADRE','Assam Police','Assam TET','Grade III','Grade IV'
 var DIFFS=[{id:'mixed',l:'Mixed',icon:'🎲'},{id:'easy',l:'Easy',icon:'🟢'},{id:'medium',l:'Medium',icon:'🟡'},{id:'hard',l:'Hard',icon:'🔴'}];
 
 // ════════════════════════════════════════════════
+// 8 PERMANENT ARENA OPPONENTS
+// ════════════════════════════════════════════════
+var OPPONENTS=[
+  {id:'opp_rituraj',name:'Rituraj Saikia',gender:'male',avatar:'👨',baseRating:1050,baseAccuracy:68,responseSpeed:1.2,strengths:['GK','Current Affairs','General Knowledge'],weaknesses:['History'],difficulty_level:'medium'},
+  {id:'opp_parthajit',name:'Parthajit Bora',gender:'male',avatar:'👨',baseRating:1120,baseAccuracy:78,responseSpeed:1.5,strengths:['Polity','Indian Polity'],weaknesses:['Geography'],difficulty_level:'hard'},
+  {id:'opp_ankur',name:'Ankur Hazarika',gender:'male',avatar:'👨',baseRating:1000,baseAccuracy:70,responseSpeed:1.3,strengths:['History','Indian History'],weaknesses:['GK','General Knowledge'],difficulty_level:'medium'},
+  {id:'opp_debojit',name:'Debojit Dutta',gender:'male',avatar:'👨',baseRating:980,baseAccuracy:62,responseSpeed:0.9,strengths:['Geography'],weaknesses:['Polity','History'],difficulty_level:'easy'},
+  {id:'opp_junali',name:'Junali Saikia',gender:'female',avatar:'👩',baseRating:1030,baseAccuracy:72,responseSpeed:1.3,strengths:['Current Affairs','Current affairs'],weaknesses:['History'],difficulty_level:'medium'},
+  {id:'opp_nandita',name:'Nandita Bora',gender:'female',avatar:'👩',baseRating:1100,baseAccuracy:80,responseSpeed:1.6,strengths:['Assam GK','Assam History','Assam Polity'],weaknesses:['Geography'],difficulty_level:'hard'},
+  {id:'opp_priyanka',name:'Priyanka Hazarika',gender:'female',avatar:'👩',baseRating:1010,baseAccuracy:66,responseSpeed:1.0,strengths:['Geography','Indian Geography'],weaknesses:['Polity'],difficulty_level:'medium'},
+  {id:'opp_mousumi',name:'Mousumi Dutta',gender:'female',avatar:'👩',baseRating:1070,baseAccuracy:75,responseSpeed:1.4,strengths:['History','Polity','Indian History','Indian Polity'],weaknesses:['Current Affairs','Current affairs'],difficulty_level:'medium'}
+];
+
+// Persistent opponent state management (localStorage)
+function loadOpponentStates(){
+  try{
+    var saved=JSON.parse(localStorage.getItem('arena_opponents')||'{}');
+    OPPONENTS.forEach(function(o){
+      if(saved[o.id]){
+        o.rating=saved[o.id].rating||o.baseRating;
+        o.wins=saved[o.id].wins||0;
+        o.losses=saved[o.id].losses||0;
+        o.draws=saved[o.id].draws||0;
+        o.matches=saved[o.id].matches||0;
+        o.current_streak=saved[o.id].current_streak||0;
+        o.best_streak=saved[o.id].best_streak||0;
+        o.recent_form=saved[o.id].recent_form||[];
+      }else{
+        o.rating=o.baseRating;
+        o.wins=0;o.losses=0;o.draws=0;o.matches=0;
+        o.current_streak=0;o.best_streak=0;o.recent_form=[];
+      }
+    });
+  }catch(e){
+    OPPONENTS.forEach(function(o){
+      o.rating=o.baseRating;o.wins=0;o.losses=0;o.draws=0;o.matches=0;
+      o.current_streak=0;o.best_streak=0;o.recent_form=[];
+    });
+  }
+}
+
+function saveOpponentStates(){
+  try{
+    var states={};
+    OPPONENTS.forEach(function(o){
+      states[o.id]={rating:o.rating,wins:o.wins,losses:o.losses,draws:o.draws,matches:o.matches,current_streak:o.current_streak,best_streak:o.best_streak,recent_form:o.recent_form};
+    });
+    localStorage.setItem('arena_opponents',JSON.stringify(states));
+  }catch(e){}
+}
+
+function getOpponentById(id){
+  return OPPONENTS.find(function(o){return o.id===id;});
+}
+
+function updateOpponentStats(oppId,isWin,isDraw){
+  var opp=getOpponentById(oppId);
+  if(!opp)return;
+  opp.matches++;
+  if(isDraw){opp.draws++;opp.recent_form.unshift('D');opp.current_streak=0;}
+  else if(isWin){opp.wins++;opp.recent_form.unshift('W');opp.current_streak++;if(opp.current_streak>opp.best_streak)opp.best_streak=opp.current_streak;}
+  else{opp.losses++;opp.recent_form.unshift('L');opp.current_streak=0;}
+  if(opp.recent_form.length>5)opp.recent_form=opp.recent_form.slice(0,5);
+  saveOpponentStates();
+}
+
+// Elo rating calculation (K=32, standard Elo)
+function calculateElo(userRating,oppRating,result){
+  // result: 1=win, 0=loss, 0.5=draw
+  var expected=1/(1+Math.pow(10,(oppRating-userRating)/400));
+  var K=32;
+  var change=Math.round(K*(result-expected));
+  return {newRating:userRating+change,change:change};
+}
+
+// Select fallback opponent closest to user's rating
+function selectFallbackOpponent(userRating,excludeIds){
+  excludeIds=excludeIds||[];
+  loadOpponentStates();
+  var available=OPPONENTS.filter(function(o){return excludeIds.indexOf(o.id)<0;});
+  if(!available.length)available=OPPONENTS.slice();
+  // Sort by rating closeness to user
+  available.sort(function(a,b){
+    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
+  });
+  // Pick from top 3 with some randomness
+  var pool=available.slice(0,Math.min(3,available.length));
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+// Select multiple opponents for team modes
+function selectFallbackOpponents(userRating,count,excludeIds){
+  excludeIds=excludeIds||[];
+  loadOpponentStates();
+  var available=OPPONENTS.filter(function(o){return excludeIds.indexOf(o.id)<0;});
+  if(!available.length)available=OPPONENTS.slice();
+  available.sort(function(a,b){
+    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
+  });
+  var selected=[];
+  var used=[];
+  for(var i=0;i<count&&i<available.length;i++){
+    // Pick from top available with some randomness
+    var pool=available.filter(function(o){return used.indexOf(o.id)<0;});
+    if(!pool.length)break;
+    var pickIdx=Math.floor(Math.random()*Math.min(3,pool.length));
+    selected.push(pool[pickIdx]);
+    used.push(pool[pickIdx].id);
+  }
+  return selected;
+}
+
+// Get local match history (for fallback matches)
+function getLocalHistory(){
+  try{return JSON.parse(localStorage.getItem('arena_local_history')||'[]');}catch(e){return[];}
+}
+
+function saveLocalMatch(match){
+  var hist=getLocalHistory();
+  hist.unshift(match);
+  if(hist.length>200)hist=hist.slice(0,200);
+  try{localStorage.setItem('arena_local_history',JSON.stringify(hist));}catch(e){}
+}
+
+// Get combined history (backend + local)
+function getCombinedHistory(){
+  return getLocalHistory();
+}
+
+// Opponent answer simulation
+function simulateOpponentAnswer(opp,qIdx,questions){
+  var q=questions[qIdx];
+  if(!q)return null;
+  var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
+  
+  // Base accuracy from opponent profile
+  var acc=opp.baseAccuracy/100;
+  
+  // Topic match - strengths/weaknesses
+  var topic=(q.topic||q.category||'').toLowerCase();
+  var isStrength=opp.strengths.some(function(s){return topic.indexOf(s.toLowerCase())>=0||s.toLowerCase().indexOf(topic)>=0;});
+  var isWeakness=opp.weaknesses.some(function(s){return topic.indexOf(s.toLowerCase())>=0||s.toLowerCase().indexOf(topic)>=0;});
+  
+  if(isStrength)acc+=0.15;
+  if(isWeakness)acc-=0.15;
+  
+  // Difficulty adjustment
+  var diff=(q.difficulty||'').toLowerCase();
+  if(diff==='hard')acc-=0.10;
+  else if(diff==='easy')acc+=0.05;
+  
+  // Match progress pressure - later questions slightly harder
+  var progress=qIdx/questions.length;
+  acc-=progress*0.03;
+  
+  // Clamp
+  acc=Math.max(0.15,Math.min(0.95,acc));
+  
+  // Randomness
+  var isCorrect=Math.random()<acc;
+  
+  // Response time: base * speed * random factor
+  var baseTime=8+Math.random()*12; // 8-20 seconds base
+  var responseTime=Math.round(baseTime*opp.responseSpeed*(0.7+Math.random()*0.6));
+  
+  // If wrong, pick a random wrong answer
+  var selectedIdx;
+  if(isCorrect){
+    selectedIdx=correctIdx;
+  }else{
+    var wrongOptions=[0,1,2,3].filter(function(i){return i!==correctIdx;});
+    selectedIdx=wrongOptions[Math.floor(Math.random()*wrongOptions.length)];
+  }
+  
+  return {selectedIdx:selectedIdx,isCorrect:isCorrect,timeSpent:responseTime,answer:String.fromCharCode(97+selectedIdx)};
+}
+
+// Pre-compute all opponent answers for a match
+function preComputeOpponentAnswers(opp,questions){
+  var answers=[];
+  for(var i=0;i<questions.length;i++){
+    answers.push(simulateOpponentAnswer(opp,i,questions));
+  }
+  return answers;
+}
+
+
+
+// ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
 var S={
@@ -274,40 +463,21 @@ var S={
   battle:{qIdx:0,questions:[],answers:[],startTime:null,qStart:null,correct:0,wrong:0,skipped:0,totalTime:0,topicStats:{}},
   screen:null,
   searchResults:[],
-  _fallbackTriggered:false,
-  _isBotMatch:false,
-  _botProfile:null,
-  _botSim:null,
-  _botSimTimer:null,
-  _botCompleted:false,
-  _botFinished:false,
-  _lobbyTimeout:null,
   pendingInvite:null,
   seed:null,
   lobbyReady:false,
-  _matchFinalized:false,
-  _waitStartTime:null,
-  _qTimeLeft:30
+  isFallback:false,
+  fallbackOpponent:null,
+  fallbackOpponents:[],
+  oppSimTimers:[]
 };
 
-async function api(action,data,timeoutMs){
+async function api(action,data){
   data=data||{};
-  // Guard against indefinitely-hanging fetches on slow/flaky mobile connections.
-  // Without this, a single stalled request can freeze the UI forever (the
-  // 'Submitting your result' spinner bug) since browsers don't time out fetch
-  // on their own for slow-but-alive connections.
-  var ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
-  var timer=ctrl?setTimeout(function(){ctrl.abort();},timeoutMs||8000):null;
   try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},data)),signal:ctrl?ctrl.signal:undefined});
-    if(timer)clearTimeout(timer);
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},data))});
     return await res.json();
-  }catch(e){
-    if(timer)clearTimeout(timer);
-    var msg=(e&&e.name==='AbortError')?'Request timed out':(e&&e.message)||'Network error';
-    console.error('Arena API:',msg);
-    return{ok:false,error:msg};
-  }
+  }catch(e){console.error('Arena API:',e);return{ok:false,error:e.message};}
 }
 
 function getUser(){
@@ -932,6 +1102,10 @@ var CSS=`
 }
 .arena-promo-badge-icon{font-size:0.8rem}
 
+/* ══ MATCHMAKING UI ══ */
+.arena-searching{position:relative;}
+.arena-search-config{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0;padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:10px;}
+
 /* ══ RESPONSIVE BANNER ══ */
 @media(max-width:600px){
   .arena-promo-grid{padding:16px 14px 12px}
@@ -998,31 +1172,11 @@ function toast(msg){
 }
 
 async function computeArenaStats(userId){
-  // Use getStats which checks ArenaPresence FIRST (live stats from completeMatch)
-  // and falls back to ArenaResult history. This fixes the regression where
-  // computeArenaStats only read from ArenaResult (which could be empty).
-  try{
-    var statsRes=await api('getStats',{userId:userId});
-    if(statsRes.ok&&statsRes.stats){
-      var s=statsRes.stats;
-      // Backend returns 'arenaRating' from ArenaPresence OR 'rating' from computed fallback.
-      // Handle BOTH field names to prevent undefined rating bug.
-      var ratingVal=s.arenaRating!==undefined?s.arenaRating:(s.rating!==undefined?s.rating:1000);
-      if(ratingVal!==undefined){
-        return{
-          rating:Number(ratingVal)||1000,
-          wins:Number(s.wins)||0,
-          losses:Number(s.losses)||0,
-          draws:Number(s.draws)||0,
-          battles:Number(s.battles)||0,
-          winRate:Number(s.winRate)||0
-        };
-      }
-    }
-  }catch(e){console.warn('[Arena] getStats failed:',e)}
-  // Fallback: old method if getStats fails
   var res=await api('getHistory',{userId:userId});
   var history=(res.ok&&res.history)?res.history:[];
+  // Merge local fallback match history
+  var localHist=getLocalHistory();
+  history=history.concat(localHist);
   var wins=0,losses=0,draws=0;
   var teamLookups=[];
   history.forEach(function(m){
@@ -1053,11 +1207,23 @@ async function computeArenaStats(userId){
   }
   var battles=wins+losses+draws;
   var winRate=battles?Math.round(wins/battles*100):0;
-  // No persisted ELO on the backend — approximate rating from the real
-  // win/loss record so it moves with actual results instead of staying frozen.
-  var rating=1000+wins*25-losses*20;
-  if(rating<0||!Number.isFinite(rating))rating=1000;
-  return {rating:rating,wins:wins||0,losses:losses||0,draws:draws||0,battles:battles||0,winRate:winRate||0};
+  // Use Elo rating from local storage if available, otherwise approximate
+  var storedRating=0;
+  try{var sr=JSON.parse(localStorage.getItem('arena_elo')||'{}');storedRating=sr.rating||0;}catch(e){}
+  var rating;
+  if(storedRating>0){
+    // Adjust stored Elo based on any new backend-only matches we haven't counted
+    var localMatchCount=localHist.length;
+    var backendWins=0,backendLosses=0;
+    history.forEach(function(m){
+      if(localMatchCount>0){return;} // Already counted
+    });
+    rating=storedRating;
+  }else{
+    rating=1000+wins*25-losses*20;
+  }
+  if(rating<0)rating=0;
+  return {rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate};
 }
 
 
@@ -1125,31 +1291,15 @@ async function showHome(){
     showOverlay('<div class="arena-login-prompt"><div class="arena-login-icon">🔐</div><div class="arena-login-text">Please log in to use the Practice Arena.</div><button class="arena-btn" onclick="Arena.close()">OK</button></div>');
     return;
   }
-  // REFRESH RECOVERY: Check if we have an active match to restore
-  if(!S.matchId&&_restoreActiveMatch()){
-    console.log('[Arena] Restored active match after refresh');
-    renderBattle(); // Resume battle from saved state
-    return;
-  }
-  if(S.user)api('clearMatch',{userId:S.user.id});
-  var st;
-  try{st=await computeArenaStats(S.user.id);}catch(e){console.error('[Arena] computeArenaStats failed:',e);st={}}
-  var rating=Number(st.rating)||1000;
-  var wins=Number(st.wins)||0;
-  var losses=Number(st.losses)||0;
-  var draws=Number(st.draws)||0;
-  var battles=Number(st.battles)||0;
-  var winRate=Number(st.winRate)||0;
-  if(!Number.isFinite(rating))rating=1000;
-  if(!Number.isFinite(wins))wins=0;
-  if(!Number.isFinite(losses))losses=0;
-  if(!Number.isFinite(battles))battles=0;
-  if(!Number.isFinite(winRate))winRate=0;
+  if(S.user&&!S.isFallback)api('clearMatch',{userId:S.user.id});
+  S.isFallback=false;
+  var st=await computeArenaStats(S.user.id);
+  var rating=st.rating,wins=st.wins,losses=st.losses,draws=st.draws;
+  var battles=st.battles,winRate=st.winRate;
   try{localStorage.setItem('arena_stats',JSON.stringify({rating:rating,wins:wins,losses:losses,draws:draws,battles:battles,winRate:winRate}));}catch(e){}
 
   var histRes=await api('getHistory',{userId:S.user.id});
-  var apiHist=(histRes.ok&&histRes.history)?histRes.history:[];
-  var history=_getMergedHistory(apiHist);
+  var history=(histRes.ok&&histRes.history)?histRes.history:[];
   var streaks=computeStreaks(history,S.user.id);
   var rankTier=getRankTier(rating);
 
@@ -1331,8 +1481,6 @@ async function startSearch(){
   S.matchId=null;
   S.searchResults=[];
   S.autoMatching=true;
-  S._fallbackTriggered=false;
-  S._isBotMatch=false;
   try{ArenaAudio.play('searching');ArenaAudio.startSearch();}catch(e){}
   
   renderSearch();
@@ -1345,21 +1493,48 @@ async function startSearch(){
 function renderSearch(){
   var m=MODES.find(function(x){return x.id===S.cfg.mode;});
   var elapsed=S.searchStartTime?Math.floor((Date.now()-S.searchStartTime)/1000):0;
-  var h='<div class="arena-title">🔎 Find Players</div>';
-  h+='<div class="arena-sub">'+m.label+' · Auto-matching...</div>';
+  var remaining=Math.max(0,100-elapsed);
+  var onlineCount=S.searchResults.length;
+  
+  // Match quality
+  var quality='Searching';
+  if(onlineCount>0){
+    var userRating=getArenaStats().rating||1000;
+    var hasMatch=onlineCount>0&&Math.abs((S.searchResults[0].arenaRating||1000)-userRating)<200;
+    quality=hasMatch?'Excellent':'Good';
+  }
+  if(elapsed<5)quality='Searching';
+  
+  // Estimated wait
+  var estWait;
+  if(onlineCount>0)estWait=Math.min(30,5+elapsed);
+  else estWait=Math.max(30,100-elapsed);
+  
+  var h='<div class="arena-title">⚔️ Finding Opponent</div>';
+  h+='<div class="arena-sub">'+m.label+' · Searching Arena players...</div>';
 
   h+='<div class="arena-searching">';
   h+='<div class="arena-spinner"></div>';
-  h+='<div style="font-size:15px;color:#f5e9e0;margin-bottom:4px">Auto-matching with compatible players...</div>';
-  h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-top:4px">Searching for '+elapsed+'s / 50s</div>';
+  h+='<div style="font-size:15px;color:#f5e9e0;margin-bottom:4px">Searching Arena players...</div>';
   h+='</div>';
+  
+  // Live matchmaking stats
+  h+='<div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:12px 0">';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Players Online</div><div style="font-size:18px;font-weight:700;color:#e8c87a;margin-top:2px">'+onlineCount+'</div></div>';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Match Quality</div><div style="font-size:14px;font-weight:700;color:'+(quality==='Excellent'?'#66bb6a':quality==='Good'?'#e8c87a':'rgba(245,233,224,0.5)')+';margin-top:4px">'+quality+'</div></div>';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Estimated Wait</div><div style="font-size:14px;font-weight:700;color:#e8c87a;margin-top:4px">'+estWait+'s</div></div>';
+  h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4);text-transform:uppercase;letter-spacing:0.5px">Elapsed</div><div style="font-size:14px;font-weight:700;color:rgba(245,233,224,0.6);margin-top:4px">'+elapsed+'s</div></div>';
+  h+='</div>';
+  
+  // Progress bar
+  h+='<div style="width:100%;max-width:300px;margin:0 auto 12px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,elapsed)+'%;background:linear-gradient(90deg,#930205,#e8c87a);border-radius:2px;transition:width 0.5s"></div></div>';
 
   h+='<div class="arena-search-config">';
   h+='<span>📋 '+m.label+'</span><span>📝 '+S.cfg.qCount+'Q</span><span>📚 '+S.cfg.exam+'</span><span>📁 '+S.cfg.cat+'</span><span>📊 '+S.cfg.diff+'</span>';
   h+='</div>';
 
   if(S.searchTimedOut){
-    h+='<div class="arena-empty">Searching for a compatible player...<br>An opponent will be found automatically!</div>';
+    h+='<div class="arena-empty">No compatible player found yet.<br>Try adjusting your settings or invite a friend manually below.</div>';
   }else if(S.searchResults.length===0){
     h+='<div class="arena-empty">Searching for compatible players...<br>Match starts automatically when someone joins!</div>';
   }else{
@@ -1367,14 +1542,14 @@ function renderSearch(){
     h+='<div style="font-size:12px;color:rgba(245,233,224,0.4);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Online Players</div>';
     S.searchResults.forEach(function(p){
       var cfg=p.searchConfig||{};
-      var pTier=getRankTier(Number(p.arenaRating)||1000);
+      var pTier=getRankTier(p.arenaRating||1000);
       h+='<div class="arena-player-card">';
       h+='<div class="arena-player-info">';
       h+='<div class="arena-player-avatar">'+(p.userName[0]||'?').toUpperCase()+'</div>';
       h+='<div><div class="arena-player-name">'+escapeHtml(p.userName)+'</div>';
       h+='<div class="arena-player-meta"><span class="arena-online-dot"></span>'+(p.exam||'General')+' · '+p.battles+' battles · '+p.winRate+'% WR · '+pTier.label+'</div></div>';
       h+='</div>';
-      h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+(Number(p.arenaRating)||1000)+'</div>';
+      h+='<div style="text-align:right"><div class="arena-rating-badge">⭐ '+(p.arenaRating||1000)+'</div>';
       if(cfg.mode){
         h+='<div style="font-size:10px;color:rgba(245,233,224,0.3);margin-top:4px">'+modeLabel(cfg.mode)+' · '+(cfg.questionCount||10)+'Q</div>';
       }
@@ -1390,7 +1565,7 @@ function renderSearch(){
 }
 
 async function searchPoll(){
-  if(S.screen!=='search'||!S.autoMatching)return;
+  if(S.screen!=='search'||!S.autoMatching||S.searchTimedOut)return;
   
   // Call autoMatch to find compatible players
   var res=await api('autoMatch',{
@@ -1403,9 +1578,9 @@ async function searchPoll(){
     S.matchId=res.matchId;
     S.match=res.match;
     S.autoMatching=false;
+    S.isFallback=false;
     try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
     S.screen='lobby';
-    S._matchFinalized=false;
     showLobby();
     return;
   }
@@ -1416,16 +1591,16 @@ async function searchPoll(){
     S.searchResults=searchRes.players;
   }
   
-  // Check timeout — 50 SECONDS exactly. At this threshold, auto-launch
-  // a fallback match against one of the 8 persistent Arena opponents.
-  // Do NOT show a dead-end message. Do NOT wait for another button press.
-  if(S.searchStartTime&&Date.now()-S.searchStartTime>50000&&!S._fallbackTriggered){
-    S._fallbackTriggered=true;
+  // Check timeout (100 seconds) — fallback to persistent opponent
+  if(S.searchStartTime&&Date.now()-S.searchStartTime>=100000){
+    // Double-invocation guard: if another in-flight searchPoll already
+    // triggered the fallback, this poll must NOT start a second battle
+    // chain (it would overwrite the live battle mid-play).
+    if(S.searchTimedOut)return;
     S.autoMatching=false;
-    stopTimer('search');
+    S.searchTimedOut=true;
     try{ArenaAudio.stopSearch();ArenaAudio.play('opponentFound');}catch(e){}
-    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#f5e9e0;margin-bottom:12px">✅ Opponent Found</div><div style="color:rgba(245,233,224,0.6)">Preparing your battle...</div><div class="arena-spinner" style="margin-top:16px"></div></div>');
-    setTimeout(function(){startFallbackMatch();},1200);
+    startFallbackMatch();
     return;
   }
   
@@ -1450,14 +1625,11 @@ async function invitePlayer(toUserId,toUserName){
 }
 
 function cancelSearch(){
-  S._fallbackTriggered=false;
-  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
-  if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
-  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
-  if(S.matchId){
+  if(S.matchId&&!S.isFallback){
     api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
-    S.matchId=null;
   }
+  S.matchId=null;
+  S.isFallback=false;
   S.autoMatching=false;
   try{ArenaAudio.stopSearch();}catch(e){}
   if(S.user){
@@ -1465,259 +1637,6 @@ function cancelSearch(){
   }
   stopAllTimers();
   showHome();
-}
-
-
-
-// ════════════════════════════════════════════════
-// 8 PERMANENT ARENA OPPONENTS — 4 male + 4 female Assamese names
-// Persistent profiles stored in localStorage. Same identity every match.
-// ════════════════════════════════════════════════
-var FALLBACK_OPPONENTS=[
-  {id:'bot-001',name:'Bhola',gender:'M',rating:1050,accuracy:0.62,minTime:4,maxTime:12,personality:'steady'},
-  {id:'bot-002',name:'Dipankar',gender:'M',rating:1200,accuracy:0.78,minTime:3,maxTime:9,personality:'aggressive'},
-  {id:'bot-003',name:'Gaurav',gender:'M',rating:980,accuracy:0.52,minTime:5,maxTime:15,personality:'cautious'},
-  {id:'bot-004',name:'Bhaskar',gender:'M',rating:1350,accuracy:0.85,minTime:2,maxTime:8,personality:'expert'},
-  {id:'bot-005',name:'Riya',gender:'F',rating:1100,accuracy:0.68,minTime:3,maxTime:11,personality:'balanced'},
-  {id:'bot-006',name:'Anjali',gender:'F',rating:1250,accuracy:0.80,minTime:3,maxTime:10,personality:'aggressive'},
-  {id:'bot-007',name:'Kabita',gender:'F',rating:1000,accuracy:0.58,minTime:4,maxTime:14,personality:'steady'},
-  {id:'bot-008',name:'Dharitri',gender:'F',rating:1150,accuracy:0.72,minTime:3,maxTime:10,personality:'balanced'}
-];
-
-// Persist opponent records between matches (wins/losses/battles update over time)
-function getOpponentProfiles(){
-  try{
-    var stored=JSON.parse(localStorage.getItem('arena_bot_profiles')||'{}');
-    var profiles=[];
-    FALLBACK_OPPONENTS.forEach(function(bo){
-      var s=stored[bo.id];
-      if(s){
-        // Merge: use stored stats but keep base config fresh
-        profiles.push(Object.assign({},bo,{wins:s.wins||0,losses:s.losses||0,battles:s.battles||0}));
-      }else{
-        profiles.push(Object.assign({},bo,{wins:0,losses:0,battles:0}));
-      }
-    });
-    return profiles;
-  }catch(e){
-    return FALLBACK_OPPONENTS.map(function(bo){return Object.assign({},bo,{wins:0,losses:0,battles:0});});
-  }
-}
-
-function saveOpponentProfile(botId,result){
-  try{
-    var stored=JSON.parse(localStorage.getItem('arena_bot_profiles')||'{}');
-    if(!stored[botId])stored[botId]={wins:0,losses:0,battles:0};
-    stored[botId].battles=(stored[botId].battles||0)+1;
-    if(result==='win')stored[botId].wins=(stored[botId].wins||0)+1;
-    else if(result==='loss')stored[botId].losses=(stored[botId].losses||0)+1;
-    localStorage.setItem('arena_bot_profiles',JSON.stringify(stored));
-  }catch(e){}
-}
-
-// Pick a bot based on user's rating — try to match close to user's level
-function pickFallbackOpponent(userRating){
-  var profiles=getOpponentProfiles();
-  // Sort by distance to user rating
-  var sorted=profiles.slice().sort(function(a,b){
-    return Math.abs(a.rating-userRating)-Math.abs(b.rating-userRating);
-  });
-  // Pick from top 4 with slight randomness
-  var pool=sorted.slice(0,4);
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-
-// ════════════════════════════════════════════════
-// startFallbackMatch — called at 50s timeout
-// Creates a real match on the backend with a bot opponent
-// ════════════════════════════════════════════════
-async function startFallbackMatch(){
-  S.user=getUser();if(!S.user){toast('Please log in');return;}
-  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
-  if(!m)return;
-
-  var si=getArenaStats();
-  var bot=pickFallbackOpponent(si.rating||1000);
-
-  var res=await api('createBotMatch',{
-    userId:S.user.id,
-    userName:S.user.name,
-    config:{mode:S.cfg.mode,questionCount:S.cfg.qCount,exam:S.cfg.exam,category:S.cfg.cat,difficulty:S.cfg.diff},
-    botId:bot.id
-  });
-
-  if(!res.ok||!res.matchId){
-    toast('Could not start battle. Please try again.');
-    showHome();
-    return;
-  }
-
-  S.matchId=res.matchId;
-  S.match=res.match;
-  S._isBotMatch=true;
-  S._botProfile=res.botProfiles?res.botProfiles[0]:null;
-  S._botSimQueued=false;
-  S.screen='battle'; // Go straight to battle, skip lobby
-  S._matchFinalized=false; // Reset for new match
-
-  // PROFESSIONAL VS SCREEN
-  var si=getArenaStats();
-  var myAcc=si.battles>0?Math.round(si.wins/si.battles*100):0;
-  var myStreak=0;
-  try{var lh=_getLocalHistory();var st=computeStreaks(lh,S.user.id);myStreak=st.current||0;}catch(e){}
-  var botProfiles=getOpponentProfiles();
-  var botProf=botProfiles.find(function(p){return p.id===bot.id;})||bot;
-  var botWR=botProf.battles>0?Math.round(botProf.wins/botProf.battles*100):0;
-  var vsHTML='<div class="arena-countdown" style="padding:24px 16px">';
-  vsHTML+='<div style="font-size:14px;color:#e8c87a;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px">⚔️ Match Found</div>';
-  vsHTML+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:24px">';
-  // Player
-  vsHTML+='<div style="flex:1;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#930205,#c99a3c);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">'+(S.user.name||'You').charAt(0).toUpperCase()+'</div><div style="font-size:14px;font-weight:700;color:#f5e9e0">'+escapeHtml(S.user.name||'You')+'</div><div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">⭐ '+si.rating+' RP</div><div style="font-size:11px;color:rgba(245,233,224,0.4)">Acc '+myAcc+'% · Streak '+myStreak+'</div></div>';
-  // VS
-  vsHTML+='<div style="font-size:28px;font-weight:900;color:#e8c87a">VS</div>';
-  // Opponent
-  vsHTML+='<div style="flex:1;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4a4a4a,#6a6a6a);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">'+escapeHtml(bot.name.charAt(0).toUpperCase())+'</div><div style="font-size:14px;font-weight:700;color:#f5e9e0">'+escapeHtml(bot.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.5);margin-top:4px">⭐ '+bot.rating+' RP</div><div style="font-size:11px;color:rgba(245,233,224,0.4)">Acc '+Math.round(bot.accuracy*100)+'% · WR '+botWR+'%</div></div>';
-  vsHTML+='</div>';
-  vsHTML+='<div id="arena-vs-countdown" style="font-size:32px;font-weight:900;color:#e8c87a;min-height:48px">'+(S.cfg.qCount||10)+' Questions</div>';
-  vsHTML+='</div>';
-  showOverlay(vsHTML);
-
-  // Show config info briefly, then start countdown
-  setTimeout(function(){
-    startBattle();
-  },2200);
-}
-
-// ════════════════════════════════════════════════
-// Bot answer simulation — runs during battle
-// Computes bot answers based on accuracy profile, submits to backend
-// ════════════════════════════════════════════════
-function startBotSimulation(){
-  if(!S._isBotMatch||!S._botProfile||S._botSimQueued)return;
-  S._botSimQueued=true;S._botFinished=false;
-
-  var botProfile=S._botProfile;
-  var questions=S.battle.questions;
-  var totalQ=questions.length;
-  var botUserId=S.match.players[1].userId; // bot's userId in the match
-
-  // Pre-compute all bot answers
-  var botAnswers=[];
-  var botCorrect=0,botWrong=0,botSkipped=0;
-  var botTotalTime=0;
-  var botTopicStats={};
-
-  questions.forEach(function(q,i){
-    var correctIdx=q.correct_answer==='a'?0:q.correct_answer==='b'?1:q.correct_answer==='c'?2:q.correct_answer==='d'?3:-1;
-    // Determine if bot gets this question right based on accuracy
-    // Add difficulty factor: harder questions = lower accuracy
-    var difficultyFactor=1;
-    if(q.difficulty==='hard')difficultyFactor=0.85;
-    else if(q.difficulty==='easy')difficultyFactor=1.1;
-    var effectiveAccuracy=Math.min(0.95,botProfile.accuracy*difficultyFactor);
-    var isCorrect=Math.random()<effectiveAccuracy;
-
-    // Compute answer time within bot's range with natural variation
-    var timeRange=botProfile.maxTime-botProfile.minTime;
-    var baseTime=botProfile.minTime+Math.random()*timeRange;
-    // Faster on easy, slower on hard
-    if(q.difficulty==='easy')baseTime*=0.8;
-    else if(q.difficulty==='hard')baseTime*=1.3;
-    // Add some randomness (sometimes the bot takes longer to "think")
-    if(Math.random()<0.15)baseTime+=2+Math.random()*3;
-    var answerTime=Math.max(2,Math.round(baseTime));
-
-    botAnswers.push({
-      questionIndex:i,
-      isCorrect:isCorrect,
-      answer:isCorrect?String.fromCharCode(97+correctIdx):String.fromCharCode(97+Math.floor(Math.random()*4)),
-      timeSpent:answerTime
-    });
-
-    if(isCorrect)botCorrect++;else botWrong++;
-    botTotalTime+=answerTime;
-
-    var topic=q.topic||q.category||'Unknown';
-    if(!botTopicStats[topic])botTopicStats[topic]={correct:0,total:0,time:0};
-    botTopicStats[topic].total++;
-    if(isCorrect)botTopicStats[topic].correct++;
-    botTopicStats[topic].time+=answerTime;
-  });
-
-  S._botSim={
-    answers:botAnswers,
-    correct:botCorrect,
-    wrong:botWrong,
-    skipped:botSkipped,
-    totalTime:botTotalTime,
-    topicStats:botTopicStats,
-    botUserId:botUserId,
-    submittedIndices:0
-  };
-
-  // Submit bot answers with realistic delays via a timer
-  S._botSimTimer=setInterval(function(){
-    if(!S._botSim||S._botFinished)return;
-    var sim=S._botSim;
-    if(sim.submittedIndices>=sim.answers.length){
-      // All answers submitted — complete the bot's match
-      clearInterval(S._botSimTimer);
-      S._botSimTimer=null;
-      // Submit bot completion to backend
-      var botScore=Math.round((sim.correct/totalQ)*100);
-      var botAnswersStr=sim.answers.map(function(a){return a.answer;});
-      api('completeMatch',{
-        matchId:S.matchId,
-        userId:sim.botUserId,
-        correct:sim.correct,
-        wrong:sim.wrong,
-        skipped:0,
-        score:botScore,
-        totalTime:sim.totalTime,
-        topicBreakdown:sim.topicStats,
-        answers:botAnswersStr
-      }).then(function(res){
-        S._botCompleted=true;S._botFinished=true;
-        if(S.screen==='waiting')waitingPoll();
-      }).catch(function(e){
-        S._botCompleted=true;S._botFinished=true;
-        if(S.screen==='waiting')waitingPoll();
-      });
-      return;
-    }
-    var ans=sim.answers[sim.submittedIndices];
-    // Submit this answer to the backend
-    api('submitAnswer',{
-      matchId:S.matchId,
-      userId:sim.botUserId,
-      questionIndex:ans.questionIndex,
-      answer:ans.answer,
-      timeSpent:ans.timeSpent
-    });
-    sim.submittedIndices++;
-    // Update opponent progress display
-    updateBotProgress(sim.submittedIndices,totalQ);
-  },3000+Math.random()*2000); // Submit one answer every 3-5 seconds
-}
-
-function updateBotProgress(answeredCount,totalQ){
-  // Update opponent progress display
-  var oppProgEl=document.getElementById('arena-opp-progress');
-  if(oppProgEl)oppProgEl.textContent=answeredCount+'/'+totalQ;
-  // Update opponent live score
-  var oppScoreEl=document.getElementById('arena-live-opp-score');
-  if(oppScoreEl&&S._botSim)oppScoreEl.textContent=S._botSim.correct*10;
-  // Update score gap
-  var gapEl=document.getElementById('arena-score-gap');
-  var myScoreEl=document.getElementById('arena-live-my-score');
-  if(gapEl&&myScoreEl&&S._botSim){
-    var myS=parseInt(myScoreEl.textContent)||0;
-    var oppS=S._botSim.correct*10;
-    var gap=myS-oppS;
-    if(gap>0){gapEl.textContent='Leading +'+gap;gapEl.style.color='#66bb6a';}
-    else if(gap<0){gapEl.textContent='Behind '+(-gap);gapEl.style.color='#ff4d6d';}
-    else{gapEl.textContent='Tied';gapEl.style.color='rgba(245,233,224,0.5)';}
-  }
 }
 
 
@@ -1834,7 +1753,6 @@ async function setReady(ready){
 }
 
 async function leaveLobby(){
-  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(!confirm('Leave this arena lobby?'))return;
   await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
   S.matchId=null;S.match=null;
@@ -1844,8 +1762,8 @@ async function leaveLobby(){
 }
 
 async function startBattle(){
-  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   stopTimer('poll');
+  S._finishingBattle=false;
   S.screen='battle';
   
   // Get match with questions
@@ -1876,7 +1794,6 @@ function showCountdown(n){
     try{ArenaAudio.play('countdownGo');ArenaAudio.stopTimeWarn();ArenaAudio.startTimeWarn();}catch(e){}
     renderBattle();
     startBattlePoll();
-    if(S._isBotMatch){startBotSimulation();}
     return;
   }
   try{ArenaAudio.play('countdownTick');}catch(e){}
@@ -1893,45 +1810,24 @@ function renderBattle(){
   var progress=((idx)/total)*100;
   
   var h='<div class="arena-battle">';
-  var qLabel='Q'+(idx+1)+' / '+total+(idx===total-1?' · 🏁 FINAL':'');
-  h+='<div class="arena-battle-header"><span>'+qLabel+'</span><span id="arena-battle-timer">⏱ '+Q_TIME_LIMIT+':00</span></div>';
+  h+='<div class="arena-battle-header"><span>Q'+(idx+1)+' / '+total+'</span><span id="arena-battle-timer">⏱ 0:00</span></div>';
   h+='<div class="arena-battle-progress"><div class="arena-battle-progress-bar" style="width:'+progress+'%"></div></div>';
   
-  // Live score bar: YOU vs OPPONENT with score gap
-  var myLiveScore=0,oppLiveScore=0,oppLiveName='Opponent';
-  if(S.match&&S.match.players){
-    var oppP=S.match.players.find(function(p){return p.userId!==S.user.id;});
-    if(oppP)oppLiveName=oppP.userName||'Opponent';
-  }
-  // Estimate live score from correct answers (without speed bonus for real-time)
-  myLiveScore=S.battle.correct*10;
-  // Get opponent progress from bot sim or match data
-  if(S._botSim){oppLiveScore=S._botSim.submittedIndices>0?Math.round(S._botSim.correct*(10/S.battle.questions.length)*S.battle.questions.length/10):0;}
-  // Actually use bot sim correct count for live score
-  if(S._botSim){oppLiveScore=S._botSim.correct*10;}
-  h+='<div class="arena-live-status" style="justify-content:space-between;align-items:center">';
-  h+='<div class="arena-live-card" style="flex:1;text-align:center"><div class="arena-live-label">'+escapeHtml(S.user.name||'You')+'</div><div class="arena-live-val" id="arena-live-my-score">'+myLiveScore+'</div><div style="font-size:10px;color:rgba(245,233,224,0.4)">'+S.battle.correct+'C '+S.battle.wrong+'W</div></div>';
-  // Score gap indicator
-  var gap=myLiveScore-oppLiveScore;
-  var gapText=gap>0?'+' +gap:'+'+gap;
-  var gapClass=gap>0?'leading':'trailing';
-  if(gap===0)gapClass='';
-  h+='<div style="text-align:center;min-width:60px"><div style="font-size:11px;color:rgba(245,233,224,0.4);font-weight:600">SCORE</div><div style="font-size:13px;color:'+(gap>0?'#66bb6a':gap<0?'#ff4d6d':'rgba(245,233,224,0.5)')+';font-weight:700" id="arena-score-gap">'+(gap>0?'Leading +'+gap:gap<0?'Behind '+(-gap):'Tied')+'</div></div>';
-  h+='<div class="arena-live-card" style="flex:1;text-align:center"><div class="arena-live-label">'+escapeHtml(oppLiveName)+'</div><div class="arena-live-val" id="arena-live-opp-score">'+oppLiveScore+'</div><div style="font-size:10px;color:rgba(245,233,224,0.4)" id="arena-opp-progress">0/'+total+'</div></div>';
+  // Live stats
+  h+='<div class="arena-live-status">';
+  h+='<div class="arena-live-card"><div class="arena-live-label">Correct</div><div class="arena-live-val" id="arena-live-correct">'+S.battle.correct+'</div></div>';
+  h+='<div class="arena-live-card"><div class="arena-live-label">Wrong</div><div class="arena-live-val" id="arena-live-wrong">'+S.battle.wrong+'</div></div>';
+  h+='<div class="arena-live-card"><div class="arena-live-label">Skipped</div><div class="arena-live-val" id="arena-live-skipped">'+S.battle.skipped+'</div></div>';
   h+='</div>';
-  // Hidden counters for internal updates
-  h+='<div style="display:none"><span id="arena-live-correct">'+S.battle.correct+'</span><span id="arena-live-wrong">'+S.battle.wrong+'</span><span id="arena-live-skipped">'+S.battle.skipped+'</span></div>';
   
-  // Opponent progress (without revealing answers or exact score)
+  // Opponent status (without revealing answers)
   if(S.match&&S.match.players){
     S.match.players.forEach(function(p){
       if(p.userId!==S.user.id&&p.status!=='abandoned'){
-        var answered=0;
-        if(S._botSim)answered=S._botSim.submittedIndices;
-        else answered=p.answers?p.answers.length:0;
+        var answered=p.answers?p.answers.length:0;
         var dotClass=answered>idx?'answered':answered>0?'thinking':'waiting';
         var statusText=answered>idx?'Answered':answered>0?'Thinking':'Not Started';
-        h+='<div class="arena-opp-status" style="display:none"><span class="arena-opp-dot '+dotClass+'"></span><span style="font-size:12px;color:rgba(245,233,224,0.5)">'+escapeHtml(p.userName)+': '+statusText+' ('+answered+'/'+total+')</span></div>';
+        h+='<div class="arena-opp-status"><span class="arena-opp-dot '+dotClass+'"></span><span style="font-size:12px;color:rgba(245,233,224,0.5)">'+escapeHtml(p.userName)+': '+statusText+' ('+answered+'/'+total+')</span></div>';
       }
     });
   }
@@ -1978,50 +1874,13 @@ function renderBattle(){
   }
 }
 
-var Q_TIME_LIMIT=30; // seconds per question
 function startBattleTimer(){
   if(battleTimerInt)clearInterval(battleTimerInt);
-  S._qTimeLeft=Q_TIME_LIMIT;
   battleTimerInt=setInterval(function(){
     var el=document.getElementById('arena-battle-timer');
     if(el){
-      S._qTimeLeft--;
-      var s=Math.max(0,S._qTimeLeft);
+      var s=Math.floor((Date.now()-S.battle.qStart)/1000);
       el.textContent='⏱ '+fmtTime(s);
-      // Visual warning at 5 seconds
-      if(s<=5&&s>0){el.style.color='#ff4d6d';try{ArenaAudio.play('timeWarn');}catch(e){}}
-      else if(s<=10){el.style.color='#fbbf24';}
-      else{el.style.color='';}
-      // Auto-advance when timer hits 0
-      if(s<=0){
-        clearInterval(battleTimerInt);
-        battleTimerInt=null;
-        // If not answered yet, lock as timeout and move on
-        var idx=S.battle.qIdx;
-        if(S.battle.answers[idx]===undefined||S.battle.answers[idx]===null){
-          S.battle.answers[idx]={skipped:true,timeout:true};
-          S.battle.skipped++;
-          var sEl=document.getElementById('arena-live-skipped');
-          if(sEl)sEl.textContent=S.battle.skipped;
-          var topic=S.battle.questions[idx]?(S.battle.questions[idx].topic||S.battle.questions[idx].category||'Unknown'):'Unknown';
-          if(!S.battle.topicStats[topic])S.battle.topicStats[topic]={correct:0,total:0,time:0};
-          S.battle.topicStats[topic].total++;
-          S.battle.topicStats[topic].time+=Q_TIME_LIMIT;
-          try{ArenaAudio.play('timeUp');}catch(e){}
-        }
-        // Auto-advance after short delay
-        setTimeout(function(){
-          if(battleTimerInt){clearInterval(battleTimerInt);battleTimerInt=null;}
-          S.battle.totalTime+=Q_TIME_LIMIT;
-          S.battle.qIdx++;
-          S.battle.qStart=Date.now();
-          if(S.battle.qIdx>=S.battle.questions.length){
-            finishBattle();
-          }else{
-            renderBattle();
-          }
-        },800);
-      }
     }
   },1000);
 }
@@ -2041,8 +1900,10 @@ function answerQ(optIdx){
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
   try{ArenaAudio.play('answerSelect');if(isCorrect)ArenaAudio.play('correct');else ArenaAudio.play('wrong');}catch(e){}
   
-  // Submit to backend
-  api('submitAnswer',{matchId:S.matchId,userId:S.user.id,questionIndex:idx,answer:String.fromCharCode(97+optIdx),timeSpent:timeSpent});
+  // Submit to backend (skip for fallback matches — simulated locally)
+  if(!S.isFallback){
+    api('submitAnswer',{matchId:S.matchId,userId:S.user.id,questionIndex:idx,answer:String.fromCharCode(97+optIdx),timeSpent:timeSpent});
+  }
   
   // Show feedback
   var opts=document.querySelectorAll('.arena-battle-opt');
@@ -2062,8 +1923,6 @@ function answerQ(optIdx){
   // Record answer
   S.battle.answers[idx]={selectedIdx:optIdx,isCorrect:isCorrect,timeSpent:timeSpent};
   if(isCorrect)S.battle.correct++;else S.battle.wrong++;
-  // Save active match state for refresh recovery
-  _saveActiveMatchState();
   
   // Topic stats
   var topic=q.topic||q.category||'Unknown';
@@ -2077,26 +1936,11 @@ function answerQ(optIdx){
     BrainLab.saveMistakeLocal(q,String.fromCharCode(97+optIdx));
   }
   
-  // Update live score display
+  // Update live status
   var cEl=document.getElementById('arena-live-correct');
   var wEl=document.getElementById('arena-live-wrong');
   if(cEl)cEl.textContent=S.battle.correct;
   if(wEl)wEl.textContent=S.battle.wrong;
-  // Update live score bar
-  var myNewScore=S.battle.correct*10;
-  var myScoreEl=document.getElementById('arena-live-my-score');
-  if(myScoreEl)myScoreEl.textContent=myNewScore;
-  // Update score gap
-  var oppScoreEl=document.getElementById('arena-live-opp-score');
-  var gapEl=document.getElementById('arena-score-gap');
-  var oppNewScore=S._botSim?S._botSim.correct*10:0;
-  if(oppScoreEl)oppScoreEl.textContent=oppNewScore;
-  if(gapEl){
-    var newGap=myNewScore-oppNewScore;
-    if(newGap>0){gapEl.textContent='Leading +'+newGap;gapEl.style.color='#66bb6a';}
-    else if(newGap<0){gapEl.textContent='Behind '+(-newGap);gapEl.style.color='#ff4d6d';}
-    else{gapEl.textContent='Tied';gapEl.style.color='rgba(245,233,224,0.5)';}
-  }
   
   // Enable next button
   var nb=document.getElementById('arena-next-btn');
@@ -2110,9 +1954,8 @@ function skipQ(){
   if(S.battle.answers[idx]!==undefined&&S.battle.answers[idx]!==null)return;
   try{ArenaAudio.play('skip');}catch(e){}
   var timeSpent=Math.floor((Date.now()-S.battle.qStart)/1000);
-  S.battle.answers[idx]={skipped:true,timeout:false};
+  S.battle.answers[idx]={skipped:true};
   S.battle.skipped++;
-  _saveActiveMatchState();
   var sEl=document.getElementById('arena-live-skipped');
   if(sEl)sEl.textContent=S.battle.skipped;
   
@@ -2130,7 +1973,6 @@ function nextQ(){
   try{ArenaAudio.play('nextQuestion');ArenaAudio.stopTimeWarn();}catch(e){}
   if(battleTimerInt)clearInterval(battleTimerInt);
   S.battle.totalTime+=Math.floor((Date.now()-S.battle.qStart)/1000);
-  _saveActiveMatchState();
   S.battle.qIdx++;
   S.battle.qStart=Date.now();
   if(S.battle.qIdx>=S.battle.questions.length){
@@ -2141,28 +1983,33 @@ function nextQ(){
 }
 
 async function finishBattle(){
+  // RE-ENTRY GUARD: rapid Next/double-tap on the last question (or skipQ's
+  // internal nextQ followed by a user click) can call finishBattle multiple
+  // times, double-saving history and double-applying Elo/opponent stats.
+  if(S._finishingBattle)return;
+  S._finishingBattle=true;
   if(battleTimerInt)clearInterval(battleTimerInt);
   stopTimer('battlePoll');
   try{ArenaAudio.stopTimeWarn();ArenaAudio.play('battleComplete');}catch(e){}
   
-  // IDEMPOTENCY: Check if this match was already finalized
-  if(S._matchFinalized){
-    console.log('[Arena] Match already finalized, skipping resubmit');
-    if(S.match)showResults({type:'user',userId:S.user.id,userName:S.user.name},S.match);
-    else showHome();
+  // Clear any pending opponent simulation timers
+  if(S.oppSimTimers){S.oppSimTimers.forEach(function(t){clearTimeout(t);});S.oppSimTimers=[];}
+  
+  // FALLBACK MATCH: Process locally without backend API
+  if(S.isFallback){
+    processFallbackResult();
     return;
   }
   
-  // Calculate final stats locally — we have ALL the data already
+  // Calculate final stats
   var total=S.battle.questions.length;
   var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
-  // SCORE: accuracy-based + speed bonus (knowledge > speed)
-  var baseScore=total?Math.round((S.battle.correct/total)*100):0;
-  // Speed bonus: 0-30 points based on average answer time (faster = more)
-  var avgTime=S.battle.answers.length>0?
-    S.battle.answers.reduce(function(s,a){return s+((a&&a.timeSpent)?a.timeSpent:0);},0)/S.battle.answers.length:30;
-  var speedBonus=Math.round(Math.max(0,Math.min(30,(30-avgTime)*1.5)));
-  var score=baseScore+speedBonus;
+  var score=Math.round((S.battle.correct/total)*100);
+  // Backend stores players[].answers as an array of STRINGS (letter answers),
+  // not objects — sending {selectedIdx,isCorrect,timeSpent} objects fails schema
+  // validation on every single submit ("Input should be a valid string"), which
+  // is why completeMatch was failing on every real battle. Convert to plain
+  // letter strings here; skipped questions become an empty string.
   var answersForServer=S.battle.answers.map(function(a){
     if(a===null||a===undefined||a.skipped)return '';
     return String.fromCharCode(97+a.selectedIdx);
@@ -2175,129 +2022,41 @@ async function finishBattle(){
     answers:answersForServer
   };
   
-  // Save match locally BEFORE submitting (offline safety)
-  _saveMatchLocal(payload);
-  S._matchFinalized=true;
-  _clearActiveMatch(); // Clear active match state — battle is done
-  
-  // BUILD A LOCAL RESULT OBJECT so we can show results INSTANTLY
-  // without waiting for the API response. The API sync happens in
-  // the background — the user never waits for it.
-  var localMatch=S.match||{};
-  // Update local match with our results
-  var myPlayerData={
-    userId:S.user.id,
-    userName:S.user.name,
-    team:'A',
-    status:'completed',
-    ready:true,
-    score:score,
-    baseScore:baseScore,
-    speedBonus:speedBonus,
-    correct:S.battle.correct,
-    wrong:S.battle.wrong,
-    skipped:S.battle.skipped,
-    answers:answersForServer,
-    timing:[],
-    completedAt:new Date().toISOString(),
-    totalTime:totalTime,
-    topicBreakdown:S.battle.topicStats
-  };
-  
-  // Build/merge match object
-  var matchForResults=Object.assign({},localMatch);
-  if(!matchForResults.players||!matchForResults.players.length){
-    matchForResults.players=[myPlayerData];
-  }else{
-    matchForResults.players=matchForResults.players.map(function(p){
-      if(p.userId===S.user.id)return Object.assign({},p,myPlayerData);
-      return p;
-    });
-  }
-  matchForResults.status=S._isBotMatch?'completed':matchForResults.status;
-  
-  // For bot matches: determine winner locally if bot already has data
-  var winner={type:'user',userId:S.user.id,userName:S.user.name};
-  var botPlayer=matchForResults.players.find(function(p){return p.userId!==S.user.id;});
-  if(botPlayer&&botPlayer.status==='completed'){
-    if((botPlayer.score||0)>score){
-      winner={type:'user',userId:botPlayer.userId,userName:botPlayer.userName||'Opponent'};
-    }else if((botPlayer.score||0)===score){
-      winner={type:'draw',userId:S.user.id,userName:S.user.name};
-    }
-    matchForResults.status='completed';
+  // Submit final results — RETRY on failure. On flaky mobile connections a
+  // single failed submit used to permanently strand the match (server never
+  // learns this player finished, opponent's report shows 0s forever). Retry
+  // a few times with backoff before giving up.
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">📤 Submitting your result…</div><div class="arena-spinner"></div></div>');
+  var res=null;
+  for(var attempt=0;attempt<5;attempt++){
+    if(attempt>0)await new Promise(function(r){setTimeout(r,800*attempt);});
+    res=await api('completeMatch',payload);
+    if(res&&res.ok)break;
   }
   
-  // SHOW RESULTS IMMEDIATELY — do NOT wait for API
-  if(matchForResults.status==='completed'){
-    showResults(winner,matchForResults);
-  }else{
-    // For real player matches where opponent hasn't finished, show waiting
+  if(res&&res.ok&&res.allCompleted){
+    // Both players finished — show results using the FRESH match data we just got
+    // back from completeMatch (avoids read-after-write replication lag from a
+    // separate getMatch call right after this write)
+    showResults(res.winner,res.match);
+  }else if(res&&res.ok){
+    // Waiting for opponent
     showWaitingForOpponent();
+  }else{
+    // All retries failed — likely a real connectivity problem. Do NOT fake a
+    // result screen with local-only data (that hides that the server never
+    // recorded this player's completion). Offer a manual retry instead.
+    showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:#e57373;margin-bottom:12px">⚠️ Couldn\'t submit your result</div><div style="color:rgba(245,233,224,0.6);margin-bottom:20px;font-size:14px">Check your connection and try again — your answers are saved locally.</div><button class="arena-btn primary" onclick="Arena.retrySubmit()">🔄 Retry Submit</button></div>');
+    S.screen='submitFailed';
   }
-  
-  // SYNC TO BACKEND IN BACKGROUND (fire-and-forget, non-blocking)
-  // This runs AFTER showResults — user already sees their result
-  api('completeMatch',payload,8000).then(function(res){
-    if(res&&res.ok){
-      _removeMatchLocal(S.matchId);
-      // Fetch fresh stats from server to update local cache
-      api('getStats',{userId:S.user.id},5000).then(function(statsRes){
-        if(statsRes.ok&&statsRes.stats){
-          var s=statsRes.stats;
-          var r=s.arenaRating!==undefined?s.arenaRating:s.rating;
-          if(r!==undefined){
-            try{localStorage.setItem('arena_stats',JSON.stringify({
-              rating:Number(r)||1000,
-              wins:Number(s.wins)||0,
-              losses:Number(s.losses)||0,
-              draws:Number(s.draws)||0,
-              battles:Number(s.battles)||0,
-              winRate:Number(s.winRate)||0
-            }));}catch(e){}
-          }
-        }
-      }).catch(function(){});
-      // If the result came back with allCompleted, refresh the results display
-      if(res.allCompleted&&S.screen==='results'){
-        console.log('[Arena] Backend sync complete — updating with server data');
-        S.match=res.match||S.match;
-        if(res.winner)showResults(res.winner,res.match||matchForResults);
-      }else if(!res.allCompleted&&S._isBotMatch&&S.screen==='results'){
-        if(!S._botFinished){
-          var waitBotPoll=setInterval(function(){
-            if(S._botFinished){clearInterval(waitBotPoll);waitingPoll();}
-          },2000);
-          setTimeout(function(){clearInterval(waitBotPoll);},30000);
-        }
-      }
-    }else{
-      console.warn('[Arena] Background sync failed, saved locally for retry');
-      _markMatchPendingSync(payload);
-    }
-  }).catch(function(e){
-    console.warn('[Arena] Background sync error:',e);
-    _markMatchPendingSync(payload);
-  });
 }
 
 function retrySubmit(){
+  S._finishingBattle=false;
   finishBattle();
 }
 
 function showWaitingForOpponent(){
-  S._waitStartTime=Date.now();
-  // If this is a bot match, the bot should already be completing.
-  // The bot simulation continues regardless of screen state (FIX).
-  if(S._isBotMatch){
-    S.screen='waiting';
-    waitingPoll(); // Check immediately
-    if(!S._botCompleted){
-      // Bot still simulating — start polling
-      startWaitingPoll();
-    }
-    return;
-  }
   showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">✅ Battle Complete!</div><div class="arena-spinner"></div><div style="margin-top:16px;color:rgba(245,233,224,0.6)">Waiting for opponent to finish...</div><div style="margin-top:20px;display:flex;gap:10px;justify-content:center"><button class="arena-btn secondary" onclick="Arena.checkNowWait()">🔄 Check Now</button><button class="arena-btn secondary" onclick="Arena.forfeitWait()">Don\'t Wait</button></div></div>');
   S.screen='waiting';
   startWaitingPoll();
@@ -2305,24 +2064,6 @@ function showWaitingForOpponent(){
 
 async function waitingPoll(){
   if(S.screen!=='waiting'||!S.matchId)return;
-  // SAFETY: Don't poll forever — after 60s, show results with available data
-  if(S._waitStartTime&&Date.now()-S._waitStartTime>60000){
-    stopTimer('waitingPoll');stopTimer('poll');
-    console.warn('[Arena] Waiting timeout — showing results with available data');
-    if(S.match){
-      var active=S.match.players.filter(function(p){return p.status!=='abandoned';});
-      var me=active.find(function(p){return p.userId===S.user.id;});
-      var sorted=active.slice().sort(function(a,b){return(b.score||0)-(a.score||0);});
-      var top=sorted[0];
-      var isDraw=sorted[1]&&(sorted[1].score||0)===(top.score||0);
-      var w=isDraw?{type:'draw',userId:top.userId,userName:top.userName,score:top.score}
-        :{type:'user',userId:top.userId,userName:top.userName,score:top.score};
-      showResults(w,S.match);
-    }else{
-      showHome();
-    }
-    return;
-  }
   var res=await api('getMatch',{matchId:S.matchId});
   if(!res.ok)return;
   S.match=res.match;
@@ -2375,7 +2116,12 @@ function checkNowWait(){
 
 async function leaveBattle(){
   if(!confirm('Leave Arena? Your progress will be saved as abandoned.'))return;
-  await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
+  if(!S.isFallback){
+    await api('leaveMatch',{matchId:S.matchId,userId:S.user.id});
+  }else{
+    // Clear opponent sim timers for fallback
+    if(S.oppSimTimers){S.oppSimTimers.forEach(function(t){clearTimeout(t);});S.oppSimTimers=[];}
+  }
   if(battleTimerInt)clearInterval(battleTimerInt);
   try{ArenaAudio.stopTimeWarn();ArenaAudio.cleanup();}catch(e){}
   stopAllTimers();
@@ -2667,45 +2413,26 @@ async function showResults(winner,freshMatch){
   // ══ LAYER 7: RATING CHANGE ══
   if(S.user){
     var oldStats=getArenaStats();
-    var oldRating=Number(oldStats.rating)||1000;
-    // If server returned fresh match with updated player data, use server rating
-    if(freshMatch&&freshMatch.players){
-      var serverMe=freshMatch.players.find(function(p){return p.userId===S.user.id;});
-      // Server doesn't return rating in match data — use local stats for display
-    }
-    var newRating=oldRating;
-    var delta=0;
-    // PROPER ELO RATING — based on rating difference between players
-    var oppRating=1000;
-    if(opp&&S._botProfile)oppRating=S._botProfile.rating||1000;
-    else if(opp&&!S._isBotMatch)oppRating=1000; // real player — will use server rating
-    var expected=1/(1+Math.pow(10,(oppRating-oldRating)/400));
-    var K=32; // ELO K-factor
-    if(isWin||isTeamWin){delta=Math.round(K*(1-expected));newRating=oldRating+delta;}
-    else if(!isDraw){delta=Math.round(K*(0-expected));newRating=Math.max(100,oldRating+delta);}
-    else if(isDraw){delta=Math.round(K*(0.5-expected));newRating=oldRating+delta;}
+    var newRating=oldStats.rating||1000;
+    if(isWin||isTeamWin)newRating+=Math.round(15+Math.random()*10);
+    else if(!isDraw)newRating-=Math.round(10+Math.random()*8);
+    var delta=newRating-(oldStats.rating||1000);
     if(delta!==0){
       h+='<div class="arena-result-section"><div class="arena-result-section-title">🏅 Arena Rating</div>';
       h+='<div class="arena-rating-change">';
-      h+='<div class="arena-rating-before">'+oldRating+'</div>';
+      h+='<div class="arena-rating-before">'+(oldStats.rating||1000)+'</div>';
       h+='<div class="arena-rating-arrow">→</div>';
       h+='<div class="arena-rating-after">'+newRating+'</div>';
       h+='<div class="arena-rating-delta '+(delta>0?'pos':'neg')+'">'+(delta>0?'+':'')+delta+'</div>';
       h+='</div>';
       try{
-        var updated=Object.assign({},oldStats,{rating:newRating,wins:oldStats.wins||0,losses:oldStats.losses||0,battles:(oldStats.battles||0),winRate:oldStats.winRate||0});
-        if(isWin||isTeamWin)updated.wins=(updated.wins||0)+1;
-        else if(!isDraw)updated.losses=(updated.losses||0)+1;
-        updated.battles=(updated.wins||0)+(updated.losses||0)+(updated.draws||0);
-        updated.winRate=updated.battles?Math.round((updated.wins||0)/updated.battles*100):0;
+        var updated=Object.assign({},oldStats,{rating:newRating});
         localStorage.setItem('arena_stats',JSON.stringify(updated));
         if(delta>0)ArenaAudio.play('newRating');
       }catch(e){}
       h+='</div>';
     }
   }
-  // Save to local history backup
-  if(S.match){try{_saveLocalHistory(S.match);}catch(e){}}
   // Win streak sound — only on actual win, check streak from history
   try{
     if((isWin||isTeamWin)&&S.user){
@@ -2842,13 +2569,6 @@ async function showResults(winner,freshMatch){
   if(S.battle.questions.length>20)h+='<div style="font-size:12px;color:rgba(245,233,224,0.35);text-align:center;padding:8px">Showing first 20 questions. '+S.battle.questions.length+' total.</div>';
   h+='</div>';
   
-  // Save opponent profile for persistent bot stats
-  if(S._isBotMatch&&S._botProfile){
-    var botResult=isWin||isTeamWin?'loss':'win';
-    if(isDraw)botResult='draw';
-    saveOpponentProfile(S._botProfile.id,botResult);
-  }
-
   // Save session
   if(window.BrainLab){
     BrainLab.saveSession({
@@ -2930,11 +2650,10 @@ function practiceWeakTopic(topic){
 }
 
 function rematch(){
-  S._matchFinalized=false;
   try{ArenaAudio.play('rematch');}catch(e){}
   // Create new match with same config
-  if(S.user)api('clearMatch',{userId:S.user.id});
-  S.matchId=null;S.match=null;
+  if(S.user&&!S.isFallback)api('clearMatch',{userId:S.user.id});
+  S.matchId=null;S.match=null;S.isFallback=false;
   S.seed=genSeed();
   startSearch();
 }
@@ -2964,9 +2683,16 @@ function practiceSimilar(){
 async function showHistory(){
   S.user=getUser();if(!S.user){toast('Please log in');return;}
   var res=await api('getHistory',{userId:S.user.id});
-  var apiHistory=res.ok?res.history:[];
-  // Merge with local history backup (preserves matches during API outages)
-  var history=_getMergedHistory(apiHistory);
+  var history=res.ok?res.history:[];
+  // Merge local fallback match history
+  var localHist=getLocalHistory();
+  history=history.concat(localHist);
+  // Sort by date descending
+  history.sort(function(a,b){
+    var da=new Date(a.createdAt||a.completedAt||0).getTime();
+    var db=new Date(b.createdAt||b.completedAt||0).getTime();
+    return db-da;
+  });
   
   var h='<div class="arena-title">📜 Battle History</div>';
   h+='<div class="arena-sub">'+history.length+' battles</div>';
@@ -3226,8 +2952,6 @@ async function inviteCheckPoll(){
       }
       // Fallback: re-enable autoMatching so next searchPoll picks it up
       S.autoMatching=true;
-  S._fallbackTriggered=false;
-  S._isBotMatch=false;
       return;
     }
     // Show modal for manual accept/reject (when not in search mode)
@@ -3368,6 +3092,27 @@ function startLobbyPoll(){
 
 function startBattlePoll(){
   stopTimer('poll');
+  if(S.isFallback){
+    // For fallback matches, poll locally to update opponent status
+    S.timers.poll=setInterval(function(){
+      if(S.screen!=='battle'||!S.isFallback)return;
+      // Update opponent status display without re-rendering
+      if(S.match&&S.match.players){
+        S.match.players.forEach(function(p){
+          if(p.userId!==S.user.id){
+            var answered=p.answers?p.answers.length:0;
+            var dotEl=document.querySelector('[data-opp-status="'+p.userId+'"]');
+            if(dotEl){
+              var idx=S.battle.qIdx;
+              var statusText=answered>idx?'Answered':answered>0?'Thinking':'Not Started';
+              dotEl.textContent=escapeHtml(p.userName)+': '+statusText+' ('+answered+'/'+S.battle.questions.length+')';
+            }
+          }
+        });
+      }
+    },POLL_MS);
+    return;
+  }
   S.timers.poll=setInterval(async function(){
     if(S.screen!=='battle'||!S.matchId)return;
     var res=await api('getMatch',{matchId:S.matchId});
@@ -3409,117 +3154,11 @@ function stopTimer(name){
 
 function stopAllTimers(){
   stopTimer('presence');stopTimer('poll');stopTimer('inviteCheck');stopTimer('search');
-  if(S._botSimTimer){clearInterval(S._botSimTimer);S._botSimTimer=null;}
-  if(S._lobbyTimeout){clearTimeout(S._lobbyTimeout);S._lobbyTimeout=null;}
   if(battleTimerInt){clearInterval(battleTimerInt);battleTimerInt=null;}
 }
 
 function getArenaStats(){
-  try{
-    var s=JSON.parse(localStorage.getItem('arena_stats')||'{}');
-    return{
-      rating:Number(s.rating)||1000,
-      wins:Number(s.wins)||0,
-      losses:Number(s.losses)||0,
-      draws:Number(s.draws)||0,
-      battles:Number(s.battles)||0,
-      winRate:Number(s.winRate)||0
-    };
-  }catch(e){return{rating:1000,wins:0,losses:0,draws:0,battles:0,winRate:0};}
-}
-
-// ════════════════════════════════════════════════
-// LOCAL MATCH PERSISTENCE — offline safety
-// ════════════════════════════════════════════════
-function _getLocalMatches(){
-  try{return JSON.parse(localStorage.getItem('arena_local_matches')||'[]');}catch(e){return[];}
-}
-function _saveMatchLocal(payload){
-  try{
-    var matches=_getLocalMatches();
-    // Don't duplicate
-    var existing=matches.find(function(m){return m.matchId===payload.matchId;});
-    if(!existing){
-      matches.push(Object.assign({},payload,{savedAt:Date.now(),syncStatus:'pending'}));
-      localStorage.setItem('arena_local_matches',JSON.stringify(matches));
-    }
-  }catch(e){}
-}
-function _markMatchPendingSync(payload){
-  try{
-    var matches=_getLocalMatches();
-    var existing=matches.find(function(m){return m.matchId===payload.matchId;});
-    if(existing){existing.syncStatus='pending';}
-    else{
-      matches.push(Object.assign({},payload,{savedAt:Date.now(),syncStatus:'pending'}));
-    }
-    localStorage.setItem('arena_local_matches',JSON.stringify(matches));
-  }catch(e){}
-}
-function _removeMatchLocal(matchId){
-  try{
-    var matches=_getLocalMatches();
-    matches=matches.filter(function(m){return m.matchId!==matchId;});
-    localStorage.setItem('arena_local_matches',JSON.stringify(matches));
-  }catch(e){}
-}
-async function retryPendingSync(){
-  var matches=_getLocalMatches();
-  var pending=matches.filter(function(m){return m.syncStatus==='pending';});
-  if(!pending.length){toast('No pending results to sync');return;}
-  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">🔄 Syncing '+pending.length+' result(s)…</div><div class="arena-spinner"></div></div>');
-  var synced=0;
-  for(var i=0;i<pending.length;i++){
-    var p=pending[i];
-    var res=await api('completeMatch',p,8000);
-    if(res&&res.ok){_removeMatchLocal(p.matchId);synced++;}
-  }
-  if(synced>0){
-    toast('✅ '+synced+' result(s) synced!');
-    showHome();
-  }else{
-    toast('⚠ Sync failed — will retry later');
-    showHome();
-  }
-}
-
-// ════════════════════════════════════════════════
-// LOCAL HISTORY — backup match records in localStorage
-// ════════════════════════════════════════════════
-function _getLocalHistory(){
-  try{return JSON.parse(localStorage.getItem('arena_history')||'[]');}catch(e){return[];}
-}
-function _saveLocalHistory(match){
-  try{
-    var history=_getLocalHistory();
-    // Deduplicate by matchId
-    if(history.find(function(m){return (m.matchId||m.id)===match.id;}))return;
-    history.push({
-      matchId:match.id,
-      mode:match.mode,
-      questionCount:match.questionCount,
-      winner:match.winner||{},
-      playerResults:(match.players||[]).map(function(p){
-        return{userId:p.userId,userName:p.userName,team:p.team,score:p.score,correct:p.correct,wrong:p.wrong,skipped:p.skipped,accuracy:p.score?Math.round((p.correct/(match.questionCount||1))*100):0,totalTime:p.totalTime};
-      }),
-      createdAt:match.completedAt||new Date().toISOString(),
-      status:match.status||'completed'
-    });
-    // Keep last 100 matches
-    if(history.length>100)history=history.slice(-100);
-    localStorage.setItem('arena_history',JSON.stringify(history));
-  }catch(e){}
-}
-function _getMergedHistory(apiHistory){
-  var local=_getLocalHistory();
-  if(!local.length)return apiHistory||[];
-  if(!apiHistory||!apiHistory.length)return local;
-  // Merge — deduplicate by matchId
-  var seen={};
-  var merged=[];
-  apiHistory.forEach(function(m){var id=m.matchId||m.id;seen[id]=true;merged.push(m);});
-  local.forEach(function(m){var id=m.matchId||m.id;if(!seen[id]){seen[id]=true;merged.push(m);}});
-  return merged;
+  try{return JSON.parse(localStorage.getItem('arena_stats')||'{}');}catch(e){return{};}
 }
 
 
@@ -3546,127 +3185,6 @@ function selectMode(modeId){
 
 
 // ════════════════════════════════════════════════
-// LEGACY MIGRATION — restore old Arena data
-// ════════════════════════════════════════════════
-function _migrateLegacyArenaData(){
-  var migrated=false;
-  try{
-    // Check for old arena_stats in different keys
-    var legacyKeys=['arena_stats_v1','arena_stats_v2','arena_profile','bl_arena_stats'];
-    legacyKeys.forEach(function(key){
-      var raw=localStorage.getItem(key);
-      if(raw){
-        try{
-          var old=JSON.parse(raw);
-          if(old&&old.rating){
-            var current=getArenaStats();
-            // Only restore if current is empty/default and old has more data
-            if((current.battles||0)===0&&(old.battles||0)>0){
-              console.log('[Arena] Migrating legacy data from',key,':',old);
-              localStorage.setItem('arena_stats',JSON.stringify({
-                rating:Number(old.rating)||1000,
-                wins:Number(old.wins)||0,
-                losses:Number(old.losses)||0,
-                draws:Number(old.draws)||0,
-                battles:Number(old.battles)||0,
-                winRate:Number(old.winRate)||0
-              }));
-              migrated=true;
-            }
-          }
-        }catch(e){console.warn('[Arena] Legacy key '+key+' parse failed:',e);}
-      }
-    });
-    // Check for old history keys
-    var legacyHistKeys=['arena_history_v1','arena_battle_history','bl_arena_history'];
-    legacyHistKeys.forEach(function(key){
-      var raw=localStorage.getItem(key);
-      if(raw){
-        try{
-          var oldHist=JSON.parse(raw);
-          if(Array.isArray(oldHist)&&oldHist.length>0){
-            var current=_getLocalHistory();
-            if(current.length===0){
-              console.log('[Arena] Migrating legacy history from',key,':',oldHist.length,'matches');
-              localStorage.setItem('arena_history',JSON.stringify(oldHist));
-              migrated=true;
-            }
-          }
-        }catch(e){console.warn('[Arena] Legacy history key '+key+' parse failed:',e);}
-      }
-    });
-    if(migrated)console.log('[Arena] Legacy migration complete');
-  }catch(e){console.warn('[Arena] Migration failed:',e);}
-}
-
-// ════════════════════════════════════════════════
-// MATCH STATE PERSISTENCE — save/restore active battle on refresh
-// ════════════════════════════════════════════════
-function _saveActiveMatchState(){
-  if(S.screen!=='battle'||!S.matchId)return;
-  try{
-    var state={
-      matchId:S.matchId,
-      match:S.match,
-      mode:S.cfg.mode,
-      qCount:S.cfg.qCount,
-      exam:S.cfg.exam,
-      cat:S.cfg.cat,
-      diff:S.cfg.diff,
-      qIdx:S.battle.qIdx,
-      answers:S.battle.answers,
-      correct:S.battle.correct,
-      wrong:S.battle.wrong,
-      skipped:S.battle.skipped,
-      totalTime:S.battle.totalTime,
-      topicStats:S.battle.topicStats,
-      questions:S.battle.questions,
-      isBotMatch:S._isBotMatch,
-      botProfile:S._botProfile,
-      screen:S.screen,
-      savedAt:Date.now()
-    };
-    localStorage.setItem('arena_active_match',JSON.stringify(state));
-  }catch(e){}
-}
-
-function _restoreActiveMatch(){
-  try{
-    var raw=localStorage.getItem('arena_active_match');
-    if(!raw)return false;
-    var state=JSON.parse(raw);
-    if(!state||!state.matchId)return false;
-    // Check if match is already finalized — don't restore if so
-    if(S._matchFinalized){localStorage.removeItem('arena_active_match');return false;}
-    // Check if saved state is too old (more than 10 minutes)
-    if(state.savedAt&&Date.now()-state.savedAt>600000){localStorage.removeItem('arena_active_match');return false;}
-    // Restore state
-    S.matchId=state.matchId;
-    S.match=state.match;
-    S.cfg.mode=state.mode;S.cfg.qCount=state.qCount;S.cfg.exam=state.exam;S.cfg.cat=state.cat;S.cfg.diff=state.diff;
-    S.battle.qIdx=state.qIdx||0;
-    S.battle.answers=state.answers||[];
-    S.battle.correct=state.correct||0;
-    S.battle.wrong=state.wrong||0;
-    S.battle.skipped=state.skipped||0;
-    S.battle.totalTime=state.totalTime||0;
-    S.battle.topicStats=state.topicStats||{};
-    S.battle.questions=state.questions||[];
-    S.battle.startTime=Date.now();
-    S.battle.qStart=Date.now();
-    S._isBotMatch=state.isBotMatch||false;
-    S._botProfile=state.botProfile||null;
-    S.screen='battle';
-    S._matchFinalized=false;
-    return true;
-  }catch(e){return false;}
-}
-
-function _clearActiveMatch(){
-  try{localStorage.removeItem('arena_active_match');}catch(e){}
-}
-
-// ════════════════════════════════════════════════
 // BRAINLAB HOOK
 // ════════════════════════════════════════════════
 function init(){
@@ -3674,11 +3192,8 @@ function init(){
   if(window._arenaInitDone)return; // Prevent double-init
   window._arenaInitDone=true;
   
-  // MIGRATION: Check for legacy Arena storage keys and merge
-  _migrateLegacyArenaData();
-  
-  // REFRESH RECOVERY: Check for active match state
-  // (will be restored when user opens Arena, not on page load)
+  // Initialize persistent opponent states
+  loadOpponentStates();
   
   // Store original renderPracticeArena
   var origRender=BrainLab.renderPracticeArena;
@@ -3710,6 +3225,331 @@ function init(){
   }
 }
 
+
+// ════════════════════════════════════════════════
+// FALLBACK MATCH: START, SIMULATE, COMPLETE
+// ════════════════════════════════════════════════
+
+function startFallbackMatch(){
+  S.user=getUser();
+  if(!S.user){toast('Please log in');return;}
+  
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  if(!m)return;
+  
+  var userRating=getArenaStats().rating||1000;
+  S.isFallback=true;
+  S.fallbackOpponents=[];
+  
+  // Select opponents based on mode
+  if(m.type==='duel'){
+    // 1v1: one opponent
+    var opp=selectFallbackOpponent(userRating);
+    S.fallbackOpponents=[opp];
+  }else if(m.type==='team'){
+    // Team modes: fill both teams with opponents
+    // Team A: user + (teamA-1) opponents
+    // Team B: (teamB) opponents
+    var teamACount=m.teamA-1; // user fills one slot
+    var teamBCount=m.teamB;
+    var teamAOpps=selectFallbackOpponents(userRating,teamACount);
+    var excludeIds=teamAOpps.map(function(o){return o.id;});
+    var teamBOpps=selectFallbackOpponents(userRating,teamBCount,excludeIds);
+    S.fallbackOpponents=teamAOpps.concat(teamBOpps);
+  }else if(m.type==='ffa'){
+    // FFA: (players-1) opponents
+    var ffaCount=m.players-1;
+    S.fallbackOpponents=selectFallbackOpponents(userRating,ffaCount);
+  }
+  
+  // Show "Opponent Found" screen
+  showOpponentFound();
+}
+
+function showOpponentFound(){
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  var h='<div class="arena-countdown" style="text-align:center">';
+  h+='<div style="font-size:20px;color:#e8c87a;margin-bottom:16px;font-weight:700">⚔️ OPPONENT FOUND</div>';
+  
+  if(m.type==='duel'&&S.fallbackOpponents.length>0){
+    var opp=S.fallbackOpponents[0];
+    loadOpponentStates();
+    var oppData=getOpponentById(opp.id)||opp;
+    var form=oppData.recent_form||[];
+    var formStr=form.length?form.map(function(r){return r==='W'?'<span style="color:#66bb6a">W</span>':r==='L'?'<span style="color:#f44336">L</span>':'<span style="color:#e8c87a">D</span>';}).join(' '):'New';
+    
+    h+='<div style="display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0">';
+    h+='<div style="text-align:center"><div style="width:60px;height:60px;border-radius:50%;background:rgba(201,154,60,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 8px">'+(S.user.name[0]||'P').toUpperCase()+'</div><div style="font-size:14px;color:#f5e9e0;font-weight:600">'+escapeHtml(S.user.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.4)">'+(getArenaStats().rating||1000)+' Rating</div></div>';
+    h+='<div style="font-size:24px;color:#e8c87a;font-weight:700">VS</div>';
+    h+='<div style="text-align:center"><div style="width:60px;height:60px;border-radius:50%;background:rgba(201,154,60,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 8px">'+oppData.avatar+'</div><div style="font-size:14px;color:#f5e9e0;font-weight:600">'+escapeHtml(oppData.name)+'</div><div style="font-size:12px;color:rgba(245,233,224,0.4)">'+oppData.rating+' Rating</div></div>';
+    h+='</div>';
+    
+    h+='<div style="display:flex;justify-content:center;gap:24px;margin:12px 0">';
+    h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4)">Accuracy</div><div style="font-size:16px;color:#f5e9e0">'+oppData.baseAccuracy+'%</div></div>';
+    h+='<div style="text-align:center"><div style="font-size:11px;color:rgba(245,233,224,0.4)">Recent Form</div><div style="font-size:16px;color:#f5e9e0">'+formStr+'</div></div>';
+    h+='</div>';
+  }else if(m.type==='team'){
+    h+='<div style="margin:16px 0">';
+    var teamAOpps=S.fallbackOpponents.slice(0,m.teamA-1);
+    var teamBOpps=S.fallbackOpponents.slice(m.teamA-1);
+    h+='<div style="font-size:14px;color:#66bb6a;font-weight:600;margin-bottom:8px">Team A: You + '+teamAOpps.map(function(o){return escapeHtml(o.name);}).join(', ')+'</div>';
+    h+='<div style="font-size:14px;color:#f44336;font-weight:600">Team B: '+teamBOpps.map(function(o){return escapeHtml(o.name);}).join(', ')+'</div>';
+    h+='</div>';
+  }else{
+    // FFA
+    h+='<div style="margin:16px 0;font-size:14px;color:#f5e9e0">Opponents: '+S.fallbackOpponents.map(function(o){return escapeHtml(o.name);}).join(', ')+'</div>';
+  }
+  
+  h+='</div>';
+  showOverlay(h);
+  
+  // Countdown 3-2-1-BATTLE
+  setTimeout(function(){fallbackCountdown(3);},2500);
+}
+
+function fallbackCountdown(n){
+  if(n<=0){
+    try{ArenaAudio.play('countdownGo');ArenaAudio.stopTimeWarn();ArenaAudio.startTimeWarn();}catch(e){}
+    startFallbackBattle();
+    return;
+  }
+  try{ArenaAudio.play('countdownTick');}catch(e){}
+  showOverlay('<div class="arena-countdown"><div style="font-size:18px;color:rgba(245,233,224,0.5);margin-bottom:20px">⚔️ BATTLE START</div><div class="arena-countdown-num">'+n+'</div></div>');
+  setTimeout(function(){fallbackCountdown(n-1);},1000);
+}
+
+function startFallbackBattle(){
+  S.screen='battle';
+  S._finishingBattle=false;
+  S.matchId='fallback_'+Date.now();
+  
+  // Generate questions locally using same engine
+  var seed=genSeed();
+  var matchConfig={
+    questionIds:'seed:'+seed,
+    questionCount:S.cfg.qCount,
+    exam:S.cfg.exam,
+    category:S.cfg.cat,
+    difficulty:S.cfg.diff,
+    mode:S.cfg.mode
+  };
+  
+  S.battle.questions=getMatchQuestions(matchConfig);
+  if(!S.battle.questions.length){toast('No questions available');showHome();return;}
+  S.battle.qIdx=0;
+  S.battle.answers=[];
+  S.battle.correct=0;
+  S.battle.wrong=0;
+  S.battle.skipped=0;
+  S.battle.totalTime=0;
+  S.battle.topicStats={};
+  S.battle.startTime=Date.now();
+  S.battle.qStart=Date.now();
+  
+  // Build match object with same structure as backend match
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  var players=[{userId:S.user.id,userName:S.user.name,status:'in_progress',answers:[],score:0,correct:0,wrong:0,skipped:0,totalTime:0}];
+  
+  // Add opponent players
+  S.fallbackOpponents.forEach(function(opp){
+    var team=m.type==='team'?(S.fallbackOpponents.indexOf(opp)<m.teamA-1?'A':'B'):undefined;
+    players.push({userId:opp.id,userName:opp.name,status:'in_progress',answers:[],score:0,correct:0,wrong:0,skipped:0,totalTime:0,team:team,isBot:true});
+  });
+  
+  S.match={
+    matchId:S.matchId,
+    mode:S.cfg.mode,
+    questionCount:S.cfg.qCount,
+    exam:S.cfg.exam,
+    category:S.cfg.cat,
+    difficulty:S.cfg.diff,
+    players:players,
+    status:'in_progress',
+    createdAt:new Date().toISOString()
+  };
+  
+  // Pre-compute opponent answers
+  S.fallbackOpponentAnswers={};
+  S.fallbackOpponents.forEach(function(opp){
+    S.fallbackOpponentAnswers[opp.id]=preComputeOpponentAnswers(opp,S.battle.questions);
+  });
+  
+  // Schedule opponent answer simulations
+  scheduleOpponentAnswers();
+  
+  renderBattle();
+}
+
+function scheduleOpponentAnswers(){
+  S.oppSimTimers=[];
+  var totalQ=S.battle.questions.length;
+  
+  S.fallbackOpponents.forEach(function(opp){
+    var answers=S.fallbackOpponentAnswers[opp.id];
+    var cumulativeTime=0;
+    
+    for(var i=0;i<totalQ;i++){
+      var ans=answers[i];
+      cumulativeTime+=ans.timeSpent*1000;
+      
+      (function(oppId,qIdx,ansData,delay){
+        var t=setTimeout(function(){
+          // Only update if battle is still active
+          if(S.screen!=='battle'||!S.isFallback)return;
+          var player=S.match.players.find(function(p){return p.userId===oppId;});
+          if(!player)return;
+          player.answers[qIdx]=ansData.answer;
+          if(ansData.isCorrect){player.correct++;player.score+=100;}
+          else{player.wrong++;}
+          player.totalTime+=ansData.timeSpent;
+        },delay);
+        S.oppSimTimers.push(t);
+      })(opp.id,i,ans,cumulativeTime);
+    }
+  });
+}
+
+function processFallbackResult(){
+  var m=MODES.find(function(x){return x.id===S.cfg.mode;});
+  var total=S.battle.questions.length;
+  var totalTime=S.battle.totalTime+Math.floor((Date.now()-S.battle.qStart)/1000);
+  var userScore=Math.round((S.battle.correct/total)*100);
+  
+  // Update user's player object in match
+  var me=S.match.players.find(function(p){return p.userId===S.user.id;});
+  if(me){
+    me.correct=S.battle.correct;
+    me.wrong=S.battle.wrong;
+    me.skipped=S.battle.skipped;
+    me.score=userScore;
+    me.totalTime=totalTime;
+    me.answers=S.battle.answers.map(function(a){
+      if(!a||a.skipped)return '';
+      return String.fromCharCode(97+a.selectedIdx);
+    });
+    me.status='completed';
+    me.topicBreakdown=S.battle.topicStats;
+  }
+  
+  // Ensure all opponents are completed (in case some timers didn't fire)
+  S.match.players.forEach(function(p){
+    if(p.userId!==S.user.id){
+      p.status='completed';
+      // If opponent didn't answer all questions, fill remaining as wrong
+      var opp=getOpponentById(p.userId);
+      if(opp&&S.fallbackOpponentAnswers[p.userId]){
+        var answers=S.fallbackOpponentAnswers[p.userId];
+        for(var i=0;i<total;i++){
+          if(!p.answers[i]){
+            var ans=answers[i];
+            p.answers[i]=ans?ans.answer:'';
+            if(ans&&ans.isCorrect){p.correct++;p.score+=100;}
+            else{p.wrong++;}
+            p.totalTime+=ans?ans.timeSpent:15;
+          }
+        }
+      }
+      p.score=p.score||Math.round((p.correct/total)*100);
+    }
+  });
+  
+  S.match.status='completed';
+  S.match.completedAt=new Date().toISOString();
+  
+  // Determine winner
+  var winner={};
+  if(m.type==='duel'){
+    var opp=S.match.players.find(function(p){return p.userId!==S.user.id;});
+    var myScore=me?me.score:0;
+    var oppScore=opp?opp.score:0;
+    if(myScore>oppScore){
+      winner={type:'user',userId:S.user.id,userName:S.user.name,score:myScore};
+    }else if(oppScore>myScore){
+      winner={type:'user',userId:opp.userId,userName:opp.userName,score:oppScore};
+    }else{
+      winner={type:'draw',userId:S.user.id,userName:S.user.name,score:myScore};
+    }
+  }else if(m.type==='team'){
+    var teamA=S.match.players.filter(function(p){return p.team==='A';});
+    var teamB=S.match.players.filter(function(p){return p.team==='B';});
+    var scoreA=teamA.reduce(function(s,p){return s+(p.score||0);},0);
+    var scoreB=teamB.reduce(function(s,p){return s+(p.score||0);},0);
+    if(scoreA>scoreB)winner={type:'team',team:'A'};
+    else if(scoreB>scoreA)winner={type:'team',team:'B'};
+    else winner={type:'draw'};
+  }else if(m.type==='ffa'){
+    var ranked=S.match.players.slice().sort(function(a,b){return (b.score||0)-(a.score||0);});
+    if(ranked.length>1&&ranked[0].score===ranked[1].score){
+      winner={type:'draw'};
+    }else{
+      winner={type:'ffa',ranking:ranked.map(function(p){return {userId:p.userId,userName:p.userName,score:p.score||0,correct:p.correct||0};})};
+    }
+  }
+  
+  S.match.winner=winner;
+  
+  // Calculate Elo rating change
+  var userRating=getArenaStats().rating||1000;
+  var oppRating=0;
+  if(m.type==='duel'){
+    var opp2=S.match.players.find(function(p){return p.userId!==S.user.id;});
+    oppRating=opp2?(getOpponentById(opp2.userId)||opp2).rating||1000:1000;
+  }else{
+    // For team/FFA, use average opponent rating
+    var opps=S.match.players.filter(function(p){return p.userId!==S.user.id;});
+    oppRating=opps.length?Math.round(opps.reduce(function(s,p){var od=getOpponentById(p.userId);return s+(od?od.rating:1000);},0)/opps.length):1000;
+  }
+  
+  var eloResult;
+  if(winner.type==='draw'){eloResult=calculateElo(userRating,oppRating,0.5);}
+  else if((winner.type==='user'&&winner.userId===S.user.id)||(winner.type==='team'&&winner.team==='A')){
+    eloResult=calculateElo(userRating,oppRating,1);
+  }else{
+    eloResult=calculateElo(userRating,oppRating,0);
+  }
+  
+  // Store new Elo rating
+  try{localStorage.setItem('arena_elo',JSON.stringify({rating:eloResult.newRating}));}catch(e){}
+  
+  // Update opponent stats
+  var isUserWin=(winner.type==='user'&&winner.userId===S.user.id)||(winner.type==='team'&&winner.team==='A');
+  var isDraw=winner.type==='draw';
+  S.fallbackOpponents.forEach(function(opp){
+    // Opponent's result is opposite of user's
+    updateOpponentStats(opp.id,!isUserWin&&!isDraw,isDraw);
+    // Also update opponent's Elo
+    var oppEloResult=calculateElo(opp.rating,userRating,isUserWin?0:isDraw?0.5:1);
+    var oppData=getOpponentById(opp.id);
+    if(oppData){oppData.rating=oppEloResult.newRating;saveOpponentStates();}
+  });
+  
+  // Save match to local history
+  var historyMatch={
+    matchId:S.matchId,
+    mode:S.cfg.mode,
+    questionCount:S.cfg.qCount,
+    exam:S.cfg.exam,
+    category:S.cfg.cat,
+    difficulty:S.cfg.diff,
+    status:'completed',
+    winner:winner,
+    players:S.match.players.map(function(p){
+      return {userId:p.userId,userName:p.userName,score:p.score||0,correct:p.correct||0,wrong:p.wrong||0,skipped:p.skipped||0,totalTime:p.totalTime||0,team:p.team};
+    }),
+    playerResults:S.match.players.map(function(p){
+      return {userId:p.userId,userName:p.userName,score:p.score||0,correct:p.correct||0,wrong:p.wrong||0,skipped:p.skipped||0,totalTime:p.totalTime||0,team:p.team,accuracy:p.correct&&total?Math.round(p.correct/total*100):0};
+    }),
+    ratingBefore:userRating,
+    ratingAfter:eloResult.newRating,
+    ratingChange:eloResult.change,
+    createdAt:S.match.createdAt,
+    completedAt:S.match.completedAt
+  };
+  saveLocalMatch(historyMatch);
+  
+  // Show results using same showResults function
+  showResults(winner,S.match);
+}
 
 // ════════════════════════════════════════════════
 // EXPOSE PUBLIC API
@@ -3745,10 +3585,9 @@ window.Arena={
   filterLeaderboard:filterLeaderboard,
   forfeitWait:forfeitWait,
   retrySubmit:retrySubmit,
-  retryPendingSync:retryPendingSync,
-  clearActiveMatch:_clearActiveMatch,
   checkNowWait:checkNowWait,
-  close:closeOverlay
+  close:closeOverlay,
+  startFallbackMatch:startFallbackMatch
 };
 
 // Initialize when BrainLab is ready

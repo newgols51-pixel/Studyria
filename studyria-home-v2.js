@@ -609,16 +609,16 @@
 
     container.innerHTML = html;
 
-    // Insert AFTER the discover/search section so that:
-    // Hero → Live Notifications → Search Studyria → [sv2 sections] → OTT Carousels
-    var discover = homePage.querySelector('#discover-section');
-    if (discover) {
-      // Insert right after the discover-section
-      if (discover.nextSibling) {
-        homePage.insertBefore(container, discover.nextSibling);
-      } else {
-        homePage.appendChild(container);
-      }
+    // Insert AFTER Search Studyria (discover-section) so the newer
+    // Live Notifications / Trust Strip / Search Studyria sections stay
+    // visible right after the Hero, and this legacy jobs block appears
+    // below them instead of pushing them down.
+    var anchor = document.getElementById('discover-section');
+    var hero = homePage.querySelector('.sh-hero');
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(container, anchor.nextSibling);
+    } else if (hero && hero.parentNode) {
+      hero.parentNode.insertBefore(container, hero.nextSibling);
     } else {
       // Fallback: insert after the hero section
       var hero = homePage.querySelector('.sh-hero');

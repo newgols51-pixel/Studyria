@@ -180,14 +180,3 @@
   .adre-filter-group{width:100%;}
   .adre-filter-btn{font-size:12px;padding:4px 10px;}
 }
-
-/* Bilingual Language Toggle */
-.adre-lang-toggle{display:flex;gap:4px;background:rgba(0,0,0,0.3);padding:4px;border-radius:8px;}
-.adre-lang-btn{padding:4px 10px;font-size:12px;font-weight:600;border:none;border-radius:4px;cursor:pointer;background:transparent;color:#aaa;transition:all 0.2s;}
-.adre-lang-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
-.adre-lang-btn.active{background:#e8c87a;color:#1a1a1a;}
-
-/* Assamese text styling */
-.adre-q-text.adre-q-as{font-family:'Noto Sans Assamese','Asom-Times-Bold','Golos Regular',sans-serif;color:#ccc;font-size:15px;margin-top:6px;padding-top:6px;border-top:1px dashed rgba(255,255,255,0.15);}
-.adre-opt-as{font-family:'Noto Sans Assamese','Asom-Times-Bold','Golos Regular',sans-serif;font-size:14px;color:#999;display:block;margin-top:2px;}
-.adre-review-q-text.adre-q-as{font-family:'Noto Sans Assamese','Asom-Times-Bold','Golos Regular',sans-serif;color:#999;font-size:14px;margin-top:4px;}

@@ -346,27 +346,124 @@
 .hr-why-title { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .hr-why-desc { font-size: .78rem; line-height: 1.6; color: var(--text2); }
 
-/* ── TRUST BADGES REDESIGN ─────────────────────────────────────── */
-.hr-trust-strip {
+/* ── STUDYRIA TRUST STRIP (Premium 8-item redesign) ────────────── */
+.studyria-trust-strip {
+  display: block;
+  padding: 14px 0 10px;
+}
+.studyria-trust-strip__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(201, 154, 60, 0.18);
+  border-bottom: 1px solid rgba(201, 154, 60, 0.18);
+  padding: 10px 0;
+}
+.studyria-trust-strip__item {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  padding: 16px 0;
-  flex-wrap: wrap;
-}
-.hr-trust-item {
-  display: flex;
-  align-items: center;
   gap: 8px;
-  padding: 8px 20px;
-  font-size: .78rem;
+  padding: 12px 14px;
+  font-size: .76rem;
   font-weight: 600;
-  color: var(--text2);
-  border-right: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+  font-family: var(--font-body);
+  color: var(--text);
+  line-height: 1.4;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .5s ease, transform .5s ease;
 }
-.hr-trust-item:last-child { border-right: none; }
-.hr-trust-icon { font-size: 1rem; }
+.studyria-trust-strip__item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Subtle vertical divider between columns on desktop */
+@media (min-width: 769px) {
+  .studyria-trust-strip__item:not(:nth-child(4n))::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(201, 154, 60, 0.15);
+  }
+}
+.studyria-trust-strip__icon {
+  font-size: .95rem;
+  flex-shrink: 0;
+  line-height: 1;
+  filter: saturate(0.85);
+}
+.studyria-trust-strip__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Mobile: 2-column grid */
+@media (max-width: 768px) {
+  .studyria-trust-strip__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+  .studyria-trust-strip__item {
+    padding: 10px 12px;
+    font-size: .72rem;
+    gap: 7px;
+  }
+  .studyria-trust-strip__item:nth-child(2n)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(201, 154, 60, 0.15);
+  }
+  .studyria-trust-strip__item:nth-child(odd):not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(201, 154, 60, 0.15);
+  }
+}
+/* Very small screens: ensure text wraps if needed */
+@media (max-width: 360px) {
+  .studyria-trust-strip__item {
+    font-size: .68rem;
+    padding: 9px 8px;
+    gap: 6px;
+  }
+  .studyria-trust-strip__label {
+    white-space: normal;
+  }
+}
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .studyria-trust-strip__item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* Light theme */
+body.light .studyria-trust-strip__item {
+  color: #2a2a2a;
+}
+body.light .studyria-trust-strip__grid {
+  border-color: rgba(201, 154, 60, 0.25);
+}
+body.light .studyria-trust-strip__item::after,
+body.light .studyria-trust-strip__item:nth-child(2n)::after,
+body.light .studyria-trust-strip__item:nth-child(odd):not(:last-child)::after {
+  background: rgba(201, 154, 60, 0.2);
+}
 
 /* ── PREMIUM BANNER REDESIGN ────────────────────────────────────── */
 .hr-premium-banner {
@@ -452,8 +549,6 @@
   .hr-premium-left { flex-direction: column; text-align: center; }
   .hr-premium-btn { width: 100%; }
 
-  .hr-trust-strip { gap: 0; }
-  .hr-trust-item { padding: 6px 12px; font-size: .72rem; }
 }
 
 @media (max-width: 480px) {
@@ -469,7 +564,6 @@ body.light .hr-why-card:hover { border-color: rgba(147,2,5,0.25); box-shadow: 0 
 body.light .hr-feature-strip { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.06); }
 body.light .hr-feature-item { border-color: rgba(0,0,0,0.06); }
 body.light .hr-feature-item:hover { background: rgba(0,0,0,0.02); }
-body.light .hr-trust-item { border-color: rgba(0,0,0,0.06); }
 body.light .hr-see-all { border-color: rgba(0,0,0,0.1); }
 body.light .hr-see-all:hover { border-color: #930205; }
 body.light .hr-premium-banner { background: linear-gradient(135deg, rgba(251,191,36,0.06) 0%, rgba(245,158,11,0.04) 100%); border-color: rgba(251,191,36,0.25); }

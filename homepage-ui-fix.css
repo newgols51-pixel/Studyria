@@ -404,10 +404,17 @@ body.light .hr-premium-banner {
   border-color: rgba(251, 191, 36, 0.2) !important;
 }
 
-/* Trust strip light theme */
-body.light .hr-trust-item {
-  border-color: rgba(0, 0, 0, 0.06) !important;
-  color: #4a5f80 !important;
+/* Studyria Trust Strip light theme */
+body.light .studyria-trust-strip__item {
+  color: #2a2a2a !important;
+}
+body.light .studyria-trust-strip__grid {
+  border-color: rgba(201, 154, 60, 0.25) !important;
+}
+body.light .studyria-trust-strip__item::after,
+body.light .studyria-trust-strip__item:nth-child(2n)::after,
+body.light .studyria-trust-strip__item:nth-child(odd):not(:last-child)::after {
+  background: rgba(201, 154, 60, 0.2) !important;
 }
 
 /* Notification cards light theme */

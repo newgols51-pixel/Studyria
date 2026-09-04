@@ -3,7 +3,6 @@ node_modules/
 .npm/
 __pycache__/
 .cache/
-blobs/
 package.json
 package-lock.json
 premium-content.js.bak
