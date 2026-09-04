@@ -1,5 +1,12 @@
 /* ═════════════════════════════════════════════════════════════════════
-   STUDYRIA LIVE NOTIFICATIONS — Frontend client
+   STUDYRIA LIVE NOTIFICATIONS — Frontend client  (v3 — Smart Announcement Engine)
+   v3 upgrade (additive, backward-compatible):
+     • CTA labels per announcement type (Read Now / View Job / Start Quiz…)
+     • Safe destination fallbacks: missing/unknown destination falls back
+       to the relevant Studyria section instead of a dead card
+     • Client-side dedup guard on publish (double-click / double-fire of
+       the same content event; server-side content_id dedupe still rules)
+     • GA4 (GTM dataLayer) events for notification card opens
    Backend: Studyria Notifications Base44 app (superagent-f8acee03)
    — separate Base44 backend, NOT BrainLab Arena (solas-e60b5349).
 
@@ -17,15 +24,39 @@
   var FETCH_TIMEOUT = 8000;
 
   var TYPE_META = {
-    PDF:             { label: 'New PDF',  icon: '📕' },
-    JOB:             { label: 'Job Alert', icon: '💼' },
-    QUIZ:            { label: 'Quiz',    icon: '🧠' },
-    MOCK_TEST:       { label: 'Mock Test', icon: '📝' },
-    CURRENT_AFFAIRS: { label: 'Affairs', icon: '📰' },
-    ADRE:            { label: 'ADRE',    icon: '🗂️' },
-    CATEGORY:        { label: 'Category', icon: '📂' },
-    GENERAL:         { label: 'Update',  icon: '📢' }
+    PDF:             { label: 'New PDF',  icon: '📚', cta: 'Read Now' },
+    JOB:             { label: 'Job Alert', icon: '💼', cta: 'View Job' },
+    QUIZ:            { label: 'Quiz',    icon: '📝', cta: 'Start Quiz' },
+    MOCK_TEST:       { label: 'Mock Test', icon: '🎯', cta: 'Take Test' },
+    CURRENT_AFFAIRS: { label: 'Affairs', icon: '📰', cta: 'Read Now' },
+    ADRE:            { label: 'ADRE',    icon: '🗂️', cta: 'View Details' },
+    CATEGORY:        { label: 'Category', icon: '📂', cta: 'Explore' },
+    GENERAL:         { label: 'Update',  icon: '📢', cta: 'View' }
   };
+
+  /* Section fallback when an announcement has no destination (or an
+     unknown one) — never leaves the user on a dead card. */
+  var TYPE_SECTION = {
+    PDF:             "navigate('library')",
+    JOB:             "navigate('career-hub')",
+    QUIZ:            "navigate('brainlab')",
+    MOCK_TEST:       "navigate('brainlab')",
+    CURRENT_AFFAIRS: "navigate('brainlab')",
+    ADRE:            "navigate('library')",
+    CATEGORY:        "navigate('library')",
+    GENERAL:         ''
+  };
+
+  /* Fire-and-forget GA4 event via the existing GTM dataLayer.
+     Never throws, never blocks navigation. */
+  function _trackOpen(evt, ntype) {
+    try {
+      (window.dataLayer || (window.dataLayer = [])).push({
+        event: evt,
+        notif_type: String(ntype || 'GENERAL')
+      });
+    } catch (e) { /* analytics must never break UX */ }
+  }
 
   function escAttr(s) {
     return String(s == null ? '' : s)
@@ -55,7 +86,12 @@
       case 'page':
         return "navigate('" + escAttr(val) + "')";
       case 'url':
-        return "window.open('" + escAttr(val) + "','_blank','noopener')";
+        // Trusted-destination guard: only https Studyria URLs open directly;
+        // anything else falls back to the homepage (never a broken/foreign URL).
+        if (/^https:\/\/studyria\.qzz\.io\//.test(val)) {
+          return "SN._trackOpen('notification_card_open','URL');window.open('" + escAttr(val) + "','_blank','noopener')";
+        }
+        return '';
       default:
         return '';
     }
@@ -84,15 +120,22 @@
         throw new Error((res && res.error) || 'Live notifications unavailable');
       }
       return res.notifications.map(function (n) {
-        var meta = TYPE_META[n.type] || TYPE_META.GENERAL;
+        var rawType = String(n.type || 'GENERAL');
+        var meta = TYPE_META[rawType] || TYPE_META.GENERAL;
+        var dest = destinationAction(n.destination);
+        var track = "SN._trackOpen('notification_card_open','" + escAttr(rawType) + "');";
+        var action = dest
+          ? (track + dest)
+          : (TYPE_SECTION[rawType] ? (track + TYPE_SECTION[rawType]) : '');
         return {
-          type: String(n.type || 'GENERAL').toLowerCase(),
+          type: rawType.toLowerCase(),
           typeLabel: meta.label,
           title: n.title || 'Update',
           message: n.message || '',
           time: n.published_at || null,
           icon: n.icon || meta.icon,
-          action: destinationAction(n.destination)
+          ctaLabel: meta.cta,
+          action: action
         };
       });
     });
@@ -107,12 +150,47 @@
     }).catch(function () { return null; });
   }
 
+  /* Client-side dedup guard (Smart Announcement Engine, additive):
+     • in-flight guard  → the same event fired twice concurrently shares
+       one request (double-click, double hook fire)
+     • recent guard     → the identical (type,id,title,message) event is
+       skipped for 30s within the tab session (page refresh / retry
+       double-fire). Legitimate re-publishes with changed content always
+       pass through. The server-side content_id dedupe remains the
+       authoritative layer; this is a polite first line of defense. */
+  var _publishInflight = {};
+
+  function _recentPublishes() {
+    try { return JSON.parse(sessionStorage.getItem('snRecentPublishes') || '{}'); }
+    catch (e) { return {}; }
+  }
+  function _setRecentPublish(map) {
+    try { sessionStorage.setItem('snRecentPublishes', JSON.stringify(map)); } catch (e) {}
+  }
+
   /* Auto-notification on publish. Fire-and-forget with one silent retry:
      a notification failure must NEVER fail the content publish itself. */
   function publish(contentType, contentId, opts) {
     opts = opts || {};
     if (contentType === 'PDF' && _looksLikeAdre(opts)) contentType = 'ADRE';
-    return getAdminToken().then(function (token) {
+
+    var dedupeKey = contentType + '|' + (contentId || '') + '|' +
+                    (opts.title || '') + '|' + (opts.message || '');
+
+    // Concurrent identical call → share the in-flight promise
+    if (_publishInflight[dedupeKey]) return _publishInflight[dedupeKey];
+
+    // Same event already published < 30s ago in this tab session → skip
+    var recent = _recentPublishes();
+    var now = Date.now();
+    for (var k in recent) { if (now - recent[k] > 30000) delete recent[k]; }
+    if (recent[dedupeKey]) {
+      return Promise.resolve({ ok: true, deduped: true });
+    }
+    recent[dedupeKey] = now;
+    _setRecentPublish(recent);
+
+    _publishInflight[dedupeKey] = getAdminToken().then(function (token) {
       if (!token) { console.warn('[SN] publish skipped — no admin session'); return { ok: false, skipped: true }; }
       var payload = {
         op: 'create', source: 'auto',
@@ -136,10 +214,23 @@
         }
         return res;
       });
+    }).then(function (res) {
+      // If the backend ultimately rejected the event, un-block the key so
+      // a later legitimate attempt isn't swallowed by the recent guard.
+      if (!res || res.ok !== true) {
+        var m2 = _recentPublishes();
+        if (m2[dedupeKey]) { delete m2[dedupeKey]; _setRecentPublish(m2); }
+      }
+      return res;
     }).catch(function (e) {
+      var m3 = _recentPublishes();
+      if (m3[dedupeKey]) { delete m3[dedupeKey]; _setRecentPublish(m3); }
       console.warn('[SN] publish failed (content publish unaffected):', e);
       return { ok: false };
+    }).finally(function () {
+      delete _publishInflight[dedupeKey];
     });
+    return _publishInflight[dedupeKey];
   }
 
   function _looksLikeAdre(opts) {
@@ -587,6 +678,7 @@
   /* ── Public API ───────────────────────────────────────────────── */
   window.SN = {
     fetchLive: fetchLive,
+    _trackOpen: _trackOpen,
     publish: publish,
     deactivate: deactivate,
     destinationAction: destinationAction,

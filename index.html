@@ -10149,6 +10149,8 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 .ln-card-title { font-size:.8rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ln-card-msg { font-size:.72rem; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
 .ln-card-time { font-size:.62rem; color:var(--text3); margin-top:2px; white-space:nowrap; }
+.ln-card-cta { font-size:.62rem; font-weight:700; color:#930205; background:rgba(147,2,5,.08); border:1px solid rgba(147,2,5,.18); padding:2px 8px; border-radius:100px; flex-shrink:0; white-space:nowrap; }
+.ln-card:hover .ln-card-cta { background:rgba(147,2,5,.14); }
 .ln-card-type { font-size:.58rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:1px 6px; border-radius:100px; flex-shrink:0; }
 .ln-type-pdf { background:rgba(147,2,5,0.12); color:var(--accent); }
 .ln-type-job { background:rgba(16,217,142,0.12); color:var(--success); }
@@ -19789,7 +19791,7 @@ async function handleNewsletterSubscribe(btn) {
 window.supabaseLib = window.supabase;
 </script>
 <script src="supabase.js"></script>
-<script src="studyria-notifications.js?v=2" defer></script>
+<script src="studyria-notifications.js?v=3" defer></script>
 <script>
 /* ═══ PUSH NOTIFICATION DEEP-LINK ROUTER ═════════════════════════════
  * When a user taps a mobile push notification, the service worker opens
@@ -19807,17 +19809,26 @@ window.supabaseLib = window.supabase;
   if (i < 0) return;
   var kind = raw.slice(0, i), val = raw.slice(i + 1);
 
+  /* Smart Announcement Engine: GA4 open-event (via existing GTM dataLayer),
+     fire-and-forget, never blocks routing. */
+  function trackOpen(evt) {
+    try { (window.dataLayer || (window.dataLayer = [])).push({ event: evt, notif_kind: kind }); }
+    catch (e) { /* analytics must never break the deep link */ }
+  }
+
   function go() {
     try {
       switch (kind) {
         case 'pdf': {
           if (typeof openDetail !== 'function') return false;
           if (!window.PDFS || !PDFS.length) return false; // wait for data
+          trackOpen('notification_open');
           openDetail(val);
           return true;
         }
         case 'job': {
           if (typeof navigate !== 'function') return false;
+          trackOpen('notification_open');
           navigate('career-hub');
           setTimeout(function () {
             if (typeof chOpenDetail === 'function') chOpenDetail(val);
@@ -19826,6 +19837,7 @@ window.supabaseLib = window.supabase;
         }
         case 'quiz': case 'mock': case 'affair': {
           if (typeof navigate !== 'function') return false;
+          trackOpen('notification_open');
           navigate('brainlab');
           var tab = kind === 'quiz' ? 'quiz' : (kind === 'mock' ? 'mock' : 'affairs');
           setTimeout(function () {
@@ -19835,6 +19847,7 @@ window.supabaseLib = window.supabase;
         }
         case 'page': {
           if (typeof navigate !== 'function') return false;
+          trackOpen('notification_open');
           navigate(val);
           return true;
         }
@@ -19852,7 +19865,14 @@ window.supabaseLib = window.supabase;
   var tries = 0;
   (function poll() {
     if (go()) return;
-    if (++tries > 40) return; // ~20s max, then give up silently
+    if (++tries > 40) {
+      // Smart Announcement Engine: data never arrived (rare). Fall back to
+      // the relevant section instead of leaving the user on the homepage.
+      try {
+        if (kind === 'pdf' && typeof navigate === 'function') navigate('library');
+      } catch (e) { /* stay on homepage — still a safe destination */ }
+      return;
+    }
     setTimeout(poll, 500);
   })();
 })();
@@ -48107,6 +48127,12 @@ window.addEventListener('load', function() {
       var clickAttr = action ? ' onclick="' + action + '"' : '';
       var posterUrl = 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(item.type || 'GENERAL') + '&title=' + encodeURIComponent(item.title || 'Studyria') + '&sub=' + encodeURIComponent(item.message || '');
       var thumbHtml = '<img class="ln-card-thumb" src="' + posterUrl + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">';
+      /* Smart Announcement Engine: CTA chip derived from the real type
+         (Read Now / View Job / Start Quiz / Take Test…). Additive —
+         cards without a ctaLabel render exactly as before. */
+      var ctaHtml = item.ctaLabel
+        ? '<span class="ln-card-cta">' + esc(item.ctaLabel) + ' \u2192</span>'
+        : '';
       return '<div class="ln-card"' + clickAttr + '>' +
         thumbHtml +
         '<div class="ln-card-icon">' + icon + '</div>' +
@@ -48114,6 +48140,7 @@ window.addEventListener('load', function() {
           '<div class="ln-card-title">' + esc(item.title) + '</div>' +
           msgHtml + timeHtml +
         '</div>' +
+        ctaHtml +
         '<span class="ln-card-type ' + typeClass + '">' + esc(item.typeLabel || item.type || '') + '</span>' +
       '</div>';
     }).join('');

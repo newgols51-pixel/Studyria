@@ -26,14 +26,14 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v93'; // v93: Native VAPID Web Push + Live Notifications system
+const CACHE_VERSION = 'v94'; // v94: Smart Announcement Engine — branded push templates, CTA buttons, safe deep-link fallbacks
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.18-instant-result';
+const SW_BUILD      = '2026.09.04-smart-announcements';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🏛️ ADRE Previous Year Papers: Real exam simulation with verified questions and official answer keys.';
+const WHATS_NEW = '🔔 Smart Announcement Engine: branded push notifications (📚 PDF / 💼 Job / 📝 Quiz / 🎯 Mock Test / 📰 Affairs) with CTA buttons and safe deep-link fallbacks.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -271,35 +271,103 @@ async function refreshCriticalAssets() {
 // ── PUSH NOTIFICATIONS (native VAPID Web Push) ────────────────────
 // Payload from the Studyria notification backend (snMutate dispatch):
 //   { title, body, icon, badge, tag, requireInteraction, data:{ url } }
+//
+// SMART ANNOUNCEMENT ENGINE (v94, additive upgrade):
+//   • The push data.url carries the ?notif=<kind>:<id> deep-link descriptor.
+//     We derive the announcement kind from it and render the professional
+//     branded template (📚 New Study Material Added / 💼 New Job Alert /
+//     📝 New Quiz Available / 🎯 New Mock Test / 📰 New Current Affairs),
+//     preserving the content title inside the body. Payloads that already
+//     carry a branded title (or no descriptor) pass through untouched —
+//     fully backward-compatible with the existing backend dispatch.
+//   • A single CTA action button ("Read Now →" etc.) is added where the
+//     browser supports notification actions (feature-detected via
+//     'maxActions' in Notification). Unsupported browsers keep the
+//     plain working notification — no breakage.
+//   • Click handling is defensive: missing/invalid URL falls back to
+//     the site root instead of throwing inside the service worker.
+
+const PUSH_TEMPLATE = {
+  pdf:    { title: '📚 New Study Material Added', cta: 'Read Now →' },
+  job:    { title: '💼 New Job Alert',             cta: 'View Job →' },
+  quiz:   { title: '📝 New Quiz Available',        cta: 'Start Quiz →' },
+  mock:   { title: '🎯 New Mock Test',            cta: 'Take Test →' },
+  affair: { title: '📰 New Current Affairs',      cta: 'Read Now →' },
+};
+
+function _notifKindFromUrl(url) {
+  try {
+    const u = new URL(String(url), self.location.origin);
+    const m = /(?:\?|&)notif=([^&]+)/.exec(u.search);
+    if (!m) return '';
+    const raw = decodeURIComponent(m[1]);
+    const i = raw.indexOf(':');
+    return i < 0 ? '' : raw.slice(0, i);
+  } catch (_) { return ''; }
+}
+
 self.addEventListener('push', event => {
   if (!event.data) return;
   let payload;
   try { payload = event.data.json(); } catch (_) { payload = { title: 'Studyria', body: event.data.text() }; }
-  const title   = payload.title || 'Studyria';
+
+  const data   = payload.data || {};
+  const rawUrl = data.url || data.click_url || '/';
+  const kind   = _notifKindFromUrl(rawUrl);
+  const tmpl   = PUSH_TEMPLATE[kind];
+
+  let title = payload.title || 'Studyria';
+  let body  = payload.body || '';
+
+  // Smart branded template — only when we know the kind and the title
+  // is not already branded. Content title is preserved in the body.
+  if (tmpl && !/^[📚💼📝🎯📰🗂️]/u.test(title)) {
+    title = tmpl.title;
+    body  = payload.title
+      ? (body ? payload.title + ' — ' + body : payload.title)
+      : body;
+  }
+
   const options = {
-    body:    payload.body    || '',
+    body:    body,
     icon:    payload.icon    || '/icon-192.png',
     badge:   payload.badge   || '/icon-96.png',
     image:   payload.image   || undefined,
-    data:    payload.data    || {},
-    tag:     payload.tag     || 'studyria-push',
+    data:    { url: rawUrl },
+    tag:     payload.tag     || ('studyria-push' + (kind ? '-' + kind : '')),
     requireInteraction: payload.requireInteraction || false,
-    actions: payload.actions || [],
   };
+
+  // CTA action button — only where the browser actually supports actions.
+  if (tmpl && self.Notification && ('maxActions' in self.Notification)) {
+    options.actions = [{ action: 'open', title: tmpl.cta }];
+  } else if (payload.actions && payload.actions.length) {
+    options.actions = payload.actions;
+  }
+
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || '/';
+  event.notification.close(); // works for both the body tap and the CTA button
+  const rawUrl = (event.notification.data && event.notification.data.url) || '/';
+  let target;
+  try {
+    target = new URL(String(rawUrl), self.location.origin);
+    if (target.origin !== self.location.origin) target = new URL('/', self.location.origin);
+    target = target.href;
+  } catch (_) {
+    target = new URL('/', self.location.origin).href; // never open a broken URL
+  }
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
-      const existing = clients.find(c => c.url === url && 'focus' in c);
+      const existing = clients.find(c => c.url === target && 'focus' in c);
       if (existing) return existing.focus();
-      return self.clients.openWindow(url);
-    })
+      return self.clients.openWindow(target);
+    }).catch(() => self.clients.openWindow(new URL('/', self.location.origin).href))
   );
 });
+
 
 // ── MESSAGE HANDLER ───────────────────────────────────────────────
 self.addEventListener('message', event => {
