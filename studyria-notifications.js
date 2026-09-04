@@ -128,6 +128,7 @@
           ? (track + dest)
           : (TYPE_SECTION[rawType] ? (track + TYPE_SECTION[rawType]) : '');
         return {
+          id: n.id,
           type: rawType.toLowerCase(),
           typeLabel: meta.label,
           title: n.title || 'Update',
@@ -253,6 +254,469 @@
     });
   }
 
+  /* ═══════════ PREMIUM NOTIFICATION COMPOSER (additive) ═══════════
+   * Five professional presets + live preview + per-notification custom
+   * banners + drafts + duplicate/reuse. ZERO backend changes: presets map
+   * onto existing whitelisted fields (type/icon/priority/destination),
+   * banners live in Supabase Storage at a deterministic public path and
+   * are probed by the feed with automatic snPoster fallback. The admin
+   * mutation payload stays byte-identical to the previous implementation.
+   * ──────────────────────────────────────────────────────────────── */
+  var SN_BANNER_BUCKETS = ['sn-banners', 'user-documents'];
+  var SN_BANNER_PATH = function (id) { return 'sn-banners/' + id + '.jpg'; };
+  var SN_BANNER_PUBLIC = function (bucket, id) {
+    return 'https://qsdfmgcekdpjdcyqhuhi.supabase.co/storage/v1/object/public/' + bucket + '/' + SN_BANNER_PATH(id);
+  };
+  var SN_BANNER_MAX_RAW = 5 * 1024 * 1024;
+  var SN_BANNER_W = 1200, SN_BANNER_H = 630; /* recommended aspect 1.9:1 */
+
+  var PRESETS = [
+    { id: 'study',    name: 'Study Material',        icon: '📚', type: 'PDF',       priority: 'normal',
+      desc: 'Academic / study-focused · clean premium education look' },
+    { id: 'trending',name: 'New & Trending',        icon: '🔥', type: 'CATEGORY',  priority: 'high',
+      desc: 'High-attention announcement style for newly released content' },
+    { id: 'exam',    name: 'Exam / Mock Test',      icon: '🎯', type: 'MOCK_TEST', priority: 'high',
+      desc: 'Competitive-exam focused · strong CTA hierarchy' },
+    { id: 'jobs',    name: 'Jobs / Career',         icon: '💼', type: 'JOB',       priority: 'normal',
+      desc: 'Professional career-oriented visual hierarchy' },
+    { id: 'announce',name: 'Important Announcement',icon: '📢', type: 'GENERAL',   priority: 'high',
+      desc: 'Premium announcement / alert style' }
+  ];
+
+  /* Mirror of sw.js PUSH_TEMPLATE — the preview shows EXACTLY what the
+     service worker will render on device. Keep in sync with sw.js. */
+  var SN_PUSH_TEMPLATES = {
+    pdf:    { title: '📚 New Study Material Added', cta: 'Read Now →' },
+    job:    { title: '💼 New Job Alert',             cta: 'View Job →' },
+    quiz:   { title: '📝 New Quiz Available',        cta: 'Start Quiz →' },
+    mock:   { title: '🎯 New Mock Test',             cta: 'Take Test →' },
+    affair: { title: '📰 New Current Affairs',      cta: 'Read Now →' }
+  };
+  var SN_KIND_BY_TYPE = { PDF:'pdf', JOB:'job', QUIZ:'quiz', MOCK_TEST:'mock', CURRENT_AFFAIRS:'affair' };
+
+  function _composer() {
+    window.__snComposer = window.__snComposer || {
+      presetId: 'study',
+      banner: { staged: null, existing: null, fit: 'cover', busy: false },
+      previewTab: 'android',
+      pvTimer: null
+    };
+    return window.__snComposer;
+  }
+
+  function _field(id) { return document.getElementById(id); }
+  function _fv(id) { var el = _field(id); return el ? String(el.value || '') : ''; }
+
+  function _drafts() {
+    try { return JSON.parse(localStorage.getItem('snDraftsV1') || '[]'); } catch (e) { return []; }
+  }
+  function _draftsSave(arr) { try { localStorage.setItem('snDraftsV1', JSON.stringify(arr.slice(0, 20))); } catch (e) {} }
+
+  /* Deterministic custom-banner probe for a notification id.
+     Feed side uses the same public URLs — hit → custom banner,
+     miss → automatic snPoster fallback. */
+  function bannerUrls(id) {
+    return SN_BANNER_BUCKETS.map(function (b) { return SN_BANNER_PUBLIC(b, id); });
+  }
+  function probeBanner(id) {
+    return new Promise(function (resolve) {
+      var urls = bannerUrls(id), i = 0;
+      (function next() {
+        if (i >= urls.length) return resolve(null);
+        var img = new Image();
+        img.onload = function () { resolve(urls[i]); };
+        img.onerror = function () { i++; next(); };
+        img.src = urls[i];
+      })();
+    });
+  }
+
+  /* Apply a preset — only touches UNSET/derived fields so admin content
+     is never destroyed. Changing preset keeps title/message/etc. */
+  function applyPreset(pid, opts) {
+    var p = PRESETS.filter(function (x) { return x.id === pid; })[0];
+    if (!p) return;
+    var c = _composer();
+    c.presetId = pid;
+    var t = _field('snType'), pr = _field('snPriority'), ic = _field('snIcon');
+    if (t) t.value = p.type;
+    if (pr) pr.value = p.priority;
+    if (ic && (opts && opts.forceIcon || !_fv('snIcon'))) ic.value = p.icon;
+    _renderPresetCards();
+    _renderPreviewNow();
+  }
+
+  function _renderPresetCards() {
+    var wrap = _field('snPresetRow');
+    if (!wrap) return;
+    var c = _composer();
+    wrap.innerHTML = PRESETS.map(function (p) {
+      var on = c.presetId === p.id;
+      return '<button type="button" class="sn-preset-card' + (on ? ' sn-preset-on' : '') + '" onclick="SN.preset(\'' + p.id + '\')"'
+        + ' aria-pressed="' + on + '" title="' + _escHtml(p.desc) + '">'
+        + '<span class="sn-preset-ico">' + p.icon + '</span>'
+        + '<span class="sn-preset-name">' + _escHtml(p.name) + '</span>'
+        + '<span class="sn-preset-type">' + _escHtml(TYPE_META[p.type] ? TYPE_META[p.type].label : p.type) + '</span>'
+        + '</button>';
+    }).join('');
+  }
+
+  /* ── Live preview — renders EXACTLY what production renders ──── */
+  function _pvDebounced() {
+    var c = _composer();
+    clearTimeout(c.pvTimer);
+    c.pvTimer = setTimeout(_renderPreviewNow, 140);
+  }
+
+  function _previewRecord() {
+    var kind = SN_KIND_BY_TYPE[_fv('snType')] || '';
+    var tmpl = kind ? SN_PUSH_TEMPLATES[kind] : null;
+    var title = _fv('snTitle') || 'Your notification title';
+    var message = _fv('snMessage');
+    var icon = _fv('snIcon') || (TYPE_META[_fv('snType')] || TYPE_META.GENERAL).icon;
+    var pushTitle = title, pushBody = message;
+    /* exact sw.js logic: template title when the content title isn't
+       already emoji-branded; content title preserved in the body */
+    if (tmpl && !/^[📚💼📝🎯📰🗂️]/u.test(title)) {
+      pushTitle = tmpl.title;
+      pushBody = title + (message ? ' — ' + message : '');
+    }
+    var meta = TYPE_META[_fv('snType')] || TYPE_META.GENERAL;
+    return {
+      kind: kind, tmpl: tmpl, title: title, message: message, icon: icon,
+      pushTitle: pushTitle, pushBody: pushBody, priority: _fv('snPriority') || 'normal',
+      typeLabel: meta.label, cta: meta.cta, presetId: _composer().presetId,
+      banner: _stagedBannerUrl() || _composer().banner.existing
+    };
+  }
+
+  function _stagedBannerUrl() {
+    var b = _composer().banner;
+    return b.staged ? b.staged.dataUrl : null;
+  }
+
+  function _posterUrl(r, w) {
+    return 'https://superagent-f8acee03.base44.app/functions/snPoster?type='
+      + encodeURIComponent(_fv('snType') || 'GENERAL') + '&title=' + encodeURIComponent(r.title || 'Studyria')
+      + '&sub=' + encodeURIComponent(r.message || '') + (w ? '&w=' + w : '');
+  }
+
+  function _renderPreviewNow() {
+    var host = _field('snPreviewHost');
+    if (!host) return;
+    var c = _composer();
+    var r = _previewRecord();
+    var bannerSrc = r.banner || _posterUrl(r);
+    var tabs = _field('snPvTabs');
+    if (tabs) {
+      tabs.innerHTML = ['android', 'desktop', 'feed'].map(function (t) {
+        var lbl = t === 'android' ? '📱 Android' : t === 'desktop' ? '🖥️ Desktop' : '📰 Live Feed';
+        return '<button type="button" class="sn-pv-tab' + (c.previewTab === t ? ' sn-pv-tab-on' : '') + '" onclick="SN.pvTab(\'' + t + '\')">' + lbl + '</button>';
+      }).join('');
+    }
+    var html = '';
+    if (c.previewTab === 'android' || c.previewTab === 'desktop') {
+      var isAndroid = c.previewTab === 'android';
+      html = '<div class="sn-pv-shade' + (isAndroid ? '' : ' sn-pv-desk') + '">'
+        + '<div class="sn-pv-phone">'
+          + '<div class="sn-pv-status"><span>9:41</span><span>📶 ▮▮▮</span></div>'
+          + (isAndroid ? '' : '<div class="sn-pv-desk-hint">Chrome — desktop notification</div>')
+          + '<div class="sn-pv-notif">'
+            + '<div class="sn-pv-head"><img class="sn-pv-appico" src="/icon-192.png" alt="" onerror="this.style.display=\'none\'"/>'
+            + '<span class="sn-pv-origin">studyria.qzz.io</span><span class="sn-pv-now">now</span></div>'
+            + '<div class="sn-pv-body">'
+              + '<div class="sn-pv-title">' + _escHtml(r.pushTitle) + '</div>'
+              + (r.pushBody ? '<div class="sn-pv-text">' + _escHtml(r.pushBody) + '</div>' : '')
+            + '</div>'
+            + (r.tmpl ? '<div class="sn-pv-actions"><span class="sn-pv-cta">' + _escHtml(r.tmpl.cta) + '</span></div>' : '')
+          + '</div>'
+        + '</div></div>'
+        + '<div class="sn-pv-note">' + (r.tmpl
+            ? 'Branded template + CTA button — exactly what sw.js v94 renders on device.'
+            : 'This type has no branded push template — sw.js renders the plain title (existing fallback).') + '</div>';
+    } else {
+      /* EXACT production feed card markup (ln-card) with real snPoster URL */
+      html = '<div class="sn-pv-feedwrap">'
+        + '<div class="ln-card" style="cursor:default">'
+          + '<img class="ln-card-thumb" src="' + _escHtml(bannerSrc) + '" alt="" loading="lazy" onerror="this.remove()">'
+          + '<div class="ln-card-icon">' + r.icon + '</div>'
+          + '<div class="ln-card-body">'
+            + '<div class="ln-card-title">' + _escHtml(r.title) + '</div>'
+            + (r.message ? '<div class="ln-card-msg">' + _escHtml(r.message) + '</div>' : '')
+            + '<div class="ln-card-time">just now</div>'
+          + '</div>'
+          + '<span class="ln-card-cta">' + _escHtml(r.cta) + ' →</span>'
+          + '<span class="ln-card-type ln-type-' + (_fv('snType') || 'GENERAL').toLowerCase() + '">' + _escHtml(r.typeLabel) + '</span>'
+        + '</div>'
+        + (r.banner ? '<div class="sn-pv-note">Custom banner — will show in the Live Feed.</div>'
+                    : '<div class="sn-pv-note">Auto-generated Studyria poster (snPoster) — one unique poster per notification.</div>')
+        + '</div>';
+    }
+    host.innerHTML = html;
+  }
+
+  /* ── Banner: validate → compress → stage; upload on publish/save ── */
+  function bannerPick(input) {
+    var c = _composer();
+    var file = input && input.files && input.files[0];
+    if (!file) return;
+    var err = _field('snBannerMsg');
+    var bad = function (m) { if (err) { err.style.display = ''; err.style.color = '#ff6b85'; err.textContent = '✗ ' + m; } };
+    if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) { bad('Only JPG, PNG or WebP images are supported.'); input.value = ''; return; }
+    if (file.size > SN_BANNER_MAX_RAW) { bad('File too large — max 5 MB (larger images are compressed after upload).'); input.value = ''; return; }
+    c.banner.busy = true;
+    if (err) { err.style.display = ''; err.style.color = 'var(--text2)'; err.textContent = '… compressing image'; }
+    var reader = new FileReader();
+    reader.onerror = function () { c.banner.busy = false; bad('Could not read this image.'); };
+    reader.onload = function () {
+      var img = new Image();
+      img.onerror = function () { c.banner.busy = false; bad('This file is not a valid image.'); };
+      img.onload = function () {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = SN_BANNER_W; canvas.height = SN_BANNER_H;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#F7F1E2'; ctx.fillRect(0, 0, SN_BANNER_W, SN_BANNER_H);
+          var fit = c.banner.fit, s = Math.min(img.width / SN_BANNER_W, img.height / SN_BANNER_H);
+          var dw = img.width / s, dh = img.height / s;
+          if (fit === 'contain') {
+            ctx.drawImage(img, (SN_BANNER_W - dw) / 2, (SN_BANNER_H - dh) / 2, dw, dh);
+          } else { /* cover: center-crop */
+            ctx.drawImage(img, (SN_BANNER_W - dw) / 2, (SN_BANNER_H - dh) / 2, dw, dh);
+          }
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          c.banner.staged = { dataUrl: dataUrl, name: file.name };
+          c.banner.busy = false;
+          if (err) { err.style.display = ''; err.style.color = '#10d98e'; err.textContent = '✓ Banner ready — ' + Math.round(dataUrl.length / 1365) + ' KB compressed (' + (fit === 'contain' ? 'fit' : 'crop') + ')'; }
+          _renderBannerBox();
+          _renderPreviewNow();
+        } catch (e) { c.banner.busy = false; bad('Could not process this image.'); }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  function _renderBannerBox() {
+    var host = _field('snBannerBox');
+    if (!host) return;
+    var c = _composer();
+    var showing = _stagedBannerUrl() || c.banner.existing;
+    var staged = !!c.banner.staged;
+    var isNewNote = !st_editingId() ? '<div class="sn-banner-note">Uploaded automatically after you publish.</div>' : '';
+    host.innerHTML = showing
+      ? '<div class="sn-banner-prev"><img src="' + _escHtml(showing) + '" alt="Banner preview" '
+        + 'onerror="this.parentNode.innerHTML=\'<div class=\'\"sn-banner-broken\'\">⚠ image failed to load — will fall back to the Studyria poster</div>\'"/></div>'
+        + '<div class="sn-banner-meta">' + (staged ? 'New banner staged' : 'Current custom banner') + '</div>'
+        + '<div class="sn-banner-btns">'
+          + '<label class="btn btn-ghost btn-sm" for="snBannerFile2">↻ Replace</label>'
+          + '<button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.bannerRemove()">🗑 Remove</button>'
+        + '</div>'
+        + '<input type="file" id="snBannerFile2" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="SN.bannerPick(this)"/>'
+        + isNewNote
+      : '<div class="sn-banner-empty">'
+          + '<div class="sn-banner-empty-ico">🖼️</div>'
+          + '<div>No custom banner — each notification automatically gets its own unique Studyria poster.</div>'
+          + '<label class="btn btn-ghost btn-sm" for="snBannerFile1">⬆ Upload Banner</label>'
+          + '<input type="file" id="snBannerFile1" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="SN.bannerPick(this)"/>'
+        + '</div>';
+  }
+
+  function bannerRemove() {
+    var c = _composer();
+    if (c.banner.staged) {
+      c.banner.staged = null;
+      _renderBannerBox(); _renderPreviewNow();
+      var err = _field('snBannerMsg'); if (err) { err.style.display = 'none'; }
+      return;
+    }
+    if (c.banner.existing && st_editingId()) {
+      /* delete from storage — feed falls back to the auto poster */
+      var id = st_editingId();
+      c.banner.busy = true;
+      _sbStorage().then(function (sb) {
+        var buckets = SN_BANNER_BUCKETS.slice();
+        (function next() {
+          if (!buckets.length) { c.banner.busy = false; return; }
+          var b = buckets.shift();
+          sb.storage.from(b).remove([SN_BANNER_PATH(id)]).then(function (res) {
+            if (res && res.error) { next(); return; }
+            c.banner.existing = null; c.banner.busy = false;
+            _renderBannerBox(); _renderPreviewNow();
+            var err = _field('snBannerMsg');
+            if (err) { err.style.display = ''; err.style.color = '#10d98e'; err.textContent = '✓ Banner removed — auto poster restored'; }
+          }).catch(next);
+        })();
+      }).catch(function (e) { c.banner.busy = false; _bannerErr('Could not remove: ' + (e.message || e)); });
+    }
+  }
+
+  function _bannerErr(m) {
+    var err = _field('snBannerMsg');
+    if (err) { err.style.display = ''; err.style.color = '#ff6b85'; err.textContent = '✗ ' + m; }
+  }
+
+  function st_editingId() { return _state().editingId; }
+
+  function _sbStorage() {
+    return new Promise(function (resolve, reject) {
+      var sb = window.supabaseClient;
+      if (!sb || !sb.storage) { reject(new Error('Storage unavailable — log in again')); return; }
+      resolve(sb);
+    });
+  }
+
+  /* Upload the staged banner to the deterministic path for a notif id.
+     Creates the dedicated bucket when the platform allows it, else uses
+     the existing public bucket. Honest result reporting — no fakes. */
+  function bannerUploadFor(id) {
+    var c = _composer();
+    if (!c.banner.staged || !id) return Promise.resolve({ ok: true, skipped: true });
+    var dataUrl = c.banner.staged.dataUrl;
+    c.banner.busy = true;
+    return fetch(dataUrl).then(function (r) { return r.blob(); }).then(function (blob) {
+      return _sbStorage().then(function (sb) {
+        /* remember a bucket that already worked */
+        var known = null;
+        try { known = localStorage.getItem('snBannerBucket'); } catch (e) {}
+        var order = known ? [known].concat(SN_BANNER_BUCKETS.filter(function (b) { return b !== known; })) : SN_BANNER_BUCKETS.slice();
+        var i = 0;
+        function tryNext() {
+          if (i >= order.length) throw new Error('storage rejected the upload (bucket policy)');
+          var bucket = order[i++];
+          return sb.storage.from(bucket).upload(SN_BANNER_PATH(id), blob, { upsert: true, contentType: 'image/jpeg' })
+            .then(function (res) {
+              if (res && res.error) throw new Error(res.error.message || 'upload failed');
+              try { localStorage.setItem('snBannerBucket', bucket); } catch (e) {}
+              c.banner.busy = false;
+              return { ok: true, bucket: bucket, url: SN_BANNER_PUBLIC(bucket, id), kb: Math.round(blob.size / 1024) };
+            })
+            .catch(function (e) {
+              if (i < order.length) return tryNext();
+              c.banner.busy = false;
+              throw e;
+            });
+        }
+        return tryNext();
+      });
+    });
+  }
+
+  /* ── Drafts (local-only — never auto-published) ──────────────── */
+  function draftSave() {
+    var r = {
+      title: _fv('snTitle'), message: _fv('snMessage')
+    };
+    if (!r.title && !r.message) { alert('Nothing to save yet — add a title or message.'); return; }
+    var c = _composer();
+    var arr = _drafts();
+    arr.unshift({
+      id: 'draft-' + Date.now(), savedAt: new Date().toISOString(),
+      presetId: c.presetId,
+      fields: {
+        title: r.title, message: r.message,
+        type: _fv('snType'), priority: _fv('snPriority'), icon: _fv('snIcon'),
+        destKind: _fv('snDestKind'), destVal: _fv('snDestVal'), expires: _fv('snExpires')
+      },
+      banner: c.banner.staged ? { fit: c.banner.fit, staged: (c.banner.staged.dataUrl.length < 1200000 ? c.banner.staged.dataUrl : null) } : null
+    });
+    _draftsSave(arr);
+    var msg = _field('snSaveMsg');
+    if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = '✓ Draft saved locally (not published)'; }
+    _renderDrafts();
+  }
+
+  function _renderDrafts() {
+    var host = _field('snDraftList');
+    if (!host) return;
+    var arr = _drafts();
+    var wrap = _field('snDraftWrap');
+    if (wrap) wrap.style.display = arr.length ? '' : 'none';
+    host.innerHTML = arr.map(function (d) {
+      return '<div class="sn-draft-row">'
+        + '<span class="sn-draft-t">' + _escHtml(d.fields.title || 'Untitled draft') + '</span>'
+        + '<span class="sn-draft-time">' + new Date(d.savedAt).toLocaleString() + '</span>'
+        + '<button type="button" class="btn btn-ghost btn-sm" onclick="SN.draftResume(\'' + d.id + '\')">▶ Resume</button> '
+        + '<button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.draftDelete(\'' + d.id + '\')">🗑</button>'
+        + '</div>';
+    }).join('');
+  }
+
+  function draftResume(id) {
+    var d = _drafts().filter(function (x) { return x.id === id; })[0];
+    if (!d) return;
+    var st = _state();
+    st.editingId = null;
+    var main = document.getElementById('adminMain') || document.getElementById('admin-main');
+    if (main) renderPanel(main);
+    applyPreset(d.presetId, { forceIcon: false });
+    var f = d.fields;
+    if (_field('snTitle')) _field('snTitle').value = f.title || '';
+    if (_field('snMessage')) _field('snMessage').value = f.message || '';
+    if (_field('snType')) _field('snType').value = f.type || '';
+    if (_field('snPriority')) _field('snPriority').value = f.priority || 'normal';
+    if (_field('snIcon')) _field('snIcon').value = f.icon || '';
+    if (_field('snDestKind')) _field('snDestKind').value = f.destKind || '';
+    if (_field('snDestVal')) { _field('snDestVal').value = f.destVal || ''; }
+    if (_field('snDestValWrap')) _field('snDestValWrap').style.display = f.destKind ? '' : 'none';
+    if (_field('snExpires')) _field('snExpires').value = f.expires || '';
+    if (d.banner && d.banner.staged) { _composer().banner.staged = { dataUrl: d.banner.staged, name: 'draft' }; }
+    _renderBannerBox(); _renderPreviewNow();
+  }
+
+  function draftDelete(id) {
+    _draftsSave(_drafts().filter(function (x) { return x.id !== id; }));
+    _renderDrafts();
+  }
+
+  function _loadRecordIntoComposer(n, mode) {
+    /* mode: 'edit' | 'duplicate' | 'reuse' */
+    var st = _state();
+    st.editingId = mode === 'edit' ? n.id : null;
+    st.duplicateNote = mode !== 'edit';
+    var main = document.getElementById('adminMain') || document.getElementById('admin-main');
+    if (main) renderPanel(main);
+    if (mode === 'edit') {
+      if (_field('snTitle')) _field('snTitle').value = n.title || '';
+      if (_field('snMessage')) _field('snMessage').value = n.message || '';
+    } else if (mode === 'duplicate') {
+      if (_field('snTitle')) _field('snTitle').value = (n.title || '') + (n.title ? ' (Copy)' : '');
+      if (_field('snMessage')) _field('snMessage').value = n.message || '';
+    } else { /* reuse: preset/layout only */
+      if (_field('snTitle')) _field('snTitle').value = '';
+      if (_field('snMessage')) _field('snMessage').value = '';
+    }
+    if (_field('snType')) _field('snType').value = n.notification_type || 'GENERAL';
+    if (_field('snPriority')) _field('snPriority').value = n.priority || 'normal';
+    if (_field('snIcon')) _field('snIcon').value = n.icon || '';
+    if (n.destination) {
+      var m = String(n.destination).match(/^(page|url):(.*)$/);
+      if (m) {
+        if (_field('snDestKind')) _field('snDestKind').value = m[1];
+        if (_field('snDestVal')) _field('snDestVal').value = m[2];
+        if (_field('snDestValWrap')) _field('snDestValWrap').style.display = '';
+      }
+    } else {
+      if (_field('snDestKind')) _field('snDestKind').value = '';
+      if (_field('snDestValWrap')) _field('snDestValWrap').style.display = 'none';
+    }
+    var presetType = n.notification_type || 'GENERAL';
+    var p = PRESETS.filter(function (x) { return x.type === presetType; })[0] || PRESETS[0];
+    _composer().presetId = p.id;
+    _renderPresetCards();
+    if (mode === 'edit' && n.id) {
+      probeBanner(n.id).then(function (url) {
+        if (url) { _composer().banner.existing = url; _renderBannerBox(); _renderPreviewNow(); }
+      });
+    }
+    _renderPreviewNow();
+    if (mode !== 'edit') {
+      var note = _field('snComposeNote');
+      if (note) { note.style.display = ''; note.textContent = mode === 'duplicate' ? 'Duplicating — publishing creates a NEW notification (fresh identity).' : 'Reusing the design — enter new content.'; }
+    }
+  }
+
   /* ── ADMIN PANEL: "Live Feed" manager UI ──────────────────────── */
   function adminCall(payload) {
     return getAdminToken().then(function (token) {
@@ -272,77 +736,162 @@
       return '<option value="' + t + '">' + t + '</option>';
     }).join('');
     var e = st.editingId ? _find(st.editingId) : null;
+    var c = _composer();
 
     main.innerHTML = `
-      <div class="admin-section-title">📡 Live Feed Notifications</div>
-      <div class="admin-section-sub">Real-time notification system. Publishing content (PDFs, Jobs, Quizzes, Mock Tests, Current Affairs, Announcements) creates notifications automatically. Create manual announcements here — they appear in the homepage "Live Notifications" section within a minute.</div>
-
-      <div style="display:flex;gap:8px;margin:14px 0">
-        <button class="btn btn-ghost btn-sm" onclick="SN.adminTestConn(this)">🔌 Test Connection</button>
-        <span id="snAdminConn" style="font-size:.78rem;color:var(--text2);align-self:center"></span>
-      </div>
-
-      <div class="mod-form-wrap" style="margin-bottom:14px">
-        <div style="font-weight:700;color:var(--accent);margin-bottom:12px">${e ? '✏️ Edit Notification' : '➕ New Manual Notification'}</div>
-        <input type="hidden" id="snEditId" value="${e ? e.id : ''}" />
-        <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="snTitle" maxlength="120" placeholder="e.g. ADRE 2.0 — Paper III Added" value="${e ? _escHtml(e.title) : ''}"/></div>
-        <div class="form-group" style="margin-top:8px"><label class="form-label">Message</label><textarea class="form-input" id="snMessage" rows="2" maxlength="300" placeholder="Short message shown on the notification card">${e ? _escHtml(e.message || '') : ''}</textarea></div>
-        <div class="admin-form-grid" style="margin-top:8px">
-          <div class="form-group"><label class="form-label">Type</label>
-            <select class="form-input" id="snType">${typeOptions}</select></div>
-          <div class="form-group"><label class="form-label">Priority</label>
-            <select class="form-input" id="snPriority">
-              <option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option>
-            </select></div>
-        </div>
-        <div class="admin-form-grid" style="margin-top:8px">
-          <div class="form-group"><label class="form-label">Destination (CTA)</label>
-            <select class="form-input" id="snDestKind" onchange="SN.adminDestKindChange()">
-              <option value="">No CTA</option>
-              <option value="page">Site page</option>
-              <option value="url">External URL</option>
-            </select></div>
-          <div class="form-group" id="snDestValWrap" style="display:none"><label class="form-label">Value</label>
-            <input class="form-input" id="snDestVal" placeholder="page id (library, career-hub, brainlab) or https://…"/></div>
-        </div>
-        <div class="admin-form-grid" style="margin-top:8px">
-          <div class="form-group"><label class="form-label">Icon (emoji, optional)</label><input class="form-input" id="snIcon" maxlength="8" placeholder="📢"/></div>
-          <div class="form-group"><label class="form-label">Expires (optional)</label><input class="form-input" id="snExpires" type="datetime-local"/></div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-sm" onclick="SN.adminSave(this)">${e ? '💾 Save Changes' : '🚀 Publish Notification'}</button>
-          ${e ? '<button class="btn btn-ghost btn-sm" onclick="SN.adminCancelEdit()">✕ Cancel</button>' : ''}
-        </div>
-        <div id="snSaveMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
-      </div>
-
-      <div class="mod-form-wrap">
-        <div style="font-weight:700;color:var(--accent);margin-bottom:12px">🔔 Mobile Push Delivery</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-          <div style="flex:1;min-width:220px">
-            <div style="font-size:.82rem;font-weight:600">Global Push Switch</div>
-            <div style="font-size:.74rem;color:var(--text2);margin-top:2px">Emergency kill switch — when OFF no new pushes are sent; Live Notifications keep working.</div>
+      <div class="sn-hero">
+        <div class="sn-hero-left">
+          <div class="sn-hero-title">📡 Live Feed Notifications</div>
+          <div class="sn-hero-sub">Studyria Premium Notification Center — real-time notification management. Publishing content creates notifications automatically; compose premium manual announcements here.</div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-ghost btn-sm" onclick="SN.adminTestConn(this)">🔌 Test Connection</button>
+            <span id="snAdminConn" style="font-size:.78rem;color:var(--text2)"></span>
           </div>
-          <button class="btn btn-sm" id="snPushKill" onclick="SN.adminPushToggle(this)">⏳…</button>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="SN.adminPushTest(this)">📤 Send Test Push</button>
-          <span id="snPushStats" style="font-size:.78rem;color:var(--text2)"></span>
+        <div class="sn-hero-right">
+          <button class="btn btn-primary btn-sm" onclick="SN.composeNew()">✚ Create Notification</button>
         </div>
-        <div id="snPushMsg" style="margin-top:8px;font-size:.78rem;display:none"></div>
       </div>
 
-      <div class="mod-form-wrap">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="font-weight:700">📜 All Notifications</div>
-          <button class="btn btn-ghost btn-sm" onclick="SN.adminRefresh(this)">🔄 Refresh</button>
+      <div class="sn-layout">
+        <div class="sn-main-col">
+
+          <div class="sn-card" id="snComposerCard">
+            <div class="sn-card-head">
+              <div>
+                <div class="sn-card-title">${e ? '✏️ Edit Notification' : '✚ Notification Composer'}</div>
+                <div class="sn-card-sub">Presets, content, banner and action — with a live preview of what users will receive.</div>
+              </div>
+            </div>
+            <div id="snComposeNote" class="sn-note" style="display:none"></div>
+            <input type="hidden" id="snEditId" value="${e ? e.id : ''}" />
+
+            <div class="sn-sec-label">🎨 PRESET</div>
+            <div class="sn-preset-row" id="snPresetRow" role="group" aria-label="Notification presets"></div>
+
+            <div class="sn-sec-label">📝 CONTENT</div>
+            <div class="sn-grid">
+              <div class="form-group sn-span2"><label class="form-label" for="snTitle">Title *</label>
+                <input class="form-input" id="snTitle" maxlength="120" placeholder="e.g. ADRE 2.0 — Paper III Added" value="${e ? _escHtml(e.title) : ''}" oninput="SN._pv()"/></div>
+              <div class="form-group sn-span2"><label class="form-label" for="snMessage">Message</label>
+                <textarea class="form-input" id="snMessage" rows="2" maxlength="300" placeholder="Short message shown on the notification card" oninput="SN._pv()">${e ? _escHtml(e.message || '') : ''}</textarea></div>
+              <div class="form-group"><label class="form-label" for="snType">Type</label>
+                <select class="form-input" id="snType" onchange="SN._pv()">${typeOptions}</select></div>
+              <div class="form-group"><label class="form-label" for="snPriority">Priority</label>
+                <select class="form-input" id="snPriority" onchange="SN._pv()">
+                  <option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option>
+                </select></div>
+              <div class="form-group"><label class="form-label" for="snIcon">Icon (emoji, optional)</label>
+                <input class="form-input" id="snIcon" maxlength="8" placeholder="📢" oninput="SN._pv()"/></div>
+              <div class="form-group"><label class="form-label" for="snExpires">Expires (optional)</label>
+                <input class="form-input" id="snExpires" type="datetime-local"/></div>
+            </div>
+
+            <div class="sn-sec-label">🖼️ VISUAL — CUSTOM BANNER</div>
+            <div class="sn-banner-block">
+              <div id="snBannerBox"></div>
+              <div class="sn-banner-tips">
+                <div class="sn-tip-row"><span class="sn-tip-k">Recommended</span> 1200 × 630 px (1.9:1 poster)</div>
+                <div class="sn-tip-row"><span class="sn-tip-k">Formats</span> JPG · PNG · WebP — max 5 MB (auto-compressed)</div>
+                <div class="sn-tip-row"><span class="sn-tip-k">Fit</span>
+                  <label><input type="radio" name="snBannerFit" value="cover" checked onchange="SN.bannerFit('cover')"/> Center-crop to poster</label>
+                  <label><input type="radio" name="snBannerFit" value="contain" onchange="SN.bannerFit('contain')"/> Fit whole image</label>
+                </div>
+              </div>
+              <div id="snBannerMsg" style="font-size:.78rem;display:none;margin-top:8px"></div>
+            </div>
+
+            <div class="sn-sec-label">🎯 ACTION</div>
+            <div class="sn-grid">
+              <div class="form-group"><label class="form-label" for="snDestKind">CTA / Destination</label>
+                <select class="form-input" id="snDestKind" onchange="SN.adminDestKindChange()">
+                  <option value="">No CTA</option><option value="page">Site page</option><option value="url">External URL</option>
+                </select></div>
+              <div class="form-group" id="snDestValWrap" style="display:none"><label class="form-label" for="snDestVal">Value</label>
+                <input class="form-input" id="snDestVal" placeholder="page id (library, career-hub, brainlab) or https://…"/></div>
+            </div>
+            <div class="sn-cta-note" id="snCtaNote"></div>
+
+            <div class="sn-actions" id="snActions">
+              <div class="sn-actions-inner">
+                <button class="btn btn-primary" id="snSaveBtn" onclick="SN.adminSave(this)">${e ? '💾 Save Changes' : '🚀 Publish Notification'}</button>
+                <button class="btn btn-ghost" onclick="SN.draftSave()">📥 Save Draft</button>
+                ${e ? '<button class="btn btn-ghost" onclick="SN.adminCancelEdit()">✕ Cancel</button>' : ''}
+              </div>
+            </div>
+            <div id="snSaveMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
+          </div>
+
+          <div class="sn-card" id="snPushCard">
+            <div class="sn-card-title">🔔 Mobile Push Delivery</div>
+            <div class="sn-card-sub">Global kill switch and device test — unchanged production pipeline.</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px">
+              <div style="flex:1;min-width:220px">
+                <div style="font-size:.82rem;font-weight:600">Global Push Switch</div>
+                <div style="font-size:.74rem;color:var(--text2);margin-top:2px">Emergency kill switch — when OFF no new pushes are sent; Live Notifications keep working.</div>
+              </div>
+              <button class="btn btn-sm" id="snPushKill" onclick="SN.adminPushToggle(this)">⏳…</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" onclick="SN.adminPushTest(this)">📤 Send Test Push</button>
+              <span id="snPushStats" style="font-size:.78rem;color:var(--text2)"></span>
+            </div>
+            <div id="snPushMsg" style="margin-top:8px;font-size:.78rem;display:none"></div>
+          </div>
+
+          <div class="sn-card" id="snDraftWrap" style="display:none">
+            <div class="sn-card-title">📥 Saved Drafts (this device only)</div>
+            <div id="snDraftList"></div>
+          </div>
+
+          <div class="sn-card">
+            <div class="sn-card-head">
+              <div>
+                <div class="sn-card-title">📜 All Notifications</div>
+                <div class="sn-card-sub">Search, filter and manage every notification.</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="SN.adminRefresh(this)">🔄 Refresh</button>
+            </div>
+            <div class="sn-filters">
+              <input class="form-input sn-f-search" id="snFQ" placeholder="🔍 Search title…" oninput="SN._listRender()"/>
+              <select class="form-input" id="snFType" onchange="SN._listRender()"><option value="">All types</option></select>
+              <select class="form-input" id="snFPrio" onchange="SN._listRender()">
+                <option value="">All priorities</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option>
+              </select>
+              <select class="form-input" id="snFStatus" onchange="SN._listRender()">
+                <option value="">All statuses</option><option value="live">● Live</option><option value="inactive">Inactive</option><option value="expired">Expired</option>
+              </select>
+              <select class="form-input" id="snFSort" onchange="SN._listRender()">
+                <option value="new">Newest first</option><option value="old">Oldest first</option>
+              </select>
+            </div>
+            <div id="snAdminList">Loading…</div>
+          </div>
+
         </div>
-        <div id="snAdminList" style="font-size:.82rem">Loading…</div>
+
+        <div class="sn-preview-col">
+          <div class="sn-card sn-preview-card">
+            <div class="sn-card-head">
+              <div>
+                <div class="sn-card-title">👁️ Live Preview</div>
+                <div class="sn-card-sub">Exactly what users receive — updates as you type.</div>
+              </div>
+            </div>
+            <div class="sn-pv-tabs" id="snPvTabs"></div>
+            <div id="snPreviewHost" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="snViewOverlay" class="sn-overlay" style="display:none" onclick="if(event.target===this)SN.viewClose()">
+        <div class="sn-overlay-card" id="snViewBody"></div>
       </div>`;
 
     if (e) {
       var sel = main.querySelector('#snType'); if (sel) sel.value = e.notification_type || 'GENERAL';
       var pr = main.querySelector('#snPriority'); if (pr) pr.value = e.priority || 'normal';
+      if (e.icon) { var ic = main.querySelector('#snIcon'); if (ic) ic.value = e.icon; }
       if (e.destination) {
         var m = String(e.destination).match(/^(page|url):(.*)$/);
         if (m) {
@@ -351,7 +900,18 @@
           var dw = main.querySelector('#snDestValWrap'); if (dw) dw.style.display = '';
         }
       }
+      var p = PRESETS.filter(function (x) { return x.type === (e.notification_type || 'GENERAL'); })[0];
+      if (p) c.presetId = p.id;
     }
+
+    /* populate type filter from TYPE_META */
+    var ft = main.querySelector('#snFType');
+    if (ft) { ft.innerHTML = '<option value="">All types</option>' + Object.keys(TYPE_META).map(function (t) { return '<option value="' + t + '">' + t + '</option>'; }).join(''); }
+
+    _renderPresetCards();
+    _renderBannerBox();
+    _renderPreviewNow();
+    _renderDrafts();
     SN.adminRefresh();
     SN.adminPushRefresh();
   }
@@ -467,8 +1027,41 @@
     adminCall(payload).then(function (res) {
       btn.disabled = false; btn.textContent = st.editingId ? '💾 Save Changes' : '🚀 Publish Notification';
       if (res && res.ok) {
-        if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = st.editingId ? '✓ Updated' : '✓ Published — live within a minute'; }
+        var wasEdit = !!st.editingId;
+        var editId = st.editingId;
         st.editingId = null;
+        /* Custom banner: upload to the deterministic path so the feed
+           picks it up; any failure is reported honestly and NEVER
+           affects the published notification (auto poster fallback). */
+        var c = _composer();
+        if (c.banner.staged) {
+          var newId = (res && (res.id || (res.notification && res.notification.id) || res.notification_id)) || null;
+          var resolveId = Promise.resolve(newId);
+          if (!wasEdit && !newId) {
+            resolveId = adminCall({ op: 'list' }).then(function (lr) {
+              var arr = (lr && lr.notifications) || [];
+              var m2 = arr.filter(function (n) { return n.source === 'manual' && n.title === title && (!payload.notification_type || n.notification_type === payload.notification_type); })[0];
+              return m2 ? m2.id : null;
+            }).catch(function () { return null; });
+          } else if (wasEdit) { resolveId = Promise.resolve(editId); }
+          resolveId.then(function (id) {
+            if (!id) { if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — banner NOT uploaded (could not resolve the notification id)'; } return; }
+            if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — uploading banner…'; }
+            bannerUploadFor(id).then(function (up) {
+              if (up && up.ok && !up.skipped) {
+                c.banner.staged = null; c.banner.existing = up.url;
+                if (msg) { msg.style.color = '#10d98e'; msg.textContent = '✓ Published — banner uploaded (' + up.kb + ' KB)'; }
+              } else if (up && up.error) {
+                if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — banner failed: ' + up.error; }
+              }
+              _renderBannerBox();
+            }).catch(function (e2) {
+              if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — banner failed: ' + (e2 && (e2.message || e2.error_description) || 'upload error'); }
+            });
+          });
+        } else {
+          if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = wasEdit ? '✓ Updated' : '✓ Published — live within a minute'; }
+        }
         SN.adminRefresh();
         if (typeof loadLiveNotifications === 'function') { try { loadLiveNotifications(true); } catch (e) {} }
       } else if (msg) {
@@ -495,34 +1088,175 @@
       _renderList();
     }).catch(function () {
       if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh'; }
+      /* honest error state — never leave the admin staring at "Loading…" */
+      var wrap = document.getElementById('snAdminList');
+      if (wrap && !document.querySelector('#snAdminList .sn-row')) {
+        wrap.innerHTML = '<div class="sn-empty">⚠️ Could not load notifications — your admin session may have expired.<br/><br/>'
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminRefresh(this)">↻ Retry</button></div>';
+      }
     });
+  }
+
+  /* ── Notification list: thumbnails, filters, search, sort ────── */
+  function _filters() {
+    window.__snFilters = window.__snFilters || { q: '', type: '', priority: '', status: '', sort: 'new' };
+    return window.__snFilters;
+  }
+  function _syncFilters() {
+    var f = _filters();
+    f.q = _fv('snFQ'); f.type = _fv('snFType'); f.priority = _fv('snFPrio'); f.status = _fv('snFStatus'); f.sort = _fv('snFSort') || 'new';
+  }
+  function _listRender() {
+    _syncFilters();
+    _renderList();
   }
 
   function _renderList() {
     var wrap = document.getElementById('snAdminList');
     if (!wrap) return;
-    var list = _state().list;
-    if (!list.length) { wrap.innerHTML = '<div style="padding:16px;color:var(--text2)">📭 No notifications yet. Publish content or create one above.</div>'; return; }
+    var list = _state().list.slice();
+    var f = _filters();
+    if (f.q) list = list.filter(function (n) { return String(n.title || '').toLowerCase().indexOf(f.q.toLowerCase()) !== -1; });
+    if (f.type) list = list.filter(function (n) { return n.notification_type === f.type; });
+    if (f.priority) list = list.filter(function (n) { return (n.priority || 'normal') === f.priority; });
     var now = Date.now();
-    wrap.innerHTML = '<table style="width:100%;border-collapse:collapse"><tbody>' + list.map(function (n) {
-      var expired = n.expires_at && new Date(n.expires_at).getTime() <= now;
-      var state = !n.is_active ? '<span style="color:#f59e0b">Inactive</span>' : expired ? '<span style="color:#94a3b8">Expired</span>' : '<span style="color:#10d98e">● Live</span>';
-      var srcBadge = n.source === 'auto' ? '<span style="background:rgba(147,2,5,.12);color:#930205;border-radius:6px;padding:1px 7px;font-size:.68rem">auto</span>' : '<span style="background:rgba(16,217,142,.12);color:#10d98e;border-radius:6px;padding:1px 7px;font-size:.68rem">manual</span>';
-      return '<tr style="border-bottom:1px solid rgba(147,2,5,.1)">' +
-        '<td style="padding:8px 8px 8px 0">' + (n.icon || '') + ' <b>' + _escHtml(n.title) + '</b><div style="font-size:.7rem;color:var(--text2)">' + _escHtml(n.notification_type) + ' · ' + srcBadge + (n.content_id ? ' · ' + _escHtml(String(n.content_id).slice(0, 14)) : '') + '</div></td>' +
-        '<td style="padding:8px;white-space:nowrap">' + state + '</td>' +
-        '<td style="padding:8px;white-space:nowrap;text-align:right">' +
-          '<button class="btn btn-ghost btn-sm" onclick="SN.adminEdit(\'' + n.id + '\')" title="Edit">✏️</button> ' +
-          '<button class="btn btn-ghost btn-sm" onclick="SN.adminToggle(\'' + n.id + '\')" title="Activate/Deactivate">' + (n.is_active ? '⏸️' : '▶️') + '</button> ' +
-          '<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.adminDelete(\'' + n.id + '\')" title="Delete">🗑️</button>' +
-        '</td></tr>';
-    }).join('') + '</tbody></table>';
+    var stateOf = function (n) {
+      if (!n.is_active) return 'inactive';
+      if (n.expires_at && new Date(n.expires_at).getTime() <= now) return 'expired';
+      return 'live';
+    };
+    if (f.status) list = list.filter(function (n) { return stateOf(n) === f.status; });
+    list.sort(function (a, b) {
+      var ta = new Date(a.published_at || a.created_date || 0).getTime();
+      var tb = new Date(b.published_at || b.created_date || 0).getTime();
+      return f.sort === 'old' ? ta - tb : tb - ta;
+    });
+
+    if (!_state().list.length) { wrap.innerHTML = '<div class="sn-empty">📭 No notifications yet. Publish content or compose one above.</div>'; return; }
+    if (!list.length) { wrap.innerHTML = '<div class="sn-empty">🔍 No notifications match these filters.</div>'; return; }
+
+    wrap.innerHTML = list.map(function (n) {
+      var state = stateOf(n);
+      var stateHtml = state === 'live' ? '<span class="sn-state sn-state-live">● Live</span>'
+        : state === 'expired' ? '<span class="sn-state sn-state-expired">Expired</span>'
+        : '<span class="sn-state sn-state-inactive">Inactive</span>';
+      var srcBadge = n.source === 'auto' ? '<span class="sn-src sn-src-auto">auto</span>' : '<span class="sn-src sn-src-manual">manual</span>';
+      var thumb = 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(n.notification_type || 'GENERAL') + '&title=' + encodeURIComponent(n.title || 'Studyria') + '&sub=' + encodeURIComponent(n.message || '');
+      var exp = n.expires_at ? new Date(n.expires_at).toLocaleDateString() : '—';
+      var meta = TYPE_META[n.notification_type] || TYPE_META.GENERAL;
+      return '<div class="sn-row" data-nid="' + _escHtml(n.id) + '">'
+        + '<img class="sn-row-thumb" src="' + _escHtml(thumb) + '" alt="" loading="lazy" decoding="async" onerror="this.classList.add(\'sn-row-thumb-broken\')"/>'
+        + '<div class="sn-row-body">'
+          + '<div class="sn-row-title">' + (n.icon || '') + ' ' + _escHtml(n.title) + '</div>'
+          + '<div class="sn-row-sub">' + _escHtml(meta.label) + ' · ' + srcBadge + (n.message ? ' · ' + _escHtml(n.message.slice(0, 60)) + (n.message.length > 60 ? '…' : '') : '') + '</div>'
+          + '<div class="sn-row-meta">' + stateHtml + ' <span>' + escAttr(String(n.priority || 'normal')) + '</span> · <span>expires ' + escAttr(exp) + '</span></div>'
+        + '</div>'
+        + '<div class="sn-row-actions">'
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminView(\'' + n.id + '\')" title="View / Preview">👁</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminEdit(\'' + n.id + '\')" title="Edit">✏️</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminDuplicate(\'' + n.id + '\')" title="Duplicate (new identity)">⧉</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminReuse(\'' + n.id + '\')" title="Reuse design">♻</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminToggle(\'' + n.id + '\')" title="Activate/Deactivate">' + (n.is_active ? '⏸️' : '▶️') + '</button> '
+          + '<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.adminDelete(\'' + n.id + '\')" title="Delete">🗑️</button>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+
+    /* probe custom banners for thumbnails (miss → poster stays) */
+    list.forEach(function (n) {
+      if (window.__snThumbProbed && window.__snThumbProbed[n.id]) return;
+      probeBanner(n.id).then(function (url) {
+        if (!url) return;
+        if (!window.__snThumbProbed) window.__snThumbProbed = {};
+        window.__snThumbProbed[n.id] = true;
+        var img = wrap.querySelector('.sn-row[data-nid="' + n.id + '"] .sn-row-thumb');
+        if (img) img.src = url;
+      });
+    });
   }
 
-  function adminEdit(id) {
-    _state().editingId = id;
+  function adminView(id) {
+    var n = _find(id);
+    if (!n) return;
+    var meta = TYPE_META[n.notification_type] || TYPE_META.GENERAL;
+    var kind = SN_KIND_BY_TYPE[n.notification_type] || '';
+    var tmpl = kind ? SN_PUSH_TEMPLATES[kind] : null;
+    var pushTitle = n.title, pushBody = n.message || '';
+    if (tmpl && !/^[📚💼📝🎯📰🗂️]/u.test(n.title || '')) {
+      pushTitle = tmpl.title;
+      pushBody = n.title + (n.message ? ' — ' + n.message : '');
+    }
+    var poster = 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(n.notification_type || 'GENERAL') + '&title=' + encodeURIComponent(n.title || '') + '&sub=' + encodeURIComponent(n.message || '');
+    var overlay = document.getElementById('snViewOverlay');
+    var body = document.getElementById('snViewBody');
+    if (!overlay || !body) return;
+    body.innerHTML =
+      '<div class="sn-card-title">👁 ' + _escHtml(n.title) + '</div>'
+      + '<div class="sn-view-grid">'
+        + '<div>'
+          + '<div class="sn-sec-label">DEVICE PUSH (as rendered by sw.js)</div>'
+          + '<div class="sn-pv-shade"><div class="sn-pv-phone">'
+            + '<div class="sn-pv-status"><span>9:41</span><span>📶 ▮▮▮</span></div>'
+            + '<div class="sn-pv-notif">'
+              + '<div class="sn-pv-head"><img class="sn-pv-appico" src="/icon-192.png" alt="" onerror="this.style.display=\'none\'"/><span class="sn-pv-origin">studyria.qzz.io</span><span class="sn-pv-now">now</span></div>'
+              + '<div class="sn-pv-body"><div class="sn-pv-title">' + _escHtml(pushTitle) + '</div>'
+              + (pushBody ? '<div class="sn-pv-text">' + _escHtml(pushBody) + '</div>' : '') + '</div>'
+              + (tmpl ? '<div class="sn-pv-actions"><span class="sn-pv-cta">' + _escHtml(tmpl.cta) + '</span></div>' : '')
+            + '</div>'
+          + '</div></div>'
+        + '</div>'
+        + '<div>'
+          + '<div class="sn-sec-label">LIVE FEED CARD (production rendering)</div>'
+          + '<div class="sn-pv-feedwrap"><div class="ln-card" style="cursor:default">'
+            + '<img class="ln-card-thumb" data-viewthumb="' + _escHtml(n.id) + '" src="' + _escHtml(poster) + '" alt="" loading="lazy" onerror="this.remove()"/>'
+            + '<div class="ln-card-icon">' + (n.icon || meta.icon) + '</div>'
+            + '<div class="ln-card-body"><div class="ln-card-title">' + _escHtml(n.title) + '</div>'
+            + (n.message ? '<div class="ln-card-msg">' + _escHtml(n.message) + '</div>' : '') + '</div>'
+            + '<span class="ln-card-cta">' + _escHtml(meta.cta) + ' →</span>'
+            + '<span class="ln-card-type ln-type-' + String(n.notification_type || 'GENERAL').toLowerCase() + '">' + _escHtml(meta.label) + '</span>'
+          + '</div></div>'
+        + '</div>'
+      + '</div>'
+      + '<div style="text-align:right;margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="SN.viewClose()">✕ Close</button></div>';
+    overlay.style.display = '';
+    probeBanner(n.id).then(function (url) {
+      if (!url) return;
+      var im = body.querySelector('img[data-viewthumb="' + n.id + '"]');
+      if (im) im.src = url;
+    });
+  }
+  function viewClose() {
+    var overlay = document.getElementById('snViewOverlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  function composeNew() {
+    _state().editingId = null;
+    _composer().banner.staged = null; _composer().banner.existing = null;
     var main = document.getElementById('adminMain') || document.getElementById('admin-main');
     if (main) renderPanel(main);
+    var card = document.getElementById('snComposerCard');
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var t = document.getElementById('snTitle');
+    if (t) setTimeout(function () { t.focus(); }, 350);
+  }
+
+  function adminDuplicate(id) {
+    var n = _find(id);
+    if (n) _loadRecordIntoComposer(n, 'duplicate');
+  }
+  function adminReuse(id) {
+    var n = _find(id);
+    if (n) _loadRecordIntoComposer(n, 'reuse');
+  }
+
+  function preset(pid) { applyPreset(pid, { forceIcon: true }); }
+  function pvTab(t) { _composer().previewTab = t; _renderPreviewNow(); }
+  function bannerFit(mode) { _composer().banner.fit = mode; }
+
+  function adminEdit(id) {
+    var n = _find(id);
+    if (n) _loadRecordIntoComposer(n, 'edit');
   }
 
   function adminToggle(id) {
@@ -710,6 +1444,23 @@
     adminEdit: adminEdit,
     adminToggle: adminToggle,
     adminDelete: adminDelete,
+    adminView: adminView,
+    viewClose: viewClose,
+    adminDuplicate: adminDuplicate,
+    adminReuse: adminReuse,
+    composeNew: composeNew,
+    preset: preset,
+    pvTab: pvTab,
+    bannerPick: bannerPick,
+    bannerRemove: bannerRemove,
+    bannerFit: bannerFit,
+    bannerUrls: bannerUrls,
+    probeBanner: probeBanner,
+    draftSave: draftSave,
+    draftResume: draftResume,
+    draftDelete: draftDelete,
+    _pv: _pvDebounced,
+    _listRender: _listRender,
     adminPushRefresh: adminPushRefresh,
     adminPushToggle: adminPushToggle,
     adminPushTest: adminPushTest,
