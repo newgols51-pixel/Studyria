@@ -1607,6 +1607,8 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
                   <th>Cover</th>
                   <th>Title</th>
                   <th>Category</th>
+                  <th>Type</th>
+                  <th>Verify</th>
                   <th>Price</th>
                   <th>Status</th>
                   <th>Validation Status</th>
@@ -1614,7 +1616,7 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
                 </tr>
               </thead>
               <tbody id="spmTableBody">
-                <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text2,#94a3b8)">
+                <tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text2,#94a3b8)">
                   <div class="spm-spinner" style="margin:0 auto 10px;width:24px;height:24px;border-width:3px"></div>
                   Loading draft PDFs…
                 </td></tr>
@@ -1665,7 +1667,7 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
     const slice = SPM.filtered.slice(start, start + PAGE_SIZE);
 
     if (!SPM.filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text2,#94a3b8)">
+      tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text2,#94a3b8)">
         ${SPM.pdfs.length === 0
           ? '📭 No draft PDFs in queue. Upload PDFs above to get started.'
           : '🔍 No PDFs match your search/filter.'}
@@ -1746,6 +1748,8 @@ Return ONLY valid JSON (no markdown, no backticks, no extra text):
       </td>
       <td><span style="font-size:.73rem;background:rgba(147,2,5,.1);border-radius:6px;padding:2px 8px">
         ${_safeEsc(p.category || '—')}
+      <td><span style="font-size:.68rem;color:var(--text2,#94a3b8)">${_safeEsc(p.material_type || '—').replace('_',' ').replace('study notes','Notes').replace('mcq book','MCQ').replace('model paper','Mock').replace('revision notes','Revision').replace('formula sheet','Formula').replace('exam strategy','Strategy').replace('current affairs','CA').replace('subject capsule','Capsule')}</span></td>
+      <td>${(p.verification_status === 'verified' || p.content_source_type === 'original') ? '<span style="font-size:.68rem;color:#10d98e">✓ Verified</span>' : '<span style="font-size:.68rem;color:#f59e0b">⚠ Review</span>'}</td>
       </span></td>
       <td style="font-weight:700;color:var(--accent,#930205)">
         ${(p.free || price === 0) ? 'Free' : '₹' + price}

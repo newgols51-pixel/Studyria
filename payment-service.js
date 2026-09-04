@@ -315,7 +315,7 @@ export function buildCheckoutOptions({
     order_id:    orderId,
     name:        MERCHANT_NAME,
     description: `${MERCHANT_DESCRIPTION} — ${planLabel}`,
-    image:       'https://studyria.qzz.io/icons/icon-192x192.png',
+    image:       'https://studyria.qzz.io/icon-192.png',
 
     prefill: {
       name:    userName  || '',

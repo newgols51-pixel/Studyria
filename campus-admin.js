@@ -373,6 +373,21 @@
         var update = { status: status, updated_at: new Date().toISOString() };
         if (status === 'published') update.published_at = new Date().toISOString();
         await cl.from('brainlab_quizzes').update(update).eq('id', id);
+        // ── Live Notifications hook (fire-and-forget) ──
+        try {
+          if (window.SN) {
+            if (status === 'published') {
+              var qz = { title: 'New Quiz' };
+              try {
+                var qr = await cl.from('brainlab_quizzes').select('title, category').eq('id', id).single();
+                if (qr && qr.data) qz = qr.data;
+              } catch (e2) {}
+              SN.publish('QUIZ', id, { title: (qz.title || 'New Quiz') + ' — Live Now', message: 'New quiz published in BrainLab', destination: 'quiz:' + id, metadata: { category: qz.category } });
+            } else {
+              SN.deactivate('QUIZ', id);
+            }
+          }
+        } catch (e) { console.warn('SN quiz hook:', e); }
         this.renderQuizzes();
       } catch (e) { alert('Error: ' + (e.message || '')); }
     },
@@ -464,6 +479,21 @@
         var update = { status: status, updated_at: new Date().toISOString() };
         if (status === 'published') update.published_at = new Date().toISOString();
         await cl.from('mock_tests').update(update).eq('id', id);
+        // ── Live Notifications hook (fire-and-forget) ──
+        try {
+          if (window.SN) {
+            if (status === 'published') {
+              var mk = { title: 'New Mock Test', exam_type: '' };
+              try {
+                var mr = await cl.from('mock_tests').select('title, exam_type').eq('id', id).single();
+                if (mr && mr.data) mk = mr.data;
+              } catch (e2) {}
+              SN.publish('MOCK_TEST', id, { title: (mk.title || 'New Mock Test') + ' Added', message: (mk.exam_type ? mk.exam_type + ' exam-style full-length test' : 'Full-length exam-style test now live'), destination: 'mock:' + id, metadata: { exam: mk.exam_type } });
+            } else {
+              SN.deactivate('MOCK_TEST', id);
+            }
+          }
+        } catch (e) { console.warn('SN mock hook:', e); }
         this.renderMocks();
       } catch (e) { alert('Error: ' + (e.message || '')); }
     },
@@ -581,12 +611,18 @@
       var contentVal = document.getElementById('ca-content').value.trim();
       if (!title || !contentVal) { alert('Fill title and content'); return; }
       try {
-        await cl.from('current_affairs').insert({
+        var _caIns = await cl.from('current_affairs').insert({
           title: title, content: contentVal,
           category: document.getElementById('ca-category').value || 'national',
           source: document.getElementById('ca-source').value || null,
           status: 'published', published_at: new Date().toISOString()
-        });
+        }).select('id').single();
+        // ── Live Notifications hook (fire-and-forget) ──
+        try {
+          if (window.SN && _caIns && _caIns.data && _caIns.data.id) {
+            SN.publish('CURRENT_AFFAIRS', _caIns.data.id, { title: title, message: 'New current affairs update in BrainLab', destination: 'affair:' + _caIns.data.id });
+          }
+        } catch (e) { console.warn('SN affair hook:', e); }
         document.getElementById('ca-title').value = '';
         document.getElementById('ca-content').value = '';
         this.renderAffairs();
@@ -595,8 +631,9 @@
 
     deleteAffair: async function (id) {
       var cl = client(); if (!cl) return;
-      try { await cl.from('current_affairs').update({ is_deleted: true }).eq('id', id); this.renderAffairs(); }
-      catch (e) { alert('Error: ' + (e.message || '')); }
+      try { await cl.from('current_affairs').update({ is_deleted: true }).eq('id', id); } catch (e) { alert('Error: ' + (e.message || '')); return; }
+      try { if (window.SN) SN.deactivate('CURRENT_AFFAIRS', id); } catch (e2) { console.warn('SN affair delete hook:', e2); }
+      this.renderAffairs();
     },
 
     /* ── Leaderboard ── */

@@ -136,7 +136,7 @@
       { key: 'a', text: q.option_a },
       { key: 'b', text: q.option_b },
       { key: 'c', text: q.option_c },
-      { key: 'd', q.option_d }
+      { key: 'd', text: q.option_d }
     ].filter(o => o.text);
 
     return `<div class="rm-card rm-question" data-q="${q.id}">
@@ -153,11 +153,15 @@
   }
 
   function selectAnswer(qId, answer) {
+    // LOCK: Once an answer is selected for a question, it cannot be changed.
+    // This prevents answer manipulation and ensures one final answer per question.
+    if (_state.answers[qId] !== undefined) return;
     _state.answers[qId] = answer;
     const card = document.querySelector(`[data-q="${qId}"]`);
     if (!card) return;
     card.querySelectorAll('.rm-option').forEach(opt => {
-      opt.classList.remove('selected');
+      opt.classList.add('locked');
+      opt.style.pointerEvents = 'none';
       const letter = opt.querySelector('.rm-option-letter').textContent.toLowerCase();
       if (letter === answer) opt.classList.add('selected');
     });

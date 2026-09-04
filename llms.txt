@@ -10,6 +10,13 @@ providing curated, exam-specific PDF study materials, current affairs
 compilations, and a searchable job/scholarship board. Content is written in
 English and Assamese for Assam-based learners.
 
+## Expanded guide
+
+For a detailed page-by-page breakdown with exam taxonomy, technical notes,
+and content-type descriptions, see:
+- [llms-full.txt](https://studyria.qzz.io/llms-full.txt): expanded LLM guide
+- [ai.json](https://studyria.qzz.io/ai.json): structured AI metadata
+
 ## Core offerings
 
 - Free & premium PDF study notes for ADRE 3.0, APSC, Assam Police, Assam TET,

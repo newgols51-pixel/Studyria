@@ -226,12 +226,30 @@ async function adminSavePDF() {
       showToast(`✅ "${title}" updated successfully!`, 'success');
     } else {
       payload.created_at = new Date().toISOString();
-      const { error: insertErr } = await window.supabaseClient.from('pdfs').insert(payload);
+      const { data: insertedPdf, error: insertErr } = await window.supabaseClient.from('pdfs').insert(payload).select('id').single();
       if (insertErr) throw new Error(`Database insert failed: ${insertErr.message}`);
       logAdminActivity(`Published PDF: "${title}" in ${category}`, 'green');
       const _savedMsg = window._spmSaveAsDraft ? `✅ "${title}" saved as Draft!` : `✅ "${title}" published instantly!`;
       showToast(_savedMsg, 'success');
     }
+
+    // ── Live Notifications hook (fire-and-forget, never blocks the publish) ──
+    try {
+      if (window.SN && SN.publish) {
+        const _pdfId = isEditing ? window.adminEditingPDFId : (insertedPdf && insertedPdf.id);
+        if (payload.status === 'published' && _pdfId) {
+          SN.publish('PDF', _pdfId, {
+            title: payload.title,
+            message: 'New PDF now available in the Library',
+            destination: 'pdf:' + _pdfId,
+            metadata: { category: payload.category }
+          });
+        } else if (isEditing && window.adminEditingPDFId) {
+          // Saved back to draft → retire any live notification for this PDF
+          SN.deactivate('PDF', window.adminEditingPDFId);
+        }
+      }
+    } catch (e) { console.warn('SN publish hook:', e); }
 
     window.adminEditingPDFId    = null;
     window.adminEditingCoverUrl = null;
