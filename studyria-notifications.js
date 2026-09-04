@@ -668,6 +668,25 @@
     } catch (e) { return Promise.resolve(st); }
   }
 
+  /* ── Device-scoped self-test (additive): presents THIS device's own
+     subscription to snPushOps op:'self-test'. Backend verifies the caller
+     IS the registered device (endpoint + key match), then sends exactly ONE
+     hardcoded test push to this endpoint only, through the same VAPID
+     production pipeline. Returns the backend's real response including the
+     push-service status. No admin auth involved; no broadcast; no
+     mutation beyond a per-endpoint cooldown timestamp. ──────────────── */
+  function pushSelfTest() {
+    if (!pushSupported()) return Promise.resolve({ ok: false, error: 'unsupported' });
+    return navigator.serviceWorker.ready.then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (!sub) return { ok: false, error: 'this device is not subscribed' };
+        return _fetch('snPushOps', { op: 'self-test', subscription: sub.toJSON() });
+      });
+    }).catch(function (e) {
+      return { ok: false, error: (e && e.message) || 'error' };
+    });
+  }
+
   /* Live feed + push subscribe/unsubscribe refreshes */
   window.addEventListener('sn-push-changed', function () {
     if (typeof refreshNotificationCenter === 'function') {
@@ -698,7 +717,8 @@
       supported: pushSupported,
       enable: pushEnable,
       disable: pushDisable,
-      status: pushStatus
+      status: pushStatus,
+      selfTest: pushSelfTest
     }
   };
 })();

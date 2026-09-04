@@ -25712,6 +25712,7 @@ async function refreshNotificationCenter() {
         <div style="display:flex;align-items:center;gap:8px;color:#10d98e;font-size:.82rem;font-weight:600;justify-content:center;padding:2px 0">
           <span>✅</span><span>Push Notifications Enabled</span>
         </div>
+        <button class="btn btn-primary btn-sm" id="notifCenterSelfTestBtn" onclick="notifCenterSelfTest(this)">🧪 Send Test to This Device</button>
         <button class="btn btn-ghost btn-sm" onclick="notifCenterTurnOff(this)">🔔 Turn Off Notifications</button>
       </div>`;
     } else {
@@ -25736,6 +25737,31 @@ async function refreshNotificationCenter() {
   body.textContent = 'Turn on notifications to get notified the moment new PDFs, results, scholarships and exam alerts drop.';
   if (hmBadge) { hmBadge.textContent = 'SETUP'; hmBadge.style.color = '#fbbf24'; hmBadge.style.background = 'rgba(251,191,36,.15)'; }
   actions.innerHTML = `<button class="btn btn-primary btn-sm" id="notifCenterEnableBtn" onclick="notifCenterRequestPermission()">🔔 Enable Notifications</button>`;
+}
+
+async function notifCenterSelfTest(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending test…'; }
+  // Device-scoped self-test: presents THIS device's own push subscription to
+  // the snPushOps 'self-test' op. The backend matches it against the
+  // registered record and pushes ONLY to this device. Real backend response
+  // only — no simulated success.
+  let res;
+  try {
+    res = (window.SN && SN.push && SN.push.selfTest) ? await SN.push.selfTest()
+        : { ok: false, error: 'unavailable' };
+  } catch (e) { res = { ok: false, error: (e && e.message) || 'error' }; }
+  if (btn) { btn.disabled = false; btn.textContent = '🧪 Send Test to This Device'; }
+  if (res && res.ok) {
+    const st = res.push_service_status ? ' (push service: ' + res.push_service_status + ')' : '';
+    if (typeof showToast === 'function') showToast('✅ Test push sent to this device' + st + '. Check your notification tray.', 'success');
+  } else {
+    const m = (res && (res.error || res.err)) || 'failed';
+    if (typeof showToast === 'function') {
+      showToast(m.indexOf('Unknown op') !== -1
+        ? 'Self-test is not enabled on the notification backend yet.'
+        : 'Self-test: ' + m, 'error');
+    }
+  }
 }
 
 async function notifCenterTurnOff(btn) {
