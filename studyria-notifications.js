@@ -498,6 +498,11 @@
     input.value = '';
   }
 
+  function _bannerImgError(imgEl) {
+    var wrap = imgEl && imgEl.parentNode;
+    if (wrap) wrap.innerHTML = '<div class="sn-banner-broken">\u26a0 image failed to load \u2014 will fall back to the Studyria poster</div>';
+  }
+
   function _renderBannerBox() {
     var host = _field('snBannerBox');
     if (!host) return;
@@ -506,8 +511,7 @@
     var staged = !!c.banner.staged;
     var isNewNote = !st_editingId() ? '<div class="sn-banner-note">Uploaded automatically after you publish.</div>' : '';
     host.innerHTML = showing
-      ? '<div class="sn-banner-prev"><img src="' + _escHtml(showing) + '" alt="Banner preview" '
-        + 'onerror="this.parentNode.innerHTML=\'<div class=\'\"sn-banner-broken\'\">⚠ image failed to load — will fall back to the Studyria poster</div>\'"/></div>'
+      ? '<div class="sn-banner-prev"><img src="' + _escHtml(showing) + '" alt="Banner preview" onerror="SN._bannerImgError(this)"/></div>'
         + '<div class="sn-banner-meta">' + (staged ? 'New banner staged' : 'Current custom banner') + '</div>'
         + '<div class="sn-banner-btns">'
           + '<label class="btn btn-ghost btn-sm" for="snBannerFile2">↻ Replace</label>'
@@ -1454,6 +1458,7 @@
     bannerPick: bannerPick,
     bannerRemove: bannerRemove,
     bannerFit: bannerFit,
+    _bannerImgError: _bannerImgError,
     bannerUrls: bannerUrls,
     probeBanner: probeBanner,
     draftSave: draftSave,
