@@ -26,7 +26,7 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v95'; // v95: custom banner resolution at push time — exact per-notification banner, auto poster stays as strict fallback
+const CACHE_VERSION = 'v96'; // v96: Notification Composer 3.0 — 10 presets, scheduler, validation box; SWR users were one visit behind, bump forces fresh studyria-notifications.js
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
