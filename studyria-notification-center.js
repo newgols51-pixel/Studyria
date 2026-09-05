@@ -183,9 +183,18 @@
       if (!rec) return;
       markRead(id);
       var act = actionFor(rec);
-      if (act) { try { new Function(act)(); } catch (e) {} }
+      if (act) {
+        /* §13 — double-action guard: a second click while navigation is
+           resolving must not re-fire (duplicate navigation/window.open).
+           900ms is imperceptible for a normal re-open. */
+        var now = Date.now();
+        if (SNC._lastCtaAt[id] && (now - SNC._lastCtaAt[id]) < 900) return;
+        SNC._lastCtaAt[id] = now;
+        try { new Function(act)(); } catch (e) {}
+      }
       else { renderList(); } // no valid destination → detail shows fallback
     },
+    _lastCtaAt: {},
     /* §11 — safe Studyria fallback destination */
     explore: function () { if (typeof navigate === 'function') navigate('library'); },
     /* §16 — expand a same-day PDF group (deterministic key, no random ids) */
@@ -297,8 +306,25 @@
   }
 
   /* ── Cards (§7) ─────────────────────────────────────────────────── */
+  /* ── Poster resolver (§8/§17): rec.poster_url first, then the SAME
+     deterministic sn-banners probe the Live Feed uses (covers the
+     banner-uploaded-after-publish race where poster_url is still empty),
+     else '' → category icon fallback. Never shows a broken image. */
+  var bannerCache = {};   /* id → url ('' = resolved, no custom banner) */
   function thumbOf(rec) {
-    return (rec.poster_url && /^https:\/\//.test(String(rec.poster_url))) ? String(rec.poster_url) : '';
+    var u = (rec.poster_url && /^https:\/\//.test(String(rec.poster_url))) ? String(rec.poster_url) : '';
+    if (!u && rec.id) {
+      if (!(rec.id in bannerCache)) {
+        bannerCache[rec.id] = '';
+        if (window.SN && typeof SN.probeBanner === 'function') {
+          SN.probeBanner(rec.id).then(function (url) {
+            if (url) { bannerCache[rec.id] = url; if (isPageActive()) renderList(); }
+          }).catch(function () { /* banner probe is best-effort */ });
+        }
+      }
+      u = bannerCache[rec.id] || '';
+    }
+    return u;
   }
   function ctaLabel(rec) {
     return (rec.cta && String(rec.cta).slice(0, 40)) || typeMeta(rec.type).cta;
@@ -319,10 +345,10 @@
       ' aria-label="' + esc((unread ? 'Unread notification: ' : '') + (high ? 'Urgent: ' : '') + meta.label + ' — ' + rec.title) + '"' +
       ' onclick="' + act + '" onkeydown="' + keyNav + '">' +
       (open && thumb
-        ? '<img class="snc-poster" src="' + esc(thumb) + '" alt="" width="640" height="360" loading="lazy" onerror="this.style.display=\'none\'">'
+        ? '<img class="snc-poster" src="' + esc(thumb) + '" alt="' + esc(rec.title) + '" width="640" height="360" loading="lazy" onerror="this.style.display=\'none\'">'
         : '') +
       (!open && thumb
-        ? '<img class="snc-thumb" src="' + esc(thumb) + '" alt="" width="64" height="64" loading="lazy" onerror="this.style.display=\'none\'">'
+        ? '<img class="snc-thumb" src="' + esc(thumb) + '" alt="' + esc(rec.title) + '" width="64" height="64" loading="lazy" onerror="this.style.display=\'none\'">'
         : '') +
       '<span class="snc-ico' + (thumb ? ' has-thumb' : '') + '" aria-hidden="true">' + (rec.icon && rec.icon.length < 4 ? esc(rec.icon) : meta.icon) + '</span>' +
       '<div class="snc-body">' +

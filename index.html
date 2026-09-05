@@ -19903,8 +19903,8 @@ async function handleNewsletterSubscribe(btn) {
 window.supabaseLib = window.supabase;
 </script>
 <script src="supabase.js"></script>
-<script src="studyria-notifications.js?v=4" defer></script>
-<script src="studyria-notification-center.js?v=4" defer></script>
+<script src="studyria-notifications.js?v=5" defer></script>
+<script src="studyria-notification-center.js?v=5" defer></script>
 <script>
 /* ═══ PUSH NOTIFICATION DEEP-LINK ROUTER ═════════════════════════════
  * When a user taps a mobile push notification, the service worker opens
@@ -19960,8 +19960,14 @@ window.supabaseLib = window.supabase;
         }
         case 'page': {
           if (typeof navigate !== 'function') return false;
+          /* FIX: canonical page-id resolver — case-insensitive, alias-aware,
+             existence-checked (same one SN.destinationAction uses), so push
+             clicks and card CTAs can never disagree or hit a blank page. */
+          var pid = (window.SN && typeof SN.resolvePageId === 'function')
+            ? SN.resolvePageId(val)
+            : (document.getElementById('page-' + String(val).toLowerCase()) ? String(val).toLowerCase() : '');
           trackOpen('notification_open');
-          navigate(val);
+          navigate(pid || 'home'); /* invalid/deleted destination → safe fallback, never blank */
           return true;
         }
         case 'url': {
@@ -20803,7 +20809,11 @@ async function navigate(page) {
     console.warn('Page not found:', page);
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const notFound = document.getElementById('page-404');
-    if (notFound) notFound.classList.add('active');
+    /* FIX (notif blank page): #page-404 ships with inline style="display:none".
+       The .active class (display:block) can never beat an inline style, so any
+       navigation to an unknown page id left EVERY page hidden → literal blank
+       screen. Clear the inline display exactly like the normal path does. */
+    if (notFound) { notFound.classList.add('active'); notFound.style.removeProperty('display'); }
     window.currentPage = '404';
     if (typeof currentPage !== 'undefined') try { currentPage = '404'; } catch(_) {}
     window.scrollTo(0, 0);

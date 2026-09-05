@@ -66,6 +66,19 @@
 
   /* Map a backend destination descriptor to an inline onclick action,
    * using ONLY existing SPA routes/handlers (never invented routes). */
+  /* ── Canonical page-id resolver (notif spec §2/§4): case-insensitive,
+     alias-aware, and EXISTENCE-checked against the real SPA page ids.
+     Returns '' for unknown pages so every caller falls back honestly —
+     never a blank page, never a blind homepage redirect for valid pages. */
+  var PAGE_ALIASES = { homepage: 'home', main: 'home', index: 'home', start: 'home' };
+  function resolvePageId(val) {
+    var v = String(val == null ? '' : val).trim().toLowerCase();
+    if (!/^[a-z0-9\-]{1,60}$/.test(v)) return '';
+    if (PAGE_ALIASES[v]) v = PAGE_ALIASES[v];
+    try { if (document.getElementById('page-' + v)) return v; } catch (e) {}
+    return '';
+  }
+
   function destinationAction(dest) {
     if (!dest) return '';
     var i = String(dest).indexOf(':');
@@ -83,8 +96,13 @@
         return "navigate('brainlab');setTimeout(function(){if(window.BrainLab&&BrainLab.switchTab)BrainLab.switchTab('mock')},350)";
       case 'affair':
         return "navigate('brainlab');setTimeout(function(){if(window.BrainLab&&BrainLab.switchTab)BrainLab.switchTab('affairs')},350)";
-      case 'page':
-        return "navigate('" + escAttr(val) + "')";
+      case 'page': {
+        /* FIX: only emit navigation for REAL page ids (handles legacy
+           destinations like page:Homepage case-insensitively); unknown
+           page ids resolve to '' → the card shows the honest fallback. */
+        var pid = resolvePageId(val);
+        return pid ? "navigate('" + escAttr(pid) + "')" : '';
+      }
       case 'url':
         // Trusted-destination guard: only https Studyria URLs open directly;
         // anything else falls back to the homepage (never a broken/foreign URL).
@@ -439,9 +457,9 @@
     ok(title.length >= 3 && title.length <= 65, '<b>Title</b> ' + (title ? '(' + title.length + ' chars)' : '— 3–65 characters'));
     ok(msg.length === 0 || msg.length >= 5, '<b>Message</b>' + (msg.length ? '' : ' (empty is allowed, 5+ recommended)'));
     var dOk = true;
-    if (kind === 'page') dOk = /^[a-z0-9\-]{1,60}$/i.test(val);
+    if (kind === 'page') dOk = /^[a-z0-9\-]{1,60}$/i.test(val) && !!resolvePageId(val);
     else if (kind === 'url') dOk = /^https:\/\/studyria\.qzz\.io(\/|$|\?|#)/.test(val);
-    if (kind) ok(dOk, '<b>Destination</b> ' + (dOk ? 'opens a real Studyria page' : (kind === 'url' ? 'must be https://studyria.qzz.io/…' : 'page id: letters/digits/dashes')));
+    if (kind) ok(dOk, '<b>Destination</b> ' + (dOk ? 'opens a real Studyria page' : (kind === 'url' ? 'must be https://studyria.qzz.io/…' : 'must be a real Studyria page id (home, library, career-hub…)')));
     ok(!exp || new Date(exp).getTime() > Date.now() + 60000, '<b>Expiry</b>' + (exp ? '' : ' — none'));
     var schedMsg = '';
     if (mode === 'schedule') {
@@ -1080,7 +1098,14 @@
     /* ── strict destination validation (spec §7) — block bad sends ── */
     var msg = document.getElementById('snSaveMsg');
     var bad = function (m) { if (msg) { msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + m; } btn.disabled = false; return; };
-    if (kind === 'page' && !/^[a-z0-9\-]{1,60}$/i.test(val)) return bad('Invalid page id — letters, digits and dashes only.');
+    if (kind === 'page') {
+      if (!/^[a-z0-9\-]{1,60}$/i.test(val)) return bad('Invalid page id — letters, digits and dashes only.');
+      /* FIX: block page ids that don't exist (e.g. "Homepage") — this is how
+         page:Homepage got published and blank-screened user CTAs. */
+      var normPage = resolvePageId(val);
+      if (!normPage) return bad('Unknown page "' + val + '" — use a real Studyria page id (home, library, career-hub, brainlab…).');
+      dest = 'page:' + normPage; /* normalized + verified */
+    }
     if (kind === 'url' && !/^https:\/\/studyria\.qzz\.io(\/|$|\?|#)/.test(val)) return bad('External URLs are blocked — the destination must be a Studyria page (https://studyria.qzz.io/…).');
     var pubVal = (document.getElementById('snPublishAt') || {}).value || '';
     var scheduledAt = null;
@@ -1548,6 +1573,7 @@
     publish: publish,
     deactivate: deactivate,
     destinationAction: destinationAction,
+    resolvePageId: resolvePageId,
     adminPanel: renderPanel,
     adminTestConn: adminTestConn,
     adminRefresh: adminRefresh,
