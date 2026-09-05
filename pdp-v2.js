@@ -11,6 +11,22 @@
 (function() {
 'use strict';
 
+/* ── ONE-TIME VIEWPORT LOCK (V3.6, 2026-09-05) ─────────────────────
+   index.html ships the viewport locked statically:
+   maximum-scale=1.0, user-scalable=no. This is an IDEMPOTENT one-time
+   enforcement at script load — it only guards against a stale cached
+   index.html that still carries maximum-scale=5. It NEVER toggles the
+   meta at runtime (runtime rewriting was the V3.4 bug). Browsers that
+   ignore the meta (Firefox Android, force-zoom Chrome, WebViews) are
+   handled by the gesture-level pinch block in pdp-v3.js instead.    */
+(function () {
+  var m = document.querySelector('meta[name="viewport"]');
+  if (m) {
+    var want = 'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no';
+    if (m.getAttribute('content') !== want) m.setAttribute('content', want);
+  }
+})();
+
 /* ── PDF.js Worker Configuration ── */
 /* Runs when pdp-v2.js executes (deferred, after pdf.min.js) */
 if (window.pdfjsLib) {
