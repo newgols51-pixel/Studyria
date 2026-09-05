@@ -39044,7 +39044,7 @@ document.addEventListener('DOMContentLoaded', async function _appInit() {
     // advertise as indexable; every other page's behaviour is unchanged.
     const _initQueryPage = new URLSearchParams(location.search).get('page');
     const _QUERY_PAGE_ALLOWLIST = new Set([
-      'about', 'career-hub', 'library', 'contact', 'privacy', 'terms', 'refund'
+      'about', 'career-hub', 'library', 'contact', 'privacy', 'terms', 'refund', 'notifications'
     ]);
     if (_initHash && _initHash !== '404' && _SPA_PUBLIC_PAGES.has(_initHash)) {
       navigate(_initHash);
