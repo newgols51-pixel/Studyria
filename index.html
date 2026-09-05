@@ -48105,7 +48105,7 @@ window.addEventListener('load', function() {
       var timeHtml = time ? '<div class="ln-card-time">' + time + '</div>' : '';
       var action = item.action || '';
       var clickAttr = action ? ' onclick="' + action + '"' : '';
-      var posterUrl = 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(item.type || 'GENERAL') + '&title=' + encodeURIComponent(item.title || 'Studyria') + '&sub=' + encodeURIComponent(item.message || '');
+      var posterUrl = item.poster_url || ('https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(item.type || 'GENERAL') + '&title=' + encodeURIComponent(item.title || 'Studyria') + '&sub=' + encodeURIComponent(item.message || ''));
       var thumbHtml = '<img class="ln-card-thumb" src="' + posterUrl + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">';
       return '<div class="ln-card"' + clickAttr + '>' +
         thumbHtml +
