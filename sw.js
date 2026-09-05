@@ -26,14 +26,14 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v94'; // v94: Smart Announcement Engine — branded push templates, CTA buttons, safe deep-link fallbacks
+const CACHE_VERSION = 'v95'; // v95: custom banner resolution at push time — exact per-notification banner, auto poster stays as strict fallback
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.09.04-smart-announcements';
+const SW_BUILD      = '2026.09.05-custom-banners';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🔔 Smart Announcement Engine: branded push notifications (📚 PDF / 💼 Job / 📝 Quiz / 🎯 Mock Test / 📰 Affairs) with CTA buttons and safe deep-link fallbacks.';
+const WHATS_NEW = '🖼️ Custom banners: each notification\'s own banner/poster now appears on push notifications — auto-generated Studyria poster stays as fallback.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -306,6 +306,100 @@ function _notifKindFromUrl(url) {
   } catch (_) { return ''; }
 }
 
+// ── CUSTOM BANNER RESOLUTION (v95) ─────────────────────────────
+// The composer uploads each notification's custom banner to public
+// Supabase Storage at a deterministic path (covers bucket →
+// sn-banners/<notificationId>.jpg) — the SAME url the live feed and
+// the admin list already probe. The push payload has no banner field
+// (dispatch backend untouched), so the service worker resolves the
+// exact banner here. The backend's auto-generated Studyria poster
+// (payload.image) remains the STRICT fallback — a failed or missing
+// probe can never delay or break notification delivery: the push is
+// ALWAYS shown first with the existing behavior, and the banner only
+// ever replaces it silently (same tag → in-place update, renotify
+// stays false → no second sound/vibration).
+const SN_BANNER_BUCKETS   = ['covers', 'sn-banners'];
+const SN_BANNER_PUBLIC    = 'https://qsdfmgcekdpjdcyqhuhi.supabase.co/storage/v1/object/public/';
+const SN_LIVE_ENDPOINT    = 'https://superagent-f8acee03.base44.app/functions/snLive';
+
+function _withTimeout(promise, ms) {
+  return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+}
+
+function _notifIdFromUrl(url) {
+  try {
+    const u = new URL(String(url), self.location.origin);
+    const m = /(?:\?|&)notif=([^&]+)/.exec(u.search);
+    if (!m) return '';
+    const raw = decodeURIComponent(m[1]);
+    const i = raw.indexOf(':');
+    return i < 0 ? '' : raw.slice(i + 1);
+  } catch (_) { return ''; }
+}
+
+/* HEAD-probe the deterministic banner paths. Returns the exact public
+   banner url, or null (→ strict auto-poster fallback). */
+async function _probeBannerUrl(id) {
+  if (!id) return null;
+  for (const bucket of SN_BANNER_BUCKETS) {
+    const url = SN_BANNER_PUBLIC + bucket + '/sn-banners/' + id + '.jpg';
+    try {
+      const res = await _withTimeout(fetch(url, { method: 'HEAD' }), 2500);
+      if (res && res.ok && /^image\//i.test(res.headers.get('content-type') || '')) return url;
+    } catch (_) { /* next bucket → fallback */ }
+  }
+  return null;
+}
+
+/* Resolve the notification record id for this push. The deep-link
+   descriptor often carries a CONTENT id (auto pushes) rather than the
+   notification record id, so: (a) try the descriptor id directly,
+   (b) fall back to an exact-title match on the public live feed
+   (tiny payload, same endpoint the homepage already calls). */
+async function _resolveCustomBanner(payload, rawUrl) {
+  const id = _notifIdFromUrl(rawUrl);
+  let record = null;
+  try {
+    if (/^[a-f0-9]{16,}$/i.test(id)) {
+      const direct = await _probeBannerUrl(id);
+      if (direct) return { url: direct, retry: false };
+    }
+    const res = await _withTimeout(fetch(SN_LIVE_ENDPOINT, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}'
+    }), 3000);
+    if (!res || !res.ok) return { url: null, retry: true };          // transient → retry
+    const j = await res.json();
+    const t = String(payload.title || '').trim();
+    const arr = (j && j.notifications) || [];
+    record = arr.filter(n => n && n.title && String(n.title).trim() === t)
+                .sort((a, b) => String(b.published_at || '').localeCompare(String(a.published_at || '')))[0] || null;
+    if (!record) return { url: null, retry: false };                  // unresolvable → stop
+    if (record.source === 'auto') return { url: null, retry: false }; // auto records never carry banners
+    const byRecord = await _probeBannerUrl(record.id);
+    if (byRecord) return { url: byRecord, retry: false };
+    return { url: null, retry: true };                                // manual + race with upload → retry
+  } catch (_) {
+    return { url: null, retry: !!record };                           // network hiccup → cautious retry
+  }
+}
+
+/* The composer uploads the banner a few seconds AFTER create fires
+   the push (banner path needs the new notification id), so the first
+   probe can legitimately miss. Brief bounded retries; on hit, the
+   same-tag re-show swaps the poster for the exact banner in place. */
+async function _upgradeWithCustomBanner(payload, rawUrl, title, options) {
+  for (const delay of [2000, 5000, 9000]) {
+    await new Promise(r => setTimeout(r, delay));
+    const r = await _resolveCustomBanner(payload, rawUrl);
+    if (r.url) {
+      options.image = r.url;
+      await self.registration.showNotification(title, options);       // same tag → silent in-place replace
+      return;
+    }
+    if (!r.retry) return;                                             // no banner will ever appear
+  }
+}
+
 self.addEventListener('push', event => {
   if (!event.data) return;
   let payload;
@@ -345,7 +439,10 @@ self.addEventListener('push', event => {
     options.actions = payload.actions;
   }
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil((async () => {
+    await self.registration.showNotification(title, options);   // instant — existing behavior first
+    try { await _upgradeWithCustomBanner(payload, rawUrl, title, options); } catch (_) {} // v95: never blocks delivery
+  })());
 });
 
 self.addEventListener('notificationclick', event => {
@@ -372,6 +469,14 @@ self.addEventListener('notificationclick', event => {
 // ── MESSAGE HANDLER ───────────────────────────────────────────────
 self.addEventListener('message', event => {
   const { type, urls } = event.data || {};
+
+  // ── v95: SN_RESOLVE_BANNER — verification hook (read-only, public data) ──
+  if (type === 'SN_RESOLVE_BANNER' && event.data && event.data.id) {
+    _probeBannerUrl(String(event.data.id)).then(url => {
+      event.source && event.source.postMessage({ type: 'SN_BANNER_RESOLVED', id: String(event.data.id), url: url || null });
+    });
+    return;
+  }
 
   if (type === 'SKIP_WAITING') {
     console.log('[SW] SKIP_WAITING — activating update');

@@ -262,7 +262,13 @@
    * are probed by the feed with automatic snPoster fallback. The admin
    * mutation payload stays byte-identical to the previous implementation.
    * ──────────────────────────────────────────────────────────────── */
-  var SN_BANNER_BUCKETS = ['sn-banners', 'user-documents'];
+  /* 'covers' is the existing public-read bucket (book covers) — the only
+   * banner-capable bucket that actually exists in Supabase Storage.
+   * 'sn-banners' is kept as a forward-compatible second probe target
+   * (used only if that bucket is ever created). Uploads go through the
+   * same admin-authenticated window.supabaseClient that already writes
+   * book covers today — no credentials, no policy changes. */
+  var SN_BANNER_BUCKETS = ['covers', 'sn-banners'];
   var SN_BANNER_PATH = function (id) { return 'sn-banners/' + id + '.jpg'; };
   var SN_BANNER_PUBLIC = function (bucket, id) {
     return 'https://qsdfmgcekdpjdcyqhuhi.supabase.co/storage/v1/object/public/' + bucket + '/' + SN_BANNER_PATH(id);
