@@ -8845,9 +8845,9 @@ function studyriaApp() {
       </div>
       <div style="padding:4px 0 6px">
         <div class="hm-admin-section">
-          <button class="hm-admin-btn" onclick="mhCloseBurger();toggleNotificationCenter()">
+          <button class="hm-admin-btn" onclick="mhCloseBurger();navigate('notifications')">
             <span class="hm-admin-crown" style="animation:none">🔔</span>
-            <span class="hm-admin-text"><span class="hm-admin-title">Notifications</span></span>
+            <span class="hm-admin-text"><span class="hm-admin-title">Notifications</span><span class="snc-badge" data-snc-badge hidden>0</span></span>
             <span class="hm-admin-secure" style="background:rgba(251,191,36,0.15);color:#fbbf24;border-color:rgba(251,191,36,0.3)">SETUP</span>
           </button>
         </div>
@@ -9008,7 +9008,7 @@ function studyriaApp() {
           <div class="hp-menu-section-label">Settings</div>
           <a class="hp-menu-item" onclick="dhCloseHamburger();toggleTheme()"><span class="hp-menu-icon" id="menuThemeIcon">🌙</span> Theme Toggle</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();toggleLangMenu(event)"><span class="hp-menu-icon">🌐</span> Language</a>
-          <a class="hp-menu-item" onclick="dhCloseHamburger();dhMenuNotifications()"><span class="hp-menu-icon">🔔</span> Notifications</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('notifications')"><span class="hp-menu-icon">🔔</span> Notifications<span class="snc-badge" data-snc-badge hidden>0</span></a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('wishlist')"><span class="hp-menu-icon">❤️</span> Wishlist</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)"><span class="hp-menu-icon">⬇️</span> Downloads</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('privacy')"><span class="hp-menu-icon">🔒</span> Privacy &amp; Security</a>
@@ -18163,6 +18163,8 @@ window._chMenuBootstrap = (function() {
 </div>
 
 <!-- ── PWA V3.2 PAGE ── -->
+<div class="page" id="page-notifications"></div>
+
 <div class="page" id="page-pwa"></div>
 
 <div class="page" id="page-404" style="display:none">
@@ -19902,6 +19904,7 @@ window.supabaseLib = window.supabase;
 </script>
 <script src="supabase.js"></script>
 <script src="studyria-notifications.js?v=4" defer></script>
+<script src="studyria-notification-center.js?v=1" defer></script>
 <script>
 /* ═══ PUSH NOTIFICATION DEEP-LINK ROUTER ═════════════════════════════
  * When a user taps a mobile push notification, the service worker opens
@@ -20732,7 +20735,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload','ai-notes',
-  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab','free-materials'
+  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab','free-materials','notifications'
 ]);
 
 // ── SPA page canonical handling ─────────────────────────────────────
