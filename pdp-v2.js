@@ -521,16 +521,18 @@ function _pdpRenderShell(pdf) {
   }
 
   // Scroll-based sticky bar reveal.
-  // Desktop anchor: the buy card. On mobile/tablet the buy card is
-  // display:none → its rect is all zeros, which previously meant the
-  // sticky bar could NEVER appear below 1024px. Anchor on the mobile
-  // price block there instead.
+  // ≥1024px: anchor on the desktop buy card (bar shows once it scrolls
+  // past the top). <1024px the buy card is display:none (zero rect) — the
+  // old code could therefore NEVER show the bar on phones/tablets. On
+  // those widths the sticky bar is the ONLY purchase affordance while
+  // scrolling, so anchor on the preview gallery: once it has scrolled
+  // past, show the bar.
   window._pdpScrollHandler = function() {
     const bar = document.getElementById('pdpStickyBar');
     if (!bar) return;
     let anchor = document.getElementById('pdpBuyCard');
     if (!anchor || anchor.getBoundingClientRect().height === 0) {
-      anchor = document.getElementById('pdpMobilePriceBlock');
+      anchor = document.getElementById('pdpV3Gallery');
     }
     if (!anchor) { bar.classList.add('visible'); return; }
     const rect = anchor.getBoundingClientRect();
