@@ -445,6 +445,7 @@ body.light .ott-row-track .pdf-cover-scrim {
 <link rel="stylesheet" href="premium-p2.css">
 <link rel="stylesheet" href="premium-p3.css">
 <link rel="stylesheet" href="studyria-ui-2.0.css">
+<link rel="stylesheet" href="cart.css?v=20260905">
 <link rel="stylesheet" href="studyria-me-v3.css">
 <style>
 /* ── STATIC DESIGN TOKENS ───────────────────────────────────────
@@ -8918,9 +8919,9 @@ function studyriaApp() {
         <button class="hp-signin-btn" id="navLoginBtn" onclick="navigate('login')">Sign In</button>
         <!-- Get Pass (red primary, connected to production premium flow) -->
         <button class="hp-get-pass-btn" onclick="navigate('premium')">Get Pass</button>
-        <!-- Basket/Cart with count badge -->
-        <button class="hp-basket-btn" onclick="navigate('wishlist')" aria-label="Basket" title="My Wishlist">
-          <span aria-hidden="true">🧺</span>
+        <!-- Shopping Cart with count badge (Cart 2.0 — routes to the dedicated Cart page, NOT wishlist) -->
+        <button class="hp-basket-btn" onclick="navigate('cart')" aria-label="Shopping Cart" title="Your Cart">
+          <span aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg></span>
           <span class="hp-basket-count" id="basketCount">0</span>
         </button>
         <!-- Theme toggle (hidden, moved to menu) -->
@@ -9030,9 +9031,9 @@ function studyriaApp() {
 
           <!-- Basket icon with live count (existing production cart) -->
           <div class="hp-menu-cta">
-            <button class="hp-basket-btn" onclick="dhCloseHamburger();navigate('wishlist')" aria-label="Basket" title="My Wishlist" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px">
+            <button class="hp-basket-btn" onclick="dhCloseHamburger();navigate('cart')" aria-label="Shopping Cart" title="Your Cart" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-              <span style="font-size:14px;font-weight:600">Basket</span>
+              <span style="font-size:14px;font-weight:600">Cart</span>
               <span class="hp-basket-count" id="dhMenuBasketCount" style="position:relative;top:0;right:0;display:inline-flex">0</span>
             </button>
           </div>
@@ -11694,7 +11695,7 @@ function scardHTML(pdf, opts) {
       + '<span class="sc-price-paid">₹' + displayPrice + '</span>'
       + (origPrice && origPrice > displayPrice ? '<span class="sc-price-orig">₹' + origPrice + '</span>' : '')
       + '</div>';
-    ctaHTML = '<button class="sc-cta sc-cta-buy" onclick="event.stopPropagation();buyPDF(\'' + shEsc(pdf.id) + '\',' + displayPrice + ')">Buy ₹' + displayPrice + '</button>';
+    ctaHTML = '<button class="sc-cta sc-cta-buy" onclick="event.stopPropagation();(window.Cart?Cart.add(\'' + shEsc(pdf.id) + '\'):buyPDF(\'' + shEsc(pdf.id) + '\',' + displayPrice + '))">🛒 Add to Cart · ₹' + displayPrice + '</button>';
   }
 
   return '<div class="sc-card" onclick="openPDFDetail(\'' + shEsc(pdf.id) + '\')" data-pdf-id="' + shEsc(pdf.id) + '">'
@@ -11755,7 +11756,7 @@ function shHeroCardHTML(pdf, isActive, rank) {
       : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Free';
   } else {
     ctaClass = 'sh-hero-cta-primary sh-hero-cta-buy';
-    ctaLabel = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.97-1.67L23 6H6"/></svg> Buy Now · ₹' + displayPrice;
+    ctaLabel = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.97-1.67L23 6H6"/></svg> Add to Cart · ₹' + displayPrice;
   }
 
   // Fallback emoji
@@ -11782,7 +11783,7 @@ function shHeroCardHTML(pdf, isActive, rank) {
     +   metaHTML
     +   priceHTML
     +   '<div class="sh-hero-cta-row">'
-    +     '<button class="' + ctaClass + '" onclick="event.stopPropagation();' + (isFree ? 'downloadPDF(\'' + shEsc(pdf.id) + '\')' : 'buyPDF(\'' + shEsc(pdf.id) + '\',' + displayPrice + ')') + '">' + ctaLabel + '</button>'
+    +     '<button class="' + ctaClass + '" onclick="event.stopPropagation();' + (isFree ? 'downloadPDF(\'' + shEsc(pdf.id) + '\')' : '(window.Cart?Cart.add(\'' + shEsc(pdf.id) + '\'):buyPDF(\'' + shEsc(pdf.id) + '\',' + displayPrice + '))') + '">' + ctaLabel + '</button>'
     +     '<button class="sh-hero-save-btn ' + wishActive + '" onclick="event.stopPropagation();shToggleWish(\'' + shEsc(pdf.id) + '\',event)" aria-label="Save">' + wishIcon + '</button>'
     +   '</div>'
     + '</div>'
@@ -15090,6 +15091,16 @@ body.light .me-stat-val { filter:none; }
       </div>
     </div>
   </div>
+</div>
+
+<!-- ═══ SHOPPING CART (Cart 2.0 — real cart, NOT wishlist) ═══ -->
+<div class="page" id="page-cart">
+  <div id="cartRoot"></div>
+</div>
+
+<!-- ═══ CHECKOUT (verified prices → existing Razorpay flow) ═══ -->
+<div class="page" id="page-checkout">
+  <div id="checkoutRoot"></div>
 </div>
 
 <div class="page" id="page-admin-login">
@@ -20857,6 +20868,8 @@ async function navigate(page) {
     }
     renderWishlist();
   }
+  if (page === 'cart' && window.Cart) Cart.renderCart();
+  if (page === 'checkout' && window.Cart) Cart.renderCheckout();
   if (page === 'admin') renderAdmin();
   if (page === 'detail') renderDetail();
   if (page === 'career-hub') {
@@ -21595,9 +21608,9 @@ function pdfCardHTML(pdf) {
             </button>`;
           })()
         : `<button class="pdf-buy-btn"
-            onclick="event.stopPropagation();buyPDF('${pdf.id}', ${displayPrice})">
+            onclick="event.stopPropagation();(window.Cart?Cart.add('${pdf.id}'):buyPDF('${pdf.id}', ${displayPrice}))">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-            Buy Now &middot; &#8377;${displayPrice}
+            Add to Cart &middot; &#8377;${displayPrice}
           </button>`
       }
     </div>
@@ -41415,6 +41428,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <script src="pdp-v3.js?v=20260803a" defer></script>
     <script src="pdp-v4.js?v=20260803a" defer></script>
     <script src="pdp-checkout.js?v=20260804" defer></script>
+    <script src="cart.js?v=20260905" defer></script>
 
 
 
@@ -47684,16 +47698,12 @@ window.dhUpdateMenuTheme = function() {
 
 
 <script>
-// Update basket count from wishlist
+// CART badge (Cart 2.0): real cart count — cart.js owns all updates
+// (broadcast after add/remove/checkout + cross-tab storage events).
 function updateBasketCount() {
-  try {
-    var wl = JSON.parse(localStorage.getItem('studyria_wishlist') || '[]');
-    var bc = document.getElementById('basketCount');
-    if(bc) bc.textContent = wl.length;
-  } catch(e) {}
+  try { if (window.Cart && window.Cart.updateBadge) window.Cart.updateBadge(); } catch(e) {}
 }
 document.addEventListener('DOMContentLoaded', updateBasketCount);
-setInterval(updateBasketCount, 3000);
 </script>
 
 <script>
