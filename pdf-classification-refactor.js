@@ -763,10 +763,10 @@ function _buildDetailClassifChips(pdf) {
   const chips = [];
 
   if (_isValidClassif(pdf.category))
-    chips.push(`<div class="pdp-info-chip"><span class="pdp-ic-icon">📚</span><span class="pdp-ic-label">Category</span><span class="pdp-ic-val">${_esc(pdf.category)}</span></div>`);
+    chips.push(`<div class="pdp-info-chip" data-classif="1"><span class="pdp-ic-icon">📚</span><span class="pdp-ic-label">Category</span><span class="pdp-ic-val">${_esc(pdf.category)}</span></div>`);
 
   if (_isValidClassif(pdf.subcategory))
-    chips.push(`<div class="pdp-info-chip"><span class="pdp-ic-icon">🏫</span><span class="pdp-ic-label">Class/Level</span><span class="pdp-ic-val">${_esc(pdf.subcategory)}</span></div>`);
+    chips.push(`<div class="pdp-info-chip" data-classif="1"><span class="pdp-ic-icon">🏫</span><span class="pdp-ic-label">Class/Level</span><span class="pdp-ic-val">${_esc(pdf.subcategory)}</span></div>`);
 
   if (_isValidClassif(pdf.academic_level))
     chips.push(`<div class="pdp-info-chip"><span class="pdp-ic-icon">🎓</span><span class="pdp-ic-label">Academic Level</span><span class="pdp-ic-val">${_esc(pdf.academic_level)}</span></div>`);
@@ -898,11 +898,17 @@ function _cmPatchedNavigate(page, ...args) { // FIX: renamed from 'navigate' to 
       if (chipsEl && pdf) {
         const classifChips = _buildDetailClassifChips(pdf);
         // Preserve non-classification chips (language, pages, downloads, dates, access)
-        const existingNonClassif = chipsEl.querySelectorAll(
-          '.pdp-info-chip:not([data-classif])'
-        );
+        // FIX: originals carry no data-classif attr, so filter by label text instead
+        // to avoid duplicating the Category chip built by pdp-v2's shell.
+        const _classifLabels = ['Category','Class/Level','Academic Level','Stream','Semester/Class','Subject'];
+        const existingNonClassif = Array.from(
+          chipsEl.querySelectorAll('.pdp-info-chip:not([data-classif])')
+        ).filter(function (el) {
+          var lab = el.querySelector('.pdp-ic-label');
+          return !lab || _classifLabels.indexOf(lab.textContent.trim()) === -1;
+        });
         // Mark classification chips and replace
-        const nonClassifHTML = Array.from(existingNonClassif).map(el => el.outerHTML).join('');
+        const nonClassifHTML = existingNonClassif.map(el => el.outerHTML).join('');
         chipsEl.innerHTML = classifChips + nonClassifHTML;
       }
     });
