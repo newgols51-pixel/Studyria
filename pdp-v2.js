@@ -512,7 +512,9 @@ function _pdpRenderShell(pdf) {
                </div>`
             : ''}
         <button class="pdp-buy-primary" style="margin-top:12px" onclick="pdpHandleBuy()">
-          ${pdf.free
+          ${ownedPaid
+            ? '⚡ Open PDF'
+            : pdf.free
             ? (_isOwned(String(pdf.id)) ? '⚡ Open PDF' : '⚡ Download Free')
             : price > 0 ? `⚡ Buy Now — ₹${price}` : '⚡ Download Free'}
         </button>
