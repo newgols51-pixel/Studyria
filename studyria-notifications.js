@@ -1,12 +1,19 @@
 /* ═════════════════════════════════════════════════════════════════════
-   STUDYRIA LIVE NOTIFICATIONS — Frontend client
+   STUDYRIA LIVE NOTIFICATIONS — Frontend client  (v3 — Smart Announcement Engine)
+   v3 upgrade (additive, backward-compatible):
+     • CTA labels per announcement type (Read Now / View Job / Start Quiz…)
+     • Safe destination fallbacks: missing/unknown destination falls back
+       to the relevant Studyria section instead of a dead card
+     • Client-side dedup guard on publish (double-click / double-fire of
+       the same content event; server-side content_id dedupe still rules)
+     • GA4 (GTM dataLayer) events for notification card opens
    Backend: Studyria Notifications Base44 app (superagent-f8acee03)
    — separate Base44 backend, NOT BrainLab Arena (solas-e60b5349).
 
    Public side : SN.fetchLive()        → live feed (read-only, no auth)
    Admin side  : SN.publish()          → auto-notification on content publish
                 SN.deactivate()       → unpublish / expiry handling
-                SN.adminPanel()     → Notification Studio (v3 admin UI)
+                SN.adminPanelInit()   → admin "Live Feed" manager UI
    All write calls verify the admin server-side via the Supabase session
    token; nothing sensitive is stored in this file.
    ═════════════════════════════════════════════════════════════════════ */
@@ -17,15 +24,39 @@
   var FETCH_TIMEOUT = 8000;
 
   var TYPE_META = {
-    PDF:             { label: 'New PDF',  icon: '📕' },
-    JOB:             { label: 'Job Alert', icon: '💼' },
-    QUIZ:            { label: 'Quiz',    icon: '🧠' },
-    MOCK_TEST:       { label: 'Mock Test', icon: '📝' },
-    CURRENT_AFFAIRS: { label: 'Affairs', icon: '📰' },
-    ADRE:            { label: 'ADRE',    icon: '🗂️' },
-    CATEGORY:        { label: 'Category', icon: '📂' },
-    GENERAL:         { label: 'Update',  icon: '📢' }
+    PDF:             { label: 'New PDF',  icon: '📚', cta: 'Read Now' },
+    JOB:             { label: 'Job Alert', icon: '💼', cta: 'View Job' },
+    QUIZ:            { label: 'Quiz',    icon: '📝', cta: 'Start Quiz' },
+    MOCK_TEST:       { label: 'Mock Test', icon: '🎯', cta: 'Take Test' },
+    CURRENT_AFFAIRS: { label: 'Affairs', icon: '📰', cta: 'Read Now' },
+    ADRE:            { label: 'ADRE',    icon: '🗂️', cta: 'View Details' },
+    CATEGORY:        { label: 'Category', icon: '📂', cta: 'Explore' },
+    GENERAL:         { label: 'Update',  icon: '📢', cta: 'View' }
   };
+
+  /* Section fallback when an announcement has no destination (or an
+     unknown one) — never leaves the user on a dead card. */
+  var TYPE_SECTION = {
+    PDF:             "navigate('library')",
+    JOB:             "navigate('career-hub')",
+    QUIZ:            "navigate('brainlab')",
+    MOCK_TEST:       "navigate('brainlab')",
+    CURRENT_AFFAIRS: "navigate('brainlab')",
+    ADRE:            "navigate('library')",
+    CATEGORY:        "navigate('library')",
+    GENERAL:         ''
+  };
+
+  /* Fire-and-forget GA4 event via the existing GTM dataLayer.
+     Never throws, never blocks navigation. */
+  function _trackOpen(evt, ntype) {
+    try {
+      (window.dataLayer || (window.dataLayer = [])).push({
+        event: evt,
+        notif_type: String(ntype || 'GENERAL')
+      });
+    } catch (e) { /* analytics must never break UX */ }
+  }
 
   function escAttr(s) {
     return String(s == null ? '' : s)
@@ -55,7 +86,12 @@
       case 'page':
         return "navigate('" + escAttr(val) + "')";
       case 'url':
-        return "window.open('" + escAttr(val) + "','_blank','noopener')";
+        // Trusted-destination guard: only https Studyria URLs open directly;
+        // anything else falls back to the homepage (never a broken/foreign URL).
+        if (/^https:\/\/studyria\.qzz\.io\//.test(val)) {
+          return "SN._trackOpen('notification_card_open','URL');window.open('" + escAttr(val) + "','_blank','noopener')";
+        }
+        return '';
       default:
         return '';
     }
@@ -84,17 +120,24 @@
         throw new Error((res && res.error) || 'Live notifications unavailable');
       }
       return res.notifications.map(function (n) {
-        var meta = TYPE_META[n.type] || TYPE_META.GENERAL;
+        var rawType = String(n.type || 'GENERAL');
+        var meta = TYPE_META[rawType] || TYPE_META.GENERAL;
+        var dest = destinationAction(n.destination);
+        var track = "SN._trackOpen('notification_card_open','" + escAttr(rawType) + "');";
+        var action = dest
+          ? (track + dest)
+          : (TYPE_SECTION[rawType] ? (track + TYPE_SECTION[rawType]) : '');
         return {
-          type: String(n.type || 'GENERAL').toLowerCase(),
+          id: n.id,
+          type: rawType.toLowerCase(),
           typeLabel: meta.label,
           title: n.title || 'Update',
           message: n.message || '',
           time: n.published_at || null,
           icon: n.icon || meta.icon,
           poster_url: n.poster_url || '',
-          cta: n.cta || '',
-          action: destinationAction(n.destination)
+          ctaLabel: meta.cta,
+          action: action
         };
       });
     });
@@ -109,12 +152,47 @@
     }).catch(function () { return null; });
   }
 
+  /* Client-side dedup guard (Smart Announcement Engine, additive):
+     • in-flight guard  → the same event fired twice concurrently shares
+       one request (double-click, double hook fire)
+     • recent guard     → the identical (type,id,title,message) event is
+       skipped for 30s within the tab session (page refresh / retry
+       double-fire). Legitimate re-publishes with changed content always
+       pass through. The server-side content_id dedupe remains the
+       authoritative layer; this is a polite first line of defense. */
+  var _publishInflight = {};
+
+  function _recentPublishes() {
+    try { return JSON.parse(sessionStorage.getItem('snRecentPublishes') || '{}'); }
+    catch (e) { return {}; }
+  }
+  function _setRecentPublish(map) {
+    try { sessionStorage.setItem('snRecentPublishes', JSON.stringify(map)); } catch (e) {}
+  }
+
   /* Auto-notification on publish. Fire-and-forget with one silent retry:
      a notification failure must NEVER fail the content publish itself. */
   function publish(contentType, contentId, opts) {
     opts = opts || {};
     if (contentType === 'PDF' && _looksLikeAdre(opts)) contentType = 'ADRE';
-    return getAdminToken().then(function (token) {
+
+    var dedupeKey = contentType + '|' + (contentId || '') + '|' +
+                    (opts.title || '') + '|' + (opts.message || '');
+
+    // Concurrent identical call → share the in-flight promise
+    if (_publishInflight[dedupeKey]) return _publishInflight[dedupeKey];
+
+    // Same event already published < 30s ago in this tab session → skip
+    var recent = _recentPublishes();
+    var now = Date.now();
+    for (var k in recent) { if (now - recent[k] > 30000) delete recent[k]; }
+    if (recent[dedupeKey]) {
+      return Promise.resolve({ ok: true, deduped: true });
+    }
+    recent[dedupeKey] = now;
+    _setRecentPublish(recent);
+
+    _publishInflight[dedupeKey] = getAdminToken().then(function (token) {
       if (!token) { console.warn('[SN] publish skipped — no admin session'); return { ok: false, skipped: true }; }
       var payload = {
         op: 'create', source: 'auto',
@@ -138,10 +216,23 @@
         }
         return res;
       });
+    }).then(function (res) {
+      // If the backend ultimately rejected the event, un-block the key so
+      // a later legitimate attempt isn't swallowed by the recent guard.
+      if (!res || res.ok !== true) {
+        var m2 = _recentPublishes();
+        if (m2[dedupeKey]) { delete m2[dedupeKey]; _setRecentPublish(m2); }
+      }
+      return res;
     }).catch(function (e) {
+      var m3 = _recentPublishes();
+      if (m3[dedupeKey]) { delete m3[dedupeKey]; _setRecentPublish(m3); }
       console.warn('[SN] publish failed (content publish unaffected):', e);
       return { ok: false };
+    }).finally(function () {
+      delete _publishInflight[dedupeKey];
     });
+    return _publishInflight[dedupeKey];
   }
 
   function _looksLikeAdre(opts) {
@@ -164,6 +255,531 @@
     });
   }
 
+  /* ═══════════ PREMIUM NOTIFICATION COMPOSER (additive) ═══════════
+   * Five professional presets + live preview + per-notification custom
+   * banners + drafts + duplicate/reuse. ZERO backend changes: presets map
+   * onto existing whitelisted fields (type/icon/priority/destination),
+   * banners live in Supabase Storage at a deterministic public path and
+   * are probed by the feed with automatic snPoster fallback. The admin
+   * mutation payload stays byte-identical to the previous implementation.
+   * ──────────────────────────────────────────────────────────────── */
+  /* 'covers' is the existing public-read bucket (book covers) — the only
+   * banner-capable bucket that actually exists in Supabase Storage.
+   * 'sn-banners' is kept as a forward-compatible second probe target
+   * (used only if that bucket is ever created). Uploads go through the
+   * same admin-authenticated window.supabaseClient that already writes
+   * book covers today — no credentials, no policy changes. */
+  var SN_BANNER_BUCKETS = ['covers', 'sn-banners'];
+  var SN_BANNER_PATH = function (id) { return 'sn-banners/' + id + '.jpg'; };
+  var SN_BANNER_PUBLIC = function (bucket, id) {
+    return 'https://qsdfmgcekdpjdcyqhuhi.supabase.co/storage/v1/object/public/' + bucket + '/' + SN_BANNER_PATH(id);
+  };
+  var SN_BANNER_MAX_RAW = 5 * 1024 * 1024;
+  var SN_BANNER_W = 1200, SN_BANNER_H = 630; /* recommended aspect 1.9:1 */
+
+  var PRESETS = [
+    { id: 'study',    name: 'Study Material',        icon: '📚', type: 'PDF',       priority: 'normal', style: 'material',
+      desc: 'Academic / study-focused · clean premium education look' },
+    { id: 'trending',name: 'New & Trending',        icon: '🔥', type: 'CATEGORY',  priority: 'high',  style: 'affairs',
+      desc: 'High-attention announcement style for newly released content' },
+    { id: 'exam',    name: 'Exam / Mock Test',      icon: '🎯', type: 'MOCK_TEST', priority: 'high',  style: 'mock',
+      desc: 'Competitive-exam focused · strong CTA hierarchy' },
+    { id: 'jobs',    name: 'Jobs / Career',         icon: '💼', type: 'JOB',       priority: 'normal', style: 'job',
+      desc: 'Professional career-oriented visual hierarchy' },
+    { id: 'announce',name: 'Important Announcement',icon: '📢', type: 'GENERAL',   priority: 'high',  style: 'classic',
+      desc: 'Premium announcement / alert style' },
+    { id: 'adre',    name: 'ADRE Special',          icon: '🏛️', type: 'ADRE',     priority: 'normal', style: 'adre',
+      desc: 'Assam Direct Recruitment papers & updates' },
+    { id: 'affairs', name: 'Current Affairs',       icon: '📰', type: 'CURRENT_AFFAIRS', priority: 'normal', style: 'affairs',
+      desc: 'Daily current-affairs updates' },
+    { id: 'feature', name: 'New Feature',          icon: '✨', type: 'GENERAL',   priority: 'normal', style: 'feature',
+      desc: 'Something new on Studyria — Try Now CTA' },
+    { id: 'premium', name: 'Premium Announcement', icon: '👑', type: 'GENERAL',   priority: 'high',  style: 'premium',
+      desc: 'Pass / premium content announcement — gold look' },
+    { id: 'urgent',  name: 'Important Alert',       icon: '🚨', type: 'GENERAL',   priority: 'high',  style: 'alert',
+      desc: 'Urgent alerts — deadline, exam date, urgent update' }
+  ];
+
+  /* Mirror of sw.js PUSH_TEMPLATE — the preview shows EXACTLY what the
+     service worker will render on device. Keep in sync with sw.js. */
+  var SN_PUSH_TEMPLATES = {
+    pdf:    { title: '📚 New Study Material Added', cta: 'Read Now →' },
+    job:    { title: '💼 New Job Alert',             cta: 'View Job →' },
+    quiz:   { title: '📝 New Quiz Available',        cta: 'Start Quiz →' },
+    mock:   { title: '🎯 New Mock Test',             cta: 'Take Test →' },
+    affair: { title: '📰 New Current Affairs',      cta: 'Read Now →' }
+  };
+  var SN_KIND_BY_TYPE = { PDF:'pdf', JOB:'job', QUIZ:'quiz', MOCK_TEST:'mock', CURRENT_AFFAIRS:'affair' };
+
+  function _composer() {
+    window.__snComposer = window.__snComposer || {
+      presetId: 'study',
+      banner: { staged: null, existing: null, fit: 'cover', busy: false },
+      previewTab: 'android',
+      pvTimer: null
+    };
+    return window.__snComposer;
+  }
+
+  function _field(id) { return document.getElementById(id); }
+  function _fv(id) { var el = _field(id); return el ? String(el.value || '') : ''; }
+
+  function _drafts() {
+    try { return JSON.parse(localStorage.getItem('snDraftsV1') || '[]'); } catch (e) { return []; }
+  }
+  function _draftsSave(arr) { try { localStorage.setItem('snDraftsV1', JSON.stringify(arr.slice(0, 20))); } catch (e) {} }
+
+  /* Deterministic custom-banner probe for a notification id.
+     Feed side uses the same public URLs — hit → custom banner,
+     miss → automatic snPoster fallback. */
+  function bannerUrls(id) {
+    return SN_BANNER_BUCKETS.map(function (b) { return SN_BANNER_PUBLIC(b, id); });
+  }
+  function probeBanner(id) {
+    return new Promise(function (resolve) {
+      var urls = bannerUrls(id), i = 0;
+      (function next() {
+        if (i >= urls.length) return resolve(null);
+        var img = new Image();
+        img.onload = function () { resolve(urls[i]); };
+        img.onerror = function () { i++; next(); };
+        img.src = urls[i];
+      })();
+    });
+  }
+
+  /* Apply a preset — only touches UNSET/derived fields so admin content
+     is never destroyed. Changing preset keeps title/message/etc. */
+  function applyPreset(pid, opts) {
+    var p = PRESETS.filter(function (x) { return x.id === pid; })[0];
+    if (!p) return;
+    var c = _composer();
+    c.presetId = pid;
+    var t = _field('snType'), pr = _field('snPriority'), ic = _field('snIcon');
+    if (t) t.value = p.type;
+    if (pr) pr.value = p.priority;
+    if (ic && (opts && opts.forceIcon || !_fv('snIcon'))) ic.value = p.icon;
+    _renderPresetCards();
+    _renderPreviewNow();
+  }
+
+  function _renderPresetCards() {
+    var wrap = _field('snPresetRow');
+    if (!wrap) return;
+    var c = _composer();
+    wrap.innerHTML = PRESETS.map(function (p) {
+      var on = c.presetId === p.id;
+      return '<button type="button" class="sn-preset-card' + (on ? ' sn-preset-on' : '') + '" onclick="SN.preset(\'' + p.id + '\')"'
+        + ' aria-pressed="' + on + '" title="' + _escHtml(p.desc) + '">'
+        + '<span class="sn-preset-ico">' + p.icon + '</span>'
+        + '<span class="sn-preset-name">' + _escHtml(p.name) + '</span>'
+        + '<span class="sn-preset-type">' + _escHtml(TYPE_META[p.type] ? TYPE_META[p.type].label : p.type) + '</span>'
+        + '</button>';
+    }).join('');
+  }
+
+  /* ── Live preview — renders EXACTLY what production renders ──── */
+  function _pvDebounced() {
+    var c = _composer();
+    clearTimeout(c.pvTimer);
+    c.pvTimer = setTimeout(_renderPreviewNow, 140);
+  }
+
+  function _previewRecord() {
+    var kind = SN_KIND_BY_TYPE[_fv('snType')] || '';
+    var tmpl = kind ? SN_PUSH_TEMPLATES[kind] : null;
+    var title = _fv('snTitle') || 'Your notification title';
+    var message = _fv('snMessage');
+    var icon = _fv('snIcon') || (TYPE_META[_fv('snType')] || TYPE_META.GENERAL).icon;
+    var pushTitle = title, pushBody = message;
+    /* exact sw.js logic: template title when the content title isn't
+       already emoji-branded; content title preserved in the body */
+    if (tmpl && !/^[📚💼📝🎯📰🗂️]/u.test(title)) {
+      pushTitle = tmpl.title;
+      pushBody = title + (message ? ' — ' + message : '');
+    }
+    var meta = TYPE_META[_fv('snType')] || TYPE_META.GENERAL;
+    return {
+      kind: kind, tmpl: tmpl, title: title, message: message, icon: icon,
+      pushTitle: pushTitle, pushBody: pushBody, priority: _fv('snPriority') || 'normal',
+      typeLabel: meta.label, cta: meta.cta, presetId: _composer().presetId,
+      banner: _stagedBannerUrl() || _composer().banner.existing
+    };
+  }
+
+  function _stagedBannerUrl() {
+    var b = _composer().banner;
+    return b.staged ? b.staged.dataUrl : null;
+  }
+
+  function _presetStyle() {
+    var p = PRESETS.filter(function (x) { return x.id === _composer().presetId; })[0];
+    return (p && p.style) || 'classic';
+  }
+
+  function _posterUrl(r, w) {
+    return 'https://superagent-f8acee03.base44.app/functions/snPoster?type='
+      + encodeURIComponent(_fv('snType') || 'GENERAL') + '&title=' + encodeURIComponent(r.title || 'Studyria')
+      + '&sub=' + encodeURIComponent(r.message || '') + '&style=' + encodeURIComponent(_presetStyle())
+      + (w ? '&w=' + w : '');
+  }
+
+  /* ── pre-send validation (spec §23) — live, honest, blocks bad sends ── */
+  function _renderValBox(mode) {
+    var box = _field('snValBox');
+    if (!box) return true;
+    var title = _fv('snTitle').trim();
+    var msg = _fv('snMessage').trim();
+    var kind = _fv('snDestKind');
+    var val = _fv('snDestVal').trim();
+    var exp = _fv('snExpires');
+    var pub = _fv('snPublishAt');
+    var items = [];
+    var ok = function (b, l) { items.push('<div><span style="color:' + (b ? '#10d98e' : '#ff6b85') + '">' + (b ? '✓' : '✗') + '</span> ' + l + '</div>'); };
+    ok(title.length >= 3 && title.length <= 65, '<b>Title</b> ' + (title ? '(' + title.length + ' chars)' : '— 3–65 characters'));
+    ok(msg.length === 0 || msg.length >= 5, '<b>Message</b>' + (msg.length ? '' : ' (empty is allowed, 5+ recommended)'));
+    var dOk = true;
+    if (kind === 'page') dOk = /^[a-z0-9\-]{1,60}$/i.test(val);
+    else if (kind === 'url') dOk = /^https:\/\/studyria\.qzz\.io(\/|$|\?|#)/.test(val);
+    if (kind) ok(dOk, '<b>Destination</b> ' + (dOk ? 'opens a real Studyria page' : (kind === 'url' ? 'must be https://studyria.qzz.io/…' : 'page id: letters/digits/dashes')));
+    ok(!exp || new Date(exp).getTime() > Date.now() + 60000, '<b>Expiry</b>' + (exp ? '' : ' — none'));
+    var schedMsg = '';
+    if (mode === 'schedule') {
+      var pOk = !!pub && new Date(pub).getTime() > Date.now() + 120000;
+      ok(pOk, '<b>Schedule time</b> — at least 2 minutes ahead');
+      schedMsg = pOk ? ' — will appear in Live Feed and push at that time' : '';
+    }
+    var allOk = true;
+    for (var i = 0; i < items.length; i++) if (items[i].indexOf('✗') !== -1) { allOk = false; break; }
+    var btn = _field('snSaveBtn');
+    if (btn && mode !== 'draft') btn.disabled = !allOk;
+    var sb = _field('snSchedBtn');
+    box.innerHTML = '<div style="font-size:.74rem;line-height:1.7">' + items.join('') +
+      (allOk && mode !== 'schedule' ? '<div style="color:#10d98e;font-weight:700;margin-top:4px">✓ Ready to Send</div>' : '') + '</div>';
+    return allOk;
+  }
+
+  function _renderPreviewNow() {
+    var host = _field('snPreviewHost');
+    if (!host) return;
+    var c = _composer();
+    var r = _previewRecord();
+    var bannerSrc = r.banner || _posterUrl(r);
+    var tabs = _field('snPvTabs');
+    if (tabs) {
+      tabs.innerHTML = ['android', 'desktop', 'feed'].map(function (t) {
+        var lbl = t === 'android' ? '📱 Android' : t === 'desktop' ? '🖥️ Desktop' : '📰 Live Feed';
+        return '<button type="button" class="sn-pv-tab' + (c.previewTab === t ? ' sn-pv-tab-on' : '') + '" onclick="SN.pvTab(\'' + t + '\')">' + lbl + '</button>';
+      }).join('');
+    }
+    var html = '';
+    if (c.previewTab === 'android' || c.previewTab === 'desktop') {
+      var isAndroid = c.previewTab === 'android';
+      html = '<div class="sn-pv-shade' + (isAndroid ? '' : ' sn-pv-desk') + '">'
+        + '<div class="sn-pv-phone">'
+          + '<div class="sn-pv-status"><span>9:41</span><span>📶 ▮▮▮</span></div>'
+          + (isAndroid ? '' : '<div class="sn-pv-desk-hint">Chrome — desktop notification</div>')
+          + '<div class="sn-pv-notif">'
+            + '<div class="sn-pv-head"><img class="sn-pv-appico" src="/icon-192.png" alt="" onerror="this.style.display=\'none\'"/>'
+            + '<span class="sn-pv-origin">studyria.qzz.io</span><span class="sn-pv-now">now</span></div>'
+            + '<div class="sn-pv-body">'
+              + '<div class="sn-pv-title">' + _escHtml(r.pushTitle) + '</div>'
+              + (r.pushBody ? '<div class="sn-pv-text">' + _escHtml(r.pushBody) + '</div>' : '')
+            + '</div>'
+            + (r.tmpl ? '<div class="sn-pv-actions"><span class="sn-pv-cta">' + _escHtml(r.tmpl.cta) + '</span></div>' : '')
+          + '</div>'
+        + '</div></div>'
+        + '<div class="sn-pv-note">' + (r.tmpl
+            ? 'Branded template + CTA button — exactly what sw.js v94 renders on device.'
+            : 'This type has no branded push template — sw.js renders the plain title (existing fallback).') + '</div>';
+    } else {
+      /* EXACT production feed card markup (ln-card) with real snPoster URL */
+      html = '<div class="sn-pv-feedwrap">'
+        + '<div class="ln-card" style="cursor:default">'
+          + '<img class="ln-card-thumb" src="' + _escHtml(bannerSrc) + '" alt="" loading="lazy" onerror="this.remove()">'
+          + '<div class="ln-card-icon">' + r.icon + '</div>'
+          + '<div class="ln-card-body">'
+            + '<div class="ln-card-title">' + _escHtml(r.title) + '</div>'
+            + (r.message ? '<div class="ln-card-msg">' + _escHtml(r.message) + '</div>' : '')
+            + '<div class="ln-card-time">just now</div>'
+          + '</div>'
+          + '<span class="ln-card-cta">' + _escHtml(r.cta) + ' →</span>'
+          + '<span class="ln-card-type ln-type-' + (_fv('snType') || 'GENERAL').toLowerCase() + '">' + _escHtml(r.typeLabel) + '</span>'
+        + '</div>'
+        + (r.banner ? '<div class="sn-pv-note">Custom banner — will show in the Live Feed.</div>'
+                    : '<div class="sn-pv-note">Auto-generated Studyria poster (snPoster) — one unique poster per notification.</div>')
+        + '</div>';
+    }
+    host.innerHTML = html;
+    _renderValBox();
+  }
+
+  /* ── Banner: validate → compress → stage; upload on publish/save ── */
+  function bannerPick(input) {
+    var c = _composer();
+    var file = input && input.files && input.files[0];
+    if (!file) return;
+    var err = _field('snBannerMsg');
+    var bad = function (m) { if (err) { err.style.display = ''; err.style.color = '#ff6b85'; err.textContent = '✗ ' + m; } };
+    if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) { bad('Only JPG, PNG or WebP images are supported.'); input.value = ''; return; }
+    if (file.size > SN_BANNER_MAX_RAW) { bad('File too large — max 5 MB (larger images are compressed after upload).'); input.value = ''; return; }
+    c.banner.busy = true;
+    if (err) { err.style.display = ''; err.style.color = 'var(--text2)'; err.textContent = '… compressing image'; }
+    var reader = new FileReader();
+    reader.onerror = function () { c.banner.busy = false; bad('Could not read this image.'); };
+    reader.onload = function () {
+      var img = new Image();
+      img.onerror = function () { c.banner.busy = false; bad('This file is not a valid image.'); };
+      img.onload = function () {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = SN_BANNER_W; canvas.height = SN_BANNER_H;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#F7F1E2'; ctx.fillRect(0, 0, SN_BANNER_W, SN_BANNER_H);
+          var fit = c.banner.fit, s = Math.min(img.width / SN_BANNER_W, img.height / SN_BANNER_H);
+          var dw = img.width / s, dh = img.height / s;
+          if (fit === 'contain') {
+            ctx.drawImage(img, (SN_BANNER_W - dw) / 2, (SN_BANNER_H - dh) / 2, dw, dh);
+          } else { /* cover: center-crop */
+            ctx.drawImage(img, (SN_BANNER_W - dw) / 2, (SN_BANNER_H - dh) / 2, dw, dh);
+          }
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          c.banner.staged = { dataUrl: dataUrl, name: file.name };
+          c.banner.busy = false;
+          if (err) { err.style.display = ''; err.style.color = '#10d98e'; err.textContent = '✓ Banner ready — ' + Math.round(dataUrl.length / 1365) + ' KB compressed (' + (fit === 'contain' ? 'fit' : 'crop') + ')'; }
+          _renderBannerBox();
+          _renderPreviewNow();
+        } catch (e) { c.banner.busy = false; bad('Could not process this image.'); }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  function _bannerImgError(imgEl) {
+    var wrap = imgEl && imgEl.parentNode;
+    if (wrap) wrap.innerHTML = '<div class="sn-banner-broken">\u26a0 image failed to load \u2014 will fall back to the Studyria poster</div>';
+  }
+
+  function _renderBannerBox() {
+    var host = _field('snBannerBox');
+    if (!host) return;
+    var c = _composer();
+    var showing = _stagedBannerUrl() || c.banner.existing;
+    var staged = !!c.banner.staged;
+    var isNewNote = !st_editingId() ? '<div class="sn-banner-note">Uploaded automatically after you publish.</div>' : '';
+    host.innerHTML = showing
+      ? '<div class="sn-banner-prev"><img src="' + _escHtml(showing) + '" alt="Banner preview" onerror="SN._bannerImgError(this)"/></div>'
+        + '<div class="sn-banner-meta">' + (staged ? 'New banner staged' : 'Current custom banner') + '</div>'
+        + '<div class="sn-banner-btns">'
+          + '<label class="btn btn-ghost btn-sm" for="snBannerFile2">↻ Replace</label>'
+          + '<button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.bannerRemove()">🗑 Remove</button>'
+        + '</div>'
+        + '<input type="file" id="snBannerFile2" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="SN.bannerPick(this)"/>'
+        + isNewNote
+      : '<div class="sn-banner-empty">'
+          + '<div class="sn-banner-empty-ico">🖼️</div>'
+          + '<div>No custom banner — each notification automatically gets its own unique Studyria poster.</div>'
+          + '<label class="btn btn-ghost btn-sm" for="snBannerFile1">⬆ Upload Banner</label>'
+          + '<input type="file" id="snBannerFile1" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="SN.bannerPick(this)"/>'
+        + '</div>';
+  }
+
+  function bannerRemove() {
+    var c = _composer();
+    if (c.banner.staged) {
+      c.banner.staged = null;
+      _renderBannerBox(); _renderPreviewNow();
+      var err = _field('snBannerMsg'); if (err) { err.style.display = 'none'; }
+      return;
+    }
+    if (c.banner.existing && st_editingId()) {
+      /* delete from storage — feed falls back to the auto poster */
+      var id = st_editingId();
+      c.banner.busy = true;
+      _sbStorage().then(function (sb) {
+        var buckets = SN_BANNER_BUCKETS.slice();
+        (function next() {
+          if (!buckets.length) { c.banner.busy = false; return; }
+          var b = buckets.shift();
+          sb.storage.from(b).remove([SN_BANNER_PATH(id)]).then(function (res) {
+            if (res && res.error) { next(); return; }
+            c.banner.existing = null; c.banner.busy = false;
+            _renderBannerBox(); _renderPreviewNow();
+            var err = _field('snBannerMsg');
+            if (err) { err.style.display = ''; err.style.color = '#10d98e'; err.textContent = '✓ Banner removed — auto poster restored'; }
+          }).catch(next);
+        })();
+      }).catch(function (e) { c.banner.busy = false; _bannerErr('Could not remove: ' + (e.message || e)); });
+    }
+  }
+
+  function _bannerErr(m) {
+    var err = _field('snBannerMsg');
+    if (err) { err.style.display = ''; err.style.color = '#ff6b85'; err.textContent = '✗ ' + m; }
+  }
+
+  function st_editingId() { return _state().editingId; }
+
+  function _sbStorage() {
+    return new Promise(function (resolve, reject) {
+      var sb = window.supabaseClient;
+      if (!sb || !sb.storage) { reject(new Error('Storage unavailable — log in again')); return; }
+      resolve(sb);
+    });
+  }
+
+  /* Upload the staged banner to the deterministic path for a notif id.
+     Creates the dedicated bucket when the platform allows it, else uses
+     the existing public bucket. Honest result reporting — no fakes. */
+  function bannerUploadFor(id) {
+    var c = _composer();
+    if (!c.banner.staged || !id) return Promise.resolve({ ok: true, skipped: true });
+    var dataUrl = c.banner.staged.dataUrl;
+    c.banner.busy = true;
+    return fetch(dataUrl).then(function (r) { return r.blob(); }).then(function (blob) {
+      return _sbStorage().then(function (sb) {
+        /* remember a bucket that already worked */
+        var known = null;
+        try { known = localStorage.getItem('snBannerBucket'); } catch (e) {}
+        var order = known ? [known].concat(SN_BANNER_BUCKETS.filter(function (b) { return b !== known; })) : SN_BANNER_BUCKETS.slice();
+        var i = 0;
+        function tryNext() {
+          if (i >= order.length) throw new Error('storage rejected the upload (bucket policy)');
+          var bucket = order[i++];
+          return sb.storage.from(bucket).upload(SN_BANNER_PATH(id), blob, { upsert: true, contentType: 'image/jpeg' })
+            .then(function (res) {
+              if (res && res.error) throw new Error(res.error.message || 'upload failed');
+              try { localStorage.setItem('snBannerBucket', bucket); } catch (e) {}
+              c.banner.busy = false;
+              return { ok: true, bucket: bucket, url: SN_BANNER_PUBLIC(bucket, id), kb: Math.round(blob.size / 1024) };
+            })
+            .catch(function (e) {
+              if (i < order.length) return tryNext();
+              c.banner.busy = false;
+              throw e;
+            });
+        }
+        return tryNext();
+      });
+    });
+  }
+
+  /* ── Drafts (local-only — never auto-published) ──────────────── */
+  function draftSave() {
+    var r = {
+      title: _fv('snTitle'), message: _fv('snMessage')
+    };
+    if (!r.title && !r.message) { alert('Nothing to save yet — add a title or message.'); return; }
+    var c = _composer();
+    var arr = _drafts();
+    arr.unshift({
+      id: 'draft-' + Date.now(), savedAt: new Date().toISOString(),
+      presetId: c.presetId,
+      fields: {
+        title: r.title, message: r.message,
+        type: _fv('snType'), priority: _fv('snPriority'), icon: _fv('snIcon'),
+        destKind: _fv('snDestKind'), destVal: _fv('snDestVal'), expires: _fv('snExpires')
+      },
+      banner: c.banner.staged ? { fit: c.banner.fit, staged: (c.banner.staged.dataUrl.length < 1200000 ? c.banner.staged.dataUrl : null) } : null
+    });
+    _draftsSave(arr);
+    var msg = _field('snSaveMsg');
+    if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = '✓ Draft saved locally (not published)'; }
+    _renderDrafts();
+  }
+
+  function _renderDrafts() {
+    var host = _field('snDraftList');
+    if (!host) return;
+    var arr = _drafts();
+    var wrap = _field('snDraftWrap');
+    if (wrap) wrap.style.display = arr.length ? '' : 'none';
+    host.innerHTML = arr.map(function (d) {
+      return '<div class="sn-draft-row">'
+        + '<span class="sn-draft-t">' + _escHtml(d.fields.title || 'Untitled draft') + '</span>'
+        + '<span class="sn-draft-time">' + new Date(d.savedAt).toLocaleString() + '</span>'
+        + '<button type="button" class="btn btn-ghost btn-sm" onclick="SN.draftResume(\'' + d.id + '\')">▶ Resume</button> '
+        + '<button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.draftDelete(\'' + d.id + '\')">🗑</button>'
+        + '</div>';
+    }).join('');
+  }
+
+  function draftResume(id) {
+    var d = _drafts().filter(function (x) { return x.id === id; })[0];
+    if (!d) return;
+    var st = _state();
+    st.editingId = null;
+    var main = document.getElementById('adminMain') || document.getElementById('admin-main');
+    if (main) renderPanel(main);
+    applyPreset(d.presetId, { forceIcon: false });
+    var f = d.fields;
+    if (_field('snTitle')) _field('snTitle').value = f.title || '';
+    if (_field('snMessage')) _field('snMessage').value = f.message || '';
+    if (_field('snType')) _field('snType').value = f.type || '';
+    if (_field('snPriority')) _field('snPriority').value = f.priority || 'normal';
+    if (_field('snIcon')) _field('snIcon').value = f.icon || '';
+    if (_field('snDestKind')) _field('snDestKind').value = f.destKind || '';
+    if (_field('snDestVal')) { _field('snDestVal').value = f.destVal || ''; }
+    if (_field('snDestValWrap')) _field('snDestValWrap').style.display = f.destKind ? '' : 'none';
+    if (_field('snExpires')) _field('snExpires').value = f.expires || '';
+    if (d.banner && d.banner.staged) { _composer().banner.staged = { dataUrl: d.banner.staged, name: 'draft' }; }
+    _renderBannerBox(); _renderPreviewNow();
+  }
+
+  function draftDelete(id) {
+    _draftsSave(_drafts().filter(function (x) { return x.id !== id; }));
+    _renderDrafts();
+  }
+
+  function _loadRecordIntoComposer(n, mode) {
+    /* mode: 'edit' | 'duplicate' | 'reuse' */
+    var st = _state();
+    st.editingId = mode === 'edit' ? n.id : null;
+    st.duplicateNote = mode !== 'edit';
+    var main = document.getElementById('adminMain') || document.getElementById('admin-main');
+    if (main) renderPanel(main);
+    if (mode === 'edit') {
+      if (_field('snTitle')) _field('snTitle').value = n.title || '';
+      if (_field('snMessage')) _field('snMessage').value = n.message || '';
+    } else if (mode === 'duplicate') {
+      if (_field('snTitle')) _field('snTitle').value = (n.title || '') + (n.title ? ' (Copy)' : '');
+      if (_field('snMessage')) _field('snMessage').value = n.message || '';
+    } else { /* reuse: preset/layout only */
+      if (_field('snTitle')) _field('snTitle').value = '';
+      if (_field('snMessage')) _field('snMessage').value = '';
+    }
+    if (_field('snType')) _field('snType').value = n.notification_type || 'GENERAL';
+    if (_field('snPriority')) _field('snPriority').value = n.priority || 'normal';
+    if (_field('snIcon')) _field('snIcon').value = n.icon || '';
+    if (n.destination) {
+      var m = String(n.destination).match(/^(page|url):(.*)$/);
+      if (m) {
+        if (_field('snDestKind')) _field('snDestKind').value = m[1];
+        if (_field('snDestVal')) _field('snDestVal').value = m[2];
+        if (_field('snDestValWrap')) _field('snDestValWrap').style.display = '';
+      }
+    } else {
+      if (_field('snDestKind')) _field('snDestKind').value = '';
+      if (_field('snDestValWrap')) _field('snDestValWrap').style.display = 'none';
+    }
+    var presetType = n.notification_type || 'GENERAL';
+    var p = PRESETS.filter(function (x) { return x.type === presetType; })[0] || PRESETS[0];
+    _composer().presetId = p.id;
+    _renderPresetCards();
+    if (mode === 'edit' && n.id) {
+      probeBanner(n.id).then(function (url) {
+        if (url) { _composer().banner.existing = url; _renderBannerBox(); _renderPreviewNow(); }
+      });
+    }
+    _renderPreviewNow();
+    if (mode !== 'edit') {
+      var note = _field('snComposeNote');
+      if (note) { note.style.display = ''; note.textContent = mode === 'duplicate' ? 'Duplicating — publishing creates a NEW notification (fresh identity).' : 'Reusing the design — enter new content.'; }
+    }
+  }
+
   /* ── ADMIN PANEL: "Live Feed" manager UI ──────────────────────── */
   function adminCall(payload) {
     return getAdminToken().then(function (token) {
@@ -177,631 +793,199 @@
     return window.__snAdmin;
   }
 
-/* ═══════════ NOTIFICATION STUDIO (v3) — 10 presets, live Android
-   preview, pre-send validation, custom poster upload, draft/schedule
-   delivery. Built ON TOP of the existing v2 admin manager: every
-   existing control (kill switch, test push, list, edit, delete) stays. */
-var SN_PRESETS = {
-  classic:  { name: 'Studyria Classic',     emoji: '\uD83D\uDCE2', type: 'GENERAL',       style: 'classic',  cta: 'Open \u2192',             prefix: '\uD83D\uDCE2 Important Announcement' },
-  material: { name: 'New Study Material',    emoji: '\uD83D\uDCDA', type: 'PDF',           style: 'material', cta: 'Read Now \u2192',        prefix: '\uD83D\uDCDA New Study Material' },
-  job:      { name: 'Job Alert',            emoji: '\uD83D\uDCBC', type: 'JOB',           style: 'job',       cta: 'View Job \u2192',        prefix: '\uD83D\uDCBC New Assam Job Alert' },
-  exam:     { name: 'Exam Alert',           emoji: '\u23F0',       type: 'GENERAL',       style: 'exam',     cta: 'Open \u2192',             prefix: '\u23F0 Exam Alert' },
-  adre:     { name: 'ADRE Special',         emoji: '\uD83C\uDFDB\uFE0F', type: 'ADRE',    style: 'adre',     cta: 'Start Paper \u2192',     prefix: '\uD83C\uDFDB\uFE0F New ADRE Paper' },
-  mock:     { name: 'Mock Test',            emoji: '\uD83D\uDCDD', type: 'MOCK_TEST',     style: 'mock',     cta: 'Start Test \u2192',      prefix: '\uD83D\uDCDD New Mock Test' },
-  affairs:  { name: 'Current Affairs',      emoji: '\uD83D\uDCF0', type: 'CURRENT_AFFAIRS', style: 'affairs', cta: 'Read Update \u2192',     prefix: '\uD83D\uDCF0 Current Affairs Update' },
-  feature:  { name: 'New Feature',          emoji: '\u2728',       type: 'GENERAL',       style: 'feature',  cta: 'Try Now \u2192',          prefix: '\u2728 New on Studyria' },
-  alert:    { name: 'Important Alert',      emoji: '\uD83D\uDEA8', type: 'GENERAL',       style: 'alert',    cta: 'Open \u2192',             prefix: '\uD83D\uDEA8 Important Update' },
-  premium:  { name: 'Premium Announcement', emoji: '\uD83D\uDC51', type: 'GENERAL',       style: 'premium',  cta: 'Get Studyria Pass \u2192', prefix: '\uD83D\uDC51 Premium Announcement' }
-};
-var SN_SUGGEST = {
-  PDF:             { kind: 'pdf',   cta: 'Read Now \u2192' },
-  JOB:             { kind: 'job',   cta: 'View Job \u2192' },
-  QUIZ:            { kind: 'quiz',  cta: 'Take Quiz \u2192' },
-  MOCK_TEST:       { kind: 'mock',  cta: 'Start Test \u2192' },
-  ADRE:            { kind: 'page', cta: 'Start Paper \u2192', val: 'adre' },
-  CURRENT_AFFAIRS: { kind: 'affair', cta: 'Read Update \u2192' },
-  CATEGORY:        { kind: 'page', cta: 'Explore \u2192' },
-  GENERAL:         { kind: 'page', cta: 'Open \u2192' }
-};
-
-function _studioState() {
-  window.__snStudio = window.__snStudio || { style: 'classic', posterMode: 'auto', posterUrl: '', mode: 'now', debounce: null };
-  return window.__snStudio;
-}
-
-function _snStudioCss() {
-  if (document.getElementById('snStudioCss')) return;
-  var s = document.createElement('style');
-  s.id = 'snStudioCss';
-  s.textContent = [
-    '.snst-grid { display:grid; grid-template-columns:1fr 340px; gap:16px; align-items:start; }',
-    '@media (max-width:920px) { .snst-grid { grid-template-columns:1fr; } }',
-    '.snst-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; padding:18px; margin-bottom:14px; }',
-    '.snst-sec-title { font-weight:700; color:#C9A227; font-size:.85rem; letter-spacing:.4px; margin-bottom:10px; display:flex; align-items:center; gap:7px; }',
-    '.snst-presets { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }',
-    '@media (max-width:760px) { .snst-presets { grid-template-columns:repeat(2,1fr); } }',
-    '.snst-preset { border:1px solid var(--glass-border); background:var(--glass); border-radius:12px; padding:9px 6px; text-align:center; cursor:pointer; transition:border-color .15s, transform .1s; }',
-    '.snst-preset:hover { border-color:#C9A227; } .snst-preset:active { transform:scale(.97); }',
-    '.snst-preset.on { border-color:#C9A227; background:rgba(201,162,39,.1); }',
-    '.snst-preset-emoji { font-size:1.25rem; } .snst-preset-name { font-size:.62rem; color:var(--text2); margin-top:3px; line-height:1.2; }',
-    '.snst-chip { display:inline-flex; align-items:center; gap:5px; font-size:.68rem; border:1px solid var(--glass-border); border-radius:100px; padding:3px 10px; color:var(--text2); }',
-    '.snst-chip.on { color:#10d98e; border-color:rgba(16,217,142,.4); }',
-    '.snst-check-item { display:flex; gap:8px; align-items:flex-start; font-size:.76rem; padding:3px 0; }',
-    '.snst-ok { color:#10d98e; } .snst-bad { color:#ff6b85; }',
-    '.snst-ready { margin-top:8px; font-weight:700; font-size:.82rem; color:#10d98e; }',
-    '.snst-notready { margin-top:8px; font-weight:700; font-size:.82rem; color:#ff6b85; }',
-    '.snst-counter { font-size:.66rem; color:var(--text2); float:right; }',
-    '.snst-preview-phone { background:#F7F1E2; border-radius:20px; padding:12px; color:#2A1A12; box-shadow:0 8px 28px rgba(0,0,0,.25); }',
-    '.snst-prev-head { display:flex; align-items:center; gap:7px; font-size:.66rem; color:#6B5B4E; margin-bottom:8px; }',
-    '.snst-prev-appicon { width:18px; height:18px; border-radius:5px; }',
-    '.snst-prev-title { font-weight:700; font-size:.82rem; line-height:1.25; }',
-    '.snst-prev-msg { font-size:.72rem; color:#6B5B4E; margin-top:2px; line-height:1.3; }',
-    '.snst-prev-poster { width:100%; height:96px; object-fit:cover; border-radius:10px; margin-top:8px; background:#EADFC4; display:block; }',
-    '.snst-prev-cta { display:inline-block; margin-top:8px; background:#6B1D2B; color:#E3C878; font-size:.7rem; font-weight:700; padding:5px 14px; border-radius:100px; }',
-    '.snst-note { font-size:.66rem; color:var(--text2); margin-top:8px; line-height:1.4; }',
-    '.snst-poster-opt { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }',
-    '.snst-poster-opt button { flex:0 0 auto; }',
-    '.snst-thumb { width:100%; max-width:220px; height:80px; object-fit:cover; border-radius:10px; border:1px solid var(--glass-border); }'
-  ].join('\n');
-  document.head.appendChild(s);
-}
-
-function _studioPosterUrl() {
-  var st = _studioState();
-  if (st.posterMode === 'custom' && st.posterUrl) return st.posterUrl;
-  var title = (document.getElementById('snTitle') || {}).value || 'Studyria Update';
-  var msg = (document.getElementById('snMessage') || {}).value || '';
-  var type = (document.getElementById('snType') || {}).value || 'GENERAL';
-  return 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(type) +
-    '&title=' + encodeURIComponent(title.slice(0, 120)) +
-    '&sub=' + encodeURIComponent(msg.slice(0, 200)) +
-    '&style=' + encodeURIComponent(st.style);
-}
-
-function renderPanel(main) {
-  _snStudioCss();
-  var st = _studioState();
-  var e = _state().editingId ? _find(_state().editingId) : null;
-  var typeOptions = Object.keys(TYPE_META).map(function (t) {
-    return '<option value="' + t + '">' + t + '</option>';
-  }).join('');
-  var presets = Object.keys(SN_PRESETS).map(function (k) {
-    return '<button type="button" class="snst-preset' + (st.style === k ? ' on' : '') + '" onclick="SN.studioPreset(\'' + k + '\')" title="Apply preset">' +
-      '<div class="snst-preset-emoji">' + SN_PRESETS[k].emoji + '</div><div class="snst-preset-name">' + SN_PRESETS[k].name + '</div></button>';
-  }).join('');
-
-  main.innerHTML = `
-  <div class="admin-section-title">🎨 Studyria Notification Studio</div>
-  <div class="admin-section-sub">Premium notification composer — presets, live preview, smart CTA, posters, drafts &amp; scheduling. Publishing PDFs/Jobs/Quizzes/Mock Tests/Current Affairs still creates notifications automatically.</div>
-  <div style="display:flex;gap:8px;margin:14px 0;flex-wrap:wrap">
-    <button class="btn btn-ghost btn-sm" onclick="SN.adminTestConn(this)">🔌 Test Connection</button>
-    <span class="snst-chip" id="snAdminConn">checking…</span>
-    <span class="snst-chip" id="snPushStatsChip">…</span>
-  </div>
-
-  <div class="snst-card">
-    <div class="snst-sec-title">✨ Preset <span style="color:var(--text2);font-weight:400">— one tap, fully customizable after</span></div>
-    <div class="snst-presets">${presets}</div>
-  </div>
-
-  <div class="snst-grid">
-    <div>
-      <div class="snst-card">
-        <input type="hidden" id="snEditId" value="${e ? e.id : ''}" />
-        <div class="snst-sec-title">📝 Content</div>
-        <div class="form-group"><label class="form-label">Title <span class="snst-counter"><span id="snTitleCount">0</span>/65</span></label>
-          <input class="form-input" id="snTitle" maxlength="65" placeholder="e.g. New ADRE Paper III — Solved PYQs" value="${e ? _escHtml(e.title) : ''}" oninput="SN.studioFieldChange()"/></div>
-        <div class="form-group" style="margin-top:8px"><label class="form-label">Message <span class="snst-counter"><span id="snMsgCount">0</span>/200</span></label>
-          <textarea class="form-input" id="snMessage" rows="2" maxlength="200" placeholder="Short message shown on the notification" oninput="SN.studioFieldChange()">${e ? _escHtml(e.message || '') : ''}</textarea></div>
-        <div class="admin-form-grid" style="margin-top:8px">
-          <div class="form-group"><label class="form-label">Category</label>
-            <select class="form-input" id="snType" onchange="SN.studioTypeChange()">${typeOptions}</select></div>
-          <div class="form-group"><label class="form-label">Priority</label>
-            <select class="form-input" id="snPriority">
-              <option value="normal">Normal</option><option value="high">High — urgent only</option><option value="low">Low</option>
-            </select></div>
-          <div class="form-group"><label class="form-label">Icon (emoji)</label>
-            <input class="form-input" id="snIcon" maxlength="8" placeholder="📢" oninput="SN.studioFieldChange()" value="${e ? _escHtml(e.icon || '') : ''}"/></div>
-          <div class="form-group"><label class="form-label">Language</label>
-            <select class="form-input" id="snLang">
-              <option value="en">English</option><option value="as">অসমীয়া</option><option value="bi">Bilingual</option>
-            </select></div>
-        </div>
-      </div>
-
-      <div class="snst-card">
-        <div class="snst-sec-title">🎯 CTA &amp; Destination</div>
-        <div class="admin-form-grid">
-          <div class="form-group"><label class="form-label">Opens</label>
-            <select class="form-input" id="snDestKind" onchange="SN.studioDestChange()">
-              <option value="">— No CTA —</option>
-              <option value="pdf">PDF page (id)</option>
-              <option value="job">Job (id)</option>
-              <option value="quiz">Quiz</option>
-              <option value="mock">Mock Test</option>
-              <option value="affair">Current Affairs item</option>
-              <option value="page">Site page</option>
-              <option value="url">Studyria URL</option>
-            </select></div>
-          <div class="form-group" id="snDestValWrap" style="display:none"><label class="form-label">Value</label>
-            <input class="form-input" id="snDestVal" placeholder="content id / page id / https://studyria.qzz.io/…" oninput="SN.studioFieldChange()"/></div>
-          <div class="form-group"><label class="form-label">CTA label</label>
-            <input class="form-input" id="snCtaLabel" maxlength="40" placeholder="Read Now →" oninput="SN.studioFieldChange()"/></div>
-        </div>
-        <div class="snst-note">Tap on the notification opens this exact destination. Invalid destinations are blocked before sending.</div>
-      </div>
-
-      <div class="snst-card">
-        <div class="snst-sec-title">🖼️ Poster</div>
-        <div class="snst-poster-opt">
-          <button class="btn btn-sm ${st.posterMode === 'auto' ? 'btn-primary' : 'btn-ghost'}" id="snPosterAutoBtn" onclick="SN.studioPosterMode('auto')">✨ Auto (branded)</button>
-          <button class="btn btn-sm ${st.posterMode === 'custom' ? 'btn-primary' : 'btn-ghost'}" id="snPosterCustomBtn" onclick="SN.studioPosterMode('custom')">🖼️ Custom upload</button>
-        </div>
-        <div id="snPosterCustomWrap" style="display:${st.posterMode === 'custom' ? '' : 'none'}">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input type="file" id="snPosterFile" accept="image/jpeg,image/png,image/webp" style="max-width:240px"/>
-            <button class="btn btn-ghost btn-sm" onclick="SN.studioUploadPoster(this)">⬆️ Upload</button>
-            ${st.posterUrl ? '<button class="btn btn-ghost btn-sm" onclick="SN.studioRemovePoster()">✕ Remove</button>' : ''}
-          </div>
-          <div class="snst-note">JPG / PNG / WebP · max 2 MB · landscape (wide) looks best. The original file is never modified — an optimized copy is uploaded.</div>
-        </div>
-        <div style="margin-top:10px"><img id="snPosterPreview" class="snst-thumb" alt="Poster preview" src="${_studioPosterUrl()}" onerror="this.style.display='none'"/></div>
-      </div>
-
-      <div class="snst-card">
-        <div class="snst-sec-title">🚀 Delivery</div>
-        <div class="form-group"><label class="form-label">Mode</label>
-          <select class="form-input" id="snMode" onchange="SN.studioModeChange()" ${e ? 'disabled' : ''}>
-            <option value="now">🚀 Send Now — live + push immediately</option>
-            <option value="draft">💾 Save as Draft — no push, publish later</option>
-            <option value="schedule">🕐 Schedule — live + push at chosen time</option>
-          </select></div>
-        <div class="admin-form-grid" style="margin-top:8px">
-          <div class="form-group" id="snPublishAtWrap" style="display:none"><label class="form-label">Publish at</label>
-            <input class="form-input" id="snPublishAt" type="datetime-local" onchange="SN.studioFieldChange()"/></div>
-          <div class="form-group"><label class="form-label">Expires (optional)</label>
-            <input class="form-input" id="snExpires" type="datetime-local" onchange="SN.studioFieldChange()" value="${e && e.expires_at ? new Date(e.expires_at).toISOString().slice(0, 16) : ''}"/></div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-sm" id="snSendBtn" onclick="SN.studioSubmit()">${e ? '💾 Save Changes' : '🚀 Send Notification'}</button>
-          ${e ? '<button class="btn btn-ghost btn-sm" onclick="SN.adminCancelEdit()">✕ Cancel</button>' : ''}
-        </div>
-        <div id="snSaveMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
-      </div>
-    </div>
-
-    <div>
-      <div class="snst-card" style="position:sticky;top:12px">
-        <div class="snst-sec-title">📱 Live Preview</div>
-        <div class="snst-preview-phone" aria-label="Notification preview">
-          <div class="snst-prev-head">
-            <img class="snst-prev-appicon" src="https://studyria.qzz.io/icon-192.png" alt=""/>
-            <span><b>Studyria</b> · now</span>
-          </div>
-          <div class="snst-prev-title" id="snPrevTitle">Your title here</div>
-          <div class="snst-prev-msg" id="snPrevMsg">Your message will appear here</div>
-          <img class="snst-prev-poster" id="snPrevPoster" alt="Poster preview" src="${_studioPosterUrl()}" onerror="this.style.display='none'"/>
-          <span class="snst-prev-cta" id="snPrevCta" style="display:none">Open →</span>
-        </div>
-        <div class="snst-note">Approximation of a modern Android/browser notification. Actual rendering varies by OS, browser &amp; device settings — the real notification is always the one that matters.</div>
-      </div>
-
-      <div class="snst-card">
-        <div class="snst-sec-title">✅ Pre-Send Validation</div>
-        <div id="snChecklist"></div>
-        <div id="snReadyBanner"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mod-form-wrap">
-    <div style="font-weight:700;color:var(--accent);margin-bottom:12px">🔔 Mobile Push Delivery</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-      <div style="flex:1;min-width:220px">
-        <div style="font-size:.82rem;font-weight:600">Global Push Switch</div>
-        <div style="font-size:.74rem;color:var(--text2);margin-top:2px">Emergency kill switch — when OFF no new pushes are sent; Live Notifications keep working.</div>
-      </div>
-      <button class="btn btn-sm" id="snPushKill" onclick="SN.adminPushToggle(this)">⏳…</button>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
-      <button class="btn btn-ghost btn-sm" onclick="SN.adminPushTest(this)">📤 Send Test Push</button>
-      <span id="snPushStats" style="font-size:.78rem;color:var(--text2)"></span>
-    </div>
-    <div id="snPushMsg" style="margin-top:8px;font-size:.78rem;display:none"></div>
-  </div>
-
-  <div class="mod-form-wrap">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-weight:700">📜 All Notifications</div>
-      <button class="btn btn-ghost btn-sm" onclick="SN.adminRefresh(this)">🔄 Refresh</button>
-    </div>
-    <div id="snAdminList" style="font-size:.82rem">Loading…</div>
-  </div>`;
-
-  if (e) {
-    var sel = main.querySelector('#snType'); if (sel) sel.value = e.notification_type || 'GENERAL';
-    var pr = main.querySelector('#snPriority'); if (pr) pr.value = e.priority || 'normal';
-    var lg = main.querySelector('#snLang'); if (lg && e.metadata && e.metadata.language) lg.value = e.metadata.language;
-    var cl = main.querySelector('#snCtaLabel'); if (cl && e.metadata && e.metadata.cta) cl.value = e.metadata.cta;
-    if (e.published_at && new Date(e.published_at).getTime() > Date.now()) {
-      var pb = main.querySelector('#snPublishAt'); if (pb) pb.value = new Date(e.published_at).toISOString().slice(0, 16);
-      var md = main.querySelector('#snMode'); if (md) { md.disabled = false; md.value = 'schedule'; }
-    }
-    if (e.destination) {
-      var m = String(e.destination).match(/^([a-z]+):(.*)$/);
-      if (m) {
-        var dk = main.querySelector('#snDestKind'); if (dk) dk.value = m[1];
-        var dv = main.querySelector('#snDestVal'); if (dv) dv.value = m[2];
-        SN.studioDestChange();
-      }
-    }
-    if (e.metadata && e.metadata.poster_url) {
-      st.posterMode = 'custom';
-      st.posterUrl = String(e.metadata.poster_url);
-      var ab = main.querySelector('#snPosterAutoBtn'); if (ab) ab.className = 'btn btn-sm btn-ghost';
-      var cb = main.querySelector('#snPosterCustomBtn'); if (cb) cb.className = 'btn btn-sm btn-primary';
-      var cw = main.querySelector('#snPosterCustomWrap'); if (cw) cw.style.display = '';
-    }
-  } else if (!e) {
-    var st2 = _studioState();
-    st2.posterMode = 'auto'; st2.posterUrl = '';
-  }
-  SN.studioFieldChange(true);
-  SN.adminRefresh();
-  SN.adminPushRefresh();
-}
-
-/* ── Studio helpers ─────────────────────────────────────────────── */
-function studioPreset(key) {
-  var p = SN_PRESETS[key]; if (!p) return;
-  var st = _studioState();
-  st.style = p.style;
-  var titleEl = document.getElementById('snTitle');
-  if (titleEl) {
-    var cur = (titleEl.value || '').trim();
-    var isPresetTitle = !cur;
-    for (var k in SN_PRESETS) { if (cur === SN_PRESETS[k].prefix) { isPresetTitle = true; break; } }
-    if (isPresetTitle) titleEl.value = p.prefix;
-  }
-  var typeEl = document.getElementById('snType'); if (typeEl) typeEl.value = p.type;
-  var iconEl = document.getElementById('snIcon'); if (iconEl && !(iconEl.value || '').trim()) iconEl.value = p.emoji;
-  var ctaEl = document.getElementById('snCtaLabel'); if (ctaEl && !(ctaEl.value || '').trim()) ctaEl.value = p.cta;
-  var sug = SN_SUGGEST[p.type];
-  if (sug) {
-    var dk = document.getElementById('snDestKind'); if (dk) dk.value = sug.kind;
-    var dv = document.getElementById('snDestVal');
-    if (dv && sug.val && !(dv.value || '').trim()) dv.value = sug.val;
-  }
-  var mode = st.posterMode === 'custom' ? 'custom' : 'auto';
-  var autoBtn = document.getElementById('snPosterAutoBtn'); if (autoBtn) autoBtn.className = 'btn btn-sm ' + (mode === 'auto' ? 'btn-primary' : 'btn-ghost');
-  var custBtn = document.getElementById('snPosterCustomBtn'); if (custBtn) custBtn.className = 'btn btn-sm ' + (mode === 'custom' ? 'btn-primary' : 'btn-ghost');
-  var main = document.getElementById('adminMain') || document.getElementById('admin-main');
-  var cards = main ? main.querySelectorAll('.snst-preset') : [];
-  for (var i = 0; i < cards.length; i++) cards[i].classList.remove('on');
-  if (main) {
-    var btns = main.querySelectorAll('.snst-preset');
-    var keys = Object.keys(SN_PRESETS);
-    for (var j = 0; j < btns.length; j++) if (keys[j] === key) btns[j].classList.add('on');
-  }
-  studioDestChange();
-  studioFieldChange(true);
-}
-
-function studioTypeChange() {
-  var typeEl = document.getElementById('snType');
-  if (!typeEl) return;
-  var sug = SN_SUGGEST[typeEl.value];
-  if (sug) {
-    var ctaEl = document.getElementById('snCtaLabel');
-    if (ctaEl) {
-      var cur = ctaEl.value || '';
-      var prevSug = false;
-      for (var k in SN_SUGGEST) if (cur === SN_SUGGEST[k].cta) { prevSug = true; break; }
-      if (!cur.trim() || prevSug) ctaEl.value = sug.cta;
-    }
-    var dk = document.getElementById('snDestKind'); if (dk) dk.value = sug.kind;
-    var dv = document.getElementById('snDestVal');
-    if (dv && sug.val && !(dv.value || '').trim()) dv.value = sug.val;
-  }
-  studioDestChange();
-  studioFieldChange(true);
-}
-
-function studioDestChange() {
-  var kind = (document.getElementById('snDestKind') || {}).value || '';
-  var wrap = document.getElementById('snDestValWrap');
-  if (wrap) wrap.style.display = kind && kind !== 'quiz' && kind !== 'mock' && kind !== 'affair' ? '' : (kind ? '' : 'none');
-  var dv = document.getElementById('snDestVal');
-  if (dv) {
-    dv.placeholder = kind === 'url' ? 'https://studyria.qzz.io/…'
-      : kind === 'page' ? 'page id (library, career-hub, brainlab, adre…)'
-      : kind ? 'content id' : '';
-  }
-  studioFieldChange(true);
-}
-
-function studioModeChange() {
-  var mode = (document.getElementById('snMode') || {}).value || 'now';
-  _studioState().mode = mode;
-  var w = document.getElementById('snPublishAtWrap');
-  if (w) w.style.display = mode === 'schedule' ? '' : 'none';
-  var btn = document.getElementById('snSendBtn');
-  if (btn && !_state().editingId) {
-    btn.textContent = mode === 'draft' ? '💾 Save Draft' : mode === 'schedule' ? '🕐 Schedule' : '🚀 Send Notification';
-  }
-  studioFieldChange(true);
-}
-
-function studioPosterMode(mode) {
-  var st = _studioState();
-  st.posterMode = mode;
-  var autoBtn = document.getElementById('snPosterAutoBtn'); if (autoBtn) autoBtn.className = 'btn btn-sm ' + (mode === 'auto' ? 'btn-primary' : 'btn-ghost');
-  var custBtn = document.getElementById('snPosterCustomBtn'); if (custBtn) custBtn.className = 'btn btn-sm ' + (mode === 'custom' ? 'btn-primary' : 'btn-ghost');
-  var cw = document.getElementById('snPosterCustomWrap'); if (cw) cw.style.display = mode === 'custom' ? '' : 'none';
-  studioFieldChange(true);
-}
-
-function studioRemovePoster() {
-  var st = _studioState();
-  st.posterUrl = '';
-  studioPosterMode('auto');
-  var img = document.getElementById('snPosterPreview'); if (img) { img.src = _studioPosterUrl(); img.style.display = ''; }
-}
-
-function studioUploadPoster(btn) {
-  var st = _studioState();
-  var inp = document.getElementById('snPosterFile');
-  var f = inp && inp.files && inp.files[0];
-  var msg = document.getElementById('snSaveMsg');
-  var showErr = function (m) { if (msg) { msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + m; } };
-  if (!f) { showErr('Choose an image file first.'); return; }
-  var okTypes = ['image/jpeg', 'image/png', 'image/webp'];
-  if (okTypes.indexOf(f.type) === -1) { showErr('Unsupported file type — use JPG, PNG or WebP.'); return; }
-  if (f.size > 2 * 1024 * 1024) { showErr('Image too large — max 2 MB.'); return; }
-  var sb = window.supabaseClient;
-  if (!sb || !sb.storage) { showErr('Upload unavailable — please log in again.'); return; }
-  btn.disabled = true; btn.textContent = 'Uploading…';
-  var ext = (f.name.split('.').pop() || 'png').toLowerCase();
-  var fp = 'notification-posters/np_' + Date.now() + '.' + ext;
-  sb.storage.from('covers').upload(fp, f, { upsert: false, contentType: f.type })
-    .then(function () { return sb.storage.from('covers').getPublicUrl(fp); })
-    .then(function (r) {
-      var url = r && r.data && r.data.publicUrl;
-      if (!url) throw new Error('No public URL returned');
-      st.posterUrl = url;
-      st.posterMode = 'custom';
-      studioPosterMode('custom');
-      var img = document.getElementById('snPosterPreview');
-      if (img) { img.src = url; img.style.display = ''; }
-      /* dimension check — warn (do not block) on small/portrait images */
-      var probe = new Image();
-      probe.onload = function () {
-        if (probe.naturalWidth < 600 || probe.naturalHeight < 315) {
-          if (msg) { msg.style.display = ''; msg.style.color = '#f59e0b'; msg.textContent = '⚠ Uploaded, but small (' + probe.naturalWidth + '×' + probe.naturalHeight + ') — wide 1200×630 images look best.'; }
-        } else if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = '✓ Poster uploaded (' + probe.naturalWidth + '×' + probe.naturalHeight + ').'; }
-      };
-      probe.src = url;
-      btn.disabled = false; btn.textContent = '⬆️ Upload';
-      studioFieldChange(true);
-    })
-    .catch(function (err) {
-      btn.disabled = false; btn.textContent = '⬆️ Upload';
-      showErr('Upload failed — ' + ((err && (err.message || err.error)) || 'try again') + '.');
-    });
-}
-
-/* Strict destination validation (spec §7) — blocks bad destinations
- * BEFORE anything is sent. Every path leads to a real Studyria page. */
-function snValidateDest(kind, val) {
-  val = String(val || '').trim();
-  if (!kind) return { ok: true };
-  if (kind === 'pdf' || kind === 'job' || kind === 'quiz' || kind === 'mock' || kind === 'affair') {
-    if (!val) return { ok: false, msg: 'Destination value missing — enter the content id.' };
-    if (!/^[A-Za-z0-9_\-\/\.]{1,120}$/.test(val)) return { ok: false, msg: 'Destination value contains invalid characters.' };
-    return { ok: true };
-  }
-  if (kind === 'page') {
-    if (!val) return { ok: false, msg: 'Page id missing (e.g. library, career-hub, brainlab).' };
-    if (!/^[a-z0-9\-]{1,60}$/i.test(val)) return { ok: false, msg: 'Page id looks invalid — lowercase letters/digits/dashes only.' };
-    return { ok: true };
-  }
-  if (kind === 'url') {
-    if (!/^https:\/\/studyria\.qzz\.io(\/|$|\?|#)/.test(val)) {
-      return { ok: false, msg: 'External URLs are blocked — destination must be a Studyria page (https://studyria.qzz.io/…).' };
-    }
-    return { ok: true };
-  }
-  return { ok: true };
-}
-
-function studioFieldChange(immediate) {
-  var st = _studioState();
-  if (st.debounce) clearTimeout(st.debounce);
-  if (immediate) { _studioRender(); return; }
-  st.debounce = setTimeout(_studioRender, 180);
-}
-
-function _studioRender() {
-  /* counters + preview */
-  var titleEl = document.getElementById('snTitle') || {};
-  var msgEl = document.getElementById('snMessage') || {};
-  var iconEl = document.getElementById('snIcon') || {};
-  var ctaEl = document.getElementById('snCtaLabel') || {};
-  var tc = document.getElementById('snTitleCount'); if (tc) tc.textContent = (titleEl.value || '').length;
-  var mc = document.getElementById('snMsgCount'); if (mc) mc.textContent = (msgEl.value || '').length;
-  var pt = document.getElementById('snPrevTitle'); if (pt) pt.textContent = (titleEl.value || 'Your title here').slice(0, 65);
-  var pm = document.getElementById('snPrevMsg'); if (pm) pm.textContent = (msgEl.value || 'Your message will appear here').slice(0, 200);
-  var pc = document.getElementById('snPrevCta');
-  if (pc) {
-    var lbl = (ctaEl.value || '').trim();
-    if (lbl) { pc.style.display = ''; pc.textContent = lbl; } else { pc.style.display = 'none'; }
-  }
-  var img = document.getElementById('snPrevPoster');
-  if (img) {
-    var newSrc = _studioPosterUrl();
-    if (img.getAttribute('src') !== newSrc) { img.src = newSrc; img.style.display = ''; }
-  }
-  var pimg = document.getElementById('snPosterPreview');
-  if (pimg) {
-    var n2 = _studioPosterUrl();
-    if (pimg.getAttribute('src') !== n2) { pimg.src = n2; pimg.style.display = ''; }
-  }
-  _studioValidate();
-}
-
-function _studioValidate() {
-  var st = _studioState();
-  var editing = _state().editingId;
-  var mode = editing ? 'edit' : ((document.getElementById('snMode') || {}).value || 'now');
-  var title = ((document.getElementById('snTitle') || {}).value || '').trim();
-  var msg = ((document.getElementById('snMessage') || {}).value || '').trim();
-  var kind = (document.getElementById('snDestKind') || {}).value || '';
-  var val = (document.getElementById('snDestVal') || {}).value || '';
-  var cta = ((document.getElementById('snCtaLabel') || {}).value || '').trim();
-  var exp = (document.getElementById('snExpires') || {}).value || '';
-  var pub = (document.getElementById('snPublishAt') || {}).value || '';
-  var items = [];
-  var push = function (ok, label, detail) { items.push({ ok: ok, label: label, detail: detail || '' }); };
-
-  var titleOk = title.length >= 3 && title.length <= 65;
-  push(titleOk, 'Title', titleOk ? '' : '3–65 characters (concise titles are never truncated on phone screens)');
-  var msgOk = mode === 'draft' ? msg.length <= 200 : (msg.length >= 5 && msg.length <= 200);
-  push(msgOk, 'Message', msgOk ? '' : mode === 'draft' ? 'max 200 characters' : '5–200 characters');
-  push(true, 'Category', 'selected');
-  var dRes = snValidateDest(kind, val);
-  var destOk = mode === 'draft' ? true : (kind ? dRes.ok : false);
-  push(destOk, 'Destination', destOk ? 'opens a real Studyria page' : (kind ? dRes.msg : 'choose where the notification opens (CTA)'));
-  var ctaOk = mode === 'draft' ? true : (!kind || cta.length > 0);
-  push(ctaOk, 'CTA label', ctaOk ? '' : 'add a short button label (e.g. Read Now →)');
-  var expOk = !exp || new Date(exp).getTime() > Date.now() + 60000;
-  push(expOk, 'Expiry', expOk ? (exp ? 'valid' : 'none') : 'must be in the future');
-  var pubOk = true;
-  if (mode === 'schedule') {
-    pubOk = !!pub && new Date(pub).getTime() > Date.now() + 120000;
-    push(pubOk, 'Schedule time', pubOk ? '' : 'choose a future time (at least 2 minutes ahead)');
-  }
-  var posterOk = st.posterMode === 'custom' ? !!st.posterUrl : true;
-  push(posterOk, 'Poster', st.posterMode === 'custom' ? (st.posterUrl ? 'custom image ready' : 'upload a custom image or switch to Auto') : 'auto-generated, branded');
-
-  var allOk = true;
-  for (var i = 0; i < items.length; i++) if (!items[i].ok) { allOk = false; break; }
-  var wrap = document.getElementById('snChecklist');
-  if (wrap) {
-    wrap.innerHTML = items.map(function (it) {
-      return '<div class="snst-check-item"><span class="' + (it.ok ? 'snst-ok' : 'snst-bad') + '">' + (it.ok ? '✓' : '✗') + '</span>' +
-        '<span><b>' + it.label + '</b>' + (it.detail ? ' <span style="color:var(--text2)">— ' + it.detail + '</span>' : '') + '</span></div>';
+  function renderPanel(main) {
+    var st = _state();
+    var typeOptions = Object.keys(TYPE_META).map(function (t) {
+      return '<option value="' + t + '">' + t + '</option>';
     }).join('');
-  }
-  var banner = document.getElementById('snReadyBanner');
-  var btn = document.getElementById('snSendBtn');
-  if (mode === 'draft') {
-    var minOk = titleOk;
-    if (banner) banner.innerHTML = '<div class="' + (minOk ? 'snst-ready' : 'snst-notready') + '">' + (minOk ? '✓ Ready to save draft (no push is sent)' : '✗ Title needed to save draft') + '</div>';
-    if (btn) btn.disabled = !minOk;
-  } else {
-    if (banner) banner.innerHTML = '<div class="' + (allOk ? 'snst-ready' : 'snst-notready') + '">' + (allOk ? '✓ Ready to Send' : '✗ Fix the items above to enable sending') + '</div>';
-    if (btn) btn.disabled = !allOk;
-  }
-  return allOk;
-}
+    var e = st.editingId ? _find(st.editingId) : null;
+    var c = _composer();
 
-/* ── Submit (send / draft / schedule) — replaces v2 adminSave ────── */
-function studioSubmit() {
-  var st = _studioState();
-  var editingId = _state().editingId;
-  var mode = editingId ? 'edit' : ((document.getElementById('snMode') || {}).value || 'now');
-  var allOk = _studioValidate();
-  if (!allOk && mode !== 'draft') {
-    var msg0 = document.getElementById('snSaveMsg');
-    if (msg0) { msg0.style.display = ''; msg0.style.color = '#ff6b85'; msg0.textContent = '✗ Fix the validation errors first.'; }
-    return;
-  }
-  var title = (document.getElementById('snTitle').value || '').trim();
-  var kind = (document.getElementById('snDestKind').value) || '';
-  var val = (document.getElementById('snDestVal').value || '').trim();
-  var dest = '';
-  if (kind) dest = kind + ':' + val;
-  var expVal = (document.getElementById('snExpires').value || '').trim();
-  var cta = ((document.getElementById('snCtaLabel') || {}).value || '').trim();
-  var lang = ((document.getElementById('snLang') || {}).value || 'en');
-  var e = editingId ? _find(editingId) : null;
+    main.innerHTML = `
+      <div class="sn-hero">
+        <div class="sn-hero-left">
+          <div class="sn-hero-title">📡 Live Feed Notifications</div>
+          <div class="sn-hero-sub">Studyria Premium Notification Center — real-time notification management. Publishing content creates notifications automatically; compose premium manual announcements here.</div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-ghost btn-sm" onclick="SN.adminTestConn(this)">🔌 Test Connection</button>
+            <span id="snAdminConn" style="font-size:.78rem;color:var(--text2)"></span>
+          </div>
+        </div>
+        <div class="sn-hero-right">
+          <button class="btn btn-primary btn-sm" onclick="SN.composeNew()">✚ Create Notification</button>
+        </div>
+      </div>
 
-  /* metadata: merge with existing on edit (backend replaces the object) */
-  var meta = Object.assign({}, (e && e.metadata) || {});
-  meta.poster_style = st.style;
-  meta.language = lang;
-  if (cta) meta.cta = cta; else delete meta.cta;
-  if (st.posterMode === 'custom' && st.posterUrl) meta.poster_url = st.posterUrl;
-  else delete meta.poster_url;
+      <div class="sn-layout">
+        <div class="sn-main-col">
 
-  var payload = {
-    op: editingId ? 'update' : 'create',
-    source: 'manual',
-    id: editingId || undefined,
-    title: title,
-    message: (document.getElementById('snMessage').value || '').trim(),
-    notification_type: editingId ? undefined : (document.getElementById('snType').value || 'GENERAL'),
-    priority: document.getElementById('snPriority').value || 'normal',
-    destination: dest,
-    icon: (document.getElementById('snIcon').value || '').trim(),
-    expires_at: expVal ? new Date(expVal).toISOString() : null,
-    metadata: meta
-  };
-  if (editingId) { delete payload.source; delete payload.notification_type; }
-  if (!editingId && mode === 'draft') payload.is_active = false;
-  if (!editingId && mode === 'schedule') payload.published_at = new Date(document.getElementById('snPublishAt').value).toISOString();
+          <div class="sn-card" id="snComposerCard">
+            <div class="sn-card-head">
+              <div>
+                <div class="sn-card-title">${e ? '✏️ Edit Notification' : '✚ Notification Composer'}</div>
+                <div class="sn-card-sub">Presets, content, banner and action — with a live preview of what users will receive.</div>
+              </div>
+            </div>
+            <div id="snComposeNote" class="sn-note" style="display:none"></div>
+            <input type="hidden" id="snEditId" value="${e ? e.id : ''}" />
 
-  var btn = document.getElementById('snSendBtn');
-  var msg = document.getElementById('snSaveMsg');
-  btn.disabled = true; btn.textContent = 'Saving…';
+            <div class="sn-sec-label">🎨 PRESET</div>
+            <div class="sn-preset-row" id="snPresetRow" role="group" aria-label="Notification presets"></div>
 
-  adminCall(payload).then(function (res) {
-    btn.disabled = false;
-    btn.textContent = editingId ? '💾 Save Changes' : (mode === 'draft' ? '💾 Save Draft' : mode === 'schedule' ? '🕐 Schedule' : '🚀 Send Notification');
-    if (res && res.ok) {
-      var text, ok = true;
-      if (editingId) { text = '✓ Changes saved — published notifications are never re-pushed.'; _state().editingId = null; }
-      else if (mode === 'draft') { text = '💾 Draft saved — no push sent. Publish it from the list below when ready.'; }
-      else if (mode === 'schedule') {
-        var t = new Date(payload.published_at);
-        text = '🕐 Scheduled for ' + t.toLocaleString() + ' — appears in Live Feed and pushes then.';
-      } else {
-        var p = res.push;
-        if (p && (p.pushed || 0) > 0) text = '🚀 Sent — pushed to ' + p.pushed + ' device' + (p.pushed === 1 ? '' : 's') + '. Check your phone!';
-        else if (p) text = '✓ Published — Live Feed updated. ' + (p.invalid || p.failed ? (p.invalid || 0) + ' invalid subscription(s) removed.' : 'No active push subscribers yet.');
-        else text = '✓ Published — live within a minute.';
+            <div class="sn-sec-label">📝 CONTENT</div>
+            <div class="sn-grid">
+              <div class="form-group sn-span2"><label class="form-label" for="snTitle">Title *</label>
+                <input class="form-input" id="snTitle" maxlength="120" placeholder="e.g. ADRE 2.0 — Paper III Added" value="${e ? _escHtml(e.title) : ''}" oninput="SN._pv()"/></div>
+              <div class="form-group sn-span2"><label class="form-label" for="snMessage">Message</label>
+                <textarea class="form-input" id="snMessage" rows="2" maxlength="300" placeholder="Short message shown on the notification card" oninput="SN._pv()">${e ? _escHtml(e.message || '') : ''}</textarea></div>
+              <div class="form-group"><label class="form-label" for="snType">Type</label>
+                <select class="form-input" id="snType" onchange="SN._pv()">${typeOptions}</select></div>
+              <div class="form-group"><label class="form-label" for="snPriority">Priority</label>
+                <select class="form-input" id="snPriority" onchange="SN._pv()">
+                  <option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option>
+                </select></div>
+              <div class="form-group"><label class="form-label" for="snIcon">Icon (emoji, optional)</label>
+                <input class="form-input" id="snIcon" maxlength="8" placeholder="📢" oninput="SN._pv()"/></div>
+              <div class="form-group"><label class="form-label" for="snExpires">Expires (optional)</label>
+                <input class="form-input" id="snExpires" type="datetime-local"/></div>
+            </div>
+
+            <div class="sn-sec-label">🖼️ VISUAL — CUSTOM BANNER</div>
+            <div class="sn-banner-block">
+              <div id="snBannerBox"></div>
+              <div class="sn-banner-tips">
+                <div class="sn-tip-row"><span class="sn-tip-k">Recommended</span> 1200 × 630 px (1.9:1 poster)</div>
+                <div class="sn-tip-row"><span class="sn-tip-k">Formats</span> JPG · PNG · WebP — max 5 MB (auto-compressed)</div>
+                <div class="sn-tip-row"><span class="sn-tip-k">Fit</span>
+                  <label><input type="radio" name="snBannerFit" value="cover" checked onchange="SN.bannerFit('cover')"/> Center-crop to poster</label>
+                  <label><input type="radio" name="snBannerFit" value="contain" onchange="SN.bannerFit('contain')"/> Fit whole image</label>
+                </div>
+              </div>
+              <div id="snBannerMsg" style="font-size:.78rem;display:none;margin-top:8px"></div>
+            </div>
+
+            <div class="sn-sec-label">🎯 ACTION</div>
+            <div class="sn-grid">
+              <div class="form-group"><label class="form-label" for="snDestKind">CTA / Destination</label>
+                <select class="form-input" id="snDestKind" onchange="SN.adminDestKindChange()">
+                  <option value="">No CTA</option><option value="page">Site page</option><option value="url">External URL</option>
+                </select></div>
+              <div class="form-group" id="snDestValWrap" style="display:none"><label class="form-label" for="snDestVal">Value</label>
+                <input class="form-input" id="snDestVal" placeholder="page id (library, career-hub, brainlab) or https://…"/></div>
+            </div>
+            <div class="sn-cta-note" id="snCtaNote"></div>
+            <div class="sn-grid" style="margin-top:8px">
+              <div class="form-group"><label class="form-label" for="snCtaLabel">CTA label override (optional)</label>
+                <input class="form-input" id="snCtaLabel" maxlength="40" placeholder="auto (Read Now → / View Job → …)" oninput="SN._pv()"/></div>
+              <div class="form-group"><label class="form-label" for="snPublishAt">Publish at — schedule (optional)</label>
+                <input class="form-input" id="snPublishAt" type="datetime-local" onchange="SN._pv()"/></div>
+            </div>
+            <div class="sn-cta-note" id="snValBox"></div>
+
+            <div class="sn-actions" id="snActions">
+              <div class="sn-actions-inner">
+                <button class="btn btn-primary" id="snSaveBtn" onclick="SN.adminSave(this)">${e ? '💾 Save Changes' : '🚀 Publish Notification'}</button>
+                <button class="btn btn-ghost" onclick="SN.draftSave()">📥 Save Draft</button>
+                <button class="btn btn-ghost" id="snSchedBtn" onclick="SN.adminSchedule(this)">🕐 Schedule</button>
+                ${e ? '<button class="btn btn-ghost" onclick="SN.adminCancelEdit()">✕ Cancel</button>' : ''}
+              </div>
+            </div>
+            <div id="snSaveMsg" style="margin-top:10px;font-size:.8rem;display:none"></div>
+          </div>
+
+          <div class="sn-card" id="snPushCard">
+            <div class="sn-card-title">🔔 Mobile Push Delivery</div>
+            <div class="sn-card-sub">Global kill switch and device test — unchanged production pipeline.</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px">
+              <div style="flex:1;min-width:220px">
+                <div style="font-size:.82rem;font-weight:600">Global Push Switch</div>
+                <div style="font-size:.74rem;color:var(--text2);margin-top:2px">Emergency kill switch — when OFF no new pushes are sent; Live Notifications keep working.</div>
+              </div>
+              <button class="btn btn-sm" id="snPushKill" onclick="SN.adminPushToggle(this)">⏳…</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" onclick="SN.adminPushTest(this)">📤 Send Test Push</button>
+              <span id="snPushStats" style="font-size:.78rem;color:var(--text2)"></span>
+            </div>
+            <div id="snPushMsg" style="margin-top:8px;font-size:.78rem;display:none"></div>
+          </div>
+
+          <div class="sn-card" id="snDraftWrap" style="display:none">
+            <div class="sn-card-title">📥 Saved Drafts (this device only)</div>
+            <div id="snDraftList"></div>
+          </div>
+
+          <div class="sn-card">
+            <div class="sn-card-head">
+              <div>
+                <div class="sn-card-title">📜 All Notifications</div>
+                <div class="sn-card-sub">Search, filter and manage every notification.</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="SN.adminRefresh(this)">🔄 Refresh</button>
+            </div>
+            <div class="sn-filters">
+              <input class="form-input sn-f-search" id="snFQ" placeholder="🔍 Search title…" oninput="SN._listRender()"/>
+              <select class="form-input" id="snFType" onchange="SN._listRender()"><option value="">All types</option></select>
+              <select class="form-input" id="snFPrio" onchange="SN._listRender()">
+                <option value="">All priorities</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option>
+              </select>
+              <select class="form-input" id="snFStatus" onchange="SN._listRender()">
+                <option value="">All statuses</option><option value="live">● Live</option><option value="inactive">Inactive</option><option value="expired">Expired</option>
+              </select>
+              <select class="form-input" id="snFSort" onchange="SN._listRender()">
+                <option value="new">Newest first</option><option value="old">Oldest first</option>
+              </select>
+            </div>
+            <div id="snAdminList">Loading…</div>
+          </div>
+
+        </div>
+
+        <div class="sn-preview-col">
+          <div class="sn-card sn-preview-card">
+            <div class="sn-card-head">
+              <div>
+                <div class="sn-card-title">👁️ Live Preview</div>
+                <div class="sn-card-sub">Exactly what users receive — updates as you type.</div>
+              </div>
+            </div>
+            <div class="sn-pv-tabs" id="snPvTabs"></div>
+            <div id="snPreviewHost" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="snViewOverlay" class="sn-overlay" style="display:none" onclick="if(event.target===this)SN.viewClose()">
+        <div class="sn-overlay-card" id="snViewBody"></div>
+      </div>`;
+
+    if (e) {
+      var sel = main.querySelector('#snType'); if (sel) sel.value = e.notification_type || 'GENERAL';
+      var pr = main.querySelector('#snPriority'); if (pr) pr.value = e.priority || 'normal';
+      if (e.icon) { var ic = main.querySelector('#snIcon'); if (ic) ic.value = e.icon; }
+      if (e.destination) {
+        var m = String(e.destination).match(/^(page|url):(.*)$/);
+        if (m) {
+          var dk = main.querySelector('#snDestKind'); if (dk) dk.value = m[1];
+          var dv = main.querySelector('#snDestVal'); if (dv) dv.value = m[2];
+          var dw = main.querySelector('#snDestValWrap'); if (dw) dw.style.display = '';
+        }
       }
-      if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = text; }
-      SN.adminRefresh();
-      if (typeof loadLiveNotifications === 'function') { try { loadLiveNotifications(true); } catch (err) {} }
-    } else if (msg) {
-      msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + ((res && res.error) || 'failed');
+      var p = PRESETS.filter(function (x) { return x.type === (e.notification_type || 'GENERAL'); })[0];
+      if (p) c.presetId = p.id;
     }
-  }).catch(function (err) {
-    btn.disabled = false;
-    btn.textContent = editingId ? '💾 Save Changes' : (mode === 'draft' ? '💾 Save Draft' : mode === 'schedule' ? '🕐 Schedule' : '🚀 Send Notification');
-    if (msg) { msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + (err && err.message || 'failed'); }
-  });
-}
 
-/* Draft → live (sends push exactly once — server-side idempotent) */
-function adminPublishDraft(id) {
-  if (!confirm('Publish this draft now? It will go live and push to subscribers (once).')) return;
-  adminCall({ op: 'publish', id: id }).then(function (res) {
-    var msg = document.getElementById('snSaveMsg');
-    if (res && res.ok) {
-      var p = res.push;
-      var text = (res.scheduled ? '🕐 Activated — scheduled time still in the future, it will push then.' :
-        (p && (p.pushed || 0) > 0 ? '🚀 Published — pushed to ' + p.pushed + ' device(s).' : '✓ Published (no push subscribers or already sent).'));
-      if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = text; }
-      SN.adminRefresh();
-      if (typeof loadLiveNotifications === 'function') { try { loadLiveNotifications(true); } catch (e) {} }
-    } else if (msg) { msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + ((res && res.error) || 'failed'); }
-  }).catch(function (e) {
-    var msg = document.getElementById('snSaveMsg');
-    if (msg) { msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + (e && e.message || 'failed'); }
-  });
-}
+    /* populate type filter from TYPE_META */
+    var ft = main.querySelector('#snFType');
+    if (ft) { ft.innerHTML = '<option value="">All types</option>' + Object.keys(TYPE_META).map(function (t) { return '<option value="' + t + '">' + t + '</option>'; }).join(''); }
+
+    _renderPresetCards();
+    _renderBannerBox();
+    _renderPreviewNow();
+    _renderDrafts();
+    SN.adminRefresh();
+    SN.adminPushRefresh();
+  }
 
   /* ── ADMIN: push controls (kill switch + test push + stats) ──── */
   function adminPushRefresh() {
@@ -878,6 +1062,130 @@ function adminPublishDraft(id) {
     });
   }
 
+  function adminDestKindChange() {
+    var kind = document.getElementById('snDestKind').value;
+    var wrap = document.getElementById('snDestValWrap');
+    if (wrap) wrap.style.display = kind ? '' : 'none';
+  }
+
+  function adminSave(btn, mode) {
+    mode = mode || 'now';
+    var title = (document.getElementById('snTitle').value || '').trim();
+    if (!title) { alert('Title is required'); return; }
+    var kind = (document.getElementById('snDestKind').value) || '';
+    var val = (document.getElementById('snDestVal').value || '').trim();
+    var dest = '';
+    if (kind === 'page') dest = 'page:' + (val || 'home');
+    else if (kind === 'url') dest = 'url:' + val;
+    /* ── strict destination validation (spec §7) — block bad sends ── */
+    var msg = document.getElementById('snSaveMsg');
+    var bad = function (m) { if (msg) { msg.style.display = ''; msg.style.color = '#ff6b85'; msg.textContent = '✗ ' + m; } btn.disabled = false; return; };
+    if (kind === 'page' && !/^[a-z0-9\-]{1,60}$/i.test(val)) return bad('Invalid page id — letters, digits and dashes only.');
+    if (kind === 'url' && !/^https:\/\/studyria\.qzz\.io(\/|$|\?|#)/.test(val)) return bad('External URLs are blocked — the destination must be a Studyria page (https://studyria.qzz.io/…).');
+    var pubVal = (document.getElementById('snPublishAt') || {}).value || '';
+    var scheduledAt = null;
+    if (mode === 'schedule') {
+      if (st_editing_check()) return bad('Scheduling applies to new notifications — save the edit instead.');
+      if (!pubVal) return bad('Choose a schedule time first.');
+      scheduledAt = new Date(pubVal);
+      if (scheduledAt.getTime() <= Date.now() + 120000) return bad('Schedule time must be at least 2 minutes ahead.');
+    }
+    function st_editing_check() { return !!_state().editingId; }
+    var expVal = (document.getElementById('snExpires').value || '').trim();
+    var st = _state();
+    btn.disabled = true; btn.textContent = mode === 'schedule' ? 'Scheduling…' : 'Saving…';
+
+    /* metadata (server-side additive): poster preset style + CTA override.
+     * The backend merge-replaces metadata, so on edit we merge with the
+     * record's existing metadata first. */
+    var meta = {};
+    var rec = st.editingId ? _find(st.editingId) : null;
+    if (rec && rec.metadata && typeof rec.metadata === 'object') meta = JSON.parse(JSON.stringify(rec.metadata));
+    meta.poster_style = _presetStyle();
+    var ctaVal = ((document.getElementById('snCtaLabel') || {}).value || '').trim();
+    if (ctaVal) meta.cta = ctaVal; else delete meta.cta;
+
+    var payload = {
+      op: st.editingId ? 'update' : 'create',
+      source: 'manual',
+      id: st.editingId || undefined,
+      title: title,
+      message: (document.getElementById('snMessage').value || '').trim(),
+      notification_type: st.editingId ? undefined : (document.getElementById('snType').value || 'GENERAL'),
+      priority: document.getElementById('snPriority').value || 'normal',
+      destination: dest,
+      icon: (document.getElementById('snIcon').value || '').trim(),
+      expires_at: expVal ? new Date(expVal).toISOString() : null,
+      metadata: meta
+    };
+    if (scheduledAt) payload.published_at = scheduledAt.toISOString();
+    if (st.editingId) { delete payload.source; delete payload.notification_type; }
+
+    adminCall(payload).then(function (res) {
+      btn.disabled = false; btn.textContent = st.editingId ? '💾 Save Changes' : (mode === 'schedule' ? '🕐 Schedule' : '🚀 Publish Notification');
+      if (res && res.ok) {
+        var wasEdit = !!st.editingId;
+        var editId = st.editingId;
+        st.editingId = null;
+        /* Custom banner: upload to the deterministic path so the feed
+           picks it up; any failure is reported honestly and NEVER
+           affects the published notification (auto poster fallback). */
+        var c = _composer();
+        if (c.banner.staged) {
+          var newId = (res && (res.id || (res.notification && res.notification.id) || res.notification_id)) || null;
+          var resolveId = Promise.resolve(newId);
+          if (!wasEdit && !newId) {
+            resolveId = adminCall({ op: 'list' }).then(function (lr) {
+              var arr = (lr && lr.notifications) || [];
+              var m2 = arr.filter(function (n) { return n.source === 'manual' && n.title === title && (!payload.notification_type || n.notification_type === payload.notification_type); })[0];
+              return m2 ? m2.id : null;
+            }).catch(function () { return null; });
+          } else if (wasEdit) { resolveId = Promise.resolve(editId); }
+          resolveId.then(function (id) {
+            if (!id) { if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — banner NOT uploaded (could not resolve the notification id)'; } return; }
+            if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — uploading banner…'; }
+            bannerUploadFor(id).then(function (up) {
+              if (up && up.ok && !up.skipped) {
+                c.banner.staged = null; c.banner.existing = up.url;
+                /* v3: persist the banner into the record metadata so the
+                   push payload (scheduled sends), snLive feed and deep-link
+                   layer all carry the custom image. Merge — never clobber. */
+                adminCall({ op: 'list' }).then(function (lr) {
+                  var r2 = ((lr && lr.notifications) || []).filter(function (x) { return x.id === id; })[0];
+                  var m2 = (r2 && r2.metadata && typeof r2.metadata === 'object') ? JSON.parse(JSON.stringify(r2.metadata)) : {};
+                  m2.poster_url = up.url;
+                  return adminCall({ op: 'update', id: id, metadata: m2 });
+                }).catch(function () { /* feed probe still covers this */ });
+                if (msg) { msg.style.color = '#10d98e'; msg.textContent = '✓ Published — banner uploaded (' + up.kb + ' KB)'; }
+              } else if (up && up.error) {
+                if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — banner failed: ' + up.error; }
+              }
+              _renderBannerBox();
+            }).catch(function (e2) {
+              if (msg) { msg.style.color = '#f59e0b'; msg.textContent += ' — banner failed: ' + (e2 && (e2.message || e2.error_description) || 'upload error'); }
+            });
+          });
+        } else if (scheduledAt) {
+          if (msg) { msg.style.display = ''; msg.style.color = '#C9A227'; msg.textContent = '🕐 Scheduled for ' + scheduledAt.toLocaleString() + ' — Live Feed + push at that time.'; }
+          var pb = document.getElementById('snPublishAt'); if (pb) pb.value = '';
+        } else {
+          if (msg) { msg.style.display = ''; msg.style.color = '#10d98e'; msg.textContent = wasEdit ? '✓ Updated — published notifications are never re-pushed' : '✓ Published — live within a minute'; }
+        }
+        SN.adminRefresh();
+        if (typeof loadLiveNotifications === 'function') { try { loadLiveNotifications(true); } catch (e) {} }
+      } else if (msg) {
+        msg.style.display = ''; msg.style.color = '#ef4444'; msg.textContent = '✗ ' + ((res && res.error) || 'failed');
+      }
+    }).catch(function (e) {
+      btn.disabled = false; btn.textContent = st.editingId ? '💾 Save Changes' : (mode === 'schedule' ? '🕐 Schedule' : '🚀 Publish Notification');
+      if (msg) { msg.style.display = ''; msg.style.color = '#ef4444'; msg.textContent = '✗ ' + (e.message || 'failed'); }
+    });
+  }
+
+  function adminSchedule(btn) {
+    return adminSave(btn, 'schedule');
+  }
+
   function adminCancelEdit() {
     _state().editingId = null;
     var main = document.getElementById('adminMain') || document.getElementById('admin-main');
@@ -893,42 +1201,175 @@ function adminPublishDraft(id) {
       _renderList();
     }).catch(function () {
       if (btn) { btn.disabled = false; btn.textContent = '🔄 Refresh'; }
+      /* honest error state — never leave the admin staring at "Loading…" */
+      var wrap = document.getElementById('snAdminList');
+      if (wrap && !document.querySelector('#snAdminList .sn-row')) {
+        wrap.innerHTML = '<div class="sn-empty">⚠️ Could not load notifications — your admin session may have expired.<br/><br/>'
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminRefresh(this)">↻ Retry</button></div>';
+      }
     });
+  }
+
+  /* ── Notification list: thumbnails, filters, search, sort ────── */
+  function _filters() {
+    window.__snFilters = window.__snFilters || { q: '', type: '', priority: '', status: '', sort: 'new' };
+    return window.__snFilters;
+  }
+  function _syncFilters() {
+    var f = _filters();
+    f.q = _fv('snFQ'); f.type = _fv('snFType'); f.priority = _fv('snFPrio'); f.status = _fv('snFStatus'); f.sort = _fv('snFSort') || 'new';
+  }
+  function _listRender() {
+    _syncFilters();
+    _renderList();
   }
 
   function _renderList() {
     var wrap = document.getElementById('snAdminList');
     if (!wrap) return;
-    var list = _state().list;
-    if (!list.length) { wrap.innerHTML = '<div style="padding:16px;color:var(--text2)">📭 No notifications yet. Publish content or create one in the Studio above.</div>'; return; }
+    var list = _state().list.slice();
+    var f = _filters();
+    if (f.q) list = list.filter(function (n) { return String(n.title || '').toLowerCase().indexOf(f.q.toLowerCase()) !== -1; });
+    if (f.type) list = list.filter(function (n) { return n.notification_type === f.type; });
+    if (f.priority) list = list.filter(function (n) { return (n.priority || 'normal') === f.priority; });
     var now = Date.now();
-    wrap.innerHTML = '<table style="width:100%;border-collapse:collapse"><tbody>' + list.map(function (n) {
-      var expired = n.expires_at && new Date(n.expires_at).getTime() <= now;
-      var isDraft = !n.is_active && n.source === 'manual';
-      var scheduled = n.is_active && n.published_at && new Date(n.published_at).getTime() > now;
-      var state = isDraft ? '<span style="color:#f59e0b">💾 Draft</span>'
-        : scheduled ? '<span style="color:#C9A227">🕐 ' + new Date(n.published_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) + '</span>'
-        : !n.is_active ? '<span style="color:#f59e0b">Inactive</span>'
-        : expired ? '<span style="color:#94a3b8">Expired</span>'
-        : '<span style="color:#10d98e">● Live</span>';
-      var srcBadge = n.source === 'auto' ? '<span style="background:rgba(147,2,5,.12);color:#930205;border-radius:6px;padding:1px 7px;font-size:.68rem">auto</span>' : '<span style="background:rgba(16,217,142,.12);color:#10d98e;border-radius:6px;padding:1px 7px;font-size:.68rem">manual</span>';
-      var posterDot = (n.metadata && (n.metadata.poster_url || n.metadata.poster_style)) ? ' 🖼️' : '';
-      return '<tr style="border-bottom:1px solid rgba(147,2,5,.1)">' +
-        '<td style="padding:8px 8px 8px 0">' + (n.icon || '') + ' <b>' + _escHtml(n.title) + '</b><div style="font-size:.7rem;color:var(--text2)">' + _escHtml(n.notification_type) + ' · ' + srcBadge + posterDot + (n.content_id ? ' · ' + _escHtml(String(n.content_id).slice(0, 14)) : '') + '</div></td>' +
-        '<td style="padding:8px;white-space:nowrap">' + state + '</td>' +
-        '<td style="padding:8px;white-space:nowrap;text-align:right">' +
-          '<button class="btn btn-ghost btn-sm" onclick="SN.adminEdit(\'' + n.id + '\')" title="Edit">✏️</button> ' +
-          (isDraft ? '<button class="btn btn-primary btn-sm" onclick="SN.adminPublishDraft(\'' + n.id + '\')" title="Publish draft — goes live and pushes once">🚀 Publish</button> ' :
-            '<button class="btn btn-ghost btn-sm" onclick="SN.adminToggle(\'' + n.id + '\')" title="Activate/Deactivate">' + (n.is_active ? '⏸️' : '▶️') + '</button> ') +
-          '<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.adminDelete(\'' + n.id + '\')" title="Delete">🗑️</button>' +
-        '</td></tr>';
-    }).join('') + '</tbody></table>';
+    var stateOf = function (n) {
+      if (!n.is_active) return 'inactive';
+      if (n.expires_at && new Date(n.expires_at).getTime() <= now) return 'expired';
+      return 'live';
+    };
+    if (f.status) list = list.filter(function (n) { return stateOf(n) === f.status; });
+    list.sort(function (a, b) {
+      var ta = new Date(a.published_at || a.created_date || 0).getTime();
+      var tb = new Date(b.published_at || b.created_date || 0).getTime();
+      return f.sort === 'old' ? ta - tb : tb - ta;
+    });
+
+    if (!_state().list.length) { wrap.innerHTML = '<div class="sn-empty">📭 No notifications yet. Publish content or compose one above.</div>'; return; }
+    if (!list.length) { wrap.innerHTML = '<div class="sn-empty">🔍 No notifications match these filters.</div>'; return; }
+
+    wrap.innerHTML = list.map(function (n) {
+      var state = stateOf(n);
+      var stateHtml = state === 'live' ? '<span class="sn-state sn-state-live">● Live</span>'
+        : state === 'expired' ? '<span class="sn-state sn-state-expired">Expired</span>'
+        : '<span class="sn-state sn-state-inactive">Inactive</span>';
+      var srcBadge = n.source === 'auto' ? '<span class="sn-src sn-src-auto">auto</span>' : '<span class="sn-src sn-src-manual">manual</span>';
+      var thumb = 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(n.notification_type || 'GENERAL') + '&title=' + encodeURIComponent(n.title || 'Studyria') + '&sub=' + encodeURIComponent(n.message || '');
+      var exp = n.expires_at ? new Date(n.expires_at).toLocaleDateString() : '—';
+      var meta = TYPE_META[n.notification_type] || TYPE_META.GENERAL;
+      return '<div class="sn-row" data-nid="' + _escHtml(n.id) + '">'
+        + '<img class="sn-row-thumb" src="' + _escHtml(thumb) + '" alt="" loading="lazy" decoding="async" onerror="this.classList.add(\'sn-row-thumb-broken\')"/>'
+        + '<div class="sn-row-body">'
+          + '<div class="sn-row-title">' + (n.icon || '') + ' ' + _escHtml(n.title) + '</div>'
+          + '<div class="sn-row-sub">' + _escHtml(meta.label) + ' · ' + srcBadge + (n.message ? ' · ' + _escHtml(n.message.slice(0, 60)) + (n.message.length > 60 ? '…' : '') : '') + '</div>'
+          + '<div class="sn-row-meta">' + stateHtml + ' <span>' + escAttr(String(n.priority || 'normal')) + '</span> · <span>expires ' + escAttr(exp) + '</span></div>'
+        + '</div>'
+        + '<div class="sn-row-actions">'
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminView(\'' + n.id + '\')" title="View / Preview">👁</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminEdit(\'' + n.id + '\')" title="Edit">✏️</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminDuplicate(\'' + n.id + '\')" title="Duplicate (new identity)">⧉</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminReuse(\'' + n.id + '\')" title="Reuse design">♻</button> '
+          + '<button class="btn btn-ghost btn-sm" onclick="SN.adminToggle(\'' + n.id + '\')" title="Activate/Deactivate">' + (n.is_active ? '⏸️' : '▶️') + '</button> '
+          + '<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="SN.adminDelete(\'' + n.id + '\')" title="Delete">🗑️</button>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+
+    /* probe custom banners for thumbnails (miss → poster stays) */
+    list.forEach(function (n) {
+      if (window.__snThumbProbed && window.__snThumbProbed[n.id]) return;
+      probeBanner(n.id).then(function (url) {
+        if (!url) return;
+        if (!window.__snThumbProbed) window.__snThumbProbed = {};
+        window.__snThumbProbed[n.id] = true;
+        var img = wrap.querySelector('.sn-row[data-nid="' + n.id + '"] .sn-row-thumb');
+        if (img) img.src = url;
+      });
+    });
   }
 
-  function adminEdit(id) {
-    _state().editingId = id;
+  function adminView(id) {
+    var n = _find(id);
+    if (!n) return;
+    var meta = TYPE_META[n.notification_type] || TYPE_META.GENERAL;
+    var kind = SN_KIND_BY_TYPE[n.notification_type] || '';
+    var tmpl = kind ? SN_PUSH_TEMPLATES[kind] : null;
+    var pushTitle = n.title, pushBody = n.message || '';
+    if (tmpl && !/^[📚💼📝🎯📰🗂️]/u.test(n.title || '')) {
+      pushTitle = tmpl.title;
+      pushBody = n.title + (n.message ? ' — ' + n.message : '');
+    }
+    var poster = 'https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(n.notification_type || 'GENERAL') + '&title=' + encodeURIComponent(n.title || '') + '&sub=' + encodeURIComponent(n.message || '');
+    var overlay = document.getElementById('snViewOverlay');
+    var body = document.getElementById('snViewBody');
+    if (!overlay || !body) return;
+    body.innerHTML =
+      '<div class="sn-card-title">👁 ' + _escHtml(n.title) + '</div>'
+      + '<div class="sn-view-grid">'
+        + '<div>'
+          + '<div class="sn-sec-label">DEVICE PUSH (as rendered by sw.js)</div>'
+          + '<div class="sn-pv-shade"><div class="sn-pv-phone">'
+            + '<div class="sn-pv-status"><span>9:41</span><span>📶 ▮▮▮</span></div>'
+            + '<div class="sn-pv-notif">'
+              + '<div class="sn-pv-head"><img class="sn-pv-appico" src="/icon-192.png" alt="" onerror="this.style.display=\'none\'"/><span class="sn-pv-origin">studyria.qzz.io</span><span class="sn-pv-now">now</span></div>'
+              + '<div class="sn-pv-body"><div class="sn-pv-title">' + _escHtml(pushTitle) + '</div>'
+              + (pushBody ? '<div class="sn-pv-text">' + _escHtml(pushBody) + '</div>' : '') + '</div>'
+              + (tmpl ? '<div class="sn-pv-actions"><span class="sn-pv-cta">' + _escHtml(tmpl.cta) + '</span></div>' : '')
+            + '</div>'
+          + '</div></div>'
+        + '</div>'
+        + '<div>'
+          + '<div class="sn-sec-label">LIVE FEED CARD (production rendering)</div>'
+          + '<div class="sn-pv-feedwrap"><div class="ln-card" style="cursor:default">'
+            + '<img class="ln-card-thumb" data-viewthumb="' + _escHtml(n.id) + '" src="' + _escHtml(poster) + '" alt="" loading="lazy" onerror="this.remove()"/>'
+            + '<div class="ln-card-icon">' + (n.icon || meta.icon) + '</div>'
+            + '<div class="ln-card-body"><div class="ln-card-title">' + _escHtml(n.title) + '</div>'
+            + (n.message ? '<div class="ln-card-msg">' + _escHtml(n.message) + '</div>' : '') + '</div>'
+            + '<span class="ln-card-cta">' + _escHtml(meta.cta) + ' →</span>'
+            + '<span class="ln-card-type ln-type-' + String(n.notification_type || 'GENERAL').toLowerCase() + '">' + _escHtml(meta.label) + '</span>'
+          + '</div></div>'
+        + '</div>'
+      + '</div>'
+      + '<div style="text-align:right;margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="SN.viewClose()">✕ Close</button></div>';
+    overlay.style.display = '';
+    probeBanner(n.id).then(function (url) {
+      if (!url) return;
+      var im = body.querySelector('img[data-viewthumb="' + n.id + '"]');
+      if (im) im.src = url;
+    });
+  }
+  function viewClose() {
+    var overlay = document.getElementById('snViewOverlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  function composeNew() {
+    _state().editingId = null;
+    _composer().banner.staged = null; _composer().banner.existing = null;
     var main = document.getElementById('adminMain') || document.getElementById('admin-main');
     if (main) renderPanel(main);
+    var card = document.getElementById('snComposerCard');
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var t = document.getElementById('snTitle');
+    if (t) setTimeout(function () { t.focus(); }, 350);
+  }
+
+  function adminDuplicate(id) {
+    var n = _find(id);
+    if (n) _loadRecordIntoComposer(n, 'duplicate');
+  }
+  function adminReuse(id) {
+    var n = _find(id);
+    if (n) _loadRecordIntoComposer(n, 'reuse');
+  }
+
+  function preset(pid) { applyPreset(pid, { forceIcon: true }); }
+  function pvTab(t) { _composer().previewTab = t; _renderPreviewNow(); }
+  function bannerFit(mode) { _composer().banner.fit = mode; }
+
+  function adminEdit(id) {
+    var n = _find(id);
+    if (n) _loadRecordIntoComposer(n, 'edit');
   }
 
   function adminToggle(id) {
@@ -1074,6 +1515,25 @@ function adminPublishDraft(id) {
     } catch (e) { return Promise.resolve(st); }
   }
 
+  /* ── Device-scoped self-test (additive): presents THIS device's own
+     subscription to snPushOps op:'self-test'. Backend verifies the caller
+     IS the registered device (endpoint + key match), then sends exactly ONE
+     hardcoded test push to this endpoint only, through the same VAPID
+     production pipeline. Returns the backend's real response including the
+     push-service status. No admin auth involved; no broadcast; no
+     mutation beyond a per-endpoint cooldown timestamp. ──────────────── */
+  function pushSelfTest() {
+    if (!pushSupported()) return Promise.resolve({ ok: false, error: 'unsupported' });
+    return navigator.serviceWorker.ready.then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (!sub) return { ok: false, error: 'this device is not subscribed' };
+        return _fetch('snPushOps', { op: 'self-test', subscription: sub.toJSON() });
+      });
+    }).catch(function (e) {
+      return { ok: false, error: (e && e.message) || 'error' };
+    });
+  }
+
   /* Live feed + push subscribe/unsubscribe refreshes */
   window.addEventListener('sn-push-changed', function () {
     if (typeof refreshNotificationCenter === 'function') {
@@ -1084,35 +1544,47 @@ function adminPublishDraft(id) {
   /* ── Public API ───────────────────────────────────────────────── */
   window.SN = {
     fetchLive: fetchLive,
+    _trackOpen: _trackOpen,
     publish: publish,
     deactivate: deactivate,
     destinationAction: destinationAction,
     adminPanel: renderPanel,
     adminTestConn: adminTestConn,
     adminRefresh: adminRefresh,
-    adminSave: studioSubmit,          /* legacy alias — v2 callers keep working */
+    adminSave: adminSave,
+    adminSchedule: adminSchedule,
     adminCancelEdit: adminCancelEdit,
+    adminDestKindChange: adminDestKindChange,
     adminEdit: adminEdit,
     adminToggle: adminToggle,
     adminDelete: adminDelete,
-    adminPublishDraft: adminPublishDraft,
+    adminView: adminView,
+    viewClose: viewClose,
+    adminDuplicate: adminDuplicate,
+    adminReuse: adminReuse,
+    composeNew: composeNew,
+    preset: preset,
+    pvTab: pvTab,
+    bannerPick: bannerPick,
+    bannerRemove: bannerRemove,
+    bannerFit: bannerFit,
+    _bannerImgError: _bannerImgError,
+    bannerUrls: bannerUrls,
+    probeBanner: probeBanner,
+    draftSave: draftSave,
+    draftResume: draftResume,
+    draftDelete: draftDelete,
+    _pv: _pvDebounced,
+    _listRender: _listRender,
     adminPushRefresh: adminPushRefresh,
     adminPushToggle: adminPushToggle,
     adminPushTest: adminPushTest,
-    studioPreset: studioPreset,
-    studioTypeChange: studioTypeChange,
-    studioDestChange: studioDestChange,
-    studioModeChange: studioModeChange,
-    studioFieldChange: studioFieldChange,
-    studioPosterMode: studioPosterMode,
-    studioUploadPoster: studioUploadPoster,
-    studioRemovePoster: studioRemovePoster,
-    studioSubmit: studioSubmit,
     push: {
       supported: pushSupported,
       enable: pushEnable,
       disable: pushDisable,
-      status: pushStatus
+      status: pushStatus,
+      selfTest: pushSelfTest
     }
   };
 })();

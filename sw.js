@@ -26,14 +26,14 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v93'; // v93: Native VAPID Web Push + Live Notifications system
+const CACHE_VERSION = 'v95'; // v95: custom banner resolution at push time — exact per-notification banner, auto poster stays as strict fallback
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.08.18-instant-result';
+const SW_BUILD      = '2026.09.05-custom-banners';
 const OFFLINE_PAGE  = '/offline.html';
 
-const WHATS_NEW = '🏛️ ADRE Previous Year Papers: Real exam simulation with verified questions and official answer keys.';
+const WHATS_NEW = '🖼️ Custom banners: each notification\'s own banner/poster now appears on push notifications — auto-generated Studyria poster stays as fallback.';
 
 // ── PRECACHE ──────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
@@ -271,39 +271,212 @@ async function refreshCriticalAssets() {
 // ── PUSH NOTIFICATIONS (native VAPID Web Push) ────────────────────
 // Payload from the Studyria notification backend (snMutate dispatch):
 //   { title, body, icon, badge, tag, requireInteraction, data:{ url } }
+//
+// SMART ANNOUNCEMENT ENGINE (v94, additive upgrade):
+//   • The push data.url carries the ?notif=<kind>:<id> deep-link descriptor.
+//     We derive the announcement kind from it and render the professional
+//     branded template (📚 New Study Material Added / 💼 New Job Alert /
+//     📝 New Quiz Available / 🎯 New Mock Test / 📰 New Current Affairs),
+//     preserving the content title inside the body. Payloads that already
+//     carry a branded title (or no descriptor) pass through untouched —
+//     fully backward-compatible with the existing backend dispatch.
+//   • A single CTA action button ("Read Now →" etc.) is added where the
+//     browser supports notification actions (feature-detected via
+//     'maxActions' in Notification). Unsupported browsers keep the
+//     plain working notification — no breakage.
+//   • Click handling is defensive: missing/invalid URL falls back to
+//     the site root instead of throwing inside the service worker.
+
+const PUSH_TEMPLATE = {
+  pdf:    { title: '📚 New Study Material Added', cta: 'Read Now →' },
+  job:    { title: '💼 New Job Alert',             cta: 'View Job →' },
+  quiz:   { title: '📝 New Quiz Available',        cta: 'Start Quiz →' },
+  mock:   { title: '🎯 New Mock Test',            cta: 'Take Test →' },
+  affair: { title: '📰 New Current Affairs',      cta: 'Read Now →' },
+};
+
+function _notifKindFromUrl(url) {
+  try {
+    const u = new URL(String(url), self.location.origin);
+    const m = /(?:\?|&)notif=([^&]+)/.exec(u.search);
+    if (!m) return '';
+    const raw = decodeURIComponent(m[1]);
+    const i = raw.indexOf(':');
+    return i < 0 ? '' : raw.slice(0, i);
+  } catch (_) { return ''; }
+}
+
+// ── CUSTOM BANNER RESOLUTION (v95) ─────────────────────────────
+// The composer uploads each notification's custom banner to public
+// Supabase Storage at a deterministic path (covers bucket →
+// sn-banners/<notificationId>.jpg) — the SAME url the live feed and
+// the admin list already probe. The push payload has no banner field
+// (dispatch backend untouched), so the service worker resolves the
+// exact banner here. The backend's auto-generated Studyria poster
+// (payload.image) remains the STRICT fallback — a failed or missing
+// probe can never delay or break notification delivery: the push is
+// ALWAYS shown first with the existing behavior, and the banner only
+// ever replaces it silently (same tag → in-place update, renotify
+// stays false → no second sound/vibration).
+const SN_BANNER_BUCKETS   = ['covers', 'sn-banners'];
+const SN_BANNER_PUBLIC    = 'https://qsdfmgcekdpjdcyqhuhi.supabase.co/storage/v1/object/public/';
+const SN_LIVE_ENDPOINT    = 'https://superagent-f8acee03.base44.app/functions/snLive';
+
+function _withTimeout(promise, ms) {
+  return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+}
+
+function _notifIdFromUrl(url) {
+  try {
+    const u = new URL(String(url), self.location.origin);
+    const m = /(?:\?|&)notif=([^&]+)/.exec(u.search);
+    if (!m) return '';
+    const raw = decodeURIComponent(m[1]);
+    const i = raw.indexOf(':');
+    return i < 0 ? '' : raw.slice(i + 1);
+  } catch (_) { return ''; }
+}
+
+/* HEAD-probe the deterministic banner paths. Returns the exact public
+   banner url, or null (→ strict auto-poster fallback). */
+async function _probeBannerUrl(id) {
+  if (!id) return null;
+  for (const bucket of SN_BANNER_BUCKETS) {
+    const url = SN_BANNER_PUBLIC + bucket + '/sn-banners/' + id + '.jpg';
+    try {
+      const res = await _withTimeout(fetch(url, { method: 'HEAD' }), 2500);
+      if (res && res.ok && /^image\//i.test(res.headers.get('content-type') || '')) return url;
+    } catch (_) { /* next bucket → fallback */ }
+  }
+  return null;
+}
+
+/* Resolve the notification record id for this push. The deep-link
+   descriptor often carries a CONTENT id (auto pushes) rather than the
+   notification record id, so: (a) try the descriptor id directly,
+   (b) fall back to an exact-title match on the public live feed
+   (tiny payload, same endpoint the homepage already calls). */
+async function _resolveCustomBanner(payload, rawUrl) {
+  const id = _notifIdFromUrl(rawUrl);
+  let record = null;
+  try {
+    if (/^[a-f0-9]{16,}$/i.test(id)) {
+      const direct = await _probeBannerUrl(id);
+      if (direct) return { url: direct, retry: false };
+    }
+    const res = await _withTimeout(fetch(SN_LIVE_ENDPOINT, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}'
+    }), 3000);
+    if (!res || !res.ok) return { url: null, retry: true };          // transient → retry
+    const j = await res.json();
+    const t = String(payload.title || '').trim();
+    const arr = (j && j.notifications) || [];
+    record = arr.filter(n => n && n.title && String(n.title).trim() === t)
+                .sort((a, b) => String(b.published_at || '').localeCompare(String(a.published_at || '')))[0] || null;
+    if (!record) return { url: null, retry: false };                  // unresolvable → stop
+    if (record.source === 'auto') return { url: null, retry: false }; // auto records never carry banners
+    const byRecord = await _probeBannerUrl(record.id);
+    if (byRecord) return { url: byRecord, retry: false };
+    return { url: null, retry: true };                                // manual + race with upload → retry
+  } catch (_) {
+    return { url: null, retry: !!record };                           // network hiccup → cautious retry
+  }
+}
+
+/* The composer uploads the banner a few seconds AFTER create fires
+   the push (banner path needs the new notification id), so the first
+   probe can legitimately miss. Brief bounded retries; on hit, the
+   same-tag re-show swaps the poster for the exact banner in place. */
+async function _upgradeWithCustomBanner(payload, rawUrl, title, options) {
+  for (const delay of [2000, 5000, 9000]) {
+    await new Promise(r => setTimeout(r, delay));
+    const r = await _resolveCustomBanner(payload, rawUrl);
+    if (r.url) {
+      options.image = r.url;
+      await self.registration.showNotification(title, options);       // same tag → silent in-place replace
+      return;
+    }
+    if (!r.retry) return;                                             // no banner will ever appear
+  }
+}
+
 self.addEventListener('push', event => {
   if (!event.data) return;
   let payload;
   try { payload = event.data.json(); } catch (_) { payload = { title: 'Studyria', body: event.data.text() }; }
-  const title   = payload.title || 'Studyria';
+
+  const data   = payload.data || {};
+  const rawUrl = data.url || data.click_url || '/';
+  const kind   = _notifKindFromUrl(rawUrl);
+  const tmpl   = PUSH_TEMPLATE[kind];
+
+  let title = payload.title || 'Studyria';
+  let body  = payload.body || '';
+
+  // Smart branded template — only when we know the kind and the title
+  // is not already branded. Content title is preserved in the body.
+  if (tmpl && !/^[📚💼📝🎯📰🗂️]/u.test(title)) {
+    title = tmpl.title;
+    body  = payload.title
+      ? (body ? payload.title + ' — ' + body : payload.title)
+      : body;
+  }
+
   const options = {
-    body:    payload.body    || '',
+    body:    body,
     icon:    payload.icon    || '/icon-192.png',
     badge:   payload.badge   || '/icon-96.png',
     image:   payload.image   || undefined,
-    data:    payload.data    || {},
-    tag:     payload.tag     || 'studyria-push',
+    data:    { url: rawUrl },
+    tag:     payload.tag     || ('studyria-push' + (kind ? '-' + kind : '')),
     requireInteraction: payload.requireInteraction || false,
-    actions: payload.actions || [],
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+
+  // CTA action button — only where the browser actually supports actions.
+  if (tmpl && self.Notification && ('maxActions' in self.Notification)) {
+    options.actions = [{ action: 'open', title: tmpl.cta }];
+  } else if (payload.actions && payload.actions.length) {
+    options.actions = payload.actions;
+  }
+
+  event.waitUntil((async () => {
+    await self.registration.showNotification(title, options);   // instant — existing behavior first
+    try { await _upgradeWithCustomBanner(payload, rawUrl, title, options); } catch (_) {} // v95: never blocks delivery
+  })());
 });
 
 self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || '/';
+  event.notification.close(); // works for both the body tap and the CTA button
+  const rawUrl = (event.notification.data && event.notification.data.url) || '/';
+  let target;
+  try {
+    target = new URL(String(rawUrl), self.location.origin);
+    if (target.origin !== self.location.origin) target = new URL('/', self.location.origin);
+    target = target.href;
+  } catch (_) {
+    target = new URL('/', self.location.origin).href; // never open a broken URL
+  }
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
-      const existing = clients.find(c => c.url === url && 'focus' in c);
+      const existing = clients.find(c => c.url === target && 'focus' in c);
       if (existing) return existing.focus();
-      return self.clients.openWindow(url);
-    })
+      return self.clients.openWindow(target);
+    }).catch(() => self.clients.openWindow(new URL('/', self.location.origin).href))
   );
 });
+
 
 // ── MESSAGE HANDLER ───────────────────────────────────────────────
 self.addEventListener('message', event => {
   const { type, urls } = event.data || {};
+
+  // ── v95: SN_RESOLVE_BANNER — verification hook (read-only, public data) ──
+  if (type === 'SN_RESOLVE_BANNER' && event.data && event.data.id) {
+    _probeBannerUrl(String(event.data.id)).then(url => {
+      event.source && event.source.postMessage({ type: 'SN_BANNER_RESOLVED', id: String(event.data.id), url: url || null });
+    });
+    return;
+  }
 
   if (type === 'SKIP_WAITING') {
     console.log('[SW] SKIP_WAITING — activating update');

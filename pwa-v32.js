@@ -613,6 +613,16 @@
 
     var isInstalled = (window.PWA && typeof window.PWA.isInstalled === 'function') ? window.PWA.isInstalled() : (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
     var notifPermission = Notification.permission;
+    // [Studyria Push Migration fix] Browser permission alone doesn't mean a
+    // push subscription actually exists in the backend — check the real
+    // SN.push subscription status so this card can't show a false "On".
+    var notifSubscribed = false;
+    try {
+      if (notifPermission === 'granted' && window.SN && SN.push && typeof SN.push.status === 'function') {
+        var _st = await SN.push.status();
+        notifSubscribed = !!(_st && _st.subscribed);
+      }
+    } catch (e) {}
     var isOnline = navigator.onLine;
     var storageUsage = _estimateStorage();
 
@@ -641,13 +651,22 @@
     // Check for updates
     html += '<div class="pwa32-card" style="margin-bottom:10px"><div class="pwa32-card-icon">⬇️</div><div class="pwa32-card-body"><div class="pwa32-card-label">Check For Updates</div><div class="pwa32-card-value">Verify you have the latest version</div></div><button class="pwa32-btn pwa32-btn-sm" onclick="window.PWA32._checkUpdate()">Check Now</button></div>';
 
-    // Notification status
-    var notifBadge = notifPermission === 'granted' ? 'pwa32-badge-ok' : notifPermission === 'denied' ? 'pwa32-badge-off' : 'pwa32-badge-warn';
-    html += '<div class="pwa32-card" style="margin-bottom:10px"><div class="pwa32-card-icon">🔔</div><div class="pwa32-card-body"><div class="pwa32-card-label">Notifications</div><div class="pwa32-card-value">' + (notifPermission === 'granted' ? 'Notifications enabled' : notifPermission === 'denied' ? 'Blocked — enable in browser settings' : 'Not enabled yet') + '</div></div>';
-    if (notifPermission !== 'granted') {
-      html += '<button class="pwa32-btn pwa32-btn-sm" onclick="window.PWA32._enableNotif()">Enable</button>';
-    } else {
+    // Notification status — 3 real states: Not enabled / Half Setup (permission
+    // granted but no push subscription yet) / Enabled (actually subscribed).
+    var notifFullyOn = notifPermission === 'granted' && notifSubscribed;
+    var notifHalfSetup = notifPermission === 'granted' && !notifSubscribed;
+    var notifBadge = notifFullyOn ? 'pwa32-badge-ok' : notifPermission === 'denied' ? 'pwa32-badge-off' : 'pwa32-badge-warn';
+    var notifValueText = notifFullyOn ? 'Notifications enabled'
+      : notifHalfSetup ? 'Permission granted — tap Complete Setup to finish'
+      : notifPermission === 'denied' ? 'Blocked — enable in browser settings'
+      : 'Not enabled yet';
+    html += '<div class="pwa32-card" style="margin-bottom:10px"><div class="pwa32-card-icon">🔔</div><div class="pwa32-card-body"><div class="pwa32-card-label">Notifications</div><div class="pwa32-card-value">' + notifValueText + '</div></div>';
+    if (notifFullyOn) {
       html += '<span class="pwa32-card-badge ' + notifBadge + '">On</span>';
+    } else if (notifHalfSetup) {
+      html += '<button class="pwa32-btn pwa32-btn-sm" onclick="window.PWA32._enableNotif()">Complete Setup</button>';
+    } else {
+      html += '<button class="pwa32-btn pwa32-btn-sm" onclick="window.PWA32._enableNotif()">Enable</button>';
     }
     html += '</div>';
 
@@ -789,7 +808,28 @@
       }
     },
     _enableNotif: function() {
-      if (Notification.permission === 'default') {
+      // [Studyria Push Migration fix] Route through the same native VAPID
+      // Web Push flow the hamburger Notification Center uses (SN.push.enable
+      // via window.StudyriaNotifications.requestPermission), instead of only
+      // asking for raw browser permission. This actually creates the push
+      // subscription and registers it with the backend (snPushOps), so this
+      // card can no longer show "On" without a real subscription existing.
+      if (Notification.permission === 'denied') {
+        showToast && showToast('Enable notifications in your browser settings.', 'info');
+        return;
+      }
+      var api = window.StudyriaNotifications;
+      if (api && typeof api.requestPermission === 'function') {
+        api.requestPermission().then(function (res) {
+          if (res && res.success) {
+            showToast && showToast('🔔 Notifications enabled!', 'success');
+          } else if (res && res.reason === 'denied') {
+            showToast && showToast('Notifications were blocked. Enable them from site settings.', 'error');
+          }
+          renderPWAPage();
+        }).catch(function () { renderPWAPage(); });
+      } else if (Notification.permission === 'default') {
+        // Fallback if the native push API hasn't loaded yet
         Notification.requestPermission().then(function(p) { renderPWAPage(); });
       } else {
         showToast && showToast('Enable notifications in your browser settings.', 'info');

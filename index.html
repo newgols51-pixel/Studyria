@@ -8498,6 +8498,116 @@ crossorigin="anonymous"></script>
 </style>
 
 <link rel="stylesheet" href="text-visibility-fix.css">
+<style id="snComposerCss">
+/* ═══ Studyria Premium Notification Composer (additive) ═══ */
+.sn-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.sn-hero-title{font-size:1.15rem;font-weight:800}
+.sn-hero-sub{font-size:.8rem;color:var(--text2);margin-top:4px;max-width:640px;line-height:1.5}
+.sn-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.sn-main-col{min-width:0;display:flex;flex-direction:column;gap:16px}
+.sn-preview-col{position:sticky;top:12px}
+.sn-card{background:var(--bg2,var(--bg,#fff));border:1px solid rgba(147,2,5,.12);border-radius:14px;padding:16px;box-shadow:0 2px 14px rgba(147,2,5,.05)}
+body.dark .sn-card{background:#1d1620;border-color:rgba(201,162,39,.14)}
+.sn-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.sn-card-title{font-weight:800;font-size:.95rem}
+.sn-card-sub{font-size:.75rem;color:var(--text2);margin-top:2px;line-height:1.45}
+.sn-note{font-size:.78rem;color:#c99a3c;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);border-radius:8px;padding:8px 12px;margin:8px 0}
+.sn-sec-label{font-size:.68rem;font-weight:800;letter-spacing:.08em;color:var(--text2);margin:16px 0 8px}
+.sn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sn-grid .sn-span2{grid-column:1/-1}
+.sn-preset-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sn-preset-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:10px 10px 9px;border-radius:12px;border:1.5px solid rgba(147,2,5,.14);background:rgba(247,241,226,.5);cursor:pointer;text-align:left;min-height:76px;transition:border-color .15s,transform .12s,box-shadow .15s;color:inherit}
+body.dark .sn-preset-card{background:#241a28;border-color:rgba(201,162,39,.16)}
+.sn-preset-card:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(147,2,5,.12)}
+.sn-preset-card:focus-visible{outline:2px solid #c99a3c;outline-offset:2px}
+.sn-preset-on{border-color:#930205;background:rgba(147,2,5,.08);box-shadow:0 3px 12px rgba(147,2,5,.15)}
+.sn-preset-ico{font-size:1.15rem;line-height:1}
+.sn-preset-name{font-size:.74rem;font-weight:800;line-height:1.2}
+.sn-preset-type{font-size:.62rem;color:var(--text2)}
+.sn-banner-block{border:1px dashed rgba(147,2,5,.2);border-radius:12px;padding:12px}
+body.dark .sn-banner-block{border-color:rgba(201,162,39,.22)}
+.sn-banner-prev img{width:100%;border-radius:10px;display:block;aspect-ratio:1200/630;object-fit:cover;background:rgba(147,2,5,.06)}
+.sn-banner-meta{font-size:.72rem;color:#10d98e;margin-top:6px;font-weight:700}
+.sn-banner-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.sn-banner-note{font-size:.72rem;color:var(--text2);margin-top:6px}
+.sn-banner-empty{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:6px 2px}
+.sn-banner-empty-ico{font-size:1.4rem}
+.sn-banner-empty>div:not(.sn-banner-empty-ico){font-size:.78rem;color:var(--text2);line-height:1.45}
+.sn-banner-broken{font-size:.75rem;color:#f59e0b;padding:10px 0}
+.sn-banner-tips{margin-top:10px;display:flex;flex-direction:column;gap:3px}
+.sn-tip-row{font-size:.72rem;color:var(--text2)}
+.sn-tip-k{display:inline-block;min-width:86px;font-weight:700;color:inherit}
+.sn-tip-row label{margin-right:12px;white-space:nowrap;cursor:pointer}
+.sn-cta-note{font-size:.72rem;color:var(--text2);margin-top:8px}
+.sn-actions{position:sticky;bottom:0;margin-top:16px;padding:10px 0 2px;background:linear-gradient(to top,var(--bg,#fff) 60%,transparent)}
+.sn-actions-inner{display:flex;gap:10px;flex-wrap:wrap}
+.sn-filters{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:8px;margin:10px 0 14px}
+.sn-filters .form-input{padding:7px 10px;font-size:.78rem}
+.sn-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(147,2,5,.1)}
+body.dark .sn-row{border-color:rgba(201,162,39,.1)}
+.sn-row-thumb{width:86px;height:46px;object-fit:cover;border-radius:8px;flex-shrink:0;background:rgba(147,2,5,.07)}
+.sn-row-thumb-broken{visibility:hidden}
+.sn-row-body{flex:1;min-width:0}
+.sn-row-title{font-weight:700;font-size:.82rem;line-height:1.35;overflow-wrap:anywhere}
+.sn-row-sub{font-size:.72rem;color:var(--text2);margin-top:2px;line-height:1.4}
+.sn-row-meta{font-size:.7rem;color:var(--text2);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sn-row-actions{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.sn-state{font-weight:700}
+.sn-state-live{color:#10d98e}.sn-state-expired{color:#94a3b8}.sn-state-inactive{color:#f59e0b}
+.sn-src{border-radius:6px;padding:1px 7px;font-size:.64rem}
+.sn-src-auto{background:rgba(147,2,5,.12);color:#930205}
+body.dark .sn-src-auto{color:#e5868a}
+.sn-src-manual{background:rgba(16,217,142,.12);color:#10d98e}
+.sn-empty{padding:18px;color:var(--text2);font-size:.8rem;text-align:center}
+.sn-draft-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(147,2,5,.08);flex-wrap:wrap}
+.sn-draft-t{font-weight:700;font-size:.8rem;flex:1;min-width:120px;overflow-wrap:anywhere}
+.sn-draft-time{font-size:.68rem;color:var(--text2)}
+/* preview */
+.sn-pv-tabs{display:flex;gap:6px;margin:10px 0}
+.sn-pv-tab{flex:1;padding:7px 4px;border-radius:9px;border:1.5px solid rgba(147,2,5,.14);background:transparent;font-size:.74rem;font-weight:700;cursor:pointer;color:inherit}
+.sn-pv-tab-on{background:rgba(147,2,5,.1);border-color:#930205}
+body.dark .sn-pv-tab-on{background:rgba(201,162,39,.12);border-color:#c99a39}
+.sn-pv-tab:focus-visible{outline:2px solid #c99a3c;outline-offset:2px}
+.sn-pv-shade{background:linear-gradient(160deg,#24121e,#10131c);border-radius:16px;padding:14px;display:flex;justify-content:center}
+.sn-pv-desk{background:linear-gradient(160deg,#20262e,#14181e)}
+.sn-pv-phone{width:100%;max-width:300px}
+.sn-pv-status{display:flex;justify-content:space-between;color:#cfd8e3;font-size:.68rem;padding:0 10px 10px;letter-spacing:.04em}
+.sn-pv-desk-hint{color:#9fb0c3;font-size:.66rem;text-align:center;margin-bottom:8px}
+.sn-pv-notif{background:rgba(255,255,255,.96);border-radius:14px;padding:11px 12px;box-shadow:0 4px 18px rgba(0,0,0,.35);color:#202124}
+.sn-pv-head{display:flex;align-items:center;gap:7px;font-size:.66rem;color:#5f6368;margin-bottom:6px}
+.sn-pv-appico{width:15px;height:15px;border-radius:50%}
+.sn-pv-origin{font-weight:600}
+.sn-pv-now{margin-left:auto}
+.sn-pv-title{font-size:.8rem;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.sn-pv-text{font-size:.74rem;color:#3c4043;margin-top:3px;line-height:1.35;overflow-wrap:anywhere}
+.sn-pv-actions{border-top:1px solid rgba(0,0,0,.08);margin-top:8px;padding-top:8px}
+.sn-pv-cta{display:inline-block;background:#930205;color:#fff;border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:700}
+.sn-pv-note{font-size:.68rem;color:var(--text2);margin-top:8px;text-align:center;line-height:1.4}
+.sn-pv-feedwrap{background:var(--bg,#faf6ef);border-radius:12px;padding:12px}
+body.dark .sn-pv-feedwrap{background:#241a28}
+.sn-pv-feedwrap .ln-card{margin:0 auto}
+.sn-overlay{position:fixed;inset:0;background:rgba(16,10,14,.6);z-index:1200;display:flex;align-items:center;justify-content:center;padding:16px}
+.sn-overlay-card{background:var(--bg,#fff);border-radius:16px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:18px}
+.sn-view-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+@media (max-width:900px){
+  .sn-layout{grid-template-columns:1fr}
+  .sn-preview-col{position:static}
+  .sn-preset-row{grid-template-columns:repeat(2,1fr)}
+  .sn-grid,.sn-filters{grid-template-columns:1fr 1fr}
+  .sn-filters .sn-f-search{grid-column:1/-1}
+  .sn-row{flex-wrap:wrap}
+  .sn-row-actions{width:100%;justify-content:flex-start}
+  .sn-view-grid{grid-template-columns:1fr}
+  .sn-hero-right{width:100%}
+  .sn-hero-right .btn{width:100%}
+}
+@media (max-width:480px){
+  .sn-grid,.sn-filters{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .sn-preset-card,.sn-card{transition:none}
+}
+</style>
 </head>
 <body x-data="studyriaApp()" :class="{ 'light': !isDarkMode }">
 
@@ -10149,6 +10259,8 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
 .ln-card-title { font-size:.8rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ln-card-msg { font-size:.72rem; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px; }
 .ln-card-time { font-size:.62rem; color:var(--text3); margin-top:2px; white-space:nowrap; }
+.ln-card-cta { font-size:.62rem; font-weight:700; color:#930205; background:rgba(147,2,5,.08); border:1px solid rgba(147,2,5,.18); padding:2px 8px; border-radius:100px; flex-shrink:0; white-space:nowrap; }
+.ln-card:hover .ln-card-cta { background:rgba(147,2,5,.14); }
 .ln-card-type { font-size:.58rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:1px 6px; border-radius:100px; flex-shrink:0; }
 .ln-type-pdf { background:rgba(147,2,5,0.12); color:var(--accent); }
 .ln-type-job { background:rgba(16,217,142,0.12); color:var(--success); }
@@ -19789,7 +19901,7 @@ async function handleNewsletterSubscribe(btn) {
 window.supabaseLib = window.supabase;
 </script>
 <script src="supabase.js"></script>
-<script src="studyria-notifications.js?v=2" defer></script>
+<script src="studyria-notifications.js?v=4" defer></script>
 <script>
 /* ═══ PUSH NOTIFICATION DEEP-LINK ROUTER ═════════════════════════════
  * When a user taps a mobile push notification, the service worker opens
@@ -19807,17 +19919,26 @@ window.supabaseLib = window.supabase;
   if (i < 0) return;
   var kind = raw.slice(0, i), val = raw.slice(i + 1);
 
+  /* Smart Announcement Engine: GA4 open-event (via existing GTM dataLayer),
+     fire-and-forget, never blocks routing. */
+  function trackOpen(evt) {
+    try { (window.dataLayer || (window.dataLayer = [])).push({ event: evt, notif_kind: kind }); }
+    catch (e) { /* analytics must never break the deep link */ }
+  }
+
   function go() {
     try {
       switch (kind) {
         case 'pdf': {
           if (typeof openDetail !== 'function') return false;
           if (!window.PDFS || !PDFS.length) return false; // wait for data
+          trackOpen('notification_open');
           openDetail(val);
           return true;
         }
         case 'job': {
           if (typeof navigate !== 'function') return false;
+          trackOpen('notification_open');
           navigate('career-hub');
           setTimeout(function () {
             if (typeof chOpenDetail === 'function') chOpenDetail(val);
@@ -19826,6 +19947,7 @@ window.supabaseLib = window.supabase;
         }
         case 'quiz': case 'mock': case 'affair': {
           if (typeof navigate !== 'function') return false;
+          trackOpen('notification_open');
           navigate('brainlab');
           var tab = kind === 'quiz' ? 'quiz' : (kind === 'mock' ? 'mock' : 'affairs');
           setTimeout(function () {
@@ -19835,6 +19957,7 @@ window.supabaseLib = window.supabase;
         }
         case 'page': {
           if (typeof navigate !== 'function') return false;
+          trackOpen('notification_open');
           navigate(val);
           return true;
         }
@@ -19852,7 +19975,14 @@ window.supabaseLib = window.supabase;
   var tries = 0;
   (function poll() {
     if (go()) return;
-    if (++tries > 40) return; // ~20s max, then give up silently
+    if (++tries > 40) {
+      // Smart Announcement Engine: data never arrived (rare). Fall back to
+      // the relevant section instead of leaving the user on the homepage.
+      try {
+        if (kind === 'pdf' && typeof navigate === 'function') navigate('library');
+      } catch (e) { /* stay on homepage — still a safe destination */ }
+      return;
+    }
     setTimeout(poll, 500);
   })();
 })();
@@ -25692,6 +25822,7 @@ async function refreshNotificationCenter() {
         <div style="display:flex;align-items:center;gap:8px;color:#10d98e;font-size:.82rem;font-weight:600;justify-content:center;padding:2px 0">
           <span>✅</span><span>Push Notifications Enabled</span>
         </div>
+        <button class="btn btn-primary btn-sm" id="notifCenterSelfTestBtn" onclick="notifCenterSelfTest(this)">🧪 Send Test to This Device</button>
         <button class="btn btn-ghost btn-sm" onclick="notifCenterTurnOff(this)">🔔 Turn Off Notifications</button>
       </div>`;
     } else {
@@ -25716,6 +25847,31 @@ async function refreshNotificationCenter() {
   body.textContent = 'Turn on notifications to get notified the moment new PDFs, results, scholarships and exam alerts drop.';
   if (hmBadge) { hmBadge.textContent = 'SETUP'; hmBadge.style.color = '#fbbf24'; hmBadge.style.background = 'rgba(251,191,36,.15)'; }
   actions.innerHTML = `<button class="btn btn-primary btn-sm" id="notifCenterEnableBtn" onclick="notifCenterRequestPermission()">🔔 Enable Notifications</button>`;
+}
+
+async function notifCenterSelfTest(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending test…'; }
+  // Device-scoped self-test: presents THIS device's own push subscription to
+  // the snPushOps 'self-test' op. The backend matches it against the
+  // registered record and pushes ONLY to this device. Real backend response
+  // only — no simulated success.
+  let res;
+  try {
+    res = (window.SN && SN.push && SN.push.selfTest) ? await SN.push.selfTest()
+        : { ok: false, error: 'unavailable' };
+  } catch (e) { res = { ok: false, error: (e && e.message) || 'error' }; }
+  if (btn) { btn.disabled = false; btn.textContent = '🧪 Send Test to This Device'; }
+  if (res && res.ok) {
+    const st = res.push_service_status ? ' (push service: ' + res.push_service_status + ')' : '';
+    if (typeof showToast === 'function') showToast('✅ Test push sent to this device' + st + '. Check your notification tray.', 'success');
+  } else {
+    const m = (res && (res.error || res.err)) || 'failed';
+    if (typeof showToast === 'function') {
+      showToast(m.indexOf('Unknown op') !== -1
+        ? 'Self-test is not enabled on the notification backend yet.'
+        : 'Self-test: ' + m, 'error');
+    }
+  }
 }
 
 async function notifCenterTurnOff(btn) {
@@ -48106,18 +48262,46 @@ window.addEventListener('load', function() {
       var action = item.action || '';
       var clickAttr = action ? ' onclick="' + action + '"' : '';
       var posterUrl = item.poster_url || ('https://superagent-f8acee03.base44.app/functions/snPoster?type=' + encodeURIComponent(item.type || 'GENERAL') + '&title=' + encodeURIComponent(item.title || 'Studyria') + '&sub=' + encodeURIComponent(item.message || ''));
-      var thumbHtml = '<img class="ln-card-thumb" src="' + posterUrl + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">';
-      return '<div class="ln-card"' + clickAttr + '>' +
+      /* Additive custom-banner probe: per-notification banner in Supabase
+         Storage (deterministic public path). Miss → auto snPoster poster,
+         poster fail → card survives without thumb. Never breaks the card. */
+      var cachedBanner = (window.__snFeedBanner && window.__snFeedBanner[item.id]) || '';
+      var thumbSrc = cachedBanner || posterUrl;
+      var probeAttr = item.id ? ' data-nid="' + esc(item.id) + '"' : '';
+      var thumbHtml = '<img class="ln-card-thumb" src="' + thumbSrc + '"' + probeAttr + ' alt="" loading="lazy" decoding="async" onerror="this.remove()">';
+      /* Smart Announcement Engine: CTA chip derived from the real type
+         (Read Now / View Job / Start Quiz / Take Test…). Additive —
+         cards without a ctaLabel render exactly as before. */
+      var ctaHtml = item.ctaLabel
+        ? '<span class="ln-card-cta">' + esc(item.ctaLabel) + ' \u2192</span>'
+        : '';      return '<div class="ln-card"' + clickAttr + '>' +
         thumbHtml +
         '<div class="ln-card-icon">' + icon + '</div>' +
         '<div class="ln-card-body">' +
           '<div class="ln-card-title">' + esc(item.title) + '</div>' +
           msgHtml + timeHtml +
         '</div>' +
+        ctaHtml +
         '<span class="ln-card-type ' + typeClass + '">' + esc(item.typeLabel || item.type || '') + '</span>' +
       '</div>';
     }).join('');
     wrap.innerHTML = '<div class="ln-track">' + cards + cards + '</div>';
+    /* Custom-banner discovery (additive): one probe per unseen id, session-
+       cached (hit + miss) so repeat renders cost nothing. Direct src swap —
+       no re-render, no layout shift for poster cards. */
+    if (window.SN && SN.bannerUrls) {
+      window.__snFeedBanner = window.__snFeedBanner || {};
+      items.forEach(function (it) {
+        if (!it.id || (it.id in window.__snFeedBanner)) return;
+        window.__snFeedBanner[it.id] = null; /* pessimistic until proven */
+        SN.probeBanner(it.id).then(function (url) {
+          window.__snFeedBanner[it.id] = url || '';
+          if (url) {
+            wrap.querySelectorAll('.ln-card-thumb[data-nid="' + it.id + '"]').forEach(function (img) { img.src = url; });
+          }
+        }).catch(function () {});
+      });
+    }
   }
 
   function renderError(msg) {
