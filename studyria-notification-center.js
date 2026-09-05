@@ -159,7 +159,13 @@
   /* ── Deep link: exact destination, same routing as the marquee ── */
   function actionFor(rec) {
     try {
-      if (window.SN && typeof SN.destinationAction === 'function') return SN.destinationAction(rec.destination || '');
+      if (!window.SN || typeof SN.destinationAction !== 'function') return '';
+      var act = SN.destinationAction(rec.destination || '');
+      if (!act) return '';
+      /* same open-tracking the Live Feed marquee emits */
+      var track = (typeof SN._trackOpen === 'function')
+        ? "SN._trackOpen('notification_card_open','" + String(rec.type || 'GENERAL') + "');" : '';
+      return track + act;
     } catch (e) {}
     return '';
   }
@@ -585,7 +591,7 @@
     }).length;
   }
   function updateBadgesAsync() {
-    fetchLive().then(function (list) {
+    fetchHistory().then(function (list) {
       updateBadges(badgeCountFrom(list));
     }).catch(function () {});
   }
