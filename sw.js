@@ -26,11 +26,11 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v96'; // v96: Notification Composer 3.0 — 10 presets, scheduler, validation box; SWR users were one visit behind, bump forces fresh studyria-notifications.js
+const CACHE_VERSION = 'v97'; // v97: PDP scroll-zoom ROOT fix — viewport locking removed (pdp-v2/pdp-v3), navigation hijack fix (serve real URL), asset versions bumped to ?v=20260905
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.09.05-custom-banners';
+const SW_BUILD      = '2026.09.05-pdp-zoom-root-fix';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🖼️ Custom banners: each notification\'s own banner/poster now appears on push notifications — auto-generated Studyria poster stays as fallback.';
@@ -160,26 +160,42 @@ self.addEventListener('fetch', event => {
 async function navigationStrategy(event) {
   const cache = await caches.open(CACHE_NAME);
 
-  // 1. Try navigation preload
+  // ── FIX (2026-09-05): navigation hijack bug ─────────────────────
+  // The old strategy fetched '/' HARDCODED for every navigation — so
+  // /pdf/<slug>.html and /job/<slug>.html (real, indexed product pages)
+  // were silently replaced by the homepage shell for every user with
+  // an installed service worker. It also clobbered the cached shell by
+  // cache.put('/', <some /pdf page>) whenever navigation preload fired
+  // for a sub-page. Now: serve the ACTUAL requested URL network-first,
+  // cache the shell only when the shell is what was requested.
+  const request = event.request;
+
+  // 1. Try navigation preload (the real URL)
   try {
     const preload = await event.preloadResponse;
     if (preload && preload.ok) {
-      cache.put('/', preload.clone());
+      if (new URL(request.url).pathname === '/') {
+        cache.put('/', preload.clone());
+      }
       return preload;
     }
   } catch (_) {}
 
-  // 2. Network-first
+  // 2. Network-first for the ACTUAL URL (no-store: never a stale page)
   try {
-    const res = await fetch('/', { cache: 'no-store' });
+    const res = await fetch(request, { cache: 'no-store' });
     if (res && res.ok) {
-      cache.put('/', res.clone());
+      if (new URL(request.url).pathname === '/') {
+        cache.put('/', res.clone());
+      }
       return res;
     }
   } catch (_) {}
 
-  // 3. Cache fallback (SPA shell)
-  const cached = await cache.match('/');
+  // 3. Cache fallback — exact URL first (static /pdf/, /job/ pages),
+  //    then the cached SPA shell for hash routes.
+  const cached = (await cache.match(request, { ignoreSearch: true })) ||
+                 (await cache.match('/'));
   if (cached) return cached;
 
   // 4. Offline page

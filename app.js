@@ -33,7 +33,7 @@ const PWA_CONFIG = {
   OFFLINE_PAGE:      '/offline.html',
 
   // Must match CACHE_NAME in sw.js
-  CACHE_NAME:        'studyria-v13',
+  CACHE_NAME:        'studyria-v90',
 
   // How often to poll for SW updates (4 hours)
   UPDATE_INTERVAL_MS: 4 * 60 * 60 * 1000,

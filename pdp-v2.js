@@ -6,26 +6,11 @@
    All function signatures match the old ones so app.js, supabase.js,
    and all other modules keep working unchanged.
 
-   V2.1 — 2026-08-03 — Root cause fix: removed pdpInitPreview call + preview-track HTML
+   V2.2 — 2026-09-05 — Removed ALL viewport-meta locking/mutation (root cause of
+   mobile scroll-zoom desync). touch-action hardening only. Accessibility zoom preserved.
    ═══════════════════════════════════════════════════════════════════════ */
 (function() {
 'use strict';
-
-/* ── ONE-TIME VIEWPORT LOCK (V3.6, 2026-09-05) ─────────────────────
-   index.html ships the viewport locked statically:
-   maximum-scale=1.0, user-scalable=no. This is an IDEMPOTENT one-time
-   enforcement at script load — it only guards against a stale cached
-   index.html that still carries maximum-scale=5. It NEVER toggles the
-   meta at runtime (runtime rewriting was the V3.4 bug). Browsers that
-   ignore the meta (Firefox Android, force-zoom Chrome, WebViews) are
-   handled by the gesture-level pinch block in pdp-v3.js instead.    */
-(function () {
-  var m = document.querySelector('meta[name="viewport"]');
-  if (m) {
-    var want = 'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no';
-    if (m.getAttribute('content') !== want) m.setAttribute('content', want);
-  }
-})();
 
 /* ── PDF.js Worker Configuration ── */
 /* Runs when pdp-v2.js executes (deferred, after pdf.min.js) */
@@ -50,19 +35,27 @@ if (window.pdfjsLib) {
      WCAG 1.4.4). It can never corrupt layout because nothing fights it.
    ═══════════════════════════════════════════════════════════════════════ */
 function _pdpInstallZoomControl() {
+  // V3 ARCHITECTURE (2026-09-05): touch-action hardening ONLY.
+  // NO viewport meta locking/mutation — browser accessibility zoom always
+  // works. (Runtime meta mutation was the scroll-zoom desync root cause.)
   if (window._pdpZoomCleanup) {
     window._pdpZoomCleanup();
     window._pdpZoomCleanup = null;
   }
   const coverWrap = document.querySelector('.pdp-cover-wrap');
   if (coverWrap) coverWrap.style.touchAction = 'manipulation';
+  const stage = document.querySelector('.pdp-v3-stage');
+  if (stage) stage.style.touchAction = 'pan-y'; // vertical scroll passes through natively
   window._pdpZoomCleanup = function() {
-    if (coverWrap) coverWrap.style.touchAction = 'pan-y';
+    if (coverWrap) coverWrap.style.touchAction = '';
+    if (stage) stage.style.touchAction = '';
   };
 }
 window._pdpInstallZoomControl = _pdpInstallZoomControl;
 
-/* Kept for backwards compatibility with old call sites — true no-op.
+/* Kept for backwards compatibility with old call sites — TRUE NO-OP.
+   The old implementation toggled the viewport meta at runtime
+   ('shrink-to-fit' hack) — the scroll-zoom desync root cause.
    NEVER rewrite the viewport meta from JS. */
 function _pdpResetPageZoom() {}
 window._pdpResetPageZoom = _pdpResetPageZoom;
@@ -823,308 +816,20 @@ async function _pdpRenderThumb(pdfDoc, pageNum) {
 }
 
 
-async function pdpInitPreview(pdf) {
-  // V3 guard: if V3 gallery is active, this V2 function should not run
-  if (document.getElementById('pdpV3Gallery')) {
-    console.log('[PDP V2] Skipping V2 pdpInitPreview — V3 gallery is active');
-    return;
-  }
-  const track     = document.getElementById('pdpPreviewTrack');
-  const stickyEl  = document.getElementById('pdpPreviewSticky');
-  const img       = document.getElementById('pdpPreviewImg');
-  const loading   = document.getElementById('pdpPreviewLoading');
-  const indicator = document.getElementById('pdpPreviewPageIndicator');
-  if (!track || !img) return;
-
-  // ── Tear down previous session listeners ───────────────────────────────
-  if (window._pdpPreviewScrollHandler) {
-    window.removeEventListener('scroll', window._pdpPreviewScrollHandler);
-    window._pdpPreviewScrollHandler = null;
-  }
-  if (window._pdpPreviewResizeHandler) {
-    window.removeEventListener('resize', window._pdpPreviewResizeHandler);
-    window._pdpPreviewResizeHandler = null;
-  }
-  if (window._pdpPreviewVisibilityHandler) {
-    document.removeEventListener('visibilitychange', window._pdpPreviewVisibilityHandler);
-    window._pdpPreviewVisibilityHandler = null;
-  }
-
-  track.classList.remove('active');
-  img.classList.remove('loaded');
-  img.removeAttribute('src');
-  if (loading) loading.style.display = '';
-  if (indicator) indicator.textContent = '';
-
-  // Remove previous thumbnail strip if any
-  const oldStrip = document.getElementById('pdpThumbStrip');
-  if (oldStrip) oldStrip.remove();
-
-  const previewUrl = (pdf.previewPdfUrl || pdf.preview_pdf_url || '').trim();
-  if (!previewUrl) return;
-
-  if (!window.pdfjsLib) {
-    console.warn('pdpInitPreview: pdf.js not available');
-    return;
-  }
-
-  // ── Load PDF document ────────────────────────────────────────────────
-  // Use withCredentials:false + no CORS header exposure (the URL is only
-  // used inside pdf.js worker — never injected into DOM as an <a> or src)
-  let pdfDoc, numPages = 0;
-  try {
-    pdfDoc = await window.pdfjsLib.getDocument({
-      url: previewUrl,
-      withCredentials: false,
-      disableAutoFetch: false,
-      disableStream: false,
-    }).promise;
-    numPages = pdfDoc.numPages || 0;
-  } catch (e) {
-    console.warn('pdpInitPreview: load failed', e);
-    return;
-  }
-  if (!numPages) return;
-  if (!document.getElementById('pdpPreviewTrack')) return; // navigated away
-
-  // ── Determine allowed pages (admin restriction) ──────────────────────
-  const previewPageSpec = pdf.preview_pages || pdf.previewPages || pdf.preview || null;
-  // If spec is a text description (not a page range), allow all pages
-  const looksLikeSpec  = previewPageSpec && /^\d/.test(String(previewPageSpec).trim());
-  const allowedPages   = looksLikeSpec
-    ? _pdpParsePreviewPages(previewPageSpec, numPages)
-    : Array.from({ length: Math.min(numPages, 3) }, (_, i) => i + 1);
-  // Clamp to actual page count
-  const safePages = allowedPages.filter(p => p >= 1 && p <= numPages);
-  if (!safePages.length) return;
-
-  track.classList.add('active');
-
-  // ── Page cache & render ───────────────────────────────────────────────
-  const pageCache  = {};
-  const thumbCache = {};
-  const renderQ    = {};
-  const thumbQ     = {};
-  let   activePageIdx = 0; // index into safePages[]
-
-  async function renderPage(pageNum) {
-    if (pageCache[pageNum]) return pageCache[pageNum];
-    if (renderQ[pageNum])   return renderQ[pageNum];
-    renderQ[pageNum] = _pdpRenderPageToDataURL(pdfDoc, pageNum, 1.8).then(url => {
-      pageCache[pageNum] = url;
-      delete renderQ[pageNum];
-      return url;
-    }).catch(e => { delete renderQ[pageNum]; throw e; });
-    return renderQ[pageNum];
-  }
-
-  async function renderThumb(pageNum) {
-    if (thumbCache[pageNum]) return thumbCache[pageNum];
-    if (thumbQ[pageNum])     return thumbQ[pageNum];
-    thumbQ[pageNum] = _pdpRenderPageToDataURL(pdfDoc, pageNum, 0.35).then(url => {
-      thumbCache[pageNum] = url;
-      delete thumbQ[pageNum];
-      return url;
-    }).catch(e => { delete thumbQ[pageNum]; throw e; });
-    return thumbQ[pageNum];
-  }
-
-  // ── Show a specific page (by index into safePages) ───────────────────
-  async function showPageAtIndex(idx) {
-    idx = Math.max(0, Math.min(safePages.length - 1, idx));
-    if (idx === activePageIdx && img.classList.contains('loaded')) return;
-    activePageIdx = idx;
-    const pageNum = safePages[idx];
-
-    // Update indicator
-    if (indicator) indicator.textContent = `Page ${pageNum} of ${safePages.length} preview pages`;
-
-    // Update thumb strip highlight
-    const stripEl = document.getElementById('pdpThumbStrip');
-    if (stripEl) {
-      stripEl.querySelectorAll('.pdp-thumb-item').forEach((el, i) => {
-        el.classList.toggle('pdp-thumb-active', i === idx);
-      });
-    }
-
-    // Show loading
-    if (loading) loading.style.display = '';
-    img.classList.remove('loaded');
-
-    try {
-      const url = await renderPage(pageNum);
-      if (activePageIdx !== idx) return; // race: user switched before this resolved
-      img.src = url;
-      img.classList.add('loaded');
-      if (loading) loading.style.display = 'none';
-    } catch (e) {
-      console.warn('pdpInitPreview: render failed for page', pageNum, e);
-    }
-
-    // Pre-warm adjacent pages
-    if (idx + 1 < safePages.length) renderPage(safePages[idx + 1]).catch(() => {});
-    if (idx - 1 >= 0)               renderPage(safePages[idx - 1]).catch(() => {});
-  }
-
-  // ── Build thumbnail strip ─────────────────────────────────────────────
-  function buildThumbStrip() {
-    const stage = document.getElementById('pdpPreviewStage');
-    if (!stage) return;
-
-    const strip = document.createElement('div');
-    strip.id        = 'pdpThumbStrip';
-    strip.className = 'pdp-thumb-strip';
-    strip.setAttribute('role', 'tablist');
-    strip.setAttribute('aria-label', 'Preview pages');
-
-    safePages.forEach((pageNum, idx) => {
-      const item = document.createElement('button');
-      item.className   = 'pdp-thumb-item' + (idx === 0 ? ' pdp-thumb-active' : '');
-      item.type        = 'button';
-      item.title       = 'Page ' + pageNum;
-      item.setAttribute('role', 'tab');
-      item.setAttribute('aria-label', 'Preview page ' + pageNum);
-      item.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
-
-      // Placeholder while thumb renders
-      item.innerHTML = '<div class="pdp-thumb-placeholder"><span>' + pageNum + '</span></div>';
-
-      item.addEventListener('click', () => {
-        showPageAtIndex(idx);
-      });
-
-      strip.appendChild(item);
-
-      // Async load thumbnail into the button
-      renderThumb(pageNum).then(url => {
-        if (!document.getElementById('pdpThumbStrip')) return; // navigated away
-        const img2 = document.createElement('img');
-        img2.src             = url;
-        img2.alt             = 'Page ' + pageNum;
-        img2.draggable       = false;
-        img2.style.width     = '100%';
-        img2.style.height    = '100%';
-        img2.style.objectFit = 'cover';
-        img2.style.borderRadius = '4px';
-        // Content protection on thumb
-        img2.addEventListener('contextmenu', e => e.preventDefault());
-        img2.addEventListener('dragstart',   e => e.preventDefault());
-        item.innerHTML = '';
-        item.appendChild(img2);
-      }).catch(() => {});
-    });
-
-    // Insert strip BELOW the sticky viewer
-    const sticky = document.getElementById('pdpPreviewSticky');
-    if (sticky && sticky.parentNode) {
-      sticky.parentNode.insertBefore(strip, sticky.nextSibling);
-    } else {
-      track.appendChild(strip);
-    }
-  }
-
-  // ── Content protection on main viewer ────────────────────────────────
-  function applyContentProtection() {
-    const stage = document.getElementById('pdpPreviewStage');
-    if (!stage) return;
-
-    // Disable right-click
-    stage.addEventListener('contextmenu', e => e.preventDefault());
-    // Disable drag
-    stage.addEventListener('dragstart',   e => e.preventDefault());
-    // Disable text selection
-    stage.style.userSelect       = 'none';
-    stage.style.webkitUserSelect = 'none';
-    // Disable long-press save on iOS (prevents callout menu)
-    stage.style.webkitTouchCallout = 'none';
-    // Disable image dragging
-    img.setAttribute('draggable', 'false');
-    img.addEventListener('contextmenu', e => e.preventDefault());
-    img.addEventListener('dragstart',   e => e.preventDefault());
-    // Block common dev shortcuts on the preview area (best-effort)
-    stage.addEventListener('keydown', e => {
-      if ((e.ctrlKey || e.metaKey) && ['s','u','p','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault();
-      }
-    }, true);
-  }
-
-  // ── Blur on tab switch ────────────────────────────────────────────────
-  function onVisibilityChange() {
-    const stage = document.getElementById('pdpPreviewStage');
-    if (!stage) return;
-    if (document.hidden) {
-      stage.style.filter = 'blur(12px)';
-      stage.style.transition = 'filter 0.1s';
-    } else {
-      stage.style.filter = '';
-    }
-  }
-  window._pdpPreviewVisibilityHandler = onVisibilityChange;
-  document.addEventListener('visibilitychange', onVisibilityChange);
-
-  // ── Scroll-driven page switching (unchanged logic — drives by index) ──
-  function stableViewportHeight() {
-    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-  }
-  function sizeTrack() {
-    // Height: each allowed page gets one scroll slot
-    track.style.height = (safePages.length * stableViewportHeight() * 0.9) + 'px';
-  }
-  sizeTrack();
-
-  function computeIdxFromScroll() {
-    const rect         = track.getBoundingClientRect();
-    const stickyHeight = stickyEl ? stickyEl.offsetHeight : window.innerHeight;
-    const scrollable   = rect.height - stickyHeight;
-    if (scrollable <= 0) return 0;
-    const progress = Math.max(0, Math.min(1, -rect.top / scrollable));
-    return Math.min(safePages.length - 1, Math.floor(progress * safePages.length));
-  }
-
-  let ticking = false;
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      showPageAtIndex(computeIdxFromScroll());
-      ticking = false;
-    });
-  }
-
-  let resizeTicking = false;
-  let lastKnownWidth = window.innerWidth;
-  function onResize() {
-    if (resizeTicking) return;
-    resizeTicking = true;
-    requestAnimationFrame(() => {
-      const cw = window.innerWidth;
-      if (cw !== lastKnownWidth) {
-        lastKnownWidth = cw;
-        sizeTrack();
-        showPageAtIndex(computeIdxFromScroll());
-      }
-      resizeTicking = false;
-    });
-  }
-
-  window._pdpPreviewScrollHandler = onScroll;
-  window._pdpPreviewResizeHandler = onResize;
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onResize);
-
-  // ── Initialise ────────────────────────────────────────────────────────
-  buildThumbStrip();
-  applyContentProtection();
-  showPageAtIndex(0);
-  onScroll();
-}
-
-// ── Fetch all live counters + reviews from Supabase in one parallel pass ──
-
-window.pdpInitPreview = pdpInitPreview;
-window._pdpParsePreviewPages = _pdpParsePreviewPages;
-window._pdpWatermarkText = _pdpWatermarkText;
-window._pdpRenderPageToDataURL = _pdpRenderPageToDataURL;
-window._pdpRenderThumb = _pdpRenderThumb;
+/* ═══════════════════════════════════════════════════════════════════════
+   V2 SCROLL-DRIVEN PREVIEW — REMOVED (2026-09-05)
+   The entire scroll-driven sticky preview (pdpPreviewTrack / sticky stage /
+   scroll+resize handlers / visualViewport sizing) was the original auto-zoom
+   bug mechanism. It has been fully deleted — the V3 gallery
+   (pdp-v3.js) is the only preview engine: click-driven thumbnails,
+   CSS-contained stage (aspect-ratio + overflow:hidden + object-fit:contain),
+   no scroll listeners, no viewport mutation. Stubs kept for compatibility.
+   ═══════════════════════════════════════════════════════════════════════ */
+window.pdpInitPreview = async function pdpInitPreview(pdf) {
+  // V3 gallery owns previews. On static pages without pdp-v3.js this is a
+  // harmless no-op (no preview-track elements exist).
+  if (document.getElementById('pdpV3Gallery')) return;
+  const track = document.getElementById('pdpPreviewTrack');
+  if (!track) return; // nothing to drive — and nothing scroll-driven exists
+};
 

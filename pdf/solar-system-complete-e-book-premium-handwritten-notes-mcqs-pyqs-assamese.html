@@ -36,22 +36,37 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" />
 
-<!-- PDP V2 styles -->
-<link rel="stylesheet" href="/pdp-v2.css?v=20260801" />
+<!-- PDP styles (V2 base + V3 gallery + V4 review/badge UI) -->
+<link rel="stylesheet" href="/pdp-v2.css?v=20260905z" />
+<link rel="stylesheet" href="/pdp-v3.css?v=20260905z" />
+<link rel="stylesheet" href="/pdp-v4.css?v=20260905z" />
 
 <!--
   ── DESIGN TOKENS ──────────────────────────────────────────────
-  Mirrors :root in index.html so this page matches the SPA shell.
+  Warm Paper Cream / Maroon / Gold theme — matches the live site's
+  body.light token set (see index.html) so this standalone page is
+  visually identical to the SPA product view.
 -->
 <style>
 :root {
-  --color-accent:#930205; --color-accent2:#c99a3c; --color-gold:#c99a3c;
+  --color-accent:#930205; --color-accent2:#c99a3c; --color-accent3:#f59e0b;
+  --color-gold:#f59e0b; --color-danger:#ff4d6d; --color-success:#10d98e;
   --grad-primary: linear-gradient(135deg,#930205 0%,#c99a3c 100%);
-  --radius:14px; --radius-lg:22px;
+  --radius:14px; --radius-sm:9px; --radius-lg:22px; --radius-xl:32px;
   --font-display:"Playfair Display",Georgia,serif; --font-body:"Inter",system-ui,sans-serif;
-  --bg:#080c14; --bg2:#0d1220; --text:#eef2ff; --text2:#7a8caa;
-  --glass:rgba(255,255,255,0.055); --glass-border:rgba(255,255,255,0.09);
-  --accent:#930205;
+
+  /* Cream theme runtime tokens (light values) */
+  --bg:#f0f4fb; --bg2:#ffffff; --bg3:#e4eaf6;
+  --surface:rgba(0,0,0,0.035);
+  --glass:rgba(255,255,255,0.75);
+  --glass-border:rgba(0,0,0,0.07);
+  --glass-border-hover:rgba(147,2,5,0.3);
+  --text:#0a1022; --text2:#4a5f80; --text3:#8fa0bb;
+  --shadow:0 8px 32px rgba(10,16,34,0.10);
+  --shadow-sm:0 4px 16px rgba(10,16,34,0.06);
+  --shadow-accent:0 8px 32px rgba(147,2,5,0.22);
+  --accent:#930205; --accent2:#c99a3c; --gold:#f59e0b;
+  --danger:#ff4d6d; --success:#10d98e;
 }
 * { box-sizing: border-box; }
 body { margin:0; font-family:var(--font-body); background:var(--bg); color:var(--text); min-height:100vh; }
@@ -76,7 +91,7 @@ j=d.createElement(s),dl=l!='data-layer'?'&l='+l:'';j.async=true;j.src=
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868252287561748"
 crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="light">
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PH9XCFFG"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -119,10 +134,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js" defer></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 <script src="/app.js" defer></script>
-<!-- PDP V2 — renderDetail, zoom control, preview, watermarking -->
-<script src="/pdp-v2.js?v=20260801" defer></script>
+<!-- PDP stack — same as the SPA shell so static pages render the full
+     V3 gallery (Cover + Page 1-3 preview, thumbnails, fullscreen) and
+     V4 review/badge UI. Previously static pages loaded only v2, which
+     meant NO preview gallery and a stale dark theme. -->
+<script src="/pdp-v2.js?v=20260905z" defer></script>
+<script src="/pdp-v3.js?v=20260905z" defer></script>
+<script src="/pdp-v4.js?v=20260905z" defer></script>
 <!-- PDP Checkout — buyPDF, downloadPDF, ownership, wishlist, reviews -->
-<script src="/pdp-checkout.js?v=20260801" defer></script>
+<script src="/pdp-checkout.js?v=20260905z" defer></script>
 <script>
   // Ensure globals exist for pdp-checkout.js IIFE (standalone page has no index.html lexical scope)
   window.selectedPdf = window.selectedPdf || null;

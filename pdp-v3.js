@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════════
    STUDYRIA — PDF PRODUCT DETAIL PAGE V3 GALLERY ENGINE
-   V3.4 — 2026-08-04 — Auto-generated preview images support — Root cause fix: V2 no-op trick removed, V2 preview elements cleaned up
+   V3.5 — 2026-09-05 — Removed viewport meta locking + visualViewport re-lock loop
+   (root cause of mobile scroll-zoom desync). Gallery containment via CSS only.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* ═══ 1. VIEWPORT — V3.5 ROOT-CAUSE FIX (2026-09-05) ══════════════════
+  /* ═══ 1. ZOOM CONTROL (V3.5 ROOT-CAUSE FIX — 2026-09-05) ════════════
      The V3.4 version locked the viewport meta (user-scalable=no) on every
      PDP mount and RE-LOCKED it from a visualViewport resize listener
      whenever the user's pinch exceeded 1.02×. Fighting the browser's
@@ -13,36 +14,21 @@
      visual/layout viewports → oversized, cropped, mispositioned preview
      after scroll/zoom (the reported bug). ALL meta manipulation is
      removed. The document meta is never touched from JS. Preview zoom
-     is LOCAL to the stage (Section 14 below).                     */
+     is LOCAL to the stage (Section 14 below).
+     NOTE: a document-level 2-finger touchmove pinch block (V3.6 attempt)
+     was deliberately REMOVED — it kills browser accessibility zoom
+     page-wide (WCAG 1.4.4, incl. Firefox Android where user-scalable=no
+     is ignored by design). Native pinch now behaves like any normal
+     web page; the CSS-contained stage can't be corrupted by it.        */
   window._pdpInstallZoomControl = function () {
     /* Local double-tap suppression only — no global viewport lock. */
-    var gallery = document.getElementById('pdpV3Gallery');
+    var gallery = document.getElementById('pdpV3Gallery') || document.getElementById('pdpV3Stage');
     if (gallery) gallery.style.touchAction = 'pan-y';
-
-    /* V3.6 — GESTURE-LEVEL PINCH BLOCK (2026-09-05)
-       Some mobile browsers IGNORE the viewport meta's user-scalable=no /
-       maximum-scale=1: Firefox Android (by design), Chrome with the
-       accessibility "Force enable zoom" setting, and most in-app
-       WebViews (WhatsApp/Instagram/Telegram). On those, a native pinch
-       still zoomed the WHOLE page (header, buttons, everything). The meta
-       tag alone cannot fix them, so block the GESTURE itself while the
-       PDP is open: any touchmove with 2+ fingers is cancelled at document
-       level (capture, passive:false). Single-finger scroll is untouched.
-       The stage's own 2-finger handler still receives the events and runs
-       the LOCAL zoom — only the BROWSER's native page-zoom dies.        */
-    var _blockPinch = function (e) {
-      if (e.touches && e.touches.length >= 2) e.preventDefault();
-    };
-    /* iOS Safari dispatches its own 'gesturestart' for native pinch even
-       when touch events are handled — cancel that too. */
-    var _blockGesture = function (e) { e.preventDefault(); };
-    document.addEventListener('touchmove', _blockPinch, { passive: false, capture: true });
-    document.addEventListener('gesturestart', _blockGesture, { passive: false, capture: true });
-
+    var cover = document.querySelector('.pdp-cover-wrap');
+    if (cover) cover.style.touchAction = 'manipulation';
     window._pdpZoomCleanup = function () {
       if (gallery) gallery.style.touchAction = '';
-      document.removeEventListener('touchmove', _blockPinch, { capture: true });
-      document.removeEventListener('gesturestart', _blockGesture, { capture: true });
+      if (cover) cover.style.touchAction = '';
     };
   };
   window._pdpResetPageZoom = function () {};
