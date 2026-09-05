@@ -5,36 +5,21 @@
 (function () {
   'use strict';
 
-  /* ═══ 1. VIEWPORT ZOOM LOCK ═════════════════════════════════════════ */
-  var _origVp = null;
-
-  function _lockVp() {
-    var vp = document.querySelector('meta[name="viewport"]');
-    if (!vp) return;
-    if (!_origVp) _origVp = vp.getAttribute('content');
-    vp.setAttribute('content',
-      'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-  }
-
-  function _unlockVp() {
-    var vp = document.querySelector('meta[name="viewport"]');
-    if (!vp) return;
-    vp.setAttribute('content', _origVp ||
-      'width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0');
-    _origVp = null;
-  }
-
+  /* ═══ 1. VIEWPORT — V3.5 ROOT-CAUSE FIX (2026-09-05) ══════════════════
+     The V3.4 version locked the viewport meta (user-scalable=no) on every
+     PDP mount and RE-LOCKED it from a visualViewport resize listener
+     whenever the user's pinch exceeded 1.02×. Fighting the browser's
+     native pinch by rewriting viewport meta mid-gesture desynchronises
+     visual/layout viewports → oversized, cropped, mispositioned preview
+     after scroll/zoom (the reported bug). ALL meta manipulation is
+     removed. The document meta is never touched from JS. Preview zoom
+     is LOCAL to the stage (Section 14 below).                     */
   window._pdpInstallZoomControl = function () {
-    _lockVp();
-    var onResize = function () {
-      if (window.visualViewport && window.visualViewport.scale > 1.02) _lockVp();
-    };
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', onResize, { passive: true });
-    }
+    /* Local double-tap suppression only — no global viewport lock. */
+    var gallery = document.getElementById('pdpV3Gallery');
+    if (gallery) gallery.style.touchAction = 'pan-y';
     window._pdpZoomCleanup = function () {
-      _unlockVp();
-      if (window.visualViewport) window.visualViewport.removeEventListener('resize', onResize);
+      if (gallery) gallery.style.touchAction = '';
     };
   };
   window._pdpResetPageZoom = function () {};
@@ -47,6 +32,8 @@
     fsOpen: false, fsScale: 1, fsOX: 0, fsOY: 0,
     swX: 0, swActive: false,
     fsSwX: 0, fsSwActive: false,
+    /* Local inline-stage zoom state (V3.5) */
+    zS: 1, zX: 0, zY: 0, zBind: false,
   };
 
   /* ═══ 3. WATERMARK ═════════════════════════════════════════════════ */
@@ -134,9 +121,22 @@
     return (
       '<div class="pdp-v3-gallery" id="pdpV3Gallery">' +
         '<div class="pdp-v3-stage" id="pdpV3Stage">' +
-          coverContent +
-          '<img id="pdpV3PreviewImg" class="pdp-v3-preview-img" alt="Preview" draggable="false">' +
+          '<div class="pdp-v3-zoom-layer" id="pdpV3ZoomLayer">' +
+            coverContent +
+            '<img id="pdpV3PreviewImg" class="pdp-v3-preview-img" alt="Preview" draggable="false">' +
+          '</div>' +
           '<div class="pdp-v3-watermark" id="pdpV3Watermark"><div class="pdp-v3-wm-text" id="pdpV3WmText"></div></div>' +
+          '<div class="pdp-v3-error" id="pdpV3Error" style="display:none">' +
+            '<div class="pdp-v3-error-icon">⚠️</div>' +
+            '<div class="pdp-v3-error-title">Preview unavailable</div>' +
+            '<button class="pdp-v3-error-retry" onclick="window._v3RetryItem()">Retry</button>' +
+          '</div>' +
+          '<div class="pdp-v3-zoom-bar" id="pdpV3ZoomBar" style="display:none" role="toolbar" aria-label="Preview zoom controls">' +
+            '<button class="pdp-v3-zb pdp-v3-zb-out" onclick="window._v3ZoomOut()" aria-label="Zoom out">−</button>' +
+            '<span class="pdp-v3-zb-val" id="pdpV3ZoomVal" aria-live="polite">1.0×</span>' +
+            '<button class="pdp-v3-zb pdp-v3-zb-in" onclick="window._v3ZoomIn()" aria-label="Zoom in">+</button>' +
+            '<button class="pdp-v3-zb pdp-v3-zb-fit" onclick="window._v3ZoomFit()" aria-label="Fit to screen">Fit</button>' +
+          '</div>' +
           '<div class="pdp-v3-loading" id="pdpV3Loading"><div class="pdp-v3-spinner"></div><span>Loading preview…</span></div>' +
           tagHTML + discHTML +
           '<button class="pdp-v3-arrow pdp-v3-arrow-prev" id="pdpV3Prev" style="display:none" onclick="window._v3Prev()" aria-label="Previous">' +
@@ -200,6 +200,9 @@
 
       // 4. Install swipe on stage
       _installStageSwipe(document.getElementById('pdpV3Stage'));
+
+      // 4b. Install LOCAL zoom engine (V3.5) — zoom stays inside the stage
+      _installStageZoom(document.getElementById('pdpV3Stage'));
 
       // 5. Cover image protections
       var ci = document.getElementById('pdpV3CoverImg');
@@ -325,6 +328,11 @@
     if (idx < 0 || idx >= G.items.length) return;
     G.idx = idx;
 
+    /* V3.5: every page switch resets the local zoom (predictable sizing) */
+    _zoomReset();
+    var _errOv = document.getElementById('pdpV3Error');
+    if (_errOv) _errOv.style.display = 'none';
+
     var item = G.items[idx];
     var coverImg = document.getElementById('pdpV3CoverImg');
     var previewImg = document.getElementById('pdpV3PreviewImg');
@@ -349,6 +357,7 @@
       if (coverImg) coverImg.style.opacity = '1';
       if (wm) wm.classList.remove('pdp-v3-visible');
       if (fsBtn) fsBtn.style.display = 'none';
+      _setZoomBar(false); // cover never zooms
 
     } else if (item.type === 'preview' && item.src) {
       // ═══ Pre-generated preview image (direct URL, no PDF.js needed) ═══
@@ -366,6 +375,7 @@
           previewImg.classList.add('pdp-v3-visible');
         }
         _setLoading(false);
+        _setZoomBar(true);
         if (wm && wmText) {
           wmText.textContent = _wm();
           wm.classList.add('pdp-v3-visible');
@@ -378,6 +388,7 @@
       pre.onerror = function () {
         console.warn('[PDP V3] Preview image failed to load:', item.src);
         _setLoading(false);
+        _setPreviewError(true, idx);
       };
       pre.src = item.src;
 
@@ -401,6 +412,7 @@
           previewImg.classList.add('pdp-v3-visible');
         }
         _setLoading(false);
+        _setZoomBar(true);
         if (wm && wmText) {
           wmText.textContent = _wm();
           wm.classList.add('pdp-v3-visible');
@@ -417,9 +429,30 @@
       }).catch(function (e) {
         console.warn('[PDP V3] Render failed:', e);
         _setLoading(false);
+        _setPreviewError(true, idx);
       });
     }
   }
+
+  /* ═══ 8b. PREVIEW ERROR STATE (V3.5) — professional fallback, never blank ══ */
+  function _setPreviewError(on, idx) {
+    var ov = document.getElementById('pdpV3Error');
+    if (!ov) return;
+    if (on) {
+      ov.style.display = 'flex';
+      var pi = document.getElementById('pdpV3PreviewImg');
+      if (pi) pi.classList.remove('pdp-v3-visible');
+      _setZoomBar(false);
+      G._errIdx = idx;
+    } else {
+      ov.style.display = 'none';
+    }
+  }
+  window._v3RetryItem = function () {
+    var idx = (G._errIdx !== undefined) ? G._errIdx : G.idx;
+    _setPreviewError(false, idx);
+    _showItem(idx, true);
+  };
 
   /* ═══ 9. THUMBNAIL STRIP ═══════════════════════════════════════════ */
   function _buildThumbStrip() {
@@ -718,6 +751,155 @@
       if (G.fsScale <= 1) { G.fsOX = 0; G.fsOY = 0; }
       applyT(false);
     }, { passive: false });
+  }
+
+  /* ═══ 13b. LOCAL STAGE ZOOM ENGINE (V3.5 — 2026-09-05) ════════════
+     Zoom lives INSIDE the stage container. The page layout is never
+     touched: no viewport meta, no body transforms. The stage is
+     overflow:hidden, so a scaled image can NEVER create page-wide
+     horizontal overflow. Min 1×, max 3×, pan clamped so the content
+     can never be dragged fully out of sight.                                  */
+  var ZMIN = 1, ZMAX = 3, ZSTEP = 1.25;
+
+  function _layer() { return document.getElementById('pdpV3ZoomLayer'); }
+  function _stage() { return document.getElementById('pdpV3Stage'); }
+
+  function _zoomApply(smooth) {
+    var layer = _layer();
+    if (!layer) return;
+    layer.style.transform = 'translate(' + G.zX + 'px,' + G.zY + 'px) scale(' + G.zS + ')';
+    layer.style.transition = smooth === false ? 'none' : '';
+    var val = document.getElementById('pdpV3ZoomVal');
+    if (val) val.textContent = G.zS.toFixed(1) + '×';
+    var st = _stage();
+    if (st) st.style.touchAction = (G.zS > 1) ? 'none' : 'pan-y';
+  }
+
+  function _zoomClampPan() {
+    var st = _stage();
+    if (!st) return;
+    var w = st.clientWidth, h = st.clientHeight;
+    var mx = Math.max(0, (w * (G.zS - 1)) / 2);
+    var my = Math.max(0, (h * (G.zS - 1)) / 2);
+    G.zX = Math.min(mx, Math.max(-mx, G.zX));
+    G.zY = Math.min(my, Math.max(-my, G.zY));
+  }
+
+  function _zoomAt(f, cx, cy, smooth) {
+    var st = _stage();
+    if (!st) return;
+    var old = G.zS;
+    G.zS = Math.min(ZMAX, Math.max(ZMIN, G.zS * f));
+    if (G.zS === old) { _zoomApply(smooth); return; }
+    if (cx !== undefined && cy !== undefined) {
+      var r = st.getBoundingClientRect();
+      var px = cx - r.left - r.width / 2;
+      var py = cy - r.top - r.height / 2;
+      G.zX = px - (px - G.zX) * (G.zS / old);
+      G.zY = py - (py - G.zY) * (G.zS / old);
+    }
+    if (G.zS <= 1) { G.zS = 1; G.zX = 0; G.zY = 0; }
+    _zoomClampPan();
+    _zoomApply(smooth);
+  }
+
+  function _zoomReset() { G.zS = 1; G.zX = 0; G.zY = 0; _zoomApply(false); }
+
+  window._v3ZoomIn  = function () { _zoomAt(ZSTEP); };
+  window._v3ZoomOut = function () { _zoomAt(1 / ZSTEP); };
+  window._v3ZoomFit = function () {
+    _zoomReset();
+    var st = _stage(); if (!st) return;
+    st.classList.add('pdp-v3-fit-flash');
+    setTimeout(function () { st.classList.remove('pdp-v3-fit-flash'); }, 420);
+  };
+
+  function _setZoomBar(on) {
+    var bar = document.getElementById('pdpV3ZoomBar');
+    if (bar) bar.style.display = on ? 'flex' : 'none';
+  }
+
+  function _installStageZoom(stage) {
+    if (!stage || stage._v3ZoomBound) return;
+    stage._v3ZoomBound = true;
+
+    var pinchD0 = 0, pinchS0 = 1, panning = false, panSX = 0, panSY = 0;
+    var twoFinger = false;
+
+    /* Desktop: ctrl/cmd + wheel → local zoom. Plain wheel scrolls page. */
+    stage.addEventListener('wheel', function (e) {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      _zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY, false);
+    }, { passive: false });
+
+    /* Desktop: double-click toggles 1× ↔ 2× at cursor */
+    stage.addEventListener('dblclick', function (e) {
+      if (e.target.closest('.pdp-v3-arrow, .pdp-v3-zoom-bar, .pdp-v3-fs-btn')) return;
+      if (G.items[G.idx] && G.items[G.idx].type === 'cover') return;
+      e.preventDefault();
+      if (G.zS > 1) _zoomReset(); else _zoomAt(2, e.clientX, e.clientY);
+    });
+
+    /* Desktop: drag to pan while zoomed */
+    stage.addEventListener('mousedown', function (e) {
+      if (G.zS <= 1) return;
+      if (e.target.closest('.pdp-v3-arrow, .pdp-v3-zoom-bar, .pdp-v3-fs-btn')) return;
+      e.preventDefault();
+      panning = true; panSX = e.clientX - G.zX; panSY = e.clientY - G.zY;
+      stage.classList.add('pdp-v3-panning');
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (!panning) return;
+      G.zX = e.clientX - panSX; G.zY = e.clientY - panSY;
+      _zoomClampPan(); _zoomApply(false);
+    });
+    window.addEventListener('mouseup', function () {
+      if (!panning) return;
+      panning = false; stage.classList.remove('pdp-v3-panning');
+    });
+
+    /* Touch: 2-finger pinch → LOCAL zoom (stage has touch-action:pan-y,
+       so the browser never page-zooms from here — events reach JS).  */
+    stage.addEventListener('touchstart', function (e) {
+      if (e.touches.length === 2) {
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinchD0 = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+        pinchS0 = G.zS;
+        twoFinger = true;
+      } else if (e.touches.length === 1 && G.zS > 1) {
+        twoFinger = false;
+        panning = true;
+        panSX = e.touches[0].clientX - G.zX;
+        panSY = e.touches[0].clientY - G.zY;
+      }
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', function (e) {
+      if (twoFinger && e.touches.length === 2) {
+        e.preventDefault(); // keep the gesture LOCAL — never the page
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        var d = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+        var midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        var midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        G.zS = pinchS0;
+        var ratio = d / pinchD0;
+        var target = pinchS0 * ratio;
+        target = Math.min(ZMAX, Math.max(ZMIN, target));
+        if (target !== pinchS0) _zoomAt(target / pinchS0, midX, midY, false);
+      } else if (panning && e.touches.length === 1 && G.zS > 1) {
+        e.preventDefault(); // pan the image, not the page
+        G.zX = e.touches[0].clientX - panSX;
+        G.zY = e.touches[0].clientY - panSY;
+        _zoomClampPan(); _zoomApply(false);
+      }
+    }, { passive: false });
+
+    stage.addEventListener('touchend', function (e) {
+      if (e.touches.length === 0) { twoFinger = false; panning = false; }
+    }, { passive: true });
   }
 
   /* ═══ 14. BOOT ════════════════════════════════════════════════════ */

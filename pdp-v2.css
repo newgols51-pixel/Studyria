@@ -394,3 +394,36 @@ body.light .pdp-desc-wrap:not(.expanded)::after { background:linear-gradient(tra
   .pdp-features-grid { grid-template-columns:repeat(3,1fr); }
   .pdp-trust-grid { grid-template-columns:repeat(5,1fr); }
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   V2.1 — OWNED STATE + STICKY CART (2026-09-05)
+   Owned paid PDFs show "✓ Purchased" — never a misleading buy button.
+   ═════════════════════════════════════════════════════════════════ */
+.pdp-owned-banner {
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #15803d;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+}
+.pdp-sticky-cart {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  min-height: 40px;
+}
+.pdp-sticky-cart:hover:not(:disabled) { background: var(--glass2, rgba(255,255,255,0.12)); }
+.pdp-sticky-cart:disabled { color: #15803d; border-color: rgba(34,197,94,0.4); }
+.pdp-sticky-cart:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

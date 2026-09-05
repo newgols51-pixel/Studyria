@@ -6957,8 +6957,8 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="brainlab.css?v=20260903dcafix2">
 <link rel="stylesheet" href="brainlab-icons.css?v=20260818icons1">
 <link rel="stylesheet" href="adre-exam.css?v=20260827d">
-<link rel="stylesheet" href="pdp-v2.css?v=20260801">
-  <link rel="stylesheet" href="pdp-v3.css?v=20260803a">
+<link rel="stylesheet" href="pdp-v2.css?v=20260905b">
+  <link rel="stylesheet" href="pdp-v3.css?v=20260905b">
   <link rel="stylesheet" href="pdp-v4.css?v=20260803a">
 <link rel="stylesheet" href="studyria-home-v2.css?v=20260901">
 
@@ -13626,7 +13626,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="pdp-sticky-price" id="pdpStickyPrice"></div>
       </div>
       <div class="pdp-sticky-actions">
-        <button class="pdp-sticky-wish" id="pdpStickyWish" onclick="pdpToggleWish()">❤️</button>
+        <button class="pdp-sticky-wish" id="pdpStickyWish" onclick="pdpToggleWish()" aria-label="Toggle wishlist">❤️</button>
+        <button class="pdp-sticky-cart" id="pdpStickyCart" style="display:none">🛒 Cart</button>
         <button class="pdp-sticky-buy" id="pdpStickyBuy" onclick="pdpHandleBuy()">⚡ Buy Now</button>
       </div>
     </div>
@@ -41424,8 +41425,8 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="smart-publish-manager.js" defer></script>
 <script src="pdf-classification-refactor.js" defer></script>
 <script src="premium-edit-pdf-ui.js" defer></script>
-<script src="pdp-v2.js?v=20260803a" defer></script>
-    <script src="pdp-v3.js?v=20260803a" defer></script>
+<script src="pdp-v2.js?v=20260905b" defer></script>
+    <script src="pdp-v3.js?v=20260905b" defer></script>
     <script src="pdp-v4.js?v=20260803a" defer></script>
     <script src="pdp-checkout.js?v=20260804" defer></script>
     <script src="cart.js?v=20260905" defer></script>

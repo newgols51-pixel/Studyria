@@ -19,59 +19,36 @@ if (window.pdfjsLib) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   PDP ZOOM CONTROL V2
-   • Resets browser zoom to 100% when PDP opens
-   • Blocks double-tap auto-zoom on cover (touch-action: manipulation)
-   • Blocks accidental pinch-zoom on the page
-   • Cover image NEVER zooms — pointer-events:none on img
-   • Only the dedicated zoom overlay (pdpZoomCover) allows zoom
+   PDP ZOOM CONTROL — V2.1 ROOT-CAUSE FIX (2026-09-05)
+   The old version rewrote the <meta viewport> on every PDP mount
+   (user-scalable=no, maximum-scale=1) and again from a visualViewport
+   resize listener. Dynamically rewriting viewport meta mid-session
+   desynchronises the visual viewport from the layout viewport on
+   iOS/Android → the reported oversized/cropped/mispositioned preview
+   after scroll or pinch. THE META TAG IS NEVER TOUCHED NOW.
+   • Double-tap zoom on the cover is blocked LOCALLY via
+     touch-action: manipulation (no meta needed).
+   • Preview zoom is handled locally inside the V3 stage
+     (pdp-v3.js zoom engine) — never the whole page.
+   • Browser pinch-zoom remains available to the user (accessibility,
+     WCAG 1.4.4). It can never corrupt layout because nothing fights it.
    ═══════════════════════════════════════════════════════════════════════ */
 function _pdpInstallZoomControl() {
   if (window._pdpZoomCleanup) {
     window._pdpZoomCleanup();
     window._pdpZoomCleanup = null;
   }
-
-  // V2: Use touch-action: manipulation on cover wrap to natively
-  // disable double-tap zoom without any JS handler needed.
-  // This is the cleanest, most reliable approach — no custom
-  // double-tap detection, no timing hacks, no transform toggling.
   const coverWrap = document.querySelector('.pdp-cover-wrap');
-  if (coverWrap) {
-    coverWrap.style.touchAction = 'manipulation';
-  }
-
-  // V2: Also ensure the viewport meta stays locked on PDP
-  const vp = document.querySelector('meta[name="viewport"]');
-  if (vp) {
-    const current = vp.getAttribute('content') || '';
-    if (!current.includes('maximum-scale')) {
-      vp.setAttribute('content',
-        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-    }
-  }
-
+  if (coverWrap) coverWrap.style.touchAction = 'manipulation';
   window._pdpZoomCleanup = function() {
-    if (coverWrap) {
-      coverWrap.style.touchAction = 'pan-y';
-    }
+    if (coverWrap) coverWrap.style.touchAction = 'pan-y';
   };
 }
 window._pdpInstallZoomControl = _pdpInstallZoomControl;
 
-/* ═══════════════════════════════════════════════════════════════════════
-   PDP RESET PAGE ZOOM (kept compatible with old calls)
-   ═══════════════════════════════════════════════════════════════════════ */
-function _pdpResetPageZoom() {
-  const vv = window.visualViewport;
-  if (vv && vv.scale && vv.scale > 1.02) {
-    const vp = document.querySelector('meta[name="viewport"]');
-    if (!vp) return;
-    const base = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-    vp.setAttribute('content', base + ', shrink-to-fit=yes');
-    requestAnimationFrame(() => vp.setAttribute('content', base));
-  }
-}
+/* Kept for backwards compatibility with old call sites — true no-op.
+   NEVER rewrite the viewport meta from JS. */
+function _pdpResetPageZoom() {}
 window._pdpResetPageZoom = _pdpResetPageZoom;
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -195,6 +172,8 @@ function _pdpRenderShell(pdf) {
     ).slice(0, 6);
 
   const _isOwned = typeof window._isOwned === 'function' ? window._isOwned : () => false;
+  /* Owned PAID product → the UI must never re-offer purchase (§12) */
+  const ownedPaid = (!pdf.free && price > 0 && _isOwned(String(pdf.id)));
 
   const pdpHTML = `
   <div class="pdp-page">
@@ -387,7 +366,9 @@ function _pdpRenderShell(pdf) {
               <div class="pdp-cta-title">Start Learning Today</div>
               <div class="pdp-cta-sub" id="pdpCtaSub">Get instant access to this PDF</div>
               <button class="pdp-cta-btn" onclick="pdpHandleBuy()">
-                ${pdf.free || price === 0
+                ${ownedPaid
+                  ? '⚡ Open PDF'
+                  : pdf.free || price === 0
                   ? (_isOwned(String(pdf.id)) ? '⚡ Open PDF' : '⚡ Download Free Now')
                   : `⚡ Buy Now – ₹${price}`}
               </button>
@@ -399,6 +380,7 @@ function _pdpRenderShell(pdf) {
         <!-- ═══ RIGHT: Buy Card (desktop only) ═══ -->
         <div class="pdp-right">
           <div class="pdp-buy-card" id="pdpBuyCard">
+            ${ownedPaid ? `<div class="pdp-owned-banner">✓ Purchased — Lifetime Access</div>` : ''}
             ${pdf.free ? `
               <div class="pdp-price-row">
                 <span class="pdp-price-free">FREE</span>
@@ -414,7 +396,9 @@ function _pdpRenderShell(pdf) {
             ` : ''}
 
             <button class="pdp-buy-primary" onclick="pdpHandleBuy()">
-              ${pdf.free
+              ${ownedPaid
+                ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open PDF`
+                : pdf.free
                 ? _isOwned(String(pdf.id))
                   ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open PDF`
                   : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Free`
@@ -422,6 +406,7 @@ function _pdpRenderShell(pdf) {
                   ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>Buy Now — ₹${price}`
                   : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>Get Access`}
             </button>
+            ${ownedPaid ? `<button class="pdp-cart-secondary" onclick="navigate('library')" style="text-align:center">📚 View in Library</button>` : ''}
 
             ${(pdf.free || price === 0 || (window.Cart && Cart.has(pdf.id)) || (typeof _isOwned === 'function' && _isOwned(String(pdf.id)))) ? '' : `<button class="pdp-cart-secondary" data-pdp-cart-btn onclick="pdpAddToCart()">🛒 Add to Cart</button>`}
 
@@ -473,11 +458,43 @@ function _pdpRenderShell(pdf) {
   const stickyTitle = document.getElementById('pdpStickyTitle');
   const stickyPrice = document.getElementById('pdpStickyPrice');
   const stickyBuy   = document.getElementById('pdpStickyBuy');
+  const stickyCart  = document.getElementById('pdpStickyCart');
   if (stickyTitle) stickyTitle.textContent = (pdf.title||'').slice(0,40) + ((pdf.title||'').length > 40 ? '…' : '');
   if (stickyPrice) stickyPrice.textContent = pdf.free ? 'FREE' : (price > 0 ? `₹${price}` : 'FREE');
-  const _pdfOwned = pdf.free && _isOwned(String(pdf.id));
+  const _pdfOwned = _isOwned(String(pdf.id)) && (pdf.free || ownedPaid);
   if (stickyBuy)   stickyBuy.textContent   = _pdfOwned ? '⚡ Open PDF' : (pdf.free ? '⚡ Download Free' : (price > 0 ? `⚡ Buy ₹${price}` : '⚡ Download Free'));
   if (stickyBar)   stickyBar.style.display = '';
+  /* Sticky Add to Cart — visible only for a paid, not-yet-owned, not-in-cart PDF */
+  const _stickySyncCart = () => {
+    const btn = document.getElementById('pdpStickyCart');
+    if (!btn) return;
+    const p = window.selectedPdf;
+    if (!p) return;
+    const isFree = p.free || Number(p.price ?? 0) === 0;
+    const owned = typeof window._isOwned === 'function' && window._isOwned(String(p.id));
+    if (isFree || owned) { btn.style.display = 'none'; return; }
+    if (window.Cart && Cart.has(p.id)) {
+      btn.style.display = '';
+      btn.textContent = '✓ Added';
+      btn.disabled = true;
+    } else {
+      btn.style.display = '';
+      btn.textContent = '🛒 Cart';
+      btn.disabled = false;
+    }
+  };
+  if (stickyCart) {
+    stickyCart.onclick = async () => {
+      const p = window.selectedPdf;
+      if (!p) return;
+      await window.pdpAddToCart();
+      _stickySyncCart();
+    };
+    _stickySyncCart();
+  }
+  window.removeEventListener('studyria:cartChanged', window._pdpStickyCartSync || (() => {}));
+  window._pdpStickyCartSync = _stickySyncCart;
+  window.addEventListener('studyria:cartChanged', _stickySyncCart);
 
   // Mobile price block
   const mobilePriceBlock = document.getElementById('pdpMobilePriceBlock');

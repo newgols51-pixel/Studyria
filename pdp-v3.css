@@ -423,3 +423,115 @@
 /* Sticky buy card is fine — it doesn't zoom, it just sticks */
 .pdp-buy-card { position: sticky; top: 88px; }
 .pdp-sticky-bar { position: fixed; bottom: 0; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   V3.5 — LOCAL STAGE ZOOM (2026-09-05)
+   Zoom is LOCAL to the stage: the layer transforms, the stage clips.
+   No page-level zoom, no viewport meta, no horizontal overflow.
+   ═════════════════════════════════════════════════════════════════ */
+.pdp-v3-zoom-layer {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+}
+
+/* Zoom controls — top-right of the stage, clear of the fs button
+   (bottom-right), indicator (bottom-center) and arrows (mid-height) */
+.pdp-v3-zoom-bar {
+  position: absolute;
+  top: 10px; right: 10px;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  -webkit-tap-highlight-color: transparent;
+}
+.pdp-v3-zb {
+  min-width: 34px; height: 34px;
+  padding: 0 8px;
+  border: none; border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.9rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s ease;
+}
+.pdp-v3-zb:hover { background: rgba(255, 255, 255, 0.14); }
+.pdp-v3-zb:active { background: rgba(255, 255, 255, 0.26); }
+.pdp-v3-zb:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+.pdp-v3-zb-val {
+  min-width: 34px;
+  text-align: center;
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+/* Panning cursor while zoomed */
+.pdp-v3-stage.pdp-v3-panning { cursor: grabbing; }
+.pdp-v3-stage.pdp-v3-panning * { cursor: grabbing; }
+
+/* Fit feedback flash */
+.pdp-v3-stage.pdp-v3-fit-flash {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: -2px;
+}
+
+/* Preview error state — professional fallback, never a blank box */
+.pdp-v3-error {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg3, #14100e);
+  text-align: center;
+  padding: 16px;
+}
+.pdp-v3-error-icon { font-size: 1.6rem; opacity: 0.9; }
+.pdp-v3-error-title {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.pdp-v3-error-retry {
+  margin-top: 4px;
+  padding: 8px 22px;
+  border: none;
+  border-radius: 20px;
+  background: #930205;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity 0.15s ease;
+}
+.pdp-v3-error-retry:hover { opacity: 0.88; }
+.pdp-v3-error-retry:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Reduced motion — no transform animation for zoom transitions */
+@media (prefers-reduced-motion: reduce) {
+  .pdp-v3-zoom-layer { transition: none; }
+}
