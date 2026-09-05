@@ -100,11 +100,13 @@
     return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ', ' + h + ':' + pad(d.getMinutes()) + ' ' + ap;
   }
 
-  /* ── Real data: same source as Live Feed + Web Push ───────────── */
-  function fetchLive() {
+  /* ── Real data (§18/§24): snHistory mirrors snLive's exact read
+     semantics at cap 30 — one source, no parallel dataset. Badge and
+     marquee stay on light snLive. ─────────────────────────────────── */
+  function fetchVia(fn) {
     var ctrl = ('AbortController' in window) ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 10000) : null;
-    return fetch(API + 'snLive', {
+    return fetch(API + fn, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: '{}', signal: ctrl ? ctrl.signal : undefined
     }).then(function (r) { if (timer) clearTimeout(timer); return r.json(); })
@@ -112,6 +114,14 @@
         if (!res || res.ok !== true || !Array.isArray(res.notifications)) throw new Error('bad response');
         return res.notifications;
       });
+  }
+  function fetchLive()     { return fetchVia('snLive'); }     /* cap 10 — badges/marquee parity */
+  function fetchHistory()  { return fetchVia('snHistory'); }  /* cap 30 — Center history (§24) */
+  var PAGE_SIZE = 10, shown = PAGE_SIZE;                      /* §24 pagination */
+  function dedupe(list) {
+    var seen = {}, out = [];
+    for (var i = 0; i < list.length; i++) { var r = list[i]; if (!r || !r.id || seen[r.id]) continue; seen[r.id] = 1; out.push(r); }
+    return out;
   }
 
   /* ── View state ─────────────────────────────────────────────────── */
@@ -125,7 +135,7 @@
   function isCleared(id) { return clearedSet.indexOf(id) !== -1; }
   function markRead(id) {
     if (isRead(id)) return;
-    readSet.push(id); persist(); updateBadges();
+    readSet.push(id); persist(); updateBadges(unreadCount());
   }
   function typeMeta(t) { return TYPES[t] || TYPES.GENERAL; }
   function allowedByPrefs(rec) {
@@ -177,18 +187,19 @@
       groupOpen[key] = !groupOpen[key];
       renderList();
     },
-    setFilter: function (f) { filter = f; expandedId = null; render(); },
+    setFilter: function (f) { filter = f; expandedId = null; shown = PAGE_SIZE; render(); },
+    loadMore: function () { shown += PAGE_SIZE; renderList(); },
     markAllRead: function () {
       records.forEach(function (r) { if (!isRead(r.id) && allowedByPrefs(r)) readSet.push(r.id); });
-      persist(); updateBadges(); render();
+      persist(); updateBadges(unreadCount()); render();
     },
     clearRead: function () {
       records.forEach(function (r) { if (isRead(r.id) && !isCleared(r.id)) clearedSet.push(r.id); });
-      persist(); updateBadges(); render();
+      persist(); updateBadges(unreadCount()); render();
     },
     retry: function () { load(); },
     setPref: function (cat, on) {
-      prefs[cat] = !!on; persist(); updateBadges(); renderList(); renderSettings();
+      prefs[cat] = !!on; persist(); updateBadges(unreadCount()); renderList(); renderSettings();
     },
     pushToggle: function () {
       if (pushBusy || !(window.SN && SN.push)) return;
@@ -208,8 +219,7 @@
   };
 
   /* ── Burger badges: REAL unread count only (no fake numbers) ───── */
-  function updateBadges() {
-    var n = unreadCount();
+  function updateBadges(n) {
     var b = document.querySelectorAll('[data-snc-badge]');
     for (var i = 0; i < b.length; i++) {
       b[i].hidden = !(n > 0);
@@ -396,6 +406,7 @@
       return;
     }
     var list = visibleList();
+    var page = list.slice(0, shown);   /* §24 — paginate history, 10 at a time */
     if (!list.length) {
       if (records.length && filter === 'unread') {
         box.innerHTML = '<div class="snc-state"><div class="snc-state-ico" aria-hidden="true">✅</div><p class="snc-state-t">No unread notifications.</p></div>';
@@ -409,7 +420,7 @@
 
     /* order: newest first (snLive is already newest-first) */
     var buckets = { TODAY: [], YESTERDAY: [], EARLIER: [] };
-    for (var i = 0; i < list.length; i++) buckets[dayBucket(list[i].published_at)].push(list[i]);
+    for (var i = 0; i < page.length; i++) buckets[dayBucket(page[i].published_at)].push(page[i]);
 
     var html = '';
     ['TODAY', 'YESTERDAY', 'EARLIER'].forEach(function (b) {
@@ -431,6 +442,10 @@
       }
       for (var m = 0; m < singles.length; m++) html += card(singles[m]);
     });
+    var remaining = list.length - page.length;
+    if (remaining > 0) {
+      html += '<div class="snc-more"><button class="snc-ghost-btn" onclick="SNC.loadMore()">Load more (' + remaining + ')</button></div>';
+    }
     box.innerHTML = html;
   }
 
@@ -517,17 +532,13 @@
     if (!isPageActive()) { stopPoll(); return; }
     loading = true; loadErr = false;
     if (box) renderList();
-    fetchLive().then(function (list) {
+    fetchHistory().then(function (list) {
       loading = false;
       /* key by id — one event appears exactly once, regardless of
          realtime reconnect / retry / poll overlap (§17 duplicate protection) */
-      var seen = {}; records = [];
-      for (var i = 0; i < list.length; i++) {
-        var r = list[i]; if (!r || !r.id || seen[r.id]) continue;
-        seen[r.id] = 1; records.push(r);
-      }
+      records = dedupe(list);
       syncPushClickRead();
-      updateBadges();
+      updateBadges(unreadCount());
       if (isPageActive()) { renderList(); renderToolbarCounts(); }
     }).catch(function () {
       loading = false; loadErr = true;
@@ -568,11 +579,14 @@
     if (typeof orig !== 'function') return;
     window[fn] = function (e) { updateBadgesAsync(); return orig.apply(this, arguments); };
   });
+  function badgeCountFrom(list) {
+    return dedupe(list).filter(function (r) {
+      return !isRead(r.id) && !isCleared(r.id) && allowedByPrefs(r);
+    }).length;
+  }
   function updateBadgesAsync() {
     fetchLive().then(function (list) {
-      var seen = {}; records = [];
-      for (var i = 0; i < list.length; i++) { var r = list[i]; if (!r || !r.id || seen[r.id]) continue; seen[r.id] = 1; records.push(r); }
-      updateBadges();
+      updateBadges(badgeCountFrom(list));
     }).catch(function () {});
   }
 
@@ -686,6 +700,8 @@
       '.snc-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;margin-left:auto;border-radius:999px;background:#930205;color:#faf6ef;font-size:.66rem;font-weight:800}',
       /* mobile 360–430px (§33) */
       '@media(max-width:767px){#page-notifications{padding:16px 12px 42px}.snc-card{flex-wrap:wrap;padding:12px}.snc-cta{width:100%;order:4;margin-top:2px}.snc-chev{display:none}.snc-h1{font-size:1.3rem}.snc-tb-actions{width:100%;margin-left:0;justify-content:space-between}.snc-detail-actions{flex-direction:column;align-items:stretch}.snc-detail-actions .snc-primary-btn,.snc-detail-actions .snc-ghost-btn{width:100%;text-align:center}}',
+      '.snc-more{display:flex;justify-content:center;margin-top:6px}',
+      '.snc-more .snc-ghost-btn{min-height:38px;padding:9px 18px;font-size:.74rem}',
       /* §35 — respect reduced motion */
       '@media(prefers-reduced-motion:reduce){.snc-wrap,.snc-chev,.snc-sw-knob,.snc-sw-track{animation:none !important;transition:none !important}}'
     ].join('\n');
