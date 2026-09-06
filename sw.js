@@ -26,11 +26,11 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v97'; // v97: PDP scroll-zoom ROOT fix — viewport locking removed (pdp-v2/pdp-v3), navigation hijack fix (serve real URL), asset versions bumped to ?v=20260905
+const CACHE_VERSION = 'v98'; // v98: checkout rebuild — pco.js/pco.css added, asset versions v=20260906*, static /pdf/ pages bumped to v=20260906c. Bump wipes v97 SWR entries that kept serving the OLD pdp-checkout.js (old checkout page) to devices.
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;
-const SW_BUILD      = '2026.09.05-pdp-zoom-root-fix';
+const SW_BUILD      = '2026.09.06-checkout-rebuild';
 const OFFLINE_PAGE  = '/offline.html';
 
 const WHATS_NEW = '🖼️ Custom banners: each notification\'s own banner/poster now appears on push notifications — auto-generated Studyria poster stays as fallback.';
