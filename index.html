@@ -1808,6 +1808,21 @@ body.light .pdp-review-textarea {
   padding: 2px 7px;
   flex-shrink: 0;
 }
+.pdp-rev-sample-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.60rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(150,150,150,0.14);
+  color: #9a9a9a;
+  border: 1px solid rgba(150,150,150,0.30);
+  border-radius: 20px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
 .pdp-rev-login-prompt {
   font-family: var(--font-ui);
   font-size: 0.78rem;
@@ -19052,6 +19067,12 @@ body:not(.light) .sf-stories .srv-author-loc { color:rgba(240,228,208,0.4) !impo
   border-color:rgba(201,154,60,0.2) !important;
   font-size:.66rem !important; padding:3px 9px !important;
 }
+.sf-stories .srv-sample {
+  color:#9a9a9a !important;
+  background:rgba(150,150,150,0.08) !important;
+  border-color:rgba(150,150,150,0.2) !important;
+  font-size:.66rem !important; padding:3px 9px !important;
+}
 .sf-stories .srv-quote-icon { color:rgba(201,154,60,0.12) !important; font-size:3.4rem !important; }
 .sf-stories .srv-date { color:var(--hp-ink,#1c1b1a) !important; opacity:.3 !important; font-size:.68rem !important; }
 body:not(.light) .sf-stories .srv-date { color:rgba(240,228,208,0.28) !important; }
@@ -19162,6 +19183,7 @@ body:not(.light) .sf-stories .srv-star-btn { color:rgba(255,255,255,0.2) !import
   .sf-stories .srv-author-name { font-size:.9rem !important; }
   .sf-stories .srv-author-loc { font-size:.72rem !important; }
   .sf-stories .srv-verified { font-size:.6rem !important; padding:2px 7px !important; }
+  .sf-stories .srv-sample { font-size:.6rem !important; padding:2px 7px !important; }
   .sf-stories .srv-avatar { width:40px !important; height:40px !important; font-size:.92rem !important; }
   .sf-stories .srv-card-stars-str { font-size:.95rem !important; letter-spacing:1.5px !important; }
   .sf-stories .srv-card-stars-num { font-size:.68rem !important; }
@@ -22395,7 +22417,10 @@ function _pdpApplyLiveStats({ dlCount, purchCount, revCount, avgRating, ratingDi
             <div class="pdp-rev-header">
               <div class="pdp-rev-avatar">${initials}</div>
               <div class="pdp-rev-meta">
-                <div class="pdp-rev-name">${_esc(r.name)}</div>
+                <div class="pdp-rev-name" style="display:flex;align-items:center;gap:6px;">
+                  ${_esc(r.name)}
+                  <span class="pdp-rev-sample-badge">Sample Review</span>
+                </div>
                 <div class="pdp-rev-loc">📍 ${_esc(r.loc)}</div>
               </div>
               <div class="pdp-rev-stars">${rStars}</div>
@@ -46742,6 +46767,13 @@ async function crpAutoLevelUpgrade(userId) {
   border: 1px solid rgba(147,2,5,0.3);
   border-radius: 20px; padding: 2px 7px; margin-top: 3px;
 }
+.srv-sample {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: .58rem; font-weight: 700; letter-spacing: .04em;
+  color: #9a9a9a; background: rgba(150,150,150,0.12);
+  border: 1px solid rgba(150,150,150,0.3);
+  border-radius: 20px; padding: 2px 7px; margin-top: 3px;
+}
 .srv-date {
   position: absolute; top: 14px; right: 14px;
   font-size: .58rem; color: rgba(255,255,255,0.28);
@@ -46862,6 +46894,9 @@ function _srvCard(r,idx){
   var stars=_srvStars(r.rating);
   var initial=(r.name||'S').charAt(0);
   var bg=_srvPalette[idx%_srvPalette.length];
+  var badgeHTML = r.verified
+    ? '<div class="srv-verified"><span>\u2714</span> Verified Purchase</div>'
+    : '<div class="srv-sample"><span>\u25CF</span> Sample Review</div>';
   return '<div class="srv-card">'+
     '<div class="srv-quote-icon">\u201C</div>'+
     (r.date?'<div class="srv-date">'+r.date+'</div>':'')+
@@ -46875,7 +46910,7 @@ function _srvCard(r,idx){
       '<div class="srv-author-info">'+
         '<div class="srv-author-name">'+r.name+'</div>'+
         '<div class="srv-author-loc">\uD83D\uDCCD '+(r.loc||'Assam')+'</div>'+
-        '<div class="srv-verified"><span>\u2714</span> Verified Purchase</div>'+
+        badgeHTML+
       '</div>'+
     '</div>'+
   '</div>';
@@ -46934,7 +46969,8 @@ async function _srvInit(){
         loc:'Assam',
         rating:Number(r.rating)||5,
         date:r.created_at?new Date(r.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'}):'',
-        text:r.comment
+        text:r.comment,
+        verified:true
       };});
     if(!dbRevs.length) return;
     _srvRender(dbRevs.concat(SRV_REVIEWS));
