@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="robots" content="noindex">
+<title>hydration debug</title>
+<style>body{font:12px/1.5 monospace;margin:0;padding:8px;background:#fff}#dbg{white-space:pre-wrap;word-break:break-all}</style>
+</head><body>
+<pre id="dbg">START
+</pre>
+<script>
+(function(){
+  var lines = ['START'];
+  var pre = document.getElementById('dbg');
+  function log(m){ lines.push(m); try{ pre.textContent = lines.join('\n'); }catch(e){} }
+  window.__log = log;
+  window.addEventListener('error', function(e){ log('ONERROR: ' + (e.message||'') + ' @ ' + (e.filename||'') + ':' + (e.lineno||'') + (e.error && e.error.stack ? '\n' + String(e.error.stack).slice(0,600) : '')); });
+  ['error','warn'].forEach(function(lvl){
+    var orig = console[lvl].bind(console);
+    console[lvl] = function(){ log('CONSOLE.'+lvl+': ' + Array.prototype.map.call(arguments, function(a){ try{return a && a.message || a;}catch(_){return '';} }).join(' | ').slice(0,400)); orig.apply(null, arguments); };
+  });
+  log('reporter installed');
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.__log('JSDELIVR LOAD ERROR')"></script>
+<script>window.__log('after jsdelivr: supabase=' + typeof window.supabase + ' createClient=' + (window.supabase && typeof window.supabase.createClient));</script>
+<script src="/supabase.js" onerror="window.__log('SUPABASE.JS LOAD ERROR')"></script>
+<script>window.__log('after supabase.js: supabaseClient=' + typeof window.supabaseClient);</script>
+<script src="/pdf-list.js" onerror="window.__log('PDF-LIST LOAD ERROR')"></script>
+<script src="/pdp-v2.js?v=20260905z" defer onerror="window.__log('PDP-V2 LOAD ERROR')"></script>
+<script>
+window.__STATIC_PDF_ID__ = "92bc4484-311a-4222-a2a8-82c7a6a46dd0";
+window.selectedPdf = window.selectedPdf || null;
+window.wishlist = window.wishlist || [];
+var t0 = Date.now();
+(function poll(){
+  var t = ((Date.now()-t0)/1000).toFixed(1);
+  window.__log('t+'+t+'s supabaseClient=' + typeof window.supabaseClient + ' PDFS=' + ((window.PDFS&&window.PDFS.length)||0) + ' renderDetail=' + typeof window.renderDetail + ' sel=' + (window.selectedPdf&&window.selectedPdf.id?'Y':'n'));
+  if (window.PDFS && window.PDFS.length) {
+    var pdf = window.PDFS.find(function(p){return String(p.id)===String(window.__STATIC_PDF_ID__);});
+    window.__log('FOUND target pdf: ' + !!pdf);
+    if (pdf) { window.selectedPdf = pdf; try { window.renderDetail(); window.__log('renderDetail OK'); } catch(e){ window.__log('renderDetail THREW: ' + e.message); } }
+    return;
+  }
+  if (Date.now()-t0 > 25000) { window.__log('GAVE UP at 25s'); return; }
+  setTimeout(poll, 1000);
+})();
+// direct REST probe — does the query itself work in this browser?
+setTimeout(function(){
+  fetch('https://qsdfmgcekdpjdcyqhuhi.supabase.co/rest/v1/pdfs?select=id&status=eq.published&limit=1', {headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZGZtZ2Nla2RwamRjeXFodWhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTE2NDcsImV4cCI6MjA5NjIyNzY0N30.kDOEYxUQyLTp1blasuX2kVSIy2olGLhdqqtOMTlEX5g'}})
+    .then(function(r){ window.__log('REST probe: HTTP ' + r.status); return r.text(); })
+    .then(function(tx){ window.__log('REST probe body: ' + tx.slice(0,150)); })
+    .catch(function(e){ window.__log('REST probe FAILED: ' + (e.message||e)); });
+}, 3000);
+</script>
+</body></html>
