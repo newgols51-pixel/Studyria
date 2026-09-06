@@ -51,6 +51,31 @@
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
+  /* ── Self-bootstrap ────────────────────────────────────────────────
+     The checkout page markup lives in index.html. If a device serves a
+     stale shell (old SW / cached HTML) that lacks #page-pdf-checkout,
+     PCO builds its own container instead of falling back to the legacy
+     direct-Razorpay flow. The CSS link is injected too, so the page is
+     fully functional even from a stale shell + fresh JS. */
+  function _ensurePage() {
+    if (document.getElementById('pcoRoot')) return true;
+    try {
+      var page = document.createElement('div');
+      page.className = 'page';
+      page.id = 'page-pdf-checkout';
+      page.innerHTML = '<div id="pcoRoot"></div>';
+      var anchor = document.getElementById('page-checkout');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(page, anchor.nextSibling);
+      else document.body.appendChild(page);
+      if (!document.querySelector('link[href*="pco.css"]')) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/pco.css?v=20260906';
+        document.head.appendChild(link);
+      }
+      return true;
+    } catch (_) { return false; }
+  }
   function _root() { return document.getElementById('pcoRoot'); }
   function _client() { return window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null); }
   function _toast(msg, type) { if (typeof window.showToast === 'function') window.showToast(msg, type || 'info'); }
@@ -59,6 +84,7 @@
 
   /* ── Public API ──────────────────────────────────────────────────── */
   function open(pdfId) {
+    _ensurePage();
     S.pdfId = String(pdfId || '');
     S.notice = null; S.retryCount = 0;
     S.phase = 'loading';
@@ -71,6 +97,7 @@
 
   /* Called by the navigate() case in index.html */
   function renderFromRoute() {
+    _ensurePage();
     if (window._pcoDeepLinkId) { S.pdfId = String(window._pcoDeepLinkId); window._pcoDeepLinkId = null; S.notice = null; }
     if (!S.pdfId) { S.phase = 'notfound'; render(); return; }
     load();

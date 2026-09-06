@@ -174,6 +174,7 @@
 
 <meta name="theme-color" content="#930205" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)" />
+<meta name="studyria-build" content="20260906-pco-checkout-v2" />
 <!-- ── Resource Hints ── -->
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
@@ -40155,6 +40156,33 @@ if (_origTrackReading) {
     renderInstallCard();
   });
 
+  // ── Deploy freshness: stale-tab recovery ─────────────────────
+  // SW-driven updates are handled by the restart-card flow above (no
+  // auto-reload by design). This covers the remaining gap: long-lived
+  // tabs on devices with no service worker (or a stuck SW) never see
+  // HTML-only deploys. On tab focus (max once/30 min) compare the
+  // deployed build stamp against this document's and toast if an
+  // update is pending.
+  (function () {
+    var _lastCheck = 0;
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState !== 'visible') return;
+      var now = Date.now();
+      if (now - _lastCheck < 30 * 60 * 1000) return;
+      _lastCheck = now;
+      var cur = (document.querySelector('meta[name="studyria-build"]') || {}).content;
+      if (!cur) return;
+      fetch('/', { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : null; })
+        .then(function (html) {
+          if (!html) return;
+          var m = html.match(/name="studyria-build"\s+content="([^"]+)"/);
+          if (m && m[1] !== cur && typeof showToast === 'function') {
+            showToast('নতুন আপডেট উপলব্ধ — ৰিফ্ৰেশ কৰক (Update available — please refresh)', 'info');
+          }
+        }).catch(function () {});
+    });
+  })();
+
   // ── Service Worker registration ────────────────────────────────
   // Guard: app.js also registers /sw.js; reuse existing registration if
   // it already exists to avoid concurrent installs at the same scope.
@@ -41465,7 +41493,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <script src="pdp-v4.js?v=20260905z" defer></script>
     <script src="pdp-checkout.js?v=20260906c" defer></script>
     <script src="cart.js?v=20260906" defer></script>
-<script src="pco.js?v=20260906" defer></script>
+<script src="pco.js?v=20260906b" defer></script>
 
 
 
