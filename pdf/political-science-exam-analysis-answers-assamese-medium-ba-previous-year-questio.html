@@ -142,7 +142,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script src="/pdp-v3.js?v=20260905z" defer></script>
 <script src="/pdp-v4.js?v=20260905z" defer></script>
 <!-- PDP Checkout — buyPDF, downloadPDF, ownership, wishlist, reviews -->
-<script src="/pdp-checkout.js?v=20260906c" defer></script>
+<script src="/pdp-checkout.js?v=20260906d" defer></script>
 <script>
   // Ensure globals exist for pdp-checkout.js IIFE (standalone page has no index.html lexical scope)
   window.selectedPdf = window.selectedPdf || null;
@@ -163,11 +163,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       const pdf = window.PDFS.find(p => String(p.id) === String(window.__STATIC_PDF_ID__));
       if (pdf) {
         window.selectedPdf = pdf;
-        window.renderDetail();
-        return;
+        try {
+          window.renderDetail();
+          window.__staticHydrated = true;
+          return;
+        } catch (err) {
+          // Never leave the page retry-looping on a render error — keep the
+          // static skeleton content visible and surface the reason in console.
+          console.error('[Studyria] renderDetail failed on static page:', err);
+          return;
+        }
       }
     }
-    if (tries < 60) return setTimeout(() => waitAndRender(tries + 1), 150);
+    // 30s budget (200 x 150ms) — a first visit on a slow mobile network
+    // (cold CDN downloads + DB fetch for the whole catalogue) can exceed 9s.
+    if (tries < 200) return setTimeout(() => waitAndRender(tries + 1), 150);
     console.warn('[Studyria] Could not hydrate PDF detail — falling back to static content.');
   })();
 

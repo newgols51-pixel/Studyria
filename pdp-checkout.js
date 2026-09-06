@@ -20,6 +20,15 @@ if (typeof window._refreshFreeButtonLabels !== 'function') window._refreshFreeBu
 if (typeof window.loadWishlistFromSupabase !== 'function') window.loadWishlistFromSupabase = async function() {};
 if (typeof window.cpCreditCreatorSale !== 'function') window.cpCreditCreatorSale = function() {};
 
+/* ── Standalone-safe fallback cache ──────────────────────────────────
+   index.html (SPA) declares `const _pdfFallbackCache = {}` in an inline
+   script — a GLOBAL LEXICAL binding that does NOT exist on standalone
+   /pdf/ pages. Bare reads below threw `ReferenceError: _pdfFallbackCache
+   is not defined` from normalizePdf → renderDetail() → static pages were
+   stuck on skeleton screens forever. Keep a self-contained, window-level
+   cache so both SPA and standalone pages work identically. */
+var _pdfFallbackCache = window._pdfFallbackCache = window._pdfFallbackCache || {};
+
 /* ── normalizePdf ── */
 function normalizePdf(p) {
   if (!p) return p;
