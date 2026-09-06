@@ -446,6 +446,7 @@ body.light .ott-row-track .pdf-cover-scrim {
 <link rel="stylesheet" href="premium-p3.css">
 <link rel="stylesheet" href="studyria-ui-2.0.css">
 <link rel="stylesheet" href="cart.css?v=20260905">
+  <link rel="stylesheet" href="pdf-checkout.css?v=20260906">
 <link rel="stylesheet" href="studyria-me-v3.css">
 <style>
 /* ── STATIC DESIGN TOKENS ───────────────────────────────────────
@@ -15104,6 +15105,13 @@ body.light .me-stat-val { filter:none; }
   <div id="checkoutRoot"></div>
 </div>
 
+<!-- ═══ PDF CHECKOUT — premium single-product checkout page (pdf-checkout.js)
+     Route: navigate('pdf-checkout') · deep link: #pdf-checkout/<pdfId>
+     Reuses Cart payment core + V3 preview as a single instance ═══ -->
+<div class="page" id="page-pdf-checkout">
+  <div id="pdfCheckoutRoot"></div>
+</div>
+
 <div class="page" id="page-admin-login">
   <div class="admin-login-wrap">
     <div class="admin-login-orb admin-login-orb-1"></div>
@@ -20871,6 +20879,7 @@ async function navigate(page) {
   }
   if (page === 'cart' && window.Cart) Cart.renderCart();
   if (page === 'checkout' && window.Cart) Cart.renderCheckout();
+  if (page === 'pdf-checkout' && window.PdfCheckout) PdfCheckout.route();
   if (page === 'admin') renderAdmin();
   if (page === 'detail') renderDetail();
   if (page === 'career-hub') {
@@ -22679,6 +22688,11 @@ function pdpHandleBuy() {
   const price = Number(pdf.price ?? 0);
   // Free PDFs always go through downloadPDF which handles ownership grant
   if (pdf.free) downloadPDF(pdf.id);
+  // Paid PDFs → dedicated premium PDF checkout page (reuses the same
+  // payment + entitlement systems via Cart.payItems — no second payment
+  // implementation). Falls back to the legacy direct buyPDF() flow if
+  // the checkout module is not loaded (e.g. standalone /pdf/ pages).
+  else if (window.PdfCheckout && typeof window.PdfCheckout.open === 'function') window.PdfCheckout.open(pdf.id, { from: 'pdp' });
   else buyPDF(pdf.id, price);
 }
 
@@ -41426,10 +41440,11 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="pdf-classification-refactor.js?v=20260906" defer></script>
 <script src="premium-edit-pdf-ui.js" defer></script>
 <script src="pdp-v2.js?v=20260905z" defer></script>
-    <script src="pdp-v3.js?v=20260905z" defer></script>
+    <script src="pdp-v3.js?v=20260906" defer></script>
     <script src="pdp-v4.js?v=20260905z" defer></script>
-    <script src="pdp-checkout.js?v=20260905z" defer></script>
-    <script src="cart.js?v=20260905" defer></script>
+    <script src="pdp-checkout.js?v=20260906" defer></script>
+    <script src="cart.js?v=20260906" defer></script>
+    <script src="pdf-checkout.js?v=20260906" defer></script>
 
 
 
