@@ -116,8 +116,16 @@
     S.db = v;                       // dbPrice / dbOriginal / dbTitle / dbCategory / dbCover
     S.pdf = local || { id: S.pdfId, title: v.dbTitle || 'Study Material', category: v.dbCategory || null, coverImage: v.dbCover || '', pages: 0, description: '' };
 
-    // ownership (verifyList already flagged owned rows for signed-in users)
+    // Ownership — same pre-check pattern as buyPDF(): based on the fresh
+    // auth.getUser() session (never the possibly-stale window.currentUser).
     if (v.state === 'owned') { S.phase = 'owned'; render(); return; }
+    if (user) {
+      try {
+        const rr = await client.from('purchased_pdfs')
+          .select('pdf_uuid').eq('user_id', user.id).eq('status', 'paid').eq('pdf_uuid', String(S.pdfId));
+        if (rr && rr.data && rr.data.length) { S.phase = 'owned'; render(); return; }
+      } catch (e) { /* verifyList flag above is the primary signal */ }
+    }
 
     // premium members get instant access (same business rule as buyPDF / Cart.pay)
     S.isPremium = false;
@@ -232,6 +240,7 @@
         } else {
           img.style.background = '';
           img.src = item.src;
+          if (img.complete && img.naturalWidth) img.classList.add('pco-visible');  // cached
           img.onload = function () { img.classList.add('pco-visible'); };
           img.onerror = function () { img.classList.remove('pco-visible'); };
         }

@@ -15,7 +15,8 @@ function ok(cond, name) {
     <div class="page" id="page-pdf-checkout"><div id="pcoRoot"></div></div>
     <div class="page" id="page-detail"><div id="pdpWrap"></div></div>
     <div class="page" id="page-cart"><div id="cartRoot"></div></div>
-  </body></html>`, { url: 'https://studyria.qzz.io/', pretendToBeVisual: true });
+    <div class="page" id="page-checkout"><div id="checkoutRoot"></div></div>
+  </body></html>`, { url: 'https://studyria.qzz.io/', pretendToBeVisual: true, runScripts: 'outside-only' });
   const w = dom.window;
   global.window = w;
   global.CustomEvent = w.CustomEvent;
@@ -26,7 +27,7 @@ function ok(cond, name) {
     pdf_url: 'pdfs/adre.pdf' };
   let OWNED_ROWS = [];
   let CURRENT_USER = null;
-  let AUTH_CB = null;
+  const AUTH_CBS = [];
   const INSERT_LOG = [];
   const WEBHOOK_LOG = [];
 
@@ -42,10 +43,14 @@ function ok(cond, name) {
     return b;
   }
 
+  const setUser = (u) => {
+    CURRENT_USER = u; w.currentUser = u;
+    if (u) AUTH_CBS.forEach(cb => { try { cb('SIGNED_IN'); } catch (e) {} });
+  };
   w.supabaseClient = {
     auth: {
       getUser: async () => ({ data: { user: CURRENT_USER } }),
-      onAuthStateChange: (cb) => { AUTH_CB = cb; return { data: { subscription: { unsubscribe(){} } } }; }
+      onAuthStateChange: (cb) => { AUTH_CBS.push(cb); return { data: { subscription: { unsubscribe(){} } } }; }
     },
     from: (table) => {
       if (table === 'pdfs') {
@@ -108,8 +113,7 @@ function ok(cond, name) {
   console.log('TEST B — auth return to checkout');
   w.PCO._signIn();
   ok(w.sessionStorage.getItem('pco_return') === 'uuid-1', 'return state stored before login');
-  CURRENT_USER = { id: 'u1', email: 'buyer@test.com', user_metadata: {} };
-  AUTH_CB('SIGNED_IN');           // simulate successful login
+  setUser({ id: 'u1', email: 'buyer@test.com', user_metadata: {} });   // login (fires SIGNED_IN)
   await sleep(700);               // listener uses a 350ms debounce
   ok(root().innerHTML.includes('pcoPayBtn'), 'back on checkout as signed-in user — Pay button present');
   ok(!root().innerHTML.includes('Sign In to Continue'), 'guest CTA gone after sign-in');
