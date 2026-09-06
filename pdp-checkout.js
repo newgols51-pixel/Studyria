@@ -634,11 +634,6 @@ function pdpSharePDF() {
   }
 }
 
-// Force-clears the fullscreen cover preview and its scroll lock, no matter
-// how it was left open. Called defensively from pdpZoomCover() itself and
-// from navigate() below, so a stray overlay can never survive a page change
-// and corrupt the layout of whatever page the user goes to next.
-
 
 // ── WISHLIST ──────────────────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════════

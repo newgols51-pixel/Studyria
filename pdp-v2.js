@@ -574,129 +574,6 @@ window.pdpToggleDesc = function pdpToggleDesc() {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   PDP CLEAR ZOOM LOCK
-   ═══════════════════════════════════════════════════════════════════════ */
-function _pdpClearZoomLock() {
-  document.body.classList.remove('pdp-zoom-lock');
-}
-window._pdpClearZoomLock = _pdpClearZoomLock;
-
-/* ═══════════════════════════════════════════════════════════════════════
-   PDP ZOOM COVER — full-screen cover zoom with pinch/pan
-   (Unchanged from original — works perfectly)
-   ═══════════════════════════════════════════════════════════════════════ */
-window.pdpZoomCover = function pdpZoomCover() {
-  const pdf = window.selectedPdf;
-  if (!pdf || !pdf.coverImage) { if (typeof showToast === 'function') showToast('No cover image to zoom.', 'info'); return; }
-
-  _pdpClearZoomLock();
-  document.body.classList.add('pdp-zoom-lock');
-
-  const overlay = document.createElement('div');
-  overlay.className = 'pdp-zoom-overlay';
-  overlay.innerHTML = `
-    <div class="pdp-zoom-bg"></div>
-    <button class="pdp-zoom-close" aria-label="Close preview">✕</button>
-    <div class="pdp-zoom-content">
-      <img src="${pdf.coverImage}" alt="${_esc(pdf.title || 'PDF cover')}" class="pdp-zoom-img" loading="lazy" decoding="async" draggable="false">
-    </div>`;
-  document.body.appendChild(overlay);
-
-  const img = overlay.querySelector('.pdp-zoom-img');
-  const content = overlay.querySelector('.pdp-zoom-content');
-  const bg = overlay.querySelector('.pdp-zoom-bg');
-  const closeBtn = overlay.querySelector('.pdp-zoom-close');
-
-  let closed = false;
-  function closeZoom() {
-    if (closed) return;
-    closed = true;
-    document.removeEventListener('keydown', onKeyDown);
-    overlay.classList.add('pdp-zoom-closing');
-    setTimeout(() => overlay.remove(), 150);
-    document.body.classList.remove('pdp-zoom-lock');
-  }
-  function onKeyDown(e) { if (e.key === 'Escape') closeZoom(); }
-  document.addEventListener('keydown', onKeyDown);
-  bg.addEventListener('click', closeZoom);
-  closeBtn.addEventListener('click', closeZoom);
-
-  let scale = 1, lastScale = 1;
-  let originX = 0, originY = 0, panStartX = 0, panStartY = 0;
-  let startDist = 0, isPanning = false, lastTapTime = 0, lastTapX = 0, lastTapY = 0;
-
-  function clampScale(s) { return Math.min(Math.max(s, 1), 4); }
-  function clampPan() {
-    const maxOffsetX = (img.clientWidth * (scale - 1)) / 2 + 40;
-    const maxOffsetY = (img.clientHeight * (scale - 1)) / 2 + 40;
-    originX = Math.min(Math.max(originX, -maxOffsetX), maxOffsetX);
-    originY = Math.min(Math.max(originY, -maxOffsetY), maxOffsetY);
-  }
-  function setTransform(animated) {
-    img.style.transition = animated ? 'transform .25s ease' : 'none';
-    img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-    if (animated) setTimeout(() => { img.style.transition = ''; }, 260);
-  }
-  function resetZoom(animated) { scale = 1; originX = 0; originY = 0; setTransform(animated); }
-  function toggleZoomAt(clientX, clientY) {
-    if (scale > 1) { resetZoom(true); }
-    else {
-      const rect = img.getBoundingClientRect();
-      scale = 2.5;
-      originX = (rect.width / 2 - (clientX - rect.left)) * (scale - 1) / scale;
-      originY = (rect.height / 2 - (clientY - rect.top)) * (scale - 1) / scale;
-      clampPan(); setTransform(true);
-    }
-  }
-  function getDistance(touches) {
-    const dx = touches[0].clientX - touches[1].clientX;
-    const dy = touches[0].clientY - touches[1].clientY;
-    return Math.hypot(dx, dy);
-  }
-
-  content.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 2) { startDist = getDistance(e.touches); lastScale = scale; }
-    else if (e.touches.length === 1) {
-      if (scale > 1) { isPanning = true; panStartX = e.touches[0].clientX - originX; panStartY = e.touches[0].clientY - originY; }
-      const now = Date.now();
-      const dx = Math.abs(e.touches[0].clientX - lastTapX);
-      const dy = Math.abs(e.touches[0].clientY - lastTapY);
-      if (now - lastTapTime < 300 && dx < 30 && dy < 30) { toggleZoomAt(e.touches[0].clientX, e.touches[0].clientY); lastTapTime = 0; }
-      else { lastTapTime = now; lastTapX = e.touches[0].clientX; lastTapY = e.touches[0].clientY; }
-    }
-  }, { passive: true });
-
-  content.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2 && startDist) {
-      e.preventDefault();
-      const dist = getDistance(e.touches);
-      scale = clampScale(lastScale * (dist / startDist));
-      clampPan(); setTransform(false);
-    } else if (e.touches.length === 1 && isPanning && scale > 1) {
-      e.preventDefault();
-      originX = e.touches[0].clientX - panStartX;
-      originY = e.touches[0].clientY - panStartY;
-      clampPan(); setTransform(false);
-    }
-  }, { passive: false });
-
-  content.addEventListener('touchend', (e) => {
-    if (e.touches.length < 2) startDist = 0;
-    if (e.touches.length === 0) { isPanning = false; if (scale <= 1) resetZoom(false); }
-  });
-
-  img.addEventListener('dblclick', (e) => toggleZoomAt(e.clientX, e.clientY));
-  content.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const prevScale = scale;
-    scale = clampScale(scale + (e.deltaY < 0 ? 0.25 : -0.25));
-    if (scale === 1) { originX = 0; originY = 0; }
-    else if (prevScale !== scale) clampPan();
-    setTransform(false);
-  }, { passive: false });
-};
-
-/* ═══════════════════════════════════════════════════════════════════════
    PDP LEAVE PAGE CLEANUP
    ═══════════════════════════════════════════════════════════════════════ */
 window._pdpLeavePage = function _pdpLeavePage() {
@@ -726,7 +603,6 @@ window._pdpLeavePage = function _pdpLeavePage() {
   }
   const bar = document.getElementById('pdpStickyBar');
   if (bar) bar.classList.remove('visible');
-  document.body.classList.remove('pdp-zoom-lock');
   document.body.style.top = '';
 };
 

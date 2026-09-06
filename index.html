@@ -6957,7 +6957,7 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="brainlab.css?v=20260903dcafix2">
 <link rel="stylesheet" href="brainlab-icons.css?v=20260818icons1">
 <link rel="stylesheet" href="adre-exam.css?v=20260827d">
-<link rel="stylesheet" href="pdp-v2.css?v=20260905z">
+<link rel="stylesheet" href="pdp-v2.css?v=20260906b">
   <link rel="stylesheet" href="pdp-v3.css?v=20260905z">
   <link rel="stylesheet" href="pdp-v4.css?v=20260905z">
 <link rel="stylesheet" href="studyria-home-v2.css?v=20260901">
@@ -20797,11 +20797,6 @@ function _setPageCanonical(page) {
 async function navigate(page) {
   window._realNavigate = navigate; // expose for stub flush
 
-  // Safety net: if a fullscreen cover preview was left open from a
-  // previous page (e.g. user hit back/bottom-nav instead of the close
-  // button), force it closed so its scroll-lock can never bleed into
-  // the page we're about to show.
-  if (typeof _pdpClearZoomLock === 'function') _pdpClearZoomLock();
   // Clean up PDP touch zoom listeners when leaving PDP
   if (typeof window._pdpZoomCleanup === 'function') {
     window._pdpZoomCleanup();
@@ -22722,11 +22717,6 @@ function pdpSharePDF() {
     navigator.clipboard?.writeText(url).then(() => showToast('Link copied! 📋', 'success')).catch(() => {});
   }
 }
-
-// Force-clears the fullscreen cover preview and its scroll lock, no matter
-// how it was left open. Called defensively from pdpZoomCover() itself and
-// from navigate() below, so a stray overlay can never survive a page change
-// and corrupt the layout of whatever page the user goes to next.
 
 
 // ── WISHLIST ──────────────────────────────────────────────────────
@@ -41425,10 +41415,10 @@ document.addEventListener('DOMContentLoaded', function(){
 <script src="smart-publish-manager.js" defer></script>
 <script src="pdf-classification-refactor.js?v=20260906" defer></script>
 <script src="premium-edit-pdf-ui.js" defer></script>
-<script src="pdp-v2.js?v=20260905z" defer></script>
+<script src="pdp-v2.js?v=20260906b" defer></script>
     <script src="pdp-v3.js?v=20260905z" defer></script>
     <script src="pdp-v4.js?v=20260905z" defer></script>
-    <script src="pdp-checkout.js?v=20260905z" defer></script>
+    <script src="pdp-checkout.js?v=20260906b" defer></script>
     <script src="cart.js?v=20260905" defer></script>
 
 
