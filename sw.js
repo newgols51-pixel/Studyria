@@ -26,7 +26,7 @@
 // no duplicate notifications, no foreign SDK listeners.
 
 // ── VERSION ───────────────────────────────────────────────────────
-const CACHE_VERSION = 'v100' // v100: standalone _ownedPdfIds init — _isOwned threw 'undefined has' killing static-page hydration; assets -> v20260906e; // v99: pdp-checkout.js ReferenceError fix (_pdfFallbackCache) — static /pdf/ pages were stuck on skeletons; bump wipes v98 entries so stale devices fetch v20260906d. // v98: checkout rebuild — pco.js/pco.css added, asset versions v=20260906*, static /pdf/ pages bumped to v=20260906c. Bump wipes v97 SWR entries that kept serving the OLD pdp-checkout.js (old checkout page) to devices.
+const CACHE_VERSION = 'v101' // v101: route-lazy architecture — 25 heavy route scripts (question-bank 2.4MB, ADRE papers, BrainLab/Arena, Campus, admin tools) + 4 route CSS now load on-demand via navigate() preload; creator-program.js extracted from index.html; studyria-notifications.js BrainLab deep-links now use __blReady retry. Bump wipes stale SWR entries so devices fetch fresh JS. // v100: standalone _ownedPdfIds init — _isOwned threw 'undefined has' killing static-page hydration; assets -> v20260906e; // v99: pdp-checkout.js ReferenceError fix (_pdfFallbackCache) — static /pdf/ pages were stuck on skeletons; bump wipes v98 entries so stale devices fetch v20260906d. // v98: checkout rebuild — pco.js/pco.css added, asset versions v=20260906*, static /pdf/ pages bumped to v=20260906c. Bump wipes v97 SWR entries that kept serving the OLD pdp-checkout.js (old checkout page) to devices.
 const CACHE_NAME    = 'studyria-' + CACHE_VERSION;
 const IMG_CACHE     = 'studyria-img-' + CACHE_VERSION;
 const FONT_CACHE    = 'studyria-font-' + CACHE_VERSION;

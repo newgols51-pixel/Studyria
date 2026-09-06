@@ -91,11 +91,11 @@
       case 'job':
         return "navigate('career-hub');setTimeout(function(){if(typeof chOpenDetail==='function')chOpenDetail('" + escAttr(val) + "')},350)";
       case 'quiz':
-        return "navigate('brainlab');setTimeout(function(){if(window.BrainLab&&BrainLab.switchTab)BrainLab.switchTab('quiz')},350)";
+        return "navigate('brainlab');__blReady(function(){BrainLab.switchTab('quiz')})";
       case 'mock':
-        return "navigate('brainlab');setTimeout(function(){if(window.BrainLab&&BrainLab.switchTab)BrainLab.switchTab('mock')},350)";
+        return "navigate('brainlab');__blReady(function(){BrainLab.switchTab('mock')})";
       case 'affair':
-        return "navigate('brainlab');setTimeout(function(){if(window.BrainLab&&BrainLab.switchTab)BrainLab.switchTab('affairs')},350)";
+        return "navigate('brainlab');__blReady(function(){BrainLab.switchTab('affairs')})";
       case 'page': {
         /* FIX: only emit navigation for REAL page ids (handles legacy
            destinations like page:Homepage case-insensitively); unknown
