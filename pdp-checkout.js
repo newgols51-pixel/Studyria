@@ -28,6 +28,9 @@ if (typeof window.cpCreditCreatorSale !== 'function') window.cpCreditCreatorSale
    stuck on skeleton screens forever. Keep a self-contained, window-level
    cache so both SPA and standalone pages work identically. */
 var _pdfFallbackCache = window._pdfFallbackCache = window._pdfFallbackCache || {};
+window._ownedPdfIds = window._ownedPdfIds || new Set();
+window._pdfDownloadFireGuard = window._pdfDownloadFireGuard || new Map();
+window._pdpRealtimeSubs = window._pdpRealtimeSubs || [];
 
 /* ── normalizePdf ── */
 function normalizePdf(p) {
