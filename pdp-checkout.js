@@ -583,11 +583,6 @@ function pdpHandleBuy() {
   const price = Number(pdf.price ?? 0);
   // Free PDFs always go through downloadPDF which handles ownership grant
   if (pdf.free) downloadPDF(pdf.id);
-  // Paid PDFs → dedicated premium PDF checkout page (reuses the same
-  // payment + entitlement systems via Cart.payItems — no second payment
-  // implementation). Falls back to the legacy direct buyPDF() flow if
-  // the checkout module is not loaded (e.g. standalone /pdf/ pages).
-  else if (window.PdfCheckout && typeof window.PdfCheckout.open === 'function') window.PdfCheckout.open(pdf.id, { from: 'pdp' });
   else buyPDF(pdf.id, price);
 }
 

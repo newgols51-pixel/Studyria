@@ -685,17 +685,6 @@
   window._v3FsPrev = _v3FsPrev;
   window._v3FsNext = _v3FsNext;
 
-  /* ═══ 13b. SHARED-INSTANCE EXPORTS (PDF Checkout page reuse) ════
-     The V3 viewer is a single-instance module (fixed #pdpV3* IDs +
-     module state G). The dedicated PDF checkout page reuses this exact
-     viewer by mounting the SAME markup as the ONLY gallery in the DOM
-     (it clears #pdpWrap first — renderDetail always rebuilds it later).
-     These exports let the checkout page install the identical gallery,
-     swipe and local-zoom engine without duplicating any viewer code. */
-  window._v3GalleryHTML = _galleryHTML;
-  window._v3InstallStageSwipe = _installStageSwipe;
-  window._v3InstallStageZoom = _installStageZoom;
-
   function _fsKey(e) {
     if (!G.fsOpen) return;
     if (e.key === 'Escape') _closeFs();
