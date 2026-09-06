@@ -8,83 +8,16 @@
 'use strict';
 
 /* ─── CONSTANTS ────────────────────────────────────────────────── */
-const CP_LEVELS = {
-  starter: { label:'Starter', share:60, icon:'⭐', color:'#f59e0b', minSales:0 },
-  rising:  { label:'Rising',  share:65, icon:'🚀', color:'#10d98e', minSales:5000 },
-  pro:     { label:'Pro',     share:70, icon:'💎', color:'#930205', minSales:25000 }
-};
+/* CP_LEVELS now lives in index.html (always-loaded) — credit logic runs on payment/download flows outside this lazy bundle. */
+
 
 // ── Creator revenue attribution: credits the creator when THEIR pdf sells,
 // logs to creator_ledger, and auto-promotes level based on cumulative sales.
 // Called from both purchase-completion handlers, right after a successful
 // (non-duplicate) purchased_pdfs insert. Wrapped defensively — a failure
 // here must never block the buyer's PDF from opening.
-async function cpCreditCreatorSale(pdfId, amount) {
-  try {
-    const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
-    if (!sb || !pdfId) return;
-    const { data: pdf } = await sb.from('pdfs').select('creator_id').eq('id', String(pdfId)).maybeSingle();
-    if (!pdf || !pdf.creator_id) return; // not a creator-published PDF — nothing to credit
-
-    const { data: creator } = await sb.from('creators')
-      .select('level,revenue_share,total_sales,total_earnings,available_balance')
-      .eq('user_id', pdf.creator_id).maybeSingle();
-    if (!creator) return;
-
-    const saleAmount = Number(amount) || 0;
-    const share = (creator.revenue_share || CP_LEVELS[creator.level || 'starter']?.share || 60) / 100;
-    const creatorCut = Math.round(saleAmount * share * 100) / 100;
-    const newTotalSales = (creator.total_sales || 0) + saleAmount;
-    const newTotalEarnings = (creator.total_earnings || 0) + creatorCut;
-    const newBalance = (creator.available_balance || 0) + creatorCut;
-
-    // Auto level promotion based on cumulative sales (Starter → Rising → Pro)
-    let newLevel = creator.level || 'starter';
-    let newShare = creator.revenue_share || CP_LEVELS[newLevel].share;
-    for (const lvl of ['starter','rising','pro']) {
-      if (newTotalSales >= CP_LEVELS[lvl].minSales) { newLevel = lvl; newShare = CP_LEVELS[lvl].share; }
-    }
-
-    await sb.from('creators').update({
-      total_sales: newTotalSales,
-      total_earnings: newTotalEarnings,
-      available_balance: newBalance,
-      level: newLevel,
-      revenue_share: newShare
-    }).eq('user_id', pdf.creator_id);
-
-    await sb.from('creator_ledger').insert({
-      user_id: pdf.creator_id,
-      type: 'credit',
-      amount: creatorCut,
-      description: `Sale revenue (${Math.round(share*100)}% share) — PDF sold for ₹${saleAmount}`,
-      created_at: new Date().toISOString()
-    });
-
-    if (newLevel !== (creator.level || 'starter')) {
-      console.log(`🎉 Creator ${pdf.creator_id} auto-promoted to ${newLevel} (${newShare}% share)`);
-    }
-  } catch(e) {
-    console.warn('⚠️ cpCreditCreatorSale error (non-blocking):', e);
-  }
-}
-
 // ── Creator download attribution: bumps total_downloads when a creator's
 // PDF is opened/downloaded (paid or free). Wrapped defensively.
-async function cpCreditCreatorDownload(pdfId) {
-  try {
-    const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
-    if (!sb || !pdfId) return;
-    const { data: pdf } = await sb.from('pdfs').select('creator_id').eq('id', String(pdfId)).maybeSingle();
-    if (!pdf || !pdf.creator_id) return;
-    const { data: creator } = await sb.from('creators').select('total_downloads').eq('user_id', pdf.creator_id).maybeSingle();
-    if (!creator) return;
-    await sb.from('creators').update({ total_downloads: (creator.total_downloads || 0) + 1 }).eq('user_id', pdf.creator_id);
-  } catch(e) {
-    console.warn('⚠️ cpCreditCreatorDownload error (non-blocking):', e);
-  }
-}
-
 /* ─── Creator Registration State ───────────────────────────────── */
 let _crpStep = 1;
 let _crpMaxStepReached = 1; // highest step unlocked via real validation — used for Preview Mode gating

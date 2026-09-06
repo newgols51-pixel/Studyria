@@ -25663,13 +25663,22 @@ async function incrementDownloadCount(pdfId) {
   const client = window.supabaseClient;
   if (!client || !pdfId) return;
   try {
-    // Use RPC if available, otherwise manual increment
+    // RLS hardening phase-1: prefer the SECURITY DEFINER RPC (works for every
+    // visitor once pdfs UPDATE is admin-gated); fall back to the old manual
+    // increment for databases where the RPC isn't deployed yet.
+    const { data: newCount, error: rpcErr } = await client
+      .rpc('bump_download_count', { p_pdf_id: String(pdfId) });
+    if (!rpcErr && newCount != null && newCount !== -1) {
+      console.log(`✅ download_count incremented for pdf ${pdfId} via RPC → ${newCount}`);
+      if (typeof cpCreditCreatorDownload === 'function') cpCreditCreatorDownload(pdfId);
+      return;
+    }
     const { data: row } = await client
       .from('pdfs').select('download_count').eq('id', String(pdfId)).single();
     const current = (row?.download_count) || 0;
     await client.from('pdfs').update({ download_count: current + 1 }).eq('id', String(pdfId));
     console.log(`✅ download_count incremented for pdf ${pdfId}: ${current} → ${current + 1}`);
-    cpCreditCreatorDownload(pdfId);
+    if (typeof cpCreditCreatorDownload === 'function') cpCreditCreatorDownload(pdfId);
   } catch(e) {
     console.warn('⚠️ incrementDownloadCount error:', e);
   }
@@ -43111,6 +43120,84 @@ body.light .sdl-insights-card { background: rgba(255,255,255,0.85); }
 }
 </style>
 
+<script>
+/* ─── CREATOR CREDIT LOGIC — always loaded (called by payment + download flows
+   on public routes, independent of the lazy creator-program.js bundle).
+   CP_LEVELS is a `var` global so the lazy creator bundle can reuse it. */
+var CP_LEVELS = {
+  starter: { label:'Starter', share:60, icon:'⭐', color:'#f59e0b', minSales:0 },
+  rising:  { label:'Rising',  share:65, icon:'🚀', color:'#10d98e', minSales:5000 },
+  pro:     { label:'Pro',     share:70, icon:'💎', color:'#930205', minSales:25000 }
+};
+
+async function cpCreditCreatorSale(pdfId, amount) {
+  try {
+    const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+    if (!sb || !pdfId) return;
+    const { data: pdf } = await sb.from('pdfs').select('creator_id').eq('id', String(pdfId)).maybeSingle();
+    if (!pdf || !pdf.creator_id) return; // not a creator-published PDF — nothing to credit
+
+    const { data: creator } = await sb.from('creators')
+      .select('level,revenue_share,total_sales,total_earnings,available_balance')
+      .eq('user_id', pdf.creator_id).maybeSingle();
+    if (!creator) return;
+
+    const saleAmount = Number(amount) || 0;
+    const share = (creator.revenue_share || CP_LEVELS[creator.level || 'starter']?.share || 60) / 100;
+    const creatorCut = Math.round(saleAmount * share * 100) / 100;
+    const newTotalSales = (creator.total_sales || 0) + saleAmount;
+    const newTotalEarnings = (creator.total_earnings || 0) + creatorCut;
+    const newBalance = (creator.available_balance || 0) + creatorCut;
+
+    // Auto level promotion based on cumulative sales (Starter → Rising → Pro)
+    let newLevel = creator.level || 'starter';
+    let newShare = creator.revenue_share || CP_LEVELS[newLevel].share;
+    for (const lvl of ['starter','rising','pro']) {
+      if (newTotalSales >= CP_LEVELS[lvl].minSales) { newLevel = lvl; newShare = CP_LEVELS[lvl].share; }
+    }
+
+    await sb.from('creators').update({
+      total_sales: newTotalSales,
+      total_earnings: newTotalEarnings,
+      available_balance: newBalance,
+      level: newLevel,
+      revenue_share: newShare
+    }).eq('user_id', pdf.creator_id);
+
+    await sb.from('creator_ledger').insert({
+      user_id: pdf.creator_id,
+      type: 'credit',
+      amount: creatorCut,
+      description: `Sale revenue (${Math.round(share*100)}% share) — PDF sold for ₹${saleAmount}`,
+      created_at: new Date().toISOString()
+    });
+
+    if (newLevel !== (creator.level || 'starter')) {
+      console.log(`🎉 Creator ${pdf.creator_id} auto-promoted to ${newLevel} (${newShare}% share)`);
+    }
+  } catch(e) {
+    console.warn('⚠️ cpCreditCreatorSale error (non-blocking):', e);
+  }
+}
+
+
+
+async function cpCreditCreatorDownload(pdfId) {
+  try {
+    const sb = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+    if (!sb || !pdfId) return;
+    const { data: pdf } = await sb.from('pdfs').select('creator_id').eq('id', String(pdfId)).maybeSingle();
+    if (!pdf || !pdf.creator_id) return;
+    const { data: creator } = await sb.from('creators').select('total_downloads').eq('user_id', pdf.creator_id).maybeSingle();
+    if (!creator) return;
+    await sb.from('creators').update({ total_downloads: (creator.total_downloads || 0) + 1 }).eq('user_id', pdf.creator_id);
+  } catch(e) {
+    console.warn('⚠️ cpCreditCreatorDownload error (non-blocking):', e);
+  }
+}
+
+
+</script>
 <script>
 /* ─── CREATOR PROGRAM 2.0 — route-lazy bundle (Issue #1) ────────────
    The full creator/KYC application code now lives in creator-program.js
