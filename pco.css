@@ -1,0 +1,574 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   STUDYRIA — PREMIUM PDF CHECKOUT (PCO)
+   New checkout UI layer over the existing trusted systems
+   (cart.js Cart · Razorpay · purchased_pdfs · Library).
+
+   ARCHITECTURE RULES (non-negotiable):
+   • The preview never locks document scrolling — no body/html overflow
+     manipulation anywhere in this file.
+   • No global touch/pointer/wheel handlers — page scroll and browser
+     pinch zoom stay 100% native.
+   • The sticky mobile bar reserves its own space via padding on the
+     page container — it never covers content and never creates
+     horizontal overflow.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.pco-root {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px 16px calc(96px + env(safe-area-inset-bottom));
+  font-family: var(--font-ui, 'Wix Madefor Display', system-ui, sans-serif);
+}
+.pco-root.pco-no-bar { padding-bottom: 32px; }
+
+/* ── Top row ─────────────────────────────────────────────────────── */
+.pco-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.pco-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(147, 2, 5, 0.22);
+  background: transparent;
+  color: #930205;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.pco-back:hover { background: rgba(147, 2, 5, 0.06); }
+.pco-secure-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0a7a3d;
+}
+.pco-secure-tag svg { flex-shrink: 0; }
+
+/* ── Two-column shell (desktop) ───────────────────────────────────── */
+@media (min-width: 1024px) {
+  .pco-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 28px;
+    align-items: start;
+  }
+  .pco-root { padding-bottom: 40px; }
+}
+
+/* ── Product identity ─────────────────────────────────────────────── */
+.pco-ident { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.pco-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #930205;
+}
+.pco-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1c1410;
+  text-wrap: balance;
+}
+.pco-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.pco-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(147, 2, 5, 0.07);
+  color: #6d1b1b;
+  white-space: nowrap;
+}
+.pco-chip.pco-chip-plain { background: rgba(28, 20, 16, 0.06); color: #5a4a42; }
+
+/* ── Preview card — ISOLATED, bounded, zero viewport impact ───────── */
+.pco-preview {
+  border: 1px solid rgba(28, 20, 16, 0.10);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fffdf9 0%, #faf6ef 100%);
+  overflow: hidden;
+}
+.pco-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a7a70;
+}
+.pco-preview-badge {
+  color: #0a7a3d;
+  background: rgba(10, 122, 61, 0.08);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.pco-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 520px;
+  background: #f3ede3;
+  overflow: hidden;
+  touch-action: pan-y;            /* vertical panning allowed → page scrolls */
+}
+.pco-stage-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;            /* image can NEVER escape the stage */
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity .25s ease;
+  opacity: 0;
+}
+.pco-stage-img.pco-visible { opacity: 1; }
+
+.pco-wm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.pco-wm.pco-visible { opacity: 1; }
+.pco-wm span {
+  font-size: clamp(0.8rem, 2.4vw, 1.05rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(28, 20, 16, 0.13);
+  transform: rotate(-28deg);
+  text-align: center;
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+.pco-stage-loading,
+.pco-stage-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 3;
+  background: rgba(243, 237, 227, 0.65);
+}
+.pco-spinner {
+  width: 30px; height: 30px;
+  border: 3px solid rgba(147, 2, 5, 0.15);
+  border-top-color: #930205;
+  border-radius: 50%;
+  animation: pco-spin .8s linear infinite;
+}
+@keyframes pco-spin { to { transform: rotate(360deg); } }
+.pco-stage-loading span { font-size: 0.78rem; font-weight: 600; color: #8a7a70; }
+.pco-stage-error span { font-size: 0.8rem; font-weight: 600; color: #a33; }
+@media (prefers-reduced-motion: reduce) { .pco-spinner { animation-duration: 2s; } }
+
+.pco-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(28, 20, 16, 0.14);
+  background: rgba(255, 253, 249, 0.92);
+  color: #1c1410;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background .15s ease;
+}
+.pco-arrow:hover:not(:disabled) { background: #fff; }
+.pco-arrow:disabled { opacity: 0.35; cursor: default; }
+.pco-arrow-prev { left: 10px; }
+.pco-arrow-next { right: 10px; }
+
+.pco-stage-ind {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 10px;
+  z-index: 4;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(28, 20, 16, 0.6);
+  color: #fffdf9;
+  padding: 3px 10px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* Thumbnails */
+.pco-thumbs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.pco-thumbs::-webkit-scrollbar { display: none; }
+.pco-thumb {
+  flex: 0 0 auto;
+  width: 46px; height: 60px;
+  border-radius: 8px;
+  border: 2px solid rgba(28, 20, 16, 0.12);
+  background: #f3ede3;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+.pco-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pco-thumb .pco-thumb-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700; color: #8a7a70;
+}
+.pco-thumb.active { border-color: #930205; box-shadow: 0 0 0 2px rgba(147, 2, 5, 0.15); }
+.pco-thumb-label {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  font-size: 0.52rem; font-weight: 700; text-transform: uppercase;
+  text-align: center; background: rgba(28,20,16,0.55); color: #fff;
+  padding: 1px 0;
+}
+
+/* ── Description / benefits ──────────────────────────────────────── */
+.pco-desc {
+  margin-top: 14px;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: #4a3e37;
+}
+.pco-benefits {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pco-benefits li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 0.82rem;
+  color: #4a3e37;
+}
+.pco-benefits svg { flex-shrink: 0; margin-top: 2px; color: #0a7a3d; }
+
+/* ── Summary card ────────────────────────────────────────────────── */
+.pco-summary {
+  border: 1px solid rgba(147, 2, 5, 0.14);
+  border-radius: 18px;
+  background: #fffdf9;
+  box-shadow: 0 10px 30px rgba(28, 20, 16, 0.06);
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .pco-summary { position: sticky; top: 84px; }
+}
+.pco-summary-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(28, 20, 16, 0.07);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #8a7a70;
+}
+.pco-prod-row {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px 6px;
+  align-items: center;
+}
+.pco-prod-cover {
+  width: 52px; height: 66px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(28, 20, 16, 0.08);
+}
+.pco-prod-noimg {
+  width: 52px; height: 66px;
+  border-radius: 8px;
+  background: rgba(147, 2, 5, 0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.pco-prod-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1c1410;
+  line-height: 1.35;
+}
+.pco-prod-sub { font-size: 0.72rem; color: #8a7a70; margin-top: 2px; }
+
+.pco-pricebox { padding: 8px 18px 16px; }
+.pco-price-final {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.pco-price-final .pco-pay {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #1c1410;
+}
+.pco-price-final .pco-mrp {
+  font-size: 0.9rem;
+  color: #9b8d84;
+  text-decoration: line-through;
+}
+.pco-off {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0a7a3d;
+  background: rgba(10, 122, 61, 0.09);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+.pco-price-rows {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(28, 20, 16, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.pco-price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #5a4a42;
+}
+.pco-price-row strong { color: #1c1410; font-weight: 800; }
+.pco-price-row.pco-save strong { color: #0a7a3d; }
+
+.pco-actions { padding: 0 18px 6px; display: flex; flex-direction: column; gap: 10px; }
+.pco-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .1s ease, opacity .15s ease;
+  font-family: inherit;
+}
+.pco-btn:active:not(:disabled) { transform: scale(0.985); }
+.pco-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.pco-btn-primary { background: linear-gradient(135deg, #a70609 0%, #930205 100%); color: #fffdf9; box-shadow: 0 6px 18px rgba(147, 2, 5, 0.28); }
+.pco-btn-primary:hover:not(:disabled) { box-shadow: 0 8px 22px rgba(147, 2, 5, 0.34); }
+.pco-btn-secondary { background: transparent; color: #930205; border: 1.5px solid rgba(147, 2, 5, 0.3); }
+.pco-btn-ghost { background: rgba(28, 20, 16, 0.05); color: #4a3e37; }
+.pco-btn-green { background: linear-gradient(135deg, #0d8f47 0%, #0a7a3d 100%); color: #fff; box-shadow: 0 6px 18px rgba(10, 122, 61, 0.25); }
+.pco-btn[disabled] { transform: none; }
+
+.pco-cart-row { display: flex; gap: 10px; }
+.pco-cart-row .pco-btn { flex: 1; }
+
+.pco-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #8a7a70;
+  padding: 6px 18px 14px;
+  text-align: center;
+}
+
+/* ── Trust badges ─────────────────────────────────────────────────── */
+.pco-trust {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 14px 18px 18px;
+  border-top: 1px solid rgba(28, 20, 16, 0.07);
+}
+.pco-trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #4a3e37;
+}
+.pco-trust-item svg { color: #930205; }
+.pco-trust-item small { font-weight: 500; color: #8a7a70; font-size: 0.62rem; }
+@media (max-width: 359px) { .pco-trust { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── Inline notice (cancel / save-failed) ─────────────────────────── */
+.pco-notice {
+  margin: 0 18px 12px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.pco-notice-info { background: rgba(10, 122, 61, 0.08); color: #0a7a3d; }
+.pco-notice-warn { background: rgba(214, 92, 22, 0.10); color: #9a5b0e; }
+
+/* ── State cards (owned / premium / success / errors) ─────────────── */
+.pco-state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 34px 22px;
+  border-radius: 18px;
+  border: 1px solid rgba(28, 20, 16, 0.10);
+  background: #fffdf9;
+  margin-top: 10px;
+}
+.pco-state-ico {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+}
+.pco-state-ico-green { background: rgba(10, 122, 61, 0.10); }
+.pco-state-ico-gold { background: rgba(180, 140, 30, 0.14); }
+.pco-state-ico-red { background: rgba(147, 2, 5, 0.08); }
+.pco-state-title { margin: 0; font-size: 1.15rem; font-weight: 800; color: #1c1410; }
+.pco-state-sub { margin: 0; font-size: 0.84rem; color: #5a4a42; line-height: 1.55; max-width: 420px; }
+.pco-state-ctas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 6px; }
+.pco-state-ctas .pco-btn { width: auto; min-width: 150px; }
+
+/* ── Skeleton ─────────────────────────────────────────────────────── */
+.pco-skel {
+  border-radius: 10px;
+  background: linear-gradient(100deg, rgba(28,20,16,0.06) 40%, rgba(28,20,16,0.11) 50%, rgba(28,20,16,0.06) 60%);
+  background-size: 200% 100%;
+  animation: pco-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes pco-shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .pco-skel { animation: none; } }
+.pco-skel-title { height: 22px; width: 65%; margin-bottom: 8px; }
+.pco-skel-line { height: 12px; width: 90%; margin-bottom: 6px; }
+.pco-skel-stage { aspect-ratio: 3/4; max-height: 420px; border-radius: 16px; }
+.pco-skel-card { height: 380px; border-radius: 18px; }
+
+/* ── Sticky mobile checkout bar ───────────────────────────────────── */
+.pco-sticky {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 0;
+  z-index: 940;
+  background: rgba(255, 253, 249, 0.97);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(28, 20, 16, 0.10);
+  box-shadow: 0 -6px 24px rgba(28, 20, 16, 0.08);
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+}
+.pco-sticky-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.pco-sticky-price { display: flex; flex-direction: column; min-width: 58px; }
+.pco-sticky-price .pco-sp-now { font-size: 1.05rem; font-weight: 800; color: #1c1410; line-height: 1.1; }
+.pco-sticky-price .pco-sp-mrp { font-size: 0.68rem; color: #9b8d84; text-decoration: line-through; }
+.pco-sticky-price .pco-sp-off { font-size: 0.62rem; font-weight: 800; color: #0a7a3d; }
+
+.pco-sticky-icon {
+  width: 40px; height: 40px;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  border: 1.5px solid rgba(28, 20, 16, 0.14);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4a3e37;
+  font-size: 1rem;
+  padding: 0;
+}
+.pco-sticky-icon.on { color: #930205; border-color: rgba(147, 2, 5, 0.4); background: rgba(147, 2, 5, 0.05); }
+.pco-sticky-buy {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a70609 0%, #930205 100%);
+  color: #fffdf9;
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 5px 16px rgba(147, 2, 5, 0.3);
+  font-family: inherit;
+  transition: transform .1s ease, opacity .15s ease;
+}
+.pco-sticky-buy:active:not(:disabled) { transform: scale(0.98); }
+.pco-sticky-buy:disabled { opacity: 0.6; cursor: not-allowed; }
+
+@media (min-width: 1024px) { .pco-sticky { display: none; } }
+
+/* ── Accessibility ────────────────────────────────────────────────── */
+.pco-btn:focus-visible,
+.pco-arrow:focus-visible,
+.pco-thumb:focus-visible,
+.pco-back:focus-visible,
+.pco-sticky-icon:focus-visible,
+.pco-sticky-buy:focus-visible {
+  outline: 2px solid #930205;
+  outline-offset: 2px;
+}
