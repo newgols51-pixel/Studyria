@@ -629,8 +629,8 @@
     _payingUI(true);
 
     var ui = {
-      onStart: function () { /* buttons already in paying state */ },
-      onSuccess: function (granted, paymentId, failed) {
+      setBusy: function (on) { _payingUI(on); },
+      onGranted: function (granted, paymentId, failed) {
         S.payBusy = false;
         S.paymentId = paymentId || null;
         S.phase = 'success';
@@ -642,9 +642,11 @@
           _toast('Payment successful! 🎉', 'success');
         }
       },
-      onPremium: function () {
+      onPremium: function (premList) {
         S.payBusy = false;
-        S.phase = 'premium';
+        try { (premList || []).forEach(function (v) { Cart.openOwned(v.ci.pdfId); }); } catch (e) {}
+        S.phase = 'success';
+        S.paymentId = null;
         render();
       },
       onNothingToPay: function (verified) {
@@ -652,6 +654,12 @@
         S.notice = null;
         load();   // re-verify → will land in owned / notfound state
       },
+      onAllOwned: function () {
+        S.payBusy = false;
+        S.notice = null;
+        load();
+      },
+      onSomeOwned: function () { /* single-product flow — cannot occur */ },
       onAuthRequired: function () {
         S.payBusy = false;
         S.phase = 'guest';
@@ -661,12 +669,12 @@
       onDismiss: function () {
         S.payBusy = false;
         S.notice = { kind: 'info', text: 'Payment cancelled — no charge was made. You can safely try again.' };
-        if (S.phase === 'ready') render(); else { S.phase = 'ready'; load(); }
+        render();
       },
       onError: function (msg) {
         S.payBusy = false;
         S.notice = { kind: 'warn', text: msg || 'Payment could not start. Please try again.' };
-        if (S.phase === 'ready') render(); else _payingUI(false);
+        render();
       }
     };
 

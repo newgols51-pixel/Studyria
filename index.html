@@ -446,6 +446,7 @@ body.light .ott-row-track .pdf-cover-scrim {
 <link rel="stylesheet" href="premium-p3.css">
 <link rel="stylesheet" href="studyria-ui-2.0.css">
 <link rel="stylesheet" href="cart.css?v=20260905">
+<link rel="stylesheet" href="pco.css?v=20260906">
 <link rel="stylesheet" href="studyria-me-v3.css">
 <style>
 /* ── STATIC DESIGN TOKENS ───────────────────────────────────────
@@ -15119,6 +15120,12 @@ body.light .me-stat-val { filter:none; }
   <div id="checkoutRoot"></div>
 </div>
 
+<!-- ═══ PREMIUM PDF CHECKOUT (PCO — new dedicated PDF checkout page;
+     reuses Cart.verifyList/payItems, Razorpay, purchased_pdfs, Library) ═══ -->
+<div class="page" id="page-pdf-checkout">
+  <div id="pcoRoot"></div>
+</div>
+
 <div class="page" id="page-admin-login">
   <div class="admin-login-wrap">
     <div class="admin-login-orb admin-login-orb-1"></div>
@@ -20775,7 +20782,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload','ai-notes',
-  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab','free-materials','notifications'
+  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab','free-materials','notifications','pdf-checkout'
 ]);
 
 // ── SPA page canonical handling ─────────────────────────────────────
@@ -20826,6 +20833,12 @@ async function navigate(page) {
   }
   if (typeof _pdpLeavePage === "function") _pdpLeavePage();
   _pdpResetPageZoom();
+
+  // ── Deep link: #pdf-checkout/<pdfId> → premium PDF checkout ─────
+  if (typeof page === 'string' && page.indexOf('pdf-checkout/') === 0) {
+    window._pcoDeepLinkId = decodeURIComponent(page.slice('pdf-checkout/'.length).split('/')[0] || '');
+    page = 'pdf-checkout';
+  }
 
   // ── Already signed in? Don't show the login/register screen ─────
   if ((page === 'login' || page === 'register') && window.currentUser) {
@@ -20888,6 +20901,7 @@ async function navigate(page) {
   }
   if (page === 'cart' && window.Cart) Cart.renderCart();
   if (page === 'checkout' && window.Cart) Cart.renderCheckout();
+  if (page === 'pdf-checkout' && window.PCO) PCO.renderFromRoute();
   if (page === 'admin') renderAdmin();
   if (page === 'detail') renderDetail();
   if (page === 'career-hub') {
@@ -22698,8 +22712,14 @@ function pdpHandleBuy() {
   normalizePdf(pdf);
   const price = Number(pdf.price ?? 0);
   // Free PDFs always go through downloadPDF which handles ownership grant
-  if (pdf.free) downloadPDF(pdf.id);
-  else buyPDF(pdf.id, price);
+  if (pdf.free) { downloadPDF(pdf.id); return; }
+  // NEW PREMIUM PDF CHECKOUT — SPA only (pdp-checkout.js overrides this copy)
+  if (window.PCO && typeof window.PCO.open === 'function' &&
+      document.getElementById('page-pdf-checkout')) {
+    PCO.open(pdf.id);
+    return;
+  }
+  buyPDF(pdf.id, price);
 }
 
 async function pdpToggleWish() {
@@ -41445,6 +41465,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <script src="pdp-v4.js?v=20260905z" defer></script>
     <script src="pdp-checkout.js?v=20260906b" defer></script>
     <script src="cart.js?v=20260905" defer></script>
+<script src="pco.js?v=20260906" defer></script>
 
 
 

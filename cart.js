@@ -133,9 +133,9 @@
     return null;
   }
 
-  async function verifyCart() {
-    const cart = items();
-    if (!cart.length) return { items: [], ok: true };
+  async function verifyList(list) {
+    const cart = list;
+    if (!cart || !cart.length) return { items: [], ok: true };
 
     const db = await _db();
     if (!db) throw new Error('network');
@@ -188,6 +188,8 @@
       })
     };
   }
+
+  async function verifyCart() { return verifyList(items()); }
 
   /* ══════════════════════════════════════════════════════════════════
      MUTATIONS
@@ -537,27 +539,67 @@
   }
 
   /* ══════════════════════════════════════════════════════════════════
-     PAYMENT — reuses the exact buyPDF() Razorpay pattern, batched
+     PAYMENT — ONE shared Razorpay implementation (batched buyPDF pattern)
+     • pay()      — the Cart-page flow (behavior unchanged)
+     • payItems() — the SAME implementation, callable by other trusted
+       surfaces (the PDF checkout page). No second payment system:
+       one key, one duplicate-guarded purchased_pdfs insert contract,
+       one webhook, one premium bypass, one GA4 event set.
      ══════════════════════════════════════════════════════════════════ */
   let _paying = false;   // §36 idempotency guard
 
   async function pay() {
     if (_paying) return;
-    const btn = document.getElementById('cartPayBtn');
+    await payItems(items().map(i => ({ pdfId: i.pdfId, price: i.priceSnapshot, title: i.title })), null);
+  }
+
+  async function payItems(payList, ui) {
+    if (_paying) return;
+
+    /* UI adapters — defaults reproduce the original Cart-page behavior
+       exactly; the PDF checkout passes its own callbacks. */
+    const d = {
+      setBusy:      (ui && ui.setBusy)      || function (on, amount) {
+                      const btn = document.getElementById('cartPayBtn');
+                      if (btn) { btn.disabled = on; btn.textContent = on ? 'Opening secure payment…' : 'Pay ₹' + amount; }
+                    },
+      onAuthRequired: (ui && ui.onAuthRequired) || function () { _toast('Please login to checkout.', 'info'); navigate('login'); },
+      onNothingToPay: (ui && ui.onNothingToPay) || function (verified) { _toast('No chargeable items in your cart.', 'info'); renderCart(); navigate('cart'); },
+      onAllOwned:  (ui && ui.onAllOwned)  || function () { _toast('✓ These items are already in your library.', 'success'); renderCart(); navigate('cart'); },
+      onSomeOwned: (ui && ui.onSomeOwned) || function () { _toast('Some items were already purchased — checkout continues with the rest.', 'info'); },
+      onPremium:   (ui && ui.onPremium)   || async function (premList) {
+                      _toast('👑 Premium member — opening your items directly.', 'success');
+                      for (const v of premList) await openOwned(v.ci.pdfId);
+                      save(items().filter(i => !premList.some(v => String(v.ci.pdfId) === String(i.pdfId))));
+                      renderCart(); navigate('cart');
+                    },
+      onGranted:   (ui && ui.onGranted)   || function (granted, paymentId, failed) {
+                      navigate('cart');
+                      renderCart();
+                      if (failed.length) {
+                        _toast('⚠️ Payment received but ' + failed.length + ' item(s) couldn\u2019t be saved. Contact support with ID: ' + paymentId, 'error');
+                      } else {
+                        _showSuccess(granted);
+                      }
+                    },
+      onDismiss:   (ui && ui.onDismiss)   || function (amount) { _toast('Payment cancelled — your cart is safe.', 'info'); },
+      onError:     (ui && ui.onError)     || function (msg) { _toast(msg || 'Payment could not start. Please try again.', 'error'); }
+    };
+
     const db = await _db();
-    if (!db) { _toast('Network issue — please try again.', 'error'); return; }
+    if (!db) { d.onError('Network issue — please try again.'); return; }
 
     // 1. Validate authenticated user
     let user = null;
     try { const { data: { user: u } } = await db.auth.getUser(); user = u; } catch (_) {}
-    if (!user) { _toast('Please login to checkout.', 'info'); navigate('login'); return; }
+    if (!user) { d.onAuthRequired(); return; }
 
     // 2. Fresh verification — DB is the only price source (§13)
     let verified;
-    try { verified = await verifyCart(); }
-    catch (e) { _toast('Couldn\u2019t verify prices. Please try again.', 'error'); return; }
+    try { verified = await verifyList(payList.map(p => ({ pdfId: p.pdfId, priceSnapshot: p.price, title: p.title }))); }
+    catch (e) { d.onError('Couldn\u2019t verify prices. Please try again.'); return; }
     const live = verified.items.filter(v => v.state === 'ok');
-    if (!live.length) { _toast('No chargeable items in your cart.', 'info'); renderCart(); navigate('cart'); return; }
+    if (!live.length) { d.onNothingToPay(verified); return; }
 
     // 3. Final ownership re-check (race safety §17)
     try {
@@ -568,8 +610,8 @@
         const ownedIds = new Set(owned.map(o => String(o.pdf_uuid)));
         const stillLive = live.filter(v => !ownedIds.has(String(v.ci.pdfId)));
         if (stillLive.length !== live.length) {
-          if (!stillLive.length) { _toast('✓ These items are already in your library.', 'success'); renderCart(); navigate('cart'); return; }
-          _toast('Some items were already purchased — checkout continues with the rest.', 'info');
+          if (!stillLive.length) { d.onAllOwned(); return; }
+          d.onSomeOwned();
           live.length = 0; stillLive.forEach(v => live.push(v));
         }
       }
@@ -578,41 +620,35 @@
     // 4. Premium members bypass Razorpay for Pass content (same rule as buyPDF)
     if (window.SMCI && typeof window.SMCI.isPremium === 'function') {
       try {
-        if (await window.SMCI.isPremium()) {
-          _toast('👑 Premium member — opening your items directly.', 'success');
-          for (const v of live) await openOwned(v.ci.pdfId);
-          save(items().filter(i => !live.some(v => String(v.ci.pdfId) === String(i.pdfId))));
-          renderCart(); navigate('cart');
-          return;
-        }
+        if (await window.SMCI.isPremium()) { await d.onPremium(live); return; }  // NEVER reach Razorpay for premium members
       } catch (_) {}
     }
 
-    const payItems = live.map(v => ({ pdfId: v.ci.pdfId, price: v.dbPrice > 0 ? v.dbPrice : v.ci.priceSnapshot, title: v.dbTitle || v.ci.title }));
-    const amount = payItems.reduce((s, p) => s + p.price, 0);   // DB-data amount only
+    const payNow = live.map(v => ({ pdfId: v.ci.pdfId, price: v.dbPrice > 0 ? v.dbPrice : v.ci.priceSnapshot, title: v.dbTitle || v.ci.title }));
+    const amount = payNow.reduce((s, p) => s + p.price, 0);   // DB-data amount only
 
     if (typeof Razorpay === 'undefined') {
-      _toast('Payment gateway loading… please try again in a moment.', 'info');
+      d.onError('Payment gateway loading… please try again in a moment.');
       return;
     }
 
     _paying = true;
-    if (btn) { btn.disabled = true; btn.textContent = 'Opening secure payment…'; }
-    _ga4('begin_checkout', { currency: 'INR', value: amount, num_items: payItems.length });
+    d.setBusy(true, amount);
+    _ga4('begin_checkout', { currency: 'INR', value: amount, num_items: payNow.length });
 
     const options = {
       key: RZP_KEY,
       amount: amount * 100,
       currency: 'INR',
       name: 'Studyria',
-      description: 'Study Materials (' + payItems.length + ' item' + (payItems.length !== 1 ? 's' : '') + ')',
+      description: 'Study Materials (' + payNow.length + ' item' + (payNow.length !== 1 ? 's' : '') + ')',
       prefill: { email: user.email, name: (user.user_metadata && user.user_metadata.full_name) || '' },
       theme: { color: '#930205' },
 
       handler: async function (response) {
         const paymentId = response.razorpay_payment_id;
         const failed = [];
-        for (const p of payItems) {
+        for (const p of payNow) {
           // Same insert contract as buyPDF: duplicate-guarded purchased_pdfs row
           let ok = false;
           try {
@@ -643,27 +679,21 @@
         }
 
         // Clear only successfully-granted items (§22)
-        const granted = payItems.filter(p => !failed.some(f => f.pdfId === p.pdfId));
+        const granted = payNow.filter(p => !failed.some(f => f.pdfId === p.pdfId));
         save(items().filter(i => !granted.some(g => String(g.pdfId) === String(i.pdfId))));
         window._dashCache = null;
         try { if (typeof window._refreshDashStats === 'function') window._refreshDashStats(); } catch (_) {}
-        _ga4('purchase', { currency: 'INR', value: amount, transaction_id: paymentId, num_items: payItems.length });
+        _ga4('purchase', { currency: 'INR', value: amount, transaction_id: paymentId, num_items: payNow.length });
 
-        if (typeof navigate === 'function') navigate('cart');
-        renderCart();
         _paying = false;
-        if (failed.length) {
-          _toast('⚠️ Payment received but ' + failed.length + ' item(s) couldn\u2019t be saved. Contact support with ID: ' + paymentId, 'error');
-        } else {
-          _showSuccess(granted);
-        }
+        d.onGranted(granted, paymentId, failed);
       },
 
       modal: {
         ondismiss: function () {   // §21 payment failure/cancel — cart stays intact
-          _toast('Payment cancelled — your cart is safe.', 'info');
           _paying = false;
-          if (btn) { btn.disabled = false; btn.textContent = 'Pay ₹' + amount; }
+          d.setBusy(false, amount);
+          d.onDismiss(amount);
         }
       }
     };
@@ -672,9 +702,9 @@
       new Razorpay(options).open();
     } catch (e) {
       console.error('[Cart] Razorpay open failed:', e);
-      _toast('Could not open payment window. Please try again.', 'error');
       _paying = false;
-      if (btn) { btn.disabled = false; btn.textContent = 'Pay ₹' + amount; }
+      d.setBusy(false, amount);
+      d.onError('Could not open payment window. Please try again.');
     }
   }
 
@@ -742,7 +772,7 @@
   window.Cart = {
     add, remove, has, count, items, clearAll, openOwned,
     renderCart, renderCheckout, retryRender, goCheckout, pay,
-    updateBadge, mergeGuestCart, verifyCart
+    updateBadge, mergeGuestCart, verifyCart, verifyList, payItems
   };
 
   document.addEventListener('DOMContentLoaded', function () {

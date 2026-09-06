@@ -582,8 +582,28 @@ function pdpHandleBuy() {
   normalizePdf(pdf);
   const price = Number(pdf.price ?? 0);
   // Free PDFs always go through downloadPDF which handles ownership grant
-  if (pdf.free) downloadPDF(pdf.id);
-  else buyPDF(pdf.id, price);
+  if (pdf.free) { downloadPDF(pdf.id); return; }
+
+  // NEW PREMIUM PDF CHECKOUT — SPA flow (Buy Now → dedicated checkout page).
+  if (window.PCO && typeof window.PCO.open === 'function' &&
+      document.getElementById('page-pdf-checkout')) {
+    PCO.open(pdf.id);
+    return;
+  }
+
+  // Standalone /pdf/ static pages (no SPA): send the buyer to the
+  // checkout deep link on the main app — same premium checkout for
+  // every normal user flow.
+  if (!document.getElementById('page-detail')) {
+    try {
+      const base = location.origin && location.origin !== 'null' ? location.origin : 'https://studyria.qzz.io';
+      location.href = base + '/#pdf-checkout/' + encodeURIComponent(pdf.id);
+      return;
+    } catch (e) { /* fall through to legacy direct buy */ }
+  }
+
+  // Legacy fallback (kept only as a safety net for non-SPA contexts)
+  buyPDF(pdf.id, price);
 }
 
 
