@@ -407,7 +407,7 @@
           ${savings > 0 ? `<div class="cart-sum-row cart-sum-save"><span>You save (MRP)</span><span>−₹${savings}</span></div>` : ''}
           <div class="cart-sum-total"><span>Total</span><span>₹${subtotal}</span></div>
           <button class="cart-btn cart-btn-primary cart-checkout-btn" ${live.length ? '' : 'disabled'}>
-            Proceed to Checkout →
+            ${live.length === 1 ? 'Proceed to Checkout →' : 'Pay ₹' + subtotal + ' Securely'}
           </button>
           <div class="cart-sum-note">🔒 Prices are re-verified from our database at checkout before you pay.</div>
         </div>
@@ -448,95 +448,30 @@
   /* ══════════════════════════════════════════════════════════════════
      CHECKOUT PAGE (§18–§22) — verified prices, same Razorpay flow
      ══════════════════════════════════════════════════════════════════ */
-  function goCheckout() {
+  async function goCheckout() {
     // Login gate — existing rule: purchases require an account
     if (!_uid()) {
       _toast('Please login to checkout.', 'info');
       if (typeof navigate === 'function') navigate('login');
       return;
     }
-    if (typeof navigate === 'function') navigate('checkout');
-  }
-
-  function renderCheckout() {
-    const root = document.getElementById('checkoutRoot'); if (!root) return;
-    const cart = items();
-    if (!cart.length) { if (typeof navigate === 'function') navigate('cart'); return; }
-    root.innerHTML = _skeletonHTML(cart.length);
-    verifyCart()
-      .then(res => {
-        root.innerHTML = _checkoutHTML(res);
-        _bindCheckoutBtn(res);
-      })
-      .catch(() => {
-        root.innerHTML =
-          '<div class="cart-error-box">⚠ Couldn\u2019t verify prices right now. Please try again.<br><br>' +
-          '<button class="cart-btn cart-btn-primary" onclick="Cart.renderCheckout()">Try Again</button> ' +
-          '<button class="cart-btn cart-btn-ghost" onclick="navigate(\'cart\')">Back to Cart</button></div>';
-      });
-  }
-
-  function _checkoutHTML(verified) {
-    const live = verified.items.filter(v => v.state === 'ok');
-    if (!live.length) {
-      return '<div class="cart-wrap"><div class="cart-empty"><div class="cart-empty-ico">✓</div>' +
-        '<h2 class="cart-empty-title">Nothing to pay for.</h2>' +
-        '<p class="cart-empty-sub">Your cart has no chargeable items — everything is either already purchased or unavailable.</p>' +
-        '<div class="cart-empty-ctas"><button class="cart-btn cart-btn-primary" onclick="navigate(\'cart\')">Back to Cart</button> ' +
-        '<button class="cart-btn cart-btn-ghost" onclick="navigate(\'library\')">Browse Study Materials</button></div></div></div>';
+    // ONE canonical checkout: the premium PCO checkout page (#pdf-checkout).
+    // The old dedicated '#checkout' cart page is retired. Route by
+    // CHARGEABLE (DB-verified) items, not raw cart count, so owned /
+    // unavailable leftovers never force the batch path.
+    let live = [];
+    try { live = (await verifyCart()).items.filter(v => v.state === 'ok'); } catch (e) { /* pay() re-verifies */ }
+    if (window.PCO && typeof window.PCO.open === 'function' && live.length === 1) {
+      PCO.open(live[0].ci.pdfId);
+      return;
     }
-
-    const subtotal = live.reduce((s, v) => s + (v.dbPrice > 0 ? v.dbPrice : v.ci.priceSnapshot), 0);
-    const mrp = live.reduce((s, v) => s + (v.dbOriginal > v.dbPrice ? v.dbOriginal : 0), 0);
-    const savings = mrp > subtotal ? mrp - subtotal : 0;
-
-    return `
-    <div class="cart-wrap cart-wrap-checkout">
-      <div class="cart-main">
-        <div class="cart-title-row">
-          <h1 class="cart-h1">Checkout</h1>
-          <span class="cart-sub">Step 2 of 2 · Secure payment</span>
-          <button class="cart-clear-btn" onclick="navigate('cart')">← Back to Cart</button>
-        </div>
-        <div class="cart-list">
-          ${live.map(v => `
-          <div class="cart-item">
-            <div class="cart-item-img">
-              ${(v.ci.cover || v.dbCover)
-                ? `<img src="${_esc(v.ci.cover || v.dbCover)}" alt="${_esc(v.dbTitle || v.ci.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'cart-item-noimg',innerHTML:'📚'}))">`
-                : '<div class="cart-item-noimg">📚</div>'}
-            </div>
-            <div class="cart-item-body">
-              <div class="cart-item-title">${_esc(v.dbTitle || v.ci.title)}</div>
-              <div class="cart-item-cat">${_esc(v.dbCategory || v.ci.category || 'Study Material')}</div>
-              <div class="cart-item-actions"><span class="cart-qty">Qty ×1</span></div>
-            </div>
-            <div class="cart-item-price"><span class="cart-price-now">₹${v.dbPrice > 0 ? v.dbPrice : v.ci.priceSnapshot}</span>
-              ${v.priceChanged ? `<div class="cart-price-upd">Was ₹${v.ci.priceSnapshot} at add-time — current price shown</div>` : ''}
-            </div>
-          </div>`).join('')}
-        </div>
-      </div>
-
-      <aside class="cart-summary">
-        <div class="cart-summary-card">
-          <div class="cart-sum-title">Order Summary</div>
-          <div class="cart-sum-row"><span>Items (${live.length})</span><span>₹${subtotal}</span></div>
-          ${savings > 0 ? `<div class="cart-sum-row cart-sum-save"><span>You save (MRP)</span><span>−₹${savings}</span></div>` : ''}
-          <div class="cart-sum-total"><span>To Pay</span><span>₹${subtotal}</span></div>
-          <button class="cart-btn cart-btn-primary cart-checkout-btn" id="cartPayBtn">
-            Pay ₹${subtotal}
-          </button>
-          <div class="cart-sum-note">🔒 Final amount re-verified from the database before the payment window opens.</div>
-        </div>
-      </aside>
-    </div>`;
+    // Multi-item cart: PCO is single-PDF — the existing batch payment
+    // (one Razorpay for the whole cart, DB-verified totals) runs directly
+    // from the cart page. No intermediate checkout screen.
+    pay();
   }
 
-  function _bindCheckoutBtn() {
-    const btn = document.getElementById('cartPayBtn');
-    if (btn) btn.addEventListener('click', function (e) { e.preventDefault(); pay(); });
-  }
+
 
   /* ══════════════════════════════════════════════════════════════════
      PAYMENT — ONE shared Razorpay implementation (batched buyPDF pattern)
@@ -780,7 +715,7 @@
   /* ── Export ─────────────────────────────────────────────────────── */
   window.Cart = {
     add, remove, has, count, items, clearAll, openOwned,
-    renderCart, renderCheckout, retryRender, goCheckout, pay,
+    renderCart, retryRender, goCheckout, pay,
     updateBadge, mergeGuestCart, verifyCart, verifyList, payItems
   };
 

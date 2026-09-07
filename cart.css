@@ -4,12 +4,11 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ── Page shells ─────────────────────────────────────────────────────── */
-#page-cart, #page-checkout { padding-bottom: 64px; }
+#page-cart { padding-bottom: 64px; }
 .cart-wrap {
   max-width: 1080px; margin: 0 auto; padding: 28px 20px 10px;
   display: grid; grid-template-columns: 1fr; gap: 24px;
 }
-.cart-wrap-checkout { max-width: 980px; }
 
 .cart-title-row {
   display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;

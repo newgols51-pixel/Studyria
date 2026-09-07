@@ -500,7 +500,7 @@ body.light .ott-row-track .pdf-cover-scrim {
 <link rel="stylesheet" href="premium-p2.css">
 <link rel="stylesheet" href="premium-p3.css">
 <link rel="stylesheet" href="studyria-ui-2.0.css">
-<link rel="stylesheet" href="cart.css?v=20260905">
+<link rel="stylesheet" href="cart.css?v=20260907">
 <link rel="stylesheet" href="pco.css?v=20260906">
 <link rel="stylesheet" href="studyria-me-v3.css">
 <style>
@@ -15148,11 +15148,6 @@ body.light .me-stat-val { filter:none; }
   <div id="cartRoot"></div>
 </div>
 
-<!-- ═══ CHECKOUT (verified prices → existing Razorpay flow) ═══ -->
-<div class="page" id="page-checkout">
-  <div id="checkoutRoot"></div>
-</div>
-
 <!-- ═══ PREMIUM PDF CHECKOUT (PCO — new dedicated PDF checkout page;
      reuses Cart.verifyList/payItems, Razorpay, purchased_pdfs, Library) ═══ -->
 <div class="page" id="page-pdf-checkout">
@@ -20867,6 +20862,12 @@ async function navigate(page) {
   if (typeof _pdpLeavePage === "function") _pdpLeavePage();
   _pdpResetPageZoom();
 
+  // ── Legacy route: the old cart-checkout page is RETIRED. The premium
+  //    PCO checkout (#pdf-checkout) is the single canonical PDF checkout.
+  //    Old #checkout URLs/bookmarks land safely on the cart page (its
+  //    Order Summary + checkout CTA live there).
+  if (page === 'checkout') page = 'cart';
+
   // ── Deep link: #pdf-checkout/<pdfId> → premium PDF checkout ─────
   if (typeof page === 'string' && page.indexOf('pdf-checkout/') === 0) {
     window._pcoDeepLinkId = decodeURIComponent(page.slice('pdf-checkout/'.length).split('/')[0] || '');
@@ -20933,7 +20934,6 @@ async function navigate(page) {
     renderWishlist();
   }
   if (page === 'cart' && window.Cart) Cart.renderCart();
-  if (page === 'checkout' && window.Cart) Cart.renderCheckout();
   if (page === 'pdf-checkout' && window.PCO) PCO.renderFromRoute();
   if (page === 'admin') renderAdmin();
   if (page === 'detail') renderDetail();
@@ -41619,8 +41619,8 @@ document.addEventListener('DOMContentLoaded', function(){
     <script src="pdp-v3.js?v=20260905z" defer></script>
     <script src="pdp-v4.js?v=20260905z" defer></script>
     <script src="pdp-checkout.js?v=20260906d" defer></script>
-    <script src="cart.js?v=20260906" defer></script>
-<script src="pco.js?v=20260906b" defer></script>
+    <script src="cart.js?v=20260907" defer></script>
+<script src="pco.js?v=20260907" defer></script>
 
 
 

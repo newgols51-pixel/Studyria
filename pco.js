@@ -64,7 +64,7 @@
       page.className = 'page';
       page.id = 'page-pdf-checkout';
       page.innerHTML = '<div id="pcoRoot"></div>';
-      var anchor = document.getElementById('page-checkout');
+      var anchor = document.getElementById('page-cart');   // old #page-checkout is retired
       if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(page, anchor.nextSibling);
       else document.body.appendChild(page);
       if (!document.querySelector('link[href*="pco.css"]')) {
