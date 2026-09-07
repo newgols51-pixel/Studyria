@@ -661,7 +661,7 @@
         <h2 class="cart-empty-title">Payment Successful</h2>
         <p class="cart-empty-sub">Your study materials are now available in your library${granted.length ? ' — ' + _esc(granted[0].title) + (granted.length > 1 ? ' and ' + (granted.length - 1) + ' more' : '') : ''}.</p>
         <div class="cart-empty-ctas">
-          <button class="cart-btn cart-btn-primary" onclick="navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)">Open My Library</button>
+          <button class="cart-btn cart-btn-primary" onclick="if(typeof openMyLibrary==='function'){openMyLibrary()}else{navigate('dashboard')}">Open My Library</button>
           <button class="cart-btn cart-btn-ghost" onclick="navigate('library')">Continue Studying</button>
         </div>
       </div>

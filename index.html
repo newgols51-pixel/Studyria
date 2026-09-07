@@ -8950,7 +8950,7 @@ function studyriaApp() {
         <button class="nav-link" data-page="library" onclick="navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)">ADRE</button>
         <button class="nav-link" data-page="free-materials" onclick="navigate('free-materials')">Free Materials</button>
         <button class="nav-link" data-page="library" onclick="navigate('library')">Categories</button>
-        <button class="nav-link" data-page="dashboard" onclick="navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)" style="margin-left:6px;padding-left:14px;border-left:1px solid var(--hp-line,rgba(28,27,26,0.12))">📚 My Library</button>
+        <button class="nav-link" data-page="my-library" onclick="openMyLibrary()" style="margin-left:6px;padding-left:14px;border-left:1px solid var(--hp-line,rgba(28,27,26,0.12))">📚 My Library</button>
       </div>
 
       <!-- Search box (pill-shaped, hidden on mobile) -->
@@ -9025,7 +9025,7 @@ function studyriaApp() {
           <!-- ═══ NAVIGATION SECTION ═══ -->
           <div class="hp-menu-section-label">Navigation</div>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('home')"><span class="hp-menu-icon">🏠</span> Home</a>
-          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)"><span class="hp-menu-icon">📚</span> My Library</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();openMyLibrary()"><span class="hp-menu-icon">📚</span> My Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library')"><span class="hp-menu-icon">📚</span> Library</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('library');setTimeout(function(){var f=document.getElementById('dStream');if(f){f.value='ADRE';f.dispatchEvent(new Event('change'));}},300)"><span class="hp-menu-icon">🎯</span> ADRE</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('brainlab');setTimeout(function(){var el=document.getElementById('bl-arena');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},400)"><span class="hp-menu-icon">⚔️</span> Arena Battle</a>
@@ -9060,7 +9060,7 @@ function studyriaApp() {
           <a class="hp-menu-item" onclick="dhCloseHamburger();toggleLangMenu(event)"><span class="hp-menu-icon">🌐</span> Language</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('notifications')"><span class="hp-menu-icon">🔔</span> Notifications<span class="snc-badge" data-snc-badge hidden>0</span></a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('wishlist')"><span class="hp-menu-icon">❤️</span> Wishlist</a>
-          <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('dashboard');setTimeout(function(){if(typeof switchMeTab==='function')switchMeTab('purchased');},400)"><span class="hp-menu-icon">⬇️</span> Downloads</a>
+          <a class="hp-menu-item" onclick="dhCloseHamburger();openMyLibrary()"><span class="hp-menu-icon">⬇️</span> Downloads</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('privacy')"><span class="hp-menu-icon">🔒</span> Privacy &amp; Security</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('contact')"><span class="hp-menu-icon">❓</span> Help Center</a>
           <a class="hp-menu-item" onclick="dhCloseHamburger();navigate('contact')"><span class="hp-menu-icon">📞</span> Contact Support</a>
@@ -10966,7 +10966,7 @@ body.light .sc-tag-new { background: rgba(147,2,5,0.12); }
         <span class="sh-section-title" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">&#x1F451; Pass Content</span>
         <span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.1));color:#fbbf24;border:1px solid rgba(251,191,36,0.25);margin-left:4px">MEMBERS ONLY</span>
       </div>
-      <button class="sh-see-all" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()">View All &#8594;</button>
+      <button class="sh-see-all" onclick="openMyLibrary('premium')">View All &#8594;</button>
     </div>
   </div>
   <div class="sh-row-outer">
@@ -13132,7 +13132,7 @@ window.addEventListener('resize', function() {
         <span class="ottlib-section-text">▶ Continue Reading</span>
         <span class="ottlib-section-badge" style="background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3)">In Progress</span>
       </div>
-      <button class="ottlib-see-all" onclick="switchMeTab('purchased')">My Library →</button>
+      <button class="ottlib-see-all" onclick="openMyLibrary()">My Library →</button>
     </div>
     <div class="ottlib-track-outer">
       <div class="ottlib-track" id="ottlibContinueTrack"></div>
@@ -13164,7 +13164,7 @@ window.addEventListener('resize', function() {
         <span class="ottlib-section-text">📥 My PDFs</span>
         <span class="ottlib-section-badge" style="background:rgba(16,217,142,0.12);color:#34d399;border:1px solid rgba(16,217,142,0.3)">Purchased</span>
       </div>
-      <button class="ottlib-see-all" onclick="switchMeTab('purchased')">View All →</button>
+      <button class="ottlib-see-all" onclick="openMyLibrary()">View All →</button>
     </div>
     <div class="ottlib-track-outer">
       <div class="ottlib-track" id="ottlibMyPDFsTrack"></div>
@@ -14393,6 +14393,27 @@ body.light .me-tab-bar {
 }
 .me-tab-panel { animation: dashFadeUp .38s ease both; }
 
+/* ═══ MY LIBRARY DEDICATED PAGE (#my-library) — premium study library ═══ */
+#page-my-library .mylib-page-head { padding:34px 0 6px; }
+.mylib-page-title { display:flex; align-items:center; gap:16px; }
+.mylib-page-ico { width:56px; height:56px; flex:0 0 56px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; background:linear-gradient(135deg, rgba(147,2,5,0.12), rgba(201,154,60,0.10)); border:1px solid rgba(201,154,60,0.35); box-shadow:0 6px 22px rgba(147,2,5,0.14); }
+.mylib-page-h1 { font-family:var(--font-display); font-size:1.85rem; line-height:1.15; margin:0; letter-spacing:.01em; background:linear-gradient(135deg, var(--color-accent) 0%, #7d1122 60%, var(--color-accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.mylib-page-sub { font-size:.85rem; color:var(--text2); margin:6px 0 0; }
+#page-my-library .lib-sub-tabs { margin-top:18px; }
+
+/* Guest gate — premium sign-in state (never auto-redirects to the catalog) */
+.mylib-gate { text-align:center; padding:80px 20px; animation:dashFadeUp .4s ease both; }
+.mylib-gate-ico { font-size:3rem; margin-bottom:16px; }
+.mylib-gate-title { font-family:var(--font-display); font-size:1.6rem; margin-bottom:10px; }
+.mylib-gate-sub { color:var(--text2); margin:0 auto 28px; max-width:420px; }
+
+@media (max-width:640px) {
+  #page-my-library .mylib-page-head { padding:22px 0 2px; }
+  .mylib-page-ico { width:46px; height:46px; flex-basis:46px; font-size:1.3rem; border-radius:13px; }
+  .mylib-page-h1 { font-size:1.4rem; }
+  .mylib-page-sub { font-size:.78rem; }
+}
+
 /* ── LIBRARY SUB-TABS (My Library / Premium Library Universe) ── */
 .lib-sub-tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
 .lib-sub-tabs::-webkit-scrollbar { display:none; }
@@ -15031,6 +15052,29 @@ body.light .me-stat-val { filter:none; }
 
   <div class="me-content" id="dashMain">
 
+  </div>
+</div>
+
+<div class="page" id="page-my-library">
+  <div class="section">
+    <div class="container">
+
+      <!-- ═══ MY LIBRARY PAGE HEADER (premium digital study library) ═══ -->
+      <div class="mylib-page-head">
+        <div class="mylib-page-title">
+          <span class="mylib-page-ico">📚</span>
+          <div>
+            <h1 class="mylib-page-h1">My Library</h1>
+            <p class="mylib-page-sub">Your personal study collection — every PDF you own, added, or unlocked.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Single-source BSF library renders here (sub-tabs: My Library /
+           Premium Library Universe + search, filters, insights, shelves) -->
+      <div id="myLibMain"></div>
+
+    </div>
   </div>
 </div>
 
@@ -17819,7 +17863,7 @@ window._chMenuBootstrap = (function() {
         <div style="font-size:2.2rem;margin-bottom:10px">&#x1F451;</div>
         <h1 style="font-size:clamp(1.3rem,4vw,1.8rem);font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0 0 8px">Welcome, Pass Member</h1>
         <p style="font-size:.88rem;color:var(--text2);margin:0 0 18px">Your premium learning experience is now active.</p>
-        <button onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem;box-shadow:0 4px 16px rgba(251,191,36,.3)">&#x1F451; Go to My Library</button>
+        <button onclick="openMyLibrary('premium')" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;font-weight:800;padding:12px 28px;border-radius:24px;border:none;cursor:pointer;font-size:.9rem;box-shadow:0 4px 16px rgba(251,191,36,.3)">&#x1F451; Go to My Library</button>
       </div>
     </div>
 
@@ -18177,7 +18221,7 @@ window._chMenuBootstrap = (function() {
           <div id="prmCtaMember" style="display:none">
             <div class="prm-bottom-cta-title">&#x1F451; Pass Active!</div>
             <div class="prm-bottom-cta-sub">Browse all your exclusive Pass Notes</div>
-            <button class="prm-bottom-cta-btn" onclick="(function(){navigate('dashboard').then(function(){switchMeTab('purchased').then(function(){if(typeof switchLibrarySubTab==='function')switchLibrarySubTab('premium');});});})()" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000">
+            <button class="prm-bottom-cta-btn" onclick="openMyLibrary('premium')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000">
               &#x1F451; View All Pass Notes &#x2192;
             </button>
           </div>
@@ -20808,7 +20852,7 @@ function toggleTheme() {
 const _SPA_PUBLIC_PAGES = new Set([
   'home','library','dashboard','wishlist','login','register',
   'detail','career-hub','creator-register','creator-dashboard','upload','ai-notes',
-  'privacy','terms','refund','about','contact','blog','premium','premium-library','pwa','customize','campus','brainlab','free-materials','notifications','pdf-checkout'
+  'privacy','terms','refund','about','contact','blog','premium','premium-library','my-library','pwa','customize','campus','brainlab','free-materials','notifications','pdf-checkout'
 ]);
 
 // ── SPA page canonical handling ─────────────────────────────────────
@@ -20868,6 +20912,13 @@ async function navigate(page) {
   //    Order Summary + checkout CTA live there).
   if (page === 'checkout') page = 'cart';
 
+  // ── Legacy deep-link: #premium-library → canonical My Library page,
+  //    Premium Library Universe tab (never the dashboard detour).
+  if (page === 'premium-library') {
+    window._myLibPendingSubTab = 'premium';
+    page = 'my-library';
+  }
+
   // ── Deep link: #pdf-checkout/<pdfId> → premium PDF checkout ─────
   if (typeof page === 'string' && page.indexOf('pdf-checkout/') === 0) {
     window._pcoDeepLinkId = decodeURIComponent(page.slice('pdf-checkout/'.length).split('/')[0] || '');
@@ -20926,6 +20977,7 @@ async function navigate(page) {
   if (page === 'home') { renderHome(); setTimeout(() => { if (typeof ottRenderDiscovery === 'function' && window.PDFS && window.PDFS.length) ottRenderDiscovery(false); }, 100); }
   if (page === 'library') renderLibrary();
   if (page === 'dashboard') renderDashboard();
+  if (page === 'my-library') renderMyLibraryPage();
   if (page === 'wishlist') {
     // FIX: always reload from DB before rendering — never trust stale local array
     if (typeof window.loadWishlistFromSupabase === 'function') {
@@ -21274,22 +21326,6 @@ async function navigate(page) {
         window.SMCI.syncAll(true).catch(function(){});
       }
     })();
-  }
-  // Premium Library: redirect to Me → My Library → Premium tab (sub-tab architecture)
-  if (page === 'premium-library') {
-    // Don't show the premium-library page — go directly to sub-tab
-    if (typeof switchLibrarySubTab === 'function') {
-      // Already on purchased/library tab — just switch sub-tab
-      switchLibrarySubTab('premium');
-    } else {
-      // Navigate to Me/dashboard first, then switch
-      navigate('dashboard').then(function() {
-        switchMeTab('purchased').then(function() {
-          if (typeof switchLibrarySubTab === 'function') switchLibrarySubTab('premium');
-        });
-      });
-    }
-    return; // Don't show page-premium-library
   }
 }
 
@@ -24389,6 +24425,85 @@ async function renderDashboard() {
   switchMeTab(dashTab);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   CANONICAL MY LIBRARY — #my-library is the ONE dedicated personal
+   library route. openMyLibrary() is the ONE navigation function every
+   "My Library" CTA in the app must call (burger menu, header, PDF
+   owned/free states, payment success, Pass page, dashboard cards).
+   The rich library UI (search, filters, insights, Continue Reading,
+   favorites, Premium Library Universe sub-tab) stays single-source in
+   switchMeTab('purchased') — this page just renders it into #myLibMain.
+   The public/universal Library (#library catalog) is a DIFFERENT
+   destination and is never opened from here automatically.
+   ═══════════════════════════════════════════════════════════════════ */
+function openMyLibrary(subTab) {
+  window._myLibPendingSubTab = subTab || null;
+  return navigate('my-library');
+}
+
+async function renderMyLibraryPage() {
+  const main = document.getElementById('myLibMain');
+  if (!main) return;
+
+  // Premium skeleton while auth resolves (no layout jump)
+  main.innerHTML = `
+    <div class="me-tab-panel">
+      <div style="text-align:center;padding:60px 0">
+        <div class="me-skeleton" style="height:64px;width:64%;border-radius:20px;margin:0 auto 16px"></div>
+        <div class="me-skeleton" style="height:200px;border-radius:20px;margin-bottom:16px"></div>
+        <div class="me-skeleton" style="height:160px;border-radius:16px"></div>
+      </div>
+    </div>`;
+
+  // ── Auth resolution — identical priority chain to renderDashboard ──
+  let user = window.currentUser;
+  if (!user) {
+    if (window._supabaseSessionReady) {
+      await window._supabaseSessionReady;
+      user = window.currentUser;
+    }
+    if (!user && window.supabaseClient) {
+      try {
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (session?.user) {
+          window.syncNavToAuth(session.user);
+          user = window.currentUser;
+        }
+      } catch (e) {}
+    }
+  }
+
+  // ── Unauthenticated: premium sign-in gate (NOT the public catalog) ──
+  if (!user) {
+    main.innerHTML = `
+      <div class="mylib-gate" role="status" aria-live="polite">
+        <div class="mylib-gate-ico">📚</div>
+        <h2 class="mylib-gate-title">Your library is waiting for you</h2>
+        <p class="mylib-gate-sub">Sign in to open your personal study collection — every PDF you purchase or add appears here instantly.</p>
+        <button class="btn btn-primary btn-lg" onclick="navigate('login')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Sign In
+        </button>
+        <button class="btn btn-secondary" style="margin-top:10px" onclick="navigate('library')">📚 Explore the Library</button>
+      </div>`;
+    return;
+  }
+
+  // ── Authenticated: render the single-source BSF library panel ──
+  //    dashTab snapshot/restore keeps the dashboard's default tab
+  //    untouched for later Me/dashboard visits.
+  const prevDashTab = dashTab;
+  await switchMeTab('purchased');
+  dashTab = prevDashTab || 'overview';
+
+  // ── Deep sub-tab: openMyLibrary('premium') → Premium Universe tab ──
+  const sub = window._myLibPendingSubTab;
+  window._myLibPendingSubTab = null;
+  if (sub && typeof window.switchLibrarySubTab === 'function') {
+    window.switchLibrarySubTab(sub);
+  }
+}
+
 // Alias for backward compat — old code calls switchDashTab
 function switchDashTab(tab) { return switchMeTab(tab); }
 
@@ -24404,7 +24519,12 @@ async function switchMeTab(tab) {
   document.querySelectorAll('#page-dashboard .sidebar-link[data-tab]').forEach(b =>
     b.classList.toggle('active', b.dataset.tab === tab));
 
-  const main = document.getElementById('dashMain');
+  // ONE canonical implementation: on the dedicated #my-library page the
+  // whole BSF library renders into #myLibMain; on the dashboard it renders
+  // into #dashMain as before. No second My Library code path exists.
+  const main = (window.currentPage === 'my-library')
+    ? document.getElementById('myLibMain')
+    : document.getElementById('dashMain');
 
   // ── OVERVIEW ──────────────────────────────────────────────────────
   if (tab === 'overview') {
@@ -24426,7 +24546,7 @@ async function switchMeTab(tab) {
       <!-- Stat Cards -->
       <div class="me-section-title" style="animation-delay:.1s"><span class="mst-accent"></span>Your Stats</div>
       <div class="me-stats-grid">
-        <div class="me-stat-card msc-pdf" style="animation-delay:.12s" onclick="switchMeTab('purchased')" title="View My Library">
+        <div class="me-stat-card msc-pdf" style="animation-delay:.12s" onclick="openMyLibrary()" title="View My Library">
           <div class="me-stat-icon">??</div>
           <div class="me-stat-val" id="dashStat0"><span class="me-skeleton" style="width:48px;height:28px;display:block"></span></div>
           <div class="me-stat-label">PDFs Purchased</div>
@@ -24455,7 +24575,7 @@ async function switchMeTab(tab) {
       <!-- Learning Overview -->
       <div class="me-section-title" style="animation-delay:.28s"><span class="mst-accent"></span>Learning Overview</div>
       <div class="me-learn-grid">
-        <div class="me-learn-card" style="animation-delay:.30s" onclick="switchMeTab('purchased')" title="Open My Library">
+        <div class="me-learn-card" style="animation-delay:.30s" onclick="openMyLibrary()" title="Open My Library">
           <div class="me-lc-emoji">📖</div>
           <div class="me-lc-val" id="lcCollSize">—</div>
           <div class="me-lc-label">Collection Size</div>
@@ -24488,7 +24608,7 @@ async function switchMeTab(tab) {
           <div class="me-action-icon" style="background:rgba(255,77,109,0.15)">❤️</div>
           <div class="me-action-label">Wishlist</div>
         </div>
-        <div class="me-action-card" style="animation-delay:.46s" onclick="switchMeTab('purchased')">
+        <div class="me-action-card" style="animation-delay:.46s" onclick="openMyLibrary()">
           <div class="me-action-icon" style="background:rgba(147,2,5,0.15)">📖</div>
           <div class="me-action-label">My Library</div>
         </div>
@@ -24932,10 +25052,10 @@ async function switchMeTab(tab) {
 
       const totalEmpty = BSF.allPdfs.length === 0 ? `
         <div class="sdl-empty">
-          <div class="sdl-empty-icon">📭</div>
-          <div class="sdl-empty-title">Your library is empty</div>
-          <div class="sdl-empty-sub">Purchase PDFs to start building your digital library.</div>
-          <button class="btn btn-primary" onclick="navigate('library')" style="margin-top:16px">Browse Library</button>
+          <div class="sdl-empty-icon">📚</div>
+          <div class="sdl-empty-title">Your library is waiting for you</div>
+          <div class="sdl-empty-sub">Save or purchase your first study material and it will appear here.</div>
+          <button class="btn btn-primary" onclick="navigate('library')" style="margin-top:16px">📚 Explore Library</button>
         </div>` : '';
 
       const shelvesHTML = totalEmpty || (carouselsHTML || emptyMsg);
@@ -25176,7 +25296,7 @@ CREATE TRIGGER trg_progress_updated
           <span>📚</span> My Library
           <span class="lib-sub-badge" id="libSubPurchasedBadge">${stats.purchasedPdfs.length}</span>
         </button>
-        <button class="lib-sub-tab premium" data-subtab="premium" id="libSubPremiumBtn" onclick="switchLibrarySubTab('premium')" style="display:none">
+        <button class="lib-sub-tab premium" data-subtab="premium" id="libSubPremiumBtn" onclick="switchLibrarySubTab('premium')" title="Premium Library Universe — included with Studyria Pass">
           <span>👑</span> Premium Library Universe
           <span class="lib-sub-badge" id="libSubPremiumBadge">—</span>
         </button>
@@ -25385,7 +25505,7 @@ CREATE TRIGGER trg_progress_updated
         }
 
         if (!isPremium2) {
-          if (wrap) wrap.innerHTML = '<div class="sdl-empty"><div class="sdl-empty-icon">🔒</div><div class="sdl-empty-title">Studyria Pass Required</div><div class="sdl-empty-sub">Unlock the Pass Library with an active Studyria Pass.</div><button class="btn btn-primary" onclick="navigate(\'premium\')" style="margin-top:16px">👑 Get Studyria Pass</button></div>';
+          if (wrap) wrap.innerHTML = '<div class="sdl-empty"><div class="sdl-empty-icon">👑</div><div class="sdl-empty-title">Premium Library Universe</div><div class="sdl-empty-sub">Your premium study collection is waiting. Get unlimited access to premium study materials, notes and exclusive PDFs.</div><button class="btn btn-primary" onclick="navigate(\'premium\')" style="margin-top:16px">👑 Get Studyria Pass</button></div>';
           var badge2 = document.getElementById('libSubPremiumBadge');
           if (badge2) badge2.textContent = '🔒';
           return;
@@ -41645,8 +41765,8 @@ document.addEventListener('DOMContentLoaded', function(){
     <script src="pdp-v3.js?v=20260905z" defer></script>
     <script src="pdp-v4.js?v=20260905z" defer></script>
     <script src="pdp-checkout.js?v=20260906d" defer></script>
-    <script src="cart.js?v=20260907" defer></script>
-<script src="pco.js?v=20260907c" defer></script>
+    <script src="cart.js?v=20260907b" defer></script>
+<script src="pco.js?v=20260907d" defer></script>
 
 
 

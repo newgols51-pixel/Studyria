@@ -633,13 +633,13 @@
       title = 'You Own This';
       sub = 'This PDF is already in your Studyria Library — enjoy unlimited access.';
       ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">Open PDF</button>' +
-             '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'library\')">Go to My Library</button>';
+             '<button type="button" class="pco-btn pco-btn-secondary" onclick="if(typeof openMyLibrary===\'function\'){openMyLibrary()}else{navigate(\'dashboard\')}">Go to My Library</button>';
     } else if (kind === 'premium') {
       ico = '<div class="pco-state-ico pco-state-ico-gold">👑</div>';
       title = 'Included with Premium';
       sub = 'Your Studyria Premium membership covers this material — no payment needed.';
       ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">Open with Premium</button>' +
-             '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'premium-library\')">Browse Premium Library</button>';
+             '<button type="button" class="pco-btn pco-btn-secondary" onclick="if(typeof openMyLibrary===\'function\'){openMyLibrary(\'premium\')}else{navigate(\'dashboard\')}">Browse Premium Library</button>';
     } else if (kind === 'free') {
       ico = '<div class="pco-state-ico pco-state-ico-green">🎁</div>';
       title = 'FREE PDF';
@@ -688,7 +688,7 @@
         '<li>✓ ' + (isFree ? 'Free Access Granted' : 'Payment Verified') + '</li><li>✓ Added to Your Library</li><li>✓ Lifetime Access</li>' +
       '</ul>' +
       '<div class="pco-state-ctas">' +
-        '<button type="button" class="pco-btn pco-btn-green" onclick="navigate(\'library\')">📚 Open My Library</button>' +
+        '<button type="button" class="pco-btn pco-btn-green" onclick="if(typeof openMyLibrary===\'function\'){openMyLibrary()}else{navigate(\'dashboard\')}">📚 Open My Library</button>' +
         '<button type="button" class="pco-btn pco-btn-secondary" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">⬇ Read / Download PDF</button>' +
       '</div></div>';
   }
