@@ -39,6 +39,7 @@
     user: null,
     isPremium: false,
     notice: null,           // { kind: 'info'|'warn', text }
+    freeGrant: false,          // last action was a free-access grant
     payBusy: false,
     paymentId: null,        // last successful payment id (receipt display)
     payAmount: null,        // verified amount actually charged (receipt display)
@@ -73,7 +74,7 @@
       if (!document.querySelector('link[href*="pco.css"]')) {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = '/pco.css?v=20260907b';
+        link.href = '/pco.css?v=20260907c';
         document.head.appendChild(link);
       }
       return true;
@@ -98,7 +99,7 @@
     _ensurePage();
     S.fromPage = (window.currentPage && window.currentPage !== 'pdf-checkout') ? window.currentPage : (S.fromPage || null);
     S.pdfId = String(pdfId || '');
-    S.notice = null; S.failMsg = null; S.retryCount = 0;
+    S.notice = null; S.failMsg = null; S.freeGrant = false; S.retryCount = 0;
     S.phase = 'loading';
     try { sessionStorage.setItem(LAST_KEY, S.pdfId); } catch (e) {}   // refresh-safe
     _syncHash();
@@ -640,10 +641,11 @@
       ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">Open with Premium</button>' +
              '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'premium-library\')">Browse Premium Library</button>';
     } else if (kind === 'free') {
-      ico = '<div class="pco-state-ico pco-state-ico-green">⬇</div>';
-      title = 'This PDF is Free';
-      sub = 'No payment needed — download it instantly and find it in your Library anytime.';
-      ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="PCO._getFree()">⬇ Get PDF Free</button>' +
+      ico = '<div class="pco-state-ico pco-state-ico-green">🎁</div>';
+      title = 'FREE PDF';
+      sub = 'This PDF is completely free — no payment needed. Get instant access and find it in your Library anytime.';
+      ctas = '<div class="pco-free-price"><span class="pco-pay">₹0</span><span class="pco-free-tag">FREE</span></div>' +
+             '<button type="button" class="pco-btn pco-btn-green" onclick="PCO._getFree()">📖 Get Free Access</button>' +
              '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'library\')">Keep Browsing</button>';
     } else if (kind === 'failed') {
       ico = '<div class="pco-state-ico pco-state-ico-red">✕</div>';
@@ -667,22 +669,23 @@
   function _successHTML() {
     var t = (S.db && S.db.dbTitle) || (S.pdf && S.pdf.title) || 'your PDF';
     var c = (S.db && S.db.dbCover) || (S.pdf && S.pdf.coverImage) || '';
+    var isFree = !!S.freeGrant;
     var amt = S.payAmount != null ? S.payAmount : _price();
     var img = c
       ? '<img class="pco-succ-cover" src="' + _esc(c) + '" alt="' + _esc(t) + '" loading="lazy" onerror="this.style.display=\'none\'">'
       : '<div class="pco-succ-cover pco-succ-noimg">📚</div>';
     return '<div class="pco-state-card pco-succ" role="status" aria-live="polite">' +
       '<div class="pco-succ-check" aria-hidden="true"><svg viewBox="0 0 52 52" width="64" height="64"><circle class="pco-succ-c" cx="26" cy="26" r="24" fill="none"/><path class="pco-succ-p" fill="none" d="M14 27l8 8 16-16"/></svg></div>' +
-      '<h2 class="pco-state-title">Payment Successful!</h2>' +
+      '<h2 class="pco-state-title">' + (isFree ? 'Free PDF Unlocked!' : 'Payment Successful!') + '</h2>' +
       '<p class="pco-state-sub">Your PDF is now unlocked and added to your Studyria Library.</p>' +
       '<div class="pco-succ-prod">' + img +
         '<div><div class="pco-succ-name">' + _esc(t) + '</div>' +
         '<div class="pco-succ-rows">' +
-          '<div class="pco-succ-row"><span>Payment</span><strong>₹' + _fmt(amt) + '</strong></div>' +
+          '<div class="pco-succ-row"><span>' + (isFree ? 'Price' : 'Payment') + '</span><strong>' + (isFree ? 'FREE' : '₹' + _fmt(amt)) + '</strong></div>' +
           (S.paymentId ? '<div class="pco-succ-row"><span>Payment ID</span><strong>' + _esc(S.paymentId) + '</strong></div>' : '') +
         '</div></div></div>' +
       '<ul class="pco-succ-list">' +
-        '<li>✓ Payment Verified</li><li>✓ Added to Your Library</li><li>✓ Lifetime Access</li>' +
+        '<li>✓ ' + (isFree ? 'Free Access Granted' : 'Payment Verified') + '</li><li>✓ Added to Your Library</li><li>✓ Lifetime Access</li>' +
       '</ul>' +
       '<div class="pco-state-ctas">' +
         '<button type="button" class="pco-btn pco-btn-green" onclick="navigate(\'library\')">📚 Open My Library</button>' +
@@ -764,10 +767,29 @@
     if (typeof navigate === 'function') navigate('login');
   }
 
-  /* §5 free product — existing free-access system, never Razorpay */
-  function _getFree() {
-    if (typeof window.downloadPDF === 'function') { try { window.downloadPDF(String(S.pdfId)); } catch (e) {} return; }
-    if (typeof navigate === 'function') navigate('library');
+  /* §5 FREE ACCESS — existing grant system, never Razorpay.
+     Guest: same auth rule as the legacy download flow (sign in first,
+     RETURN_KEY brings them right back to this checkout).
+     Signed in: grantFreeOwnership() inserts the purchased_pdfs row
+     (type='free', amount=0, status='owned') — the SAME existing system
+     the old flow used — then the premium success screen confirms. */
+  async function _getFree() {
+    if (!S.user) { _signIn(); return; }
+    var granted = false;
+    if (typeof window.grantFreeOwnership === 'function') {
+      try { granted = await window.grantFreeOwnership(String(S.pdfId)); } catch (e) { granted = false; }
+    }
+    if (!granted && typeof window.downloadPDF === 'function') {
+      // Fallback: the existing download flow also grants ownership
+      try { window.downloadPDF(String(S.pdfId)); } catch (e) {}
+      return;
+    }
+    if (!granted) { S.notice = { kind: 'warn', text: 'Couldn\u2019t unlock the free PDF — please try again.' }; render(); return; }
+    S.freeGrant = true;
+    S.paymentId = null;
+    S.payAmount = 0;
+    S.phase = 'success';
+    render();
   }
 
   /* §11 FAILED / CANCELLED → re-verify fresh from the DB, then re-open pay */

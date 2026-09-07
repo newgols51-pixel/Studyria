@@ -501,7 +501,7 @@ body.light .ott-row-track .pdf-cover-scrim {
 <link rel="stylesheet" href="premium-p3.css">
 <link rel="stylesheet" href="studyria-ui-2.0.css">
 <link rel="stylesheet" href="cart.css?v=20260907">
-<link rel="stylesheet" href="pco.css?v=20260907b">
+<link rel="stylesheet" href="pco.css?v=20260907c">
 <link rel="stylesheet" href="studyria-me-v3.css">
 <style>
 /* ── STATIC DESIGN TOKENS ───────────────────────────────────────
@@ -11737,7 +11737,7 @@ function scardHTML(pdf, opts) {
   if (isFree) {
     var owned = shIsOwned(pdf.id);
     priceHTML = '<div class="sc-price-free">' + (owned ? '✓ Owned' : 'FREE') + '</div>';
-    ctaHTML = '<button class="sc-cta sc-cta-free" data-free-btn="' + shEsc(pdf.id) + '" onclick="event.stopPropagation();downloadPDF(\'' + shEsc(pdf.id) + '\')">'
+    ctaHTML = '<button class="sc-cta sc-cta-free" data-free-btn="' + shEsc(pdf.id) + '" onclick="event.stopPropagation();' + (owned ? 'downloadPDF(\'' + shEsc(pdf.id) + '\')' : 'openDetail(\'' + shEsc(pdf.id) + '\')') + '">'
       + (owned ? '⬇ Open' : '⬇ Free') + '</button>';
   } else {
     priceHTML = '<div class="sc-price-wrap">'
@@ -11832,7 +11832,7 @@ function shHeroCardHTML(pdf, isActive, rank) {
     +   metaHTML
     +   priceHTML
     +   '<div class="sh-hero-cta-row">'
-    +     '<button class="' + ctaClass + '" onclick="event.stopPropagation();' + (isFree ? 'downloadPDF(\'' + shEsc(pdf.id) + '\')' : '(window.Cart?Cart.add(\'' + shEsc(pdf.id) + '\'):buyPDF(\'' + shEsc(pdf.id) + '\',' + displayPrice + '))') + '">' + ctaLabel + '</button>'
+    +     '<button class="' + ctaClass + '" onclick="event.stopPropagation();' + (isFree ? (owned ? 'downloadPDF(\'' + shEsc(pdf.id) + '\')' : 'openDetail(\'' + shEsc(pdf.id) + '\')') : '(window.Cart?Cart.add(\'' + shEsc(pdf.id) + '\'):buyPDF(\'' + shEsc(pdf.id) + '\',' + displayPrice + '))') + '">' + ctaLabel + '</button>'
     +     '<button class="sh-hero-save-btn ' + wishActive + '" onclick="event.stopPropagation();shToggleWish(\'' + shEsc(pdf.id) + '\',event)" aria-label="Save">' + wishIcon + '</button>'
     +   '</div>'
     + '</div>'
@@ -21664,7 +21664,7 @@ function pdfCardHTML(pdf) {
             const owned = _isOwned(String(pdf.id));
             return `<button class="pdf-buy-btn free-btn"
               data-free-btn="${pdf.id}"
-              onclick="event.stopPropagation();downloadPDF('${pdf.id}')"
+              onclick="event.stopPropagation();${owned ? `downloadPDF('${pdf.id}')` : `openDetail('${pdf.id}')`}"
               style="${owned ? 'background:var(--grad-success)' : ''}">
               ${owned
                 ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open PDF`
@@ -22160,6 +22160,25 @@ async function renderLibGrid() {
 
 // ── DETAIL ────────────────────────────────────────────────────────
 function openDetail(id) {
+  // ── ONE CANONICAL CHECKOUT (routing fix, 2026-09-07): EVERY PDF card
+  //    click — paid, FREE, own/already-owned, premium, featured, search,
+  //    wishlist, recently-added, most-read — opens the premium PCO
+  //    checkout (#pdf-checkout) directly. PCO itself re-verifies the
+  //    product, DB price, free status and ownership server-side and
+  //    renders the right state: paid checkout / FREE ACCESS / Already
+  //    Owned / sign-in / PDF unavailable. No card-level heuristics
+  //    (free? owned? price>0?) may route anywhere else — that split was
+  //    the bug that sent free PDFs and own PDFs to the old PDP checkout.
+  //    The PDP (#detail) stays reachable only via deep links/SEO pages.
+  if (window.PCO && typeof window.PCO.open === 'function' &&
+      document.getElementById('page-pdf-checkout')) {
+    selectedPdf = (window.PDFS || []).find(p => String(p.id) === String(id));
+    window.selectedPdf = selectedPdf || null;
+    if (selectedPdf) { try { normalizePdf(selectedPdf); } catch (e) {} }
+    window.PCO.open(id);   // PCO loads the product fresh from the DB —
+    return;                // unknown ids land on its "PDF unavailable" state
+  }
+  // Legacy fallback ONLY when PCO is unavailable (e.g. script still loading)
   selectedPdf = (window.PDFS || []).find(p => String(p.id) === String(id));
   window.selectedPdf = selectedPdf;
   if (!selectedPdf) {
@@ -22167,18 +22186,6 @@ function openDetail(id) {
     return;
   }
   normalizePdf(selectedPdf);
-  // ── DIRECT-TO-CHECKOUT (user decision, 2026-09-07): every paid PDF card
-  //    click (Library / Home / Search / OTT) opens the premium PCO checkout
-  //    directly — the PDP is bypassed for the purchase flow. The PDP route
-  //    itself stays intact for FREE items (info + download) and for
-  //    already-owned items (Open PDF). Payment/verification/purchase logic
-  //    is unchanged — this only changes WHERE the card click lands.
-  var _price = Number(selectedPdf.price) || 0;
-  var _paid = !selectedPdf.free && _price > 0;
-  if (_paid && !_isOwned(String(id)) && window.PCO && typeof window.PCO.open === 'function') {
-    window.PCO.open(id);
-    return;
-  }
   navigate('detail');
 }
 // Alias for OTT discovery cards
@@ -23373,16 +23380,23 @@ function _refreshFreeButtonLabels() {
 //    Flow: Login check → Supabase check → Paid? Open PDF : Razorpay
 // ══════════════════════════════════════════════════════════════════
 
-// handleBuy kept for backward compat (detail page Buy Now button)
+// handleBuy kept for backward compat (detail page Buy Now button).
+// Routing fix 2026-09-07: paid buys open the canonical PCO checkout;
+// buyPDF is only a last-resort fallback when PCO is unavailable.
 function handleBuy(id) {
   const pdf = normalizePdf((window.PDFS || []).find(p => String(p.id) === String(id)));
   if (!pdf) return;
   if (pdf.free) {
-    downloadPDF(pdf.id);
-  } else {
-    const price = Number(pdf.price ?? 0);
-    buyPDF(pdf.id, price);
+    downloadPDF(pdf.id);   // PDP free button = intended direct download (grants ownership)
+    return;
   }
+  if (window.PCO && typeof window.PCO.open === 'function' &&
+      document.getElementById('page-pdf-checkout')) {
+    PCO.open(pdf.id);
+    return;
+  }
+  const price = Number(pdf.price ?? 0);
+  buyPDF(pdf.id, price);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -41632,7 +41646,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <script src="pdp-v4.js?v=20260905z" defer></script>
     <script src="pdp-checkout.js?v=20260906d" defer></script>
     <script src="cart.js?v=20260907" defer></script>
-<script src="pco.js?v=20260907b" defer></script>
+<script src="pco.js?v=20260907c" defer></script>
 
 
 

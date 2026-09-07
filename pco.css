@@ -656,3 +656,17 @@
     content: '';
   }
 }
+
+
+/* ═══ §5 FREE ACCESS EXPERIENCE (routing fix 2026-09-07) ════════════ */
+.pco-free-price {
+  display: flex; align-items: baseline; justify-content: center;
+  gap: 10px; margin: 4px 0 2px;
+}
+.pco-free-price .pco-pay { font-size: 1.5rem; font-weight: 900; color: #0a7a3d; }
+.pco-free-tag {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+  color: #0a7a3d; border: 1px solid rgba(10,122,61,0.35);
+  background: rgba(10,122,61,0.08);
+  padding: 3px 10px; border-radius: 999px;
+}
