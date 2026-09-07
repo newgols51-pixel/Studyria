@@ -823,6 +823,73 @@
     });
   }
 
+
+  /* ══════════════ SMART PUBLISH INTEGRATION (additive) ══════════════
+     uploadGuard: pre-upload validation (type / size / quota / duplicate)
+       • returns {ok:true} or {ok:false, reason:'...'}
+       • ALWAYS fail-open if the module state is unavailable (publishing
+         must never break because of the cloud layer)
+     registerUpload: post-upload registry + audit row (fire-and-forget)
+     Used by the existing Smart Publish flows via 2-line hooks.        */
+  function _sha256Of(file) {
+    return file.arrayBuffer().then(function (buf) {
+      return crypto.subtle.digest('SHA-256', buf).then(function (h) {
+        return Array.from(new Uint8Array(h)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+      });
+    }).catch(function () { return null; });
+  }
+
+  function uploadGuard(file, opts) {
+    opts = opts || {};
+    if (!file) return Promise.resolve({ ok: true });
+    var st = S.settings || DEFAULT_SETTINGS;
+    var maxMb = Number(st.max_upload_mb) || 500;
+    if (file.type && file.type !== 'application/pdf' && !/^image\//.test(file.type)) {
+      return Promise.resolve({ ok: false, reason: 'Invalid file type: ' + file.type });
+    }
+    if (/\.exe|\.bat|\.cmd|\.hta|\.vbs|\.sh$/i.test(file.name || '')) {
+      return Promise.resolve({ ok: false, reason: 'Blocked file type (security): ' + file.name });
+    }
+    if (file.size > maxMb * 1048576) {
+      return Promise.resolve({ ok: false, reason: 'File exceeds ' + maxMb + ' MB upload limit (' + fmtB(file.size) + ')' });
+    }
+    return Promise.all([
+      loadSettings(),
+      scanInventory(),                       /* real usage, cached after first scan */
+      loadRegistry(),
+      _sha256Of(file)
+    ]).then(function (all) {
+      var sha = all[3];
+      var q = quotaState();
+      if (q.avail < file.size) {
+        return { ok: false, reason: 'Storage quota insufficient: ' + fmtB(q.avail) + ' available, file is ' + fmtB(file.size) + '. Expand storage in Admin → ☁️ Cloud Storage → Settings.' };
+      }
+      if (sha && S.regReady && S.reg.some(function (r) { return r.sha256 === sha && r.status === 'active'; })) {
+        return { ok: false, reason: 'Duplicate file: this exact file is already registered in Studyria Cloud.' };
+      }
+      return { ok: true, quota: { used: q.used, quota: q.quota }, sha: sha };
+    }).catch(function () { return { ok: true }; });
+  }
+
+  function registerUpload(bucket, path, file, meta) {
+    meta = meta || {};
+    var sb = _sb(); if (!sb || !file) return Promise.resolve(false);
+    return _sha256Of(file).then(function (sha) {
+      if (S.regReady) {
+        return sb.from('cloud_files').upsert({
+          bucket: bucket, storage_path: path, filename: file.name || path,
+          category: meta.kind === 'preview' ? 'preview' : 'pdf',
+          mime: file.type || 'application/pdf', bytes: file.size, sha256: sha,
+          status: 'active', content_ref: meta.pdfId ? ('pdf:' + meta.pdfId) : null,
+          uploaded_by: adminEmail() || 'smart-publish'
+        }).then(function (r) { return !r.error; }).catch(function () { return false; });
+      }
+      return false;
+    }).then(function (regOk) {
+      return audit('upload', bucket, path, 'ok', { via: 'smart-publish', bytes: file.size, registered: regOk });
+    }).catch(function () { return false; });
+  }
+
   /* ══════════════ EXPORT PUBLIC API ══════════════ */
   window.SCCloud = {
     render: render, _nav: _nav, _rescan: _rescan,
@@ -831,6 +898,7 @@
     _importFile: _importFile, _trash: _trash, _restore: _restore, _purge: _purge,
     _uploadOpen: _uploadOpen, _uploadPicked: _uploadPicked, _uploadGo: _uploadGo,
     _export: _export, _saveSettings: _saveSettings, _expand: _expand,
+    uploadGuard: uploadGuard, registerUpload: registerUpload,
     /* diagnostics / tests */
     _state: function () { return { inv: S.inv, quota: quotaState(), health: analyze(), regReady: S.regReady, settingsReady: S.settingsReady }; }
   };

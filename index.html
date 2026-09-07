@@ -30283,8 +30283,11 @@ async function sbpPublishReady() {
       let pdfUrl = item.pdfUrl;
       if (item.pdfFile) {
         const fp2 = `${Date.now()}_${slug.slice(0,30)}.pdf`;
+/* SCCloud guard (additive): type/size/quota/duplicate validation — fail-open if module absent */
+      if (window.SCCloud) { const _scg = await window.SCCloud.uploadGuard(item.pdfFile, { bucket: 'pdfs', kind: 'pdf' }); if (_scg && !_scg.ok) throw new Error(_scg.reason); }
         const { error: pErr } = await sb.storage.from('pdfs').upload(fp2, item.pdfFile, { upsert: true, contentType: 'application/pdf' });
         if (pErr) throw new Error('PDF upload: ' + pErr.message);
+        if (window.SCCloud) window.SCCloud.registerUpload('pdfs', fp2, item.pdfFile).catch(()=>{});
         pdfUrl = fp2;
       }
 
@@ -30545,10 +30548,12 @@ async function sbpPublishSelected() {
       let pdfUrl = item.pdfUrl;
       if (item.pdfFile) {
         const fp2 = Date.now() + '_' + slug.slice(0, 30) + '.pdf';
+        if (window.SCCloud) { const _scg = await window.SCCloud.uploadGuard(item.pdfFile, { bucket: 'pdfs', kind: 'pdf' }); if (_scg && !_scg.ok) throw new Error(_scg.reason); }
         const { error: pErr } = await sb.storage.from('pdfs').upload(fp2, item.pdfFile, {
           upsert: true, contentType: 'application/pdf'
         });
         if (pErr) throw new Error('PDF upload: ' + pErr.message);
+        if (window.SCCloud) window.SCCloud.registerUpload('pdfs', fp2, item.pdfFile).catch(()=>{});
         pdfUrl = fp2;
       }
 
@@ -31781,12 +31786,14 @@ async function adminSavePDF() {
       showProgress('PDF', 20, 'Uploading PDF file…');
       btn.innerHTML = `<span class="auth-spinner"></span>Uploading PDF…`;
       const fpath2 = `${Date.now()}_${slug.slice(0,40)}.pdf`;
+      if (window.SCCloud) { const _scg = await window.SCCloud.uploadGuard(pdfFile, { bucket: 'pdfs', kind: 'pdf' }); if (_scg && !_scg.ok) throw new Error(_scg.reason); }
       const { error: pdfErr } = await window.supabaseClient.storage
         .from('pdfs').upload(fpath2, pdfFile, { upsert: true, contentType: 'application/pdf' });
       if (pdfErr) throw new Error(`PDF upload failed: ${pdfErr.message}`);
       // Store the bare storage path — pdfs bucket is PRIVATE so getPublicUrl would
       // produce a non-functional URL. createSignedUrl is called at read-time instead.
       pdfUrl = fpath2;
+      if (window.SCCloud) window.SCCloud.registerUpload('pdfs', fpath2, pdfFile).catch(()=>{});
       showProgress('PDF', 100, '✅ PDF uploaded');
     }
 
@@ -33552,12 +33559,14 @@ async function apmStartBulkUpload(asDraft=false) {
     try {
       // Upload to Supabase storage
       const fname = `${Date.now()}_${item.title.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'').slice(0,40)}.pdf`;
+      if (window.SCCloud) { const _scg = await window.SCCloud.uploadGuard(item.file, { bucket: 'pdfs', kind: 'pdf' }); if (_scg && !_scg.ok) throw new Error(_scg.reason); }
       const { error: upErr } = await sb.storage.from('pdfs').upload(fname, item.file, { upsert: true, contentType: 'application/pdf' });
       if (upErr) throw new Error(upErr.message);
 
       // Store the bare storage path — pdfs bucket is PRIVATE so getPublicUrl produces
       // a non-functional URL. Signed URLs are generated at read-time via createSignedUrl.
       item.url = fname;
+      if (window.SCCloud) window.SCCloud.registerUpload('pdfs', fname, item.file).catch(()=>{});
       item.progress = 70;
       apmRenderQueue();
 
@@ -33841,6 +33850,7 @@ async function apmUploadNewVersion() {
 
     // Upload new version
     const fname = `v${nextVer}_${Date.now()}_pdf${pdfId}.pdf`;
+    if (window.SCCloud) { const _scg = await window.SCCloud.uploadGuard(file, { bucket: 'pdfs', kind: 'version' }); if (_scg && !_scg.ok) throw new Error(_scg.reason); }
     const { error: upErr } = await sb.storage.from('pdfs').upload(fname, file, { upsert: true });
     if (upErr) throw new Error(upErr.message);
     // Store the bare storage path — pdfs bucket is PRIVATE, signed URLs generated at read-time.
@@ -33848,6 +33858,7 @@ async function apmUploadNewVersion() {
     // Save version record
     await sb.from('pdf_versions').insert({ pdf_id: pdfId, version_number: nextVer, pdf_url: fname, notes, created_at: new Date().toISOString(), created_by: window.adminSession?.email });
 
+    if (window.SCCloud) window.SCCloud.registerUpload('pdfs', fname, file, { kind: 'version', pdfId }).catch(()=>{});
     // Update live pdf_url in pdfs
     await sb.from('pdfs').update({ pdf_url: fname }).eq('id', pdfId);
 
@@ -33980,9 +33991,11 @@ async function apmUploadPreview() {
   if (!sb) { showToast('Supabase not connected.', 'error'); return; }
   try {
     const fname = `preview_${pdfId}_${Date.now()}.pdf`;
+    if (window.SCCloud) { const _scg = await window.SCCloud.uploadGuard(file, { bucket: 'pdfs', kind: 'preview' }); if (_scg && !_scg.ok) throw new Error(_scg.reason); }
     const { error: upErr } = await sb.storage.from('pdfs').upload(fname, file, { upsert: true });
     if (upErr) throw new Error(upErr.message);
     // Store the bare storage path — pdfs bucket is PRIVATE, signed URLs generated at read-time.
+    if (window.SCCloud) window.SCCloud.registerUpload('pdfs', fname, file, { kind: 'preview', pdfId }).catch(()=>{});
     const { error: dbErr } = await sb.from('pdfs').update({ preview_pdf_url: fname }).eq('id', pdfId);
     if (dbErr) throw new Error(dbErr.message);
     showToast('✅ Preview PDF uploaded!', 'success');
