@@ -15326,6 +15326,11 @@ body.light .me-stat-val { filter:none; }
           <svg width="16" height="16"><use href="#ic-settings"/></svg>Settings
         </button>
 
+        <div class="admin-nav-section-label" style="margin-top:16px">STUDYRIA CLOUD</div>
+        <button class="admin-nav-item" data-atab="cloud-storage" onclick="switchAdminTab('cloud-storage')" style="background:linear-gradient(90deg,rgba(201,154,60,.14),rgba(147,2,5,.07));border-left:2px solid #c99a3c">
+          ☁️ Cloud Storage
+          <span class="admin-nav-badge" style="background:rgba(201,154,60,.15);color:#946b1d;border-color:rgba(201,154,60,.35)">Cloud</span>
+        </button>
         <div class="admin-nav-section-label" style="margin-top:16px">🚀 PLATFORM CONTROL</div>
         <button class="admin-nav-item" data-atab="hero-designer" onclick="switchAdminTab('hero-designer')" style="background:linear-gradient(90deg,rgba(139,92,246,0.12),rgba(147,2,5,0.08));border-left:2px solid #8b5cf6">
           🎨 Hero Designer
@@ -20018,6 +20023,7 @@ window.supabaseLib = window.supabase;
 <script src="supabase.js"></script>
 <script src="studyria-notifications.js?v=5" defer></script>
 <script src="studyria-notification-center.js?v=5" defer></script>
+<link rel="stylesheet" href="cloud-manager.css?v=1"><script src="cloud-manager.js?v=1" defer></script>
 <script>
 /* ═══ PUSH NOTIFICATION DEEP-LINK ROUTER ═════════════════════════════
  * When a user taps a mobile push notification, the service worker opens
@@ -26411,7 +26417,7 @@ function switchAdminTab(tab) {
     'pdf-manager-pro':'Advanced PDF Manager', 'category-manager-pro':'Advanced Category Manager', 'homepage-manager':'Homepage Manager', 'header-manager':'Header Manager', 'nav-manager':'Navigation Manager', 'customization':'Website Customization', 'users-pro':'User Management Pro',
     'finance':'Sales & Finance Center', 'coupons':'Coupons & Offers', 'blog':'Blog Manager', 'announcements':'Announcement Center', 'live-feed':'Live Feed Notifications', 'testimonials':'Testimonials', 'achievements':'Achievement System', 'notifications-pro':'Notification Center',
     'seo-manager':'SEO Manager', 'live-analytics':'Live Analytics Center', 'ai-center':'AI Control Center', 'security':'Security Center', 'system-advanced':'Advanced System Settings',
-    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community', 'pass-management':'👑 Pass Management', 'campus-manager':'🏫 Campus Manager', 'brainlab-manager':'🧠 BrainLab Manager' };
+    'pwa-control':'🚀 PWA Control Center','library-manager':'📚 Library Experience Manager', 'career-hub-manager':'💼 Career Hub Manager', 'community-manager':'🌐 Community Manager', 'whatsapp-community':'📱 WhatsApp Community', 'pass-management':'👑 Pass Management', 'campus-manager':'🏫 Campus Manager', 'brainlab-manager':'🧠 BrainLab Manager', 'cloud-storage':'☁️ Studyria Cloud' };
   if (bc) bc.textContent = tabNames[tab] || tab;
 
   const main = document.getElementById('adminMain');
@@ -26489,6 +26495,7 @@ function switchAdminTab(tab) {
     case 'system-advanced':       _safeRender(window.renderPCCSystemAdvanced,     'Advanced Settings'); break;
     case 'campus-manager':    _safeRender(window.CampusAdminRender,   'Campus Manager'); break;
     case 'brainlab-manager': _safeRender(window.BrainLabAdminRender,'BrainLab Manager'); break;
+    case 'cloud-storage': _safeRender(window.SCCloud && window.SCCloud.render, 'Cloud Storage'); break;
     default: main.innerHTML = `<p class="text-muted" style="padding:32px">Section coming soon.</p>`;
   }
 }
