@@ -215,6 +215,8 @@ CREATE POLICY "admin_users_admin_only" ON public.admin_users
   USING (public.is_admin());
 
 -- purchased_pdfs (who bought what): was world-readable; inserts were
+--   NOTE: email matched via auth.jwt() claim (authenticated role has no
+--   direct SELECT on auth.users — a subquery there would break the policy).
 --   unchecked. Owners now see/insert only their own rows (matched by
 --   user_id OR their verified account email); admin sees all.
 DROP POLICY IF EXISTS "purchased_pdfs_admin_all" ON public.purchased_pdfs;
@@ -223,12 +225,12 @@ DROP POLICY IF EXISTS "Allow purchased_pdfs select" ON public.purchased_pdfs;
 CREATE POLICY "purchased_pdfs_own_read" ON public.purchased_pdfs
   FOR SELECT TO authenticated
   USING (auth.uid() = user_id
-         OR email = (SELECT email FROM auth.users WHERE id = auth.uid())
+         OR email = auth.jwt()->>'email'
          OR public.is_admin());
 CREATE POLICY "purchased_pdfs_own_insert" ON public.purchased_pdfs
   FOR INSERT TO authenticated
   WITH CHECK (auth.uid() = user_id
-              OR email = (SELECT email FROM auth.users WHERE id = auth.uid()));
+              OR email = auth.jwt()->>'email');
 CREATE POLICY "purchased_pdfs_admin_update" ON public.purchased_pdfs
   FOR UPDATE TO authenticated
   USING (public.is_admin()) WITH CHECK (public.is_admin());
