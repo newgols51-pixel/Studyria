@@ -28,7 +28,7 @@
   'use strict';
 
   var RETURN_KEY = 'pco_return';
-  var KEY = 'rzp_live_SxcnO1cOS2HAJT';
+  var LAST_KEY  = 'pco_last';      // refresh-safe fallback product
 
   /* ── State ──────────────────────────────────────────────────────── */
   var S = {
@@ -41,6 +41,9 @@
     notice: null,           // { kind: 'info'|'warn', text }
     payBusy: false,
     paymentId: null,        // last successful payment id (receipt display)
+    payAmount: null,        // verified amount actually charged (receipt display)
+    failMsg: null,          // last error message (failed state card)
+    fromPage: null,         // SPA page the user came from (smart Back)
     retryCount: 0
   };
   var PV = { items: [], idx: 0, doc: null, cache: {} };   // preview state
@@ -70,7 +73,7 @@
       if (!document.querySelector('link[href*="pco.css"]')) {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = '/pco.css?v=20260906';
+        link.href = '/pco.css?v=20260907b';
         document.head.appendChild(link);
       }
       return true;
@@ -81,16 +84,27 @@
   function _toast(msg, type) { if (typeof window.showToast === 'function') window.showToast(msg, type || 'info'); }
   function _ga4(ev, params) { try { if (typeof window.gtag === 'function') window.gtag('event', ev, params || {}); } catch (_) {} }
   function _fmt(n) { return Number(n || 0).toLocaleString('en-IN'); }
+  /* §12/§22 refresh-safe URL: keep #pdf-checkout/<id> in the address bar
+     (replaceState — never adds history entries, Back still returns to the
+     grid the user came from). On refresh the route re-hydrates from the id
+     and load() re-verifies ownership from the DB. */
+  function _syncHash() {
+    if (!S.pdfId) return;
+    try { history.replaceState(history.state, '', '#pdf-checkout/' + encodeURIComponent(S.pdfId)); } catch (e) {}
+  }
 
   /* ── Public API ──────────────────────────────────────────────────── */
   function open(pdfId) {
     _ensurePage();
+    S.fromPage = (window.currentPage && window.currentPage !== 'pdf-checkout') ? window.currentPage : (S.fromPage || null);
     S.pdfId = String(pdfId || '');
-    S.notice = null; S.retryCount = 0;
+    S.notice = null; S.failMsg = null; S.retryCount = 0;
     S.phase = 'loading';
+    try { sessionStorage.setItem(LAST_KEY, S.pdfId); } catch (e) {}   // refresh-safe
+    _syncHash();
     if (window.currentPage !== 'pdf-checkout') {
-      if (typeof navigate === 'function') navigate('pdf-checkout');
-      return;   // navigate() re-renders via renderFromRoute()
+      // hash carries the id → shareable, refresh-safe, back-button friendly
+      if (typeof navigate === 'function') { navigate('pdf-checkout/' + S.pdfId); return; }  // navigate() re-renders via renderFromRoute()
     }
     load();
   }
@@ -98,8 +112,17 @@
   /* Called by the navigate() case in index.html */
   function renderFromRoute() {
     _ensurePage();
-    if (window._pcoDeepLinkId) { S.pdfId = String(window._pcoDeepLinkId); window._pcoDeepLinkId = null; S.notice = null; }
-    if (!S.pdfId) { S.phase = 'notfound'; render(); return; }
+    if (window._pcoDeepLinkId) { S.pdfId = String(window._pcoDeepLinkId); window._pcoDeepLinkId = null; S.notice = null; S.failMsg = null; }
+    if (!S.pdfId) {
+      // bare #pdf-checkout (e.g. refresh after success): fall back to the
+      // last viewed product so the page never shows a dead end.
+      var last = null;
+      try { last = sessionStorage.getItem(LAST_KEY); } catch (e) {}
+      if (last) { S.pdfId = String(last); }
+      else { S.phase = 'notfound'; render(); return; }
+    }
+    try { sessionStorage.setItem(LAST_KEY, S.pdfId); } catch (e) {}
+    _syncHash();
     load();
   }
 
@@ -153,6 +176,10 @@
         if (rr && rr.data && rr.data.length) { S.phase = 'owned'; render(); return; }
       } catch (e) { /* verifyList flag above is the primary signal */ }
     }
+
+    // §5 FREE PRODUCT — never enters the payment flow. Existing free-access
+    // system (downloadPDF) is used; Razorpay is never opened for ₹0.
+    if (v.state === 'ok' && !(Number(v.dbPrice) > 0)) { S.phase = 'free'; render(); return; }
 
     // premium members get instant access (same business rule as buyPDF / Cart.pay)
     S.isPremium = false;
@@ -353,7 +380,10 @@
       case 'error': root.innerHTML = _errorHTML(); _setBar(false); return;
       case 'owned': root.innerHTML = _shellHTML(_stateCardHTML('owned'), null, true); _setBar(false); return;
       case 'premium': root.innerHTML = _shellHTML(_stateCardHTML('premium'), null, true); _setBar(false); return;
-      case 'success': root.innerHTML = _shellHTML(_stateCardHTML('success'), null, true); _setBar(false); return;
+      case 'success': root.innerHTML = _shellHTML(_successHTML(), null, true); _setBar(false); return;
+      case 'free': root.innerHTML = _shellHTML(_stateCardHTML('free'), null, true); _setBar(false); return;
+      case 'failed': root.innerHTML = _shellHTML(_stateCardHTML('failed'), null, true); _setBar(false); return;
+      case 'cancelled': root.innerHTML = _shellHTML(_stateCardHTML('cancelled'), null, true); _setBar(false); return;
       case 'guest': root.innerHTML = _shellHTML(_previewHTML() + _infoHTML(), _guestSummaryHTML(), true); _bindGuest(); _afterMount(); _setBar(true, true); return;
       default: /* ready */
         root.innerHTML = _shellHTML(_previewHTML() + _infoHTML(), _summaryHTML(), false);
@@ -378,7 +408,43 @@
     }
     var strip = document.getElementById('pcoThumbs');
     if (strip) strip.style.display = PV.items.length > 1 ? '' : 'none';
+    _bindStageGestures();
     _showItem(0);
+  }
+
+  /* §7 MOBILE SWIPE — pointer events isolated to the stage box only.
+     touch-action: pan-y (CSS) keeps vertical scrolling 100% native; we
+     only act on clearly-horizontal gestures so page scroll and browser
+     pinch zoom are never hijacked. No global handlers, no preventDefault. */
+  function _bindStageGestures() {
+    var stage = document.getElementById('pcoStage');
+    if (!stage || PV.items.length < 2) return;
+    var sx = 0, sy = 0, tracking = false;
+
+    stage.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse') return;         // mouse users have arrows/thumbs
+      tracking = true; sx = e.clientX; sy = e.clientY;
+    }, { passive: true });
+
+    stage.addEventListener('pointerup', function (e) {
+      if (!tracking) return;
+      tracking = false;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+        if (dx < 0) _nextFn(); else _prevFn();
+      }
+    }, { passive: true });
+
+    stage.addEventListener('pointercancel', function () { tracking = false; }, { passive: true });
+
+    // keyboard accessibility (§19)
+    stage.tabIndex = 0;
+    stage.setAttribute('role', 'group');
+    stage.setAttribute('aria-label', 'PDF preview — use left and right arrow keys to browse pages');
+    stage.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); _prevFn(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); _nextFn(); }
+    });
   }
 
   function _setBar(show, guestMode) {
@@ -507,7 +573,7 @@
 
   function _noticeHTML() {
     if (!S.notice) return '';
-    return '<div class="pco-notice ' + (S.notice.kind === 'warn' ? 'pco-notice-warn' : 'pco-notice-info') + '">' + _esc(S.notice.text) + '</div>';
+    return '<div class="pco-notice ' + (S.notice.kind === 'warn' ? 'pco-notice-warn' : 'pco-notice-info') + '" role="status" aria-live="polite">' + _esc(S.notice.text) + '</div>';
   }
 
   function _summaryHTML() {
@@ -525,6 +591,7 @@
         '<div class="pco-price-final"><span class="pco-pay">₹' + _fmt(p) + '</span>' +
         (m > p ? '<span class="pco-mrp">₹' + _fmt(m) + '</span><span class="pco-off">' + Math.round(((_mrp() - p) / m) * 100) + '% OFF</span>' : '') +
         '</div>' +
+        (m > p ? '<div class="pco-save-line">You save ₹' + _fmt(m - p) + ' (' + Math.round(((m - p) / m) * 100) + '%)</div>' : '') +
         _priceRowsHTML() +
       '</div>' +
       '<div class="pco-actions">' +
@@ -546,6 +613,7 @@
         '<div class="pco-price-final"><span class="pco-pay">₹' + _fmt(p) + '</span>' +
         (m > p ? '<span class="pco-mrp">₹' + _fmt(m) + '</span><span class="pco-off">' + Math.round(((_mrp() - p) / m) * 100) + '% OFF</span>' : '') +
         '</div>' +
+        (m > p ? '<div class="pco-save-line">You save ₹' + _fmt(m - p) + ' (' + Math.round(((m - p) / m) * 100) + '%)</div>' : '') +
         _priceRowsHTML() +
       '</div>' +
       '<div class="pco-actions">' +
@@ -571,15 +639,55 @@
       sub = 'Your Studyria Premium membership covers this material — no payment needed.';
       ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">Open with Premium</button>' +
              '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'premium-library\')">Browse Premium Library</button>';
-    } else if (kind === 'success') {
-      var t = (S.db && S.db.dbTitle) || (S.pdf && S.pdf.title) || 'your PDF';
-      ico = '<div class="pco-state-ico pco-state-ico-green">🎉</div>';
-      title = 'Payment Successful';
-      sub = _esc(t) + ' is now in your Library forever.' + (S.paymentId ? ' Payment ID: ' + _esc(S.paymentId) + '.' : '');
-      ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">Open PDF Now</button>' +
-             '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'library\')">Go to My Library</button>';
+    } else if (kind === 'free') {
+      ico = '<div class="pco-state-ico pco-state-ico-green">⬇</div>';
+      title = 'This PDF is Free';
+      sub = 'No payment needed — download it instantly and find it in your Library anytime.';
+      ctas = '<button type="button" class="pco-btn pco-btn-green" onclick="PCO._getFree()">⬇ Get PDF Free</button>' +
+             '<button type="button" class="pco-btn pco-btn-secondary" onclick="navigate(\'library\')">Keep Browsing</button>';
+    } else if (kind === 'failed') {
+      ico = '<div class="pco-state-ico pco-state-ico-red">✕</div>';
+      title = 'Payment could not be completed';
+      sub = _esc(S.failMsg || 'No money was deducted. Please check your connection or try a different payment method, then try again.');
+      ctas = '<button type="button" class="pco-btn pco-btn-primary" onclick="PCO._retryPay()">Try Again</button>' +
+             '<button type="button" class="pco-btn pco-btn-secondary" onclick="PCO._backToCheckout()">Back to Checkout</button>';
+    } else if (kind === 'cancelled') {
+      ico = '<div class="pco-state-ico pco-state-ico-red">✕</div>';
+      title = 'Payment cancelled';
+      sub = 'No charge was made. Your selection is saved here — you can safely try again anytime.';
+      ctas = '<button type="button" class="pco-btn pco-btn-primary" onclick="PCO._retryPay()">Try Payment Again</button>' +
+             '<button type="button" class="pco-btn pco-btn-secondary" onclick="PCO._backToCheckout()">Back to Checkout</button>';
     }
-    return '<div class="pco-state-card">' + ico + '<h2 class="pco-state-title">' + title + '</h2><p class="pco-state-sub">' + sub + '</p><div class="pco-state-ctas">' + ctas + '</div></div>';
+    return '<div class="pco-state-card" role="status" aria-live="polite">' + ico + '<h2 class="pco-state-title">' + title + '</h2><p class="pco-state-sub">' + sub + '</p><div class="pco-state-ctas">' + ctas + '</div></div>';
+  }
+
+  /* ── §12 PREMIUM SUCCESS SCREEN ──────────────────────────────────
+     Refresh-safe: on reload, load() re-verifies ownership in the DB and
+     lands in the 'owned' state — the Library truth is always consistent. */
+  function _successHTML() {
+    var t = (S.db && S.db.dbTitle) || (S.pdf && S.pdf.title) || 'your PDF';
+    var c = (S.db && S.db.dbCover) || (S.pdf && S.pdf.coverImage) || '';
+    var amt = S.payAmount != null ? S.payAmount : _price();
+    var img = c
+      ? '<img class="pco-succ-cover" src="' + _esc(c) + '" alt="' + _esc(t) + '" loading="lazy" onerror="this.style.display=\'none\'">'
+      : '<div class="pco-succ-cover pco-succ-noimg">📚</div>';
+    return '<div class="pco-state-card pco-succ" role="status" aria-live="polite">' +
+      '<div class="pco-succ-check" aria-hidden="true"><svg viewBox="0 0 52 52" width="64" height="64"><circle class="pco-succ-c" cx="26" cy="26" r="24" fill="none"/><path class="pco-succ-p" fill="none" d="M14 27l8 8 16-16"/></svg></div>' +
+      '<h2 class="pco-state-title">Payment Successful!</h2>' +
+      '<p class="pco-state-sub">Your PDF is now unlocked and added to your Studyria Library.</p>' +
+      '<div class="pco-succ-prod">' + img +
+        '<div><div class="pco-succ-name">' + _esc(t) + '</div>' +
+        '<div class="pco-succ-rows">' +
+          '<div class="pco-succ-row"><span>Payment</span><strong>₹' + _fmt(amt) + '</strong></div>' +
+          (S.paymentId ? '<div class="pco-succ-row"><span>Payment ID</span><strong>' + _esc(S.paymentId) + '</strong></div>' : '') +
+        '</div></div></div>' +
+      '<ul class="pco-succ-list">' +
+        '<li>✓ Payment Verified</li><li>✓ Added to Your Library</li><li>✓ Lifetime Access</li>' +
+      '</ul>' +
+      '<div class="pco-state-ctas">' +
+        '<button type="button" class="pco-btn pco-btn-green" onclick="navigate(\'library\')">📚 Open My Library</button>' +
+        '<button type="button" class="pco-btn pco-btn-secondary" onclick="Cart.openOwned(\'' + _esc(String(S.pdfId)) + '\')">⬇ Read / Download PDF</button>' +
+      '</div></div>';
   }
 
   function _shellHTML(leftInner, summaryHTML, noBar) {
@@ -622,9 +730,11 @@
      ═══════════════════════════════════════════════════════════════════ */
   function _back() {
     if (typeof navigate === 'function') {
-      // prefer returning to the product page when possible
-      if (window.selectedPdf && String(window.selectedPdf.id) === String(S.pdfId)) { navigate('detail'); return; }
-      navigate('library');
+      // Direct-to-checkout flow: return to the grid the user came from.
+      // The PDP is bypassed for purchases, so Back never dead-ends there.
+      var dest = S.fromPage && S.fromPage !== 'pdf-checkout' ? S.fromPage : 'library';
+      if (dest === 'detail') dest = 'library';
+      navigate(dest);
     }
   }
 
@@ -654,12 +764,32 @@
     if (typeof navigate === 'function') navigate('login');
   }
 
+  /* §5 free product — existing free-access system, never Razorpay */
+  function _getFree() {
+    if (typeof window.downloadPDF === 'function') { try { window.downloadPDF(String(S.pdfId)); } catch (e) {} return; }
+    if (typeof navigate === 'function') navigate('library');
+  }
+
+  /* §11 FAILED / CANCELLED → re-verify fresh from the DB, then re-open pay */
+  async function _retryPay() {
+    S.notice = null; S.failMsg = null;
+    await load();
+    if (S.phase === 'ready' && S.user) _pay();
+  }
+  async function _backToCheckout() {
+    S.notice = null; S.failMsg = null;
+    await load();
+  }
+
   /* PAY — reuses the single shared Razorpay implementation (Cart.payItems) */
   async function _pay() {
     if (S.payBusy) return;
     if (!window.Cart || typeof Cart.payItems !== 'function') { _toast('Checkout is still loading — try again in a moment.', 'info'); return; }
 
     var p = _price();
+    // §5 ₹0 never opens Razorpay — free-access flow instead
+    if (!(p > 0)) { S.phase = 'free'; render(); _getFree(); return; }
+
     var title = (S.db && S.db.dbTitle) || (S.pdf && S.pdf.title) || 'Study Material';
     S.payBusy = true;
     _payingUI(true);
@@ -669,6 +799,7 @@
       onGranted: function (granted, paymentId, failed) {
         S.payBusy = false;
         S.paymentId = paymentId || null;
+        S.payAmount = _price();          // receipt shows the DB-verified amount
         S.phase = 'success';
         if (window._dashCache !== undefined) window._dashCache = null;
         render();
@@ -704,12 +835,15 @@
       },
       onDismiss: function () {
         S.payBusy = false;
-        S.notice = { kind: 'info', text: 'Payment cancelled — no charge was made. You can safely try again.' };
+        S.notice = null; S.failMsg = null;
+        S.phase = 'cancelled';           // §11 E — dedicated cancel state
         render();
       },
       onError: function (msg) {
         S.payBusy = false;
-        S.notice = { kind: 'warn', text: msg || 'Payment could not start. Please try again.' };
+        S.notice = null;
+        S.failMsg = msg || 'Payment could not start. Please try again.';
+        S.phase = 'failed';              // §11 D — dedicated fail state
         render();
       }
     };
@@ -726,8 +860,8 @@
   function _payingUI(on) {
     var btn = document.getElementById('pcoPayBtn');
     var sBtn = document.getElementById('pcoStickyBuy');
-    if (btn) { btn.disabled = on; btn.textContent = on ? 'Processing…' : 'Pay ₹' + _fmt(_price()) + ' Securely'; }
-    if (sBtn) { sBtn.disabled = on; sBtn.textContent = on ? 'Processing…' : '⚡ Buy ₹' + _fmt(_price()); }
+    if (btn) { btn.disabled = on; btn.setAttribute('aria-busy', on ? 'true' : 'false'); btn.textContent = on ? 'Securely processing payment…' : 'Pay ₹' + _fmt(_price()) + ' Securely'; }
+    if (sBtn) { sBtn.disabled = on; sBtn.setAttribute('aria-busy', on ? 'true' : 'false'); sBtn.textContent = on ? 'Processing…' : '⚡ Buy ₹' + _fmt(_price()); }
   }
 
   /* ═══════════════════════════════════════════════════════════════════
@@ -768,7 +902,10 @@
     _prev: _prevFn,
     _next: _nextFn,
     _thumb: _thumbFn,
-    _retryPv: _retryPvFn
+    _retryPv: _retryPvFn,
+    _getFree: _getFree,
+    _retryPay: _retryPay,
+    _backToCheckout: _backToCheckout
   };
 
   _initAuthListener(0);

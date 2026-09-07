@@ -572,3 +572,87 @@
   outline: 2px solid #930205;
   outline-offset: 2px;
 }
+
+
+/* ═══ §11/§12 PAYMENT STATES + PREMIUM SUCCESS (v2026-09-07) ═════════ */
+
+/* §5 explicit savings line */
+.pco-save-line {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0a7a3d;
+  margin: 6px 0 2px;
+}
+
+/* §19 visible keyboard focus for all checkout controls */
+.pco-root :focus-visible {
+  outline: 2px solid #930205;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.pco-sticky :focus-visible { outline-color: #fff; }
+
+/* ── §12 premium success screen ──────────────────────────────────── */
+.pco-succ { max-width: 560px; }
+
+.pco-succ-check { display: flex; justify-content: center; margin-bottom: 4px; }
+.pco-succ-check .pco-succ-c {
+  stroke: #0a7a3d; stroke-width: 2.5;
+  stroke-dasharray: 151; stroke-dashoffset: 151;
+  animation: pco-succ-draw .55s ease-out .1s forwards;
+}
+.pco-succ-check .pco-succ-p {
+  stroke: #0a7a3d; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 36; stroke-dashoffset: 36;
+  animation: pco-succ-draw .35s ease-out .5s forwards;
+}
+@keyframes pco-succ-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .pco-succ-check .pco-succ-c, .pco-succ-check .pco-succ-p { animation: none; stroke-dashoffset: 0; }
+}
+
+.pco-succ-prod {
+  display: flex; gap: 14px; align-items: center; text-align: left;
+  border: 1px solid rgba(147, 2, 5, 0.14);
+  background: rgba(147, 2, 5, 0.03);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 18px auto 0;
+  max-width: 430px;
+}
+.pco-succ-cover {
+  width: 52px; height: 70px; border-radius: 8px; object-fit: cover;
+  flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,.14);
+  background: #efe7da;
+}
+.pco-succ-noimg {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+}
+.pco-succ-name {
+  font-size: 0.92rem; font-weight: 800; color: #1c1410;
+  margin-bottom: 6px; line-height: 1.35;
+}
+.pco-succ-rows { display: flex; flex-direction: column; gap: 3px; }
+.pco-succ-row {
+  display: flex; justify-content: space-between; gap: 18px;
+  font-size: 0.75rem; color: #5a4a42;
+}
+.pco-succ-row strong { color: #1c1410; font-weight: 700; }
+
+.pco-succ-list {
+  list-style: none; margin: 16px auto 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px;
+  font-size: 0.78rem; font-weight: 700; color: #0a7a3d;
+}
+@media (max-width: 480px) {
+  .pco-succ-list { flex-direction: column; align-items: center; gap: 6px; }
+  .pco-succ-prod { padding: 12px; }
+}
+
+/* §7 swipe hint (mobile only, subtle) */
+@media (max-width: 1023px) {
+  .pco-thumbs::after {
+    content: '';
+  }
+}
