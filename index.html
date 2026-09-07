@@ -23152,6 +23152,57 @@ async function _loadOwnershipCache() {
 }
 
 // Check if a PDF is already owned (free or paid) — uses the in-memory cache.
+/* ── SRP: server-side purchase verification client (phase-3) ──────
+ * Routes purchase recording through the Base44 backend (srPdfAccess),
+ * which verifies the Razorpay payment SERVER-SIDE before writing the
+ * purchased_pdfs row. Falls back to the legacy direct insert until the
+ * backend is configured; after the phase-4 RLS runs, the server path is
+ * the only writer. Free ownership goes through the same backend, which
+ * re-checks the price in the DB (never trusts the client). */
+window.SRP = {
+  BASE: 'https://superagent-f8acee03.base44.app/functions/srPdfAccess',
+  async _token() {
+    try {
+      const c = window.supabaseClient;
+      if (!c) return null;
+      const { data } = await c.auth.getSession();
+      return data && data.session ? data.session.access_token : null;
+    } catch (e) { return null; }
+  },
+  async claim(items, paymentId) {
+    try {
+      const token = await this._token();
+      if (!token) return false;
+      const res = await fetch(this.BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ op: 'claim', token, payment_id: String(paymentId || ''), items: items })
+      });
+      const j = await res.json().catch(() => null);
+      if (j && j.ok) return true;
+      if (j && j.notConfigured) { console.log('SRP: backend not configured — legacy path.'); return false; }
+      console.warn('SRP claim rejected:', j && j.error);
+      return false;
+    } catch (e) { console.warn('SRP claim error:', e); return false; }
+  },
+  async claimFree(pdfId) {
+    try {
+      const token = await this._token();
+      if (!token) return false;
+      const res = await fetch(this.BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ op: 'claim-free', token, pdf_uuid: String(pdfId) })
+      });
+      const j = await res.json().catch(() => null);
+      if (j && j.ok) return true;
+      if (j && j.notConfigured) return false;
+      console.warn('SRP claim-free rejected:', j && j.error);
+      return false;
+    } catch (e) { return false; }
+  }
+};
+
 function _isOwned(pdfId) {
   return window._ownedPdfIds.has(String(pdfId));
 }
@@ -23162,6 +23213,22 @@ function _isOwned(pdfId) {
 async function grantFreeOwnership(pdfId) {
   const client = window.supabaseClient;
   if (!client) { console.warn('⚠️ grantFreeOwnership: no supabase client'); return false; }
+
+  // SECURITY (phase-3): only genuinely FREE PDFs can be self-granted.
+  // Paid PDFs must go through checkout + server-side verification.
+  const _pdfRow = (window.PDFS || []).find(p => String(p.id) === String(pdfId));
+  if (_pdfRow && _pdfRow.free !== true && Number(_pdfRow.price ?? _pdfRow.selling_price ?? 0) > 0) {
+    console.warn('⚠️ grantFreeOwnership blocked — not a free PDF:', pdfId);
+    return false;
+  }
+  // Prefer the server-side free-claim (DB price re-check). Falls back to
+  // the local insert below until the payment backend is configured.
+  try {
+    if (window.SRP && window.SRP.claimFree) {
+      const _ok = await window.SRP.claimFree(pdfId);
+      if (_ok) { window._ownedPdfIds.add(String(pdfId)); return true; }
+    }
+  } catch (_) {}
 
   // Get live auth user
   let user = null;
@@ -23594,6 +23661,16 @@ async function downloadPDF(pdfId, _legacyUrl) {
         console.error('❌ CRITICAL: No Supabase client available in payment handler!');
       } else {
         try {
+          // ── 5a-S. SERVER-VERIFIED purchase claim (Razorpay checked server-side) ──
+          let _srpClaimed = false;
+          try {
+            if (window.SRP) _srpClaimed = await window.SRP.claim([{ pdf_uuid: String(pdfId), price: Number(pdf.price ?? 0) }], paymentId);
+          } catch (_) { _srpClaimed = false; }
+          if (_srpClaimed) {
+            console.log('✅ Purchase recorded via server-side Razorpay verification (srPdfAccess).');
+            cpCreditCreatorSale(pdfId, amount);
+            window._dashCache = null;
+          } else {
           // Duplicate guard: check by user_id + pdf_uuid only (canonical columns)
           const { data: existRows, error: checkErr } = await client
             .from('purchased_pdfs')
@@ -23644,6 +23721,7 @@ async function downloadPDF(pdfId, _legacyUrl) {
           } else {
             console.log('ℹ️ Purchase record already exists — skipping duplicate insert.');
           }
+          } // end legacy claim path
         } catch(e) {
           console.error('❌ Supabase purchase record exception:', e);
         }
@@ -23875,6 +23953,16 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
         console.error('❌ CRITICAL: No Supabase client in buyPDF payment handler!');
       } else {
         try {
+          // ── SERVER-VERIFIED purchase claim (Razorpay checked server-side) ──
+          let _srpClaimed = false;
+          try {
+            if (window.SRP) _srpClaimed = await window.SRP.claim([{ pdf_uuid: String(pdfId), price: Number(pdf.price ?? 0) }], paymentId);
+          } catch (_) { _srpClaimed = false; }
+          if (_srpClaimed) {
+            console.log('✅ buyPDF: purchase recorded via server-side verification (srPdfAccess).');
+            cpCreditCreatorSale(pdfId, amount);
+            window._dashCache = null;
+          } else {
           // Duplicate guard: use user_id + pdf_uuid (canonical columns only)
           const { data: existRows, error: checkErr } = await client
             .from('purchased_pdfs')
@@ -23924,6 +24012,7 @@ async function buyPDF(pdfId, amount, _legacyUrl) {
           } else {
             console.log('ℹ️ buyPDF: Purchase record already exists — skipping duplicate insert.');
           }
+          } // end legacy claim path
         } catch(e) {
           console.error('❌ buyPDF Supabase purchase record exception:', e);
         }

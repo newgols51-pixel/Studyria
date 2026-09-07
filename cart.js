@@ -647,14 +647,23 @@
 
       handler: async function (response) {
         const paymentId = response.razorpay_payment_id;
+        // Server-verified claim FIRST — one Razorpay payment covers the whole
+        // cart, so verify the total once server-side (srPdfAccess re-reads the
+        // real prices from the DB). Falls back to per-item local inserts until
+        // the payment backend is configured.
+        let _srpAll = false;
+        try {
+          if (window.SRP) _srpAll = await window.SRP.claim(
+            payNow.map(p => ({ pdf_uuid: String(p.pdfId), price: Number(p.price || 0) })), paymentId);
+        } catch (_) { _srpAll = false; }
         const failed = [];
         for (const p of payNow) {
           // Same insert contract as buyPDF: duplicate-guarded purchased_pdfs row
-          let ok = false;
+          let ok = _srpAll;
           try {
             const { data: existRows } = await db.from('purchased_pdfs')
               .select('id').eq('user_id', user.id).eq('pdf_uuid', String(p.pdfId)).eq('status', 'paid');
-            if (!existRows || !existRows.length) {
+            if (!ok && (!existRows || !existRows.length)) {
               const { error: insErr } = await db.from('purchased_pdfs').insert({
                 user_id: user.id, email: user.email,
                 pdf_uuid: String(p.pdfId), payment_id: paymentId, status: 'paid'
