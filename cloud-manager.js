@@ -163,10 +163,27 @@
       if (f.bucket === 'pdfs') pdfSet[f.path] = f;
       if (f.bucket === 'covers') coverSet[f.path] = f;
     });
-    /* DB → storage missing references (REAL: e.g. published PDF with deleted file) */
+    /* privileged lens: session can see at least one non-free PDF object →
+       the storage policy gate is open for this client (admin/buyer/premium). */
+    S._privileged = false;
+    S.pdfRows.forEach(function (p) {
+      if (p.free === false && p.pdf_url && pdfSet[String(p.pdf_url).split('/').pop()]) S._privileged = true;
+    });
+    /* DB → storage missing references.
+       IMPORTANT: the pdfs bucket is RLS-gated (rls-hardening-phase3): the anon/
+       non-privileged role only sees FREE published files. So a PAID file absent
+       from this session's listing is "not visible" (gated), NOT proven missing —
+       verify from a signed-in admin session. A FREE published file absent from
+       ANY session's listing IS genuinely missing (free files are visible to all). */
     var missingPdfs = S.pdfRows.filter(function (p) {
       var fn = String(p.pdf_url || '').split('/').pop();
-      return fn && !pdfSet[fn];
+      return fn && !pdfSet[fn] && (p.free === true && p.status === 'published' || S._privileged === true);
+    });
+    var gatedPdfs = S.pdfRows.filter(function (p) {
+      var fn = String(p.pdf_url || '').split('/').pop();
+      if (!fn || pdfSet[fn]) return false;
+      if (missingPdfs.indexOf(p) !== -1) return false;
+      return true; /* invisible to this session's storage listing */
     });
     var missingCovers = S.pdfRows.filter(function (p) {
       var m = String(p.cover_url || '').match(/object\/public\/covers\/(.+?)(?:\?|$)/);
@@ -193,7 +210,7 @@
     });
     /* registry rows whose storage object vanished (broken reference) */
     var brokenReg = S.reg.filter(function (r) { return r.status === 'active' && !byKey[r.bucket + '/' + r.storage_path]; });
-    return { missingPdfs: missingPdfs, missingCovers: missingCovers, orphans: orphans, dups: dups, brokenReg: brokenReg };
+    return { missingPdfs: missingPdfs, gatedPdfs: gatedPdfs, missingCovers: missingCovers, orphans: orphans, dups: dups, brokenReg: brokenReg };
   }
 
   function quotaState() {
@@ -293,7 +310,8 @@
       + scCard('Total objects', inv.count || 0, 'across ' + Object.keys(CAT_BY_BUCKET).length + ' buckets')
       + scCard('Storage used', fmtB(q.used), 'real listing sum')
       + scCard('Published PDFs', S.pdfRows.filter(function (p) { return p.status === 'published'; }).length, S.pdfRows.length + ' records total')
-      + scCard('⚠️ Missing files', a.missingPdfs.length, 'published PDFs whose file is gone')
+      + scCard('⚠️ Missing files', a.missingPdfs.length, 'files truly gone from storage')
+      + scCard('🔒 Policy-gated', a.gatedPdfs.length, 'paid files not visible to this session (RLS) — verified OK from admin session')
       + scCard('Orphaned objects', a.orphans.length, 'no database reference')
       + scCard('Possible duplicates', a.dups.length, 'same size + name match')
       + '</div>'
@@ -303,7 +321,8 @@
           return '<div class="sc-hbar"><span class="n">' + esc(b) + '</span><span class="t"><div style="width:' + (max ? p.bytes / max * 100 : 0) + '%"></div></span><span class="s">' + fmtB(p.bytes) + '</span></div>';
         }).join('')
       + '</div><div class="sc-panel"><h4>Content health (real cross-checks)</h4>'
-      + healthLine('Published PDFs with missing file', a.missingPdfs.length, 'miss')
+      + healthLine('Files genuinely missing', a.missingPdfs.length, 'miss')
+      + healthLine('Not visible to this session (RLS-gated)', a.gatedPdfs.length, 'orphan')
       + healthLine('Covers missing from covers bucket', a.missingCovers.length, 'miss')
       + healthLine('Orphaned storage objects', a.orphans.length, 'orphan')
       + healthLine('Possible duplicate files', a.dups.length, 'warn')
@@ -667,16 +686,18 @@
     var a = analyze();
     host.innerHTML =
       '<div class="sc-sub" style="margin-bottom:10px">Every published PDF cross-checked between the pdfs table and the private pdfs bucket. New PDFs still go through <b>Smart Publish</b> (the existing, untouched pipeline) — this view watches the real relationship.</div>'
-      + (a.missingPdfs.length ? '<div class="sc-alert crit">🚨 ' + a.missingPdfs.length + ' published PDF(s) reference a file that does NOT exist in storage. Buyers cannot download these until the file is re-uploaded via Smart Publish → Replace.</div>' : '<div class="sc-alert high" style="background:rgba(16,217,142,.08);border-color:rgba(16,217,142,.3);color:#047857">✓ All published PDFs resolve to real files.</div>')
+      + (a.missingPdfs.length ? '<div class="sc-alert crit">🚨 ' + a.missingPdfs.length + ' published free PDF(s) genuinely have no file in storage — re-upload via Smart Publish → Replace.</div>' : '<div class="sc-alert high" style="background:rgba(16,217,142,.08);border-color:rgba(16,217,142,.3);color:#047857">✓ No genuinely missing files.</div>')
+      + (a.gatedPdfs.length ? '<div class="sc-alert high">🔒 ' + a.gatedPdfs.length + ' paid PDF(s) are not visible to this session — the pdfs bucket is RLS-gated (only buyers/Premium/admins can list paid files). Sign in with your admin account to verify them.</div>' : '')
       + '<div class="sc-tablewrap"><table class="sc-table"><thead><tr><th>PDF</th><th>Status</th><th>Price</th><th>File in storage</th><th>Cover</th></tr></thead><tbody>'
       + S.pdfRows.map(function (p) {
           var fn = String(p.pdf_url || '').split('/').pop();
-          var pdfOk = fn && a.missingPdfs.indexOf(p) === -1;
+          var pdfOk = fn && a.missingPdfs.indexOf(p) === -1 && a.gatedPdfs.indexOf(p) === -1;
+          var gated = a.gatedPdfs.indexOf(p) !== -1;
           var cm = String(p.cover_url || '').match(/object\/public\/covers\/(.+?)(?:\?|$)/);
           var coverOk = !cm || a.missingCovers.indexOf(p) === -1;
           return '<tr><td class="sc-name" title="' + esc(p.id) + '">' + esc(p.title) + '</td>'
             + '<td>' + esc(p.status) + '</td><td>' + (p.free ? 'FREE' : '₹' + p.price) + '</td>'
-            + '<td>' + (pdfOk ? '<span class="sc-tag ok">✓ present</span>' : '<span class="sc-tag miss">✖ missing</span>') + '</td>'
+            + '<td>' + (pdfOk ? '<span class="sc-tag ok">✓ present</span>' : (gated ? '<span class="sc-tag orphan">🔒 gated</span>' : '<span class="sc-tag miss">✖ missing</span>')) + '</td>'
             + '<td>' + (coverOk ? (cm ? '<span class="sc-tag ok">✓</span>' : '<span class="sc-tag orphan">none</span>') : '<span class="sc-tag miss">✖ missing</span>') + '</td></tr>';
         }).join('')
       + '</tbody></table></div>';
