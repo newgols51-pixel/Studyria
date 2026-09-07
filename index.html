@@ -22167,6 +22167,18 @@ function openDetail(id) {
     return;
   }
   normalizePdf(selectedPdf);
+  // ── DIRECT-TO-CHECKOUT (user decision, 2026-09-07): every paid PDF card
+  //    click (Library / Home / Search / OTT) opens the premium PCO checkout
+  //    directly — the PDP is bypassed for the purchase flow. The PDP route
+  //    itself stays intact for FREE items (info + download) and for
+  //    already-owned items (Open PDF). Payment/verification/purchase logic
+  //    is unchanged — this only changes WHERE the card click lands.
+  var _price = Number(selectedPdf.price) || 0;
+  var _paid = !selectedPdf.free && _price > 0;
+  if (_paid && !_isOwned(String(id)) && window.PCO && typeof window.PCO.open === 'function') {
+    window.PCO.open(id);
+    return;
+  }
   navigate('detail');
 }
 // Alias for OTT discovery cards
