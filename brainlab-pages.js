@@ -103,15 +103,15 @@
       if (sec) w.appendChild(sec); /* DOM MOVE — content & handlers preserved */
     });
 
-    /* move Home sections into home wrapper (keep visual order) */
+    /* dashboard preview grid FIRST — spec §7 flow: Hero → Stats → Quick Access (Arena banner + module directory) → personal sections */
+    var dash = document.createElement('div');
+    dash.id = 'blv8-dashboard';
+    home.appendChild(dash);
+    /* then the personal sections (keep visual order) */
     HOME_SECS.forEach(function (id) {
       var sec = document.getElementById(id);
       if (sec) home.appendChild(sec);
     });
-    /* dashboard preview grid appends after streak/tools */
-    var dash = document.createElement('div');
-    dash.id = 'blv8-dashboard';
-    home.appendChild(dash);
   }
 
   /* ── lazy renderAll override: Home renders Home only (spec §20) ── */
