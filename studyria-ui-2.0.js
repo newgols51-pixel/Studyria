@@ -153,7 +153,10 @@
       if (!a) return;
       var id = a.getAttribute('href');
       if (id.length < 2) return;
-      var target = document.querySelector(id);
+      // Guard: SPA sub-route hrefs (e.g. #brainlab/mock-tests) are not valid
+      // CSS selectors — querySelector would throw. Skip instead of erroring.
+      var target = null;
+      try { target = document.querySelector(id); } catch (e) { return; }
       if (target) {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });

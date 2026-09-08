@@ -1,0 +1,104 @@
+/* ═════════════════════════════════════════════════════════════════════
+   STUDYRIA BRAINLAB — V8 MODULAR PAGES (additive, blv8- namespace)
+   Mobile-first, matches existing BrainLab visual identity.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* page wrappers — hidden by default, .on shows */
+.blv8-page { display: none; }
+.blv8-page.on { display: block; animation: blv8fade .18s ease; }
+@keyframes blv8fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* breadcrumb / back header on module pages */
+.blv8-crumb {
+  display: flex; align-items: center; gap: 10px;
+  margin: 10px 0 4px; flex-wrap: wrap;
+}
+.blv8-back {
+  border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  background: #fff; color: var(--hp-ink, #1c1b1a);
+  border-radius: 20px; padding: 7px 14px;
+  font-size: 0.78rem; font-weight: 800; cursor: pointer;
+  touch-action: manipulation;
+}
+.blv8-back:hover { border-color: var(--hp-red, #930205); color: var(--hp-red, #930205); }
+.blv8-crumb-title { font-size: 0.75rem; font-weight: 900; letter-spacing: .06em; color: #888; text-transform: uppercase; }
+
+/* home dashboard preview grid */
+.blv8-grid {
+  display: grid; grid-template-columns: 1fr; gap: 10px;
+  margin-top: 8px;
+}
+@media (min-width: 560px) { .blv8-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (min-width: 900px) { .blv8-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+.blv8-card {
+  background: #fff; border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  border-radius: 14px; padding: 14px;
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  box-sizing: border-box;
+}
+.blv8-card-head { display: flex; align-items: center; gap: 8px; }
+.blv8-card-icon { font-size: 1.2rem; }
+.blv8-card-title { font-weight: 800; font-size: 0.95rem; color: var(--hp-ink, #1c1b1a); }
+.blv8-card-stat { font-size: 0.78rem; color: #666; line-height: 1.45; min-height: 2.2em; overflow-wrap: anywhere; }
+.blv8-card-cta {
+  margin-top: auto; width: 100%;
+  background: var(--hp-ink, #1c1b1a); color: #fff;
+  border: none; border-radius: 10px;
+  padding: 10px; font-size: 0.74rem; font-weight: 900; letter-spacing: .05em;
+  cursor: pointer; touch-action: manipulation;
+}
+.blv8-card-cta:hover { background: var(--hp-red, #930205); }
+
+/* mock page search + chips */
+.blv8-mock-bar { margin: 4px 0 10px; display: flex; flex-direction: column; gap: 8px; }
+.blv8-search {
+  width: 100%; box-sizing: border-box;
+  border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  border-radius: 10px; padding: 10px 12px; font-size: 0.85rem;
+  background: #fff; outline: none;
+}
+.blv8-search:focus { border-color: var(--hp-red, #930205); }
+.blv8-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.blv8-chip {
+  border: 1px solid var(--hp-line, rgba(28,27,26,0.12)); background: #fafafa;
+  border-radius: 18px; padding: 6px 12px; font-size: 0.74rem; font-weight: 800;
+  cursor: pointer; touch-action: manipulation;
+}
+.blv8-chip.on { background: var(--hp-ink, #1c1b1a); color: #fff; border-color: var(--hp-ink, #1c1b1a); }
+
+/* MCQ page practice modes */
+.blv8-pmodes { margin: 2px 0 12px; }
+.blv8-pmodes h3, .blv8-trend h3 { font-size: 0.72rem; font-weight: 900; letter-spacing: .08em; color: #555; }
+.blv8-pgrid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-top: 8px; }
+@media (min-width: 700px) { .blv8-pgrid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+.blv8-pcard {
+  background: #fff; border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  border-radius: 12px; padding: 12px 10px; text-align: center; cursor: pointer;
+  display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  touch-action: manipulation;
+}
+.blv8-pcard:hover { border-color: var(--hp-red, #930205); }
+.blv8-pcard:active { transform: scale(0.98); }
+.blv8-picon { font-size: 1.3rem; }
+.blv8-pt { font-size: 0.8rem; font-weight: 800; }
+.blv8-ps { font-size: 0.68rem; color: #999; overflow-wrap: anywhere; }
+
+/* performance trend bars */
+.blv8-trend { margin: 2px 0 12px; }
+.blv8-trend-bars {
+  display: flex; align-items: flex-end; gap: 6px; height: 110px;
+  margin-top: 10px; padding: 10px 6px;
+  background: #fff; border: 1px solid var(--hp-line, rgba(28,27,26,0.12));
+  border-radius: 12px; overflow-x: auto; scrollbar-width: none;
+}
+.blv8-trend-bars::-webkit-scrollbar { display: none; }
+.blv8-tbar {
+  flex: 1 0 22px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+  align-items: center; gap: 3px; min-width: 0;
+}
+.blv8-tbar > span {
+  display: block; width: 100%; border-radius: 6px 6px 0 0;
+  background: var(--hp-red, #930205); opacity: .85;
+}
+.blv8-tbar:last-child > span { opacity: 1; }
+.blv8-tbar em { font-style: normal; font-size: 0.6rem; color: #999; }

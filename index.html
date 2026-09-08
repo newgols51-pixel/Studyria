@@ -314,7 +314,7 @@ window.__blReady = function (fn) {
   })();
 };
 window.ROUTE_SCRIPTS = {
-  brainlab:      ['question-bank.js?v=20260816exp3', 'brainlab-icons.js?v=20260901gs', 'brainlab.js?v=20260903a', 'brainlab-ext.js?v=20260815fix1', 'arena.js?v=20260903fix2', 'brainlab-v7.js?v=20260908a'],
+  brainlab:      ['question-bank.js?v=20260816exp3', 'brainlab-icons.js?v=20260901gs', 'brainlab.js?v=20260903a', 'brainlab-ext.js?v=20260815fix1', 'arena.js?v=20260903fix2', 'brainlab-v7.js?v=20260908a', 'brainlab-pages.js?v=20260908a'],
   campus:        ['campus.js?v=20260731a', 'campus-admin.js?v=20260731a'],
   'adre-papers': ['adre-papers-data.js?v=20260827d', 'adre-papers-config.js?v=20260827d', 'adre-paper1-data.js?v=20260827d', 'adre-paper2-data.js?v=20260827d', 'adre-paper5-data.js?v=20260827d', 'adre-paper1-2022-data.js?v=20260827d', 'adre-paper2-2022-data.js?v=20260827d', 'adre-paper3-2022-data.js?v=20260827d', 'adre-paper4-2022-data.js?v=20260827d', 'adre-paper5-2022-data.js?v=20260827d', 'adre-exam.js?v=20260828a'],
   admin:         ['smart-publish-manager.js', 'pdf-classification-refactor.js?v=20260906', 'premium-edit-pdf-ui.js', 'admin-membership-manager.js', 'pwa-admin-v32.js', 'library-expansion-uploader.js', 'campus-admin.js?v=20260731a'],
@@ -322,7 +322,7 @@ window.ROUTE_SCRIPTS = {
   'ai-notes':    ['ai-notes-studio.js']
 };
 window.ROUTE_CSS = {
-  brainlab:      ['brainlab.css?v=20260903dcafix2', 'brainlab-icons.css?v=20260818icons1', 'brainlab-v7.css?v=20260908a'],
+  brainlab:      ['brainlab.css?v=20260903dcafix2', 'brainlab-icons.css?v=20260818icons1', 'brainlab-v7.css?v=20260908a', 'brainlab-pages.css?v=20260908a'],
   campus:        ['campus.css?v=20260731a'],
   'adre-papers': ['adre-exam.css?v=20260827d']
 };
@@ -20911,6 +20911,13 @@ function _setPageCanonical(page) {
 
 async function navigate(page) {
   window._realNavigate = navigate; // expose for stub flush
+  // ── BrainLab V8 sub-routes: #brainlab/<module> → brainlab route + module page ──
+  // Normalizes BEFORE the lazy preload so the brainlab bundle always loads.
+  // BrainLabPages.syncFromHash() (brainlab-pages.js) opens the module page.
+  if (typeof page === 'string' && page.indexOf('brainlab/') === 0) {
+    window._blPendingSub = page.slice('brainlab/'.length).split('/')[0];
+    page = 'brainlab';
+  }
   // Route-level lazy bundle (Issue #1) — heavy route code loads on demand.
   if (window.__routePreload) { try { await window.__routePreload(page); } catch (e) { console.warn('[lazy] preload failed', e); } }
 
@@ -20977,7 +20984,10 @@ async function navigate(page) {
   // ── Hash-based SPA routing (public pages only) ────────────────
   if (_SPA_PUBLIC_PAGES.has(page) || page === 'adre-papers') {
     const hash = page === 'home' ? '#' : '#' + page;
-    if (history.pushState && location.hash !== hash && location.hash !== (page === 'home' ? '' : hash)) {
+    // BrainLab V8 sub-routes: never clobber '#brainlab/<module>' — the
+    // sub-router (brainlab-pages.js) owns the URL while a module page is open.
+    const blSub = page === 'brainlab' && /^#brainlab\//.test(location.hash);
+    if (!blSub && history.pushState && location.hash !== hash && location.hash !== (page === 'home' ? '' : hash)) {
       history.pushState({ page }, '', hash);
     }
   }
