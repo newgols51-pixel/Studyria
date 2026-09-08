@@ -226,7 +226,23 @@
         + '<button class="blv8-card-cta" onclick="' + onclick + '">' + cta + '</button></div>';
     };
 
-    var h = '<div class="bl-section-header"><h2 class="bl-section-title">🧭 Learning Modules</h2><span class="bl-section-sub">Open any module for the full experience</span></div>';
+    /* Arena hero banner — real modes from the SA array (brainlab.js), no fake stats */
+    var arenaModes = window.BL_ARENA_MODES || window.SA || [];
+    var banner = '<div class="blv8-arena-banner">'
+      + '<div class="blv8-arena-banner-head"><span class="blv8-arena-banner-emoji">⚔️</span>'
+      + '<div><div class="blv8-arena-banner-title">Practice Arena</div>'
+      + '<div class="blv8-arena-banner-sub">Real-time quiz battles — 1v1, teams, free-for-all</div></div>'
+      + '<button class="blv8-arena-banner-cta" onclick="BrainLabPages.go(\'arena\')">ENTER ARENA</button></div>'
+      + '<div class="blv8-arena-modes">'
+      + arenaModes.map(function (m) {
+          return '<button class="blv8-arena-mode" onclick="BrainLab.startArenaMode(\'' + m.mode + '\')">'
+            + '<span class="blv8-arena-mode-ic">' + m.icon + '</span>'
+            + '<span class="blv8-arena-mode-t">' + m.title + '</span>'
+            + '<span class="blv8-arena-mode-s">' + m.sub + '</span></button>';
+        }).join('')
+      + '</div></div>';
+
+    var h = banner + '<div class="bl-section-header"><h2 class="bl-section-title">🧭 Learning Modules</h2><span class="bl-section-sub">Open any module for the full experience</span></div>';
     h += '<div class="blv8-grid">';
     h += card('🎯', 'Exams', v7.EXAM_HUB ? v7.EXAM_HUB.length + ' exam tracks — ADRE, APSC, Police, TET…' : 'Exam tracks', 'OPEN', "BrainLabPages.go('exams')");
     h += card('📝', 'Mock Tests', '9 exam-style mocks · timed · instant results', 'VIEW ALL MOCK TESTS', "BrainLabPages.go('mock-tests')");

@@ -102,3 +102,19 @@
 }
 .blv8-tbar:last-child > span { opacity: 1; }
 .blv8-tbar em { font-style: normal; font-size: 0.6rem; color: #999; }
+
+
+/* ═══ Arena hero banner on Home dashboard ═══ */
+.blv8-arena-banner{margin:0 0 14px;padding:14px 14px 12px;border-radius:16px;background:linear-gradient(135deg,rgba(166,25,46,0.16),rgba(166,25,46,0.05));border:1px solid rgba(166,25,46,0.25)}
+.blv8-arena-banner-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.blv8-arena-banner-emoji{font-size:26px;line-height:1}
+.blv8-arena-banner-title{font-weight:800;font-size:1.05rem;font-family:var(--font-body,inherit)}
+.blv8-arena-banner-sub{font-size:.75rem;opacity:.75;margin-top:2px}
+.blv8-arena-banner-cta{margin-left:auto;padding:8px 14px;border-radius:10px;border:none;cursor:pointer;font-family:var(--font-body,inherit);font-size:.72rem;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--grad-primary,linear-gradient(135deg,#a6192e,#d43a4e));box-shadow:0 4px 12px rgba(166,25,46,0.35);white-space:nowrap}
+.blv8-arena-modes{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:10px;padding-bottom:2px;scrollbar-width:none}
+.blv8-arena-modes::-webkit-scrollbar{display:none}
+.blv8-arena-mode{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 12px;border-radius:12px;border:1px solid rgba(128,145,180,0.25);background:rgba(128,145,180,0.08);cursor:pointer;text-align:left;min-width:104px}
+.blv8-arena-mode:active{transform:scale(.97)}
+.blv8-arena-mode-ic{font-size:16px}
+.blv8-arena-mode-t{font-size:.75rem;font-weight:700;font-family:var(--font-body,inherit)}
+.blv8-arena-mode-s{font-size:.6rem;opacity:.7;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
