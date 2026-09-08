@@ -314,7 +314,7 @@ window.__blReady = function (fn) {
   })();
 };
 window.ROUTE_SCRIPTS = {
-  brainlab:      ['question-bank.js?v=20260816exp3', 'brainlab-icons.js?v=20260901gs', 'brainlab.js?v=20260903a', 'brainlab-ext.js?v=20260815fix1', 'arena.js?v=20260903fix2'],
+  brainlab:      ['question-bank.js?v=20260816exp3', 'brainlab-icons.js?v=20260901gs', 'brainlab.js?v=20260903a', 'brainlab-ext.js?v=20260815fix1', 'arena.js?v=20260903fix2', 'brainlab-v7.js?v=20260908a'],
   campus:        ['campus.js?v=20260731a', 'campus-admin.js?v=20260731a'],
   'adre-papers': ['adre-papers-data.js?v=20260827d', 'adre-papers-config.js?v=20260827d', 'adre-paper1-data.js?v=20260827d', 'adre-paper2-data.js?v=20260827d', 'adre-paper5-data.js?v=20260827d', 'adre-paper1-2022-data.js?v=20260827d', 'adre-paper2-2022-data.js?v=20260827d', 'adre-paper3-2022-data.js?v=20260827d', 'adre-paper4-2022-data.js?v=20260827d', 'adre-paper5-2022-data.js?v=20260827d', 'adre-exam.js?v=20260828a'],
   admin:         ['smart-publish-manager.js', 'pdf-classification-refactor.js?v=20260906', 'premium-edit-pdf-ui.js', 'admin-membership-manager.js', 'pwa-admin-v32.js', 'library-expansion-uploader.js', 'campus-admin.js?v=20260731a'],
@@ -322,7 +322,7 @@ window.ROUTE_SCRIPTS = {
   'ai-notes':    ['ai-notes-studio.js']
 };
 window.ROUTE_CSS = {
-  brainlab:      ['brainlab.css?v=20260903dcafix2', 'brainlab-icons.css?v=20260818icons1'],
+  brainlab:      ['brainlab.css?v=20260903dcafix2', 'brainlab-icons.css?v=20260818icons1', 'brainlab-v7.css?v=20260908a'],
   campus:        ['campus.css?v=20260731a'],
   'adre-papers': ['adre-exam.css?v=20260827d']
 };
@@ -18342,7 +18342,9 @@ window._chMenuBootstrap = (function() {
     <!-- ── Horizontal Section Navigation ── -->
     <div class="bl-nav-wrap">
       <div class="bl-nav">
-        <a class="bl-nav-item active" data-target="bl-sec-arena">⚔ Arena</a>
+        <a class="bl-nav-item" data-target="bl-sec-exams">🎯 Exams</a>
+        <a class="bl-nav-item" data-target="bl-sec-recommended">✨ Recommended</a>
+<a class="bl-nav-item active" data-target="bl-sec-arena">⚔ Arena</a>
         <a class="bl-nav-item" data-target="bl-sec-challenge">⚡ Daily</a>
         <a class="bl-nav-item" data-target="bl-sec-continue">📚 Continue</a>
         <a class="bl-nav-item" data-target="bl-sec-quizzes">🧩 Quizzes</a>
@@ -18363,6 +18365,14 @@ window._chMenuBootstrap = (function() {
     <div id="bl-quiz-player-area" style="display:none"></div>
 
     <!-- 00. Practice Arena — Premium Banner at top of BrainLab -->
+    <div class="bl-section" id="bl-sec-recommended">
+      <div id="bl-sec-recommended-body"></div>
+    </div>
+
+    <div class="bl-section" id="bl-sec-exams">
+      <div id="bl-sec-exams-body"></div>
+    </div>
+
     <div class="bl-section" id="bl-sec-arena">
       <div id="bl-arena"></div>
     </div>
