@@ -34,7 +34,8 @@
     'mistakes':     { sec: 'bl-sec-mistakes',      label: 'Mistakes',     icon: '🎯' },
     'arena':        { sec: 'bl-sec-arena',         label: 'Arena',        icon: '⚔' },
     'performance':  { sec: 'bl-sec-performance',   label: 'Performance',  icon: '📊' },
-    'leaderboard':  { sec: 'bl-sec-leaderboard',   label: 'Leaderboard',  icon: '🏆' }
+    'leaderboard':  { sec: 'bl-sec-leaderboard',   label: 'Leaderboard',  icon: '🏆' },
+    'subjects':     { sec: null,                   label: 'Subject-wise',  icon: '📚' }
   };
   /* sections that stay on Home */
   var HOME_SECS = ['bl-sec-continue', 'bl-sec-challenge', 'bl-sec-recommended', 'bl-sec-streak', 'bl-sec-tools'];
@@ -46,7 +47,7 @@
     { p: 'pyq', label: '📚 PYQ' }, { p: 'flashcards', label: '🎴 Flashcards' },
     { p: 'current-affairs', label: '📰 Affairs' }, { p: 'mistakes', label: '🎯 Mistakes' },
     { p: 'arena', label: '⚔ Arena' }, { p: 'performance', label: '📊 Performance' },
-    { p: 'leaderboard', label: '🏆 Leaderboard' }, { h: 'bl-sec-streak', label: '🔥 Streak' },
+    { p: 'leaderboard', label: '🏆 Leaderboard' }, { p: 'subjects', label: '📚 Subjects' }, { h: 'bl-sec-streak', label: '🔥 Streak' },
     { h: 'bl-sec-tools', label: '🛠 Tools' }
   ];
 
@@ -72,6 +73,7 @@
       case 'arena':        return [fn('renderPracticeArena')];
       case 'performance':  return [fn('renderPerformance'), P.renderTrend];
       case 'leaderboard':  return [fn('renderLeaderboard')];
+      case 'subjects':     return [P.renderSubjects];
       default:             return [];
     }
   }
@@ -103,15 +105,23 @@
       if (sec) w.appendChild(sec); /* DOM MOVE — content & handlers preserved */
     });
 
-    /* dashboard preview grid FIRST — spec §7 flow: Hero → Stats → Quick Access (Arena banner + module directory) → personal sections */
-    var dash = document.createElement('div');
-    dash.id = 'blv8-dashboard';
-    home.appendChild(dash);
-    /* then the personal sections (keep visual order) */
+    /* feature quick-access strip (existing .bl-nav) sits DIRECTLY below the hero — Part 2 */
+    var statsEl = document.getElementById('bl-stats');
+    var navWrap = document.querySelector('.bl-nav-wrap');
+    if (statsEl && navWrap && statsEl.parentNode === navWrap.parentNode) statsEl.parentNode.insertBefore(navWrap, statsEl);
+    /* personal sections first (Part 5 flow: Hero → Strip → Stats → personal…) */
     HOME_SECS.forEach(function (id) {
       var sec = document.getElementById(id);
       if (sec) home.appendChild(sec);
     });
+    /* …then the module directory dashboard (Arena banner + Learning Modules + subjects preview) */
+    var dash = document.createElement('div');
+    dash.id = 'blv8-dashboard';
+    home.appendChild(dash);
+    /* …then the Why Studyria BrainLab section */
+    var why = document.createElement('div');
+    why.id = 'blv8-why';
+    home.appendChild(why);
   }
 
   /* ── lazy renderAll override: Home renders Home only (spec §20) ── */
@@ -128,6 +138,7 @@
       try { bl.renderStudyTools(); } catch (e) { }
       try { if (window.BrainLabV7) window.BrainLabV7.renderRecommended(); } catch (e) { }
       try { P.renderDashboard(); } catch (e) { }
+      try { P.renderWhy(); } catch (e) { }
     };
   }
 
@@ -201,8 +212,8 @@
 
   /* sync view from URL hash — used after navigate()/popstate */
   P.syncFromHash = function () {
-    var m = (location.hash || '').match(/^#brainlab\/([a-z-]+)/);
-    if (m && P.PAGES[m[1]]) { P.show(m[1], false); return true; }
+    var m = (location.hash || '').match(/^#brainlab\/([a-z-]+)(?:\/([a-z0-9-]+))?/);
+    if (m && P.PAGES[m[1]]) { P.show(m[1], false); if (m[1] === 'subjects' && m[2]) P.openSubject(m[2], false); return true; }
     if (window._blPendingSub && P.PAGES[window._blPendingSub]) { var s = window._blPendingSub; window._blPendingSub = null; P.show(s, false); return true; }
     window._blPendingSub = null;
     if (current !== 'home') P.show('home', false);
@@ -255,6 +266,7 @@
     h += card('⚔', 'Arena', 'Real-time quiz battles — 1v1, teams, free-for-all', 'ENTER ARENA', "BrainLabPages.go('arena')");
     h += card('📊', 'Performance', st.tests > 0 ? st.tests + ' tests completed — view your trends' : 'Take a test to unlock analytics', 'VIEW ANALYTICS', "BrainLabPages.go('performance')");
     h += card('🏆', 'Leaderboard', bl.user() ? 'Your rank among Studyria learners' : 'Sign in to compete with real learners', 'VIEW LEADERBOARD', "BrainLabPages.go('leaderboard')");
+    h += card('📚', 'Subject-wise Practice', (bl.getCategories() || []).length + ' subjects — pick one and focus your preparation', 'EXPLORE SUBJECTS', "BrainLabPages.go('subjects')");
     h += '</div>';
     d.innerHTML = h;
 
@@ -435,4 +447,139 @@
     if (document.getElementById('page-brainlab') && window.BrainLab) { P.boot(); clearInterval(_iv); }
   }, 800);
   setTimeout(function () { clearInterval(_iv); }, 30000);
+
+
+/* ═══════════ WHY STUDYRIA BRAINLAB (Part 1 — all claims are real shipped features) ═══════════ */
+P.renderWhy = function () {
+  var d = document.getElementById('blv8-why'); if (!d) return;
+  if (d.getAttribute('data-done')) return; d.setAttribute('data-done', '1');
+  var pts = [
+    ['🎯', 'Exam-Focused Practice', 'Practice built around Assam competitive exams — ADRE, APSC, Police, TET and more.'],
+    ['🧩', 'Practice Your Weak Areas', 'Your real activity powers the Mistakes bank and Weak-Topics practice so revision targets what you actually got wrong.'],
+    ['⚡', 'Daily Practice That Builds Habits', 'Daily challenges, quick practice modes and streaks keep your preparation consistent.'],
+    ['📝', 'Real Test Experience', 'Timed mock tests with exam-style palettes, auto-submit and instant scoring — practise like the real exam.'],
+    ['📚', 'One Place for Every Practice Mode', 'Quizzes, MCQs, PYQs, Mock Tests, Flashcards and Current Affairs in one connected system.'],
+    ['📊', 'Know Your Performance', 'Accuracy, score trends, subject strength and weak areas — all from your real attempts.'],
+    ['🔥', 'Streaks, XP & Achievements', 'Turn regular study into measurable progress with streaks, XP and milestone achievements.'],
+    ['⚔️', 'Compete & Improve', 'Practice Arena battles and the real leaderboard create healthy competition among learners.'],
+    ['📰', 'Stay Exam-Ready', 'Current Affairs quizzes and exam-focused practice keep you updated for the latest pattern.'],
+    ['🧠', 'Personalized Learning', 'Recommended For You is built from your real sessions — BrainLab gets more useful the more you practise.']
+  ];
+  var h = '<div class="bl-section-header"><h2 class="bl-section-title">✨ Why Studyria BrainLab</h2><span class="bl-section-sub">Everything you need to practise smarter, track your progress, and prepare with confidence.</span></div>';
+  h += '<div class="blv8-why-grid">';
+  pts.forEach(function (p) {
+    h += '<div class="blv8-why-card"><span class="blv8-why-ic">' + p[0] + '</span><div><div class="blv8-why-t">' + p[1] + '</div><div class="blv8-why-s">' + p[2] + '</div></div></div>';
+  });
+  h += '</div>';
+  d.innerHTML = h;
+};
+
+/* ═══════════ SUBJECT-WISE PRACTICE (Part 3 — real QB data: q[7]=category, q[8]=topic, q[17]=type) ═══════════ */
+function subjIcon(name) {
+  var map = { assamese: '📖', english: '🔤', hindi: '🪔', mathematics: '🔢', math: '🔢', science: '🔬', history: '📜', geography: '🗺️', polity: '⚖️', economy: '💰', economics: '💰', reasoning: '🧩', computer: '💻', 'general knowledge': '🌐', culture: '🎭', environment: '🌱', 'current affairs': '📰', driving: '🚗' };
+  return map[String(name).toLowerCase()] || '📘';
+}
+function subjSlug(name) { return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+P.renderSubjects = function () {
+  var w = document.getElementById('blv8-subjects'); if (!w) return;
+  var bl = B(); if (!bl) return;
+  var body = document.getElementById('blv8-subj-body');
+  if (!body) { body = document.createElement('div'); body.id = 'blv8-subj-body'; w.appendChild(body); }
+  var cats = bl.getCategories() || [];
+  P._subjMap = {}; cats.forEach(function (c) { P._subjMap[subjSlug(c)] = c; });
+
+  var h = '<div class="blv8-subj-hero"><div class="blv8-subj-h-title">📚 Subject-wise Practice</div>'
+    + '<div class="blv8-subj-h-sub">Focus on one subject at a time. Practise real questions across the exams you are preparing for.</div>'
+    + '<div class="blv8-subj-badges">'
+    + '<span class="blv8-badge">📚 Subject-wise</span><span class="blv8-badge">🧩 Topic Practice</span>'
+    + '<span class="blv8-badge">📊 Performance Tracking</span><span class="blv8-badge">🌐 English + Assamese</span>'
+    + '</div>'
+    + '<input type="search" class="blv8-subj-search" id="blv8-subj-search" placeholder="Search subjects…" aria-label="Search subjects">'
+    + '</div><div class="blv8-subj-list" id="blv8-subj-list"></div>';
+  body.innerHTML = h;
+  P._renderSubjectList('');
+  var inp = document.getElementById('blv8-subj-search');
+  if (inp) inp.addEventListener('input', function () { P._renderSubjectList(inp.value); });
+};
+
+P._renderSubjectList = function (q) {
+  var bl = B(); var list = document.getElementById('blv8-subj-list'); if (!list || !bl) return;
+  var cats = bl.getCategories() || [];
+  q = String(q || '').toLowerCase().trim();
+  var rows = cats.map(function (c) {
+    var pyq = bl.filterQuestions({ category: c }).filter(function (r) { return r[17] === 'PYQ'; }).length;
+    return { name: c, topics: bl.getTopics(c).length, mcqs: bl.countByTopic(c, 'All'), pyq: pyq };
+  });
+  if (q) rows = rows.filter(function (r) { return r.name.toLowerCase().indexOf(q) !== -1; });
+  rows.sort(function (a, b) { return a.name.localeCompare(b.name); });
+  if (!rows.length) { list.innerHTML = '<div class="blv8-empty">No subjects match "' + esc(q) + '".</div>'; return; }
+  var h = '';
+  rows.forEach(function (r) {
+    var sl = subjSlug(r.name);
+    h += '<div class="blv8-subj-card" onclick="BrainLabPages.openSubject(\'' + sl + '\', true)">'
+      + '<span class="blv8-subj-ic">' + subjIcon(r.name) + '</span>'
+      + '<div class="blv8-subj-mid"><div class="blv8-subj-name">' + esc(r.name) + '</div>'
+      + '<div class="blv8-subj-counts">' + r.topics + ' topic' + (r.topics === 1 ? '' : 's') + ' · ' + r.mcqs.toLocaleString() + ' MCQs' + (r.pyq ? ' · ' + r.pyq + ' PYQs' : '') + '</div></div>'
+      + '<span class="blv8-subj-arrow">›</span></div>';
+  });
+  list.innerHTML = h;
+};
+
+P.openSubject = function (slug, push) {
+  var bl = B(); if (!bl) return;
+  var name = (P._subjMap || {})[slug];
+  if (push !== false) { location.hash = '#brainlab/subjects/' + slug; return; } /* hashchange → syncFromHash → openSubject(slug,false) */
+  if (!name) { /* direct URL: build map first */ var cats = bl.getCategories() || []; P._subjMap = {}; cats.forEach(function (c) { P._subjMap[subjSlug(c)] = c; }); name = P._subjMap[slug]; }
+  if (!name) { P.renderSubjects(); return; }
+  P._curSubjectName = name;
+  var body = document.getElementById('blv8-subj-body'); if (!body) { P.renderSubjects(); return; }
+
+  /* real user progress — only the signed-in user's own sessions */
+  var sess = (bl.getSessions() || []).filter(function (s) { return s.category === name; });
+  var progress = '';
+  if (bl.user() && sess.length) {
+    var avg = Math.round(sess.reduce(function (a, s) { return a + (s.score || 0); }, 0) / sess.length);
+    var last = sess.reduce(function (m, s) { var d = s.completed_at || s.started_at || ''; return d > m ? d : m; }, '');
+    progress = '<div class="blv8-subj-me">'
+      + '<span>🧾 ' + sess.length + ' test' + (sess.length === 1 ? '' : 's') + ' attempted</span>'
+      + '<span>🎯 ' + avg + '% avg accuracy</span>'
+      + (last ? '<span>🕘 Last: ' + esc(String(last).slice(0, 10)) + '</span>' : '')
+      + '</div>';
+  }
+
+  var topics = (bl.getTopics(name) || []).map(function (t) {
+    return { cat: name, topic: t, n: bl.countByTopic(name, t) };
+  }).sort(function (a, b) { return b.n - a.n; });
+  P._subjTopics = topics;
+
+  var h = '<button class="blv8-subj-back" onclick="BrainLabPages.subjectsBack()">← All Subjects</button>'
+    + '<div class="blv8-subj-hero"><div class="blv8-subj-h-title">' + subjIcon(name) + ' ' + esc(name) + '</div>'
+    + '<div class="blv8-subj-h-sub">' + (bl.countByTopic(name, 'All')).toLocaleString() + ' real questions · ' + topics.length + ' topic' + (topics.length === 1 ? '' : 's') + '</div>'
+    + '<div class="blv8-subj-badges"><span class="blv8-badge">🧩 Topic Practice</span><span class="blv8-badge">🌐 English + Assamese</span></div>'
+    + '</div>'
+    + progress
+    + '<button class="blv8-subj-full" onclick="BrainLabPages.startTopicPractice(-1)">▶ Start Full Subject Practice</button>'
+    + '<div class="blv8-subj-topics">';
+  topics.forEach(function (t, i) {
+    h += '<div class="blv8-subj-trow"><div><div class="blv8-subj-name">' + esc(t.topic) + '</div>'
+      + '<div class="blv8-subj-counts">' + t.n.toLocaleString() + ' questions</div></div>'
+      + '<button class="blv8-card-cta" onclick="BrainLabPages.startTopicPractice(' + i + ')">PRACTICE</button></div>';
+  });
+  h += '</div>';
+  body.innerHTML = h;
+  var top = document.getElementById('blv8-subjects');
+  if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+P.subjectsBack = function () { location.hash = '#brainlab/subjects'; };
+P.startTopicPractice = function (i) {
+  var bl = B(); if (!bl) return;
+  var t = i === -1 ? { cat: P._curSubjectName || '', topic: 'All' } : (P._subjTopics || [])[i];
+  if (!t || !t.cat) return;
+  var pool = bl.filterQuestions({ category: t.cat, topic: t.topic });
+  if (!pool.length) { bl.toast('No questions available for this selection.'); return; }
+  bl.showCountPicker({ title: t.topic === 'All' ? t.cat + ' Practice' : t.topic, category: t.cat, pool: pool, mode: 'quiz' });
+};
+
 })();

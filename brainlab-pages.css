@@ -118,3 +118,34 @@
 .blv8-arena-mode-ic{font-size:16px}
 .blv8-arena-mode-t{font-size:.75rem;font-weight:700;font-family:var(--font-body,inherit)}
 .blv8-arena-mode-s{font-size:.6rem;opacity:.7;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ═══ Why Studyria BrainLab (Part 1) ═══ */
+.blv8-why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+@media(max-width:640px){.blv8-why-grid{grid-template-columns:1fr}}
+.blv8-why-card{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:14px;border:1px solid rgba(128,145,180,.18);background:rgba(128,145,180,.05)}
+.blv8-why-ic{font-size:20px;line-height:1.2}
+.blv8-why-t{font-weight:800;font-size:.8rem;margin-bottom:2px}
+.blv8-why-s{font-size:.7rem;opacity:.75;line-height:1.4}
+
+/* ═══ Subject-wise Practice (Part 3) ═══ */
+.blv8-subj-hero{padding:14px;border-radius:16px;background:linear-gradient(135deg,rgba(166,25,46,.12),rgba(212,168,102,.1));border:1px solid rgba(166,25,46,.2);margin-bottom:12px}
+.blv8-subj-h-title{font-weight:800;font-size:1.1rem}
+.blv8-subj-h-sub{font-size:.76rem;opacity:.8;margin:4px 0 10px;line-height:1.45}
+.blv8-subj-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.blv8-badge{font-size:.62rem;font-weight:700;padding:4px 9px;border-radius:999px;border:1px solid rgba(166,25,46,.28);background:rgba(166,25,46,.07);white-space:nowrap}
+.blv8-subj-search{width:100%;max-width:420px;padding:10px 14px;border-radius:12px;border:1px solid rgba(128,145,180,.3);background:rgba(255,255,255,.6);font-size:.85rem;font-family:inherit}
+.blv8-subj-list{display:flex;flex-direction:column;gap:8px}
+.blv8-subj-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid rgba(128,145,180,.2);background:rgba(128,145,180,.05);cursor:pointer}
+.blv8-subj-card:active{transform:scale(.995)}
+.blv8-subj-ic{font-size:22px}
+.blv8-subj-mid{flex:1;min-width:0}
+.blv8-subj-name{font-weight:800;font-size:.88rem}
+.blv8-subj-counts{font-size:.7rem;opacity:.7;margin-top:2px}
+.blv8-subj-arrow{font-size:1.3rem;opacity:.35;font-weight:700}
+.blv8-subj-back{border:1px solid rgba(128,145,180,.3);background:rgba(128,145,180,.08);border-radius:10px;padding:7px 13px;font-size:.74rem;font-weight:700;cursor:pointer;margin-bottom:10px}
+.blv8-subj-me{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.blv8-subj-me span{font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:9px;background:rgba(46,125,50,.1);border:1px solid rgba(46,125,50,.25);color:#2e7d32}
+.blv8-subj-full{width:100%;padding:12px;border:none;border-radius:12px;font-weight:800;font-size:.8rem;letter-spacing:.03em;color:#fff;background:var(--grad-primary,linear-gradient(135deg,#a6192e,#d43a4e));cursor:pointer;box-shadow:0 4px 12px rgba(166,25,46,.28);margin-bottom:12px}
+.blv8-subj-topics{display:flex;flex-direction:column;gap:8px}
+.blv8-subj-trow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border-radius:13px;border:1px solid rgba(128,145,180,.18);background:rgba(128,145,180,.05)}
+.blv8-empty{padding:22px;text-align:center;opacity:.7;font-size:.8rem}
