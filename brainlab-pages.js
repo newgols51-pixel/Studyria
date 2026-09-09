@@ -62,7 +62,7 @@
     var v7 = window.BrainLabV7 || {};
     var fn = function (name) { return function () { return bl[name](); }; };
     switch (page) {
-      case 'exams':        return [v7.renderExamHub];
+      case 'exams':        return [window.BrainLabUniverse ? window.BrainLabUniverse.renderLanding : v7.renderExamHub];
       case 'mock-tests':   return [fn('renderMockTests'), P.renderMockFilters];
       case 'quizzes':      return [fn('renderQuizzes')];
       case 'mcqs':         return [fn('renderMCQs'), P.renderPracticeModes];
@@ -213,7 +213,7 @@
   /* sync view from URL hash — used after navigate()/popstate */
   P.syncFromHash = function () {
     var m = (location.hash || '').match(/^#brainlab\/([a-z-]+)(?:\/([a-z0-9-]+))?/);
-    if (m && P.PAGES[m[1]]) { P.show(m[1], false); if (m[1] === 'subjects' && m[2]) P.openSubject(m[2], false); return true; }
+    if (m && P.PAGES[m[1]]) { P.show(m[1], false); if (m[1] === 'subjects' && m[2]) P.openSubject(m[2], false); if (m[1] === 'exams' && m[2] && window.BrainLabUniverse) window.BrainLabUniverse.openExam(m[2], false); return true; }
     if (window._blPendingSub && P.PAGES[window._blPendingSub]) { var s = window._blPendingSub; window._blPendingSub = null; P.show(s, false); return true; }
     window._blPendingSub = null;
     if (current !== 'home') P.show('home', false);
@@ -267,6 +267,13 @@
     h += card('📊', 'Performance', st.tests > 0 ? st.tests + ' tests completed — view your trends' : 'Take a test to unlock analytics', 'VIEW ANALYTICS', "BrainLabPages.go('performance')");
     h += card('🏆', 'Leaderboard', bl.user() ? 'Your rank among Studyria learners' : 'Sign in to compete with real learners', 'VIEW LEADERBOARD', "BrainLabPages.go('leaderboard')");
     h += card('📚', 'Subject-wise Practice', (bl.getCategories() || []).length + ' subjects — pick one and focus your preparation', 'EXPLORE SUBJECTS', "BrainLabPages.go('subjects')");
+    if (window.BrainLabUniverse) {
+      h += '<div class="blv8-eu-strip"><div class="blv8-eu-strip-t">🎯 Exam Universe</div><div class="blv8-eu-strip-s">Your complete preparation hub for every exam.</div><div class="blv8-eu-chips">';
+      (window.BrainLabV7 && window.BrainLabV7.EXAM_HUB ? window.BrainLabV7.EXAM_HUB : []).slice(0, 4).forEach(function (e) {
+        h += '<button class="blv8-eu-chip" onclick="BrainLabUniverse.openExam(\'' + e.id + '\', true)">' + e.name + '</button>';
+      });
+      h += '</div><button class="blv8-eu-all" onclick="BrainLabPages.go(\'exams\')">EXPLORE ALL EXAMS →</button></div>';
+    }
     h += '</div>';
     d.innerHTML = h;
 

@@ -149,3 +149,12 @@
 .blv8-subj-topics{display:flex;flex-direction:column;gap:8px}
 .blv8-subj-trow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border-radius:13px;border:1px solid rgba(128,145,180,.18);background:rgba(128,145,180,.05)}
 .blv8-empty{padding:22px;text-align:center;opacity:.7;font-size:.8rem}
+
+/* ═══ Exam Universe dashboard strip (additive) ═══ */
+.blv8-eu-strip{padding:14px;border-radius:14px;border:1px solid rgba(212,168,102,.4);background:linear-gradient(135deg,rgba(212,168,102,.14),rgba(166,25,46,.07));margin-top:14px}
+.blv8-eu-strip-t{font-weight:800;font-size:.92rem}
+.blv8-eu-strip-s{font-size:.7rem;opacity:.75;margin:2px 0 10px}
+.blv8-eu-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.blv8-eu-chips::-webkit-scrollbar{display:none}
+.blv8-eu-chip{flex-shrink:0;border:1px solid rgba(166,25,46,.25);background:rgba(166,25,46,.06);border-radius:999px;padding:8px 14px;font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.blv8-eu-all{margin-top:10px;border:none;border-radius:10px;padding:10px 16px;font-size:.7rem;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--grad-primary,linear-gradient(135deg,#a6192e,#d43a4e));cursor:pointer}
